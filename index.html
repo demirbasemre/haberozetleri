@@ -511,25 +511,25 @@
     <div class="cat-pill active" data-cat="all">
       <span class="dot"></span> Tümü
     </div>
-    <div class="cat-pill" data-cat="Filo & Network" style="--c:#0277BD">
+    <div class="cat-pill" data-cat="Filo & Network" data-color="#0277BD" style="--c:#0277BD">
       <span class="dot" style="background:#0277BD"></span> Filo &amp; Network
     </div>
-    <div class="cat-pill" data-cat="Teknoloji & Dijitalleşme" style="--c:#1565C0">
+    <div class="cat-pill" data-cat="Teknoloji & Dijitalleşme" data-color="#1565C0" style="--c:#1565C0">
       <span class="dot" style="background:#1565C0"></span> Teknoloji &amp; Dijital
     </div>
-    <div class="cat-pill" data-cat="Ortaklık & İş Birlikleri" style="--c:#558B2F">
+    <div class="cat-pill" data-cat="Ortaklık & İş Birlikleri" data-color="#558B2F" style="--c:#558B2F">
       <span class="dot" style="background:#558B2F"></span> Ortaklık &amp; İş Bir.
     </div>
-    <div class="cat-pill" data-cat="Özel Kargo" style="--c:#6A1B9A">
+    <div class="cat-pill" data-cat="Özel Kargo" data-color="#6A1B9A" style="--c:#6A1B9A">
       <span class="dot" style="background:#6A1B9A"></span> Özel Kargo
     </div>
-    <div class="cat-pill" data-cat="Altyapı" style="--c:#BF360C">
+    <div class="cat-pill" data-cat="Altyapı" data-color="#BF360C" style="--c:#BF360C">
       <span class="dot" style="background:#BF360C"></span> Altyapı
     </div>
-    <div class="cat-pill" data-cat="Atama & Görevlendirme" style="--c:#00838F">
+    <div class="cat-pill" data-cat="Atama & Görevlendirme" data-color="#00838F" style="--c:#00838F">
       <span class="dot" style="background:#00838F"></span> Atama &amp; Görev.
     </div>
-    <div class="cat-pill" data-cat="Diğer" style="--c:#37474F">
+    <div class="cat-pill" data-cat="Diğer" data-color="#37474F" style="--c:#37474F">
       <span class="dot" style="background:#37474F"></span> Diğer
     </div>
   </div>
@@ -677,7 +677,6 @@ function renderCards(articles) {
         <div class="card-body">
           <div class="card-meta">
             <span class="card-cat-badge" style="background:${color}">${article.category || 'Diğer'}</span>
-            <span class="card-impact ${impactClass}">${impactLabel}</span>
           </div>
           ${article.isDuplicate ? `<div class="dup-badge">⟳ Tekrar haber</div>` : ''}
           <div class="card-title">${article.title || ''}</div>
@@ -685,7 +684,7 @@ function renderCards(articles) {
           ${hasThy ? `
             <button class="thy-toggle" onclick="toggleThy(this)">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-              Turkish Cargo Analizi
+              Analiz
             </button>
             <div class="thy-panel">${article.thyAnalysis}</div>
           ` : ''}
@@ -776,9 +775,8 @@ document.querySelectorAll('.cat-pill').forEach(pill => {
     });
     pill.classList.add('active');
     if (pill.dataset.cat !== 'all') {
-      const color = getComputedStyle(pill).getPropertyValue('--c').trim();
-      pill.style.background = color;
-      pill.style.color = 'white';
+      const color = pill.dataset.color;
+      if (color) { pill.style.background = color; pill.style.color = 'white'; }
     }
     activeCat = pill.dataset.cat;
     render();
