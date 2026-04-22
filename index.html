@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hava Kargo Haber Özetleri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8102E;
+    --red-dark: #a50d24;
+    --navy: #0f1923;
+    --navy-light: #1a2740;
+    --cream: #f7f4ef;
+    --warm-white: #fdfcfa;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --border: #e8e2d9;
+
+    --cat-filo: #0277BD;
+    --cat-tech: #1565C0;
+    --cat-ortak: #558B2F;
+    --cat-ozel: #6A1B9A;
+    --cat-alt: #BF360C;
+    --cat-atama: #00838F;
+    --cat-diger: #37474F;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--navy);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 64px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .logo-badge {
+    background: var(--red);
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 8px;
+    text-transform: uppercase;
+  }
+
+  .logo-text {
+    color: white;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+    white-space: nowrap;
+  }
+
+  .search-wrap {
+    flex: 1;
+    max-width: 400px;
+    position: relative;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255,255,255,0.4);
+    pointer-events: none;
+  }
+
+  #search {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 8px 12px 8px 38px;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  #search::placeholder { color: rgba(255,255,255,0.35); }
+  #search:focus { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+
+  .header-stats {
+    margin-left: auto;
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .header-stats span {
+    color: white;
+    font-weight: 600;
+  }
+
+  /* DATE TABS */
+  .date-bar {
+    background: var(--navy-light);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .date-bar::-webkit-scrollbar { display: none; }
+
+  .date-tabs {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .date-tab {
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.45);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .date-tab:hover { color: rgba(255,255,255,0.75); }
+  .date-tab.active { color: white; border-bottom-color: var(--red); }
+
+  /* CATEGORY FILTER */
+  .filter-bar {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 64px;
+    z-index: 90;
+  }
+
+  .filter-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 24px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    align-items: center;
+  }
+  .filter-inner::-webkit-scrollbar { display: none; }
+
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+
+  .cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1.5px solid transparent;
+    background: var(--cream);
+    color: var(--text-muted);
+  }
+
+  .cat-pill .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .cat-pill:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .cat-pill.active {
+    color: white;
+    border-color: transparent;
+  }
+
+  .cat-pill[data-cat="all"] .dot { background: var(--red); }
+  .cat-pill[data-cat="all"].active { background: var(--red); }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+
+  /* DATE SECTION */
+  .date-section {
+    margin-bottom: 48px;
+  }
+
+  .date-section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .date-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .date-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  /* ARTICLE GRID */
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  /* ARTICLE CARD */
+  .article-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: all 0.25s;
+    display: flex;
+    flex-direction: column;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .article-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+    border-color: transparent;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-top-band {
+    height: 4px;
+    flex-shrink: 0;
+  }
+
+  .card-body {
+    padding: 16px 18px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .card-cat-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: white;
+    text-transform: uppercase;
+  }
+
+  .card-impact {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+  }
+
+  .impact-firsat { background: #e8f5e9; color: #2e7d32; }
+  .impact-risk { background: #fce4ec; color: #c62828; }
+  .impact-notr { background: #f5f5f5; color: #757575; }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+
+  .card-summary {
+    font-size: 13px;
+    line-height: 1.65;
+    color: #4a5568;
+    flex: 1;
+    margin-bottom: 14px;
+  }
+
+  .card-summary strong { color: var(--navy); font-weight: 600; }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-source {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .source-favicon {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+  }
+
+  .card-link {
+    font-size: 11px;
+    color: var(--red);
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.2s;
+  }
+
+  .card-link:hover { gap: 7px; }
+
+  /* THY ANALYSIS PANEL */
+  .thy-panel {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fff8f8;
+    border-left: 3px solid var(--red);
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #5a2a2a;
+    display: none;
+  }
+
+  .thy-panel.show { display: block; }
+
+  .thy-toggle {
+    background: none;
+    border: none;
+    font-size: 11px;
+    color: var(--red);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    padding: 0;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* DUPLICATE BADGE */
+  .dup-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    padding: 2px 7px;
+    background: #fff3e0;
+    color: #e65100;
+    border-radius: 3px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--text-muted);
+    display: none;
+  }
+
+  .empty-state svg { margin-bottom: 16px; opacity: 0.3; }
+  .empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--text); }
+  .empty-state p { font-size: 14px; }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 24px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  footer strong { color: rgba(255,255,255,0.7); }
+
+  /* LOADING */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--text-muted);
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .logo-text { display: none; }
+    .header-stats { display: none; }
+    .article-grid { grid-template-columns: 1fr; }
+    .main { padding: 20px 16px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-badge">THY</div>
+      <div class="logo-text">Stratejik Planlama &amp; İş Zekası</div>
+    </div>
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="search" placeholder="Haberlerde ara...">
+    </div>
+    <div class="header-stats" id="header-stats"></div>
+  </div>
+</header>
+
+<div class="date-bar" id="date-bar" style="display:none">
+  <div class="date-tabs" id="date-tabs"></div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="filter-label">Kategori</span>
+    <div class="cat-pill active" data-cat="all">
+      <span class="dot"></span> Tümü
+    </div>
+    <div class="cat-pill" data-cat="Filo & Network" style="--c:#0277BD">
+      <span class="dot" style="background:#0277BD"></span> Filo &amp; Network
+    </div>
+    <div class="cat-pill" data-cat="Teknoloji & Dijitalleşme" style="--c:#1565C0">
+      <span class="dot" style="background:#1565C0"></span> Teknoloji &amp; Dijital
+    </div>
+    <div class="cat-pill" data-cat="Ortaklık & İş Birlikleri" style="--c:#558B2F">
+      <span class="dot" style="background:#558B2F"></span> Ortaklık &amp; İş Bir.
+    </div>
+    <div class="cat-pill" data-cat="Özel Kargo" style="--c:#6A1B9A">
+      <span class="dot" style="background:#6A1B9A"></span> Özel Kargo
+    </div>
+    <div class="cat-pill" data-cat="Altyapı" style="--c:#BF360C">
+      <span class="dot" style="background:#BF360C"></span> Altyapı
+    </div>
+    <div class="cat-pill" data-cat="Atama & Görevlendirme" style="--c:#00838F">
+      <span class="dot" style="background:#00838F"></span> Atama &amp; Görev.
+    </div>
+    <div class="cat-pill" data-cat="Diğer" style="--c:#37474F">
+      <span class="dot" style="background:#37474F"></span> Diğer
+    </div>
+  </div>
+</div>
+
+<main class="main" id="main">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div>Haberler yükleniyor...</div>
+  </div>
+  <div class="empty-state" id="empty-state">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <h3>Sonuç bulunamadı</h3>
+    <p>Arama kriterlerinizi değiştirmeyi deneyin.</p>
+  </div>
+</main>
+
+<footer>
+  <strong>Turkish Cargo — Stratejik Planlama ve İş Zekası Müdürlüğü</strong><br>
+  Bülten yapay zeka tarafından otomatik olarak oluşturulmuştur. İçeriğin doğruluğu garanti edilmez.
+</footer>
+
+<script>
+const CAT_COLORS = {
+  'Filo & Network': '#0277BD',
+  'Teknoloji & Dijitalleşme': '#1565C0',
+  'Ortaklık & İş Birlikleri': '#558B2F',
+  'Özel Kargo': '#6A1B9A',
+  'Altyapı': '#BF360C',
+  'Atama & Görevlendirme': '#00838F',
+  'Diğer': '#37474F'
+};
+
+const SOURCE_LABELS = {
+  'aircargonews': 'AirCargoNews',
+  'aircargoweek': 'AirCargoWeek',
+  'stattimes': 'StatTimes'
+};
+
+let allArticles = [];
+let activeCat = 'all';
+let activeDate = 'all';
+let searchQuery = '';
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return d.toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function formatDateShort(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
+}
+
+function getFavicon(source) {
+  const domains = {
+    'aircargonews': 'aircargonews.net',
+    'aircargoweek': 'aircargoweek.com',
+    'stattimes': 'stattimes.com'
+  };
+  const domain = domains[source] || source;
+  return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
+}
+
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+
+function getFilteredArticles() {
+  return allArticles.filter(a => {
+    const catMatch = activeCat === 'all' || a.category === activeCat;
+    const dateMatch = activeDate === 'all' || a.date === activeDate;
+    const q = searchQuery.toLowerCase();
+    const searchMatch = !q ||
+      stripHtml(a.title || '').toLowerCase().includes(q) ||
+      stripHtml(a.summary || '').toLowerCase().includes(q) ||
+      (a.source || '').toLowerCase().includes(q);
+    return catMatch && dateMatch && searchMatch;
+  });
+}
+
+function renderCards(articles) {
+  const main = document.getElementById('main');
+  const empty = document.getElementById('empty-state');
+  const loading = document.getElementById('loading');
+
+  loading.style.display = 'none';
+
+  // Tarihe göre grupla
+  const byDate = {};
+  articles.forEach(a => {
+    const d = a.date || 'Tarihsiz';
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(a);
+  });
+
+  const dates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+
+  if (articles.length === 0) {
+    main.innerHTML = '';
+    main.appendChild(empty);
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  main.innerHTML = '';
+
+  dates.forEach(date => {
+    const section = document.createElement('div');
+    section.className = 'date-section';
+
+    const header = document.createElement('div');
+    header.className = 'date-section-header';
+    header.innerHTML = `
+      <div class="date-heading">${formatDate(date)}</div>
+      <div class="date-count">${byDate[date].length} haber</div>
+    `;
+    section.appendChild(header);
+
+    const grid = document.createElement('div');
+    grid.className = 'article-grid';
+
+    byDate[date].forEach((article, i) => {
+      const color = CAT_COLORS[article.category] || '#37474F';
+      const impactClass = `impact-${article.thyImpact || 'notr'}`;
+      const impactLabel = { firsat: '↑ Fırsat', risk: '↓ Risk', notr: '— Nötr' }[article.thyImpact] || '— Nötr';
+      const sourceLabel = SOURCE_LABELS[article.source] || article.source || '';
+      const hasThy = article.thyImpact && article.thyImpact !== 'notr' && article.thyAnalysis;
+
+      const card = document.createElement('div');
+      card.className = 'article-card';
+      card.style.animationDelay = `${i * 40}ms`;
+
+      card.innerHTML = `
+        <div class="card-top-band" style="background:${color}"></div>
+        <div class="card-body">
+          <div class="card-meta">
+            <span class="card-cat-badge" style="background:${color}">${article.category || 'Diğer'}</span>
+            <span class="card-impact ${impactClass}">${impactLabel}</span>
+          </div>
+          ${article.isDuplicate ? `<div class="dup-badge">⟳ Tekrar haber</div>` : ''}
+          <div class="card-title">${article.title || ''}</div>
+          <div class="card-summary">${article.summary || ''}</div>
+          ${hasThy ? `
+            <button class="thy-toggle" onclick="toggleThy(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              Turkish Cargo Analizi
+            </button>
+            <div class="thy-panel">${article.thyAnalysis}</div>
+          ` : ''}
+          <div class="card-footer">
+            <div class="card-source">
+              <img class="source-favicon" src="${getFavicon(article.source)}" alt="" onerror="this.style.display='none'">
+              ${sourceLabel}
+            </div>
+            ${article.link ? `<a class="card-link" href="${article.link}" target="_blank" rel="noopener">
+              Haberi oku
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>` : ''}
+          </div>
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+
+    section.appendChild(grid);
+    main.appendChild(section);
+  });
+}
+
+function toggleThy(btn) {
+  const panel = btn.nextElementSibling;
+  const isOpen = panel.classList.toggle('show');
+  btn.innerHTML = `
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform:rotate(${isOpen ? 180 : 0}deg);transition:transform 0.2s"><polyline points="6 9 12 15 18 9"/></svg>
+    Turkish Cargo Analizi
+  `;
+}
+
+function updateStats(total, filtered) {
+  const el = document.getElementById('header-stats');
+  if (filtered < total) {
+    el.innerHTML = `<span>${filtered}</span> / ${total} haber gösteriliyor`;
+  } else {
+    el.innerHTML = `Toplam <span>${total}</span> haber`;
+  }
+}
+
+function buildDateTabs(articles) {
+  const dates = [...new Set(articles.map(a => a.date).filter(Boolean))].sort((a, b) => b.localeCompare(a));
+  if (dates.length <= 1) return;
+
+  const bar = document.getElementById('date-bar');
+  const tabs = document.getElementById('date-tabs');
+  bar.style.display = 'block';
+
+  const allTab = document.createElement('div');
+  allTab.className = 'date-tab active';
+  allTab.textContent = 'Tüm Tarihler';
+  allTab.dataset.date = 'all';
+  tabs.appendChild(allTab);
+
+  dates.forEach(d => {
+    const tab = document.createElement('div');
+    tab.className = 'date-tab';
+    tab.textContent = formatDateShort(d);
+    tab.dataset.date = d;
+    tabs.appendChild(tab);
+  });
+
+  tabs.addEventListener('click', e => {
+    const tab = e.target.closest('.date-tab');
+    if (!tab) return;
+    document.querySelectorAll('.date-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeDate = tab.dataset.date;
+    render();
+  });
+}
+
+function render() {
+  const filtered = getFilteredArticles();
+  renderCards(filtered);
+  updateStats(allArticles.length, filtered.length);
+}
+
+// Category pills
+document.querySelectorAll('.cat-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.cat-pill').forEach(p => {
+      p.classList.remove('active');
+      p.style.background = '';
+      p.style.color = '';
+    });
+    pill.classList.add('active');
+    if (pill.dataset.cat !== 'all') {
+      const color = getComputedStyle(pill).getPropertyValue('--c').trim();
+      pill.style.background = color;
+      pill.style.color = 'white';
+    }
+    activeCat = pill.dataset.cat;
+    render();
+  });
+});
+
+// Search
+let searchTimer;
+document.getElementById('search').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    searchQuery = e.target.value;
+    render();
+  }, 250);
+});
+
+// Load data
+fetch('data.json')
+  .then(r => {
+    if (!r.ok) throw new Error('data.json bulunamadı');
+    return r.json();
+  })
+  .then(data => {
+    allArticles = Array.isArray(data) ? data : (data.articles || []);
+    buildDateTabs(allArticles);
+    render();
+  })
+  .catch(err => {
+    document.getElementById('loading').innerHTML = `
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C8102E" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <div style="color:#C8102E;font-weight:600">Veri yüklenemedi</div>
+      <div style="font-size:12px">${err.message}</div>
+    `;
+  });
+</script>
+</body>
+</html>
