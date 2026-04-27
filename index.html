@@ -794,9 +794,11 @@ document.getElementById('search').addEventListener('input', e => {
 });
 
 // Load data
-fetch('data.json')
+const DATA_URL = 'https://n8n.emredemirbas.com/webhook/haber-ozetleri';
+
+fetch(DATA_URL)
   .then(r => {
-    if (!r.ok) throw new Error('data.json bulunamadı');
+    if (!r.ok) throw new Error('Veri kaynağına ulaşılamadı');
     return r.json();
   })
   .then(data => {
