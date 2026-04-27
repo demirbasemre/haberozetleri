@@ -547,6 +547,7 @@
     <h3>Sonuç bulunamadı</h3>
     <p>Arama kriterlerinizi değiştirmeyi deneyin.</p>
   </div>
+  <div id="cards-container"></div>
 </main>
 
 <footer>
@@ -619,12 +620,12 @@ function getFilteredArticles() {
   });
 }
 
-function renderCards(articles) {
-  const main = document.getElementById('main');
-  const empty = document.getElementById('empty-state');
-  const loading = document.getElementById('loading');
+const elLoading = document.getElementById('loading');
+const elEmpty   = document.getElementById('empty-state');
+const elCards   = document.getElementById('cards-container');
 
-  loading.style.display = 'none';
+function renderCards(articles) {
+  elLoading.style.display = 'none';
 
   // Tarihe göre grupla
   const byDate = {};
@@ -637,14 +638,13 @@ function renderCards(articles) {
   const dates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
 
   if (articles.length === 0) {
-    main.innerHTML = '';
-    main.appendChild(empty);
-    empty.style.display = 'block';
+    elCards.innerHTML = '';
+    elEmpty.style.display = 'block';
     return;
   }
 
-  empty.style.display = 'none';
-  main.innerHTML = '';
+  elEmpty.style.display = 'none';
+  elCards.innerHTML = '';
 
   dates.forEach(date => {
     const section = document.createElement('div');
@@ -680,7 +680,7 @@ function renderCards(articles) {
           </div>
           ${article.isDuplicate ? `<div class="dup-badge">⟳ Tekrar haber</div>` : ''}
           <div class="card-title">${article.title || ''}</div>
-          <div class="card-summary">${article.summary || ''}</div>
+          <div class="card-summary">${article.summary || '<span style="color:var(--text-muted);font-style:italic">Özet henüz oluşturulmadı.</span>'}</div>
           ${hasThy ? `
             <button class="thy-toggle" onclick="toggleThy(this)">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -705,7 +705,7 @@ function renderCards(articles) {
     });
 
     section.appendChild(grid);
-    main.appendChild(section);
+    elCards.appendChild(section);
   });
 }
 
@@ -807,7 +807,7 @@ fetch(DATA_URL)
     render();
   })
   .catch(err => {
-    document.getElementById('loading').innerHTML = `
+    elLoading.innerHTML = `
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C8102E" stroke-width="1.5">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
