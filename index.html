@@ -511,12 +511,36 @@
     letter-spacing: 0.03em;
     white-space: nowrap;
   }
-  /* Region colour palette */
-  .region-badge[data-region="EUROPE"]      { background:#EFF6FF; color:#1D4ED8; }
-  .region-badge[data-region="FAR EAST"]    { background:#FFF7ED; color:#C2410C; }
-  .region-badge[data-region="MEASA"]       { background:#F0FDF4; color:#15803D; }
-  .region-badge[data-region="S&N AMERICA"] { background:#FDF4FF; color:#7E22CE; }
-  .region-badge[data-region="TURKIYE"]     { background:#FFF1F2; color:#BE123C; }
+  /* Region colour palette by parent TK */
+  .region-badge[data-tk="EUROPE"]      { background:#EFF6FF; color:#1D4ED8; }
+  .region-badge[data-tk="FAR EAST"]    { background:#FFF7ED; color:#C2410C; }
+  .region-badge[data-tk="MEASA"]       { background:#F0FDF4; color:#15803D; }
+  .region-badge[data-tk="S&N AMERICA"] { background:#FDF4FF; color:#7E22CE; }
+  .region-badge[data-tk="TURKIYE"]     { background:#FFF1F2; color:#BE123C; }
+
+  /* Hierarchical region dropdown */
+  .region-parent-opt {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 8px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    user-select: none;
+    min-height: 34px;
+    transition: background 0.13s;
+  }
+  .region-parent-opt:hover { background: var(--bg); }
+  .region-parent-opt.selected { background: rgba(13,17,23,0.05); }
+  .region-sub-opt {
+    padding-left: 24px !important;
+    font-size: 12px !important;
+    color: var(--text-2) !important;
+    min-height: 32px !important;
+  }
 
   .card-title {
     font-family: 'DM Serif Display', Georgia, serif;
@@ -764,37 +788,17 @@
 
     <!-- Bölge -->
     <div class="fdd-wrap">
-      <button class="fdd-btn" id="region-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Bölge filtresi">
+      <button class="fdd-btn" id="region-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Etki alanı filtresi">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
         </svg>
-        <span id="region-btn-label">Bölge</span>
+        <span id="region-btn-label">Etki Alanı</span>
         <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="6 9 12 15 18 9"/>
         </svg>
       </button>
-      <div class="fdd-panel" id="region-panel" role="listbox" aria-multiselectable="true" aria-label="Bölge seç">
-        <div class="dropdown-section-label">TK Bölgesi</div>
-        <div class="airline-option" data-region="EUROPE" role="option" aria-selected="false">
-          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
-          <span class="airline-label">EUROPE</span>
-        </div>
-        <div class="airline-option" data-region="FAR EAST" role="option" aria-selected="false">
-          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
-          <span class="airline-label">FAR EAST</span>
-        </div>
-        <div class="airline-option" data-region="MEASA" role="option" aria-selected="false">
-          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
-          <span class="airline-label">MEASA</span>
-        </div>
-        <div class="airline-option" data-region="S&N AMERICA" role="option" aria-selected="false">
-          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
-          <span class="airline-label">S&amp;N AMERICA</span>
-        </div>
-        <div class="airline-option" data-region="TURKIYE" role="option" aria-selected="false">
-          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
-          <span class="airline-label">TÜRKİYE</span>
-        </div>
+      <div class="fdd-panel" id="region-panel" role="listbox" aria-multiselectable="true" aria-label="Etki alanı seç" style="min-width:230px">
+        <!-- Populated by buildRegionDropdown() -->
       </div>
     </div>
 
@@ -891,6 +895,21 @@ let activeAirlines = new Set();
 let activeRegions  = new Set();
 let onlyAnalysis   = false;
 
+// ── Region hierarchy (matches Bölge Yapısı table) ───────────
+const TK_HIERARCHY = [
+  { id: 'EUROPE',      label: 'EUROPE',      subs: ['Central Europe','Eastern Europe','Northern Europe','Western Europe'] },
+  { id: 'FAR EAST',    label: 'FAR EAST',    subs: ['China','North East Asia','South East Asia','Turkistan and Russia'] },
+  { id: 'MEASA',       label: 'MEASA',       subs: ['Middle East','Northern & Western Africa','Southern & Eastern Africa','Southern Asia'] },
+  { id: 'S&N AMERICA', label: 'S&N AMERICA', subs: ['Central & Southern America','Northern America'] },
+  { id: 'TURKIYE',     label: 'TÜRKİYE',     subs: ['ANKARA','CUKUROVA','IZMIR'] }
+];
+
+// Sub_Region → parent TK_Region lookup
+const SUB_TO_TK = {};
+TK_HIERARCHY.forEach(tk => tk.subs.forEach(s => { SUB_TO_TK[s] = tk.id; }));
+// Also map TK_Region IDs to themselves for backward compat (old articles)
+TK_HIERARCHY.forEach(tk => { SUB_TO_TK[tk.id] = tk.id; });
+
 // ── Airline keyword definitions ──────────────────────────────
 const AIRLINE_DEFS = [
   { id: 'thy',       label: 'Turkish Airlines / THY', isTHY: true,
@@ -960,7 +979,12 @@ function getFilteredArticles() {
     const airlineMatch  = activeAirlines.size === 0 ||
                           (a._airlines && a._airlines.some(id => activeAirlines.has(id)));
     const regionMatch   = activeRegions.size === 0 ||
-                          (Array.isArray(a.etkiAlani) && a.etkiAlani.some(r => activeRegions.has(r)));
+                          (Array.isArray(a.etkiAlani) && a.etkiAlani.some(r => {
+                            if (activeRegions.has(r)) return true;
+                            // backward compat: old articles store TK_Region; expand to its subs
+                            const tk = TK_HIERARCHY.find(t => t.id === r);
+                            return tk ? tk.subs.some(s => activeRegions.has(s)) : false;
+                          }));
     const analysisMatch = !onlyAnalysis ||
                           (a.thyImpact && a.thyImpact !== 'notr') ||
                           (a.thyAnalysis && a.thyAnalysis.trim() !== '');
@@ -1034,7 +1058,11 @@ function renderCards(articles) {
             <div class="card-summary">${article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>'}</div>
             ${Array.isArray(article.etkiAlani) && article.etkiAlani.length > 0 ? `
               <div class="region-badges">
-                ${article.etkiAlani.map(r => `<span class="region-badge" data-region="${r}">${r === 'TURKIYE' ? 'TÜRKİYE' : r}</span>`).join('')}
+                ${article.etkiAlani.map(r => {
+                  const tk = SUB_TO_TK[r] || r;
+                  const lbl = r === 'TURKIYE' ? 'TÜRKİYE' : r;
+                  return `<span class="region-badge" data-tk="${tk}">${lbl}</span>`;
+                }).join('')}
               </div>` : ''}
             ${hasThy ? `
               <button class="thy-toggle" onclick="toggleThy(this)" aria-expanded="false">
@@ -1263,6 +1291,96 @@ function syncClearBtn() {
   document.getElementById('clear-filters').style.display = hasAny ? 'inline-flex' : 'none';
 }
 
+const CHECK_SVG = `<svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg>`;
+
+function buildRegionDropdown() {
+  const panel = document.getElementById('region-panel');
+  panel.innerHTML = '';
+
+  TK_HIERARCHY.forEach(tk => {
+    // Parent row
+    const par = document.createElement('div');
+    par.className = 'region-parent-opt';
+    par.dataset.tk = tk.id;
+    par.innerHTML = `<div class="airline-check">${CHECK_SVG}</div><span class="airline-label" style="font-weight:600">${tk.label}</span>`;
+    par.addEventListener('click', e => { e.stopPropagation(); toggleTkRegion(tk); });
+    panel.appendChild(par);
+
+    // Sub rows
+    tk.subs.forEach(sub => {
+      const row = document.createElement('div');
+      row.className = 'airline-option region-sub-opt';
+      row.dataset.sub = sub;
+      row.dataset.tk  = tk.id;
+      row.setAttribute('role', 'option');
+      row.setAttribute('aria-selected', 'false');
+      row.innerHTML = `<div class="airline-check">${CHECK_SVG}</div><span class="airline-label">${sub}</span>`;
+      row.addEventListener('click', e => { e.stopPropagation(); toggleSubRegion(sub, tk); });
+      panel.appendChild(row);
+    });
+  });
+}
+
+function toggleTkRegion(tk) {
+  const allSel = tk.subs.every(s => activeRegions.has(s));
+  if (allSel) { tk.subs.forEach(s => activeRegions.delete(s)); }
+  else        { tk.subs.forEach(s => activeRegions.add(s)); }
+  syncRegionUI();
+  syncRegionBtn();
+  render();
+}
+
+function toggleSubRegion(sub, tk) {
+  if (activeRegions.has(sub)) activeRegions.delete(sub);
+  else activeRegions.add(sub);
+  syncRegionUI();
+  syncRegionBtn();
+  render();
+}
+
+function syncRegionUI() {
+  TK_HIERARCHY.forEach(tk => {
+    const allSel = tk.subs.every(s => activeRegions.has(s));
+    const anySel = tk.subs.some(s => activeRegions.has(s));
+
+    const par = document.querySelector(`.region-parent-opt[data-tk="${tk.id}"]`);
+    if (par) {
+      par.classList.toggle('selected', anySel);
+      const ch = par.querySelector('.airline-check');
+      if (anySel) {
+        ch.style.background = 'var(--navy)';
+        ch.style.borderColor = 'var(--navy)';
+        ch.querySelector('svg').style.display = allSel ? 'block' : 'none';
+        // partial: show a dash indicator
+        if (!allSel) {
+          ch.style.background = 'var(--navy)';
+          ch.innerHTML = `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>`;
+        } else {
+          ch.innerHTML = CHECK_SVG;
+        }
+      } else {
+        ch.style.background = '';
+        ch.style.borderColor = '';
+        ch.innerHTML = CHECK_SVG;
+        ch.querySelector('svg').style.display = 'none';
+      }
+    }
+
+    tk.subs.forEach(sub => {
+      const row = document.querySelector(`.region-sub-opt[data-sub="${CSS.escape(sub)}"]`);
+      if (!row) return;
+      const isSel = activeRegions.has(sub);
+      row.classList.toggle('selected', isSel);
+      row.setAttribute('aria-selected', isSel ? 'true' : 'false');
+      const ch = row.querySelector('.airline-check');
+      ch.style.background   = isSel ? 'var(--navy)' : '';
+      ch.style.borderColor  = isSel ? 'var(--navy)' : '';
+      ch.innerHTML = CHECK_SVG;
+      ch.querySelector('svg').style.display = isSel ? 'block' : 'none';
+    });
+  });
+}
+
 function syncRegionBtn() {
   const btn   = document.getElementById('region-btn');
   const lbl   = document.getElementById('region-btn-label');
@@ -1270,14 +1388,18 @@ function syncRegionBtn() {
   btn.querySelector('.airline-count')?.remove();
   if (count > 0) {
     btn.classList.add('active');
-    lbl.textContent = count === 1 ? [...activeRegions][0] : `${count} Bölge`;
+    // Show TK region name if all its subs are selected
+    const fullTk = TK_HIERARCHY.find(tk => tk.subs.every(s => activeRegions.has(s)) && tk.subs.some(s => activeRegions.has(s)));
+    if (count === 1) lbl.textContent = [...activeRegions][0];
+    else if (fullTk && count === fullTk.subs.length) lbl.textContent = fullTk.label;
+    else lbl.textContent = `${count} Alt Bölge`;
     const badge = document.createElement('span');
     badge.className = 'airline-count';
     badge.textContent = count;
     btn.insertBefore(badge, btn.querySelector('.fdd-chevron'));
   } else {
     btn.classList.remove('active');
-    lbl.textContent = 'Bölge';
+    lbl.textContent = 'Etki Alanı';
   }
   syncClearBtn();
 }
@@ -1333,24 +1455,7 @@ document.getElementById('region-btn').addEventListener('click', e => {
   const isOpen = document.getElementById('region-panel').classList.contains('open');
   if (isOpen) closeDropdown('region'); else openDropdown('region');
 });
-
-document.getElementById('region-panel').addEventListener('click', e => {
-  e.stopPropagation();
-  const opt = e.target.closest('.airline-option');
-  if (!opt) return;
-  const region = opt.dataset.region;
-  if (activeRegions.has(region)) {
-    activeRegions.delete(region);
-    opt.classList.remove('selected');
-    opt.setAttribute('aria-selected', 'false');
-  } else {
-    activeRegions.add(region);
-    opt.classList.add('selected');
-    opt.setAttribute('aria-selected', 'true');
-  }
-  syncRegionBtn();
-  render();
-});
+// (region-panel click events are attached in buildRegionDropdown)
 
 document.getElementById('airline-btn').addEventListener('click', e => {
   e.stopPropagation();
@@ -1383,10 +1488,7 @@ document.getElementById('clear-filters').addEventListener('click', () => {
   activeDate = 'all';
 
   // Reset region
-  document.querySelectorAll('#region-panel .airline-option').forEach(o => {
-    o.classList.remove('selected');
-    o.setAttribute('aria-selected', 'false');
-  });
+  syncRegionUI();
   syncRegionBtn();
 
   // Reset category
@@ -1436,6 +1538,9 @@ document.getElementById('search').addEventListener('input', e => {
     render();
   }, 220);
 });
+
+// Build region dropdown immediately (static data)
+buildRegionDropdown();
 
 // Load data
 const DATA_URL = 'https://n8n.emredemirbas.com/webhook/haber-ozetleri';
