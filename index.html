@@ -129,40 +129,6 @@
   }
   .header-stat b { color: rgba(255,255,255,0.85); font-weight: 600; }
 
-  /* ── DATE TABS ───────────────────────────────── */
-  .date-bar {
-    background: var(--navy-soft);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    display: none;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .date-bar::-webkit-scrollbar { display: none; }
-
-  .date-tabs {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 24px;
-    display: flex;
-    gap: 0;
-  }
-
-  .date-tab {
-    padding: 10px 16px;
-    font-size: 12px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.4);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    white-space: nowrap;
-    transition: color 0.15s;
-    letter-spacing: 0.01em;
-    user-select: none;
-    touch-action: manipulation;
-  }
-  .date-tab:hover { color: rgba(255,255,255,0.7); }
-  .date-tab.active { color: #fff; border-bottom-color: var(--red); }
-
   /* ── FILTER BAR ──────────────────────────────── */
   .filter-bar {
     background: var(--surface);
@@ -172,83 +138,36 @@
     z-index: 90;
   }
 
-  .filter-inner {
+  .filter-bar-inner {
     max-width: 1280px;
     margin: 0 auto;
-    padding: 10px 24px;
+    padding: 8px 24px;
     display: flex;
+    align-items: center;
     gap: 6px;
     overflow-x: auto;
     scrollbar-width: none;
-    align-items: center;
   }
-  .filter-inner::-webkit-scrollbar { display: none; }
+  .filter-bar-inner::-webkit-scrollbar { display: none; }
 
-  .filter-label {
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--text-3);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  .filter-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
     flex-shrink: 0;
-    margin-right: 4px;
+    margin: 0 4px;
   }
 
-  .cat-pill {
+  /* ── FILTER DROPDOWNS ────────────────────────── */
+  .fdd-wrap { position: relative; flex-shrink: 0; }
+
+  .fdd-btn {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 5px 11px;
+    padding: 5px 12px;
     border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.18s;
-    white-space: nowrap;
-    flex-shrink: 0;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--text-2);
-    user-select: none;
-    touch-action: manipulation;
-    min-height: 30px;
-  }
-
-  .cat-pill .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .cat-pill:hover { background: var(--bg); border-color: #d1d5db; color: var(--text); }
-
-  .cat-pill.active {
-    color: white;
-    border-color: transparent;
-    box-shadow: var(--shadow-sm);
-  }
-  .cat-pill[data-cat="all"] .dot { background: var(--red); }
-  .cat-pill[data-cat="all"].active { background: var(--red); }
-
-  /* ── FILTER ROW 2 ────────────────────────────── */
-  .filter-row-2 {
-    border-top: 1px solid var(--border-soft);
-    padding: 8px 24px;
-    display: none;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  /* Airline dropdown trigger */
-  .airline-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 11px;
-    border-radius: 20px;
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 500;
     cursor: pointer;
     border: 1.5px solid var(--border);
@@ -256,36 +175,30 @@
     color: var(--text-2);
     font-family: 'Inter', sans-serif;
     transition: all 0.18s;
-    min-height: 30px;
+    min-height: 32px;
     touch-action: manipulation;
     user-select: none;
-    position: relative;
+    white-space: nowrap;
   }
-  .airline-btn:hover { background: var(--bg); border-color: #d1d5db; color: var(--text); }
-  .airline-btn.has-filter { background: var(--navy); color: white; border-color: transparent; }
-  .airline-btn.has-filter:hover { background: #1a2332; }
+  .fdd-btn:hover { background: var(--bg); border-color: #d1d5db; color: var(--text); }
+  .fdd-btn.active { background: var(--navy); color: white; border-color: transparent; }
+  .fdd-btn.active:hover { background: #1a2332; }
 
-  .airline-btn #airline-chevron {
+  .fdd-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .fdd-chevron {
+    opacity: 0.5;
+    flex-shrink: 0;
     transition: transform 0.18s;
-    opacity: 0.6;
   }
+  .fdd-btn[aria-expanded="true"] .fdd-chevron { transform: rotate(180deg); }
 
-  .airline-count {
-    background: var(--red);
-    color: white;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 1px 5px;
-    min-width: 16px;
-    text-align: center;
-    line-height: 1.4;
-  }
-
-  /* Airline dropdown panel */
-  .airline-dropdown-wrap { position: relative; }
-
-  .airline-dropdown {
+  .fdd-panel {
     position: absolute;
     top: calc(100% + 6px);
     left: 0;
@@ -293,22 +206,55 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-md);
-    width: 260px;
+    min-width: 200px;
     z-index: 200;
     padding: 6px;
     display: none;
-    max-height: 300px;
+    max-height: 320px;
     overflow-y: auto;
     scrollbar-width: thin;
   }
-  .airline-dropdown.open { display: block; animation: dropIn 0.16s ease; }
+  .fdd-panel.open { display: block; animation: dropIn 0.16s ease; }
 
   @keyframes dropIn {
     from { opacity: 0; transform: translateY(-6px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  @media (prefers-reduced-motion: reduce) { .airline-dropdown.open { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .fdd-panel.open { animation: none; } }
 
+  .fdd-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--text);
+    user-select: none;
+    min-height: 34px;
+    transition: background 0.13s;
+  }
+  .fdd-option:hover { background: var(--bg); }
+  .fdd-option.selected { background: rgba(13,17,23,0.05); font-weight: 500; }
+
+  .fdd-radio {
+    width: 15px;
+    height: 15px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    background: white;
+    box-sizing: border-box;
+  }
+  .fdd-option.selected .fdd-radio {
+    border-color: var(--navy);
+    background: var(--navy);
+    box-shadow: inset 0 0 0 2.5px white, inset 0 0 0 5px var(--navy);
+  }
+
+  /* Airline multi-select */
   .dropdown-section-label {
     font-size: 10px;
     font-weight: 600;
@@ -346,13 +292,9 @@
     transition: all 0.15s;
     background: white;
   }
-  .airline-option.selected .airline-check {
-    background: var(--navy);
-    border-color: var(--navy);
-  }
+  .airline-option.selected .airline-check { background: var(--navy); border-color: var(--navy); }
   .airline-option.selected .airline-check svg { display: block; }
   .airline-check svg { display: none; }
-
   .airline-label { flex: 1; line-height: 1.3; }
 
   .thy-badge {
@@ -366,20 +308,28 @@
     flex-shrink: 0;
   }
 
-  .dropdown-divider {
-    height: 1px;
-    background: var(--border-soft);
-    margin: 4px 0;
+  .dropdown-divider { height: 1px; background: var(--border-soft); margin: 4px 0; }
+
+  .airline-count {
+    background: var(--red);
+    color: white;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    min-width: 16px;
+    text-align: center;
+    line-height: 1.4;
   }
 
   /* Analysis toggle */
-  .analysis-toggle {
+  .fdd-toggle {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 5px 12px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 500;
     cursor: pointer;
     border: 1.5px solid var(--border);
@@ -387,17 +337,15 @@
     color: var(--text-2);
     font-family: 'Inter', sans-serif;
     transition: all 0.18s;
-    min-height: 30px;
+    min-height: 32px;
     touch-action: manipulation;
     user-select: none;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
-  .analysis-toggle:hover { background: var(--bg); border-color: #d1d5db; color: var(--text); }
-  .analysis-toggle.active {
-    background: #1a3a2a;
-    color: #4ade80;
-    border-color: transparent;
-  }
-  .analysis-toggle.active svg { stroke: #4ade80; }
+  .fdd-toggle:hover { background: var(--bg); border-color: #d1d5db; color: var(--text); }
+  .fdd-toggle.active { background: #1a3a2a; color: #4ade80; border-color: transparent; }
+  .fdd-toggle.active svg { stroke: #4ade80; }
 
   /* Clear filters */
   .clear-btn {
@@ -694,11 +642,9 @@
     .site-name { font-size: 16px; }
     .article-grid { grid-template-columns: 1fr; gap: 12px; }
     .main { padding: 20px 16px 56px; }
-    .filter-inner { padding: 8px 16px; }
-    .filter-row-2 { padding: 8px 16px; }
-    .date-tabs { padding: 0 16px; }
+    .filter-bar-inner { padding: 8px 16px; }
     .header-inner { padding: 0 16px; gap: 12px; }
-    .airline-dropdown { width: 230px; }
+    .fdd-panel { min-width: 180px; }
   }
 
   @media (max-width: 480px) {
@@ -723,63 +669,98 @@
   </div>
 </header>
 
-<div class="date-bar" id="date-bar">
-  <div class="date-tabs" id="date-tabs"></div>
-</div>
-
 <div class="filter-bar">
-  <div class="filter-inner">
-    <span class="filter-label">Kategori</span>
-    <div class="cat-pill active" data-cat="all">
-      <span class="dot"></span>Tümü
-    </div>
-    <div class="cat-pill" data-cat="Filo & Network" data-color="var(--cat-filo)" style="--c:var(--cat-filo)">
-      <span class="dot" style="background:var(--cat-filo)"></span>Filo &amp; Network
-    </div>
-    <div class="cat-pill" data-cat="Teknoloji & Dijitalleşme" data-color="var(--cat-tech)" style="--c:var(--cat-tech)">
-      <span class="dot" style="background:var(--cat-tech)"></span>Teknoloji
-    </div>
-    <div class="cat-pill" data-cat="Ortaklık & İş Birlikleri" data-color="var(--cat-ortak)" style="--c:var(--cat-ortak)">
-      <span class="dot" style="background:var(--cat-ortak)"></span>Ortaklık
-    </div>
-    <div class="cat-pill" data-cat="Özel Kargo" data-color="var(--cat-ozel)" style="--c:var(--cat-ozel)">
-      <span class="dot" style="background:var(--cat-ozel)"></span>Özel Kargo
-    </div>
-    <div class="cat-pill" data-cat="Altyapı" data-color="var(--cat-alt)" style="--c:var(--cat-alt)">
-      <span class="dot" style="background:var(--cat-alt)"></span>Altyapı
-    </div>
-    <div class="cat-pill" data-cat="Atama & Görevlendirme" data-color="var(--cat-atama)" style="--c:var(--cat-atama)">
-      <span class="dot" style="background:var(--cat-atama)"></span>Atama
-    </div>
-    <div class="cat-pill" data-cat="Diğer" data-color="var(--cat-diger)" style="--c:var(--cat-diger)">
-      <span class="dot" style="background:var(--cat-diger)"></span>Diğer
-    </div>
-  </div>
+  <div class="filter-bar-inner">
 
-  <!-- Row 2: Airline + Analysis filters (shown after data loads) -->
-  <div class="filter-row-2" id="filter-row-2">
-
-    <!-- Havayolu dropdown -->
-    <span class="filter-label">Filtrele</span>
-    <div class="airline-dropdown-wrap">
-      <button class="airline-btn" id="airline-btn"
-              aria-haspopup="listbox" aria-expanded="false"
-              aria-label="Havayolu filtresi">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19.5 2.5c-1.5-1.5-3.5-1.5-5 0L11 6 2.8 4.2l-1.4 1.4 4.9 4.9-.4.4-2.1-.7-.9.9 3 3-1.2 1.2 1.8 1.8 1.2-1.2 3 3 .9-.9-.7-2.1.4-.4 4.9 4.9 1.4-1.4Z"/>
-        </svg>
-        <span id="airline-btn-label">Havayolu</span>
-        <svg id="airline-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <!-- Kategori -->
+    <div class="fdd-wrap">
+      <button class="fdd-btn" id="cat-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Kategori filtresi">
+        <span class="fdd-dot" id="cat-dot" style="background:var(--red)"></span>
+        <span id="cat-btn-label">Kategori</span>
+        <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="6 9 12 15 18 9"/>
         </svg>
       </button>
-      <div class="airline-dropdown" id="airline-dropdown" role="listbox" aria-multiselectable="true" aria-label="Havayolu seç">
+      <div class="fdd-panel" id="cat-panel" role="listbox" aria-label="Kategori seç">
+        <div class="fdd-option selected" data-cat="all" role="option" aria-selected="true">
+          <div class="fdd-radio"></div>
+          <span class="fdd-dot" style="background:var(--red)"></span>
+          Tümü
+        </div>
+        <div class="fdd-option" data-cat="Filo & Network" role="option" aria-selected="false">
+          <div class="fdd-radio"></div>
+          <span class="fdd-dot" style="background:var(--cat-filo)"></span>
+          Filo &amp; Network
+        </div>
+        <div class="fdd-option" data-cat="Teknoloji & Dijitalleşme" role="option" aria-selected="false">
+          <div class="fdd-radio"></div>
+          <span class="fdd-dot" style="background:var(--cat-tech)"></span>
+          Teknoloji
+        </div>
+        <div class="fdd-option" data-cat="Ortaklık & İş Birlikleri" role="option" aria-selected="false">
+          <div class="fdd-radio"></div>
+          <span class="fdd-dot" style="background:var(--cat-ortak)"></span>
+          Ortaklık
+        </div>
+        <div class="fdd-option" data-cat="Özel Kargo" role="option" aria-selected="false">
+          <div class="fdd-radio"></div>
+          <span class="fdd-dot" style="background:var(--cat-ozel)"></span>
+          Özel Kargo
+        </div>
+        <div class="fdd-option" data-cat="Altyapı" role="option" aria-selected="false">
+          <div class="fdd-radio"></div>
+          <span class="fdd-dot" style="background:var(--cat-alt)"></span>
+          Altyapı
+        </div>
+        <div class="fdd-option" data-cat="Atama & Görevlendirme" role="option" aria-selected="false">
+          <div class="fdd-radio"></div>
+          <span class="fdd-dot" style="background:var(--cat-atama)"></span>
+          Atama
+        </div>
+        <div class="fdd-option" data-cat="Diğer" role="option" aria-selected="false">
+          <div class="fdd-radio"></div>
+          <span class="fdd-dot" style="background:var(--cat-diger)"></span>
+          Diğer
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarih -->
+    <div class="fdd-wrap">
+      <button class="fdd-btn" id="date-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Tarih filtresi">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        <span id="date-btn-label">Tarih</span>
+        <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      <div class="fdd-panel" id="date-panel" role="listbox" aria-label="Tarih seç">
         <!-- Populated by JS -->
       </div>
     </div>
 
+    <!-- Havayolu -->
+    <div class="fdd-wrap">
+      <button class="fdd-btn" id="airline-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Havayolu filtresi">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19.5 2.5c-1.5-1.5-3.5-1.5-5 0L11 6 2.8 4.2l-1.4 1.4 4.9 4.9-.4.4-2.1-.7-.9.9 3 3-1.2 1.2 1.8 1.8 1.2-1.2 3 3 .9-.9-.7-2.1.4-.4 4.9 4.9 1.4-1.4Z"/>
+        </svg>
+        <span id="airline-btn-label">Havayolu</span>
+        <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      <div class="fdd-panel" id="airline-dropdown" role="listbox" aria-multiselectable="true" aria-label="Havayolu seç">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <div class="filter-sep"></div>
+
     <!-- Analiz toggle -->
-    <button class="analysis-toggle" id="analysis-toggle" aria-pressed="false">
+    <button class="fdd-toggle" id="analysis-toggle" aria-pressed="false">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>
@@ -1039,34 +1020,77 @@ function updateStats(total, filtered) {
     : `<b>${total}</b> haber`;
 }
 
-function buildDateTabs(articles) {
+const CAT_SHORT = {
+  'all':                      'Kategori',
+  'Filo & Network':           'Filo & Network',
+  'Teknoloji & Dijitalleşme': 'Teknoloji',
+  'Ortaklık & İş Birlikleri': 'Ortaklık',
+  'Özel Kargo':               'Özel Kargo',
+  'Altyapı':                  'Altyapı',
+  'Atama & Görevlendirme':    'Atama',
+  'Diğer':                    'Diğer'
+};
+
+// ── Dropdown management ──────────────────────────────────────
+function closeDropdown(id) {
+  const panelId = id === 'airline' ? 'airline-dropdown' : `${id}-panel`;
+  document.getElementById(panelId)?.classList.remove('open');
+  document.getElementById(`${id}-btn`)?.setAttribute('aria-expanded', 'false');
+}
+function openDropdown(id) {
+  ['cat', 'date', 'airline'].forEach(d => { if (d !== id) closeDropdown(d); });
+  const panelId = id === 'airline' ? 'airline-dropdown' : `${id}-panel`;
+  document.getElementById(panelId)?.classList.add('open');
+  document.getElementById(`${id}-btn`)?.setAttribute('aria-expanded', 'true');
+}
+function closeAllDropdowns() {
+  ['cat', 'date', 'airline'].forEach(closeDropdown);
+}
+
+function buildDateDropdown(articles) {
   const dates = [...new Set(articles.map(a => a.date).filter(Boolean))].sort((a, b) => b.localeCompare(a));
-  if (dates.length <= 1) return;
+  const panel = document.getElementById('date-panel');
+  panel.innerHTML = '';
 
-  const bar  = document.getElementById('date-bar');
-  const tabs = document.getElementById('date-tabs');
-  bar.style.display = 'block';
-
-  const allTab = document.createElement('div');
-  allTab.className = 'date-tab active';
-  allTab.textContent = 'Tüm Tarihler';
-  allTab.dataset.date = 'all';
-  tabs.appendChild(allTab);
+  const allOpt = document.createElement('div');
+  allOpt.className = 'fdd-option selected';
+  allOpt.dataset.date = 'all';
+  allOpt.setAttribute('role', 'option');
+  allOpt.setAttribute('aria-selected', 'true');
+  allOpt.innerHTML = `<div class="fdd-radio"></div><span>Tüm Tarihler</span>`;
+  panel.appendChild(allOpt);
 
   dates.forEach(d => {
-    const tab = document.createElement('div');
-    tab.className = 'date-tab';
-    tab.textContent = formatDateShort(d);
-    tab.dataset.date = d;
-    tabs.appendChild(tab);
+    const opt = document.createElement('div');
+    opt.className = 'fdd-option';
+    opt.dataset.date = d;
+    opt.setAttribute('role', 'option');
+    opt.setAttribute('aria-selected', 'false');
+    opt.innerHTML = `<div class="fdd-radio"></div><span>${formatDate(d)}</span>`;
+    panel.appendChild(opt);
   });
 
-  tabs.addEventListener('click', e => {
-    const tab = e.target.closest('.date-tab');
-    if (!tab) return;
-    document.querySelectorAll('.date-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    activeDate = tab.dataset.date;
+  panel.addEventListener('click', e => {
+    const opt = e.target.closest('.fdd-option');
+    if (!opt) return;
+    document.querySelectorAll('#date-panel .fdd-option').forEach(o => {
+      o.classList.remove('selected');
+      o.setAttribute('aria-selected', 'false');
+    });
+    opt.classList.add('selected');
+    opt.setAttribute('aria-selected', 'true');
+    activeDate = opt.dataset.date;
+    const btn = document.getElementById('date-btn');
+    const lbl = document.getElementById('date-btn-label');
+    if (activeDate === 'all') {
+      lbl.textContent = 'Tarih';
+      btn.classList.remove('active');
+    } else {
+      lbl.textContent = formatDateShort(activeDate);
+      btn.classList.add('active');
+    }
+    closeDropdown('date');
+    syncClearBtn();
     render();
   });
 }
@@ -1146,66 +1170,91 @@ function buildAirlineFilter(articles) {
     dropdown.appendChild(opt);
   });
 
-  // Show the second filter row
-  document.getElementById('filter-row-2').style.display = 'flex';
+  // (filter bar is always visible)
 }
 
 function syncAirlineBtn() {
   const btn   = document.getElementById('airline-btn');
   const lbl   = document.getElementById('airline-btn-label');
   const count = activeAirlines.size;
-  // Remove old badge if any
   btn.querySelector('.airline-count')?.remove();
 
   if (count > 0) {
-    btn.classList.add('has-filter');
+    btn.classList.add('active');
     lbl.textContent = count === 1
       ? AIRLINE_DEFS.find(a => activeAirlines.has(a.id))?.label || 'Havayolu'
       : `${count} Havayolu`;
     const badge = document.createElement('span');
     badge.className = 'airline-count';
     badge.textContent = count;
-    btn.insertBefore(badge, btn.querySelector('#airline-chevron'));
+    btn.insertBefore(badge, btn.querySelector('.fdd-chevron'));
   } else {
-    btn.classList.remove('has-filter');
+    btn.classList.remove('active');
     lbl.textContent = 'Havayolu';
   }
   syncClearBtn();
 }
 
 function syncClearBtn() {
-  const hasAny = activeAirlines.size > 0 || onlyAnalysis;
+  const hasAny = activeAirlines.size > 0 || onlyAnalysis || activeCat !== 'all' || activeDate !== 'all';
   document.getElementById('clear-filters').style.display = hasAny ? 'inline-flex' : 'none';
 }
 
-// Airline dropdown open/close
+// ── Dropdown button click handlers ──────────────────────────
+document.getElementById('cat-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  const isOpen = document.getElementById('cat-panel').classList.contains('open');
+  if (isOpen) closeDropdown('cat'); else openDropdown('cat');
+});
+
+document.getElementById('cat-panel').addEventListener('click', e => {
+  const opt = e.target.closest('.fdd-option');
+  if (!opt) return;
+  document.querySelectorAll('#cat-panel .fdd-option').forEach(o => {
+    o.classList.remove('selected');
+    o.setAttribute('aria-selected', 'false');
+  });
+  opt.classList.add('selected');
+  opt.setAttribute('aria-selected', 'true');
+  activeCat = opt.dataset.cat;
+  const btn = document.getElementById('cat-btn');
+  const lbl = document.getElementById('cat-btn-label');
+  const dot = document.getElementById('cat-dot');
+  if (activeCat === 'all') {
+    lbl.textContent = 'Kategori';
+    btn.style.background = '';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+    dot.style.background = 'var(--red)';
+  } else {
+    const hex = CAT_HEX[activeCat] || '#6B7280';
+    lbl.textContent = CAT_SHORT[activeCat] || activeCat;
+    btn.style.background = hex;
+    btn.style.borderColor = 'transparent';
+    btn.style.color = 'white';
+    dot.style.background = 'rgba(255,255,255,0.6)';
+  }
+  closeDropdown('cat');
+  syncClearBtn();
+  render();
+});
+
+document.getElementById('date-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  const isOpen = document.getElementById('date-panel').classList.contains('open');
+  if (isOpen) closeDropdown('date'); else openDropdown('date');
+});
+
 document.getElementById('airline-btn').addEventListener('click', e => {
   e.stopPropagation();
-  const dd      = document.getElementById('airline-dropdown');
-  const chevron = document.getElementById('airline-chevron');
-  const btn     = document.getElementById('airline-btn');
-  const isOpen  = dd.classList.toggle('open');
-  btn.setAttribute('aria-expanded', isOpen);
-  chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+  const isOpen = document.getElementById('airline-dropdown').classList.contains('open');
+  if (isOpen) closeDropdown('airline'); else openDropdown('airline');
 });
 
-// Close dropdown on outside click or Escape
-document.addEventListener('click', () => {
-  const dd = document.getElementById('airline-dropdown');
-  if (!dd.classList.contains('open')) return;
-  dd.classList.remove('open');
-  document.getElementById('airline-btn').setAttribute('aria-expanded', 'false');
-  document.getElementById('airline-chevron').style.transform = 'rotate(0deg)';
-});
-
+// Close all dropdowns on outside click or Escape
+document.addEventListener('click', closeAllDropdowns);
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    const dd = document.getElementById('airline-dropdown');
-    if (dd.classList.contains('open')) {
-      dd.classList.remove('open');
-      document.getElementById('airline-btn').focus();
-    }
-  }
+  if (e.key === 'Escape') closeAllDropdowns();
 });
 
 // Analysis toggle
@@ -1218,40 +1267,49 @@ document.getElementById('analysis-toggle').addEventListener('click', () => {
   render();
 });
 
-// Clear all advanced filters
+// Clear all filters
 document.getElementById('clear-filters').addEventListener('click', () => {
   activeAirlines.clear();
   onlyAnalysis = false;
+  activeCat = 'all';
+  activeDate = 'all';
 
+  // Reset category
+  document.querySelectorAll('#cat-panel .fdd-option').forEach(o => {
+    const isAll = o.dataset.cat === 'all';
+    o.classList.toggle('selected', isAll);
+    o.setAttribute('aria-selected', isAll ? 'true' : 'false');
+  });
+  const catBtn = document.getElementById('cat-btn');
+  catBtn.style.background = '';
+  catBtn.style.borderColor = '';
+  catBtn.style.color = '';
+  document.getElementById('cat-btn-label').textContent = 'Kategori';
+  document.getElementById('cat-dot').style.background = 'var(--red)';
+
+  // Reset date
+  document.querySelectorAll('#date-panel .fdd-option').forEach(o => {
+    const isAll = o.dataset.date === 'all';
+    o.classList.toggle('selected', isAll);
+    o.setAttribute('aria-selected', isAll ? 'true' : 'false');
+  });
+  document.getElementById('date-btn').classList.remove('active');
+  document.getElementById('date-btn-label').textContent = 'Tarih';
+
+  // Reset airline
   document.querySelectorAll('.airline-option.selected').forEach(o => {
     o.classList.remove('selected');
     o.setAttribute('aria-selected', 'false');
   });
 
+  // Reset analysis
   const toggle = document.getElementById('analysis-toggle');
   toggle.classList.remove('active');
   toggle.setAttribute('aria-pressed', 'false');
 
   syncAirlineBtn();
+  syncClearBtn();
   render();
-});
-
-// Category pills
-document.querySelectorAll('.cat-pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    document.querySelectorAll('.cat-pill').forEach(p => {
-      p.classList.remove('active');
-      p.style.background = '';
-      p.style.color = '';
-    });
-    pill.classList.add('active');
-    if (pill.dataset.cat !== 'all') {
-      const hex = CAT_HEX[pill.dataset.cat];
-      if (hex) { pill.style.background = hex; pill.style.color = 'white'; pill.style.borderColor = 'transparent'; }
-    }
-    activeCat = pill.dataset.cat;
-    render();
-  });
 });
 
 // Search
@@ -1274,7 +1332,7 @@ fetch(DATA_URL)
   })
   .then(data => {
     allArticles = Array.isArray(data) ? data : (data.articles || []);
-    buildDateTabs(allArticles);
+    buildDateDropdown(allArticles);
     buildAirlineFilter(allArticles);
     render();
   })
