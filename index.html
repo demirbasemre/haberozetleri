@@ -495,6 +495,29 @@
     font-weight: 600;
   }
 
+  /* Region badges on card */
+  .region-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 8px;
+    margin-bottom: 2px;
+  }
+  .region-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  /* Region colour palette */
+  .region-badge[data-region="EUROPE"]      { background:#EFF6FF; color:#1D4ED8; }
+  .region-badge[data-region="FAR EAST"]    { background:#FFF7ED; color:#C2410C; }
+  .region-badge[data-region="MEASA"]       { background:#F0FDF4; color:#15803D; }
+  .region-badge[data-region="S&N AMERICA"] { background:#FDF4FF; color:#7E22CE; }
+  .region-badge[data-region="TURKIYE"]     { background:#FFF1F2; color:#BE123C; }
+
   .card-title {
     font-family: 'DM Serif Display', Georgia, serif;
     font-size: 15.5px;
@@ -739,6 +762,42 @@
       </div>
     </div>
 
+    <!-- Bölge -->
+    <div class="fdd-wrap">
+      <button class="fdd-btn" id="region-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Bölge filtresi">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span id="region-btn-label">Bölge</span>
+        <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      <div class="fdd-panel" id="region-panel" role="listbox" aria-multiselectable="true" aria-label="Bölge seç">
+        <div class="dropdown-section-label">TK Bölgesi</div>
+        <div class="airline-option" data-region="EUROPE" role="option" aria-selected="false">
+          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
+          <span class="airline-label">EUROPE</span>
+        </div>
+        <div class="airline-option" data-region="FAR EAST" role="option" aria-selected="false">
+          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
+          <span class="airline-label">FAR EAST</span>
+        </div>
+        <div class="airline-option" data-region="MEASA" role="option" aria-selected="false">
+          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
+          <span class="airline-label">MEASA</span>
+        </div>
+        <div class="airline-option" data-region="S&N AMERICA" role="option" aria-selected="false">
+          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
+          <span class="airline-label">S&amp;N AMERICA</span>
+        </div>
+        <div class="airline-option" data-region="TURKIYE" role="option" aria-selected="false">
+          <div class="airline-check"><svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 3.5 3.5 6 8 1"/></svg></div>
+          <span class="airline-label">TÜRKİYE</span>
+        </div>
+      </div>
+    </div>
+
     <!-- Havayolu -->
     <div class="fdd-wrap">
       <button class="fdd-btn" id="airline-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Havayolu filtresi">
@@ -824,11 +883,12 @@ const SOURCE_LABELS = {
   'payloadasia':    'PayloadAsia'
 };
 
-let allArticles  = [];
-let activeCat    = 'all';
-let activeDate   = 'all';
-let searchQuery  = '';
-let activeAirlines = new Set(); // empty = show all
+let allArticles    = [];
+let activeCat      = 'all';
+let activeDate     = 'all';
+let searchQuery    = '';
+let activeAirlines = new Set();
+let activeRegions  = new Set();
 let onlyAnalysis   = false;
 
 // ── Airline keyword definitions ──────────────────────────────
@@ -899,6 +959,8 @@ function getFilteredArticles() {
     const dateMatch     = activeDate === 'all' || a.date === activeDate;
     const airlineMatch  = activeAirlines.size === 0 ||
                           (a._airlines && a._airlines.some(id => activeAirlines.has(id)));
+    const regionMatch   = activeRegions.size === 0 ||
+                          (Array.isArray(a.etkiAlani) && a.etkiAlani.some(r => activeRegions.has(r)));
     const analysisMatch = !onlyAnalysis ||
                           (a.thyImpact && a.thyImpact !== 'notr') ||
                           (a.thyAnalysis && a.thyAnalysis.trim() !== '');
@@ -907,7 +969,7 @@ function getFilteredArticles() {
       stripHtml(a.title   || '').toLowerCase().includes(q) ||
       stripHtml(a.summary || '').toLowerCase().includes(q) ||
       (a.source || '').toLowerCase().includes(q);
-    return catMatch && dateMatch && airlineMatch && analysisMatch && searchMatch;
+    return catMatch && dateMatch && airlineMatch && regionMatch && analysisMatch && searchMatch;
   });
 }
 
@@ -970,6 +1032,10 @@ function renderCards(articles) {
             </div>
             <div class="card-title">${article.title || ''}</div>
             <div class="card-summary">${article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>'}</div>
+            ${Array.isArray(article.etkiAlani) && article.etkiAlani.length > 0 ? `
+              <div class="region-badges">
+                ${article.etkiAlani.map(r => `<span class="region-badge" data-region="${r}">${r === 'TURKIYE' ? 'TÜRKİYE' : r}</span>`).join('')}
+              </div>` : ''}
             ${hasThy ? `
               <button class="thy-toggle" onclick="toggleThy(this)" aria-expanded="false">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1030,20 +1096,19 @@ const CAT_SHORT = {
 };
 
 // ── Dropdown management ──────────────────────────────────────
+const ALL_DROPDOWNS = ['cat', 'date', 'region', 'airline'];
+function panelId(id) { return id === 'airline' ? 'airline-dropdown' : `${id}-panel`; }
+
 function closeDropdown(id) {
-  const panelId = id === 'airline' ? 'airline-dropdown' : `${id}-panel`;
-  document.getElementById(panelId)?.classList.remove('open');
+  document.getElementById(panelId(id))?.classList.remove('open');
   document.getElementById(`${id}-btn`)?.setAttribute('aria-expanded', 'false');
 }
 function openDropdown(id) {
-  ['cat', 'date', 'airline'].forEach(d => { if (d !== id) closeDropdown(d); });
-  const panelId = id === 'airline' ? 'airline-dropdown' : `${id}-panel`;
-  document.getElementById(panelId)?.classList.add('open');
+  ALL_DROPDOWNS.forEach(d => { if (d !== id) closeDropdown(d); });
+  document.getElementById(panelId(id))?.classList.add('open');
   document.getElementById(`${id}-btn`)?.setAttribute('aria-expanded', 'true');
 }
-function closeAllDropdowns() {
-  ['cat', 'date', 'airline'].forEach(closeDropdown);
-}
+function closeAllDropdowns() { ALL_DROPDOWNS.forEach(closeDropdown); }
 
 function buildDateDropdown(articles) {
   const dates = [...new Set(articles.map(a => a.date).filter(Boolean))].sort((a, b) => b.localeCompare(a));
@@ -1194,8 +1259,27 @@ function syncAirlineBtn() {
 }
 
 function syncClearBtn() {
-  const hasAny = activeAirlines.size > 0 || onlyAnalysis || activeCat !== 'all' || activeDate !== 'all';
+  const hasAny = activeAirlines.size > 0 || activeRegions.size > 0 || onlyAnalysis || activeCat !== 'all' || activeDate !== 'all';
   document.getElementById('clear-filters').style.display = hasAny ? 'inline-flex' : 'none';
+}
+
+function syncRegionBtn() {
+  const btn   = document.getElementById('region-btn');
+  const lbl   = document.getElementById('region-btn-label');
+  const count = activeRegions.size;
+  btn.querySelector('.airline-count')?.remove();
+  if (count > 0) {
+    btn.classList.add('active');
+    lbl.textContent = count === 1 ? [...activeRegions][0] : `${count} Bölge`;
+    const badge = document.createElement('span');
+    badge.className = 'airline-count';
+    badge.textContent = count;
+    btn.insertBefore(badge, btn.querySelector('.fdd-chevron'));
+  } else {
+    btn.classList.remove('active');
+    lbl.textContent = 'Bölge';
+  }
+  syncClearBtn();
 }
 
 // ── Dropdown button click handlers ──────────────────────────
@@ -1243,6 +1327,31 @@ document.getElementById('date-btn').addEventListener('click', e => {
   if (isOpen) closeDropdown('date'); else openDropdown('date');
 });
 
+// Region dropdown
+document.getElementById('region-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  const isOpen = document.getElementById('region-panel').classList.contains('open');
+  if (isOpen) closeDropdown('region'); else openDropdown('region');
+});
+
+document.getElementById('region-panel').addEventListener('click', e => {
+  e.stopPropagation();
+  const opt = e.target.closest('.airline-option');
+  if (!opt) return;
+  const region = opt.dataset.region;
+  if (activeRegions.has(region)) {
+    activeRegions.delete(region);
+    opt.classList.remove('selected');
+    opt.setAttribute('aria-selected', 'false');
+  } else {
+    activeRegions.add(region);
+    opt.classList.add('selected');
+    opt.setAttribute('aria-selected', 'true');
+  }
+  syncRegionBtn();
+  render();
+});
+
 document.getElementById('airline-btn').addEventListener('click', e => {
   e.stopPropagation();
   const isOpen = document.getElementById('airline-dropdown').classList.contains('open');
@@ -1268,9 +1377,17 @@ document.getElementById('analysis-toggle').addEventListener('click', () => {
 // Clear all filters
 document.getElementById('clear-filters').addEventListener('click', () => {
   activeAirlines.clear();
+  activeRegions.clear();
   onlyAnalysis = false;
   activeCat = 'all';
   activeDate = 'all';
+
+  // Reset region
+  document.querySelectorAll('#region-panel .airline-option').forEach(o => {
+    o.classList.remove('selected');
+    o.setAttribute('aria-selected', 'false');
+  });
+  syncRegionBtn();
 
   // Reset category
   document.querySelectorAll('#cat-panel .fdd-option').forEach(o => {
