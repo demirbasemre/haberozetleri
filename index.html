@@ -295,7 +295,7 @@
   .airline-check svg { display: none; }
   .airline-label { flex: 1; line-height: 1.3; }
 
-  .thy-badge {
+  .primary-badge {
     font-size: 9px;
     font-weight: 700;
     background: var(--red);
@@ -606,7 +606,7 @@
   .card-link:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; border-radius: 3px; }
 
   /* Analysis panel */
-  .thy-panel {
+  .analysis-panel {
     margin-top: 8px;
     padding: 10px 12px;
     background: #FFF8F8;
@@ -617,9 +617,9 @@
     color: #7f1d1d;
     display: none;
   }
-  .thy-panel.show { display: block; }
+  .analysis-panel.show { display: block; }
 
-  .thy-toggle {
+  .analysis-toggle {
     background: none;
     border: none;
     font-size: 11px;
@@ -634,7 +634,7 @@
     gap: 3px;
     transition: opacity 0.15s;
   }
-  .thy-toggle:hover { opacity: 0.75; }
+  .analysis-toggle:hover { opacity: 0.75; }
 
   /* ── LOADING ─────────────────────────────────── */
   .loading {
@@ -912,8 +912,8 @@ TK_HIERARCHY.forEach(tk => { SUB_TO_TK[tk.id] = tk.id; });
 
 // ── Airline keyword definitions ──────────────────────────────
 const AIRLINE_DEFS = [
-  { id: 'thy',       label: 'Turkish Airlines / THY', isTHY: true,
-    kw: ['turkish cargo','turkish airlines','thy ','türk hava','türk kargo'] },
+  { id: 'turkishairlines', label: 'Turkish Airlines', isPrimary: true,
+    kw: ['turkish cargo','turkish airlines','türk hava','türk kargo'] },
   { id: 'fedex',     label: 'FedEx',          kw: ['fedex'] },
   { id: 'ups',       label: 'UPS',            kw: [' ups ',' ups,', 'ups kargo'] },
   { id: 'dhl',       label: 'DHL',            kw: ['dhl'] },
@@ -986,8 +986,8 @@ function getFilteredArticles() {
                             return tk ? tk.subs.some(s => activeRegions.has(s)) : false;
                           }));
     const analysisMatch = !onlyAnalysis ||
-                          (a.thyImpact && a.thyImpact !== 'notr') ||
-                          (a.thyAnalysis && a.thyAnalysis.trim() !== '');
+                          (a.impact && a.impact !== 'notr') ||
+                          (a.analysis && a.analysis.trim() !== '');
     const q = searchQuery.toLowerCase();
     const searchMatch = !q ||
       stripHtml(a.title   || '').toLowerCase().includes(q) ||
@@ -1039,7 +1039,7 @@ function renderCards(articles) {
 
     byDate[date].forEach((article, i) => {
       const hex   = CAT_HEX[article.category] || '#6B7280';
-      const hasThy = article.thyImpact && article.thyImpact !== 'notr' && article.thyAnalysis;
+      const hasAnalysis = article.impact && article.impact !== 'notr' && article.analysis;
       const sourceLabel = SOURCE_LABELS[article.source] || article.source || '';
 
       const card = document.createElement('div');
@@ -1064,12 +1064,12 @@ function renderCards(articles) {
                   return `<span class="region-badge" data-tk="${tk}">${lbl}</span>`;
                 }).join('')}
               </div>` : ''}
-            ${hasThy ? `
-              <button class="thy-toggle" onclick="toggleThy(this)" aria-expanded="false">
+            ${hasAnalysis ? `
+              <button class="analysis-toggle" onclick="toggleAnalysis(this)" aria-expanded="false">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                 Analiz
               </button>
-              <div class="thy-panel" role="region">${article.thyAnalysis}</div>
+              <div class="analysis-panel" role="region">${article.analysis}</div>
             ` : ''}
             <div class="card-footer">
               <div class="card-source">
@@ -1093,7 +1093,7 @@ function renderCards(articles) {
   });
 }
 
-function toggleThy(btn) {
+function toggleAnalysis(btn) {
   const panel = btn.nextElementSibling;
   const isOpen = panel.classList.toggle('show');
   btn.setAttribute('aria-expanded', isOpen);
@@ -1204,10 +1204,10 @@ function buildAirlineFilter(articles) {
   const relevant = AIRLINE_DEFS.filter(a => found.has(a.id));
   if (relevant.length === 0) return;
 
-  // Sort: THY first, then alphabetical
+  // Sort: primary airline first, then alphabetical
   relevant.sort((a, b) => {
-    if (a.isTHY) return -1;
-    if (b.isTHY) return 1;
+    if (a.isPrimary) return -1;
+    if (b.isPrimary) return 1;
     return a.label.localeCompare(b.label, 'tr');
   });
 
@@ -1221,15 +1221,15 @@ function buildAirlineFilter(articles) {
   dropdown.appendChild(lbl);
 
   relevant.forEach((airline, idx) => {
-    // Divider after THY group
-    if (idx > 0 && !airline.isTHY && relevant[idx - 1].isTHY) {
+    // Divider after primary airline
+    if (idx > 0 && !airline.isPrimary && relevant[idx - 1].isPrimary) {
       const div = document.createElement('div');
       div.className = 'dropdown-divider';
       dropdown.appendChild(div);
     }
 
     const opt = document.createElement('div');
-    opt.className = 'airline-option' + (airline.isTHY ? ' thy-opt' : '');
+    opt.className = 'airline-option';
     opt.dataset.id = airline.id;
     opt.setAttribute('role', 'option');
     opt.setAttribute('aria-selected', 'false');
@@ -1240,7 +1240,6 @@ function buildAirlineFilter(articles) {
         </svg>
       </div>
       <span class="airline-label">${airline.label}</span>
-      ${airline.isTHY ? '<span class="thy-badge">THY</span>' : ''}
     `;
 
     opt.addEventListener('click', e => {
