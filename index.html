@@ -3,176 +3,181 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hava Kargo Haber Özetleri</title>
+<title>Hava Kargo Bülteni</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --red: #C8102E;
-    --red-dark: #a50d24;
-    --navy: #0f1923;
-    --navy-light: #1a2740;
-    --cream: #f7f4ef;
-    --warm-white: #fdfcfa;
-    --text: #1a1a2e;
-    --text-muted: #6b7280;
-    --border: #e8e2d9;
+    --bg: #F4F3EF;
+    --surface: #FFFFFF;
+    --navy: #0D1117;
+    --navy-soft: #161B22;
+    --red: #E63946;
+    --red-muted: rgba(230,57,70,0.08);
+    --text: #111218;
+    --text-2: #4B5563;
+    --text-3: #9CA3AF;
+    --border: #E9E8E4;
+    --border-soft: #F0EFeb;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-hover: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+    --radius: 12px;
+    --radius-sm: 6px;
 
-    --cat-filo: #0277BD;
-    --cat-tech: #1565C0;
-    --cat-ortak: #558B2F;
-    --cat-ozel: #6A1B9A;
-    --cat-alt: #BF360C;
-    --cat-atama: #00838F;
-    --cat-diger: #37474F;
+    --cat-filo: #1D6FE8;
+    --cat-tech: #7C3AED;
+    --cat-ortak: #059669;
+    --cat-ozel: #DB2777;
+    --cat-alt: #EA580C;
+    --cat-atama: #0891B2;
+    --cat-diger: #6B7280;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
     color: var(--text);
-    min-height: 100vh;
+    min-height: 100dvh;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* HEADER */
+  /* ── HEADER ────────────────────────────────────── */
   header {
     background: var(--navy);
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
 
   .header-inner {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 0 24px;
+    height: 60px;
     display: flex;
     align-items: center;
-    gap: 32px;
-    height: 64px;
+    gap: 20px;
   }
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .site-name {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 18px;
+    color: #FFFFFF;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
     flex-shrink: 0;
   }
 
-  .logo-badge {
-    background: var(--red);
-    color: white;
-    font-family: 'Playfair Display', serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 4px 8px;
-    text-transform: uppercase;
+  .site-name span {
+    color: var(--red);
   }
 
-  .logo-text {
-    color: white;
-    font-size: 13px;
-    font-weight: 300;
-    letter-spacing: 0.5px;
-    opacity: 0.8;
-    white-space: nowrap;
+  .header-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255,255,255,0.12);
+    flex-shrink: 0;
   }
 
   .search-wrap {
     flex: 1;
-    max-width: 400px;
+    max-width: 360px;
     position: relative;
   }
 
-  .search-wrap svg {
+  .search-icon {
     position: absolute;
-    left: 12px;
+    left: 11px;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255,255,255,0.4);
+    color: rgba(255,255,255,0.3);
     pointer-events: none;
+    width: 15px;
+    height: 15px;
   }
 
   #search {
     width: 100%;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 6px;
-    padding: 8px 12px 8px 38px;
-    color: white;
-    font-family: 'DM Sans', sans-serif;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 8px 12px 8px 34px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
     font-size: 13px;
     outline: none;
-    transition: all 0.2s;
+    transition: background 0.2s, border-color 0.2s;
+    touch-action: manipulation;
   }
+  #search::placeholder { color: rgba(255,255,255,0.3); }
+  #search:focus { background: rgba(255,255,255,0.11); border-color: rgba(255,255,255,0.22); }
 
-  #search::placeholder { color: rgba(255,255,255,0.35); }
-  #search:focus { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
-
-  .header-stats {
+  .header-stat {
     margin-left: auto;
-    color: rgba(255,255,255,0.5);
     font-size: 12px;
+    color: rgba(255,255,255,0.4);
     white-space: nowrap;
     flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
   }
+  .header-stat b { color: rgba(255,255,255,0.85); font-weight: 600; }
 
-  .header-stats span {
-    color: white;
-    font-weight: 600;
-  }
-
-  /* DATE TABS */
+  /* ── DATE TABS ───────────────────────────────── */
   .date-bar {
-    background: var(--navy-light);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: var(--navy-soft);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: none;
     overflow-x: auto;
     scrollbar-width: none;
   }
   .date-bar::-webkit-scrollbar { display: none; }
 
   .date-tabs {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 0 24px;
     display: flex;
-    gap: 2px;
+    gap: 0;
   }
 
   .date-tab {
     padding: 10px 16px;
     font-size: 12px;
     font-weight: 500;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.4);
     cursor: pointer;
     border-bottom: 2px solid transparent;
     white-space: nowrap;
-    transition: all 0.2s;
-    letter-spacing: 0.3px;
+    transition: color 0.15s;
+    letter-spacing: 0.01em;
+    user-select: none;
+    touch-action: manipulation;
   }
+  .date-tab:hover { color: rgba(255,255,255,0.7); }
+  .date-tab.active { color: #fff; border-bottom-color: var(--red); }
 
-  .date-tab:hover { color: rgba(255,255,255,0.75); }
-  .date-tab.active { color: white; border-bottom-color: var(--red); }
-
-  /* CATEGORY FILTER */
+  /* ── FILTER BAR ──────────────────────────────── */
   .filter-bar {
-    background: var(--warm-white);
+    background: var(--surface);
     border-bottom: 1px solid var(--border);
     position: sticky;
-    top: 64px;
+    top: 60px;
     z-index: 90;
   }
 
   .filter-inner {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 10px 24px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
     overflow-x: auto;
     scrollbar-width: none;
     align-items: center;
@@ -180,10 +185,10 @@
   .filter-inner::-webkit-scrollbar { display: none; }
 
   .filter-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 1px;
+    color: var(--text-3);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     flex-shrink: 0;
     margin-right: 4px;
@@ -192,183 +197,217 @@
   .cat-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 5px 12px;
+    gap: 5px;
+    padding: 5px 11px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.18s;
     white-space: nowrap;
     flex-shrink: 0;
-    border: 1.5px solid transparent;
-    background: var(--cream);
-    color: var(--text-muted);
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-2);
+    user-select: none;
+    touch-action: manipulation;
+    min-height: 30px;
   }
 
   .cat-pill .dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     flex-shrink: 0;
   }
 
-  .cat-pill:hover { opacity: 0.85; transform: translateY(-1px); }
+  .cat-pill:hover { background: var(--bg); border-color: #d1d5db; color: var(--text); }
 
   .cat-pill.active {
     color: white;
     border-color: transparent;
+    box-shadow: var(--shadow-sm);
   }
-
   .cat-pill[data-cat="all"] .dot { background: var(--red); }
   .cat-pill[data-cat="all"].active { background: var(--red); }
 
-  /* MAIN LAYOUT */
+  /* ── MAIN ────────────────────────────────────── */
   .main {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 28px 24px 60px;
+    padding: 32px 24px 72px;
   }
 
-  /* DATE SECTION */
-  .date-section {
-    margin-bottom: 48px;
-  }
+  /* ── DATE SECTION ────────────────────────────── */
+  .date-section { margin-bottom: 52px; }
 
   .date-section-header {
     display: flex;
     align-items: baseline;
-    gap: 16px;
+    gap: 12px;
     margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid var(--border);
+    padding-bottom: 14px;
+    border-bottom: 1.5px solid var(--border);
   }
 
   .date-heading {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--navy);
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 20px;
+    color: var(--text);
+    letter-spacing: -0.01em;
   }
 
   .date-count {
     font-size: 12px;
-    color: var(--text-muted);
+    color: var(--text-3);
     font-weight: 400;
+    background: var(--border-soft);
+    padding: 2px 8px;
+    border-radius: 20px;
   }
 
-  /* ARTICLE GRID */
+  /* ── ARTICLE GRID ────────────────────────────── */
   .article-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 16px;
   }
 
-  /* ARTICLE CARD */
+  /* ── ARTICLE CARD ────────────────────────────── */
   .article-card {
-    background: white;
-    border-radius: 10px;
+    background: var(--surface);
+    border-radius: var(--radius);
     overflow: hidden;
     border: 1px solid var(--border);
-    transition: all 0.25s;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     display: flex;
     flex-direction: column;
-    animation: fadeUp 0.4s ease both;
+    animation: fadeUp 0.35s ease both;
+    cursor: default;
   }
 
   .article-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
     border-color: transparent;
   }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  .card-top-band {
-    height: 4px;
+  @media (prefers-reduced-motion: reduce) {
+    .article-card { animation: none; transition: none; }
+    .article-card:hover { transform: none; }
+  }
+
+  /* Left accent bar */
+  .card-accent {
+    width: 3px;
     flex-shrink: 0;
+    border-radius: 0;
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+  }
+
+  .card-inner {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    position: relative;
+  }
+
+  .card-left-bar {
+    width: 3px;
+    flex-shrink: 0;
+    border-radius: 12px 0 0 12px;
   }
 
   .card-body {
-    padding: 16px 18px 14px;
+    padding: 16px 18px 15px;
     flex: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0;
   }
 
   .card-meta {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     margin-bottom: 10px;
+    flex-wrap: wrap;
   }
 
   .card-cat-badge {
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.5px;
-    padding: 2px 8px;
-    border-radius: 3px;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    border-radius: 4px;
     color: white;
     text-transform: uppercase;
   }
 
-  .card-impact {
-    margin-left: auto;
+  .dup-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     font-size: 10px;
-    font-weight: 600;
     padding: 2px 7px;
-    border-radius: 3px;
-    letter-spacing: 0.3px;
+    background: #FEF3C7;
+    color: #92400E;
+    border-radius: 4px;
+    font-weight: 600;
   }
 
-  .impact-firsat { background: #e8f5e9; color: #2e7d32; }
-  .impact-risk { background: #fce4ec; color: #c62828; }
-  .impact-notr { background: #f5f5f5; color: #757575; }
-
   .card-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.4;
-    color: var(--navy);
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 15.5px;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--text);
     margin-bottom: 10px;
+    letter-spacing: -0.01em;
   }
 
   .card-summary {
     font-size: 13px;
-    line-height: 1.65;
-    color: #4a5568;
+    line-height: 1.68;
+    color: var(--text-2);
     flex: 1;
     margin-bottom: 14px;
   }
 
-  .card-summary strong { color: var(--navy); font-weight: 600; }
+  .card-summary strong {
+    color: var(--text);
+    font-weight: 600;
+  }
 
   .card-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding-top: 12px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--border-soft);
+    gap: 8px;
   }
 
   .card-source {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     font-size: 11px;
-    color: var(--text-muted);
+    color: var(--text-3);
     font-weight: 500;
   }
 
   .source-favicon {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     border-radius: 2px;
+    opacity: 0.75;
   }
 
   .card-link {
@@ -376,27 +415,28 @@
     color: var(--red);
     font-weight: 600;
     text-decoration: none;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 4px;
-    transition: gap 0.2s;
+    gap: 3px;
+    transition: gap 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
+  .card-link:hover { gap: 6px; }
+  .card-link:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; border-radius: 3px; }
 
-  .card-link:hover { gap: 7px; }
-
-  /* THY ANALYSIS PANEL */
+  /* Analysis panel */
   .thy-panel {
-    margin-top: 10px;
+    margin-top: 8px;
     padding: 10px 12px;
-    background: #fff8f8;
+    background: #FFF8F8;
     border-left: 3px solid var(--red);
     border-radius: 0 6px 6px 0;
     font-size: 12px;
-    line-height: 1.6;
-    color: #5a2a2a;
+    line-height: 1.65;
+    color: #7f1d1d;
     display: none;
   }
-
   .thy-panel.show { display: block; }
 
   .thy-toggle {
@@ -405,81 +445,75 @@
     font-size: 11px;
     color: var(--red);
     cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     padding: 0;
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  /* DUPLICATE BADGE */
-  .dup-badge {
+    margin-top: 4px;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    padding: 2px 7px;
-    background: #fff3e0;
-    color: #e65100;
-    border-radius: 3px;
-    font-weight: 600;
-    margin-bottom: 8px;
+    gap: 3px;
+    transition: opacity 0.15s;
   }
+  .thy-toggle:hover { opacity: 0.75; }
 
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center;
-    padding: 80px 24px;
-    color: var(--text-muted);
-    display: none;
-  }
-
-  .empty-state svg { margin-bottom: 16px; opacity: 0.3; }
-  .empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--text); }
-  .empty-state p { font-size: 14px; }
-
-  /* FOOTER */
-  footer {
-    background: var(--navy);
-    color: rgba(255,255,255,0.4);
-    text-align: center;
-    padding: 24px;
-    font-size: 11px;
-    letter-spacing: 0.5px;
-  }
-
-  footer strong { color: rgba(255,255,255,0.7); }
-
-  /* LOADING */
+  /* ── LOADING ─────────────────────────────────── */
   .loading {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 60vh;
+    min-height: 55vh;
     flex-direction: column;
-    gap: 16px;
-    color: var(--text-muted);
+    gap: 14px;
+    color: var(--text-3);
+    font-size: 13px;
   }
 
   .spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid var(--border);
+    width: 32px;
+    height: 32px;
+    border: 2.5px solid var(--border);
     border-top-color: var(--red);
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    animation: spin 0.75s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+
+  /* ── EMPTY STATE ─────────────────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--text-3);
+    display: none;
+  }
+  .empty-state svg { margin-bottom: 16px; opacity: 0.25; }
+  .empty-state h3 { font-size: 16px; margin-bottom: 6px; color: var(--text-2); font-weight: 500; }
+  .empty-state p { font-size: 13px; }
+
+  /* ── FOOTER ──────────────────────────────────── */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+    padding: 20px 24px;
+    font-size: 11px;
+    letter-spacing: 0.02em;
   }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* RESPONSIVE */
+  /* ── RESPONSIVE ──────────────────────────────── */
   @media (max-width: 768px) {
-    .logo-text { display: none; }
-    .header-stats { display: none; }
-    .article-grid { grid-template-columns: 1fr; }
-    .main { padding: 20px 16px 48px; }
+    .header-stat { display: none; }
+    .header-divider { display: none; }
+    .site-name { font-size: 16px; }
+    .article-grid { grid-template-columns: 1fr; gap: 12px; }
+    .main { padding: 20px 16px 56px; }
+    .filter-inner { padding: 8px 16px; }
+    .date-tabs { padding: 0 16px; }
+    .header-inner { padding: 0 16px; gap: 12px; }
+  }
+
+  @media (max-width: 480px) {
+    .search-wrap { max-width: none; }
   }
 </style>
 </head>
@@ -487,21 +521,19 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo">
-      <div class="logo-badge">THY</div>
-      <div class="logo-text">Stratejik Planlama &amp; İş Zekası</div>
-    </div>
+    <div class="site-name">Hava Kargo<span> Bülteni</span></div>
+    <div class="header-divider"></div>
     <div class="search-wrap">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
       </svg>
-      <input type="text" id="search" placeholder="Haberlerde ara...">
+      <input type="search" id="search" placeholder="Haberlerde ara…" autocomplete="off">
     </div>
-    <div class="header-stats" id="header-stats"></div>
+    <div class="header-stat" id="header-stats"></div>
   </div>
 </header>
 
-<div class="date-bar" id="date-bar" style="display:none">
+<div class="date-bar" id="date-bar">
   <div class="date-tabs" id="date-tabs"></div>
 </div>
 
@@ -509,28 +541,28 @@
   <div class="filter-inner">
     <span class="filter-label">Kategori</span>
     <div class="cat-pill active" data-cat="all">
-      <span class="dot"></span> Tümü
+      <span class="dot"></span>Tümü
     </div>
-    <div class="cat-pill" data-cat="Filo & Network" data-color="#0277BD" style="--c:#0277BD">
-      <span class="dot" style="background:#0277BD"></span> Filo &amp; Network
+    <div class="cat-pill" data-cat="Filo & Network" data-color="var(--cat-filo)" style="--c:var(--cat-filo)">
+      <span class="dot" style="background:var(--cat-filo)"></span>Filo &amp; Network
     </div>
-    <div class="cat-pill" data-cat="Teknoloji & Dijitalleşme" data-color="#1565C0" style="--c:#1565C0">
-      <span class="dot" style="background:#1565C0"></span> Teknoloji &amp; Dijital
+    <div class="cat-pill" data-cat="Teknoloji & Dijitalleşme" data-color="var(--cat-tech)" style="--c:var(--cat-tech)">
+      <span class="dot" style="background:var(--cat-tech)"></span>Teknoloji
     </div>
-    <div class="cat-pill" data-cat="Ortaklık & İş Birlikleri" data-color="#558B2F" style="--c:#558B2F">
-      <span class="dot" style="background:#558B2F"></span> Ortaklık &amp; İş Bir.
+    <div class="cat-pill" data-cat="Ortaklık & İş Birlikleri" data-color="var(--cat-ortak)" style="--c:var(--cat-ortak)">
+      <span class="dot" style="background:var(--cat-ortak)"></span>Ortaklık
     </div>
-    <div class="cat-pill" data-cat="Özel Kargo" data-color="#6A1B9A" style="--c:#6A1B9A">
-      <span class="dot" style="background:#6A1B9A"></span> Özel Kargo
+    <div class="cat-pill" data-cat="Özel Kargo" data-color="var(--cat-ozel)" style="--c:var(--cat-ozel)">
+      <span class="dot" style="background:var(--cat-ozel)"></span>Özel Kargo
     </div>
-    <div class="cat-pill" data-cat="Altyapı" data-color="#BF360C" style="--c:#BF360C">
-      <span class="dot" style="background:#BF360C"></span> Altyapı
+    <div class="cat-pill" data-cat="Altyapı" data-color="var(--cat-alt)" style="--c:var(--cat-alt)">
+      <span class="dot" style="background:var(--cat-alt)"></span>Altyapı
     </div>
-    <div class="cat-pill" data-cat="Atama & Görevlendirme" data-color="#00838F" style="--c:#00838F">
-      <span class="dot" style="background:#00838F"></span> Atama &amp; Görev.
+    <div class="cat-pill" data-cat="Atama & Görevlendirme" data-color="var(--cat-atama)" style="--c:var(--cat-atama)">
+      <span class="dot" style="background:var(--cat-atama)"></span>Atama
     </div>
-    <div class="cat-pill" data-cat="Diğer" data-color="#37474F" style="--c:#37474F">
-      <span class="dot" style="background:#37474F"></span> Diğer
+    <div class="cat-pill" data-cat="Diğer" data-color="var(--cat-diger)" style="--c:var(--cat-diger)">
+      <span class="dot" style="background:var(--cat-diger)"></span>Diğer
     </div>
   </div>
 </div>
@@ -538,43 +570,54 @@
 <main class="main" id="main">
   <div class="loading" id="loading">
     <div class="spinner"></div>
-    <div>Haberler yükleniyor...</div>
+    <div>Haberler yükleniyor…</div>
   </div>
   <div class="empty-state" id="empty-state">
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
       <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
     </svg>
     <h3>Sonuç bulunamadı</h3>
-    <p>Arama kriterlerinizi değiştirmeyi deneyin.</p>
+    <p>Farklı arama veya filtre deneyin.</p>
   </div>
   <div id="cards-container"></div>
 </main>
 
 <footer>
-  <strong>Turkish Cargo — Stratejik Planlama ve İş Zekası Müdürlüğü</strong><br>
-  Bülten yapay zeka tarafından otomatik olarak oluşturulmuştur. İçeriğin doğruluğu garanti edilmez.
+  Bülten yapay zeka tarafından otomatik oluşturulmuştur. İçeriğin doğruluğu garanti edilmez.
 </footer>
 
 <script>
 const CAT_COLORS = {
-  'Filo & Network': '#0277BD',
-  'Teknoloji & Dijitalleşme': '#1565C0',
-  'Ortaklık & İş Birlikleri': '#558B2F',
-  'Özel Kargo': '#6A1B9A',
-  'Altyapı': '#BF360C',
-  'Atama & Görevlendirme': '#00838F',
-  'Diğer': '#37474F'
+  'Filo & Network':           'var(--cat-filo)',
+  'Teknoloji & Dijitalleşme': 'var(--cat-tech)',
+  'Ortaklık & İş Birlikleri': 'var(--cat-ortak)',
+  'Özel Kargo':               'var(--cat-ozel)',
+  'Altyapı':                  'var(--cat-alt)',
+  'Atama & Görevlendirme':    'var(--cat-atama)',
+  'Diğer':                    'var(--cat-diger)'
+};
+
+const CAT_HEX = {
+  'Filo & Network':           '#1D6FE8',
+  'Teknoloji & Dijitalleşme': '#7C3AED',
+  'Ortaklık & İş Birlikleri': '#059669',
+  'Özel Kargo':               '#DB2777',
+  'Altyapı':                  '#EA580C',
+  'Atama & Görevlendirme':    '#0891B2',
+  'Diğer':                    '#6B7280'
 };
 
 const SOURCE_LABELS = {
-  'aircargonews': 'AirCargoNews',
-  'aircargoweek': 'AirCargoWeek',
-  'stattimes': 'StatTimes'
+  'aircargonews':   'AirCargoNews',
+  'aircargoweek':   'AirCargoWeek',
+  'stattimes':      'StatTimes',
+  'aircargoupdate': 'AirCargoUpdate',
+  'payloadasia':    'PayloadAsia'
 };
 
 let allArticles = [];
-let activeCat = 'all';
-let activeDate = 'all';
+let activeCat   = 'all';
+let activeDate  = 'all';
 let searchQuery = '';
 
 function formatDate(dateStr) {
@@ -593,9 +636,11 @@ function formatDateShort(dateStr) {
 
 function getFavicon(source) {
   const domains = {
-    'aircargonews': 'aircargonews.net',
-    'aircargoweek': 'aircargoweek.com',
-    'stattimes': 'stattimes.com'
+    'aircargonews':   'aircargonews.net',
+    'aircargoweek':   'aircargoweek.com',
+    'stattimes':      'stattimes.com',
+    'aircargoupdate': 'aircargoupdate.com',
+    'payloadasia':    'payloadasia.com'
   };
   const domain = domains[source] || source;
   return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
@@ -609,11 +654,11 @@ function stripHtml(html) {
 
 function getFilteredArticles() {
   return allArticles.filter(a => {
-    const catMatch = activeCat === 'all' || a.category === activeCat;
+    const catMatch  = activeCat === 'all' || a.category === activeCat;
     const dateMatch = activeDate === 'all' || a.date === activeDate;
     const q = searchQuery.toLowerCase();
     const searchMatch = !q ||
-      stripHtml(a.title || '').toLowerCase().includes(q) ||
+      stripHtml(a.title   || '').toLowerCase().includes(q) ||
       stripHtml(a.summary || '').toLowerCase().includes(q) ||
       (a.source || '').toLowerCase().includes(q);
     return catMatch && dateMatch && searchMatch;
@@ -627,7 +672,6 @@ const elCards   = document.getElementById('cards-container');
 function renderCards(articles) {
   elLoading.style.display = 'none';
 
-  // Tarihe göre grupla
   const byDate = {};
   articles.forEach(a => {
     const d = a.date || 'Tarihsiz';
@@ -650,53 +694,53 @@ function renderCards(articles) {
     const section = document.createElement('div');
     section.className = 'date-section';
 
-    const header = document.createElement('div');
-    header.className = 'date-section-header';
-    header.innerHTML = `
+    const hdr = document.createElement('div');
+    hdr.className = 'date-section-header';
+    hdr.innerHTML = `
       <div class="date-heading">${formatDate(date)}</div>
       <div class="date-count">${byDate[date].length} haber</div>
     `;
-    section.appendChild(header);
+    section.appendChild(hdr);
 
     const grid = document.createElement('div');
     grid.className = 'article-grid';
 
     byDate[date].forEach((article, i) => {
-      const color = CAT_COLORS[article.category] || '#37474F';
-      const impactClass = `impact-${article.thyImpact || 'notr'}`;
-      const impactLabel = { firsat: '↑ Fırsat', risk: '↓ Risk', notr: '— Nötr' }[article.thyImpact] || '— Nötr';
-      const sourceLabel = SOURCE_LABELS[article.source] || article.source || '';
+      const hex   = CAT_HEX[article.category] || '#6B7280';
       const hasThy = article.thyImpact && article.thyImpact !== 'notr' && article.thyAnalysis;
+      const sourceLabel = SOURCE_LABELS[article.source] || article.source || '';
 
       const card = document.createElement('div');
       card.className = 'article-card';
-      card.style.animationDelay = `${i * 40}ms`;
+      card.style.animationDelay = `${i * 35}ms`;
 
       card.innerHTML = `
-        <div class="card-top-band" style="background:${color}"></div>
-        <div class="card-body">
-          <div class="card-meta">
-            <span class="card-cat-badge" style="background:${color}">${article.category || 'Diğer'}</span>
-          </div>
-          ${article.isDuplicate ? `<div class="dup-badge">⟳ Tekrar haber</div>` : ''}
-          <div class="card-title">${article.title || ''}</div>
-          <div class="card-summary">${article.summary || '<span style="color:var(--text-muted);font-style:italic">Özet henüz oluşturulmadı.</span>'}</div>
-          ${hasThy ? `
-            <button class="thy-toggle" onclick="toggleThy(this)">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-              Analiz
-            </button>
-            <div class="thy-panel">${article.thyAnalysis}</div>
-          ` : ''}
-          <div class="card-footer">
-            <div class="card-source">
-              <img class="source-favicon" src="${getFavicon(article.source)}" alt="" onerror="this.style.display='none'">
-              ${sourceLabel}
+        <div class="card-inner">
+          <div class="card-left-bar" style="background:${hex}"></div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-cat-badge" style="background:${hex}">${article.category || 'Diğer'}</span>
+              ${article.isDuplicate ? `<span class="dup-badge">↺ Tekrar haber</span>` : ''}
             </div>
-            ${article.link ? `<a class="card-link" href="${article.link}" target="_blank" rel="noopener">
-              Haberi oku
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>` : ''}
+            <div class="card-title">${article.title || ''}</div>
+            <div class="card-summary">${article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>'}</div>
+            ${hasThy ? `
+              <button class="thy-toggle" onclick="toggleThy(this)" aria-expanded="false">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                Analiz
+              </button>
+              <div class="thy-panel" role="region">${article.thyAnalysis}</div>
+            ` : ''}
+            <div class="card-footer">
+              <div class="card-source">
+                <img class="source-favicon" src="${getFavicon(article.source)}" alt="" loading="lazy" onerror="this.style.display='none'">
+                ${sourceLabel}
+              </div>
+              ${article.link ? `<a class="card-link" href="${article.link}" target="_blank" rel="noopener noreferrer">
+                Haberi oku
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>` : ''}
+            </div>
           </div>
         </div>
       `;
@@ -712,26 +756,27 @@ function renderCards(articles) {
 function toggleThy(btn) {
   const panel = btn.nextElementSibling;
   const isOpen = panel.classList.toggle('show');
+  btn.setAttribute('aria-expanded', isOpen);
   btn.innerHTML = `
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="transform:rotate(${isOpen ? 180 : 0}deg);transition:transform 0.2s"><polyline points="6 9 12 15 18 9"/></svg>
-    Turkish Cargo Analizi
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+      style="transform:rotate(${isOpen ? 180 : 0}deg);transition:transform 0.2s"><polyline points="6 9 12 15 18 9"/></svg>
+    ${isOpen ? 'Kapat' : 'Analiz'}
   `;
 }
 
 function updateStats(total, filtered) {
   const el = document.getElementById('header-stats');
-  if (filtered < total) {
-    el.innerHTML = `<span>${filtered}</span> / ${total} haber gösteriliyor`;
-  } else {
-    el.innerHTML = `Toplam <span>${total}</span> haber`;
-  }
+  if (!el) return;
+  el.innerHTML = filtered < total
+    ? `<b>${filtered}</b> / ${total} haber`
+    : `<b>${total}</b> haber`;
 }
 
 function buildDateTabs(articles) {
   const dates = [...new Set(articles.map(a => a.date).filter(Boolean))].sort((a, b) => b.localeCompare(a));
   if (dates.length <= 1) return;
 
-  const bar = document.getElementById('date-bar');
+  const bar  = document.getElementById('date-bar');
   const tabs = document.getElementById('date-tabs');
   bar.style.display = 'block';
 
@@ -775,8 +820,8 @@ document.querySelectorAll('.cat-pill').forEach(pill => {
     });
     pill.classList.add('active');
     if (pill.dataset.cat !== 'all') {
-      const color = pill.dataset.color;
-      if (color) { pill.style.background = color; pill.style.color = 'white'; }
+      const hex = CAT_HEX[pill.dataset.cat];
+      if (hex) { pill.style.background = hex; pill.style.color = 'white'; pill.style.borderColor = 'transparent'; }
     }
     activeCat = pill.dataset.cat;
     render();
@@ -790,7 +835,7 @@ document.getElementById('search').addEventListener('input', e => {
   searchTimer = setTimeout(() => {
     searchQuery = e.target.value;
     render();
-  }, 250);
+  }, 220);
 });
 
 // Load data
@@ -808,11 +853,11 @@ fetch(DATA_URL)
   })
   .catch(err => {
     elLoading.innerHTML = `
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C8102E" stroke-width="1.5">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#E63946" stroke-width="1.5">
         <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
-      <div style="color:#C8102E;font-weight:600">Veri yüklenemedi</div>
-      <div style="font-size:12px">${err.message}</div>
+      <div style="color:#E63946;font-weight:600;font-size:14px">Veri yüklenemedi</div>
+      <div style="font-size:12px;color:var(--text-3)">${err.message}</div>
     `;
   });
 </script>
