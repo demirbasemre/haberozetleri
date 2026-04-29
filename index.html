@@ -639,36 +639,99 @@
   .card-link:hover { gap: 6px; }
   .card-link:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; border-radius: 3px; }
 
-  /* Analysis panel */
-  .analysis-panel {
-    margin-top: 8px;
-    padding: 10px 12px;
-    background: #FFF8F8;
-    border-left: 3px solid var(--red);
-    border-radius: 0 6px 6px 0;
-    font-size: 12px;
-    line-height: 1.65;
-    color: #7f1d1d;
-    display: none;
-  }
-  .analysis-panel.show { display: block; }
-
+  /* Analysis trigger button — centered in card */
   .analysis-toggle {
-    background: none;
-    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+    background: #FFF8F8;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
     font-size: 11px;
     color: var(--red);
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
-    padding: 0;
-    margin-top: 4px;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    transition: opacity 0.15s;
+    padding: 6px 0;
+    margin-top: 10px;
+    transition: background 0.15s, border-color 0.15s;
   }
-  .analysis-toggle:hover { opacity: 0.75; }
+  .analysis-toggle:hover { background: #fee2e2; border-color: #fca5a5; }
+  .analysis-toggle:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+  /* Analysis bottom drawer */
+  .analysis-drawer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: #fff;
+    border-top: 3px solid var(--red);
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.14);
+    max-height: 52vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 260ms ease-out, opacity 220ms ease-out;
+    pointer-events: none;
+  }
+  .analysis-drawer.open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .analysis-drawer-handle {
+    width: 36px; height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    margin: 10px auto 0;
+    flex-shrink: 0;
+  }
+  .analysis-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px 8px;
+    border-bottom: 1px solid var(--border-soft);
+    flex-shrink: 0;
+  }
+  .analysis-drawer-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--red);
+  }
+  .analysis-drawer-close {
+    background: none; border: none; cursor: pointer;
+    color: var(--text-3); padding: 4px; line-height: 1;
+    border-radius: 4px; transition: color 0.15s;
+    font-size: 18px; font-weight: 300;
+  }
+  .analysis-drawer-close:hover { color: var(--text-1); }
+  .analysis-drawer-body {
+    padding: 14px 20px 24px;
+    overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #7f1d1d;
+    -webkit-overflow-scrolling: touch;
+  }
+  .analysis-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.18);
+    z-index: 199;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms;
+  }
+  .analysis-backdrop.open { opacity: 1; pointer-events: auto; }
+  @media (prefers-reduced-motion: reduce) {
+    .analysis-drawer, .analysis-backdrop { transition: none; }
+  }
 
   /* ── LOADING ─────────────────────────────────── */
   .loading {
@@ -1112,11 +1175,10 @@ function renderCards(articles) {
               return `<div class="etki-alani"><div class="etki-alani-title">Etki Alanı</div><div class="region-groups">${groupsHTML}</div></div>`;
             })()}
             ${hasAnalysis ? `
-              <button class="analysis-toggle" onclick="toggleAnalysis(this)" aria-expanded="false">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(article.analysis||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                 Analiz
               </button>
-              <div class="analysis-panel" role="region">${article.analysis}</div>
             ` : ''}
             <div class="card-footer">
               <div class="card-source">
@@ -1140,16 +1202,6 @@ function renderCards(articles) {
   });
 }
 
-function toggleAnalysis(btn) {
-  const panel = btn.nextElementSibling;
-  const isOpen = panel.classList.toggle('show');
-  btn.setAttribute('aria-expanded', isOpen);
-  btn.innerHTML = `
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-      style="transform:rotate(${isOpen ? 180 : 0}deg);transition:transform 0.2s"><polyline points="6 9 12 15 18 9"/></svg>
-    ${isOpen ? 'Kapat' : 'Analiz'}
-  `;
-}
 
 function updateStats(total, filtered) {
   const el = document.getElementById('header-stats');
@@ -1611,6 +1663,35 @@ fetch(DATA_URL)
       <div style="font-size:12px;color:var(--text-3)">${err.message}</div>
     `;
   });
+</script>
+
+<!-- Analysis Bottom Drawer -->
+<div class="analysis-backdrop" id="analysisBd" onclick="closeAnalysisDrawer()"></div>
+<div class="analysis-drawer" id="analysisDrawer" role="dialog" aria-modal="true" aria-label="Analiz">
+  <div class="analysis-drawer-handle"></div>
+  <div class="analysis-drawer-header">
+    <span class="analysis-drawer-label">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;margin-right:4px"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      Analiz
+    </span>
+    <button class="analysis-drawer-close" onclick="closeAnalysisDrawer()" aria-label="Kapat">&#x2715;</button>
+  </div>
+  <div class="analysis-drawer-body" id="analysisDrawerBody"></div>
+</div>
+
+<script>
+function openAnalysisDrawer(btn) {
+  const text = btn.getAttribute('data-analysis') || '';
+  document.getElementById('analysisDrawerBody').innerHTML = text;
+  document.getElementById('analysisDrawer').classList.add('open');
+  document.getElementById('analysisBd').classList.add('open');
+  document.getElementById('analysisDrawer').focus();
+}
+function closeAnalysisDrawer() {
+  document.getElementById('analysisDrawer').classList.remove('open');
+  document.getElementById('analysisBd').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAnalysisDrawer(); });
 </script>
 </body>
 </html>
