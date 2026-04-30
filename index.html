@@ -123,11 +123,25 @@
     margin-left: auto;
     font-size: 12px;
     color: rgba(255,255,255,0.4);
-    white-space: nowrap;
     flex-shrink: 0;
     font-variant-numeric: tabular-nums;
+    text-align: right;
+    line-height: 1.5;
   }
   .header-stat b { color: rgba(255,255,255,0.85); font-weight: 600; }
+  .stat-line-1 { white-space: nowrap; }
+  .stat-line-2 {
+    font-size: 10.5px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-top: 1px;
+    align-items: center;
+  }
+  .stat-reg { white-space: nowrap; cursor: help; color: rgba(255,255,255,0.35); }
+  .stat-reg b { font-size: 10.5px; color: rgba(255,255,255,0.7); font-weight: 600; }
+  .stat-sep { color: rgba(255,255,255,0.18); font-size: 10px; }
 
   /* ── FILTER BAR ──────────────────────────────── */
   .filter-bar {
@@ -219,6 +233,46 @@
     to   { opacity: 1; transform: translateY(0); }
   }
   @media (prefers-reduced-motion: reduce) { .fdd-panel.open { animation: none; } }
+
+  /* ── DATE PICKER ─────────────────────────────── */
+  .dp-section { padding: 0 2px 6px; }
+  .dp-section-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding: 2px 1px 5px;
+  }
+  .dp-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .dp-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-2);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.13s;
+    user-select: none;
+    min-height: 28px;
+    touch-action: manipulation;
+  }
+  .dp-pill:hover:not(.dp-disabled) { background: var(--bg); border-color: #d1d5db; }
+  .dp-pill.dp-active { background: var(--navy); color: white; border-color: transparent; }
+  .dp-pill.dp-active:hover { background: #1a2332; }
+  .dp-pill.dp-disabled { opacity: 0.28; cursor: default; }
+  .dp-divider { height: 1px; background: var(--border-soft); margin: 4px 2px 8px; }
 
   .fdd-option {
     display: flex;
@@ -553,28 +607,67 @@
   .region-badge[data-tk="S&N AMERICA"] { background:#FDF4FF; color:#7E22CE; }
   .region-badge[data-tk="TURKIYE"]     { background:#FFF1F2; color:#BE123C; }
 
-  /* Hierarchical region dropdown */
+  /* Hierarchical region dropdown — shared base */
   .region-parent-opt {
     display: flex;
     align-items: center;
-    gap: 9px;
-    padding: 7px 8px;
+    gap: 8px;
+    padding: 6px 8px;
     border-radius: 7px;
     cursor: pointer;
-    font-size: 12.5px;
-    font-weight: 600;
+    font-size: 11.5px;
+    font-weight: 700;
     color: var(--text);
     user-select: none;
-    min-height: 34px;
+    min-height: 32px;
     transition: background 0.13s;
+    letter-spacing: 0.01em;
   }
   .region-parent-opt:hover { background: var(--bg); }
-  .region-parent-opt.selected { background: rgba(13,17,23,0.05); }
+  .region-parent-opt.selected { background: rgba(13,17,23,0.06); }
   .region-sub-opt {
-    padding-left: 24px !important;
-    font-size: 12px !important;
-    color: var(--text-2) !important;
-    min-height: 32px !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11.5px;
+    color: var(--text-2);
+    user-select: none;
+    min-height: 28px;
+    transition: background 0.13s;
+  }
+  .region-sub-opt:hover { background: var(--bg); }
+  .region-sub-opt.selected { background: rgba(13,17,23,0.05); }
+
+  /* Region tree — kolon düzeni (desktop) */
+  #region-panel {
+    min-width: min(700px, 94vw);
+    max-height: none;
+    overflow: visible;
+  }
+  .region-tree {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0 6px;
+    padding: 2px 0;
+  }
+  .region-column {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-soft);
+    padding: 0 4px;
+  }
+  .region-column:last-child { border-right: none; }
+
+  /* Mobil: tek sütun, alt alta */
+  @media (max-width: 768px) {
+    #region-panel { min-width: 220px; max-height: 340px; overflow-y: auto; }
+    .region-tree  { grid-template-columns: 1fr; gap: 0; }
+    .region-column { border-right: none; border-bottom: 1px solid var(--border-soft); padding: 4px 0; }
+    .region-column:last-child { border-bottom: none; }
+    .region-sub-opt { padding-left: 22px; }
   }
 
   .card-title {
@@ -895,7 +988,7 @@
           <polyline points="6 9 12 15 18 9"/>
         </svg>
       </button>
-      <div class="fdd-panel" id="region-panel" role="listbox" aria-multiselectable="true" aria-label="Etki alanı seç" style="min-width:230px">
+      <div class="fdd-panel" id="region-panel" role="listbox" aria-multiselectable="true" aria-label="Etki alanı seç">
         <!-- Populated by buildRegionDropdown() -->
       </div>
     </div>
@@ -985,13 +1078,26 @@ const SOURCE_LABELS = {
   'payloadasia':    'PayloadAsia'
 };
 
-let allArticles    = [];
-let activeCat      = 'all';
-let activeDate     = 'all';
-let searchQuery    = '';
-let activeAirlines = new Set();
-let activeRegions  = new Set();
-let onlyAnalysis   = false;
+const TR_MONTHS_SHORT = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+const TR_MONTHS_FULL  = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+
+const TK_SHORT = {
+  'EUROPE':      'EUR',
+  'FAR EAST':    'FAR',
+  'MEASA':       'MEA',
+  'S&N AMERICA': 'AME',
+  'TURKIYE':     'TRY'
+};
+
+let allArticles      = [];
+let activeCat        = 'all';
+let activeDateYear   = null;   // '2025'
+let activeDateMonth  = null;   // '01'..'12'
+let activeDateDay    = null;   // '01'..'31'
+let searchQuery      = '';
+let activeAirlines   = new Set();
+let activeRegions    = new Set();
+let onlyAnalysis     = false;
 
 // ── Region hierarchy (matches Bölge Yapısı table) ───────────
 const TK_HIERARCHY = [
@@ -999,7 +1105,7 @@ const TK_HIERARCHY = [
   { id: 'FAR EAST',    label: 'FAR EAST',    subs: ['China','North East Asia','South East Asia','Turkistan and Russia'] },
   { id: 'MEASA',       label: 'MEASA',       subs: ['Middle East','Northern & Western Africa','Southern & Eastern Africa','Southern Asia'] },
   { id: 'S&N AMERICA', label: 'S&N AMERICA', subs: ['Central & Southern America','Northern America'] },
-  { id: 'TURKIYE',     label: 'TÜRKİYE',     subs: ['ANKARA','CUKUROVA','IZMIR'] }
+  { id: 'TURKIYE',     label: 'TÜRKİYE',     subs: ['ANKARA','ANTALYA','CUKUROVA','ISTANBUL','IZMIR'] }
 ];
 
 // Sub_Region → parent TK_Region lookup
@@ -1073,7 +1179,17 @@ function stripHtml(html) {
 function getFilteredArticles() {
   return allArticles.filter(a => {
     const catMatch      = activeCat === 'all' || a.category === activeCat;
-    const dateMatch     = activeDate === 'all' || a.date === activeDate;
+    const dateMatch     = (() => {
+      if (!activeDateYear && !activeDateMonth && !activeDateDay) return true;
+      const d = a.date || '';
+      if (!d) return false;
+      const parts = d.split('-');
+      const y = parts[0], m = parts[1], day = parts[2];
+      if (activeDateYear  && y   !== activeDateYear)  return false;
+      if (activeDateMonth && m   !== activeDateMonth) return false;
+      if (activeDateDay   && day !== activeDateDay)   return false;
+      return true;
+    })();
     const airlineMatch  = activeAirlines.size === 0 ||
                           (a._airlines && a._airlines.some(id => activeAirlines.has(id)));
     const regionMatch   = activeRegions.size === 0 ||
@@ -1204,12 +1320,48 @@ function renderCards(articles) {
 }
 
 
-function updateStats(total, filtered) {
+function updateStats(filteredArticles, totalCount) {
   const el = document.getElementById('header-stats');
   if (!el) return;
-  el.innerHTML = filtered < total
-    ? `<b>${filtered}</b> / ${total} haber`
-    : `<b>${total}</b> haber`;
+
+  const filtered = filteredArticles.length;
+  const analysisCount = filteredArticles.filter(a =>
+    (a.impact && a.impact !== 'notr') || (a.analysis && String(a.analysis).trim())
+  ).length;
+
+  // Count articles (unique) per TK_Region and Sub_Region
+  const tkCounts  = {};
+  const subCounts = {};
+  filteredArticles.forEach(a => {
+    const subs = (a.etkiAlani || [])
+      .map(r => typeof r === 'string' ? r : (r.Sub_Region || r.sub_region || ''))
+      .filter(Boolean);
+    const tksSeen = new Set();
+    subs.forEach(sub => {
+      const isTk = TK_HIERARCHY.some(t => t.id === sub);
+      const tk   = SUB_TO_TK[sub];
+      if (!tk) return;
+      if (!tksSeen.has(tk)) { tkCounts[tk] = (tkCounts[tk] || 0) + 1; tksSeen.add(tk); }
+      if (!isTk) subCounts[sub] = (subCounts[sub] || 0) + 1;
+    });
+  });
+
+  const line1 = filtered < totalCount
+    ? `<b>${filtered}</b>/<b>${totalCount}</b> haber`
+    : `<b>${totalCount}</b> haber`;
+
+  const regionHtml = TK_HIERARCHY
+    .filter(tk => tkCounts[tk.id])
+    .map((tk, i) => {
+      const subDetail = tk.subs.filter(s => subCounts[s]).map(s => `${s}: ${subCounts[s]}`).join(' · ');
+      const sep = i > 0 ? '<span class="stat-sep">·</span>' : '';
+      return `${sep}<span class="stat-reg"${subDetail ? ` title="${subDetail}"` : ''}>${TK_SHORT[tk.id]} <b>${tkCounts[tk.id]}</b></span>`;
+    }).join('');
+
+  el.innerHTML = `
+    <div class="stat-line-1">${line1}${analysisCount ? ` · <b>${analysisCount}</b> analiz` : ''}</div>
+    ${regionHtml ? `<div class="stat-line-2">${regionHtml}</div>` : ''}
+  `;
 }
 
 const CAT_SHORT = {
@@ -1238,58 +1390,146 @@ function openDropdown(id) {
 }
 function closeAllDropdowns() { ALL_DROPDOWNS.forEach(closeDropdown); }
 
-function buildDateDropdown(articles) {
-  const dates = [...new Set(articles.map(a => a.date).filter(Boolean))].sort((a, b) => b.localeCompare(a));
+function syncDateBtn() {
+  const btn = document.getElementById('date-btn');
+  const lbl = document.getElementById('date-btn-label');
+  const isActive = activeDateYear || activeDateMonth || activeDateDay;
+  if (!isActive) {
+    lbl.textContent = 'Tarih';
+    btn.classList.remove('active');
+    return;
+  }
+  btn.classList.add('active');
+  let label = '';
+  if (activeDateYear)  label += activeDateYear;
+  if (activeDateMonth) label += (label ? ' ' : '') + TR_MONTHS_SHORT[parseInt(activeDateMonth) - 1];
+  if (activeDateDay)   label += (label ? ' ' : '') + parseInt(activeDateDay);
+  lbl.textContent = label;
+}
+
+function buildDatePanel(articles) {
   const panel = document.getElementById('date-panel');
-  panel.innerHTML = '';
+  panel.style.minWidth = '284px';
+  panel.style.padding  = '10px';
 
-  const allOpt = document.createElement('div');
-  allOpt.className = 'fdd-option selected';
-  allOpt.dataset.date = 'all';
-  allOpt.setAttribute('role', 'option');
-  allOpt.setAttribute('aria-selected', 'true');
-  allOpt.innerHTML = `<div class="fdd-radio"></div><span>Tüm Tarihler</span>`;
-  panel.appendChild(allOpt);
+  if (!panel._dpInit) {
+    panel.addEventListener('click', e => e.stopPropagation());
+    panel._dpInit = true;
+  }
 
-  dates.forEach(d => {
-    const opt = document.createElement('div');
-    opt.className = 'fdd-option';
-    opt.dataset.date = d;
-    opt.setAttribute('role', 'option');
-    opt.setAttribute('aria-selected', 'false');
-    opt.innerHTML = `<div class="fdd-radio"></div><span>${formatDate(d)}</span>`;
-    panel.appendChild(opt);
+  // Index: year → month → Set<day>
+  const idx = {};
+  articles.forEach(a => {
+    if (!a.date) return;
+    const [y, m, day] = a.date.split('-');
+    if (!idx[y]) idx[y] = {};
+    if (!idx[y][m]) idx[y][m] = new Set();
+    idx[y][m].add(day);
   });
+  const years = Object.keys(idx).sort((a, b) => b.localeCompare(a));
 
-  panel.addEventListener('click', e => {
-    const opt = e.target.closest('.fdd-option');
-    if (!opt) return;
-    document.querySelectorAll('#date-panel .fdd-option').forEach(o => {
-      o.classList.remove('selected');
-      o.setAttribute('aria-selected', 'false');
+  function repaint() {
+    panel.innerHTML = '';
+
+    // ── YIL ──
+    const ySec = document.createElement('div'); ySec.className = 'dp-section';
+    ySec.innerHTML = '<span class="dp-section-label">Yıl</span>';
+    const yRow = document.createElement('div'); yRow.className = 'dp-pills';
+    years.forEach(y => {
+      const p = document.createElement('div');
+      p.className = 'dp-pill' + (activeDateYear === y ? ' dp-active' : '');
+      p.textContent = y;
+      p.addEventListener('click', () => {
+        if (activeDateYear === y) {
+          activeDateYear = null; activeDateMonth = null; activeDateDay = null;
+        } else {
+          activeDateYear = y;
+          if (activeDateMonth && !idx[y]?.[activeDateMonth]) { activeDateMonth = null; activeDateDay = null; }
+          else if (activeDateDay && !idx[y]?.[activeDateMonth]?.has(activeDateDay)) activeDateDay = null;
+        }
+        repaint(); syncDateBtn(); syncClearBtn(); render();
+      });
+      yRow.appendChild(p);
     });
-    opt.classList.add('selected');
-    opt.setAttribute('aria-selected', 'true');
-    activeDate = opt.dataset.date;
-    const btn = document.getElementById('date-btn');
-    const lbl = document.getElementById('date-btn-label');
-    if (activeDate === 'all') {
-      lbl.textContent = 'Tarih';
-      btn.classList.remove('active');
+    ySec.appendChild(yRow);
+    panel.appendChild(ySec);
+
+    // ── AY ──
+    const d1 = document.createElement('div'); d1.className = 'dp-divider'; panel.appendChild(d1);
+    const mSec = document.createElement('div'); mSec.className = 'dp-section';
+    mSec.innerHTML = '<span class="dp-section-label">Ay</span>';
+    const mRow = document.createElement('div'); mRow.className = 'dp-pills';
+
+    const availMonths = new Set();
+    (activeDateYear ? [activeDateYear] : years)
+      .forEach(y => Object.keys(idx[y] || {}).forEach(m => availMonths.add(m)));
+
+    TR_MONTHS_SHORT.forEach((name, i) => {
+      const m = String(i + 1).padStart(2, '0');
+      const avail = availMonths.has(m);
+      const p = document.createElement('div');
+      p.className = 'dp-pill' + (activeDateMonth === m ? ' dp-active' : '') + (!avail ? ' dp-disabled' : '');
+      p.textContent = name;
+      if (avail) {
+        p.addEventListener('click', () => {
+          if (activeDateMonth === m) { activeDateMonth = null; activeDateDay = null; }
+          else {
+            activeDateMonth = m;
+            if (activeDateDay) {
+              const ys = activeDateYear ? [activeDateYear] : years;
+              if (!ys.some(y => idx[y]?.[m]?.has(activeDateDay))) activeDateDay = null;
+            }
+          }
+          repaint(); syncDateBtn(); syncClearBtn(); render();
+        });
+      }
+      mRow.appendChild(p);
+    });
+    mSec.appendChild(mRow);
+    panel.appendChild(mSec);
+
+    // ── GÜN ──
+    const d2 = document.createElement('div'); d2.className = 'dp-divider'; panel.appendChild(d2);
+    const dSec = document.createElement('div'); dSec.className = 'dp-section';
+    dSec.innerHTML = '<span class="dp-section-label">Gün</span>';
+    const dRow = document.createElement('div'); dRow.className = 'dp-pills';
+
+    if (!activeDateYear && !activeDateMonth) {
+      const hint = document.createElement('span');
+      hint.style.cssText = 'font-size:11px;color:var(--text-3)';
+      hint.textContent = 'Yıl veya ay seçin';
+      dRow.appendChild(hint);
     } else {
-      lbl.textContent = formatDateShort(activeDate);
-      btn.classList.add('active');
+      const availDays = new Set();
+      const ys = activeDateYear ? [activeDateYear] : years;
+      const ms = activeDateMonth ? [activeDateMonth] : null;
+      ys.forEach(y => {
+        const months = ms || Object.keys(idx[y] || {});
+        months.forEach(m => (idx[y]?.[m] || new Set()).forEach(d => availDays.add(d)));
+      });
+      [...availDays].sort().forEach(day => {
+        const p = document.createElement('div');
+        p.className = 'dp-pill' + (activeDateDay === day ? ' dp-active' : '');
+        p.style.minWidth = '34px';
+        p.textContent = parseInt(day);
+        p.addEventListener('click', () => {
+          activeDateDay = activeDateDay === day ? null : day;
+          repaint(); syncDateBtn(); syncClearBtn(); render();
+        });
+        dRow.appendChild(p);
+      });
     }
-    closeDropdown('date');
-    syncClearBtn();
-    render();
-  });
+    dSec.appendChild(dRow);
+    panel.appendChild(dSec);
+  }
+
+  repaint();
 }
 
 function render() {
   const filtered = getFilteredArticles();
   renderCards(filtered);
-  updateStats(allArticles.length, filtered.length);
+  updateStats(filtered, allArticles.length);
 }
 
 // ── Airline filter builder ───────────────────────────────────
@@ -1386,7 +1626,8 @@ function syncAirlineBtn() {
 }
 
 function syncClearBtn() {
-  const hasAny = activeAirlines.size > 0 || activeRegions.size > 0 || onlyAnalysis || activeCat !== 'all' || activeDate !== 'all';
+  const hasAny = activeAirlines.size > 0 || activeRegions.size > 0 || onlyAnalysis || activeCat !== 'all'
+               || activeDateYear || activeDateMonth || activeDateDay;
   document.getElementById('clear-filters').style.display = hasAny ? 'inline-flex' : 'none';
 }
 
@@ -1396,28 +1637,42 @@ function buildRegionDropdown() {
   const panel = document.getElementById('region-panel');
   panel.innerHTML = '';
 
+  const tree = document.createElement('div');
+  tree.className = 'region-tree';
+
   TK_HIERARCHY.forEach(tk => {
-    // Parent row
+    const col = document.createElement('div');
+    col.className = 'region-column';
+
+    // Column header — TK_Region (parent)
     const par = document.createElement('div');
     par.className = 'region-parent-opt';
     par.dataset.tk = tk.id;
-    par.innerHTML = `<div class="airline-check">${CHECK_SVG}</div><span class="airline-label" style="font-weight:600">${tk.label}</span>`;
+    par.innerHTML = `<div class="airline-check">${CHECK_SVG}</div><span style="flex:1">${tk.label}</span>`;
     par.addEventListener('click', e => { e.stopPropagation(); toggleTkRegion(tk); });
-    panel.appendChild(par);
+    col.appendChild(par);
 
-    // Sub rows
+    // Sub-region rows
     tk.subs.forEach(sub => {
       const row = document.createElement('div');
-      row.className = 'airline-option region-sub-opt';
+      row.className = 'region-sub-opt';
       row.dataset.sub = sub;
       row.dataset.tk  = tk.id;
       row.setAttribute('role', 'option');
       row.setAttribute('aria-selected', 'false');
-      row.innerHTML = `<div class="airline-check">${CHECK_SVG}</div><span class="airline-label">${sub}</span>`;
+      const lbl = sub === 'TURKIYE' ? 'TÜRKİYE' : sub;
+      row.innerHTML = `<div class="airline-check">${CHECK_SVG}</div><span>${lbl}</span>`;
       row.addEventListener('click', e => { e.stopPropagation(); toggleSubRegion(sub, tk); });
-      panel.appendChild(row);
+      col.appendChild(row);
     });
+
+    tree.appendChild(col);
   });
+
+  panel.appendChild(tree);
+
+  // Prevent document click from closing panel on inner interaction
+  panel.addEventListener('click', e => e.stopPropagation());
 }
 
 function toggleTkRegion(tk) {
@@ -1584,7 +1839,7 @@ document.getElementById('clear-filters').addEventListener('click', () => {
   activeRegions.clear();
   onlyAnalysis = false;
   activeCat = 'all';
-  activeDate = 'all';
+  activeDateYear = null; activeDateMonth = null; activeDateDay = null;
 
   // Reset region
   syncRegionUI();
@@ -1604,13 +1859,8 @@ document.getElementById('clear-filters').addEventListener('click', () => {
   document.getElementById('cat-dot').style.background = 'var(--red)';
 
   // Reset date
-  document.querySelectorAll('#date-panel .fdd-option').forEach(o => {
-    const isAll = o.dataset.date === 'all';
-    o.classList.toggle('selected', isAll);
-    o.setAttribute('aria-selected', isAll ? 'true' : 'false');
-  });
-  document.getElementById('date-btn').classList.remove('active');
-  document.getElementById('date-btn-label').textContent = 'Tarih';
+  buildDatePanel(allArticles);
+  syncDateBtn();
 
   // Reset airline
   document.querySelectorAll('.airline-option.selected').forEach(o => {
@@ -1651,7 +1901,7 @@ fetch(DATA_URL)
   })
   .then(data => {
     allArticles = Array.isArray(data) ? data : (data.articles || []);
-    buildDateDropdown(allArticles);
+    buildDatePanel(allArticles);
     buildAirlineFilter(allArticles);
     render();
   })
