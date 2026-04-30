@@ -827,6 +827,36 @@
     .analysis-drawer, .analysis-backdrop { transition: none; }
   }
 
+  /* ── INFINITE SCROLL SENTINEL ───────────────── */
+  .load-sentinel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0 56px;
+  }
+  .load-sentinel-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .load-sentinel-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-3);
+    display: block;
+    animation: loadPulse 1.1s ease-in-out infinite;
+  }
+  .load-sentinel-dots span:nth-child(2) { animation-delay: 0.18s; }
+  .load-sentinel-dots span:nth-child(3) { animation-delay: 0.36s; }
+  @keyframes loadPulse {
+    0%, 80%, 100% { transform: scale(0.55); opacity: 0.25; }
+    40%           { transform: scale(1);    opacity: 0.7; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .load-sentinel-dots span { animation: none; opacity: 0.3; }
+  }
+
   /* ── LOADING ─────────────────────────────────── */
   .loading {
     display: flex;
@@ -1089,6 +1119,25 @@ const TK_SHORT = {
   'TURKIYE':     'TRY'
 };
 
+// ── Date normaliser ─────────────────────────────────────────
+// Returns { y:'2026', m:'04', day:'27' } from any common format
+function extractDateParts(dateStr) {
+  if (!dateStr) return null;
+  // ISO YYYY-MM-DD (possibly with time suffix)
+  const iso = String(dateStr).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) return { y: iso[1], m: iso[2], day: iso[3] };
+  // Human-readable fallback ("April 27, 2026", "27/04/2026", etc.)
+  const d = new Date(dateStr);
+  if (!isNaN(d)) {
+    return {
+      y:   String(d.getFullYear()),
+      m:   String(d.getMonth() + 1).padStart(2, '0'),
+      day: String(d.getDate()).padStart(2, '0')
+    };
+  }
+  return null;
+}
+
 let allArticles      = [];
 let activeCat        = 'all';
 let activeDateYear   = null;   // '2025'
@@ -1098,6 +1147,11 @@ let searchQuery      = '';
 let activeAirlines   = new Set();
 let activeRegions    = new Set();
 let onlyAnalysis     = false;
+
+// ── Infinite scroll state ────────────────────────────────────
+const PAGE_SIZE    = 20;
+let displayLimit   = PAGE_SIZE;
+let scrollObserver = null;
 
 // ── Region hierarchy (matches Bölge Yapısı table) ───────────
 const TK_HIERARCHY = [
@@ -1181,13 +1235,11 @@ function getFilteredArticles() {
     const catMatch      = activeCat === 'all' || a.category === activeCat;
     const dateMatch     = (() => {
       if (!activeDateYear && !activeDateMonth && !activeDateDay) return true;
-      const d = a.date || '';
-      if (!d) return false;
-      const parts = d.split('-');
-      const y = parts[0], m = parts[1], day = parts[2];
-      if (activeDateYear  && y   !== activeDateYear)  return false;
-      if (activeDateMonth && m   !== activeDateMonth) return false;
-      if (activeDateDay   && day !== activeDateDay)   return false;
+      const parts = extractDateParts(a.date || '');
+      if (!parts) return false;
+      if (activeDateYear  && parts.y   !== activeDateYear)  return false;
+      if (activeDateMonth && parts.m   !== activeDateMonth) return false;
+      if (activeDateDay   && parts.day !== activeDateDay)   return false;
       return true;
     })();
     const airlineMatch  = activeAirlines.size === 0 ||
@@ -1215,27 +1267,96 @@ const elLoading = document.getElementById('loading');
 const elEmpty   = document.getElementById('empty-state');
 const elCards   = document.getElementById('cards-container');
 
+function buildCardHTML(article) {
+  const hex = CAT_HEX[article.category] || '#6B7280';
+  const hasAnalysis = article.impact && article.impact !== 'notr' && article.analysis;
+  const sourceLabel = SOURCE_LABELS[article.source] || article.source || '';
+
+  const subs = (article.etkiAlani || [])
+    .map(r => typeof r === 'string' ? r : (r.Sub_Region || r.sub_region || r.region || r.name || ''))
+    .filter(Boolean);
+  let etkiHtml = '';
+  if (subs.length) {
+    const grouped = {}, order = [];
+    subs.forEach(rs => {
+      const tk = SUB_TO_TK[rs] || 'OTHER';
+      if (!grouped[tk]) { grouped[tk] = []; order.push(tk); }
+      grouped[tk].push(rs);
+    });
+    const groupsHTML = order.map(tkId => {
+      const tkEntry = TK_HIERARCHY.find(t => t.id === tkId);
+      const tkLabel = tkEntry ? tkEntry.label : tkId;
+      const subBadges = grouped[tkId].map(rs =>
+        `<span class="region-badge" data-tk="${tkId}">${rs === 'TURKIYE' ? 'TÜRKİYE' : rs}</span>`
+      ).join('');
+      return `<div class="region-group"><span class="region-tk" data-tk="${tkId}">${tkLabel}</span>${subBadges}</div>`;
+    }).join('');
+    etkiHtml = `<div class="etki-alani"><div class="etki-alani-title">Etki Alanı</div><div class="region-groups">${groupsHTML}</div></div>`;
+  }
+
+  return `
+    <div class="card-inner">
+      <div class="card-left-bar" style="background:${hex}"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-cat-badge" style="background:${hex}">${article.category || 'Diğer'}</span>
+          ${article.isDuplicate ? `<span class="dup-badge">↺ Tekrar haber</span>` : ''}
+        </div>
+        <div class="card-title">${article.title || ''}</div>
+        <div class="card-summary">${article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>'}</div>
+        ${etkiHtml}
+        ${hasAnalysis ? `
+          <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(article.analysis||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            Analiz
+          </button>
+        ` : ''}
+        <div class="card-footer">
+          <div class="card-source">
+            <img class="source-favicon" src="${getFavicon(article.source)}" alt="" loading="lazy" onerror="this.style.display='none'">
+            ${sourceLabel}
+          </div>
+          ${article.link ? `<a class="card-link" href="${article.link}" target="_blank" rel="noopener noreferrer">
+            Haberi oku
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
 function renderCards(articles) {
   elLoading.style.display = 'none';
 
-  const byDate = {};
-  articles.forEach(a => {
-    const d = a.date || 'Tarihsiz';
-    if (!byDate[d]) byDate[d] = [];
-    byDate[d].push(a);
-  });
-
-  const dates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+  // Disconnect any previous scroll observer
+  if (scrollObserver) { scrollObserver.disconnect(); scrollObserver = null; }
 
   if (articles.length === 0) {
     elCards.innerHTML = '';
     elEmpty.style.display = 'block';
     return;
   }
-
   elEmpty.style.display = 'none';
+
+  // Slice to current display limit
+  const visible = articles.slice(0, displayLimit);
+  const hasMore = articles.length > displayLimit;
+
+  // Group visible articles by date
+  const byDate = {};
+  visible.forEach(a => {
+    const d = a.date || 'Tarihsiz';
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(a);
+  });
+  const dates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+
+  // Save scroll position before rebuild to avoid jump on "load more"
+  const savedY = window.scrollY;
+
   elCards.innerHTML = '';
 
+  let cardIdx = 0;
   dates.forEach(date => {
     const section = document.createElement('div');
     section.className = 'date-section';
@@ -1252,71 +1373,40 @@ function renderCards(articles) {
     grid.className = 'article-grid';
 
     byDate[date].forEach((article, i) => {
-      const hex   = CAT_HEX[article.category] || '#6B7280';
-      const hasAnalysis = article.impact && article.impact !== 'notr' && article.analysis;
-      const sourceLabel = SOURCE_LABELS[article.source] || article.source || '';
-
       const card = document.createElement('div');
       card.className = 'article-card';
-      card.style.animationDelay = `${i * 35}ms`;
-
-      card.innerHTML = `
-        <div class="card-inner">
-          <div class="card-left-bar" style="background:${hex}"></div>
-          <div class="card-body">
-            <div class="card-meta">
-              <span class="card-cat-badge" style="background:${hex}">${article.category || 'Diğer'}</span>
-              ${article.isDuplicate ? `<span class="dup-badge">↺ Tekrar haber</span>` : ''}
-            </div>
-            <div class="card-title">${article.title || ''}</div>
-            <div class="card-summary">${article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>'}</div>
-            ${(() => {
-              const subs = (article.etkiAlani || []).map(r => typeof r === 'string' ? r : (r.Sub_Region || r.sub_region || r.region || r.name || '')).filter(Boolean);
-              if (!subs.length) return '';
-              const grouped = {};
-              const order = [];
-              subs.forEach(rs => {
-                const tk = SUB_TO_TK[rs] || 'OTHER';
-                if (!grouped[tk]) { grouped[tk] = []; order.push(tk); }
-                grouped[tk].push(rs);
-              });
-              const groupsHTML = order.map(tkId => {
-                const tkEntry = TK_HIERARCHY.find(t => t.id === tkId);
-                const tkLabel = tkEntry ? tkEntry.label : tkId;
-                const subBadges = grouped[tkId].map(rs => {
-                  const lbl = rs === 'TURKIYE' ? 'TÜRKİYE' : rs;
-                  return `<span class="region-badge" data-tk="${tkId}">${lbl}</span>`;
-                }).join('');
-                return `<div class="region-group"><span class="region-tk" data-tk="${tkId}">${tkLabel}</span>${subBadges}</div>`;
-              }).join('');
-              return `<div class="etki-alani"><div class="etki-alani-title">Etki Alanı</div><div class="region-groups">${groupsHTML}</div></div>`;
-            })()}
-            ${hasAnalysis ? `
-              <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(article.analysis||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                Analiz
-              </button>
-            ` : ''}
-            <div class="card-footer">
-              <div class="card-source">
-                <img class="source-favicon" src="${getFavicon(article.source)}" alt="" loading="lazy" onerror="this.style.display='none'">
-                ${sourceLabel}
-              </div>
-              ${article.link ? `<a class="card-link" href="${article.link}" target="_blank" rel="noopener noreferrer">
-                Haberi oku
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </a>` : ''}
-            </div>
-          </div>
-        </div>
-      `;
-
+      card.style.animationDelay = `${Math.min(cardIdx, 8) * 35}ms`;
+      card.innerHTML = buildCardHTML(article);
       grid.appendChild(card);
+      cardIdx++;
     });
 
     section.appendChild(grid);
     elCards.appendChild(section);
   });
+
+  // Restore scroll (prevents jump when "load more" fires)
+  if (savedY > 0) requestAnimationFrame(() => window.scrollTo({ top: savedY, behavior: 'instant' }));
+
+  // Sentinel — triggers next page load
+  if (hasMore) {
+    const sentinel = document.createElement('div');
+    sentinel.className = 'load-sentinel';
+    sentinel.innerHTML = `
+      <div class="load-sentinel-dots">
+        <span></span><span></span><span></span>
+      </div>`;
+    elCards.appendChild(sentinel);
+
+    scrollObserver = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) return;
+      scrollObserver.disconnect(); scrollObserver = null;
+      displayLimit += PAGE_SIZE;
+      renderCards(articles);          // re-render with higher limit
+      updateStats(articles, allArticles.length);
+    }, { rootMargin: '320px' });
+    scrollObserver.observe(sentinel);
+  }
 }
 
 
@@ -1417,11 +1507,12 @@ function buildDatePanel(articles) {
     panel._dpInit = true;
   }
 
-  // Index: year → month → Set<day>
+  // Index: year → month → Set<day>  (normalised via extractDateParts)
   const idx = {};
   articles.forEach(a => {
-    if (!a.date) return;
-    const [y, m, day] = a.date.split('-');
+    const parts = extractDateParts(a.date);
+    if (!parts) return;
+    const { y, m, day } = parts;
     if (!idx[y]) idx[y] = {};
     if (!idx[y][m]) idx[y][m] = new Set();
     idx[y][m].add(day);
@@ -1527,6 +1618,8 @@ function buildDatePanel(articles) {
 }
 
 function render() {
+  displayLimit = PAGE_SIZE;   // reset pagination on any filter change
+  if (scrollObserver) { scrollObserver.disconnect(); scrollObserver = null; }
   const filtered = getFilteredArticles();
   renderCards(filtered);
   updateStats(filtered, allArticles.length);
@@ -1702,18 +1795,18 @@ function syncRegionUI() {
       par.classList.toggle('selected', anySel);
       const ch = par.querySelector('.airline-check');
       if (anySel) {
-        ch.style.background = 'var(--navy)';
+        ch.style.background  = 'var(--navy)';
         ch.style.borderColor = 'var(--navy)';
-        ch.querySelector('svg').style.display = allSel ? 'block' : 'none';
-        // partial: show a dash indicator
-        if (!allSel) {
-          ch.style.background = 'var(--navy)';
-          ch.innerHTML = `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>`;
-        } else {
+        if (allSel) {
+          // All subs selected → full checkmark
           ch.innerHTML = CHECK_SVG;
+          ch.querySelector('svg').style.display = 'block';
+        } else {
+          // Partial selection → dash indicator (no svg to query)
+          ch.innerHTML = `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>`;
         }
       } else {
-        ch.style.background = '';
+        ch.style.background  = '';
         ch.style.borderColor = '';
         ch.innerHTML = CHECK_SVG;
         ch.querySelector('svg').style.display = 'none';
