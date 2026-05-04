@@ -2818,7 +2818,7 @@ async function fredFetch(seriesId, limit) {
   start.setMonth(start.getMonth() - 15);
   const s = start.toISOString().slice(0, 10);
   const url = `${FRED_BASE}?series_id=${seriesId}&api_key=${FRED_KEY}&file_type=json&limit=${limit}&sort_order=desc&observation_start=${s}`;
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url + '&_=' + Date.now())}`;
   const r = await fetch(proxyUrl);
   if (!r.ok) throw new Error('FRED ' + r.status);
   const d = await r.json();
