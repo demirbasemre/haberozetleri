@@ -3019,15 +3019,16 @@ async function loadDashboard() {
     // Jet fuel
     if (jet && jet.length) {
       const last = jet[jet.length - 1];
-      setCard('dc-jetfuel', '$' + last.value.toFixed(2), pctChg(jet.slice(-2)),
-        'ABD Gulf Coast · galon başına',
+      const lastValuePerBarrel = last.value * 42;
+      setCard('dc-jetfuel', '$' + lastValuePerBarrel.toFixed(2), pctChg(jet.slice(-2)),
+        'ABD Gulf Coast · varil başına',
         `Son veri: ${last.date} · Kaynak: EIA/FRED`);
       const step = Math.max(1, Math.floor(jet.length / 26));
       lineChart('chart-jetfuel',
         jet.filter((_,i) => i % step === 0).map(d => d.date.slice(0,7)),
         [{
-          label: 'Jet Yakıt ($/gal)',
-          data: jet.filter((_,i) => i % step === 0).map(d => d.value),
+          label: 'Jet Yakıt ($/varil)',
+          data: jet.filter((_,i) => i % step === 0).map(d => d.value * 42),
           borderColor: '#E63946', backgroundColor: 'rgba(230,57,70,0.08)',
           fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2
         }],
