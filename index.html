@@ -6,6 +6,7 @@
 <title>Hava Kargo Bülteni</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <style>
   :root {
     --bg: #F4F3EF;
@@ -930,6 +931,198 @@
     .clear-btn span { display: none; }
   }
 
+  /* ── TABS ───────────────────────────────────────── */
+  .main-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--border);
+  }
+  .main-tab {
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-3);
+    padding: 8px 18px 10px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .main-tab:hover { color: var(--text-2); }
+  .main-tab.main-tab-active { color: var(--text); border-bottom-color: var(--navy); font-weight: 600; }
+
+  /* ── DASHBOARD ───────────────────────────────────── */
+  .dash-section { margin-bottom: 44px; }
+  .dash-section-title {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dash-section-badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--border-soft);
+    color: var(--text-3);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .dash-section-note {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-3);
+    line-height: 1.6;
+  }
+  .dash-section-note a { color: var(--text-2); }
+
+  .dash-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 12px;
+  }
+  .dash-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .dash-card-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 4px;
+  }
+  .dash-card-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .dash-card-value.skeleton { color: var(--border); background: var(--border); border-radius: 4px; min-height: 32px; width: 80%; animation: skelPulse 1.3s ease infinite; }
+  @keyframes skelPulse { 0%,100%{opacity:.4} 50%{opacity:.9} }
+  .dash-card-change {
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 2px;
+  }
+  .dash-card-change.up   { color: #059669; }
+  .dash-card-change.down { color: var(--red); }
+  .dash-card-change.flat { color: var(--text-3); }
+  .dash-card-sub  { font-size: 11px; color: var(--text-2); margin-top: 4px; line-height: 1.4; }
+  .dash-card-note { font-size: 10px; color: var(--text-3); margin-top: 2px; line-height: 1.4; }
+  .dash-card-note a { color: var(--text-3); }
+
+  .dash-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .dash-chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .dash-chart-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .dash-chart-meta {
+    font-size: 10.5px;
+    color: var(--text-3);
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .dash-chart-badge {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--border-soft);
+    color: var(--text-3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .dash-chart-wrap { position: relative; height: 185px; }
+  .dash-chart-wrap.short { height: 160px; }
+  .dash-chart-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 12px;
+    color: var(--text-3);
+    text-align: center;
+    line-height: 1.7;
+  }
+  .dash-chart-error a { color: var(--text-2); }
+
+  .dash-releases {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+  }
+  .dash-release-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .dash-rel-date {
+    background: var(--navy);
+    color: white;
+    border-radius: 6px;
+    padding: 5px 9px;
+    text-align: center;
+    min-width: 44px;
+    flex-shrink: 0;
+  }
+  .dash-rel-date-m { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.55; }
+  .dash-rel-date-d { font-size: 19px; font-weight: 700; line-height: 1.1; }
+  .dash-rel-title  { font-size: 12.5px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .dash-rel-title a { color: inherit; text-decoration: none; }
+  .dash-rel-title a:hover { text-decoration: underline; }
+  .dash-rel-source  { font-size: 10.5px; color: var(--text-3); }
+  .dash-rel-cadence { font-size: 10px; color: var(--text-3); margin-top: 1px; font-style: italic; }
+
+  @media (max-width: 768px) {
+    .dash-charts { grid-template-columns: 1fr; }
+    .dash-cards  { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .dash-cards  { grid-template-columns: 1fr; }
+  }
+
   /* ── ETKI ALANI PILLS (new JSON format) ─────────── */
   .etki-section {
     margin-top: 10px;
@@ -1256,18 +1449,164 @@
 </div>
 
 <main class="main" id="main">
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <div>Haberler yükleniyor…</div>
+
+  <!-- Tab navigation -->
+  <div class="main-tabs">
+    <button class="main-tab main-tab-active" id="tab-news-btn" onclick="switchTab('news')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
+      Haberler
+    </button>
+    <button class="main-tab" id="tab-dash-btn" onclick="switchTab('dashboard')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="6" height="8" rx="1"/><rect x="10" y="3" width="12" height="4" rx="1"/><rect x="10" y="11" width="12" height="4" rx="1"/><rect x="2" y="15" width="6" height="6" rx="1"/><rect x="10" y="19" width="12" height="2" rx="1"/></svg>
+      Dashboard
+    </button>
   </div>
-  <div class="empty-state" id="empty-state">
-    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
-    <h3>Sonuç bulunamadı</h3>
-    <p>Farklı arama veya filtre deneyin.</p>
+
+  <!-- News panel -->
+  <div id="news-panel">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <div>Haberler yükleniyor…</div>
+    </div>
+    <div class="empty-state" id="empty-state">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <h3>Sonuç bulunamadı</h3>
+      <p>Farklı arama veya filtre deneyin.</p>
+    </div>
+    <div id="cards-container"></div>
   </div>
-  <div id="cards-container"></div>
+
+  <!-- Dashboard panel -->
+  <div id="dashboard-panel" style="display:none">
+
+    <!-- Anlık göstergeler -->
+    <section class="dash-section">
+      <h2 class="dash-section-title">Anlık Göstergeler</h2>
+      <div class="dash-cards">
+        <div class="dash-card" id="dc-jetfuel">
+          <div class="dash-card-label">Jet Yakıt Fiyatı</div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">ABD Gulf Coast · galon başına</div>
+          <div class="dash-card-note">EIA / FRED · Haftalık</div>
+        </div>
+        <div class="dash-card" id="dc-brent">
+          <div class="dash-card-label">Brent Ham Petrol</div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Europe Brent Spot · varil başına</div>
+          <div class="dash-card-note">EIA / FRED · Günlük</div>
+        </div>
+        <div class="dash-card" id="dc-usd">
+          <div class="dash-card-label">USD / EUR Kuru</div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub"></div>
+          <div class="dash-card-note">Frankfurter · Günlük</div>
+        </div>
+        <div class="dash-card" id="dc-gdp">
+          <div class="dash-card-label">Küresel GDP Büyümesi</div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Yıllık büyüme oranı</div>
+          <div class="dash-card-note">World Bank · Yıllık</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Enerji fiyatları -->
+    <section class="dash-section">
+      <h2 class="dash-section-title">Enerji Fiyatları <span class="dash-section-badge">EIA / FRED</span></h2>
+      <div class="dash-charts">
+        <div class="dash-chart-card">
+          <div class="dash-chart-title">Jet Yakıt Fiyatı</div>
+          <div class="dash-chart-meta">
+            <span>U.S. Gulf Coast Kerosene-Type · $/galon · Haftalık</span>
+            <span class="dash-chart-badge">WJFUELUSGULF</span>
+          </div>
+          <div class="dash-chart-wrap"><canvas id="chart-jetfuel"></canvas></div>
+        </div>
+        <div class="dash-chart-card">
+          <div class="dash-chart-title">Brent Ham Petrol</div>
+          <div class="dash-chart-meta">
+            <span>Europe Brent Spot Price · $/varil · Günlük</span>
+            <span class="dash-chart-badge">DCOILBRENTEU</span>
+          </div>
+          <div class="dash-chart-wrap"><canvas id="chart-brent"></canvas></div>
+        </div>
+      </div>
+      <div class="dash-section-note">ⓘ Veri FRED (St. Louis Fed) üzerinden ücretsiz <code>DEMO_KEY</code> ile çekiliyor. Limit aşılırsa <a href="https://fredaccount.stlouisfed.org/login/secure/" target="_blank" rel="noopener">api.stlouisfed.org</a>'dan ücretsiz anahtar alınabilir.</div>
+    </section>
+
+    <!-- Ekonomik göstergeler -->
+    <section class="dash-section">
+      <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">World Bank</span></h2>
+      <div class="dash-charts">
+        <div class="dash-chart-card">
+          <div class="dash-chart-title">GDP Büyüme Oranı (%)</div>
+          <div class="dash-chart-meta">
+            <span id="gdp-meta-note">Yükleniyor…</span>
+            <span class="dash-chart-badge">NY.GDP.MKTP.KD.ZG</span>
+          </div>
+          <div class="dash-chart-wrap short"><canvas id="chart-gdp"></canvas></div>
+        </div>
+        <div class="dash-chart-card">
+          <div class="dash-chart-title">Enflasyon / TÜFE (%)</div>
+          <div class="dash-chart-meta">
+            <span id="cpi-meta-note">Yükleniyor…</span>
+            <span class="dash-chart-badge">FP.CPI.TOTL.ZG</span>
+          </div>
+          <div class="dash-chart-wrap short"><canvas id="chart-cpi"></canvas></div>
+        </div>
+      </div>
+      <div class="dash-section-note">ⓘ World Bank yıllık veri yayınlar; en son yıl için 6–18 ay gecikme olabilir. Veri: <a href="https://data.worldbank.org" target="_blank" rel="noopener">data.worldbank.org</a></div>
+    </section>
+
+    <!-- Takip gereken endeksler -->
+    <section class="dash-section">
+      <h2 class="dash-section-title">Hava Kargo Endeksleri <span class="dash-section-badge">Manuel Takip</span></h2>
+      <div class="dash-cards">
+        <div class="dash-card">
+          <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
+          <div class="dash-card-value" style="font-size:18px;color:var(--text-3)">API Yok</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">40' konteyner başına ortalama spot fiyat</div>
+          <div class="dash-card-note">Drewry · Haftalık · <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
+          <div class="dash-card-value" style="font-size:18px;color:var(--text-3)">API Yok</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Hava kargo spot tarifesi endeksi</div>
+          <div class="dash-card-note">Baltic Exchange · <a href="https://www.balticexchange.com/en/data/routes/air.html" target="_blank" rel="noopener">balticexchange.com →</a></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">IATA Air Cargo Market Analysis</div>
+          <div class="dash-card-value" style="font-size:18px;color:var(--text-3)">Aylık</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">CTK büyümesi, kapasite ve verim değişimi</div>
+          <div class="dash-card-note">IATA · Aylık rapor · <a href="https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/" target="_blank" rel="noopener">iata.org →</a></div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Freightos Baltic Index (FBX)</div>
+          <div class="dash-card-value" style="font-size:18px;color:var(--text-3)">API Yok</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Global konteyner spot fiyat endeksi</div>
+          <div class="dash-card-note">Freightos · Günlük · <a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Yaklaşan veri yayınları -->
+    <section class="dash-section">
+      <h2 class="dash-section-title">Yaklaşan Veri Yayınları</h2>
+      <div class="dash-releases" id="dash-releases"></div>
+      <div class="dash-section-note">ⓘ Tarihler yaklaşık olup yayıncı tarafından değiştirilebilir.</div>
+    </section>
+
+  </div><!-- /dashboard-panel -->
 </main>
 
 <footer>
@@ -2453,6 +2792,303 @@ async function submitEtkiForm() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEtkiPopup(); });
+</script>
+
+<script>
+// ── TAB SWITCHING ─────────────────────────────────────────────
+let _dashInit = false;
+
+function switchTab(tab) {
+  const isNews = tab === 'news';
+  document.getElementById('news-panel').style.display      = isNews ? '' : 'none';
+  document.getElementById('dashboard-panel').style.display = isNews ? 'none' : 'block';
+  document.querySelector('.filter-bar').style.display      = isNews ? '' : 'none';
+  document.getElementById('tab-news-btn').classList.toggle('main-tab-active', isNews);
+  document.getElementById('tab-dash-btn').classList.toggle('main-tab-active', !isNews);
+  if (!isNews && !_dashInit) { _dashInit = true; loadDashboard(); }
+}
+
+// ── DASHBOARD DATA ────────────────────────────────────────────
+const FRED_KEY  = 'DEMO_KEY'; // ücretsiz: api.stlouisfed.org
+const FRED_BASE = 'https://api.stlouisfed.org/fred/series/observations';
+const WB_BASE   = 'https://api.worldbank.org/v2/country';
+
+async function fredFetch(seriesId, limit) {
+  const start = new Date();
+  start.setMonth(start.getMonth() - 15);
+  const s = start.toISOString().slice(0, 10);
+  const url = `${FRED_BASE}?series_id=${seriesId}&api_key=${FRED_KEY}&file_type=json&limit=${limit}&sort_order=desc&observation_start=${s}`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('FRED ' + r.status);
+  const d = await r.json();
+  if (d.error_message) throw new Error(d.error_message);
+  return (d.observations || [])
+    .filter(o => o.value !== '.')
+    .map(o => ({ date: o.date, value: parseFloat(o.value) }))
+    .reverse();
+}
+
+async function wbFetch(indicator, countries) {
+  const results = {};
+  await Promise.all(countries.map(async c => {
+    try {
+      const r = await fetch(`${WB_BASE}/${c}/indicator/${indicator}?format=json&mrv=6&per_page=10`);
+      if (!r.ok) return;
+      const d = await r.json();
+      const rows = (d[1] || []).filter(x => x.value !== null);
+      if (rows.length) results[c] = rows[0];
+    } catch (_) {}
+  }));
+  return results;
+}
+
+async function fxFetch() {
+  const r = await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR,JPY,CNY');
+  if (!r.ok) throw new Error('FX ' + r.status);
+  return r.json();
+}
+
+// ── CARD HELPERS ──────────────────────────────────────────────
+function setCard(id, value, change, sub, note) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const vEl = el.querySelector('.dash-card-value');
+  vEl.textContent = value;
+  vEl.classList.remove('skeleton');
+  vEl.style.fontSize = '';
+  const cEl = el.querySelector('.dash-card-change');
+  if (change != null) {
+    const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
+    cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+    cEl.className = 'dash-card-change ' + dir;
+  }
+  if (sub  != null) el.querySelector('.dash-card-sub').textContent  = sub;
+  if (note != null) el.querySelector('.dash-card-note').innerHTML   = note;
+}
+
+function pctChg(arr) {
+  if (!arr || arr.length < 2) return null;
+  const a = arr[arr.length - 2].value, b = arr[arr.length - 1].value;
+  return (b - a) / Math.abs(a) * 100;
+}
+
+// ── CHART HELPERS ─────────────────────────────────────────────
+const CHART_DEFAULTS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  interaction: { mode: 'index', intersect: false },
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: '#0D1117',
+      titleFont: { size: 11, family: 'Inter, sans-serif' },
+      bodyFont:  { size: 12, family: 'Inter, sans-serif' },
+      padding: 10
+    }
+  }
+};
+
+function lineChart(id, labels, datasets, yFmt) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: datasets.length > 1, labels: { font: { size: 11, family: 'Inter' }, boxWidth: 10, padding: 10 } } },
+      scales: {
+        x: { ticks: { maxTicksLimit: 8, font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, grid: { display: false }, border: { display: false } },
+        y: { ticks: { font: { size: 10, family: 'Inter' }, color: '#9CA3AF', callback: yFmt || (v => v) }, grid: { color: '#F4F3EF' }, border: { display: false } }
+      }
+    }
+  });
+}
+
+function barChart(id, labels, data, colors) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
+    options: {
+      ...CHART_DEFAULTS,
+      indexAxis: 'y',
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: c => ' ' + (c.raw > 0 ? '+' : '') + c.raw.toFixed(1) + '%' } }
+      },
+      scales: {
+        x: { ticks: { callback: v => v + '%', font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, grid: { color: '#F4F3EF' }, border: { display: false } },
+        y: { ticks: { font: { size: 11, family: 'Inter' }, color: '#374151' }, grid: { display: false }, border: { display: false } }
+      }
+    }
+  });
+}
+
+function chartErr(id, html) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  ctx.style.display = 'none';
+  const div = document.createElement('div');
+  div.className = 'dash-chart-error';
+  div.innerHTML = html;
+  ctx.closest('.dash-chart-wrap').appendChild(div);
+}
+
+// ── RELEASE CALENDAR ──────────────────────────────────────────
+function buildReleaseCalendar() {
+  const now = new Date();
+  const TR_M = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+
+  function nextWed() {
+    const d = new Date(now);
+    d.setDate(d.getDate() + ((3 - d.getDay() + 7) % 7 || 7));
+    return d;
+  }
+  function abs(y, m, day) { return new Date(y, m, day); } // 0-indexed month
+
+  const y = now.getFullYear(), mo = now.getMonth();
+
+  const schedule = [
+    { title: 'EIA Weekly Petroleum Status Report',    source: 'U.S. EIA',  date: nextWed(),         cadence: 'Her Çarşamba',                   link: 'https://www.eia.gov/petroleum/supply/weekly/' },
+    { title: 'ABD TÜFE Raporu',                       source: 'BLS',       date: abs(2026,4,13),    cadence: 'Aylık · ~takip eden ayın 13-15\'i', link: 'https://www.bls.gov/cpi/' },
+    { title: 'IATA Hava Kargo Aylık Analizi',         source: 'IATA',      date: abs(2026,4,28),    cadence: 'Aylık · ~takip eden ayın 4. haftası', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'OECD Economic Outlook',                 source: 'OECD',      date: abs(2026,5,4),     cadence: 'Yılda 2x · Haziran & Kasım',      link: 'https://www.oecd.org/economic-outlook/' },
+    { title: 'World Bank Global Economic Prospects',  source: 'World Bank', date: abs(2026,5,11),   cadence: 'Yılda 2x · Ocak & Haziran',       link: 'https://www.worldbank.org/en/publication/global-economic-prospects' },
+    { title: 'IMF World Economic Outlook Update',     source: 'IMF',       date: abs(2026,6,15),    cadence: 'Yılda 4x · Oca, Nis, Tem, Eki',  link: 'https://www.imf.org/en/Publications/WEO' },
+  ].filter(r => r.date >= now).sort((a, b) => a.date - b.date);
+
+  document.getElementById('dash-releases').innerHTML = schedule.map(r => `
+    <div class="dash-release-item">
+      <div class="dash-rel-date">
+        <div class="dash-rel-date-m">${TR_M[r.date.getMonth()]}</div>
+        <div class="dash-rel-date-d">${r.date.getDate()}</div>
+      </div>
+      <div>
+        <div class="dash-rel-title"><a href="${r.link}" target="_blank" rel="noopener">${r.title}</a></div>
+        <div class="dash-rel-source">${r.source}</div>
+        <div class="dash-rel-cadence">${r.cadence}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── MAIN LOAD ─────────────────────────────────────────────────
+async function loadDashboard() {
+  buildReleaseCalendar();
+
+  // ── Enerji (FRED) ──────────────────────────────────
+  Promise.all([
+    fredFetch('WJFUELUSGULF', 80).catch(() => null),
+    fredFetch('DCOILBRENTEU', 80).catch(() => null)
+  ]).then(([jet, brent]) => {
+    // Jet fuel
+    if (jet && jet.length) {
+      const last = jet[jet.length - 1];
+      setCard('dc-jetfuel', '$' + last.value.toFixed(2), pctChg(jet.slice(-2)),
+        'ABD Gulf Coast · galon başına',
+        `Son veri: ${last.date} · Kaynak: EIA/FRED`);
+      const step = Math.max(1, Math.floor(jet.length / 26));
+      lineChart('chart-jetfuel',
+        jet.filter((_,i) => i % step === 0).map(d => d.date.slice(0,7)),
+        [{
+          label: 'Jet Yakıt ($/gal)',
+          data: jet.filter((_,i) => i % step === 0).map(d => d.value),
+          borderColor: '#E63946', backgroundColor: 'rgba(230,57,70,0.08)',
+          fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2
+        }],
+        v => '$' + v.toFixed(2)
+      );
+    } else {
+      setCard('dc-jetfuel', '—', null, '', 'DEMO_KEY limiti aşıldı · <a href="https://fredaccount.stlouisfed.org/login/secure/" target="_blank" rel="noopener">Ücretsiz anahtar al →</a>');
+      chartErr('chart-jetfuel', 'FRED DEMO_KEY istek limiti aşıldı.<br><a href="https://fredaccount.stlouisfed.org/login/secure/" target="_blank" rel="noopener">Ücretsiz API anahtarı al →</a>');
+    }
+
+    // Brent
+    if (brent && brent.length) {
+      const last = brent[brent.length - 1];
+      setCard('dc-brent', '$' + last.value.toFixed(1), pctChg(brent.slice(-2)),
+        'Europe Brent Spot · varil başına',
+        `Son veri: ${last.date} · Kaynak: EIA/FRED`);
+      const step = Math.max(1, Math.floor(brent.length / 30));
+      lineChart('chart-brent',
+        brent.filter((_,i) => i % step === 0).map(d => d.date.slice(5)),
+        [{
+          label: 'Brent ($/varil)',
+          data: brent.filter((_,i) => i % step === 0).map(d => d.value),
+          borderColor: '#1D6FE8', backgroundColor: 'rgba(29,111,232,0.07)',
+          fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2
+        }],
+        v => '$' + v.toFixed(1)
+      );
+    } else {
+      setCard('dc-brent', '—', null, '', 'Veri alınamadı');
+      chartErr('chart-brent', 'Veri alınamadı');
+    }
+  });
+
+  // ── Döviz (Frankfurter) ────────────────────────────
+  fxFetch().then(fx => {
+    const eur = fx.rates.EUR, cny = fx.rates.CNY, jpy = fx.rates.JPY;
+    setCard('dc-usd',
+      eur ? eur.toFixed(4) : '—',
+      null,
+      `1 USD = ${cny?.toFixed(3)} CNY · ${jpy?.toFixed(1)} JPY`,
+      `Frankfurter · ${fx.date}`);
+  }).catch(() => setCard('dc-usd', '—', null, '', 'Kur verisi alınamadı'));
+
+  // ── World Bank: GDP ve CPI ─────────────────────────
+  const countries = ['WLD','USA','CHN','EMU','TUR'];
+  const labels    = { WLD:'Dünya', USA:'ABD', CHN:'Çin', EMU:'Euro Bölgesi', TUR:'Türkiye' };
+
+  Promise.all([
+    wbFetch('NY.GDP.MKTP.KD.ZG', countries),
+    wbFetch('FP.CPI.TOTL.ZG',    countries)
+  ]).then(([gdp, cpi]) => {
+    // GDP summary card
+    if (gdp.WLD) {
+      setCard('dc-gdp',
+        gdp.WLD.value.toFixed(1) + '%',
+        null,
+        `Küresel büyüme (${gdp.WLD.date})`,
+        'World Bank · Yıllık');
+    }
+
+    // GDP bar
+    const gdpC = countries.filter(c => gdp[c]);
+    if (gdpC.length) {
+      const vals = gdpC.map(c => gdp[c].value);
+      barChart('chart-gdp',
+        gdpC.map(c => labels[c]),
+        vals,
+        vals.map(v => v >= 0 ? 'rgba(29,111,232,0.72)' : 'rgba(230,57,70,0.72)')
+      );
+      document.getElementById('gdp-meta-note').textContent =
+        `Son veri: ${gdp[gdpC[0]].date} · World Bank`;
+    } else {
+      chartErr('chart-gdp', 'World Bank verisi alınamadı');
+      document.getElementById('gdp-meta-note').textContent = 'Veri alınamadı';
+    }
+
+    // CPI bar
+    const cpiC = countries.filter(c => cpi[c]);
+    if (cpiC.length) {
+      const vals = cpiC.map(c => cpi[c].value);
+      barChart('chart-cpi',
+        cpiC.map(c => labels[c]),
+        vals,
+        vals.map(v => v > 6 ? 'rgba(230,57,70,0.72)' : v > 3 ? 'rgba(234,88,12,0.72)' : 'rgba(5,150,105,0.72)')
+      );
+      document.getElementById('cpi-meta-note').textContent =
+        `Son veri: ${cpi[cpiC[0]].date} · World Bank`;
+    } else {
+      chartErr('chart-cpi', 'World Bank verisi alınamadı');
+      document.getElementById('cpi-meta-note').textContent = 'Veri alınamadı';
+    }
+  }).catch(() => {
+    ['chart-gdp','chart-cpi'].forEach(id => chartErr(id, 'World Bank verisi alınamadı'));
+  });
+}
 </script>
 </body>
 </html>
