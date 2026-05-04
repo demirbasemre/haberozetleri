@@ -917,6 +917,189 @@
     .search-wrap { max-width: none; }
     .clear-btn span { display: none; }
   }
+
+  /* ── ETKI ALANI PILLS (new JSON format) ─────────── */
+  .etki-section {
+    margin-top: 10px;
+    margin-bottom: 4px;
+  }
+  .etki-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .etki-row:last-child { margin-bottom: 0; }
+  .etki-row-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-3);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .etki-pill {
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+  }
+  .etki-info-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #888;
+    padding: 0 2px;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: color 0.15s;
+    display: inline-flex;
+    align-items: center;
+    font-style: normal;
+  }
+  .etki-info-btn:hover { color: #444; }
+  .etki-info-btn:focus-visible { outline: 2px solid var(--red); border-radius: 3px; }
+
+  /* ── ETKI POPUP ──────────────────────────────────── */
+  .etki-popup {
+    position: fixed;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.16), 0 2px 8px rgba(0,0,0,0.08);
+    max-width: 380px;
+    width: calc(100vw - 32px);
+    z-index: 500;
+    overflow: hidden;
+    font-size: 13px;
+  }
+  .etki-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px 8px;
+    border-bottom: 1px solid #f0eeea;
+  }
+  .etki-popup-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #C8102E;
+  }
+  .etki-popup-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9CA3AF;
+    font-size: 20px;
+    line-height: 1;
+    padding: 0 4px;
+    transition: color 0.15s;
+    border-radius: 4px;
+    font-weight: 300;
+  }
+  .etki-popup-close:hover { color: #374151; }
+  .etki-popup-body {
+    padding: 12px 16px;
+    line-height: 1.68;
+    color: #374151;
+    max-height: 180px;
+    overflow-y: auto;
+    font-size: 12.5px;
+  }
+  .etki-popup-actions {
+    padding: 0 16px 12px;
+  }
+  .etki-wrong-btn {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6B7280;
+    background: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .etki-wrong-btn:hover { background: #f9fafb; border-color: #d1d5db; color: #374151; }
+  .etki-form-inner {
+    border-top: 1px solid #f0eeea;
+    padding: 12px 16px;
+  }
+  .etki-form-group { margin-bottom: 8px; }
+  .etki-form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #6B7280;
+    margin-bottom: 3px;
+  }
+  .etki-form-inner select,
+  .etki-form-inner input,
+  .etki-form-inner textarea {
+    width: 100%;
+    padding: 5px 9px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    color: #374151;
+    outline: none;
+    background: #fff;
+    transition: border-color 0.15s;
+    box-sizing: border-box;
+  }
+  .etki-form-inner select:focus,
+  .etki-form-inner input:focus,
+  .etki-form-inner textarea:focus { border-color: #9ca3af; }
+  .etki-form-inner textarea { resize: vertical; min-height: 52px; }
+  .etki-form-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+  .etki-submit-btn {
+    background: #C8102E;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.15s;
+  }
+  .etki-submit-btn:hover { background: #a00e25; }
+  .etki-submit-btn:disabled { opacity: 0.6; cursor: default; }
+  .etki-cancel-btn {
+    background: none;
+    color: #6B7280;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+  }
+  .etki-cancel-btn:hover { background: #f9fafb; color: #374151; }
+  .etki-thanks-msg {
+    padding: 16px;
+    text-align: center;
+    color: #059669;
+    font-size: 13px;
+    font-weight: 500;
+  }
 </style>
 </head>
 <body>
@@ -1100,6 +1283,31 @@ const CAT_HEX = {
   'Diğer':                    '#6B7280'
 };
 
+const REGION_COLORS = {
+  'Central Europe':             '#1565C0',
+  'Eastern Europe':             '#1565C0',
+  'Northern Europe':            '#1565C0',
+  'Western Europe':             '#1565C0',
+  'Southern Europe':            '#1565C0',
+  'China':                      '#00838F',
+  'North East Asia':            '#00838F',
+  'South East Asia':            '#00838F',
+  'Turkistan and Russia':       '#00838F',
+  'Middle East':                '#558B2F',
+  'Northern & Western Africa':  '#558B2F',
+  'Southern & Eastern Africa':  '#558B2F',
+  'Southern Asia':              '#558B2F',
+  'Central & Southern America': '#6A1B9A',
+  'Northern America':           '#6A1B9A',
+  'ISTANBUL':                   '#BF360C',
+  'ANKARA':                     '#BF360C',
+  'IZMIR':                      '#BF360C',
+  'CUKUROVA':                   '#BF360C',
+  'ANTALYA':                    '#BF360C',
+  'BODRUM':                     '#BF360C',
+  'DALAMAN':                    '#BF360C',
+};
+
 const SOURCE_LABELS = {
   'aircargonews':   'AirCargoNews',
   'aircargoweek':   'AirCargoWeek',
@@ -1245,12 +1453,14 @@ function getFilteredArticles() {
     const airlineMatch  = activeAirlines.size === 0 ||
                           (a._airlines && a._airlines.some(id => activeAirlines.has(id)));
     const regionMatch   = activeRegions.size === 0 ||
-                          (Array.isArray(a.etkiAlani) && a.etkiAlani.some(r => {
-                            if (activeRegions.has(r)) return true;
-                            // backward compat: old articles store TK_Region; expand to its subs
-                            const tk = TK_HIERARCHY.find(t => t.id === r);
-                            return tk ? tk.subs.some(s => activeRegions.has(s)) : false;
-                          }));
+                          (() => {
+                            const { direct, hub } = parseEtkiAlani(a.etkiAlani);
+                            return [...direct, ...hub].some(r => {
+                              if (activeRegions.has(r)) return true;
+                              const tk = TK_HIERARCHY.find(t => t.id === r);
+                              return tk ? tk.subs.some(s => activeRegions.has(s)) : false;
+                            });
+                          })();
     const analysisMatch = !onlyAnalysis ||
                           (a.impact && a.impact !== 'notr') ||
                           (a.analysis && a.analysis.trim() !== '');
@@ -1267,31 +1477,61 @@ const elLoading = document.getElementById('loading');
 const elEmpty   = document.getElementById('empty-state');
 const elCards   = document.getElementById('cards-container');
 
+function parseEtkiAlani(raw) {
+  if (!raw) return { direct: [], hub: [] };
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return { direct: Array.isArray(parsed.direct) ? parsed.direct : [], hub: Array.isArray(parsed.hub) ? parsed.hub : [] };
+      }
+    } catch (e) {}
+    return { direct: [], hub: [] };
+  }
+  if (Array.isArray(raw)) {
+    const subs = raw.map(r => typeof r === 'string' ? r : (r.Sub_Region || r.sub_region || r.region || r.name || '')).filter(Boolean);
+    return { direct: subs, hub: [] };
+  }
+  return { direct: [], hub: [] };
+}
+
 function buildCardHTML(article) {
   const hex = CAT_HEX[article.category] || '#6B7280';
   const hasAnalysis = article.impact && article.impact !== 'notr' && article.analysis;
   const sourceLabel = SOURCE_LABELS[article.source] || article.source || '';
 
-  const subs = (article.etkiAlani || [])
-    .map(r => typeof r === 'string' ? r : (r.Sub_Region || r.sub_region || r.region || r.name || ''))
-    .filter(Boolean);
+  const etkiData = parseEtkiAlani(article.etkiAlani);
+  const hasEtki = etkiData.direct.length > 0 || etkiData.hub.length > 0;
+  const hasGerekce = article.etkiAlaniGerekce && article.etkiAlaniGerekce.trim();
   let etkiHtml = '';
-  if (subs.length) {
-    const grouped = {}, order = [];
-    subs.forEach(rs => {
-      const tk = SUB_TO_TK[rs] || 'OTHER';
-      if (!grouped[tk]) { grouped[tk] = []; order.push(tk); }
-      grouped[tk].push(rs);
-    });
-    const groupsHTML = order.map(tkId => {
-      const tkEntry = TK_HIERARCHY.find(t => t.id === tkId);
-      const tkLabel = tkEntry ? tkEntry.label : tkId;
-      const subBadges = grouped[tkId].map(rs =>
-        `<span class="region-badge" data-tk="${tkId}">${rs === 'TURKIYE' ? 'TÜRKİYE' : rs}</span>`
-      ).join('');
-      return `<div class="region-group"><span class="region-tk" data-tk="${tkId}">${tkLabel}</span>${subBadges}</div>`;
+  if (hasEtki) {
+    const directPills = etkiData.direct.map(r => {
+      const c = REGION_COLORS[r] || '#6B7280';
+      return `<span class="etki-pill" style="background:${c};color:#fff">${r}</span>`;
     }).join('');
-    etkiHtml = `<div class="etki-alani"><div class="etki-alani-title">Etki Alanı</div><div class="region-groups">${groupsHTML}</div></div>`;
+    const hubPills = etkiData.hub.map(r => {
+      const c = REGION_COLORS[r] || '#6B7280';
+      return `<span class="etki-pill" style="color:${c};border:1.5px solid ${c}">${r}</span>`;
+    }).join('');
+    const gerekceAttr = hasGerekce ? (article.etkiAlaniGerekce || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;') : '';
+    const titleAttr   = (article.title  || '').replace(/"/g, '&quot;');
+    const linkAttr    = (article.link   || '');
+    const directAttr  = etkiData.direct.join(', ').replace(/"/g, '&quot;');
+    const hubAttr     = etkiData.hub.join(', ').replace(/"/g, '&quot;');
+    const infoBtn = hasGerekce
+      ? `<button class="etki-info-btn" onclick="openEtkiPopup(this)" aria-label="Etki alanı analizi" data-id="${article.id||''}" data-title="${titleAttr}" data-link="${linkAttr}" data-direct="${directAttr}" data-hub="${hubAttr}" data-gerekce="${gerekceAttr}">ⓘ</button>`
+      : '';
+    etkiHtml = `<div class="etki-section">
+      <div class="etki-row">
+        <span class="etki-row-label">Etki Alanı:</span>
+        ${directPills}
+        ${infoBtn}
+      </div>
+      ${etkiData.hub.length > 0 ? `<div class="etki-row">
+        <span class="etki-row-label">Hub Üzerinden:</span>
+        ${hubPills}
+      </div>` : ''}
+    </div>`;
   }
 
   return `
@@ -1423,9 +1663,8 @@ function updateStats(filteredArticles, totalCount) {
   const tkCounts  = {};
   const subCounts = {};
   filteredArticles.forEach(a => {
-    const subs = (a.etkiAlani || [])
-      .map(r => typeof r === 'string' ? r : (r.Sub_Region || r.sub_region || ''))
-      .filter(Boolean);
+    const { direct, hub } = parseEtkiAlani(a.etkiAlani);
+    const subs = [...direct, ...hub].filter(Boolean);
     const tksSeen = new Set();
     subs.forEach(sub => {
       const isTk = TK_HIERARCHY.some(t => t.id === sub);
@@ -2009,6 +2248,41 @@ fetch(DATA_URL)
   });
 </script>
 
+<!-- Etki Alanı Popup -->
+<div id="etki-backdrop" style="position:fixed;inset:0;z-index:499;display:none" onclick="closeEtkiPopup()"></div>
+<div id="etki-popup" class="etki-popup" style="display:none" role="dialog" aria-modal="true" aria-label="Etki Alanı Analizi">
+  <div class="etki-popup-header">
+    <span class="etki-popup-title">Etki Alanı Analizi</span>
+    <button class="etki-popup-close" onclick="closeEtkiPopup()" aria-label="Kapat">&#x2715;</button>
+  </div>
+  <div class="etki-popup-body" id="etki-popup-body"></div>
+  <div class="etki-popup-actions" id="etki-popup-actions">
+    <button class="etki-wrong-btn" onclick="showEtkiForm()">Bu analiz yanlış mı?</button>
+  </div>
+  <div class="etki-form-inner" id="etki-form" style="display:none">
+    <div class="etki-form-group">
+      <label class="etki-form-label" for="etki-field-type">Alan</label>
+      <select id="etki-field-type">
+        <option value="etkiAlani">Doğrudan Etki</option>
+        <option value="etkiAlaniHub">Hub Üzerinden</option>
+      </select>
+    </div>
+    <div class="etki-form-group">
+      <label class="etki-form-label" for="etki-correction">Doğru bölgeler (virgülle ayırarak)</label>
+      <input type="text" id="etki-correction" placeholder="Central Europe, China, …">
+    </div>
+    <div class="etki-form-group">
+      <label class="etki-form-label" for="etki-note">Not (opsiyonel)</label>
+      <textarea id="etki-note" placeholder="Notunuzu buraya yazın…"></textarea>
+    </div>
+    <div class="etki-form-btns">
+      <button class="etki-cancel-btn" onclick="hideEtkiForm()">İptal</button>
+      <button class="etki-submit-btn" id="etki-submit-btn" onclick="submitEtkiForm()">Gönder</button>
+    </div>
+  </div>
+  <div class="etki-thanks-msg" id="etki-thanks" style="display:none">Teşekkürler, düzeltme kaydedildi.</div>
+</div>
+
 <!-- Analysis Bottom Drawer -->
 <div class="analysis-backdrop" id="analysisBd" onclick="closeAnalysisDrawer()"></div>
 <div class="analysis-drawer" id="analysisDrawer" role="dialog" aria-modal="true" aria-label="Analiz">
@@ -2036,6 +2310,121 @@ function closeAnalysisDrawer() {
   document.getElementById('analysisBd').classList.remove('open');
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAnalysisDrawer(); });
+</script>
+
+<script>
+let _etkiCtx = {};
+
+function openEtkiPopup(btn) {
+  const popup    = document.getElementById('etki-popup');
+  const body     = document.getElementById('etki-popup-body');
+  const form     = document.getElementById('etki-form');
+  const actions  = document.getElementById('etki-popup-actions');
+  const thanks   = document.getElementById('etki-thanks');
+  const submitBtn = document.getElementById('etki-submit-btn');
+
+  // Reset state
+  form.style.display    = 'none';
+  actions.style.display = 'block';
+  thanks.style.display  = 'none';
+  body.style.display    = 'block';
+  submitBtn.disabled    = false;
+  submitBtn.textContent = 'Gönder';
+  document.getElementById('etki-correction').value = '';
+  document.getElementById('etki-note').value = '';
+
+  body.textContent = btn.getAttribute('data-gerekce') || '';
+
+  _etkiCtx = {
+    id:     btn.getAttribute('data-id')     || '',
+    title:  btn.getAttribute('data-title')  || '',
+    link:   btn.getAttribute('data-link')   || '',
+    direct: btn.getAttribute('data-direct') || '',
+    hub:    btn.getAttribute('data-hub')    || '',
+    gerekce: btn.getAttribute('data-gerekce') || ''
+  };
+
+  // Show & position
+  popup.style.display = 'block';
+  document.getElementById('etki-backdrop').style.display = 'block';
+
+  const rect = btn.getBoundingClientRect();
+  const pw   = Math.min(380, window.innerWidth - 32);
+  popup.style.width   = pw + 'px';
+  popup.style.left    = '0px';
+  popup.style.top     = '0px';
+
+  const ph = popup.offsetHeight;
+  let left = rect.left;
+  let top  = rect.bottom + 8;
+
+  if (left + pw > window.innerWidth - 16) left = window.innerWidth - pw - 16;
+  if (left < 16) left = 16;
+  if (top + ph > window.innerHeight - 16) top = rect.top - ph - 8;
+  if (top < 16) top = 16;
+
+  popup.style.left = left + 'px';
+  popup.style.top  = top  + 'px';
+}
+
+function closeEtkiPopup() {
+  document.getElementById('etki-popup').style.display    = 'none';
+  document.getElementById('etki-backdrop').style.display = 'none';
+}
+
+function showEtkiForm() {
+  document.getElementById('etki-form').style.display    = 'block';
+  document.getElementById('etki-popup-actions').style.display = 'none';
+}
+
+function hideEtkiForm() {
+  document.getElementById('etki-form').style.display    = 'none';
+  document.getElementById('etki-popup-actions').style.display = 'block';
+}
+
+async function submitEtkiForm() {
+  const fieldType  = document.getElementById('etki-field-type').value;
+  const correction = document.getElementById('etki-correction').value.trim();
+  const note       = document.getElementById('etki-note').value.trim();
+
+  if (!correction) { document.getElementById('etki-correction').focus(); return; }
+
+  const submitBtn = document.getElementById('etki-submit-btn');
+  submitBtn.disabled    = true;
+  submitBtn.textContent = 'Gönderiliyor…';
+
+  const payload = {
+    articleId:      _etkiCtx.id,
+    articleTitle:   _etkiCtx.title,
+    articleUrl:     _etkiCtx.link,
+    fieldType:      fieldType,
+    llmDecision:    fieldType === 'etkiAlani' ? _etkiCtx.direct : _etkiCtx.hub,
+    llmReasoning:   _etkiCtx.gerekce,
+    userCorrection: correction,
+    correctionNote: note
+  };
+
+  try {
+    const resp = await fetch('https://n8n.emredemirbas.com/webhook/etki-alani-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+    document.getElementById('etki-form').style.display         = 'none';
+    document.getElementById('etki-popup-body').style.display   = 'none';
+    document.getElementById('etki-popup-actions').style.display = 'none';
+    document.getElementById('etki-thanks').style.display       = 'block';
+    setTimeout(closeEtkiPopup, 2000);
+  } catch (e) {
+    submitBtn.disabled    = false;
+    submitBtn.textContent = 'Gönder';
+    alert('Bir hata oluştu, tekrar dene.');
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEtkiPopup(); });
 </script>
 </body>
 </html>
