@@ -1545,7 +1545,17 @@
       <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">World Bank</span></h2>
       <div class="dash-charts">
         <div class="dash-chart-card">
-          <div class="dash-chart-title">GDP Büyüme Oranı (%)</div>
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            GDP Büyüme Oranı (%)
+            <select id="sel-gdp-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
           <div class="dash-chart-meta">
             <span id="gdp-meta-note">Yükleniyor…</span>
             <span class="dash-chart-badge">NY.GDP.MKTP.KD.ZG</span>
@@ -1553,7 +1563,17 @@
           <div class="dash-chart-wrap short"><canvas id="chart-gdp"></canvas></div>
         </div>
         <div class="dash-chart-card">
-          <div class="dash-chart-title">Enflasyon / TÜFE (%)</div>
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            Enflasyon / TÜFE (%)
+            <select id="sel-cpi-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
           <div class="dash-chart-meta">
             <span id="cpi-meta-note">Yükleniyor…</span>
             <span class="dash-chart-badge">FP.CPI.TOTL.ZG</span>
@@ -2818,9 +2838,22 @@ async function fredFetch(seriesId, limit) {
   start.setMonth(start.getMonth() - 15);
   const s = start.toISOString().slice(0, 10);
   const url = `${FRED_BASE}?series_id=${seriesId}&api_key=${FRED_KEY}&file_type=json&limit=${limit}&sort_order=desc&observation_start=${s}`;
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url + '&_=' + Date.now())}`;
-  const r = await fetch(proxyUrl);
-  if (!r.ok) throw new Error('FRED ' + r.status);
+  
+  const proxies = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://thingproxy.freeboard.io/fetch/${url}`
+  ];
+
+  let r = null;
+  for (const p of proxies) {
+    try {
+      const res = await fetch(p);
+      if (res.ok) { r = res; break; }
+    } catch (e) { /* ignore and try next */ }
+  }
+  
+  if (!r || !r.ok) throw new Error('FRED proxy failed');
   const d = await r.json();
   if (d.error_message) throw new Error(d.error_message);
   return (d.observations || [])
@@ -3039,56 +3072,56 @@ async function loadDashboard() {
   }).catch(() => setCard('dc-usd', '—', null, '', 'Kur verisi alınamadı'));
 
   // ── World Bank: GDP ve CPI ─────────────────────────
-  const countries = ['WLD','USA','CHN','EMU','TUR'];
-  const labels    = { WLD:'Dünya', USA:'ABD', CHN:'Çin', EMU:'Euro Bölgesi', TUR:'Türkiye' };
+  const WB_GROUPS = {
+    'default': ['WLD','USA','CHN','EMU','TUR'],
+    'g7': ['USA','GBR','FRA','DEU','JPN','CAN','ITA'],
+    'brics': ['BRA','RUS','IND','CHN','ZAF'],
+    'europe': ['EMU','DEU','FRA','ITA','ESP','GBR','TUR'],
+    'middle_east': ['SAU','ARE','QAT','ISR','EGY','TUR'],
+    'asia': ['CHN','JPN','IND','KOR','IDN','VNM']
+  };
+  
+  const WB_LABELS = { 
+    WLD:'Dünya', USA:'ABD', CHN:'Çin', EMU:'Euro B.', TUR:'Türkiye', 
+    GBR:'İng.', FRA:'Fransa', DEU:'Almanya', JPN:'Japonya', CAN:'Kanada', ITA:'İtalya',
+    BRA:'Brezilya', RUS:'Rusya', IND:'Hindistan', ZAF:'G. Afrika',
+    ESP:'İspanya', SAU:'S. Arabistan', ARE:'BAE', QAT:'Katar', ISR:'İsrail', EGY:'Mısır',
+    KOR:'G. Kore', IDN:'Endonezya', VNM:'Vietnam'
+  };
 
-  Promise.all([
-    wbFetch('NY.GDP.MKTP.KD.ZG', countries),
-    wbFetch('FP.CPI.TOTL.ZG',    countries)
-  ]).then(([gdp, cpi]) => {
-    // GDP summary card
-    if (gdp.WLD) {
-      setCard('dc-gdp',
-        gdp.WLD.value.toFixed(1) + '%',
-        null,
-        `Küresel büyüme (${gdp.WLD.date})`,
-        'World Bank · Yıllık');
+  async function updateWbChart(indicator, selId, chartId, metaId) {
+    const groupKey = document.getElementById(selId).value;
+    const countries = WB_GROUPS[groupKey];
+    try {
+      const data = await wbFetch(indicator, countries);
+      const dataC = countries.filter(c => data[c]);
+      if (dataC.length) {
+        const vals = dataC.map(c => data[c].value);
+        let colors;
+        if (indicator === 'NY.GDP.MKTP.KD.ZG') {
+          colors = vals.map(v => v >= 0 ? 'rgba(29,111,232,0.72)' : 'rgba(230,57,70,0.72)');
+          if (groupKey === 'default' && data.WLD) {
+            setCard('dc-gdp', data.WLD.value.toFixed(1) + '%', null, `Küresel büyüme (${data.WLD.date})`, 'World Bank · Yıllık');
+          }
+        } else {
+          colors = vals.map(v => v > 6 ? 'rgba(230,57,70,0.72)' : v > 3 ? 'rgba(234,88,12,0.72)' : 'rgba(5,150,105,0.72)');
+        }
+        barChart(chartId, dataC.map(c => WB_LABELS[c] || c), vals, colors);
+        document.getElementById(metaId).textContent = `Son veri: ${data[dataC[0]].date} · World Bank`;
+      } else {
+        chartErr(chartId, 'Veri alınamadı');
+        document.getElementById(metaId).textContent = 'Veri alınamadı';
+      }
+    } catch (e) {
+      chartErr(chartId, 'Veri alınamadı');
     }
+  }
 
-    // GDP bar
-    const gdpC = countries.filter(c => gdp[c]);
-    if (gdpC.length) {
-      const vals = gdpC.map(c => gdp[c].value);
-      barChart('chart-gdp',
-        gdpC.map(c => labels[c]),
-        vals,
-        vals.map(v => v >= 0 ? 'rgba(29,111,232,0.72)' : 'rgba(230,57,70,0.72)')
-      );
-      document.getElementById('gdp-meta-note').textContent =
-        `Son veri: ${gdp[gdpC[0]].date} · World Bank`;
-    } else {
-      chartErr('chart-gdp', 'World Bank verisi alınamadı');
-      document.getElementById('gdp-meta-note').textContent = 'Veri alınamadı';
-    }
-
-    // CPI bar
-    const cpiC = countries.filter(c => cpi[c]);
-    if (cpiC.length) {
-      const vals = cpiC.map(c => cpi[c].value);
-      barChart('chart-cpi',
-        cpiC.map(c => labels[c]),
-        vals,
-        vals.map(v => v > 6 ? 'rgba(230,57,70,0.72)' : v > 3 ? 'rgba(234,88,12,0.72)' : 'rgba(5,150,105,0.72)')
-      );
-      document.getElementById('cpi-meta-note').textContent =
-        `Son veri: ${cpi[cpiC[0]].date} · World Bank`;
-    } else {
-      chartErr('chart-cpi', 'World Bank verisi alınamadı');
-      document.getElementById('cpi-meta-note').textContent = 'Veri alınamadı';
-    }
-  }).catch(() => {
-    ['chart-gdp','chart-cpi'].forEach(id => chartErr(id, 'World Bank verisi alınamadı'));
-  });
+  document.getElementById('sel-gdp-group').addEventListener('change', () => updateWbChart('NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note'));
+  document.getElementById('sel-cpi-group').addEventListener('change', () => updateWbChart('FP.CPI.TOTL.ZG', 'sel-cpi-group', 'chart-cpi', 'cpi-meta-note'));
+  
+  updateWbChart('NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note');
+  updateWbChart('FP.CPI.TOTL.ZG', 'sel-cpi-group', 'chart-cpi', 'cpi-meta-note');
 }
 </script>
 </body>
