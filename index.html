@@ -9,23 +9,23 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #F4F3EF;
+    --bg: #F1F0EC;
     --surface: #FFFFFF;
     --navy: #0D1117;
     --navy-soft: #161B22;
     --red: #E63946;
     --red-muted: rgba(230,57,70,0.08);
+    --accent: #1D6FE8;
     --text: #111218;
     --text-2: #4B5563;
     --text-3: #9CA3AF;
-    --border: #E9E8E4;
-    --border-soft: #F0EFeb;
+    --border: #E4E3DF;
+    --border-soft: #EDECЕ8;
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-    --shadow-hover: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-    --radius: 12px;
-    --radius-sm: 6px;
-
+    --shadow-hover: 0 12px 40px rgba(0,0,0,0.13), 0 4px 12px rgba(0,0,0,0.07);
+    --radius: 14px;
+    --radius-sm: 7px;
     --cat-filo: #1D6FE8;
     --cat-tech: #7C3AED;
     --cat-ortak: #059669;
@@ -33,6 +33,24 @@
     --cat-alt: #EA580C;
     --cat-atama: #0891B2;
     --cat-diger: #6B7280;
+  }
+
+  [data-theme="dark"] {
+    --bg: #0F1117;
+    --surface: #1A1D27;
+    --navy: #070A10;
+    --navy-soft: #111420;
+    --red: #FF4D5A;
+    --red-muted: rgba(255,77,90,0.1);
+    --accent: #4D8EF5;
+    --text: #E8EAF0;
+    --text-2: #9AA3B8;
+    --text-3: #555E78;
+    --border: #252A3A;
+    --border-soft: #1E2130;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
+    --shadow-hover: 0 12px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,6 +64,7 @@
     min-height: 100dvh;
     font-size: 15px;
     -webkit-font-smoothing: antialiased;
+    transition: background 0.25s, color 0.25s;
   }
 
   /* ── HEADER ────────────────────────────────────── */
@@ -109,7 +128,7 @@
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 8px;
-    padding: 8px 12px 8px 34px;
+    padding: 8px 36px 8px 34px;
     color: #fff;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
@@ -119,6 +138,25 @@
   }
   #search::placeholder { color: rgba(255,255,255,0.3); }
   #search:focus { background: rgba(255,255,255,0.11); border-color: rgba(255,255,255,0.22); }
+
+  .search-right-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background: var(--red);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    pointer-events: none;
+    user-select: none;
+  }
 
   .header-stat {
     margin-left: auto;
@@ -143,6 +181,33 @@
   .stat-reg { white-space: nowrap; cursor: help; color: rgba(255,255,255,0.35); }
   .stat-reg b { font-size: 10.5px; color: rgba(255,255,255,0.7); font-weight: 600; }
   .stat-sep { color: rgba(255,255,255,0.18); font-size: 10px; }
+
+  /* ── THEME TOGGLE ───────────────────────────── */
+  .theme-toggle {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    padding: 0;
+  }
+  .theme-toggle:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.28);
+    color: #fff;
+  }
+  .theme-toggle svg { pointer-events: none; }
+  .icon-sun  { display: none; }
+  .icon-moon { display: block; }
+  [data-theme="dark"] .icon-sun  { display: block; }
+  [data-theme="dark"] .icon-moon { display: none; }
 
   /* ── FILTER BAR ──────────────────────────────── */
   .filter-bar {
@@ -472,13 +537,27 @@
     flex-direction: column;
     animation: fadeUp 0.35s ease both;
     cursor: default;
+    position: relative;
+  }
+
+  .article-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    opacity: 0;
+    transition: opacity 0.22s;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(29,111,232,0.04) 0%, transparent 60%);
   }
 
   .article-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
     box-shadow: var(--shadow-hover);
-    border-color: transparent;
+    border-color: rgba(29,111,232,0.18);
   }
+
+  .article-card:hover::before { opacity: 1; }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(14px); }
@@ -1013,17 +1092,31 @@
   .dash-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-    gap: 12px;
+    gap: 14px;
   }
   .dash-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 16px 18px;
+    padding: 18px 20px;
     display: flex;
     flex-direction: column;
     gap: 2px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   }
+  .dash-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--red));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .dash-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: rgba(29,111,232,0.2); }
+  .dash-card:hover::after { opacity: 1; }
   .dash-card-label {
     font-size: 10.5px;
     font-weight: 700;
@@ -1067,6 +1160,11 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 18px 20px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .dash-chart-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: rgba(29,111,232,0.15);
   }
   .dash-chart-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
   .dash-chart-meta {
@@ -1338,8 +1436,21 @@
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
       </svg>
       <input type="search" id="search" placeholder="Haberlerde ara…" autocomplete="off">
+      <div class="search-right-icon">A</div>
     </div>
     <div class="header-stat" id="header-stats"></div>
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="theme-toggle-btn" aria-label="Tema değiştir" title="Karanlık / Aydınlık">
+      <!-- Sun (shown in dark mode) -->
+      <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <!-- Moon (shown in light mode) -->
+      <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
   </div>
 </header>
 
@@ -1347,7 +1458,7 @@
   <div class="filter-bar-inner">
 
     <!-- News filters (shown when Haberler tab is active) -->
-    <div id="news-filter-content">
+    <div id="news-filter-content" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; width: 100%;">
 
     <!-- Kategori -->
     <div class="fdd-wrap">
@@ -1472,7 +1583,6 @@
 
     <!-- Dashboard nav links (shown when Dashboard tab is active) -->
     <div id="dash-filter-content" style="display:none; align-items:center; gap:6px; flex-wrap:wrap; width:100%;">
-      <span style="font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.6px; margin-right:4px;">Bölümler</span>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-anl\u0131k'); return false;" href="#">Anlık Göstergeler</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-enerji'); return false;" href="#">Enerji Fiyatları</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-ekonomi'); return false;" href="#">Büyüme &amp; Enflasyon</a>
@@ -2859,6 +2969,24 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEtkiPop
 </script>
 
 <script>
+// ── THEME LOGIC ────────────────────────────────────────────────
+function initTheme() {
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+
+document.getElementById('theme-toggle-btn')?.addEventListener('click', toggleTheme);
+initTheme();
+
 // ── TAB SWITCHING ─────────────────────────────────────────────
 let _dashInit = false;
 
