@@ -693,6 +693,18 @@
     font-weight: 600;
   }
 
+  .card-footer-multi {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 6px !important;
+  }
+  .card-source-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
   .card-footer {
     display: flex;
     align-items: center;
@@ -1540,7 +1552,6 @@ function buildCardHTML(article) {
       <div class="card-body">
         <div class="card-meta">
           <span class="card-cat-badge" style="background:${hex}">${article.category || 'Diğer'}</span>
-          ${article.isDuplicate ? `<span class="dup-badge">↺ Tekrar haber</span>` : ''}
         </div>
         <div class="card-title">${article.title || ''}</div>
         <div class="card-summary">${article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>'}</div>
@@ -1551,16 +1562,22 @@ function buildCardHTML(article) {
             Analiz
           </button>
         ` : ''}
-        <div class="card-footer">
-          <div class="card-source">
-            <img class="source-favicon" src="${getFavicon(article.source)}" alt="" loading="lazy" onerror="this.style.display='none'">
-            ${sourceLabel}
-          </div>
-          ${article.link ? `<a class="card-link" href="${article.link}" target="_blank" rel="noopener noreferrer">
-            Haberi oku
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>` : ''}
-        </div>
+        ${(() => {
+          const sources = (article._sources && article._sources.length > 0) ? article._sources : [{ source: article.source, link: article.link }];
+          const linkSvg = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+          if (sources.length === 1) {
+            const s = sources[0];
+            return `<div class="card-footer">
+              <div class="card-source"><img class="source-favicon" src="${getFavicon(s.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[s.source] || s.source || ''}</div>
+              ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+            </div>`;
+          }
+          const rows = sources.map(s => `<div class="card-source-row">
+            <div class="card-source"><img class="source-favicon" src="${getFavicon(s.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[s.source] || s.source || ''}</div>
+            ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+          </div>`).join('');
+          return `<div class="card-footer card-footer-multi">${rows}</div>`;
+        })()}
       </div>
     </div>`;
 }
@@ -1582,10 +1599,11 @@ function renderCards(articles) {
   const visible = articles.slice(0, displayLimit);
   const hasMore = articles.length > displayLimit;
 
-  // Group visible articles by date
+  // Group visible articles by normalised date key (YYYY-MM-DD)
   const byDate = {};
   visible.forEach(a => {
-    const d = a.date || 'Tarihsiz';
+    const parts = extractDateParts(a.date || '');
+    const d = parts ? `${parts.y}-${parts.m}-${parts.day}` : (a.date || 'Tarihsiz');
     if (!byDate[d]) byDate[d] = [];
     byDate[d].push(a);
   });
@@ -2232,7 +2250,17 @@ fetch(DATA_URL)
     return r.json();
   })
   .then(data => {
-    allArticles = Array.isArray(data) ? data : (data.articles || []);
+    const raw = Array.isArray(data) ? data : (data.articles || []);
+    // Merge duplicates: attach extra sources to the original article
+    const idMap = new Map();
+    raw.forEach(a => { idMap.set(String(a.id), a); a._sources = [{ source: a.source, link: a.link }]; });
+    allArticles = raw.filter(a => {
+      if (a.isDuplicate && a.duplicateOf) {
+        const orig = idMap.get(String(a.duplicateOf));
+        if (orig) { orig._sources.push({ source: a.source, link: a.link }); return false; }
+      }
+      return true;
+    });
     buildDatePanel(allArticles);
     buildAirlineFilter(allArticles);
     render();
