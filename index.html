@@ -3061,27 +3061,31 @@ async function fredFetch(seriesId, limit) {
   
   const proxies = [
     `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://api.codetabs.com/v1/proxy?url=${encodeURIComponent(url)}`,
     `https://corsproxy.io/?${encodeURIComponent(url)}`,
     `https://thingproxy.freeboard.io/fetch/${url}`
   ];
 
-  let r = null;
-  // Try proxies with a small artificial delay to ensure shimmer is seen
   await new Promise(resolve => setTimeout(resolve, 800)); 
   
   for (const p of proxies) {
     try {
       const res = await fetch(p);
-      if (res.ok) { 
-        const text = await res.text();
-        const d = JSON.parse(text);
-        if (d.error_message) continue;
-        return (d.observations || [])
-          .filter(o => o.value !== '.')
-          .map(o => ({ date: o.date, value: parseFloat(o.value) }))
-          .reverse();
-      }
-    } catch (e) { /* try next */ }
+      if (!res.ok) continue;
+      const text = await res.text();
+      if (!text || !text.includes('{')) continue;
+      
+      const d = JSON.parse(text);
+      if (d.error_message) continue;
+      
+      const obs = d.observations || [];
+      if (!obs.length) continue;
+
+      return obs
+        .filter(o => o.value !== '.')
+        .map(o => ({ date: o.date, value: parseFloat(o.value) }))
+        .reverse();
+    } catch (e) { console.error("Proxy failed:", p); }
   }
   throw new Error('FRED fetch failed');
 }
