@@ -960,6 +960,26 @@
 
   /* ── DASHBOARD ───────────────────────────────────── */
   .dash-section { margin-bottom: 44px; }
+
+  .dash-nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--text-2);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: background .15s, color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .dash-nav-link:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
   .dash-section-title {
     font-family: 'DM Serif Display', Georgia, serif;
     font-size: 17px;
@@ -1481,8 +1501,20 @@
   <!-- Dashboard panel -->
   <div id="dashboard-panel" style="display:none">
 
+    <!-- Dashboard quick navigation -->
+    <div id="dash-nav-bar" style="background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:60px; z-index:90;">
+      <div style="max-width:1280px; margin:0 auto; padding:8px 24px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+        <span style="font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.6px; margin-right:4px;">Bölümler</span>
+        <a href="#dash-sec-anlık" class="dash-nav-link">Anlık Göstergeler</a>
+        <a href="#dash-sec-enerji" class="dash-nav-link">Enerji Fiyatları</a>
+        <a href="#dash-sec-ekonomi" class="dash-nav-link">Büyüme &amp; Enflasyon</a>
+        <a href="#dash-sec-endeks" class="dash-nav-link">Hava Kargo Endeksleri</a>
+        <a href="#dash-sec-takvim" class="dash-nav-link">Veri Takvimi</a>
+      </div>
+    </div>
+
     <!-- Anlık göstergeler -->
-    <section class="dash-section">
+    <section class="dash-section" id="dash-sec-anlık">
       <h2 class="dash-section-title">Anlık Göstergeler</h2>
       <div class="dash-cards">
         <div class="dash-card" id="dc-jetfuel">
@@ -1517,7 +1549,7 @@
     </section>
 
     <!-- Enerji fiyatları -->
-    <section class="dash-section">
+    <section class="dash-section" id="dash-sec-enerji">
       <h2 class="dash-section-title">Enerji Fiyatları <span class="dash-section-badge">EIA / FRED</span></h2>
       <div class="dash-charts">
         <div class="dash-chart-card">
@@ -1541,7 +1573,7 @@
     </section>
 
     <!-- Ekonomik göstergeler -->
-    <section class="dash-section">
+    <section class="dash-section" id="dash-sec-ekonomi">
       <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">World Bank</span></h2>
       <div class="dash-charts">
         <div class="dash-chart-card">
@@ -1561,6 +1593,10 @@
             <span class="dash-chart-badge">NY.GDP.MKTP.KD.ZG</span>
           </div>
           <div class="dash-chart-wrap short"><canvas id="chart-gdp"></canvas></div>
+          <div style="font-size:10px; color:var(--text-3); text-align:center; margin-top:8px;">
+            <span style="display:inline-block; width:8px; height:8px; background:rgba(29,111,232,0.72); border-radius:2px; margin-right:4px;"></span>Pozitif Büyüme
+            <span style="display:inline-block; width:8px; height:8px; background:rgba(230,57,70,0.72); border-radius:2px; margin-right:4px; margin-left:12px;"></span>Negatif Büyüme (Küçülme)
+          </div>
         </div>
         <div class="dash-chart-card">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -1579,13 +1615,18 @@
             <span class="dash-chart-badge">FP.CPI.TOTL.ZG</span>
           </div>
           <div class="dash-chart-wrap short"><canvas id="chart-cpi"></canvas></div>
+          <div style="font-size:10px; color:var(--text-3); text-align:center; margin-top:8px;">
+            <span style="display:inline-block; width:8px; height:8px; background:rgba(5,150,105,0.72); border-radius:2px; margin-right:4px;"></span>≤ %3 (Düşük)
+            <span style="display:inline-block; width:8px; height:8px; background:rgba(234,88,12,0.72); border-radius:2px; margin-right:4px; margin-left:10px;"></span>%3 - %6 (Orta)
+            <span style="display:inline-block; width:8px; height:8px; background:rgba(230,57,70,0.72); border-radius:2px; margin-right:4px; margin-left:10px;"></span>> %6 (Yüksek)
+          </div>
         </div>
       </div>
       <div class="dash-section-note">ⓘ World Bank yıllık veri yayınlar; en son yıl için 6–18 ay gecikme olabilir. Veri: <a href="https://data.worldbank.org" target="_blank" rel="noopener">data.worldbank.org</a></div>
     </section>
 
     <!-- Takip gereken endeksler -->
-    <section class="dash-section">
+    <section class="dash-section" id="dash-sec-endeks">
       <h2 class="dash-section-title">Hava Kargo Endeksleri <span class="dash-section-badge">Manuel Takip</span></h2>
       <div class="dash-cards">
         <div class="dash-card">
@@ -1620,7 +1661,7 @@
     </section>
 
     <!-- Yaklaşan veri yayınları -->
-    <section class="dash-section">
+    <section class="dash-section" id="dash-sec-takvim">
       <h2 class="dash-section-title">Yaklaşan Veri Yayınları</h2>
       <div class="dash-releases" id="dash-releases"></div>
       <div class="dash-section-note">ⓘ Tarihler yaklaşık olup yayıncı tarafından değiştirilebilir.</div>
@@ -2826,6 +2867,8 @@ function switchTab(tab) {
   document.getElementById('tab-news-btn').classList.toggle('main-tab-active', isNews);
   document.getElementById('tab-dash-btn').classList.toggle('main-tab-active', !isNews);
   if (!isNews && !_dashInit) { _dashInit = true; loadDashboard(); }
+  // Scroll to top on tab switch
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ── DASHBOARD DATA ────────────────────────────────────────────
@@ -2950,12 +2993,34 @@ function barChart(id, labels, data, colors) {
   if (existingChart) existingChart.destroy();
   ctx.style.display = 'block';
   ctx.closest('.dash-chart-wrap').querySelectorAll('.dash-chart-error').forEach(el => el.remove());
+
+  const drawLabelsPlugin = {
+    id: 'drawLabels',
+    afterDatasetsDraw(chart) {
+      const c = chart.ctx;
+      chart.data.datasets.forEach((dataset, i) => {
+        const meta = chart.getDatasetMeta(i);
+        meta.data.forEach((bar, index) => {
+          const val = dataset.data[index];
+          c.fillStyle = '#4B5563';
+          c.font = '600 10.5px Inter, sans-serif';
+          c.textBaseline = 'middle';
+          c.textAlign = val >= 0 ? 'left' : 'right';
+          const pad = 6;
+          const x = val >= 0 ? bar.x + pad : bar.x - pad;
+          c.fillText((val > 0 ? '+' : '') + val.toFixed(1) + '%', x, bar.y);
+        });
+      });
+    }
+  };
+
   new Chart(ctx, {
     type: 'bar',
     data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
     options: {
       ...CHART_DEFAULTS,
       indexAxis: 'y',
+      layout: { padding: { left: 45, right: 45 } },
       plugins: {
         ...CHART_DEFAULTS.plugins,
         tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: c => ' ' + (c.raw > 0 ? '+' : '') + c.raw.toFixed(1) + '%' } }
@@ -2964,7 +3029,8 @@ function barChart(id, labels, data, colors) {
         x: { ticks: { callback: v => v + '%', font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, grid: { color: '#F4F3EF' }, border: { display: false } },
         y: { ticks: { font: { size: 11, family: 'Inter' }, color: '#374151' }, grid: { display: false }, border: { display: false } }
       }
-    }
+    },
+    plugins: [drawLabelsPlugin]
   });
 }
 
@@ -3088,8 +3154,8 @@ async function loadDashboard() {
     'g7': ['USA','GBR','FRA','DEU','JPN','CAN','ITA'],
     'brics': ['BRA','RUS','IND','CHN','ZAF'],
     'europe': ['EMU','DEU','FRA','ITA','ESP','GBR','TUR'],
-    'middle_east': ['SAU','ARE','QAT','ISR','EGY','TUR'],
-    'asia': ['CHN','JPN','IND','KOR','IDN','VNM']
+    'middle_east': ['SAU','ARE','QAT','ISR','EGY','IRN'],
+    'asia': ['CHN','JPN','IND','KOR','IDN','VNM','SGP']
   };
   
   const WB_LABELS = { 
@@ -3097,7 +3163,7 @@ async function loadDashboard() {
     GBR:'İng.', FRA:'Fransa', DEU:'Almanya', JPN:'Japonya', CAN:'Kanada', ITA:'İtalya',
     BRA:'Brezilya', RUS:'Rusya', IND:'Hindistan', ZAF:'G. Afrika',
     ESP:'İspanya', SAU:'S. Arabistan', ARE:'BAE', QAT:'Katar', ISR:'İsrail', EGY:'Mısır',
-    KOR:'G. Kore', IDN:'Endonezya', VNM:'Vietnam'
+    KOR:'G. Kore', IDN:'Endonezya', VNM:'Vietnam', SGP:'Singapur', IRN:'İran'
   };
 
   async function updateWbChart(indicator, selId, chartId, metaId) {
