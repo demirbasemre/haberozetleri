@@ -2925,6 +2925,10 @@ const CHART_DEFAULTS = {
 function lineChart(id, labels, datasets, yFmt) {
   const ctx = document.getElementById(id);
   if (!ctx) return;
+  const existingChart = Chart.getChart(ctx);
+  if (existingChart) existingChart.destroy();
+  ctx.style.display = 'block';
+  ctx.closest('.dash-chart-wrap').querySelectorAll('.dash-chart-error').forEach(el => el.remove());
   new Chart(ctx, {
     type: 'line',
     data: { labels, datasets },
@@ -2942,6 +2946,10 @@ function lineChart(id, labels, datasets, yFmt) {
 function barChart(id, labels, data, colors) {
   const ctx = document.getElementById(id);
   if (!ctx) return;
+  const existingChart = Chart.getChart(ctx);
+  if (existingChart) existingChart.destroy();
+  ctx.style.display = 'block';
+  ctx.closest('.dash-chart-wrap').querySelectorAll('.dash-chart-error').forEach(el => el.remove());
   new Chart(ctx, {
     type: 'bar',
     data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
@@ -2964,10 +2972,12 @@ function chartErr(id, html) {
   const ctx = document.getElementById(id);
   if (!ctx) return;
   ctx.style.display = 'none';
+  const wrap = ctx.closest('.dash-chart-wrap');
+  wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
   const div = document.createElement('div');
   div.className = 'dash-chart-error';
   div.innerHTML = html;
-  ctx.closest('.dash-chart-wrap').appendChild(div);
+  wrap.appendChild(div);
 }
 
 // ── RELEASE CALENDAR ──────────────────────────────────────────
