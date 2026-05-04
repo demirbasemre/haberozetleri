@@ -1346,6 +1346,9 @@
 <div class="filter-bar">
   <div class="filter-bar-inner">
 
+    <!-- News filters (shown when Haberler tab is active) -->
+    <div id="news-filter-content">
+
     <!-- Kategori -->
     <div class="fdd-wrap">
       <button class="fdd-btn" id="cat-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Kategori filtresi">
@@ -1465,6 +1468,18 @@
       <span>Temizle</span>
     </button>
 
+    </div><!-- /news-filter-content -->
+
+    <!-- Dashboard nav links (shown when Dashboard tab is active) -->
+    <div id="dash-filter-content" style="display:none; align-items:center; gap:6px; flex-wrap:wrap; width:100%;">
+      <span style="font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.6px; margin-right:4px;">Bölümler</span>
+      <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-anl\u0131k'); return false;" href="#">Anlık Göstergeler</a>
+      <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-enerji'); return false;" href="#">Enerji Fiyatları</a>
+      <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-ekonomi'); return false;" href="#">Büyüme &amp; Enflasyon</a>
+      <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-endeks'); return false;" href="#">Hava Kargo Endeksleri</a>
+      <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-takvim'); return false;" href="#">Veri Takvimi</a>
+    </div><!-- /dash-filter-content -->
+
   </div>
 </div>
 
@@ -1500,18 +1515,6 @@
 
   <!-- Dashboard panel -->
   <div id="dashboard-panel" style="display:none">
-
-    <!-- Dashboard quick navigation -->
-    <div id="dash-nav-bar" style="background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:60px; z-index:90;">
-      <div style="max-width:1280px; margin:0 auto; padding:8px 24px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-        <span style="font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.6px; margin-right:4px;">Bölümler</span>
-        <a href="#dash-sec-anlık" class="dash-nav-link">Anlık Göstergeler</a>
-        <a href="#dash-sec-enerji" class="dash-nav-link">Enerji Fiyatları</a>
-        <a href="#dash-sec-ekonomi" class="dash-nav-link">Büyüme &amp; Enflasyon</a>
-        <a href="#dash-sec-endeks" class="dash-nav-link">Hava Kargo Endeksleri</a>
-        <a href="#dash-sec-takvim" class="dash-nav-link">Veri Takvimi</a>
-      </div>
-    </div>
 
     <!-- Anlık göstergeler -->
     <section class="dash-section" id="dash-sec-anlık">
@@ -2859,15 +2862,25 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEtkiPop
 // ── TAB SWITCHING ─────────────────────────────────────────────
 let _dashInit = false;
 
+function dashScrollTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const offset = 110; // header + filter bar height
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
 function switchTab(tab) {
   const isNews = tab === 'news';
   document.getElementById('news-panel').style.display      = isNews ? '' : 'none';
   document.getElementById('dashboard-panel').style.display = isNews ? 'none' : 'block';
-  document.querySelector('.filter-bar').style.display      = isNews ? '' : 'none';
+  // Toggle filter bar content
+  document.getElementById('news-filter-content').style.display = isNews ? '' : 'none';
+  const dashContent = document.getElementById('dash-filter-content');
+  dashContent.style.display = isNews ? 'none' : 'flex';
   document.getElementById('tab-news-btn').classList.toggle('main-tab-active', isNews);
   document.getElementById('tab-dash-btn').classList.toggle('main-tab-active', !isNews);
   if (!isNews && !_dashInit) { _dashInit = true; loadDashboard(); }
-  // Scroll to top on tab switch
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
