@@ -224,8 +224,15 @@
     padding: 8px 24px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    min-height: 52px; /* Fixed height for consistency */
+  }
+
+  #news-filter-content, #dash-filter-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     flex-wrap: wrap;
+    width: 100%;
   }
 
   .filter-sep {
@@ -1458,7 +1465,7 @@
   <div class="filter-bar-inner">
 
     <!-- News filters (shown when Haberler tab is active) -->
-    <div id="news-filter-content" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; width: 100%;">
+    <div id="news-filter-content">
 
     <!-- Kategori -->
     <div class="fdd-wrap">
@@ -1582,7 +1589,7 @@
     </div><!-- /news-filter-content -->
 
     <!-- Dashboard nav links (shown when Dashboard tab is active) -->
-    <div id="dash-filter-content" style="display:none; align-items:center; gap:6px; flex-wrap:wrap; width:100%;">
+    <div id="dash-filter-content" style="display:none;">
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-anl\u0131k'); return false;" href="#">Anlık Göstergeler</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-enerji'); return false;" href="#">Enerji Fiyatları</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-ekonomi'); return false;" href="#">Büyüme &amp; Enflasyon</a>
@@ -3003,9 +3010,8 @@ function switchTab(tab) {
   document.getElementById('news-panel').style.display      = isNews ? '' : 'none';
   document.getElementById('dashboard-panel').style.display = isNews ? 'none' : 'block';
   // Toggle filter bar content
-  document.getElementById('news-filter-content').style.display = isNews ? '' : 'none';
-  const dashContent = document.getElementById('dash-filter-content');
-  dashContent.style.display = isNews ? 'none' : 'flex';
+  document.getElementById('news-filter-content').style.display = isNews ? 'flex' : 'none';
+  document.getElementById('dash-filter-content').style.display = isNews ? 'none' : 'flex';
   document.getElementById('tab-news-btn').classList.toggle('main-tab-active', isNews);
   document.getElementById('tab-dash-btn').classList.toggle('main-tab-active', !isNews);
   if (!isNews && !_dashInit) { _dashInit = true; loadDashboard(); }
