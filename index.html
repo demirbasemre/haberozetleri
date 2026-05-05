@@ -1205,6 +1205,10 @@
     border-color: rgba(29,111,232,0.15);
   }
   .dash-chart-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .energy-period-btns { display:flex; gap:4px; margin-bottom:10px; }
+  .energy-period-btn { font-size:11px; font-weight:500; padding:3px 9px; border-radius:5px; border:1px solid var(--border); background:transparent; color:var(--text-3); cursor:pointer; transition:background .15s,color .15s; }
+  .energy-period-btn:hover { background:var(--hover); color:var(--text); }
+  .energy-period-btn.active { background:var(--primary,#1D6FE8); color:#fff; border-color:var(--primary,#1D6FE8); }
   .dash-chart-meta {
     font-size: 10.5px;
     color: var(--text-3);
@@ -1705,8 +1709,14 @@
         <div class="dash-chart-card">
           <div class="dash-chart-title">Jet Yakıt &amp; Brent Ham Petrol</div>
           <div class="dash-chart-meta">
-            <span>$/varil · Aylık son değer</span>
+            <span>$/varil · Haftalık</span>
             <span class="dash-chart-badge">WJFUELUSGULF &amp; DCOILBRENTEU</span>
+          </div>
+          <div class="energy-period-btns">
+            <button class="energy-period-btn active" data-period="all">Tümü</button>
+            <button class="energy-period-btn" data-period="1y">1 Yıl</button>
+            <button class="energy-period-btn" data-period="6m">6 Ay</button>
+            <button class="energy-period-btn" data-period="3m">3 Ay</button>
           </div>
           <div class="dash-chart-wrap loading"><canvas id="chart-energy"></canvas></div>
         </div>
@@ -3125,7 +3135,7 @@ const CHART_DEFAULTS = {
   }
 };
 
-function lineChart(id, labels, datasets, yFmt) {
+function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   const ctx = document.getElementById(id);
   if (!ctx) return;
   const existingChart = Chart.getChart(ctx);
@@ -3139,7 +3149,14 @@ function lineChart(id, labels, datasets, yFmt) {
     data: { labels, datasets },
     options: {
       ...CHART_DEFAULTS,
-      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: datasets.length > 1, labels: { font: { size: 11, family: 'Inter' }, boxWidth: 10, padding: 10 } } },
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        legend: {
+          display: datasets.length > 1,
+          position: extraOpts.legendPosition || 'top',
+          labels: { font: { size: 11, family: 'Inter' }, boxWidth: 10, padding: 10 }
+        }
+      },
       scales: {
         x: { ticks: { maxTicksLimit: 8, font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, grid: { display: false }, border: { display: false } },
         y: { ticks: { font: { size: 10, family: 'Inter' }, color: '#9CA3AF', callback: yFmt || (v => v) }, grid: { color: '#F4F3EF' }, border: { display: false } }
@@ -3282,11 +3299,86 @@ async function loadDashboard() {
 
 
   // ── Enerji (FRED) ──────────────────────────────────
+  let _jetRaw = null, _brentRaw = null;
+
+  function isoWeekKey(dateStr) {
+    const d = new Date(dateStr + 'T12:00:00Z');
+    const thu = new Date(d);
+    thu.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const y = thu.getUTCFullYear();
+    const jan1 = new Date(Date.UTC(y, 0, 1));
+    const w = Math.ceil(((thu - jan1) / 86400000 + 1) / 7);
+    return `${y}-W${String(w).padStart(2, '0')}`;
+  }
+
+  function toWeekly(arr, transform) {
+    // last value in each ISO week; result: sorted [{key, date, value}]
+    const map = {};
+    (arr || []).forEach(d => {
+      const k = isoWeekKey(d.date);
+      map[k] = { key: k, date: d.date, value: transform(d.value) };
+    });
+    return Object.values(map).sort((a, b) => a.key.localeCompare(b.key));
+  }
+
+  function renderEnergyChart(period) {
+    if (!_jetRaw && !_brentRaw) return;
+    const jetW   = toWeekly(_jetRaw,   v => v * 42);
+    const brentW = toWeekly(_brentRaw, v => v);
+
+    // Period filter: cutoff date
+    const cutoff = new Date();
+    if      (period === '1y') cutoff.setFullYear(cutoff.getFullYear() - 1);
+    else if (period === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
+    else if (period === '3m') cutoff.setMonth(cutoff.getMonth() - 3);
+    else cutoff.setFullYear(2000); // all
+
+    const filterDate = cutoff.toISOString().slice(0, 10);
+    const fJet   = jetW.filter(p => p.date >= filterDate);
+    const fBrent = brentW.filter(p => p.date >= filterDate);
+
+    // Merge keys
+    const keySet = new Set([...fJet.map(p => p.key), ...fBrent.map(p => p.key)]);
+    const labels = [...keySet].sort();
+    const jetMap   = Object.fromEntries(fJet.map(p => [p.key, p.value]));
+    const brentMap = Object.fromEntries(fBrent.map(p => [p.key, p.value]));
+
+    lineChart('chart-energy', labels,
+      [
+        {
+          label: 'Jet Yakıt ($/varil)',
+          data: labels.map(k => jetMap[k] ?? null),
+          borderColor: '#E63946', backgroundColor: 'rgba(230,57,70,0.07)',
+          fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true
+        },
+        {
+          label: 'Brent Ham Petrol ($/varil)',
+          data: labels.map(k => brentMap[k] ?? null),
+          borderColor: '#1D6FE8', backgroundColor: 'rgba(29,111,232,0.07)',
+          fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true
+        }
+      ],
+      v => '$' + v.toFixed(1),
+      { legendPosition: 'bottom' }
+    );
+  }
+
+  // Period button wiring
+  document.querySelectorAll('.energy-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.energy-period-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderEnergyChart(btn.dataset.period);
+    });
+  });
+
   Promise.all([
     fredFetch('WJFUELUSGULF', 80).catch(() => null),
-    fredFetch('DCOILBRENTEU', 80).catch(() => null)
+    fredFetch('DCOILBRENTEU', 400).catch(() => null)
   ]).then(([jet, brent]) => {
-    // Kartlar
+    _jetRaw   = jet;
+    _brentRaw = brent;
+
     if (jet && jet.length) {
       const last = jet[jet.length - 1];
       setCard('dc-jetfuel', '$' + (last.value * 42).toFixed(2), pctChg(jet.slice(-2)),
@@ -3302,33 +3394,8 @@ async function loadDashboard() {
       setCard('dc-brent', '—', null, '', 'Veri alınamadı');
     }
 
-    // Tek grafik: aylık son değer ile hizala
-    if ((jet && jet.length) || (brent && brent.length)) {
-      const toMonthly = (arr, transform) => {
-        const map = {};
-        (arr || []).forEach(d => { map[d.date.slice(0, 7)] = transform(d.value); });
-        return map;
-      };
-      const jetM   = toMonthly(jet,   v => v * 42);
-      const brentM = toMonthly(brent, v => v);
-      const labels = [...new Set([...Object.keys(jetM), ...Object.keys(brentM)])].sort();
-      lineChart('chart-energy', labels,
-        [
-          {
-            label: 'Jet Yakıt ($/varil)',
-            data: labels.map(m => jetM[m] ?? null),
-            borderColor: '#E63946', backgroundColor: 'rgba(230,57,70,0.07)',
-            fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true
-          },
-          {
-            label: 'Brent Ham Petrol ($/varil)',
-            data: labels.map(m => brentM[m] ?? null),
-            borderColor: '#1D6FE8', backgroundColor: 'rgba(29,111,232,0.07)',
-            fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true
-          }
-        ],
-        v => '$' + v.toFixed(1)
-      );
+    if (jet || brent) {
+      renderEnergyChart('all');
     } else {
       chartErr('chart-energy', 'Veri alınamadı');
     }
