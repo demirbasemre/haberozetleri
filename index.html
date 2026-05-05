@@ -1465,6 +1465,68 @@
     font-size: 13px;
     font-weight: 500;
   }
+
+  /* ── AI Chat ──────────────────────────────────────── */
+  #ai-fab {
+    position: fixed; bottom: 28px; right: 28px; z-index: 1100;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, #1D6FE8, #7C3AED);
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(29,111,232,0.4); transition: transform .2s, box-shadow .2s;
+  }
+  #ai-fab:hover { transform: scale(1.08); box-shadow: 0 6px 22px rgba(29,111,232,0.5); }
+  #ai-fab svg { width: 24px; height: 24px; fill: #fff; }
+  #ai-panel {
+    position: fixed; bottom: 92px; right: 28px; z-index: 1100;
+    width: 380px; max-width: calc(100vw - 40px);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+    display: flex; flex-direction: column; overflow: hidden;
+    transform: scale(0.92) translateY(12px); opacity: 0;
+    pointer-events: none; transition: transform .22s ease, opacity .22s ease;
+  }
+  #ai-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
+  #ai-panel-header {
+    padding: 14px 18px 12px; display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-panel-icon { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#1D6FE8,#7C3AED); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .ai-panel-icon svg { width:16px; height:16px; fill:#fff; }
+  #ai-panel-header h3 { font-size: 13.5px; font-weight: 700; color: var(--text); margin: 0; }
+  #ai-panel-header p  { font-size: 11px; color: var(--text-3); margin: 1px 0 0; }
+  #ai-close { margin-left: auto; background: none; border: none; cursor: pointer; color: var(--text-3); font-size: 18px; line-height: 1; padding: 2px 4px; }
+  #ai-messages {
+    flex: 1; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column;
+    gap: 10px; min-height: 80px; max-height: 320px;
+  }
+  .ai-msg { max-width: 88%; padding: 9px 13px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+  .ai-msg.user { align-self: flex-end; background: #1D6FE8; color: #fff; border-bottom-right-radius: 4px; }
+  .ai-msg.bot  { align-self: flex-start; background: var(--hover); color: var(--text); border-bottom-left-radius: 4px; }
+  .ai-msg.bot.thinking { color: var(--text-3); font-style: italic; }
+  #ai-suggestions { padding: 0 16px 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .ai-chip {
+    font-size: 11.5px; padding: 5px 11px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-2);
+    cursor: pointer; transition: background .15s, border-color .15s;
+  }
+  .ai-chip:hover { background: var(--hover); border-color: #1D6FE8; color: var(--text); }
+  #ai-input-row { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--border); }
+  #ai-input {
+    flex: 1; border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 12px; font-size: 13px; background: var(--surface); color: var(--text);
+    outline: none; resize: none; font-family: inherit; min-height: 38px; max-height: 100px;
+  }
+  #ai-input:focus { border-color: #1D6FE8; }
+  #ai-send {
+    width: 38px; height: 38px; border-radius: 10px; background: #1D6FE8; border: none;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: background .15s;
+  }
+  #ai-send:hover { background: #1558c0; }
+  #ai-send svg { width: 16px; height: 16px; fill: #fff; }
+  #ai-send:disabled { background: var(--border); cursor: not-allowed; }
+  .ai-source-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .ai-source-pill { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: rgba(29,111,232,0.1); color: #1D6FE8; }
 </style>
 </head>
 <body>
@@ -3463,6 +3525,159 @@ async function loadDashboard() {
   updateWbChart('NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note');
   updateWbChart('FP.CPI.TOTL.ZG', 'sel-cpi-group', 'chart-cpi', 'cpi-meta-note');
 }
+</script>
+
+<!-- ── AI Chat Panel ─────────────────────────────────── -->
+<button id="ai-fab" aria-label="AI Asistan">
+  <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.38-1 1.73V7h1a7 7 0 0 1 7 7H3a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 12 2zM5 15v2a7 7 0 0 0 14 0v-2H5zm4 3a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm6 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+</button>
+
+<div id="ai-panel">
+  <div id="ai-panel-header">
+    <div class="ai-panel-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.38-1 1.73V7h1a7 7 0 0 1 7 7H3a7 7 0 0 1 7-7h1V5.73A2 2 0 0 1 12 2zM5 15v2a7 7 0 0 0 14 0v-2H5z"/></svg>
+    </div>
+    <div>
+      <h3>Haber Asistanı</h3>
+      <p>Arşivdeki haberlere sorabilirsin</p>
+    </div>
+    <button id="ai-close">✕</button>
+  </div>
+  <div id="ai-messages">
+    <div class="ai-msg bot">Hava kargo arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>
+  </div>
+  <div id="ai-suggestions">
+    <button class="ai-chip">Son haftanın öne çıkan haberleri</button>
+    <button class="ai-chip">Fiyat artışı haberleri</button>
+    <button class="ai-chip">Türkiye ile ilgili haberler</button>
+  </div>
+  <div id="ai-input-row">
+    <textarea id="ai-input" rows="1" placeholder="Bir soru sor…"></textarea>
+    <button id="ai-send">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const fab    = document.getElementById('ai-fab');
+  const panel  = document.getElementById('ai-panel');
+  const closeB = document.getElementById('ai-close');
+  const msgs   = document.getElementById('ai-messages');
+  const input  = document.getElementById('ai-input');
+  const sendB  = document.getElementById('ai-send');
+  const chips  = document.querySelectorAll('.ai-chip');
+
+  const AI_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/haber-ai';
+  const TOP_N = 15;
+
+  fab.addEventListener('click', () => panel.classList.toggle('open'));
+  closeB.addEventListener('click', () => panel.classList.remove('open'));
+
+  chips.forEach(c => c.addEventListener('click', () => {
+    input.value = c.textContent;
+    askAI();
+  }));
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAI(); }
+  });
+  sendB.addEventListener('click', askAI);
+
+  // ── Keyword scoring ───────────────────────────────────
+  function tokenize(text) {
+    return (text || '').toLowerCase()
+      .replace(/[^\w\sğüşıöçğüşıöç]/g, ' ')
+      .split(/\s+/).filter(w => w.length > 2);
+  }
+
+  function scoreArticle(article, queryTokens) {
+    let score = 0;
+    const title    = tokenize(article.title);
+    const summary  = tokenize(article.summary);
+    const category = tokenize(article.category);
+    const source   = tokenize(article.source);
+    queryTokens.forEach(q => {
+      if (title.some(t => t.includes(q) || q.includes(t)))    score += 4;
+      if (summary.some(t => t.includes(q) || q.includes(t)))  score += 2;
+      if (category.some(t => t.includes(q) || q.includes(t))) score += 2;
+      if (source.some(t => t.includes(q) || q.includes(t)))   score += 1;
+    });
+    return score;
+  }
+
+  function selectArticles(question) {
+    const articles = (typeof allArticles !== 'undefined') ? allArticles : [];
+    const tokens = tokenize(question);
+    if (!tokens.length) return articles.slice(-TOP_N);
+    const scored = articles.map(a => ({ a, s: scoreArticle(a, tokens) }));
+    scored.sort((x, y) => y.s - x.s);
+    const top = scored.slice(0, TOP_N);
+    // If all scores are 0, fallback to most recent
+    if (top.every(x => x.s === 0)) return articles.slice(-TOP_N);
+    return top.map(x => x.a);
+  }
+
+  // ── UI helpers ────────────────────────────────────────
+  function addMsg(text, role, extra) {
+    const div = document.createElement('div');
+    div.className = `ai-msg ${role}`;
+    div.textContent = text;
+    if (extra) div.appendChild(extra);
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  // ── Main ask ─────────────────────────────────────────
+  async function askAI() {
+    const q = input.value.trim();
+    if (!q) return;
+    input.value = '';
+    sendB.disabled = true;
+    document.getElementById('ai-suggestions').style.display = 'none';
+
+    addMsg(q, 'user');
+    const thinking = addMsg('Yanıt hazırlanıyor…', 'bot thinking');
+    msgs.scrollTop = msgs.scrollHeight;
+
+    const selected = selectArticles(q);
+    const payload = {
+      question: q,
+      articles: selected.map(a => ({
+        date: a.date, title: a.title, summary: a.summary,
+        category: a.category, source: a.source
+      }))
+    };
+
+    try {
+      const res = await fetch(AI_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      thinking.remove();
+
+      const answer = data.answer || 'Yanıt alınamadı.';
+      const sourceEl = document.createElement('div');
+      sourceEl.className = 'ai-source-pills';
+      const uniqueSources = [...new Set(selected.map(a => a.source))].slice(0, 5);
+      uniqueSources.forEach(s => {
+        const pill = document.createElement('span');
+        pill.className = 'ai-source-pill';
+        pill.textContent = s;
+        sourceEl.appendChild(pill);
+      });
+      addMsg(answer, 'bot', sourceEl);
+    } catch(e) {
+      thinking.remove();
+      addMsg('Bağlantı hatası. Lütfen tekrar deneyin.', 'bot');
+    }
+    sendB.disabled = false;
+  }
+})();
 </script>
 </body>
 </html>
