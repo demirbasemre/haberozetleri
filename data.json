@@ -69,23 +69,21 @@
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "risk",
-    "thyAnalysis": "My Freighter'ın Taşkent merkezli Avrupa ve Orta Asya ağını genişletmesi, Türk Kargo'nun bu bölgedeki pazar payı ve e-ticaret taşımacılığı için doğrudan rekabet oluşturmaktadır. Özellikle Liège, Maastricht ve İstanbul gibi Türk Kargo'nun freighter operasyonu yürüttüğü merkezlerin rotaya dahil edilmesi operasyonel baskı yaratabilir. Taşkent'in rakip bir hub olarak güçlenmesi, Orta Koridor üzerindeki transit geçiş üstünlüğümüzü etkileyebilir.",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Frankfurt Havalimanı'ndaki kapasite artışı ve modernize edilen altyapı, Turkish Cargo'nun Avrupa'daki en yoğun uçuş noktalarından birinde operasyonel süreçlerini hızlandıracaktır. Terminal 3'ün devreye girmesiyle oluşacak genel rahatlama, kargo elleçleme verimliliğini artırarak İstanbul üzerinden gerçekleşen transit taşımalar için operasyonel avantaj sağlayacaktır.",
     "etkiAlani": {
       "direct": [
-        "Turkistan and Russia",
-        "Central Europe",
-        "Western Europe",
-        "Southern Asia",
-        "ISTANBUL"
+        "Central Europe"
       ],
       "hub": [
         "China",
-        "Middle East"
+        "Southern Asia",
+        "Middle East",
+        "South East Asia"
       ]
     },
     "date": "Published: ",
-    "etkiAlaniGerekce": "Haberde geçen Taşkent, Almatı, Maastricht ve İstanbul noktaları Türk Kargo'nun aktif freighter rotalarıdır; bu bölgelerdeki Çin kaynaklı e-ticaret trafiği doğrudan rekabete açılmaktadır."
+    "etkiAlaniGerekce": "Frankfurt, Turkish Cargo'nun ana freighter destinasyonlarından biri olup; bu genişleme Çin, Güney Asya ve Orta Doğu'dan İstanbul aktarmalı gelen küresel kargo koridorlarının verimliliğini artıracaktır."
   },
   {
     "title": "Air Charter Service 208 Kedi ve Köpeğin Yeni Yuvalarına Ulaştırılmasına Yardımcı Oldu",
@@ -2403,7 +2401,7 @@
       "direct": [],
       "hub": []
     },
-    "thyImpact": "firsat",
+    "thyImpact": "notr",
     "thyAnalysis": "Frankfurt, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> ve <span style='color:#C8102E;font-weight:700;'>Turkish Airlines</span>'ın Avrupa'daki en kritik operasyon merkezlerinden biridir. Yeni terminalin açılması, havalimanı genelinde kapasite baskısını azaltarak <span style='color:#C8102E;font-weight:700;'>Lufthansa</span>'nın ana merkezindeki operasyonel verimliliği artıracaktır. Bu durum, Türkiye-Almanya hattındaki yoğun kargo ve yolcu trafiğinin daha akıcı yönetilmesine ve bağlantı sürelerinin iyileşmesine katkı sağlayabilir.",
     "etkiAlaniGerekce": ""
   },
