@@ -1893,11 +1893,13 @@ const TK_SHORT = {
 // Returns { y:'2026', m:'04', day:'27' } from any common format
 function extractDateParts(dateStr) {
   if (!dateStr) return null;
+  const s = String(dateStr);
   // ISO YYYY-MM-DD (possibly with time suffix)
-  const iso = String(dateStr).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (iso) return { y: iso[1], m: iso[2], day: iso[3] };
-  // Human-readable fallback ("April 27, 2026", "27/04/2026", etc.)
-  const d = new Date(dateStr);
+  // Strip "Published: Weekday, " prefix → "May 4, 2026"
+  const stripped = s.replace(/^Published\s*:\s*/i, '').replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*/i, '');
+  const d = new Date(stripped);
   if (!isNaN(d)) {
     return {
       y:   String(d.getFullYear()),
@@ -3057,37 +3059,18 @@ async function fredFetch(seriesId, limit) {
   const start = new Date();
   start.setMonth(start.getMonth() - 15);
   const s = start.toISOString().slice(0, 10);
-  const url = `${FRED_BASE}?series_id=${seriesId}&api_key=${FRED_KEY}&file_type=json&limit=${limit}&sort_order=desc&observation_start=${s}`;
-  
-  const proxies = [
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-    `https://api.codetabs.com/v1/proxy?url=${encodeURIComponent(url)}`,
-    `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    `https://thingproxy.freeboard.io/fetch/${url}`
-  ];
 
-  await new Promise(resolve => setTimeout(resolve, 800)); 
-  
-  for (const p of proxies) {
-    try {
-      const res = await fetch(p);
-      if (!res.ok) continue;
-      const text = await res.text();
-      if (!text || !text.includes('{')) continue;
-      
-      const d = JSON.parse(text);
-      if (d.error_message) continue;
-      
-      const obs = d.observations || [];
-      if (!obs.length) continue;
-
-      return obs
-        .filter(o => o.value !== '.')
-        .map(o => ({ date: o.date, value: parseFloat(o.value) }))
-        .reverse();
-    } catch (e) { console.error("Proxy failed:", p); }
-  }
-  throw new Error('FRED fetch failed');
+  // n8n server-side proxy — CORS-free
+  const proxyUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
+  const res = await fetch(proxyUrl);
+  if (!res.ok) throw new Error('FRED proxy ' + res.status);
+  const d = await res.json();
+  if (d.error_message) throw new Error(d.error_message);
+  const obs = d.observations || [];
+  return obs
+    .filter(o => o.value !== '.')
+    .map(o => ({ date: o.date, value: parseFloat(o.value) }))
+    .reverse();
 }
 
 async function wbFetch(indicator, countries) {
