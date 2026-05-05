@@ -10,8 +10,12 @@
     "duplicateOf": "",
     "thyImpact": "notr",
     "thyAnalysis": "",
-    "etkiAlani": [],
-    "date": "2026-05-04"
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "date": "2026-05-04",
+    "etkiAlaniGerekce": ""
   },
   {
     "title": "Teesside'da Sürücüsüz Otonom Yük Taşımacılığının Geleceği İçin Yeni Fizibilite Çalışması Başlatıldı",
@@ -24,8 +28,14 @@
     "duplicateOf": "",
     "thyImpact": "notr",
     "thyAnalysis": "Birleşik Krallık'taki otonom taşıma ve dijital gümrükleme projeleri, Turkish Cargo'nun bu bölgedeki kara yolu besleme servislerini (RFS) hızlandırarak operasyonel verimliliği artırabilir. Gümrük süreçlerinin kısalması, Türkiye ve Asya çıkışlı kargoların son varış noktasına daha hızlı ulaşmasını sağlayarak hizmet kalitesini yükseltir.",
-    "etkiAlani": [],
-    "date": "2026-05-04"
+    "etkiAlani": {
+      "direct": [
+        "Western Europe"
+      ],
+      "hub": []
+    },
+    "date": "2026-05-04",
+    "etkiAlaniGerekce": ""
   },
   {
     "title": "Amazon, Tüm İşletmeler İçin Tedarik Zinciri Hizmetlerini Başlattı",
@@ -38,8 +48,17 @@
     "duplicateOf": "",
     "thyImpact": "risk",
     "thyAnalysis": "Amazon'un lojistik altyapısını dış işletmelere açması, özellikle e-ticaret kargoları pazarında geleneksel taşıyıcılar için ciddi bir rekabet unsuru oluşturabilir ve pazar payı baskısı yaratabilir.",
-    "etkiAlani": [],
-    "date": "2026-05-05 05:15:38"
+    "etkiAlani": {
+      "direct": [
+        "Northern America",
+        "Western Europe"
+      ],
+      "hub": [
+        "China"
+      ]
+    },
+    "date": "2026-05-05 05:15:38",
+    "etkiAlaniGerekce": ""
   },
   {
     "title": "Awery Aviation Software, Beşinci IATA ONE Record Hackathon'unda Zafer Kazandı",
@@ -52,8 +71,17 @@
     "duplicateOf": "",
     "thyImpact": "firsat",
     "thyAnalysis": "IATA ONE Record veri standartlarının yaygınlaşması ve bu standartlara uyumlu dijital araçların gelişmesi, Turkish Cargo'nun dijitalleşme vizyonu ve operasyonel takip sistemleri için entegrasyon fırsatları sunmaktadır.",
-    "etkiAlani": [],
-    "date": "Published: "
+    "etkiAlani": {
+      "direct": [
+        "North East Asia"
+      ],
+      "hub": [
+        "Middle East",
+        "Northern America"
+      ]
+    },
+    "date": "Published: ",
+    "etkiAlaniGerekce": ""
   },
   {
     "title": "Air Charter Service 208 Kedi ve Köpeğin Yeni Yuvalarına Ulaştırılmasına Yardımcı Oldu",
