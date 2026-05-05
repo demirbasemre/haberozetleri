@@ -1701,22 +1701,14 @@
     <!-- Enerji fiyatları -->
     <section class="dash-section" id="dash-sec-enerji">
       <h2 class="dash-section-title">Enerji Fiyatları <span class="dash-section-badge">EIA / FRED</span></h2>
-      <div class="dash-charts">
+      <div class="dash-charts" style="grid-template-columns:1fr;">
         <div class="dash-chart-card">
-          <div class="dash-chart-title">Jet Yakıt Fiyatı</div>
+          <div class="dash-chart-title">Jet Yakıt &amp; Brent Ham Petrol</div>
           <div class="dash-chart-meta">
-            <span>U.S. Gulf Coast Kerosene-Type · $/galon · Haftalık</span>
-            <span class="dash-chart-badge">WJFUELUSGULF</span>
+            <span>$/varil · Aylık son değer</span>
+            <span class="dash-chart-badge">WJFUELUSGULF &amp; DCOILBRENTEU</span>
           </div>
-          <div class="dash-chart-wrap loading"><canvas id="chart-jetfuel"></canvas></div>
-        </div>
-        <div class="dash-chart-card">
-          <div class="dash-chart-title">Brent Ham Petrol</div>
-          <div class="dash-chart-meta">
-            <span>Europe Brent Spot Price · $/varil · Günlük</span>
-            <span class="dash-chart-badge">DCOILBRENTEU</span>
-          </div>
-          <div class="dash-chart-wrap loading"><canvas id="chart-brent"></canvas></div>
+          <div class="dash-chart-wrap loading"><canvas id="chart-energy"></canvas></div>
         </div>
       </div>
       <div class="dash-section-note">ⓘ Veri FRED (St. Louis Fed) üzerinden ücretsiz <code>DEMO_KEY</code> ile çekiliyor. Limit aşılırsa <a href="https://fredaccount.stlouisfed.org/login/secure/" target="_blank" rel="noopener">api.stlouisfed.org</a>'dan ücretsiz anahtar alınabilir.</div>
@@ -3294,49 +3286,51 @@ async function loadDashboard() {
     fredFetch('WJFUELUSGULF', 80).catch(() => null),
     fredFetch('DCOILBRENTEU', 80).catch(() => null)
   ]).then(([jet, brent]) => {
-    // Jet fuel
+    // Kartlar
     if (jet && jet.length) {
       const last = jet[jet.length - 1];
-      const lastValuePerBarrel = last.value * 42;
-      setCard('dc-jetfuel', '$' + lastValuePerBarrel.toFixed(2), pctChg(jet.slice(-2)),
-        'ABD Gulf Coast · varil başına',
-        `Son veri: ${last.date} · Kaynak: EIA/FRED`);
-      const step = Math.max(1, Math.floor(jet.length / 26));
-      lineChart('chart-jetfuel',
-        jet.filter((_,i,a) => i % step === 0 || i === a.length - 1).map(d => d.date.slice(0,7)),
-        [{
-          label: 'Jet Yakıt ($/varil)',
-          data: jet.filter((_,i,a) => i % step === 0 || i === a.length - 1).map(d => d.value * 42),
-          borderColor: '#E63946', backgroundColor: 'rgba(230,57,70,0.08)',
-          fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2
-        }],
-        v => '$' + v.toFixed(2)
-      );
+      setCard('dc-jetfuel', '$' + (last.value * 42).toFixed(2), pctChg(jet.slice(-2)),
+        'ABD Gulf Coast · varil başına', `Son veri: ${last.date} · Kaynak: EIA/FRED`);
     } else {
       setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
-      chartErr('chart-jetfuel', 'Veri alınamadı');
     }
-
-    // Brent
     if (brent && brent.length) {
       const last = brent[brent.length - 1];
       setCard('dc-brent', '$' + last.value.toFixed(1), pctChg(brent.slice(-2)),
-        'Europe Brent Spot · varil başına',
-        `Son veri: ${last.date} · Kaynak: EIA/FRED`);
-      const step = Math.max(1, Math.floor(brent.length / 30));
-      lineChart('chart-brent',
-        brent.filter((_,i,a) => i % step === 0 || i === a.length - 1).map(d => d.date.slice(5)),
-        [{
-          label: 'Brent ($/varil)',
-          data: brent.filter((_,i,a) => i % step === 0 || i === a.length - 1).map(d => d.value),
-          borderColor: '#1D6FE8', backgroundColor: 'rgba(29,111,232,0.07)',
-          fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2
-        }],
+        'Europe Brent Spot · varil başına', `Son veri: ${last.date} · Kaynak: EIA/FRED`);
+    } else {
+      setCard('dc-brent', '—', null, '', 'Veri alınamadı');
+    }
+
+    // Tek grafik: aylık son değer ile hizala
+    if ((jet && jet.length) || (brent && brent.length)) {
+      const toMonthly = (arr, transform) => {
+        const map = {};
+        (arr || []).forEach(d => { map[d.date.slice(0, 7)] = transform(d.value); });
+        return map;
+      };
+      const jetM   = toMonthly(jet,   v => v * 42);
+      const brentM = toMonthly(brent, v => v);
+      const labels = [...new Set([...Object.keys(jetM), ...Object.keys(brentM)])].sort();
+      lineChart('chart-energy', labels,
+        [
+          {
+            label: 'Jet Yakıt ($/varil)',
+            data: labels.map(m => jetM[m] ?? null),
+            borderColor: '#E63946', backgroundColor: 'rgba(230,57,70,0.07)',
+            fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true
+          },
+          {
+            label: 'Brent Ham Petrol ($/varil)',
+            data: labels.map(m => brentM[m] ?? null),
+            borderColor: '#1D6FE8', backgroundColor: 'rgba(29,111,232,0.07)',
+            fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true
+          }
+        ],
         v => '$' + v.toFixed(1)
       );
     } else {
-      setCard('dc-brent', '—', null, '', 'Veri alınamadı');
-      chartErr('chart-brent', 'Veri alınamadı');
+      chartErr('chart-energy', 'Veri alınamadı');
     }
   });
 
