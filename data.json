@@ -69,19 +69,23 @@
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "firsat",
-    "thyAnalysis": "IATA ONE Record veri standartlarının yaygınlaşması ve bu standartlara uyumlu dijital araçların gelişmesi, Turkish Cargo'nun dijitalleşme vizyonu ve operasyonel takip sistemleri için entegrasyon fırsatları sunmaktadır.",
+    "thyImpact": "risk",
+    "thyAnalysis": "My Freighter'ın Taşkent merkezli Avrupa ve Orta Asya ağını genişletmesi, Türk Kargo'nun bu bölgedeki pazar payı ve e-ticaret taşımacılığı için doğrudan rekabet oluşturmaktadır. Özellikle Liège, Maastricht ve İstanbul gibi Türk Kargo'nun freighter operasyonu yürüttüğü merkezlerin rotaya dahil edilmesi operasyonel baskı yaratabilir. Taşkent'in rakip bir hub olarak güçlenmesi, Orta Koridor üzerindeki transit geçiş üstünlüğümüzü etkileyebilir.",
     "etkiAlani": {
       "direct": [
-        "North East Asia"
+        "Turkistan and Russia",
+        "Central Europe",
+        "Western Europe",
+        "Southern Asia",
+        "ISTANBUL"
       ],
       "hub": [
-        "Middle East",
-        "Northern America"
+        "China",
+        "Middle East"
       ]
     },
     "date": "Published: ",
-    "etkiAlaniGerekce": ""
+    "etkiAlaniGerekce": "Haberde geçen Taşkent, Almatı, Maastricht ve İstanbul noktaları Türk Kargo'nun aktif freighter rotalarıdır; bu bölgelerdeki Çin kaynaklı e-ticaret trafiği doğrudan rekabete açılmaktadır."
   },
   {
     "title": "Air Charter Service 208 Kedi ve Köpeğin Yeni Yuvalarına Ulaştırılmasına Yardımcı Oldu",
@@ -2399,8 +2403,8 @@
       "direct": [],
       "hub": []
     },
-    "thyImpact": "notr",
-    "thyAnalysis": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Frankfurt, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> ve <span style='color:#C8102E;font-weight:700;'>Turkish Airlines</span>'ın Avrupa'daki en kritik operasyon merkezlerinden biridir. Yeni terminalin açılması, havalimanı genelinde kapasite baskısını azaltarak <span style='color:#C8102E;font-weight:700;'>Lufthansa</span>'nın ana merkezindeki operasyonel verimliliği artıracaktır. Bu durum, Türkiye-Almanya hattındaki yoğun kargo ve yolcu trafiğinin daha akıcı yönetilmesine ve bağlantı sürelerinin iyileşmesine katkı sağlayabilir.",
     "etkiAlaniGerekce": ""
   },
   {
