@@ -1585,6 +1585,17 @@
   #ai-send:disabled { background: var(--border); cursor: not-allowed; }
   .ai-source-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
   .ai-source-pill { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: rgba(29,111,232,0.1); color: #1D6FE8; }
+  .ai-msg.bot { line-height: 1.6; }
+  .ai-line { display: block; }
+  .ai-line-empty { display: block; height: 6px; }
+  .ai-bullet-line { display: flex; gap: 6px; padding: 1px 0; }
+  .ai-bullet-line::before { content: '•'; color: #1D6FE8; font-weight: 700; flex-shrink: 0; }
+  .ai-card-btns { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .ai-card-yes { padding: 5px 16px; border-radius: 8px; background: #1D6FE8; color: #fff; border: none; font-size: 12px; cursor: pointer; transition: background .15s; }
+  .ai-card-yes:hover { background: #1558c0; }
+  .ai-card-no { padding: 5px 14px; border-radius: 8px; background: var(--surface); color: var(--text-2); border: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: background .15s; }
+  .ai-card-no:hover { background: var(--hover); }
+  .ai-card-done { font-size: 12px; color: var(--text-3); font-style: italic; }
 </style>
 </head>
 <body>
@@ -3733,14 +3744,68 @@ async function loadDashboard() {
   }
 
   // ── UI helpers ────────────────────────────────────────
-  function addMsg(text, role, extra) {
+  function formatAIText(text) {
+    const escaped = text
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const lines = escaped.split('\n');
+    return lines.map(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return '<span class="ai-line-empty"></span>';
+      const bulletMatch = trimmed.match(/^[•\-\*]\s+(.+)/);
+      if (bulletMatch) {
+        const content = bulletMatch[1].replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return `<span class="ai-bullet-line">${content}</span>`;
+      }
+      const content = trimmed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      return `<span class="ai-line">${content}</span>`;
+    }).join('');
+  }
+
+  function addMsg(text, role) {
     const div = document.createElement('div');
     div.className = `ai-msg ${role}`;
     div.textContent = text;
-    if (extra) div.appendChild(extra);
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
     return div;
+  }
+
+  function addBotHTML(html) {
+    const div = document.createElement('div');
+    div.className = 'ai-msg bot';
+    div.innerHTML = html;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return div;
+  }
+
+  function addShowCardsPrompt(articles) {
+    const div = document.createElement('div');
+    div.className = 'ai-msg bot';
+    div.innerHTML = `<span class="ai-line">Bu haberler için sayfadaki kartları getireyim mi?</span><div class="ai-card-btns"><button class="ai-card-yes">Evet, göster</button><button class="ai-card-no">Hayır</button></div>`;
+
+    div.querySelector('.ai-card-yes').addEventListener('click', () => {
+      showMatchingCards(articles);
+      div.querySelector('.ai-card-btns').innerHTML = '<span class="ai-card-done">Kartlar gösterildi ✓</span>';
+    });
+    div.querySelector('.ai-card-no').addEventListener('click', () => {
+      div.querySelector('.ai-card-btns').innerHTML = '<span class="ai-card-done">Tamam</span>';
+    });
+
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function showMatchingCards(articles) {
+    const urls = new Set((articles || []).map(a => a.url).filter(Boolean));
+    const allA = (typeof allArticles !== 'undefined') ? allArticles : [];
+    const matched = urls.size > 0 ? allA.filter(a => urls.has(a.articleUrl)) : [];
+    if (matched.length === 0) return;
+    panel.classList.remove('open');
+    renderCards(matched);
+    updateStats(matched, allA.length);
+    const cardsEl = document.getElementById('cards');
+    if (cardsEl) setTimeout(() => cardsEl.scrollIntoView({ behavior: 'smooth' }), 100);
   }
 
   // ── Main ask ─────────────────────────────────────────
@@ -3755,35 +3820,19 @@ async function loadDashboard() {
     const thinking = addMsg('Yanıt hazırlanıyor…', 'bot thinking');
     msgs.scrollTop = msgs.scrollHeight;
 
-    const selected = selectArticles(q);
-    const payload = {
-      question: q,
-      articles: selected.map(a => ({
-        date: a.date, title: a.title, summary: a.summary,
-        category: a.category, source: a.source
-      }))
-    };
-
     try {
       const res = await fetch(AI_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ question: q })
       });
       const data = await res.json();
       thinking.remove();
-
-      const answer = data.answer || 'Yanıt alınamadı.';
-      const sourceEl = document.createElement('div');
-      sourceEl.className = 'ai-source-pills';
-      const uniqueSources = [...new Set(selected.map(a => a.source))].slice(0, 5);
-      uniqueSources.forEach(s => {
-        const pill = document.createElement('span');
-        pill.className = 'ai-source-pill';
-        pill.textContent = s;
-        sourceEl.appendChild(pill);
-      });
-      addMsg(answer, 'bot', sourceEl);
+      const answerText = data.answer || 'Yanıt alınamadı.';
+      addBotHTML(formatAIText(answerText));
+      if (data.articles && data.articles.length > 0) {
+        addShowCardsPrompt(data.articles);
+      }
     } catch(e) {
       thinking.remove();
       addMsg('Bağlantı hatası. Lütfen tekrar deneyin.', 'bot');
