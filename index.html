@@ -2940,11 +2940,17 @@ fetch(DATA_URL)
     const raw = Array.isArray(data) ? data : (data.articles || []);
     // Merge duplicates: attach extra sources to the original article
     const idMap = new Map();
-    raw.forEach(a => { idMap.set(String(a.id), a); a._sources = [{ source: a.source, link: a.link }]; });
+    const titleMap = new Map();
+    raw.forEach(a => {
+      a._sources = [{ source: a.source, link: a.link }];
+      if (a.id != null) idMap.set(String(a.id), a);
+      if (a.title) titleMap.set(a.title.trim(), a);
+    });
     allArticles = raw.filter(a => {
       if (a.isDuplicate && a.duplicateOf) {
-        const orig = idMap.get(String(a.duplicateOf));
-        if (orig) { orig._sources.push({ source: a.source, link: a.link }); return false; }
+        const key = String(a.duplicateOf);
+        const orig = idMap.get(key) || titleMap.get(key.trim());
+        if (orig && orig !== a) { orig._sources.push({ source: a.source, link: a.link }); return false; }
       }
       return true;
     });
