@@ -2185,11 +2185,14 @@ function formatDateShort(dateStr) {
 }
 
 function getFavicon(source) {
+  const direct = {
+    'aircargoupdate': 'https://aircargoupdate.com/wp-content/uploads/2022/08/cropped-logo-32x32.png'
+  };
+  if (direct[source]) return direct[source];
   const domains = {
     'aircargonews':   'aircargonews.net',
     'aircargoweek':   'aircargoweek.com',
     'stattimes':      'stattimes.com',
-    'aircargoupdate': 'aircargoupdate.com',
     'payloadasia':    'payloadasia.com'
   };
   const domain = domains[source] || source;
@@ -2754,10 +2757,6 @@ function buildSourceDropdown() {
   const panel = document.getElementById('source-panel');
   panel.innerHTML = '';
 
-  const lbl = document.createElement('div');
-  lbl.className = 'dropdown-section-label';
-  lbl.textContent = 'Kaynak Seç';
-  panel.appendChild(lbl);
 
   Object.entries(SOURCE_LABELS).forEach(([key, label]) => {
     const opt = document.createElement('div');
