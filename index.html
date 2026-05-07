@@ -3799,7 +3799,7 @@ async function loadDashboard() {
   function showMatchingCards(articles) {
     const urls = new Set((articles || []).map(a => a.url).filter(Boolean));
     const allA = (typeof allArticles !== 'undefined') ? allArticles : [];
-    const matched = urls.size > 0 ? allA.filter(a => urls.has(a.articleUrl)) : [];
+    const matched = urls.size > 0 ? allA.filter(a => urls.has(a.link) || urls.has(a.articleUrl)) : [];
     if (matched.length === 0) return;
     panel.classList.remove('open');
     renderCards(matched);
