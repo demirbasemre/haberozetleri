@@ -447,6 +447,43 @@
     line-height: 1.4;
   }
 
+  /* Source filter option */
+  .source-option {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 8px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.13s;
+    font-size: 12.5px;
+    color: var(--text);
+    user-select: none;
+    min-height: 36px;
+  }
+  .source-option:hover { background: var(--bg); }
+  .source-option.selected { background: rgba(13,17,23,0.05); }
+  [data-theme="dark"] .source-option.selected { background: rgba(255,255,255,0.06); }
+
+  .source-favicon-filter {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+  .source-count {
+    background: var(--red);
+    color: white;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    min-width: 16px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
   /* Analysis toggle */
   .fdd-toggle {
     display: inline-flex;
@@ -1734,6 +1771,23 @@
       </div>
     </div>
 
+    <!-- Kaynak -->
+    <div class="fdd-wrap">
+      <button class="fdd-btn" id="source-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Kaynak filtresi">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+          <path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/>
+        </svg>
+        <span id="source-btn-label">Kaynak</span>
+        <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      <div class="fdd-panel" id="source-panel" role="listbox" aria-multiselectable="true" aria-label="Kaynak seç">
+        <!-- Populated by buildSourceDropdown() -->
+      </div>
+    </div>
+
     <div class="filter-sep"></div>
 
     <!-- Analiz toggle -->
@@ -2062,6 +2116,7 @@ let activeDateDay    = null;   // '01'..'31'
 let searchQuery      = '';
 let activeAirlines   = new Set();
 let activeRegions    = new Set();
+let activeSources    = new Set();
 let onlyAnalysis     = false;
 let onlyMultiSource  = false;
 
@@ -2174,12 +2229,18 @@ function getFilteredArticles() {
                           (a.impact && a.impact !== 'notr') ||
                           (a.analysis && a.analysis.trim() !== '');
     const multiSourceMatch = !onlyMultiSource || (a._sources && a._sources.length > 1);
+    const sourceMatch = activeSources.size === 0 || (() => {
+      const allSrcs = (a._sources && a._sources.length > 0)
+        ? a._sources.map(s => s.source)
+        : [a.source];
+      return allSrcs.some(s => activeSources.has(s));
+    })();
     const q = searchQuery.toLowerCase();
     const searchMatch = !q ||
       stripHtml(a.title   || '').toLowerCase().includes(q) ||
       stripHtml(a.summary || '').toLowerCase().includes(q) ||
       (a.source || '').toLowerCase().includes(q);
-    return catMatch && dateMatch && airlineMatch && regionMatch && analysisMatch && multiSourceMatch && searchMatch;
+    return catMatch && dateMatch && airlineMatch && regionMatch && analysisMatch && multiSourceMatch && sourceMatch && searchMatch;
   });
 }
 
@@ -2437,7 +2498,7 @@ const CAT_SHORT = {
 };
 
 // ── Dropdown management ──────────────────────────────────────
-const ALL_DROPDOWNS = ['cat', 'date', 'region', 'airline'];
+const ALL_DROPDOWNS = ['cat', 'date', 'region', 'airline', 'source'];
 function panelId(id) { return id === 'airline' ? 'airline-dropdown' : `${id}-panel`; }
 
 function closeDropdown(id) {
@@ -2689,8 +2750,72 @@ function syncAirlineBtn() {
   syncClearBtn();
 }
 
+function buildSourceDropdown() {
+  const panel = document.getElementById('source-panel');
+  panel.innerHTML = '';
+
+  const lbl = document.createElement('div');
+  lbl.className = 'dropdown-section-label';
+  lbl.textContent = 'Kaynak Seç';
+  panel.appendChild(lbl);
+
+  Object.entries(SOURCE_LABELS).forEach(([key, label]) => {
+    const opt = document.createElement('div');
+    opt.className = 'source-option' + (activeSources.has(key) ? ' selected' : '');
+    opt.dataset.id = key;
+    opt.setAttribute('role', 'option');
+    opt.setAttribute('aria-selected', activeSources.has(key) ? 'true' : 'false');
+    opt.innerHTML = `
+      <div class="airline-check">
+        <svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="1 3.5 3.5 6 8 1"/>
+        </svg>
+      </div>
+      <img class="source-favicon-filter" src="${getFavicon(key)}" alt="" loading="lazy" onerror="this.style.display='none'">
+      <span class="airline-label">${label}</span>
+    `;
+    opt.addEventListener('click', e => {
+      e.stopPropagation();
+      if (activeSources.has(key)) {
+        activeSources.delete(key);
+        opt.classList.remove('selected');
+        opt.setAttribute('aria-selected', 'false');
+      } else {
+        activeSources.add(key);
+        opt.classList.add('selected');
+        opt.setAttribute('aria-selected', 'true');
+      }
+      syncSourceBtn();
+      render();
+    });
+    panel.appendChild(opt);
+  });
+}
+
+function syncSourceBtn() {
+  const btn   = document.getElementById('source-btn');
+  const lbl   = document.getElementById('source-btn-label');
+  const count = activeSources.size;
+  btn.querySelector('.source-count')?.remove();
+
+  if (count > 0) {
+    btn.classList.add('active');
+    lbl.textContent = count === 1
+      ? SOURCE_LABELS[[...activeSources][0]] || 'Kaynak'
+      : `${count} Kaynak`;
+    const badge = document.createElement('span');
+    badge.className = 'source-count';
+    badge.textContent = count;
+    btn.insertBefore(badge, btn.querySelector('.fdd-chevron'));
+  } else {
+    btn.classList.remove('active');
+    lbl.textContent = 'Kaynak';
+  }
+  syncClearBtn();
+}
+
 function syncClearBtn() {
-  const hasAny = activeAirlines.size > 0 || activeRegions.size > 0 || onlyAnalysis || onlyMultiSource || activeCat !== 'all'
+  const hasAny = activeAirlines.size > 0 || activeRegions.size > 0 || activeSources.size > 0 || onlyAnalysis || onlyMultiSource || activeCat !== 'all'
                || activeDateYear || activeDateMonth || activeDateDay;
   document.getElementById('clear-filters').style.display = hasAny ? 'inline-flex' : 'none';
 }
@@ -2881,6 +3006,12 @@ document.getElementById('airline-btn').addEventListener('click', e => {
   if (isOpen) closeDropdown('airline'); else openDropdown('airline');
 });
 
+document.getElementById('source-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  const isOpen = document.getElementById('source-panel').classList.contains('open');
+  if (isOpen) closeDropdown('source'); else { buildSourceDropdown(); openDropdown('source'); }
+});
+
 // Close all dropdowns on outside click or Escape
 document.addEventListener('click', closeAllDropdowns);
 document.addEventListener('keydown', e => {
@@ -2911,6 +3042,8 @@ document.getElementById('multi-source-toggle').addEventListener('click', () => {
 document.getElementById('clear-filters').addEventListener('click', () => {
   activeAirlines.clear();
   activeRegions.clear();
+  activeSources.clear();
+  syncSourceBtn();
   onlyAnalysis = false;
   onlyMultiSource = false;
   document.getElementById('multi-source-toggle').classList.remove('active');
