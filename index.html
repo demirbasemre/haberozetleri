@@ -1596,6 +1596,7 @@
   .ai-card-no { padding: 5px 14px; border-radius: 8px; background: var(--surface); color: var(--text-2); border: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: background .15s; }
   .ai-card-no:hover { background: var(--hover); }
   .ai-card-done { font-size: 12px; color: var(--text-3); font-style: italic; }
+  .ai-token-info { font-size: 10px; color: var(--text-3); text-align: right; margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -3829,7 +3830,8 @@ async function loadDashboard() {
       const data = await res.json();
       thinking.remove();
       const answerText = data.answer || 'Yanıt alınamadı.';
-      addBotHTML(formatAIText(answerText));
+      const tokenInfo = data.tokensUsed ? `<div class="ai-token-info">${data.tokensUsed} token · çıktı: ${data.outputTokens || '?'}</div>` : '';
+      addBotHTML(formatAIText(answerText) + tokenInfo);
       if (data.articles && data.articles.length > 0) {
         addShowCardsPrompt(data.articles);
       }
