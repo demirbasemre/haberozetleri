@@ -801,6 +801,64 @@
     gap: 8px;
   }
 
+  /* Source count badge */
+  .source-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(29,111,232,0.09);
+    border: 1px solid rgba(29,111,232,0.18);
+    border-radius: 20px;
+    padding: 2px 8px 2px 6px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    user-select: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    touch-action: manipulation;
+    min-height: 22px;
+  }
+  .source-badge:hover {
+    background: rgba(29,111,232,0.16);
+    border-color: rgba(29,111,232,0.32);
+  }
+  .source-badge:active { transform: scale(0.96); }
+  .source-badge svg { transition: transform 0.2s; flex-shrink: 0; }
+  .source-badge.open svg { transform: rotate(180deg); }
+
+  [data-theme="dark"] .source-badge {
+    background: rgba(77,142,245,0.12);
+    border-color: rgba(77,142,245,0.22);
+    color: #4D8EF5;
+  }
+  [data-theme="dark"] .source-badge:hover {
+    background: rgba(77,142,245,0.2);
+    border-color: rgba(77,142,245,0.38);
+  }
+
+  /* Extra sources panel */
+  .extra-sources {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.25s ease-out, opacity 0.2s;
+    opacity: 0;
+  }
+  .extra-sources.open {
+    max-height: 300px;
+    opacity: 1;
+  }
+  .extra-sources-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    margin-top: 8px;
+  }
+
   .card-source {
     display: flex;
     align-items: center;
@@ -2181,18 +2239,31 @@ function buildCardHTML(article) {
         ${(() => {
           const sources = (article._sources && article._sources.length > 0) ? article._sources : [{ source: article.source, link: article.link }];
           const linkSvg = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+          const chevronSvg = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>`;
+          const primary = sources[0];
           if (sources.length === 1) {
-            const s = sources[0];
             return `<div class="card-footer">
-              <div class="card-source"><img class="source-favicon" src="${getFavicon(s.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[s.source] || s.source || ''}</div>
-              ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+              <div class="card-source"><img class="source-favicon" src="${getFavicon(primary.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[primary.source] || primary.source || ''}</div>
+              ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
             </div>`;
           }
-          const rows = sources.map(s => `<div class="card-source-row">
+          const extra = sources.slice(1);
+          const extraRows = extra.map(s => `<div class="card-source-row">
             <div class="card-source"><img class="source-favicon" src="${getFavicon(s.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[s.source] || s.source || ''}</div>
             ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
           </div>`).join('');
-          return `<div class="card-footer card-footer-multi">${rows}</div>`;
+          return `<div class="card-footer card-footer-multi">
+            <div class="card-source-row">
+              <div class="card-source"><img class="source-favicon" src="${getFavicon(primary.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[primary.source] || primary.source || ''}</div>
+              <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+                ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+                <button class="source-badge" onclick="toggleExtraSources(this)" aria-expanded="false" aria-label="${extra.length} kaynak daha">+${extra.length} ${chevronSvg}</button>
+              </div>
+            </div>
+            <div class="extra-sources">
+              <div class="extra-sources-inner">${extraRows}</div>
+            </div>
+          </div>`;
         })()}
       </div>
     </div>`;
@@ -2942,6 +3013,14 @@ fetch(DATA_URL)
 </div>
 
 <script>
+function toggleExtraSources(btn) {
+  const footer = btn.closest('.card-footer-multi');
+  const panel = footer.querySelector('.extra-sources');
+  const isOpen = panel.classList.toggle('open');
+  btn.classList.toggle('open', isOpen);
+  btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+}
+
 function openAnalysisDrawer(btn) {
   const text = btn.getAttribute('data-analysis') || '';
   document.getElementById('analysisDrawerBody').innerHTML = text;
