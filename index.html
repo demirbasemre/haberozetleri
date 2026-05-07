@@ -1732,6 +1732,16 @@
       Analizli Haberler
     </button>
 
+    <!-- Çoklayan haberler toggle -->
+    <button class="fdd-toggle" id="multi-source-toggle" aria-pressed="false">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6h16M4 10h16M4 14h8"/>
+        <circle cx="17" cy="17" r="4"/>
+        <path d="M17 15v2l1 1"/>
+      </svg>
+      Çoklayan Haberler
+    </button>
+
     <!-- Clear all -->
     <button class="clear-btn" id="clear-filters" style="display:none" aria-label="Tüm filtreleri temizle">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -2041,6 +2051,7 @@ let searchQuery      = '';
 let activeAirlines   = new Set();
 let activeRegions    = new Set();
 let onlyAnalysis     = false;
+let onlyMultiSource  = false;
 
 // ── Infinite scroll state ────────────────────────────────────
 const PAGE_SIZE    = 20;
@@ -2150,12 +2161,13 @@ function getFilteredArticles() {
     const analysisMatch = !onlyAnalysis ||
                           (a.impact && a.impact !== 'notr') ||
                           (a.analysis && a.analysis.trim() !== '');
+    const multiSourceMatch = !onlyMultiSource || (a._sources && a._sources.length > 1);
     const q = searchQuery.toLowerCase();
     const searchMatch = !q ||
       stripHtml(a.title   || '').toLowerCase().includes(q) ||
       stripHtml(a.summary || '').toLowerCase().includes(q) ||
       (a.source || '').toLowerCase().includes(q);
-    return catMatch && dateMatch && airlineMatch && regionMatch && analysisMatch && searchMatch;
+    return catMatch && dateMatch && airlineMatch && regionMatch && analysisMatch && multiSourceMatch && searchMatch;
   });
 }
 
@@ -2663,7 +2675,7 @@ function syncAirlineBtn() {
 }
 
 function syncClearBtn() {
-  const hasAny = activeAirlines.size > 0 || activeRegions.size > 0 || onlyAnalysis || activeCat !== 'all'
+  const hasAny = activeAirlines.size > 0 || activeRegions.size > 0 || onlyAnalysis || onlyMultiSource || activeCat !== 'all'
                || activeDateYear || activeDateMonth || activeDateDay;
   document.getElementById('clear-filters').style.display = hasAny ? 'inline-flex' : 'none';
 }
@@ -2870,11 +2882,24 @@ document.getElementById('analysis-toggle').addEventListener('click', () => {
   render();
 });
 
+// Multi-source toggle
+document.getElementById('multi-source-toggle').addEventListener('click', () => {
+  onlyMultiSource = !onlyMultiSource;
+  const btn = document.getElementById('multi-source-toggle');
+  btn.classList.toggle('active', onlyMultiSource);
+  btn.setAttribute('aria-pressed', onlyMultiSource);
+  syncClearBtn();
+  render();
+});
+
 // Clear all filters
 document.getElementById('clear-filters').addEventListener('click', () => {
   activeAirlines.clear();
   activeRegions.clear();
   onlyAnalysis = false;
+  onlyMultiSource = false;
+  document.getElementById('multi-source-toggle').classList.remove('active');
+  document.getElementById('multi-source-toggle').setAttribute('aria-pressed', 'false');
   activeCat = 'all';
   activeDateYear = null; activeDateMonth = null; activeDateDay = null;
 
