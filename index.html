@@ -2190,6 +2190,9 @@ function parseEtkiAlani(raw) {
     const subs = raw.map(r => typeof r === 'string' ? r : (r.Sub_Region || r.sub_region || r.region || r.name || '')).filter(Boolean);
     return { direct: subs, hub: [] };
   }
+  if (typeof raw === 'object') {
+    return { direct: Array.isArray(raw.direct) ? raw.direct : [], hub: Array.isArray(raw.hub) ? raw.hub : [] };
+  }
   return { direct: [], hub: [] };
 }
 
