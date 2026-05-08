@@ -2259,9 +2259,11 @@ function getFilteredArticles() {
                               return tk ? tk.subs.some(s => activeRegions.has(s)) : false;
                             });
                           })();
+    const impactVal = a.impact || a.thyImpact;
+    const analysisVal = a.analysis || a.thyAnalysis;
     const analysisMatch = !onlyAnalysis ||
-                          (a.impact && a.impact !== 'notr') ||
-                          (a.analysis && a.analysis.trim() !== '');
+                          (impactVal && impactVal !== 'notr') ||
+                          (analysisVal && String(analysisVal).trim() !== '');
     const multiSourceMatch = !onlyMultiSource || (a._sources && a._sources.length > 1);
     const sourceMatch = activeSources.size === 0 || (() => {
       const allSrcs = (a._sources && a._sources.length > 0)
@@ -2305,7 +2307,9 @@ function parseEtkiAlani(raw) {
 
 function buildCardHTML(article) {
   const hex = CAT_HEX[article.category] || '#6B7280';
-  const hasAnalysis = article.impact && article.impact !== 'notr' && article.analysis;
+  const impactVal = article.impact || article.thyImpact;
+  const analysisVal = article.analysis || article.thyAnalysis;
+  const hasAnalysis = impactVal && impactVal !== 'notr' && analysisVal;
   const sourceLabel = SOURCE_LABELS[article.source] || article.source || '';
 
   const etkiData = parseEtkiAlani(article.etkiAlani);
@@ -2353,7 +2357,7 @@ function buildCardHTML(article) {
         <div class="card-summary">${article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>'}</div>
         ${etkiHtml}
         ${hasAnalysis ? `
-          <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(article.analysis||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
+          <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(analysisVal||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
             Analiz
           </button>
@@ -2482,9 +2486,11 @@ function updateStats(filteredArticles, totalCount) {
   if (!el) return;
 
   const filtered = filteredArticles.length;
-  const analysisCount = filteredArticles.filter(a =>
-    (a.impact && a.impact !== 'notr') || (a.analysis && String(a.analysis).trim())
-  ).length;
+  const analysisCount = filteredArticles.filter(a => {
+    const imp = a.impact || a.thyImpact;
+    const ana = a.analysis || a.thyAnalysis;
+    return (imp && imp !== 'notr') || (ana && String(ana).trim());
+  }).length;
 
   // Count articles (unique) per TK_Region and Sub_Region
   const tkCounts  = {};
