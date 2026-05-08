@@ -420,6 +420,11 @@
   .airline-option.selected .airline-check { background: var(--navy); border-color: var(--navy); }
   .airline-option.selected .airline-check svg { display: block; }
   .airline-check svg { display: none; }
+  .source-option.selected .airline-check { background: var(--navy); border-color: var(--navy); }
+  .source-option.selected .airline-check svg { display: block; }
+  [data-theme="dark"] .airline-check { background: #2a2d3a; }
+  [data-theme="dark"] .airline-option.selected .airline-check { background: var(--accent); border-color: var(--accent); }
+  [data-theme="dark"] .source-option.selected .airline-check { background: var(--accent); border-color: var(--accent); }
   .airline-label { flex: 1; line-height: 1.3; }
 
   .primary-badge {
@@ -2199,6 +2204,32 @@ function getFavicon(source) {
   return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
 }
 
+function getAirlineLogo(airlineId) {
+  const logos = {
+    'turkishairlines': 'https://www.google.com/s2/favicons?sz=32&domain=turkishcargo.com',
+    'fedex':           'https://www.google.com/s2/favicons?sz=32&domain=fedex.com',
+    'ups':             'https://www.google.com/s2/favicons?sz=32&domain=ups.com',
+    'dhl':             'https://www.google.com/s2/favicons?sz=32&domain=dhl.com',
+    'emirates':        'https://www.google.com/s2/favicons?sz=32&domain=emirates.com',
+    'qatar':           'https://www.google.com/s2/favicons?sz=32&domain=qatarairways.com',
+    'lufthansa':       'https://www.google.com/s2/favicons?sz=32&domain=lufthansa.com',
+    'cathay':          'https://www.google.com/s2/favicons?sz=32&domain=cathaypacific.com',
+    'atlas':           'https://www.google.com/s2/favicons?sz=32&domain=atlasair.com',
+    'airfrance':       'https://www.google.com/s2/favicons?sz=32&domain=airfrancecargo.com',
+    'korean':          'https://www.google.com/s2/favicons?sz=32&domain=koreanair.com',
+    'singapore':       'https://www.google.com/s2/favicons?sz=32&domain=singaporeair.com',
+    'cargolux':        'https://www.google.com/s2/favicons?sz=32&domain=cargolux.com',
+    'amazon':          'https://www.google.com/s2/favicons?sz=32&domain=amazon.com',
+    'geosky':          'https://www.google.com/s2/favicons?sz=32&domain=geosky.aero',
+    'wizz':            'https://www.google.com/s2/favicons?sz=32&domain=wizzair.com',
+    'ecs':             'https://www.google.com/s2/favicons?sz=32&domain=ecsgroup.aero',
+    'menzies':         'https://www.google.com/s2/favicons?sz=32&domain=menziesaviation.com',
+    'cargojet':        'https://www.google.com/s2/favicons?sz=32&domain=cargojet.com',
+    'aeromexico':      'https://www.google.com/s2/favicons?sz=32&domain=aeromexico.com',
+  };
+  return logos[airlineId] || null;
+}
+
 function stripHtml(html) {
   const tmp = document.createElement('div');
   tmp.innerHTML = html;
@@ -2682,11 +2713,7 @@ function buildAirlineFilter(articles) {
   const dropdown = document.getElementById('airline-dropdown');
   dropdown.innerHTML = '';
 
-  // Section label
-  const lbl = document.createElement('div');
-  lbl.className = 'dropdown-section-label';
-  lbl.textContent = 'Havayolu Seç';
-  dropdown.appendChild(lbl);
+  // (no section label — removed per user request)
 
   relevant.forEach((airline, idx) => {
     // Divider after primary airline
@@ -2701,12 +2728,14 @@ function buildAirlineFilter(articles) {
     opt.dataset.id = airline.id;
     opt.setAttribute('role', 'option');
     opt.setAttribute('aria-selected', 'false');
+    const airlineLogoUrl = getAirlineLogo(airline.id);
     opt.innerHTML = `
       <div class="airline-check">
         <svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="1 3.5 3.5 6 8 1"/>
         </svg>
       </div>
+      ${airlineLogoUrl ? `<img class="source-favicon-filter" src="${airlineLogoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
       <span class="airline-label">${airline.label}</span>
     `;
 
