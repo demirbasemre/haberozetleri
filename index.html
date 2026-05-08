@@ -1891,7 +1891,14 @@
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub"></div>
-          <div class="dash-card-note">Frankfurter · Günlük</div>
+          <div class="dash-card-note">ER-API · Günlük</div>
+        </div>
+        <div class="dash-card" id="dc-imf">
+          <div class="dash-card-label">IMF Büyüme Tahmini</div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Küresel GSYH Büyümesi</div>
+          <div class="dash-card-note">IMF WEO · Yıllık</div>
         </div>
         <div class="dash-card" id="dc-gdp">
           <div class="dash-card-label">Küresel GDP Büyümesi</div>
@@ -3444,8 +3451,16 @@ async function wbFetch(indicator, countries) {
 }
 
 async function fxFetch() {
-  const r = await fetch('https://api.frankfurter.app/latest?from=USD&to=EUR,JPY,CNY');
+  const r = await fetch('https://open.er-api.com/v6/latest/USD');
   if (!r.ok) throw new Error('FX ' + r.status);
+  return r.json();
+}
+
+async function imfFetch() {
+  const currentYear = new Date().getFullYear();
+  const periods = [currentYear - 1, currentYear, currentYear + 1].join(',');
+  const r = await fetch(`https://www.imf.org/external/datamapper/api/v1/NGDP_RPCH?periods=${periods}`);
+  if (!r.ok) throw new Error('IMF ' + r.status);
   return r.json();
 }
 
@@ -3755,15 +3770,31 @@ async function loadDashboard() {
     }
   });
 
-  // ── Döviz (Frankfurter) ────────────────────────────
+  // ── Döviz (ER-API) ────────────────────────────
   fxFetch().then(fx => {
     const eur = fx.rates.EUR, cny = fx.rates.CNY, jpy = fx.rates.JPY;
+    const d = new Date(fx.time_last_update_utc);
+    const dateStr = d.toISOString().slice(0, 10);
     setCard('dc-usd',
       eur ? eur.toFixed(4) : '—',
       null,
       `1 USD = ${cny?.toFixed(3)} CNY · ${jpy?.toFixed(1)} JPY`,
-      `Frankfurter · ${fx.date}`);
+      `ER-API · ${dateStr}`);
   }).catch(() => setCard('dc-usd', '—', null, '', 'Kur verisi alınamadı'));
+
+  // ── IMF Büyüme Tahmini ─────────────────────────────
+  imfFetch().then(imf => {
+    const worldData = imf.values.NGDP_RPCH.WEOWORLD;
+    const currentYear = new Date().getFullYear();
+    const currentVal = worldData[currentYear];
+    const nextVal = worldData[currentYear + 1];
+    setCard('dc-imf', 
+      currentVal ? currentVal.toFixed(1) + '%' : '—',
+      null,
+      `${currentYear+1} Tahmini: ${nextVal ? nextVal.toFixed(1) + '%' : '—'}`,
+      `IMF WEO · ${currentYear} Küresel`
+    );
+  }).catch(() => setCard('dc-imf', '—', null, '', 'IMF verisi alınamadı'));
 
   // ── World Bank: GDP ve CPI ─────────────────────────
   const WB_GROUPS = {
