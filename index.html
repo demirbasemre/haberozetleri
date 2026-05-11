@@ -1315,7 +1315,66 @@
     display: flex;
     gap: 12px;
     align-items: flex-start;
+    text-decoration: none;
+    color: inherit;
+    transition: filter 0.15s;
   }
+
+  /* Gelmekte olan → açık mavi */
+  .dash-release-item.upcoming {
+    background: hsl(211, 65%, 96%);
+    border-color: hsl(211, 50%, 82%);
+  }
+  .dash-release-item.upcoming .dash-rel-date {
+    background: hsl(211, 68%, 42%);
+  }
+  [data-theme="dark"] .dash-release-item.upcoming {
+    background: hsl(211, 28%, 17%);
+    border-color: hsl(211, 25%, 30%);
+  }
+  [data-theme="dark"] .dash-release-item.upcoming .dash-rel-date {
+    background: hsl(211, 50%, 32%);
+  }
+
+  /* Açıklanmış → yeşilden griye (--fade: 0=taze, 1=30 gün geçmiş) */
+  .dash-release-item.announced {
+    background: hsl(142, calc(52% * (1 - var(--fade, 0))), 94%);
+    border-color: hsl(142, calc(38% * (1 - var(--fade, 0))), 82%);
+    cursor: pointer;
+  }
+  .dash-release-item.announced:hover { filter: brightness(0.96); }
+  .dash-release-item.announced .dash-rel-date {
+    background: hsl(142, calc(48% * (1 - var(--fade, 0))), 44%);
+  }
+  [data-theme="dark"] .dash-release-item.announced {
+    background: hsl(142, calc(28% * (1 - var(--fade, 0))), 16%);
+    border-color: hsl(142, calc(22% * (1 - var(--fade, 0))), 28%);
+  }
+  [data-theme="dark"] .dash-release-item.announced .dash-rel-date {
+    background: hsl(142, calc(32% * (1 - var(--fade, 0))), 26%);
+  }
+
+  /* "Veri Açıklandı" rozeti */
+  .dash-rel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: hsl(142, 45%, 86%);
+    color: hsl(142, 55%, 26%);
+    margin-bottom: 4px;
+    opacity: calc(1 - var(--fade, 0) * 0.4);
+  }
+  [data-theme="dark"] .dash-rel-badge {
+    background: hsl(142, 22%, 22%);
+    color: hsl(142, 40%, 60%);
+  }
+
   .dash-rel-date {
     background: var(--navy);
     color: white;
@@ -1330,6 +1389,7 @@
   .dash-rel-title  { font-size: 12.5px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
   .dash-rel-title a { color: inherit; text-decoration: none; }
   .dash-rel-title a:hover { text-decoration: underline; }
+  .dash-release-item.announced .dash-rel-title { color: var(--text); }
   .dash-rel-source  { font-size: 10.5px; color: var(--text-3); }
   .dash-rel-cadence { font-size: 10px; color: var(--text-3); margin-top: 1px; font-style: italic; }
 
@@ -3433,26 +3493,57 @@ function buildReleaseCalendar() {
   const y = now.getFullYear(), mo = now.getMonth();
 
   const schedule = [
+    /* — Açıklanmış (geçmiş) — announced: true ile işaretle */
+    { title: 'ABD İstihdam Raporu (NFP)',             source: 'BLS',       date: abs(2026,4,2),     cadence: 'Aylık · İlk Cuma',                link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
+    { title: 'EIA Weekly Petroleum Status Report',    source: 'U.S. EIA',  date: abs(2026,4,7),     cadence: 'Her Çarşamba',                   link: 'https://www.eia.gov/petroleum/supply/weekly/', announced: true },
+    /* — Yaklaşan — */
     { title: 'EIA Weekly Petroleum Status Report',    source: 'U.S. EIA',  date: nextWed(),         cadence: 'Her Çarşamba',                   link: 'https://www.eia.gov/petroleum/supply/weekly/' },
     { title: 'ABD TÜFE Raporu',                       source: 'BLS',       date: abs(2026,4,13),    cadence: 'Aylık · ~takip eden ayın 13-15\'i', link: 'https://www.bls.gov/cpi/' },
     { title: 'IATA Hava Kargo Aylık Analizi',         source: 'IATA',      date: abs(2026,4,28),    cadence: 'Aylık · ~takip eden ayın 4. haftası', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
     { title: 'OECD Economic Outlook',                 source: 'OECD',      date: abs(2026,5,4),     cadence: 'Yılda 2x · Haziran & Kasım',      link: 'https://www.oecd.org/economic-outlook/' },
     { title: 'World Bank Global Economic Prospects',  source: 'World Bank', date: abs(2026,5,11),   cadence: 'Yılda 2x · Ocak & Haziran',       link: 'https://www.worldbank.org/en/publication/global-economic-prospects' },
     { title: 'IMF World Economic Outlook Update',     source: 'IMF',       date: abs(2026,6,15),    cadence: 'Yılda 4x · Oca, Nis, Tem, Eki',  link: 'https://www.imf.org/en/Publications/WEO' },
-  ].filter(r => r.date >= now).sort((a, b) => a.date - b.date);
+  ].filter(r => {
+    if (r.announced) {
+      const daysSince = (now - r.date) / 86400000;
+      return daysSince <= 30; // açıklanmış öğeyi 30 gün göster
+    }
+    return r.date >= now;
+  }).sort((a, b) => a.date - b.date);
 
-  document.getElementById('dash-releases').innerHTML = schedule.map(r => `
-    <div class="dash-release-item">
+  const checkSvg = `<svg width="9" height="9" viewBox="0 0 10 10" fill="none" style="flex-shrink:0"><path d="M1.5 5l2.8 2.8 4.2-5.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+  document.getElementById('dash-releases').innerHTML = schedule.map(r => {
+    const isAnnounced = !!r.announced;
+    let fadeAttr = '';
+    if (isAnnounced) {
+      const daysSince = Math.max(0, (now - r.date) / 86400000);
+      const fade = Math.min(daysSince / 30, 1).toFixed(3);
+      fadeAttr = ` style="--fade:${fade}"`;
+    }
+    const itemClass = `dash-release-item ${isAnnounced ? 'announced' : 'upcoming'}`;
+    const tag = isAnnounced ? 'a' : 'div';
+    const linkAttr = isAnnounced ? ` href="${r.link}" target="_blank" rel="noopener"` : '';
+    const badge = isAnnounced
+      ? `<div class="dash-rel-badge">${checkSvg} Veri Açıklandı</div>`
+      : '';
+    const titleInner = isAnnounced
+      ? r.title
+      : `<a href="${r.link}" target="_blank" rel="noopener">${r.title}</a>`;
+    return `
+    <${tag} class="${itemClass}"${linkAttr}${fadeAttr}>
       <div class="dash-rel-date">
         <div class="dash-rel-date-m">${TR_M[r.date.getMonth()]}</div>
         <div class="dash-rel-date-d">${r.date.getDate()}</div>
       </div>
       <div>
-        <div class="dash-rel-title"><a href="${r.link}" target="_blank" rel="noopener">${r.title}</a></div>
+        ${badge}
+        <div class="dash-rel-title">${titleInner}</div>
         <div class="dash-rel-source">${r.source}</div>
         <div class="dash-rel-cadence">${r.cadence}</div>
       </div>
-    </div>`).join('');
+    </${tag}>`;
+  }).join('');
 }
 
 // ── MAIN LOAD ─────────────────────────────────────────────────
