@@ -1392,6 +1392,99 @@
   .dash-release-item.announced .dash-rel-title { color: var(--text); }
   .dash-rel-source  { font-size: 10.5px; color: var(--text-3); }
   .dash-rel-cadence { font-size: 10px; color: var(--text-3); margin-top: 1px; font-style: italic; }
+  .dash-rel-empty   { grid-column: 1/-1; text-align: center; color: var(--text-3); font-size: 12px; padding: 28px 0; }
+
+  /* ── VERİ TAKVİMİ TIMELINE ─────────────────────────── */
+  .dash-tl { margin-bottom: 14px; }
+  .dash-tl-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+  .dash-tl-navs { display: flex; align-items: center; gap: 4px; }
+  .dash-tl-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    min-width: 110px;
+    text-align: center;
+  }
+  .dash-tl-btn {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .dash-tl-btn:hover:not(:disabled) { background: var(--bg); border-color: var(--text-3); color: var(--text); }
+  .dash-tl-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .dash-tl-today-btn {
+    font-size: 11px; font-weight: 600;
+    padding: 5px 13px;
+    border-radius: 20px;
+    border: 1.5px solid hsl(211, 50%, 72%);
+    background: hsl(211, 65%, 95%);
+    color: hsl(211, 60%, 38%);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .dash-tl-today-btn:hover { background: hsl(211, 65%, 89%); }
+  .dash-tl-today-btn.on-today { background: hsl(211, 68%, 42%); color: white; border-color: transparent; }
+  [data-theme="dark"] .dash-tl-today-btn { background: hsl(211, 25%, 16%); border-color: hsl(211, 28%, 32%); color: hsl(211, 50%, 68%); }
+  [data-theme="dark"] .dash-tl-today-btn.on-today { background: hsl(211, 50%, 35%); color: white; border-color: transparent; }
+
+  /* month pill strip */
+  .dash-tl-track {
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    padding: 2px 0 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  .dash-tl-track::-webkit-scrollbar { display: none; }
+
+  .dash-tl-pill {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 4px;
+    padding: 5px 13px;
+    border-radius: 20px;
+    font-size: 11.5px; font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    scroll-snap-align: center;
+    white-space: nowrap;
+  }
+  .dash-tl-pill:hover { border-color: var(--text-3); color: var(--text); }
+
+  /* geçmiş aylar → hafif yeşil tint */
+  .dash-tl-pill.past { background: hsl(142, 28%, 95%); border-color: hsl(142, 28%, 84%); color: hsl(142, 38%, 36%); }
+  [data-theme="dark"] .dash-tl-pill.past { background: hsl(142, 14%, 14%); border-color: hsl(142, 18%, 24%); color: hsl(142, 30%, 56%); }
+
+  /* bugün ayı → mavi kenarlık + nokta */
+  .dash-tl-pill.today-month { border-color: hsl(211, 52%, 68%); color: hsl(211, 60%, 38%); }
+  [data-theme="dark"] .dash-tl-pill.today-month { border-color: hsl(211, 32%, 38%); color: hsl(211, 50%, 65%); }
+  .dash-tl-dot { width: 5px; height: 5px; border-radius: 50%; background: hsl(211, 68%, 48%); flex-shrink: 0; }
+
+  /* seçili ay */
+  .dash-tl-pill.active { background: hsl(211, 68%, 42%); border-color: transparent; color: white; }
+  .dash-tl-pill.active .dash-tl-dot { background: rgba(255,255,255,0.8); }
+  .dash-tl-pill.past.active { background: hsl(142, 45%, 38%); border-color: transparent; color: white; }
+  .dash-tl-pill.past.active .dash-tl-dot { display: none; }
+  [data-theme="dark"] .dash-tl-pill.active { background: hsl(211, 50%, 34%); }
+  [data-theme="dark"] .dash-tl-pill.past.active { background: hsl(142, 30%, 26%); }
 
   @media (max-width: 768px) {
     .dash-charts { grid-template-columns: 1fr; }
@@ -2002,9 +2095,24 @@
       </div>
     </section>
 
-    <!-- Yaklaşan veri yayınları -->
+    <!-- Veri takvimi -->
     <section class="dash-section" id="dash-sec-takvim">
-      <h2 class="dash-section-title">Yaklaşan Veri Yayınları</h2>
+      <h2 class="dash-section-title">Veri Yayın Takvimi</h2>
+      <div class="dash-tl">
+        <div class="dash-tl-header">
+          <div class="dash-tl-navs">
+            <button class="dash-tl-btn" id="tl-prev" aria-label="Önceki ay">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <span class="dash-tl-label" id="tl-label"></span>
+            <button class="dash-tl-btn" id="tl-next" aria-label="Sonraki ay">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <button class="dash-tl-today-btn" id="tl-today">Bugün</button>
+        </div>
+        <div class="dash-tl-track" id="tl-track"></div>
+      </div>
       <div class="dash-releases" id="dash-releases"></div>
       <div class="dash-section-note">ⓘ Tarihler yaklaşık olup yayıncı tarafından değiştirilebilir.</div>
     </section>
@@ -3481,69 +3589,144 @@ function chartErr(id, html) {
 // ── RELEASE CALENDAR ──────────────────────────────────────────
 function buildReleaseCalendar() {
   const now = new Date();
-  const TR_M = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  const TR_M      = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  const TR_M_FULL = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
+  function abs(y, m, day) { return new Date(y, m, day); }
   function nextWed() {
     const d = new Date(now);
     d.setDate(d.getDate() + ((3 - d.getDay() + 7) % 7 || 7));
     return d;
   }
-  function abs(y, m, day) { return new Date(y, m, day); } // 0-indexed month
 
-  const y = now.getFullYear(), mo = now.getMonth();
+  // Tüm öğeler — filtre yok, geçmiş aylar da kalır
+  const allItems = [
+    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,1,6),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
+    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,1,11), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/', announced: true },
+    { title: 'IATA Hava Kargo Aylık Analizi',        source: 'IATA',       date: abs(2026,1,26), cadence: 'Aylık · ~4. hafta',                    link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/', announced: true },
+    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,2,6),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
+    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,2,12), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/', announced: true },
+    { title: 'IATA Hava Kargo Aylık Analizi',        source: 'IATA',       date: abs(2026,2,26), cadence: 'Aylık · ~4. hafta',                    link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/', announced: true },
+    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,3,3),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
+    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,3,11), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/', announced: true },
+    { title: 'IATA Hava Kargo Aylık Analizi',        source: 'IATA',       date: abs(2026,3,24), cadence: 'Aylık · ~4. hafta',                    link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/', announced: true },
+    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,4,2),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
+    { title: 'EIA Weekly Petroleum Status Report',   source: 'U.S. EIA',   date: abs(2026,4,7),  cadence: 'Her Çarşamba',                        link: 'https://www.eia.gov/petroleum/supply/weekly/', announced: true },
+    { title: 'EIA Weekly Petroleum Status Report',   source: 'U.S. EIA',   date: nextWed(),      cadence: 'Her Çarşamba',                        link: 'https://www.eia.gov/petroleum/supply/weekly/' },
+    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,4,13), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/' },
+    { title: 'IATA Hava Kargo Aylık Analizi',        source: 'IATA',       date: abs(2026,4,28), cadence: 'Aylık · ~4. hafta',                    link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'OECD Economic Outlook',                source: 'OECD',       date: abs(2026,5,4),  cadence: 'Yılda 2x · Haz & Kas',                link: 'https://www.oecd.org/economic-outlook/' },
+    { title: 'World Bank Global Economic Prospects', source: 'World Bank', date: abs(2026,5,11), cadence: 'Yılda 2x · Oca & Haz',                link: 'https://www.worldbank.org/en/publication/global-economic-prospects' },
+    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,5,5),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,5,11), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/' },
+    { title: 'IMF World Economic Outlook Update',    source: 'IMF',        date: abs(2026,6,15), cadence: 'Yılda 4x · Oca Nis Tem Eki',          link: 'https://www.imf.org/en/Publications/WEO' },
+  ].sort((a, b) => a.date - b.date);
 
-  const schedule = [
-    /* — Açıklanmış (geçmiş) — announced: true ile işaretle */
-    { title: 'ABD İstihdam Raporu (NFP)',             source: 'BLS',       date: abs(2026,4,2),     cadence: 'Aylık · İlk Cuma',                link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
-    { title: 'EIA Weekly Petroleum Status Report',    source: 'U.S. EIA',  date: abs(2026,4,7),     cadence: 'Her Çarşamba',                   link: 'https://www.eia.gov/petroleum/supply/weekly/', announced: true },
-    /* — Yaklaşan — */
-    { title: 'EIA Weekly Petroleum Status Report',    source: 'U.S. EIA',  date: nextWed(),         cadence: 'Her Çarşamba',                   link: 'https://www.eia.gov/petroleum/supply/weekly/' },
-    { title: 'ABD TÜFE Raporu',                       source: 'BLS',       date: abs(2026,4,13),    cadence: 'Aylık · ~takip eden ayın 13-15\'i', link: 'https://www.bls.gov/cpi/' },
-    { title: 'IATA Hava Kargo Aylık Analizi',         source: 'IATA',      date: abs(2026,4,28),    cadence: 'Aylık · ~takip eden ayın 4. haftası', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'OECD Economic Outlook',                 source: 'OECD',      date: abs(2026,5,4),     cadence: 'Yılda 2x · Haziran & Kasım',      link: 'https://www.oecd.org/economic-outlook/' },
-    { title: 'World Bank Global Economic Prospects',  source: 'World Bank', date: abs(2026,5,11),   cadence: 'Yılda 2x · Ocak & Haziran',       link: 'https://www.worldbank.org/en/publication/global-economic-prospects' },
-    { title: 'IMF World Economic Outlook Update',     source: 'IMF',       date: abs(2026,6,15),    cadence: 'Yılda 4x · Oca, Nis, Tem, Eki',  link: 'https://www.imf.org/en/Publications/WEO' },
-  ].filter(r => {
-    if (r.announced) {
-      const daysSince = (now - r.date) / 86400000;
-      return daysSince <= 30; // açıklanmış öğeyi 30 gün göster
-    }
-    return r.date >= now;
-  }).sort((a, b) => a.date - b.date);
+  // Benzersiz ay anahtarları: "YYYY-M"
+  const todayKey = `${now.getFullYear()}-${now.getMonth()}`;
+  const monthKeys = [...new Set(allItems.map(r => `${r.date.getFullYear()}-${r.date.getMonth()}`))];
+
+  // Başlangıç ayı: bugünün ayı (yoksa en yakın gelecek)
+  let activeKey = monthKeys.includes(todayKey)
+    ? todayKey
+    : monthKeys.find(k => k > todayKey) || monthKeys[monthKeys.length - 1];
+
+  // Timeline pill'lerini oluştur
+  const track = document.getElementById('tl-track');
+  track.innerHTML = monthKeys.map(k => {
+    const [ky, km] = k.split('-').map(Number);
+    const isPast    = k < todayKey;
+    const isToday   = k === todayKey;
+    const dot       = isToday ? '<span class="dash-tl-dot"></span>' : '';
+    const yearSuffix = ky !== now.getFullYear() ? ` ${ky}` : '';
+    return `<button class="dash-tl-pill${isPast ? ' past' : ''}${isToday ? ' today-month' : ''}"
+      data-key="${k}" aria-label="${TR_M_FULL[km]}${yearSuffix}"
+    >${dot}${TR_M[km]}${yearSuffix ? `<span style="opacity:.65;font-weight:400;font-size:10px"> ${ky}</span>` : ''}</button>`;
+  }).join('');
 
   const checkSvg = `<svg width="9" height="9" viewBox="0 0 10 10" fill="none" style="flex-shrink:0"><path d="M1.5 5l2.8 2.8 4.2-5.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
-  document.getElementById('dash-releases').innerHTML = schedule.map(r => {
-    const isAnnounced = !!r.announced;
-    let fadeAttr = '';
-    if (isAnnounced) {
-      const daysSince = Math.max(0, (now - r.date) / 86400000);
-      const fade = Math.min(daysSince / 30, 1).toFixed(3);
-      fadeAttr = ` style="--fade:${fade}"`;
+  function renderMonth(key) {
+    activeKey = key;
+    const [ky, km] = key.split('-').map(Number);
+    const idx = monthKeys.indexOf(key);
+
+    // Pill aktif durumu
+    track.querySelectorAll('.dash-tl-pill').forEach(p => p.classList.toggle('active', p.dataset.key === key));
+
+    // Aktif pill'i görünür yap
+    const activePill = track.querySelector('.dash-tl-pill.active');
+    if (activePill) activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+
+    // Başlık etiketi
+    document.getElementById('tl-label').textContent = `${TR_M_FULL[km]} ${ky}`;
+
+    // Ok butonları
+    document.getElementById('tl-prev').disabled = idx === 0;
+    document.getElementById('tl-next').disabled = idx === monthKeys.length - 1;
+
+    // Bugün butonu: aktif ayda mı?
+    document.getElementById('tl-today').classList.toggle('on-today', key === todayKey);
+
+    // Kartları filtrele & çiz
+    const items = allItems.filter(r => `${r.date.getFullYear()}-${r.date.getMonth()}` === key);
+
+    if (!items.length) {
+      document.getElementById('dash-releases').innerHTML =
+        '<div class="dash-rel-empty">Bu ay için planlanmış yayın bulunamadı.</div>';
+      return;
     }
-    const itemClass = `dash-release-item ${isAnnounced ? 'announced' : 'upcoming'}`;
-    const tag = isAnnounced ? 'a' : 'div';
-    const linkAttr = isAnnounced ? ` href="${r.link}" target="_blank" rel="noopener"` : '';
-    const badge = isAnnounced
-      ? `<div class="dash-rel-badge">${checkSvg} Veri Açıklandı</div>`
-      : '';
-    const titleInner = isAnnounced
-      ? r.title
-      : `<a href="${r.link}" target="_blank" rel="noopener">${r.title}</a>`;
-    return `
-    <${tag} class="${itemClass}"${linkAttr}${fadeAttr}>
-      <div class="dash-rel-date">
-        <div class="dash-rel-date-m">${TR_M[r.date.getMonth()]}</div>
-        <div class="dash-rel-date-d">${r.date.getDate()}</div>
-      </div>
-      <div>
-        ${badge}
-        <div class="dash-rel-title">${titleInner}</div>
-        <div class="dash-rel-source">${r.source}</div>
-        <div class="dash-rel-cadence">${r.cadence}</div>
-      </div>
-    </${tag}>`;
-  }).join('');
+
+    document.getElementById('dash-releases').innerHTML = items.map(r => {
+      const isAnnounced = !!r.announced;
+      let fadeAttr = '';
+      if (isAnnounced) {
+        const daysSince = Math.max(0, (now - r.date) / 86400000);
+        const fade = Math.min(daysSince / 90, 1).toFixed(3); // 90 günde solar
+        fadeAttr = ` style="--fade:${fade}"`;
+      }
+      const itemClass = `dash-release-item ${isAnnounced ? 'announced' : 'upcoming'}`;
+      const tag       = isAnnounced ? 'a' : 'div';
+      const linkAttr  = isAnnounced ? ` href="${r.link}" target="_blank" rel="noopener"` : '';
+      const badge     = isAnnounced ? `<div class="dash-rel-badge">${checkSvg} Veri Açıklandı</div>` : '';
+      const titleInner = isAnnounced
+        ? r.title
+        : `<a href="${r.link}" target="_blank" rel="noopener">${r.title}</a>`;
+      return `
+      <${tag} class="${itemClass}"${linkAttr}${fadeAttr}>
+        <div class="dash-rel-date">
+          <div class="dash-rel-date-m">${TR_M[r.date.getMonth()]}</div>
+          <div class="dash-rel-date-d">${r.date.getDate()}</div>
+        </div>
+        <div>
+          ${badge}
+          <div class="dash-rel-title">${titleInner}</div>
+          <div class="dash-rel-source">${r.source}</div>
+          <div class="dash-rel-cadence">${r.cadence}</div>
+        </div>
+      </${tag}>`;
+    }).join('');
+  }
+
+  // Olaylar
+  track.addEventListener('click', e => {
+    const pill = e.target.closest('.dash-tl-pill');
+    if (pill) renderMonth(pill.dataset.key);
+  });
+  document.getElementById('tl-prev').addEventListener('click', () => {
+    const i = monthKeys.indexOf(activeKey);
+    if (i > 0) renderMonth(monthKeys[i - 1]);
+  });
+  document.getElementById('tl-next').addEventListener('click', () => {
+    const i = monthKeys.indexOf(activeKey);
+    if (i < monthKeys.length - 1) renderMonth(monthKeys[i + 1]);
+  });
+  document.getElementById('tl-today').addEventListener('click', () => {
+    renderMonth(todayKey);
+  });
+
+  // İlk render
+  renderMonth(activeKey);
 }
 
 // ── MAIN LOAD ─────────────────────────────────────────────────
