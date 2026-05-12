@@ -1349,6 +1349,53 @@
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 10px;
   }
+
+  /* ── VERİ TAKVİMİ TIMELINE ─────────────────────────── */
+  .dash-tl { margin-bottom: 14px; }
+  /* month pill strip */
+  .dash-tl-track {
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    padding: 2px 0 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  .dash-tl-track::-webkit-scrollbar { display: none; }
+
+  .dash-tl-pill {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 4px;
+    padding: 5px 13px;
+    border-radius: 20px;
+    font-size: 11.5px; font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    scroll-snap-align: center;
+    white-space: nowrap;
+  }
+  .dash-tl-pill:hover { border-color: var(--text-3); color: var(--text); }
+
+  /* geçmiş aylar → hafif yeşil tint */
+  .dash-tl-pill.past { background: hsl(142, 28%, 95%); border-color: hsl(142, 28%, 84%); color: hsl(142, 38%, 36%); }
+  [data-theme="dark"] .dash-tl-pill.past { background: hsl(142, 14%, 14%); border-color: hsl(142, 18%, 24%); color: hsl(142, 30%, 56%); }
+
+  /* bugün ayı → mavi kenarlık + nokta */
+  .dash-tl-pill.today-month { border-color: hsl(211, 52%, 68%); color: hsl(211, 60%, 38%); }
+  [data-theme="dark"] .dash-tl-pill.today-month { border-color: hsl(211, 32%, 38%); color: hsl(211, 50%, 65%); }
+  .dash-tl-dot { width: 5px; height: 5px; border-radius: 50%; background: hsl(211, 68%, 48%); flex-shrink: 0; }
+
+  /* seçili ay */
+  .dash-tl-pill.active { background: hsl(211, 68%, 42%); border-color: transparent; color: white; }
+  .dash-tl-pill.active .dash-tl-dot { background: rgba(255,255,255,0.8); }
+  .dash-tl-pill.past.active { background: hsl(142, 45%, 38%); border-color: transparent; color: white; }
+  .dash-tl-pill.past.active .dash-tl-dot { display: none; }
+  [data-theme="dark"] .dash-tl-pill.active { background: hsl(211, 50%, 34%); }
+  [data-theme="dark"] .dash-tl-pill.past.active { background: hsl(142, 30%, 26%); }
   .dash-release-item {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -2177,18 +2224,6 @@
     <section class="dash-section" id="dash-sec-takvim">
       <h2 class="dash-section-title">Veri Yayın Takvimi</h2>
       <div class="dash-tl">
-        <div class="dash-tl-header">
-          <div class="dash-tl-navs">
-            <button class="dash-tl-btn" id="tl-prev" aria-label="Önceki ay">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <span class="dash-tl-label" id="tl-label"></span>
-            <button class="dash-tl-btn" id="tl-next" aria-label="Sonraki ay">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-          </div>
-          <button class="dash-tl-today-btn" id="tl-today">Bugün</button>
-        </div>
         <div class="dash-tl-track" id="tl-track"></div>
       </div>
       <div class="dash-releases" id="dash-releases"></div>
@@ -3793,7 +3828,6 @@ function buildReleaseCalendar() {
     return d;
   }
 
-  // Tüm öğeler — filtre yok, geçmiş aylar da kalır
   const allItems = [
     { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,1,6),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
     { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,1,11), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/', announced: true },
@@ -3816,16 +3850,13 @@ function buildReleaseCalendar() {
     { title: 'IMF World Economic Outlook Update',    source: 'IMF',        date: abs(2026,6,15), cadence: 'Yılda 4x · Oca Nis Tem Eki',          link: 'https://www.imf.org/en/Publications/WEO' },
   ].sort((a, b) => a.date - b.date);
 
-  // Benzersiz ay anahtarları: "YYYY-M"
   const todayKey = `${now.getFullYear()}-${now.getMonth()}`;
   const monthKeys = [...new Set(allItems.map(r => `${r.date.getFullYear()}-${r.date.getMonth()}`))];
 
-  // Başlangıç ayı: bugünün ayı (yoksa en yakın gelecek)
   let activeKey = monthKeys.includes(todayKey)
     ? todayKey
     : monthKeys.find(k => k > todayKey) || monthKeys[monthKeys.length - 1];
 
-  // Timeline pill'lerini oluştur
   const track = document.getElementById('tl-track');
   track.innerHTML = monthKeys.map(k => {
     const [ky, km] = k.split('-').map(Number);
@@ -3842,29 +3873,11 @@ function buildReleaseCalendar() {
 
   function renderMonth(key) {
     activeKey = key;
-    const [ky, km] = key.split('-').map(Number);
-    const idx = monthKeys.indexOf(key);
-
-    // Pill aktif durumu
     track.querySelectorAll('.dash-tl-pill').forEach(p => p.classList.toggle('active', p.dataset.key === key));
-
-    // Aktif pill'i görünür yap
     const activePill = track.querySelector('.dash-tl-pill.active');
     if (activePill) activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
-    // Başlık etiketi
-    document.getElementById('tl-label').textContent = `${TR_M_FULL[km]} ${ky}`;
-
-    // Ok butonları
-    document.getElementById('tl-prev').disabled = idx === 0;
-    document.getElementById('tl-next').disabled = idx === monthKeys.length - 1;
-
-    // Bugün butonu: aktif ayda mı?
-    document.getElementById('tl-today').classList.toggle('on-today', key === todayKey);
-
-    // Kartları filtrele & çiz
     const items = allItems.filter(r => `${r.date.getFullYear()}-${r.date.getMonth()}` === key);
-
     if (!items.length) {
       document.getElementById('dash-releases').innerHTML =
         '<div class="dash-rel-empty">Bu ay için planlanmış yayın bulunamadı.</div>';
@@ -3876,7 +3889,7 @@ function buildReleaseCalendar() {
       let fadeAttr = '';
       if (isAnnounced) {
         const daysSince = Math.max(0, (now - r.date) / 86400000);
-        const fade = Math.min(daysSince / 90, 1).toFixed(3); // 90 günde solar
+        const fade = Math.min(daysSince / 90, 1).toFixed(3);
         fadeAttr = ` style="--fade:${fade}"`;
       }
       const itemClass = `dash-release-item ${isAnnounced ? 'announced' : 'upcoming'}`;
@@ -3902,24 +3915,10 @@ function buildReleaseCalendar() {
     }).join('');
   }
 
-  // Olaylar
   track.addEventListener('click', e => {
     const pill = e.target.closest('.dash-tl-pill');
     if (pill) renderMonth(pill.dataset.key);
   });
-  document.getElementById('tl-prev').addEventListener('click', () => {
-    const i = monthKeys.indexOf(activeKey);
-    if (i > 0) renderMonth(monthKeys[i - 1]);
-  });
-  document.getElementById('tl-next').addEventListener('click', () => {
-    const i = monthKeys.indexOf(activeKey);
-    if (i < monthKeys.length - 1) renderMonth(monthKeys[i + 1]);
-  });
-  document.getElementById('tl-today').addEventListener('click', () => {
-    renderMonth(todayKey);
-  });
-
-  // İlk render
   renderMonth(activeKey);
 }
 
