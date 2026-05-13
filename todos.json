@@ -15,6 +15,12 @@
   ],
   "check": [
     {
+      "id": "mp4i90trx706",
+      "text": "X tarihinde şu şirketle ilgili haberleri getir ya da x tarihindeki haberleri getir doğru çalışıyor mu?",
+      "done": false,
+      "createdAt": 1778703687279
+    },
+    {
       "id": "mp4i34infflv",
       "text": "Bir haber eğer 7 gün içinde başka bir sitede yayınlanırsa bu sefer bültene eklenmez ancak bağlam olarak aynı olduğu haber kartının altında web tarafında eklenir.",
       "done": false,
