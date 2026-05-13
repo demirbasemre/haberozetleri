@@ -1839,6 +1839,18 @@
   .ai-card-no:hover { background: var(--hover); }
   .ai-card-done { font-size: 12px; color: var(--text-3); font-style: italic; }
   .ai-token-info { font-size: 10px; color: var(--text-3); text-align: right; margin-top: 6px; }
+  .ai-feedback-row { display: flex; align-items: center; gap: 6px; padding: 2px 4px 4px; flex-wrap: wrap; }
+  .ai-feedback-label { font-size: 11px; color: var(--text-3); }
+  .ai-fb-btn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 13px; line-height: 1.4; transition: background .15s; }
+  .ai-fb-btn:hover:not(:disabled) { background: var(--hover); }
+  .ai-fb-btn:disabled { opacity: 0.4; cursor: default; }
+  .ai-fb-form { display: none; flex-direction: column; gap: 5px; width: 100%; margin-top: 4px; }
+  .ai-fb-form.open { display: flex; }
+  .ai-fb-text { border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 12px; font-family: inherit; background: var(--surface); color: var(--text); resize: none; }
+  .ai-fb-text:focus { outline: none; border-color: #1D6FE8; }
+  .ai-fb-submit { align-self: flex-end; background: #1D6FE8; color: #fff; border: none; border-radius: 8px; padding: 5px 14px; font-size: 12px; cursor: pointer; transition: background .15s; }
+  .ai-fb-submit:hover { background: #1558c0; }
+  .ai-fb-done { font-size: 11px; color: var(--text-3); font-style: italic; }
 
   /* ── YAPILACAKLAR & KONTROLLER TAB ──────────────────── */
   .todo-panel {
@@ -4508,7 +4520,8 @@ async function loadDashboard() {
   const sendB  = document.getElementById('ai-send');
   const chips  = document.querySelectorAll('.ai-chip');
 
-  const AI_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/haber-ai';
+  const AI_WEBHOOK      = 'https://n8n.emredemirbas.com/webhook/haber-ai-v2';
+  const FEEDBACK_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/haber-ai-feedback';
   const TOP_N = 15;
 
   fab.addEventListener('click', () => panel.classList.toggle('open'));
@@ -4624,6 +4637,54 @@ async function loadDashboard() {
   }
 
   // ── Main ask ─────────────────────────────────────────
+  function addFeedbackButtons(question, answerText) {
+    const div = document.createElement('div');
+    div.className = 'ai-feedback-row';
+    div.innerHTML =
+      '<span class="ai-feedback-label">Faydalı mıydı?</span>' +
+      '<button class="ai-fb-btn ai-fb-pos" title="Evet">👍</button>' +
+      '<button class="ai-fb-btn ai-fb-neg" title="Hayır">👎</button>' +
+      '<div class="ai-fb-form">' +
+        '<textarea class="ai-fb-text" placeholder="Ne bekliyordunuz? (ör: 10 mayıs değil 11 mayıs istiyordum)" rows="2"></textarea>' +
+        '<button class="ai-fb-submit">Gönder</button>' +
+      '</div>' +
+      '<span class="ai-fb-done"></span>';
+
+    async function sendFeedback(type, text) {
+      try {
+        await fetch(FEEDBACK_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question, answer_summary: answerText.substring(0, 300), feedback: type, feedback_text: text, timestamp: new Date().toISOString() })
+        });
+      } catch(_) {}
+    }
+
+    const posBtn = div.querySelector('.ai-fb-pos');
+    const negBtn = div.querySelector('.ai-fb-neg');
+    const form   = div.querySelector('.ai-fb-form');
+    const done   = div.querySelector('.ai-fb-done');
+
+    posBtn.addEventListener('click', async () => {
+      posBtn.disabled = true; negBtn.disabled = true;
+      done.textContent = 'Teşekkürler ✓';
+      await sendFeedback('positive', '');
+    });
+    negBtn.addEventListener('click', () => {
+      posBtn.disabled = true; negBtn.disabled = true;
+      form.classList.add('open');
+    });
+    div.querySelector('.ai-fb-submit').addEventListener('click', async () => {
+      const text = div.querySelector('.ai-fb-text').value.trim();
+      form.classList.remove('open');
+      done.textContent = 'Geri bildirim alındı ✓';
+      await sendFeedback('negative', text);
+    });
+
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
   async function askAI() {
     const q = input.value.trim();
     if (!q) return;
@@ -4646,6 +4707,7 @@ async function loadDashboard() {
       const answerText = data.answer || 'Yanıt alınamadı.';
       const tokenInfo = data.tokensUsed ? `<div class="ai-token-info">${data.tokensUsed} token · çıktı: ${data.outputTokens || '?'}</div>` : '';
       addBotHTML(formatAIText(answerText) + tokenInfo);
+      addFeedbackButtons(q, answerText);
       if (data.articles && data.articles.length > 0) {
         addShowCardsPrompt(data.articles);
       }
