@@ -1839,6 +1839,253 @@
   .ai-card-no:hover { background: var(--hover); }
   .ai-card-done { font-size: 12px; color: var(--text-3); font-style: italic; }
   .ai-token-info { font-size: 10px; color: var(--text-3); text-align: right; margin-top: 6px; }
+
+  /* ── YAPILACAKLAR & KONTROLLER TAB ──────────────────── */
+  .todo-panel {
+    padding-bottom: 60px;
+  }
+
+  .todo-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 640px) {
+    .todo-cols { grid-template-columns: 1fr; }
+  }
+
+  .todo-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .todo-col-header {
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .todo-col-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .todo-col-title svg {
+    flex-shrink: 0;
+    color: var(--accent);
+  }
+
+  .todo-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+    transition: background 0.2s;
+  }
+  .todo-badge.done-badge {
+    background: #10B981;
+  }
+
+  .todo-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .todo-progress-bar {
+    width: 60px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .todo-progress-fill {
+    height: 100%;
+    background: #10B981;
+    border-radius: 2px;
+    transition: width 0.35s ease;
+  }
+
+  .todo-add-row {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .todo-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .todo-input::placeholder { color: var(--text-3); }
+  .todo-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(29,111,232,0.1);
+  }
+
+  .todo-add-btn {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: none;
+    background: var(--navy);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s, transform 0.1s;
+    touch-action: manipulation;
+  }
+  .todo-add-btn:hover { background: var(--accent); }
+  .todo-add-btn:active { transform: scale(0.94); }
+
+  .todo-list {
+    padding: 8px;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .todo-empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    color: var(--text-3);
+    font-size: 12.5px;
+    text-align: center;
+    gap: 8px;
+  }
+  .todo-empty-state svg { opacity: 0.3; }
+
+  .todo-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 10px 10px 8px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .todo-item:hover { background: var(--bg); }
+  .todo-item:hover .todo-item-actions { opacity: 1; pointer-events: auto; }
+
+  .todo-check-btn {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.18s, background 0.18s;
+    padding: 0;
+    margin-top: 1px;
+    touch-action: manipulation;
+  }
+  .todo-check-btn:hover { border-color: #10B981; }
+  .todo-item.done .todo-check-btn {
+    background: #10B981;
+    border-color: #10B981;
+  }
+
+  .todo-item-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .todo-item-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    word-break: break-word;
+    transition: color 0.2s;
+  }
+  .todo-item.done .todo-item-text {
+    color: var(--text-3);
+    text-decoration: line-through;
+  }
+
+  .todo-item-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1.5px solid var(--accent);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(29,111,232,0.1);
+  }
+
+  .todo-item-actions {
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+  }
+
+  .todo-action-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    transition: background 0.15s, color 0.15s;
+    touch-action: manipulation;
+    padding: 0;
+  }
+  .todo-action-btn.edit-btn:hover { background: rgba(29,111,232,0.1); color: var(--accent); }
+  .todo-action-btn.delete-btn:hover { background: rgba(230,57,70,0.1); color: var(--red); }
+
+  @keyframes todoSlideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .todo-item { animation: todoSlideIn 0.18s ease; }
 </style>
 </head>
 <body>
@@ -2032,6 +2279,11 @@
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-takvim'); return false;" href="#">Veri Takvimi</a>
     </div><!-- /dash-filter-content -->
 
+    <!-- Todo tab filter area (empty — placeholder for consistent height) -->
+    <div id="todo-filter-content" style="display:none;">
+      <span style="font-size:12px;color:var(--text-3);">Veriler tarayıcıda saklanır</span>
+    </div>
+
   </div>
 </div>
 
@@ -2046,6 +2298,10 @@
     <button class="main-tab" id="tab-dash-btn" onclick="switchTab('dashboard')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="6" height="8" rx="1"/><rect x="10" y="3" width="12" height="4" rx="1"/><rect x="10" y="11" width="12" height="4" rx="1"/><rect x="2" y="15" width="6" height="6" rx="1"/><rect x="10" y="19" width="12" height="2" rx="1"/></svg>
       Dashboard
+    </button>
+    <button class="main-tab" id="tab-todo-btn" onclick="switchTab('todo')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Yapılacaklar &amp; Kontroller
     </button>
   </div>
 
@@ -2231,6 +2487,83 @@
     </section>
 
   </div><!-- /dashboard-panel -->
+
+  <!-- Yapılacaklar & Kontroller Panel -->
+  <div id="todo-panel" style="display:none" class="todo-panel">
+    <div class="todo-cols">
+
+      <!-- SOL: Yapılacaklar -->
+      <div class="todo-col">
+        <div class="todo-col-header">
+          <div class="todo-col-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
+            Yapılacaklar
+            <span class="todo-badge" id="badge-todo">0</span>
+          </div>
+          <div class="todo-progress-wrap">
+            <div class="todo-progress-bar">
+              <div class="todo-progress-fill" id="progress-todo" style="width:0%"></div>
+            </div>
+            <span id="progress-label-todo">0/0</span>
+          </div>
+        </div>
+        <div class="todo-add-row">
+          <input
+            type="text"
+            class="todo-input"
+            id="input-todo"
+            placeholder="Yeni yapılacak ekle…"
+            maxlength="200"
+            autocomplete="off"
+            onkeydown="if(event.key==='Enter') addTodoItem('todo')"
+          >
+          <button class="todo-add-btn" onclick="addTodoItem('todo')" title="Ekle" aria-label="Yapılacak ekle">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+        <div class="todo-list" id="list-todo"></div>
+      </div>
+
+      <!-- SAĞ: Kontroller -->
+      <div class="todo-col">
+        <div class="todo-col-header">
+          <div class="todo-col-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>
+            </svg>
+            Kontroller
+            <span class="todo-badge" id="badge-check">0</span>
+          </div>
+          <div class="todo-progress-wrap">
+            <div class="todo-progress-bar">
+              <div class="todo-progress-fill" id="progress-check" style="width:0%"></div>
+            </div>
+            <span id="progress-label-check">0/0</span>
+          </div>
+        </div>
+        <div class="todo-add-row">
+          <input
+            type="text"
+            class="todo-input"
+            id="input-check"
+            placeholder="Yeni kontrol ekle…"
+            maxlength="200"
+            autocomplete="off"
+            onkeydown="if(event.key==='Enter') addTodoItem('check')"
+          >
+          <button class="todo-add-btn" onclick="addTodoItem('check')" title="Ekle" aria-label="Kontrol ekle">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+        <div class="todo-list" id="list-check"></div>
+      </div>
+
+    </div>
+  </div><!-- /todo-panel -->
+
 </main>
 
 <footer>
@@ -3594,6 +3927,7 @@ initTheme();
 
 // ── TAB SWITCHING ─────────────────────────────────────────────
 let _dashInit = false;
+let _todoInit = false;
 
 function dashScrollTo(id) {
   const el = document.getElementById(id);
@@ -3604,15 +3938,21 @@ function dashScrollTo(id) {
 }
 
 function switchTab(tab) {
-  const isNews = tab === 'news';
+  const isNews  = tab === 'news';
+  const isDash  = tab === 'dashboard';
+  const isTodo  = tab === 'todo';
   document.getElementById('news-panel').style.display      = isNews ? '' : 'none';
-  document.getElementById('dashboard-panel').style.display = isNews ? 'none' : 'block';
+  document.getElementById('dashboard-panel').style.display = isDash ? 'block' : 'none';
+  document.getElementById('todo-panel').style.display      = isTodo ? 'block' : 'none';
   // Toggle filter bar content
   document.getElementById('news-filter-content').style.display = isNews ? 'flex' : 'none';
-  document.getElementById('dash-filter-content').style.display = isNews ? 'none' : 'flex';
+  document.getElementById('dash-filter-content').style.display = isDash ? 'flex' : 'none';
+  document.getElementById('todo-filter-content').style.display = isTodo ? 'flex' : 'none';
   document.getElementById('tab-news-btn').classList.toggle('main-tab-active', isNews);
-  document.getElementById('tab-dash-btn').classList.toggle('main-tab-active', !isNews);
-  if (!isNews && !_dashInit) { _dashInit = true; loadDashboard(); }
+  document.getElementById('tab-dash-btn').classList.toggle('main-tab-active', isDash);
+  document.getElementById('tab-todo-btn').classList.toggle('main-tab-active', isTodo);
+  if (isDash && !_dashInit) { _dashInit = true; loadDashboard(); }
+  if (isTodo && !_todoInit) { _todoInit = true; initTodo(); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -4312,6 +4652,174 @@ async function loadDashboard() {
     }
     sendB.disabled = false;
   }
+})();
+
+// ── YAPILACAKLAR & KONTROLLER ────────────────────────────────
+(function() {
+  const STORE_KEY = 'hk-todo-v1';
+  // { todo: [{id, text, done, createdAt}], check: [...] }
+  let data = { todo: [], check: [] };
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        data.todo  = parsed.todo  || [];
+        data.check = parsed.check || [];
+      }
+    } catch(e) {}
+  }
+
+  function saveData() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  }
+
+  function renderList(type) {
+    const items   = data[type];
+    const listEl  = document.getElementById('list-' + type);
+    const badgeEl = document.getElementById('badge-' + type);
+    const fillEl  = document.getElementById('progress-' + type);
+    const labelEl = document.getElementById('progress-label-' + type);
+    if (!listEl) return;
+
+    const total = items.length;
+    const done  = items.filter(i => i.done).length;
+    const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    badgeEl.textContent = total - done;
+    fillEl.style.width  = pct + '%';
+    labelEl.textContent = done + '/' + total;
+
+    if (total === 0) {
+      const label = type === 'todo' ? 'Yapılacak' : 'Kontrol';
+      listEl.innerHTML = `
+        <div class="todo-empty-state">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <path d="M8 3v4M16 3v4M3 9h18"/>
+          </svg>
+          <span>${label} bulunamadı.<br>Yukarıdan yeni ekleyebilirsin.</span>
+        </div>`;
+      return;
+    }
+
+    listEl.innerHTML = items.map((item, idx) => {
+      const checkIcon = item.done
+        ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+        : '';
+      return `
+        <div class="todo-item${item.done ? ' done' : ''}" id="item-${type}-${idx}">
+          <button
+            class="todo-check-btn"
+            onclick="todoToggle('${type}',${idx})"
+            title="${item.done ? 'Tamamlanmadı işaretle' : 'Tamamlandı işaretle'}"
+            aria-label="${item.done ? 'Tamamlanmadı işaretle' : 'Tamamlandı işaretle'}"
+          >${checkIcon}</button>
+          <div class="todo-item-body">
+            <span class="todo-item-text" id="todo-text-${type}-${idx}">${escHtml(item.text)}</span>
+          </div>
+          <div class="todo-item-actions">
+            <button class="todo-action-btn edit-btn" onclick="todoEdit('${type}',${idx})" title="Düzenle" aria-label="Düzenle">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </button>
+            <button class="todo-action-btn delete-btn" onclick="todoDelete('${type}',${idx})" title="Sil" aria-label="Sil">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function render() {
+    renderList('todo');
+    renderList('check');
+  }
+
+  // PUBLIC: called from HTML onclick
+  window.addTodoItem = function(type) {
+    const inputEl = document.getElementById('input-' + type);
+    const text = inputEl.value.trim();
+    if (!text) { inputEl.focus(); return; }
+    data[type].unshift({ id: uid(), text, done: false, createdAt: Date.now() });
+    saveData();
+    renderList(type);
+    inputEl.value = '';
+    inputEl.focus();
+  };
+
+  window.todoToggle = function(type, idx) {
+    data[type][idx].done = !data[type][idx].done;
+    saveData();
+    renderList(type);
+  };
+
+  window.todoDelete = function(type, idx) {
+    const item = document.getElementById('item-' + type + '-' + idx);
+    if (item) {
+      item.style.transition = 'opacity 0.18s, transform 0.18s';
+      item.style.opacity = '0';
+      item.style.transform = 'translateX(12px)';
+      setTimeout(() => {
+        data[type].splice(idx, 1);
+        saveData();
+        renderList(type);
+      }, 170);
+    } else {
+      data[type].splice(idx, 1);
+      saveData();
+      renderList(type);
+    }
+  };
+
+  window.todoEdit = function(type, idx) {
+    const textEl = document.getElementById('todo-text-' + type + '-' + idx);
+    if (!textEl) return;
+    const current = data[type][idx].text;
+
+    // Replace span with inline input
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'todo-item-input';
+    inp.value = current;
+    inp.maxLength = 200;
+    textEl.replaceWith(inp);
+    inp.focus();
+    inp.select();
+
+    function commit() {
+      const val = inp.value.trim();
+      if (val && val !== current) {
+        data[type][idx].text = val;
+        saveData();
+      }
+      renderList(type);
+    }
+    inp.addEventListener('blur', commit);
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); commit(); }
+      if (e.key === 'Escape') { renderList(type); }
+    });
+  };
+
+  window.initTodo = function() {
+    loadData();
+    render();
+  };
 })();
 </script>
 </body>
