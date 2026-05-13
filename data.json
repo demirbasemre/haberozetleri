@@ -1,7 +1,7 @@
 [
   {
-    "title": "Brüksel Havalimanı'nda Kargo Hacimleri Artış Eğiliminde",
-    "summary": "Brüksel Havalimanı'nda <strong>Nisan 2026</strong> döneminde kargo hacmi, geçen yılın aynı dönemine göre <strong>%6,2</strong> artarak <strong>73.964 tona</strong> ulaştı. Bu büyümede, tam kargo uçağı segmentindeki <strong>%23,5</strong>'lik ve ekspres servislerdeki <strong>%1,9</strong>'luk artış belirleyici oldu. Asya'ya yönelik hacimlerin artışına karşın, Orta Doğu uçuşlarının iptali nedeniyle yolcu uçaklarında taşınan kargo <strong>%8</strong> oranında geriledi. Kamyonla taşınan kargo hacmi ise <strong>%5,2</strong> oranında bir iyileşme gösterdi. Havalimanı yönetimi, Asya ve Kuzey Amerika'yı en güçlü büyüme gösteren ana ithalat bölgeleri olarak tanımladı.",
+    "title": "Brüksel Havalimanı Kargo Hacimleri Nisan Ayında Artış Gösterdi",
+    "summary": "Brüksel Havalimanı kargo hacmi Nisan ayında bir önceki yılın aynı dönemine göre %<strong>6,2</strong> artarak <strong>73.964</strong> tona ulaştı. Özellikle tam kargo uçakları (freighter) segmenti, Asya'ya yönelik artan hacimlerin etkisiyle %<strong>23,5</strong> oranında güçlü bir büyüme kaydetti. Ekspres servislerde %<strong>1,9</strong> artış görülürken, Orta Doğu'ya iptal edilen seferler nedeniyle yolcu uçağı altı kargo hacmi %<strong>8</strong> azaldı. Kamyonla taşınan hacimler %<strong>5,2</strong> artarken, ana ithalat ve ihracat bölgeleri Asya, Kuzey Amerika ve Afrika oldu. Havalimanı yılın ilk <strong>3</strong> ayında da %<strong>6,4</strong>'lük bir iyileşme rapor etmişti.",
     "category": "Diğer",
     "source": "aircargonews",
     "link": "https://www.aircargonews.net/cargo-airport/2026/05/cargo-volumes-on-the-up-at-brussels/",
@@ -12,14 +12,18 @@
     "thyAnalysis": "",
     "etkiAlani": {
       "direct": [],
-      "hub": []
+      "hub": [
+        "China",
+        "Northern America",
+        "Middle East"
+      ]
     },
-    "etkiAlaniGerekce": "Brüksel, Turkish Cargo'nun önemli bir freighter varış noktasıdır ve bölgedeki hacim değişimleri operasyonel doluluk oranlarını etkilemektedir.",
+    "etkiAlaniGerekce": "Brüksel, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için Avrupa'daki kritik bir freighter destinasyonudur ve buradaki hacim artışları bölgedeki genel pazar hareketliliğini yansıtmaktadır.",
     "date": "2026-05-13"
   },
   {
-    "title": "Air Charter Service, Nick Harris'i Havayolu İrtibat Direktörü Olarak Atadı",
-    "summary": "Air Charter Service (ACS), Orta Doğu ve Hindistan Alt Kıtası bölgeleri için Nick Harris'i havayolu irtibat direktörü pozisyonuna terfi ettirdi. <strong>2006</strong> yılında Londra'da kariyerine başlayan Harris, <strong>2009</strong> yılından bu yana Dubai'de görev yapmaktadır. Yeni görevi kapsamında Harris, kargo, özel jet ve grup charter bölümlerini kapsayacak şekilde havayollarıyla stratejik ilişkileri güçlendirmeye odaklanacak. ACS, <strong>2025</strong> yılında <strong>35.000</strong>'den fazla uçuş organize etmiş ve ilk çeyrek gelirlerini <strong>%35</strong> artırarak <strong>380 milyon dolara</strong> ulaştırmıştır.",
+    "title": "Air Charter Service, Nick Harris'i Havayolu İlişkileri Direktörü Olarak Atadı",
+    "summary": "Air Charter Service (ACS), Nick Harris'i Orta Doğu ve Hindistan Yarımadası Havayolu İlişkileri Direktörü pozisyonuna terfi ettirdi. ACS bünyesinde <strong>20</strong> yıldan fazla deneyimi bulunan Harris, son <strong>12</strong> yıldır bölgenin kargo direktörlüğü görevini yürütüyordu. Yeni görevi kapsamında Harris, kargo ve özel jet bölümlerinde zaman hassasiyetli gönderiler ve uçak parçası taşımacılığına (AOG) odaklanacak. ACS, geçtiğimiz yıl dünya çapında <strong>35.000</strong>'den fazla uçuş organize etmişti. Şirketin ilk çeyrek gelirleri ise yıllık bazda %<strong>35</strong> artarak <strong>380</strong> milyon dolara ulaştı.",
     "category": "Atama & Görevlendirme",
     "source": "aircargonews",
     "link": "https://www.aircargonews.net/people/2026/05/air-charter-service-appoints-harris-in-airline-liaison-role/",
@@ -32,19 +36,19 @@
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "Orta Doğu ve Hindistan bölgelerindeki üst düzey atama, bu bölgelerdeki charter ve acente ilişkilerini etkileme potansiyeline sahiptir.",
+    "etkiAlaniGerekce": "Bölgesel iş birlikleri ve kiralama operasyonlarını yöneten bu atama, ilgili pazarlardaki charter ilişkilerini etkiler.",
     "date": "2026-05-12"
   },
   {
-    "title": "Chapman Freeborn 'Sıradaki İlk Uçuş' (NFO) Hizmetini Başlattı",
-    "summary": "Charter firması Chapman Freeborn, zamana duyarlı sektörleri hedefleyen 'Next Flight Out' (NFO) hizmetini küresel portföyüne ekledi. Bu servis, teslim alındıktan en geç <strong>24 saat</strong> sonra kalkış ve <strong>15 dakikada</strong> fiyat teklifi sunarak el bagajı taşıması ile tam charter uçuşları arasındaki boşluğu doldurmayı hedefliyor. Hizmetin öncelikle havacılık, otomotiv, elektronik, enerji, moda ve sağlık gibi kritik sektörlerin acil lojistik ihtiyaçlarını karşılaması planlanıyor. Ayrıca DHL Express'in de <strong>3.000 kg</strong>'a kadar olan ağır sevkiyatlar için ekspres kapasitesini genişlettiği belirtildi.",
+    "title": "Chapman Freeborn Acil Gönderiler İçin Yeni Servisini Başlattı",
+    "summary": "Charter firması Chapman Freeborn, zaman hassasiyetli sektörleri hedefleyen \"Next Flight Out\" (NFO) hizmetini genişletiyor. Bu yeni servis, <strong>15</strong> dakikada teklif sunma ve alımdan sonra en geç <strong>24</strong> saat içinde çıkış yapma garantisi veriyor. Hizmet kapsamında havacılık, otomotiv, elektronik ve sağlık sektörleri için kapıdan kapıya destek ve gümrükleme çözümleri sunulacak. NFO, kurye ile taşıma ile tam uçak kiralama arasındaki boşluğu doldurmayı hedefliyor. Operasyonlar küresel ağ üzerinden <strong>7/24</strong> esasıyla takip edilecek.",
     "category": "Özel Kargo",
     "source": "aircargonews",
     "link": "https://www.aircargonews.net/charter-company/2026/05/chapman-freeborn-launches-next-flight-out-service/",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "risk",
+    "thyImpact": "notr",
     "thyAnalysis": "Zaman kritik lojistik segmentindeki bu tür hız odaklı yeni servisler, Turkish Cargo'nun acil kargo çözümlerindeki rekabetçi konumunu zorlayabilir ve pazar payı baskısı yaratabilir.",
     "etkiAlani": {
       "direct": [],
@@ -52,12 +56,12 @@
         "ISTANBUL"
       ]
     },
-    "etkiAlaniGerekce": "Küresel çapta sunulan bir hizmet olması nedeniyle belirli bir bölgeyle sınırlı değildir.",
+    "etkiAlaniGerekce": "Acil kargo segmentindeki bu yeni ürün, genel pazarın servis çeşitliliğini artırsa da doğrudan bir operasyonel tehdit değildir.",
     "date": "2026-05-12"
   },
   {
-    "title": "Eski Emirates SkyCargo Başkanı dnata CEO'su Oldu",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo'nun eski yöneticisi Nabil Sultan, havacılık hizmetleri şirketi dnata'nın CEO'luk görevine getirildi. Sultan, <strong>2013</strong>-<strong>2024</strong> yılları arasında kargo bölümünü yönettikten sonra kısa bir süre yolcu satış biriminde görev almıştı. dnata, son mali yılda kargo operasyonlarından <strong>3,4 milyar AED</strong> gelir elde ederken, hacimlerini <strong>%2,1</strong> artışla <strong>3,2 milyon tona</strong> çıkardı. Şirket ayrıca Amsterdam'da <strong>70 milyon avro</strong> yatırımla <strong>600.000 ton</strong> kapasiteli yeni bir otomatik tesis açtığını duyurdu.",
+    "title": "Emirates SkyCargo'nun Eski Başkanı dnata'nın CEO'su Oldu",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>'nun eski başkanı Nabil Sultan, havacılık hizmetleri şirketi dnata'nın yeni CEO'su olarak atandı. <strong>2013</strong>-<strong>2024</strong> yılları arasında kargo bölümünü yöneten Sultan, bu görevi <strong>5</strong> yıldır sürdüren Steven Allen'dan devralacak. dnata son mali yılında kargo elleçleme gelirlerini %<strong>10</strong> artırarak <strong>3,4</strong> milyar AED'ye çıkardı ve <strong>3,2</strong> milyon ton kargo hacmine ulaştı. Şirket son dönemde Amsterdam'da <strong>70</strong> milyon avro yatırımla <strong>600.000</strong> ton kapasiteli tam otomatize bir tesis açmıştı. Sultan, <strong>1990</strong> yılından bu yana <span style='color:#C8102E;font-weight:700;'>Emirates</span> bünyesinde çeşitli üst düzey görevlerde bulunmuştur.",
     "category": "Atama & Görevlendirme",
     "source": "aircargonews",
     "link": "https://www.aircargonews.net/people/2026/05/ex-emirates-skycargo-boss-scoops-dnata-ceo-role/",
@@ -70,12 +74,12 @@
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "dnata'nın Dubai ve Amsterdam'daki operasyonel liderlik değişimi yer hizmetleri ve kargo elleçleme rekabetini etkileyebilir.",
+    "etkiAlaniGerekce": "dnata'nın <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun ana merkezi İstanbul ve diğer Avrupa duraklarında yer hizmeti vermesi nedeniyle yönetim değişikliği önemlidir.",
     "date": "2026-05-12"
   },
   {
     "title": "DHL Express Orta Doğu'daki İlk SAF Anlaşmasını İmzaladı",
-    "summary": "DHL Express ve Dubai merkezli SAF One, Orta Doğu'daki bir sürdürülebilir havacılık yakıtı (SAF) üretim tesisini küresel ağa dahil etmek üzere anlaştı. <strong>2028</strong> yılında Bahreyn'de üretime başlaması planlanan tesisten <strong>10 yıllık</strong> süre zarfında yıllık <strong>25.000 metrik ton</strong> SAF tedarik edilecek. Toplamda <strong>250.000 metrik tonluk</strong> hacmi kapsayan bu anlaşma, DHL'in <strong>2030</strong> yılına kadar SAF kullanımını <strong>%30</strong>'a çıkarma hedefini destekliyor. Tedarik edilen yakıt, müşterilerin kapsam 3 emisyonlarını azaltmalarına olanak tanıyan bir modelle küresel olarak tahsis edilecek.",
+    "summary": "DHL Express ve Dubai merkezli SAF One, Orta Doğu'daki ilk sürdürülebilir havacılık yakıtı (SAF) tedarik anlaşmasına imza attı. Anlaşma kapsamında DHL, Bahreyn'de <strong>2028</strong>'de üretime başlaması planlanan tesisten yıllık <strong>25.000</strong> ton, <strong>10</strong> yıl boyunca toplam <strong>250.000</strong> ton SAF alacak. Bu iş birliği, DHL'in <strong>2030</strong> yılına kadar SAF kullanımını %<strong>30</strong>'a çıkarma hedefini destekliyor. Yakıt hacimleri \"book and claim\" modeliyle küresel ağda tahsis edilecek ve GoGreen Plus hizmeti üzerinden müşterilere sunulacak. Bu girişim bölgenin karbonsuzlaşma sürecine önemli bir katkı sağlamayı amaçlıyor.",
     "category": "Diğer",
     "source": "aircargonews",
     "link": "https://www.aircargonews.net/sustainability/2026/05/dhl-express-signs-its-first-middle-east-saf-offtake-agreement/",
@@ -88,12 +92,12 @@
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "Bahreyn merkezli SAF üretimi bölgedeki sürdürülebilirlik standartlarını ve yakıt tedarik zincirini etkilemektedir.",
+    "etkiAlaniGerekce": "Bölgedeki ilk SAF üretim tesisinin kurulması, sürdürülebilirlik ekosistemini etkilemektedir.",
     "date": "2026-05-12"
   },
   {
-    "title": "ACN Ödülleri: Çevre Kategorisi Başvuruları Başladı",
-    "summary": "Air Cargo News tarafından düzenlenen ve dnata sponsorluğunda gerçekleşen Hava Kargo Haberleri Ödülleri'nde Çevre kategorisi başvuruları kabul edilmeye başlandı. Sektördeki emisyon azaltımı ve atık yönetimi girişimlerini onurlandıran ödüle son başvuru tarihi <strong>29 Mayıs 2026</strong> olarak belirlendi. Kazananlar, <strong>21 Ekim 2026</strong>'da Londra'da düzenlenecek törenle açıklanacak. Başvurularda lojistik zincirindeki somut çevresel iyileştirmelerin ve müşteri geri bildirimlerinin kanıtlanması bekleniyor.",
+    "title": "Air Cargo News Ödülleri Çevre Kategorisi Başvuruları Başladı",
+    "summary": "Air Cargo News Ödülleri, hava kargo endüstrisinde son <strong>12</strong> ayda çevre ayak izini iyileştiren şirketleri başvuruda bulunmaya davet ediyor. dnata sponsorluğundaki bu kategori, emisyon ve atık azaltma girişimlerini, müşteri geri bildirimlerini ve doğrulanabilir verileri değerlendirecek. Başvurular için son tarih <strong>29 Mayıs 2026</strong> olarak açıklandı. Ödül töreni ise <strong>21 Ekim 2026</strong>'da Londra'da gerçekleştirilecek. Bu yıl <strong>42</strong>. kez düzenlenen ödül programında toplam <strong>10</strong> farklı kategori bulunuyor.",
     "category": "Diğer",
     "source": "aircargonews",
     "link": "https://www.aircargonews.net/sustainability/2026/05/acn-awards-enter-the-environment-category/",
@@ -110,15 +114,15 @@
     "date": "2026-05-12"
   },
   {
-    "title": "Chapman Freeborn OBC, Sıradaki İlk Uçuş Hizmetini Başlattı",
-    "summary": "Chapman Freeborn, zaman kritik lojistik çözümlerini genişleterek Next Flight Out (NFO) hizmetini duyurdu. Bu servis, <strong>15 dakikada</strong> teklif sunma ve sevkiyatın alınmasından sonraki <strong>24 saat</strong> içinde çıkış yapma garantisi veriyor. Havacılık, otomotiv ve sağlık gibi hızın hayati önem taşıdığı sektörleri hedefleyen hizmet, <strong>24/7</strong> operasyonel destekle sunulacak. Chapman Freeborn, bu yeni servisiyle acil uluslararası sevkiyatlar için el bagajı taşıması ve charter uçuşları arasında esnek bir çözüm sağlamayı amaçlıyor.",
+    "title": "Chapman Freeborn OBC Bir Sonraki Uçuş Servisini Ekledi",
+    "summary": "Chapman Freeborn OBC, acil uluslararası gönderiler için \"Next Flight Out\" (NFO) adlı yeni premium lojistik hizmetini başlattı. El kuryesi taşımacılığı ile tam uçak charter hizmetleri arasında konumlanan bu servis, <strong>15</strong> dakikada fiyat teklifi ve alımdan sonra <strong>24</strong> saat içinde kalkış imkanı tanıyor. Havacılık, otomotiv ve sağlık gibi sektörleri hedefleyen hizmet, küresel havayolu ağını kullanarak <strong>7/24</strong> takip ve uçtan uca destek sunuyor. Şirket, bu adımla acil lojistik portföyünü güçlendirmeyi ve operasyonel esnekliği artırmayı amaçlıyor. Hizmet, gümrükleme ve son mil teslimat gibi süreçleri de kapsayacak.",
     "category": "Özel Kargo",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/chapman-freeborn-obc-adds-next-flight-out-nfo/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Chapman Freeborn 'Sıradaki İlk Uçuş' (NFO) Hizmetini Başlattı",
-    "thyImpact": "risk",
+    "duplicateOf": "Chapman Freeborn Acil Gönderiler İçin Yeni Servisini Başlattı",
+    "thyImpact": "notr",
     "thyAnalysis": "Zamana duyarlı kargo taşımacılığında artan rekabet, Turkish Cargo'nun ekspres ve kritik ürün pazar payı üzerinde baskı oluşturabilir.",
     "etkiAlani": {
       "direct": [],
@@ -130,8 +134,8 @@
     "date": "2026-05-12"
   },
   {
-    "title": "Navlun Oranları Artışların Ardından Stabil Seyrediyor",
-    "summary": "Küresel hava kargo oranları, son iki aydaki keskin artışların ardından geçtiğimiz hafta genel olarak sabit kaldı. Baltık Hava Kargo Endeksi (BAI), yıllık bazda <strong>%35,8</strong> yukarıda kalarak haftalık bazda sadece <strong>%0,4</strong> artış gösterdi. Hong Kong ve Hindistan çıkışlı oranlarda hafif gerilemeler yaşanırken, ABD çıkışlı navlunlar Avrupa ve Güney Amerika rotalarında güçlü çift haneli artışlar sergiledi. Piyasanın, Şubat ayı sonundan bu yana devam eden jeopolitik aksamalara uyum sağlamaya başladığı gözlemleniyor.",
+    "title": "Küresel Hava Kargo Ücretleri Artışın Ardından Stabil Seyrediyor",
+    "summary": "İki aylık keskin artışların ardından küresel hava kargo ücretleri geçen hafta büyük oranda dengelendi. Baltic Air Freight Index (BAI00), <strong>11 Mayıs</strong> haftasında %<strong>0,4</strong> oranında sınırlı bir artış gösterse de yıllık bazda %<strong>35,8</strong> daha yüksek seviyede kaldı. Hong Kong ve Hindistan çıkışlı spot fiyatlar hafifçe gerilerken, Çin'den Avrupa ve ABD'ye giden rotalarda fiyatlar haftalık bazda yumuşadı. Ancak Hong Kong endeksi (BAI30) yıllık %<strong>37,9</strong> artışla güçlü seyrini korudu. ABD çıkışlı ücretler ise Avrupa, Çin ve Güney Amerika rotalarında çift haneli kazançlarla güçlü bir yükseliş kaydetti.",
     "category": "Diğer",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/rates-remain-stable-after-months-of-increases/",
@@ -144,38 +148,40 @@
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "Küresel ana kargo hatlarındaki fiyat değişimleri tüm taşıyıcıları etkileyen genel bir pazar verisidir.",
+    "etkiAlaniGerekce": "Küresel fiyat trendleri, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun ana koridorlarındaki gelir yönetimini doğrudan etkiler.",
     "date": "2026-05-12"
   },
   {
-    "title": "Hürmüz Boğazı Gerginliği Navlun Oranları Üzerinde Baskı Oluşturuyor",
-    "summary": "Hürmüz Boğazı'ndaki jeopolitik gerilimler ve ABD ile İran arasındaki askeri hareketlilik lojistik piyasalarını baskılamaya devam ediyor. Maersk, artan yakıt maliyetlerinin aylık <strong>500 milyon dolar</strong> ek yük getirdiğini ve bu maliyetlerin navlun oranlarına yansıtıldığını belirtti. Küresel hava kargo oranları, savaş öncesi seviyelere ve geçen yıla göre <strong>%30</strong> daha yüksek seyrediyor. Özellikle Asya-Avrupa rotasında deniz-hava taşımacılığına yönelik talebin arttığı, havayollarının ise kârsız rotaları iptal ederek kapasiteyi dengelemeye çalıştığı bildirildi.",
+    "title": "Hürmüz Boğazı'ndaki Gerilim Kargo Ücretleri Üzerindeki Baskıyı Sürdürüyor",
+    "summary": "ABD'nin Hürmüz Boğazı'ndaki gemi geçişlerini destekleme operasyonunu askıya alması ve İran'ın yeni geçiş kuralları, jeopolitik riskleri ve yakıt maliyetlerini yüksek tutuyor. Maersk, yakıtla ilgili ek maliyetlerin aylık <strong>500</strong> milyon dolara ulaştığını tahmin ediyor. Hava kargo ücretleri, savaş öncesine göre %<strong>30</strong> daha yüksek seyretmeye devam ediyor; Çin-Avrupa rotasında fiyatlar Nisan zirvesinden %<strong>15</strong> düşse de hala Şubat ayına göre çok yukarıda. Bazı Asya-Avrupa göndericilerinin yüksek hava navlunları nedeniyle ABD Batı Kıyısı üzerinden deniz-hava alternatiflerine yöneldiği bildiriliyor. Jet yakıtı fiyatları Nisan zirvelerinden sonra stabilize olsa da pazarın kırılganlığı sürüyor.",
     "category": "Diğer",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/hormuz-tension-keeps-pressure-on-rates/",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "firsat",
-    "thyAnalysis": "Hürmüz Boğazı'ndaki riskler nedeniyle denizden havaya kayan kargo akışı, İstanbul üzerinden kurulan transit koridorlarda Turkish Cargo için hacim artışı fırsatı yaratmaktadır.",
+    "thyImpact": "risk",
+    "thyAnalysis": "Hürmüz Boğazı'ndaki gerilim, yakıt maliyetlerinin yüksek kalmasına ve ana rotalarda operasyonel risklerin devam etmesine neden olarak karlılığı baskılayabilir.",
     "etkiAlani": {
       "direct": [],
       "hub": [
-        "ISTANBUL"
+        "China",
+        "Central Europe",
+        "Western Europe"
       ]
     },
-    "etkiAlaniGerekce": "Bölgedeki jeopolitik riskler deniz-hava aktarmalı kargo akışlarını tetikleyerek İstanbul hub trafiğini olumlu etkileyebilir.",
+    "etkiAlaniGerekce": "Boğaz üzerindeki gerilim, bölgedeki tüm ana kargo akışlarını ve operasyonel maliyetleri doğrudan etkilemektedir.",
     "date": "2026-05-12"
   },
   {
-    "title": "ACS, Nick Harris'i Orta Doğu ve Hindistan Alt Kıtası İçin Görevlendirdi",
-    "summary": "Air Charter Service, Dubai ofisinde görev yapan Nick Harris'i Orta Doğu ve Hindistan Alt Kıtası Havayolu İrtibat Direktörü olarak atadı. Harris, <strong>20 yılı</strong> aşkın tecrübesiyle havayollarıyla ilişkileri güçlendirecek ve zaman kritik lojistik gereksinimleri destekleyecek. Yeni görev tanımı, kargo, özel jet ve grup charter bölümlerini kapsarken, onboard kurye (OBC) ve acil kargo (NFO) hizmetlerine odaklanacak. ACS, bu atamayla bölgedeki havayollarına AOG durumları ve acil operasyonel ihtiyaçlarda ana çözüm ortağı olmayı hedefliyor.",
+    "title": "Air Charter Service Nick Harris'i Terfi Ettirdi",
+    "summary": "Air Charter Service (ACS), Nick Harris'i Orta Doğu ve Hindistan Yarımadası Havayolu İlişkileri Direktörü olarak atadı. Harris, <strong>2006</strong>'da Londra'da başladığı ACS kariyerine <strong>2009</strong>'dan beri Dubai'de devam ediyordu. Yeni görevinde, bölgedeki havayollarıyla iş birliklerini güçlendirecek ve özellikle zaman hassasiyetli gönderiler ile uçak parçası taşımacılığına (AOG) odaklanacak. ACS kargo bölümü, geçtiğimiz yıl dünya genelinde <strong>35.000</strong>'den fazla uçuş gerçekleştirmişti. Harris, <strong>15</strong> yılı aşkın süredir bölgedeki havayolu operatörleriyle yakın ortaklıklar yürütmektedir.",
     "category": "Atama & Görevlendirme",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/acs-promotes-nick-harris/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Air Charter Service, Nick Harris'i Havayolu İrtibat Direktörü Olarak Atadı",
+    "duplicateOf": "Air Charter Service, Nick Harris'i Havayolu İlişkileri Direktörü Olarak Atadı",
     "thyImpact": "notr",
     "thyAnalysis": "",
     "etkiAlani": {
@@ -186,8 +192,8 @@
     "date": "2026-05-12"
   },
   {
-    "title": "Gökyüzünde Kültürel Miras Taşıma: Tarihi Hawaii Pelerini Yolculuğu",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>United</span> Cargo, Smithsonian Enstitüsü'ndeki nadir bir Hawaii tüy pelerinini ('ahu 'ula) Washington'dan Kona'ya başarıyla nakletti. <strong>1819</strong> yılına dayanan bu tarihi eser, kültürel protokoller gereği doğrudan Kona'ya, adalar arası aktarma yapılmadan taşındı. Havayolu, operasyonda yüksek güvenlikli gönderiler için özelleştirilmiş UASecure hizmetini kullanarak minimum elleçleme ile nakliyeyi gerçekleştirdi. Bu operasyon, Washington Dulles-Denver-Kona rotası üzerinden hassas lojistik planlama ile tamamlandı.",
+    "title": "United Cargo Geçmişin Mirasını Göklere Taşıyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>United</span> Cargo, Hawaii halkı için büyük tarihi öneme sahip bir tüylü pelerini Washington'daki Smithsonian Enstitüsü'nden Hawaii'nin Kona bölgesine başarıyla taşıdı. <strong>1819</strong> yılındaki Kuamo’o Savaşı'nda Şef Kekuaokalani tarafından giyilen bu eser, kültürel protokoller gereği adalar arası transfer yapılmadan doğrudan Kona'ya ulaştırıldı. Taşıma, şirketin yüksek güvenlikli ve hassas gönderiler için sunduğu UASecure hizmetiyle gerçekleştirildi. Lojistik süreç, Washington Dulles'tan Denver aktarmalı doğrudan Kona uçuşuyla, minimum elleçleme ile tamamlandı. Bu operasyon, kültürel mirasların iadesi (repatriation) kapsamında önemli bir kilometre taşı olarak kaydedildi.",
     "category": "Özel Kargo",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/carrying-legacy-across-the-skies/",
@@ -200,32 +206,34 @@
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "ABD iç hatlarında gerçekleşen hassas ve tarihi bir kargo operasyonudur.",
+    "etkiAlaniGerekce": "Değerli ve hassas tarihi eser taşımacılığı uzmanlığına yönelik bir vakadır; <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun kapsama alanı dışındadır.",
     "date": "2026-05-12"
   },
   {
-    "title": "DHL Express Küresel Portföyünü Yeni Bir Ağır Yük Servisiyle Genişletiyor",
-    "summary": "DHL Express, <strong>1.000 kg</strong>'a kadar parça ağırlığı ve <strong>3.000 kg</strong>'a kadar toplam sevkiyat kapasitesi sunan Heavy Weight Express (HWX) hizmetini başlattı. Bu servis, <strong>220</strong>'den fazla ülke ve bölgede DHL'in kendi uçak filosu ve kara ağı üzerinden ekspres hız ve sabit fiyat garantisiyle sunulacak. Teknoloji, otomotiv ve enerji gibi üretim duraksamasının yüksek maliyet yarattığı sektörleri hedefleyen hizmet için özel destek masaları oluşturuldu. HWX, geleneksel hava kargo navlun piyasasındaki oran oynaklığı ve kapasite sıkıntılarına karşı güvenilir bir alternatif olarak konumlandırılıyor.",
-    "category": "Filo & Network",
+    "title": "DHL Express Küresel Portföyünü Yeni Ağır Yük Servisiyle Genişletiyor",
+    "summary": "DHL Express, parça başına <strong>1.000</strong> kg ve sevkiyat başına <strong>3.000</strong> kg'a kadar olan gönderiler için \"Heavy Weight Express\" (HWX) hizmetini başlattı. <strong>220</strong>'den fazla ülke ve bölgeyi kapsayan servis, doğrudan DHL'in kendi uçak filosunu ve yer ağını kullanarak sabit fiyat ve garantili teslimat süreleri sunuyor. Özellikle otomotiv, teknoloji, yaşam bilimleri ve enerji sektörlerini hedefleyen bu hizmet, geleneksel hava kargo operatörlerinin domine ettiği ağır yük segmentinde ekspres hız ve kontrol vaat ediyor. Servis, üretim durmalarını önlemek ve envanter yönetimini optimize etmek amacıyla özel \"Ağır Yük Öncelikli Destek Birimleri\" tarafından takip edilecek. Bu adım, DHL'in entegratör rolünü ağır yük taşımacılığına da taşıdığını gösteriyor.",
+    "category": "Özel Kargo",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/dhl-express-expands-global-portfolio-with-new-service/",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
     "thyImpact": "risk",
-    "thyAnalysis": "DHL'in ekspres ağır yük segmentine girmesi, Turkish Cargo'nun freighter operasyonlarıyla rekabet ettiği yüksek tonajlı sevkiyatlarda pazar baskısı oluşturabilir.",
+    "thyAnalysis": "DHL'in ekspres ağını 3.000 kg kapasiteye kadar genişletmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun standart ve ekspres kargo ürünleri için özellikle yüksek değerli endüstriyel yüklerde ciddi pazar payı kaybı riski oluşturabilir.",
     "etkiAlani": {
       "direct": [],
       "hub": [
-        "ISTANBUL"
+        "Southern Asia",
+        "Middle East",
+        "South East Asia"
       ]
     },
-    "etkiAlaniGerekce": "Dünya çapında sunulan entegre bir ekspres çözümüdür.",
+    "etkiAlaniGerekce": "Küresel ölçekte sunulan bu hizmet, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun faaliyet gösterdiği tüm ana pazarlardaki ağır yük trafiğini etkileme potansiyeline sahiptir.",
     "date": "2026-05-12"
   },
   {
-    "title": "LATAM Cargo Çiçek Taşımacılığında Üst Üste Dördüncü Kez Liderliğini Korudu",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>LATAM Airlines Group</span> kargo iştirakleri, <strong>2026</strong> Anneler Günü sezonunda Güney Amerika'dan <strong>24.400 ton</strong> taze çiçek taşıdı. Kolombiya ve Ekvador çıkışlı bu operasyonda <strong>430</strong>'dan fazla özel uçuş gerçekleştirilirken, toplamda yaklaşık <strong>560 milyon</strong> çiçek sapı nakledildi. Operasyonun sorunsuz yürütülmesi için yer hizmetleri personeli normal dönemin iki katına çıkarıldı. ABD ana varış noktası olmaya devam ederken; Avrupa, Okyanusya, Şili ve Brezilya pazarlarında da büyüme kaydedildi.",
+    "title": "LATAM Cargo Çiçek İhracatında Liderliğini Sürdürüyor",
+    "summary": "LATAM Cargo, <strong>2026</strong> Anneler Günü sezonunda Kolombiya ve Ekvador'dan dünya pazarlarına <strong>24.400</strong> ton taze çiçek taşıyarak üst üste dördüncü kez liderliğini korudu. <strong>21</strong> günlük yoğun operasyon süresince <strong>430</strong>'dan fazla özel kargo uçuşu gerçekleştirildi. Yaklaşık <strong>560</strong> milyon çiçek sapına eşdeğer olan bu sevkiyatın en büyük alıcısı ABD olurken; Avrupa, Okyanusya ve Brezilya pazarlarında da büyüme kaydedildi. Operasyonun zirve döneminde yer personeli sayısı iki katına çıkarıldı. Şirket, kapasite planlaması ve operasyonel koordinasyon sayesinde saniyede <strong>300</strong>'den fazla çiçek sapı ulaştırdı.",
     "category": "Özel Kargo",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/latam-cargo-leads-for-the-fourth-consecutive-year/",
@@ -236,14 +244,16 @@
     "thyAnalysis": "",
     "etkiAlani": {
       "direct": [],
-      "hub": []
+      "hub": [
+        "Western Europe"
+      ]
     },
-    "etkiAlaniGerekce": "Güney Amerika'dan dünyaya yayılan çiçek ihracat koridorlarını doğrudan ilgilendirmektedir.",
+    "etkiAlaniGerekce": "Güney Amerika çiçek pazarı <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için bir fırsat alanı olsa da, bu haber LATAM'ın bölgesel hakimiyetini vurgulamaktadır.",
     "date": "2026-05-11"
   },
   {
-    "title": "CNS, 2026 Yıllık Ortaklık Konferansı'na San Francisco'da Hazırlanıyor",
-    "summary": "Cargo Network Services (CNS), <strong>18</strong>-<strong>20 Mayıs 2026</strong> tarihlerinde San Francisco'da düzenlenecek yıllık ortaklık konferansına ev sahipliği yapacak. Yaklaşık <strong>700</strong> sektör paydaşının katılacağı etkinlikte yapay zeka, e-ticaret büyümesi ve ONE Record standartları gibi konular tartışılacak. Konferans kapsamında havayolları ve nakliyeciler için ikili görüşme fırsatları ve teknik oturumlar düzenlenecek. ABD hava kargo pazarının <strong>2023</strong> yılında <strong>34 milyon ton</strong> kargo elleçlediği bilgisi, etkinliğin önemini vurgulayan veriler arasında yer alıyor.",
+    "title": "CNS 2026 Yıllık Ortaklık Konferansı San Francisco'da Hazırlanıyor",
+    "summary": "Cargo Network Services (CNS), yıllık konferansını <strong>18-20 Mayıs 2026</strong> tarihlerinde San Francisco'da düzenleyecek. Yaklaşık <strong>700</strong> sektör temsilcisinin katılması beklenen etkinlikte yapay zeka, ONE Record uygulamaları, e-ticaret büyümesi ve ödeme dijitalleşmesi gibi konular ele alınacak. Programda Amazon Air Cargo, Avianca Cargo ve <span style='color:#C8102E;font-weight:700;'>Etihad</span> Cargo yöneticileri panelist olarak yer alacak. Ayrıca tehlikeli madde tespiti ve ABD ACE ihracat manifestosu değişiklikleri gibi kritik operasyonel konular tartışılacak. <strong>2023</strong> yılında ABD genelinde <strong>34</strong> milyon ton hava kargosu elleçlendiği verisi de paylaşıldı.",
     "category": "Diğer",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/cns-preparing-for-2026-annual-partnership-conference-in-san-francisco/",
@@ -256,12 +266,12 @@
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "ABD merkezli sektörel bir konferanstır.",
+    "etkiAlaniGerekce": "Kuzey Amerika kargo pazarının en önemli sektörel etkinliklerinden biridir.",
     "date": "2026-05-11"
   },
   {
-    "title": "Anneler Günü Sevkiyatlarının Bitmesiyle Kargo Tonajları Düştü",
-    "summary": "Küresel hava kargo hacimleri, Anneler Günü çiçek sevkiyatlarının tamamlanması ve tatillerin etkisiyle <strong>Nisan</strong> sonu haftasında <strong>%7</strong> oranında geriledi. WorldACD verilerine göre hacim düşüşüne rağmen fiyatlar yükselişini sürdürerek kg başına <strong>3,29 dolara</strong> ulaştı. Orta Doğu ve Güney Asya (MESA) bölgesinde fiyatlar yıllık bazda <strong>%59</strong> artarken, havayolları artan yakıt maliyetleri nedeniyle tam kargo uçağı kapasitesini <strong>%2,7</strong> azalttı. Asya-Avrupa hattında ise navlun fiyatlarının yüksekliği nedeniyle bazı göndericilerin deniz-hava alternatiflerine yöneldiği bildirildi.",
+    "title": "Anneler Günü Sevkiyatlarının Ardından Hacimler Yeniden Dengeleniyor",
+    "summary": "Küresel hava kargo hacimleri, Anneler Günü çiçek sevkiyatlarının sona ermesi ve İşçi Bayramı tatillerinin etkisiyle <strong>18</strong>. haftada %<strong>7</strong> düştü. Buna rağmen Nisan ayında tonajlar geçen yıla göre %<strong>5</strong> artarken, küresel ortalama ücretler %<strong>28</strong> yükselerek kg başına <strong>3,17</strong> dolar seviyesine ulaştı. Orta Doğu ve Güney Asya (MESA) menşeli trafik toparlanmaya devam ederken, bu bölgeden yapılan ihracat yıllık bazda %<strong>4</strong> artış kaydetti. Havayolları düşen talebe yanıt olarak kargo uçağı kapasitesini haftalık %<strong>2,7</strong> oranında azalttı. Yılın ilk dört ayında ise küresel kargo fiyatlarının geçen yıla göre %<strong>11</strong> daha yüksek olduğu belirtiliyor.",
     "category": "Diğer",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/tonnages-rebound-as-flower-surge-ends/",
@@ -276,12 +286,12 @@
         "ISTANBUL"
       ]
     },
-    "etkiAlaniGerekce": "Küresel pazar verileri ve MESA bölgesindeki toparlanma Turkish Cargo'nun ana operasyon bölgelerini etkiler.",
+    "etkiAlaniGerekce": "Genel küresel kargo verileri pazarın mevsimsel döngüsünü yansıtmaktadır.",
     "date": "2026-05-11"
   },
   {
-    "title": "Lojistik Liderleri Bükreş'teki Avrupa Nakliyeciler Kongresi'nde Buluşuyor",
-    "summary": "Avrupa nakliye topluluğu, <strong>18</strong>-<strong>20 Mayıs 2026</strong> tarihlerinde Bükreş'te düzenlenecek Avrupa Nakliyeciler Kongresi'nde bir araya gelecek. FIATA himayesinde düzenlenen etkinliğe <strong>22</strong> ülkeden <strong>150</strong>'den fazla delegenin katılması bekleniyor. Kongre programı, lojistikte bölgesel ilerleme teması altında dijitalleşme, altyapı kısıtlamaları ve tedarik zinciri dayanıklılığına odaklanacak. Avrupa Komisyonu, IATA ve CLECAT gibi önemli kuruluşların katılımıyla gerçekleştirilecek kongre, B2B görüşmeleri için de bir platform sunacak.",
+    "title": "Lojistik Liderleri Bükreş'teki Avrupa Forwarder Kongresi'nde Buluşacak",
+    "summary": "Avrupa kargo forwarder topluluğu, <strong>18-20 Mayıs 2026</strong> tarihlerinde Bükreş'te düzenlenecek olan Avrupa Forwarder Kongresi'nde bir araya gelecek. FIATA himayesinde gerçekleştirilecek etkinlik, <strong>22</strong> ülkeden <strong>150</strong>'den fazla delegeyi ağırlayacak. \"Lojistikte Bölgesel İlerleme İçin Birlik\" temasıyla düzenlenen kongre; dijital dönüşüm, altyapı zorlukları ve tedarik zinciri dayanıklılığına odaklanacak. Avrupa Komisyonu, IATA ve CLECAT gibi önemli kurumlardan üst düzey temsilciler de kongreye katılacak. Etkinlik, Romanya Forwarderlar Derneği (USER) tarafından organize ediliyor.",
     "category": "Diğer",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/logistics-leaders-to-gather-in-bucharest-for-the-european-freight-forwarders-congress/",
@@ -297,12 +307,48 @@
         "ISTANBUL"
       ]
     },
-    "etkiAlaniGerekce": "Bölgesel nakliye ve lojistik gündemini etkileyen bir etkinliktir.",
+    "etkiAlaniGerekce": "Doğu Avrupa lojistik ağındaki gelişmeler ve forwarder ilişkileri açısından önemlidir.",
     "date": "2026-05-11"
   },
   {
-    "title": "Avianca Cargo Anneler Günü'nde 21.000 Ton Çiçek Taşıyarak Rekor Kırdı",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Avianca Group</span> iştiraki Avianca Cargo, <strong>2026</strong> Anneler Günü sezonunda Kolombiya ve Ekvador'dan <strong>21.000 tondan</strong> fazla çiçek taşıyarak tarihinin en büyük operasyonunu tamamladı. Şirket, toplam kapasitesinin <strong>%42</strong>'sini bu işe ayırırken <strong>330</strong>'dan fazla kargo uçuşu gerçekleştirdi. Yaklaşık <strong>330 milyon</strong> çiçek sapının taşındığı sezonda, günlük kargo hacmi <strong>24 milyon</strong> sapa ulaştı. Operasyonel verimliliği artırmak için Bogota'da depo kapasitesi <strong>%35</strong>, Medellin'de ise <strong>%41</strong> oranında artırıldı.",
+    "title": "Küresel Hava Kargo Ücretleri Artışın Ardından Stabilize Oldu",
+    "summary": "TAC Index verilerine göre, küresel hava kargo ücretleri son iki aydır süren yükselişin ardından geçen hafta büyük ölçüde sabit kaldı. Baltic Air Freight Index (BAI00), <strong>11 Mayıs</strong> itibarıyla haftalık %<strong>0,4</strong> artışla yıllık bazda %<strong>35,8</strong> yukarıda seyrediyor. Hong Kong ve Hindistan'dan gelen spot oranlar hafifçe gerilerken, Şanghay çıkışlı fiyatlar haftalık bazda %<strong>3,6</strong> düştü. Buna karşın, Chicago çıkışlı oranlar %<strong>14,1</strong>'lik güçlü bir yükseliş kaydetti. Avrupa çıkışlı fiyatlar ise Frankfurt'ta %<strong>0,7</strong>, Heathrow'da ise %<strong>5,5</strong> oranında bir önceki haftaya göre düşüş gösterdi.",
+    "category": "Diğer",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/global-air-freight-rates-stabilise-after-recent-sharp-increases-1359127",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Küresel Hava Kargo Ücretleri Artışın Ardından Stabil Seyrediyor",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-05-13 12:05:42"
+  },
+  {
+    "title": "Brüksel Havalimanı Kargo Hacimleri Nisan'da %6,2 Arttı",
+    "summary": "Brüksel Havalimanı, Nisan <strong>2026</strong>'da yıllık bazda %<strong>6,2</strong> artışla yaklaşık <strong>74.000</strong> ton kargo elleçledi. Büyüme temel olarak %<strong>11,3</strong> artan yolcu uçağı altı kargo ve %<strong>11,4</strong> artan entegratör servislerinden kaynaklandı. Öte yandan, tam kargo uçakları (freighter) ile taşınan hacimler Nisan <strong>2025</strong>'e kıyasla %<strong>4,7</strong> oranında geriledi. Kamyonla taşınan hacimler ise %<strong>6,5</strong> artış gösterdi. Ana ithalat bölgeleri Asya, Afrika ve Kuzey Amerika olurken, ihracatta Asya ve Kuzey Amerika ön plana çıktı. Havalimanındaki toplam uçak hareketliliği ise %<strong>4,8</strong> artışla <strong>277.862</strong> olarak gerçekleşti.",
+    "category": "Diğer",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/cargo-volumes-at-brussels-airport-rise-62-in-april-1359126",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Brüksel Havalimanı Kargo Hacimleri Nisan Ayında Artış Gösterdi",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-05-13 10:59:47"
+  },
+  {
+    "title": "Avianca Cargo Anneler Günü İçin 21.000 Ton Çiçek Taşıdı",
+    "summary": "Avianca Cargo, <strong>2026</strong> Anneler Günü sezonunda Kolombiya ve Ekvador'dan <strong>21.000</strong> tondan fazla çiçek taşıyarak tarihinin en büyük sezonluk operasyonunu gerçekleştirdi. Havayolu, <strong>330</strong>'dan fazla kargo uçuşu yaparak toplam kapasitesinin %<strong>42</strong>'sini çiçek taşımacılığına ayırdı. Sezon boyunca yaklaşık <strong>330</strong> milyon çiçek sapı ulaştırılırken, en yoğun günlerde günlük <strong>24</strong> sefer yapıldı. Şirket, talebi karşılamak için filosuna <strong>2</strong> ek kargo uçağı daha katarak toplam <strong>9</strong> uçakla hizmet verdi. Miami, günlük <strong>1.500</strong> tondan fazla çiçek girişiyle ana dağıtım merkezi olmaya devam etti.",
     "category": "Özel Kargo",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/avianca-cargo-moves-21000-tonnes-of-flowers-for-mothers-day-1359122",
@@ -315,12 +361,12 @@
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "Güney Amerika çiçek ihracat pazarı dinamiklerini yansıtmaktadır.",
+    "etkiAlaniGerekce": "Latin Amerika pazarındaki çiçek taşımacılığı liderliği ve sezonluk kapasite yönetimi açısından önemlidir.",
     "date": "2026-05-13 08:22:49"
   },
   {
-    "title": "Blue Dart 2026 Mali Yılı Gelirini %7,7 Artırdı",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>DHL Aviation</span> iştiraki Blue Dart Express, <strong>31 Mart 2026</strong>'da sona eren mali yılda gelirini <strong>649,7 milyon dolara</strong> çıkardı. Şirketin yıllık net kârı ise artan personel ve operasyonel giderlerin etkisiyle hafif düşerek <strong>25,4 milyon dolar</strong> olarak gerçekleşti. Blue Dart yönetimi, hisse başına <strong>25 rupi</strong> temettü dağıtılmasını önerdi. Şirket, yeni çalışma yasalarının getirdiği maliyet artışlarına rağmen operasyonel büyümesini sürdürdüğünü bildirdi.",
+    "title": "Blue Dart'ın 2026 Mali Yılı Geliri %7,7 Artışla 649,7 Milyon Dolara Ulaştı",
+    "summary": "Blue Dart Express, <strong>31 Mart 2026</strong>'da sona eren mali yılda gelirlerini %<strong>7,7</strong> artırarak <strong>649,7</strong> milyon dolara çıkardığını açıkladı. Şirketin yıllık net karı, artan işçi maliyetleri ve navlun giderleri nedeniyle hafif bir düşüşle <strong>25,4</strong> milyon dolar olarak gerçekleşti. Yalnızca dördüncü çeyrekte gelirler <strong>162,3</strong> milyon dolara ulaşırken, kar <strong>4,6</strong> milyon dolar oldu. Şirket yönetimi, hissedarlara hisse başına <strong>25</strong> ₹ temettü ödenmesini önerdi. Yeni çalışma yasalarının uygulanmasıyla birlikte personel yan hakları giderlerinin arttığı not edildi.",
     "category": "Diğer",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/blue-dart-fy26-revenue-rises-77-to-6497-million-1359114",
@@ -333,12 +379,12 @@
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "Hindistan merkezli lojistik pazarındaki mali durum ve operasyonel maliyet değişimlerini göstermektedir.",
+    "etkiAlaniGerekce": "Hindistan'ın en büyük yerel ekspres taşıyıcılarından birinin finansal sonuçları, bölge pazarındaki maliyet ve talep dengesini yansıtır.",
     "date": "2026-05-12 14:05:33"
   },
   {
-    "title": "DHL Express Bahreyn SAF One İle 10 Yıllık Tedarik Anlaşması İmzaladı",
-    "summary": "DHL Express, Bahreyn'de kurulacak olan Orta Doğu'nun ilk sürdürülebilir havacılık yakıtı (SAF) tesisi için SAF One ile <strong>10 yıllık</strong> bir anlaşma yaptı. <strong>2028</strong>'de başlayacak tedarik kapsamında yıllık <strong>25.000 ton</strong> SAF alımı gerçekleştirilecek. Bu iş birliği DHL'in bölgesel dekarbonizasyon hedeflerini desteklerken, toplamda <strong>250.000 tonluk</strong> bir hacmi kapsıyor. Şirket, bu adımla küresel SAF tedarik zinciri dayanıklılığını artırmayı ve müşterilerine emisyonu azaltılmış lojistik seçenekleri sunmayı hedefliyor.",
+    "title": "DHL Express Bahreyn Tesisi İçin 10 Yıllık SAF Anlaşması İmzaladı",
+    "summary": "DHL Express, Dubai merkezli SAF One ile Orta Doğu'da bir ilk olan sürdürülebilir havacılık yakıtı (SAF) tedarik anlaşması yaptı. Anlaşmaya göre, <strong>2028</strong> yılında faaliyete geçecek Bahreyn tesisinden yılda <strong>25.000</strong> ton SAF alınacak; bu da <strong>10</strong> yıllık dönemde <strong>250.000</strong> tonluk bir hacme tekabül ediyor. Bu hamle, DHL'in <strong>2030</strong> emisyon hedefleri doğrultusunda karbon ayak izini azaltma stratejisinin bir parçasıdır. Bahreyn tesisi, sertifikalı yakıt üretmek için yenilenebilir hammaddeler ve yeni nesil rafineri teknolojileri kullanacak. Tedarik edilecek yakıt, \"book and claim\" modeliyle küresel ağda karbon emisyonlarını düşürmek için kullanılacak.",
     "category": "Diğer",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/dhl-express-signs-10-year-saf-supply-deal-with-saf-one-bahrain-1359110",
@@ -355,50 +401,52 @@
     "date": "2026-05-12 10:34:57"
   },
   {
-    "title": "DHL Express 3.000 Kg'a Kadar Kargo İçin Ağır Yük Servisini Duyurdu",
-    "summary": "DHL Express, ağır kargo sevkiyatları için Time Definite International portföyüne Heavy Weight Express (HWX) hizmetini ekledi. Bu yeni servis ile tek parçada <strong>1.000 kg</strong>, sevkiyat başına ise <strong>3.000 kg</strong>'a kadar olan yükler ekspres hızla taşınabilecek. Otomotiv, teknoloji ve ilaç gibi sektörleri hedefleyen hizmet, <strong>220</strong>'den fazla ülkede DHL'in entegre altyapısı üzerinden sunulacak. Şirket, bu adımla geleneksel kargo acentelerinin domine ettiği segmente ekspres servis standartlarını getirmeyi amaçlıyor.",
-    "category": "Filo & Network",
+    "title": "DHL Express 3.000 KG'a Kadar Olan Kargo İçin Ağır Yük Servisi Başlattı",
+    "summary": "DHL Express, uluslararası kargo portföyünü \"Heavy Weight Express\" (HWX) ile genişleterek parça başı <strong>1.000</strong> kg, sevkiyat başı <strong>3.000</strong> kg kapasite sunmaya başladı. Genelde forwarder ve standart kargo operatörlerinin hakim olduğu bu alana giren DHL, kendi uçak filosu ve <strong>220</strong>'den fazla ülkeyi kapsayan altyapısıyla ekspres teslimat hızı vaat ediyor. Servis kapsamında teknoloji, otomotiv, ilaç ve enerji gibi kritik sektörlere garantili transit süreleri ve şeffaf fiyatlandırma sağlanacak. Müşterilere özel takip masaları üzerinden gerçek zamanlı müdahale imkanı sunulacak. Bu çözüm, yüksek değerli ve zamana duyarlı ağır yüklerin stabil kapasite ile taşınmasını amaçlıyor.",
+    "category": "Özel Kargo",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/dhl-express-launches-heavyweight-service-for-cargo-up-to-3000-kg-1359103",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "DHL Express Küresel Portföyünü Yeni Bir Ağır Yük Servisiyle Genişletiyor",
+    "duplicateOf": "DHL Express Küresel Portföyünü Yeni Ağır Yük Servisiyle Genişletiyor",
     "thyImpact": "risk",
-    "thyAnalysis": "DHL'in ağır kargo segmentine ekspres hız ve garantiyle girmesi, Turkish Cargo'nun geleneksel kargo ve özel ürün taşımacılığındaki rekabet gücünü zorlayabilir.",
+    "thyAnalysis": "DHL'in ekspres ağını 3.000 kg kapasiteye kadar genişletmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun standart ve ekspres kargo ürünleri için özellikle yüksek değerli endüstriyel yüklerde ciddi pazar payı kaybı riski oluşturabilir.",
     "etkiAlani": {
       "direct": [],
       "hub": [
-        "ISTANBUL"
+        "Southern Asia",
+        "Middle East",
+        "South East Asia"
       ]
     },
-    "etkiAlaniGerekce": "DHL'in küresel ağında başlattığı bu ağır kargo hizmeti, Turkish Cargo'nun faaliyet gösterdiği tüm ana bölgelerde rekabet oluşturmaktadır.",
+    "etkiAlaniGerekce": "Küresel ölçekte sunulan bu hizmet, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun faaliyet gösterdiği tüm ana pazarlardaki ağır yük trafiğini etkileme potansiyeline sahiptir.",
     "date": "2026-05-12 06:19:43"
   },
   {
-    "title": "National Airlines İkinci B777 Kargo Uçağının Test Uçuşlarını Tamamladı",
-    "summary": "ABD merkezli kargo taşıyıcısı National Airlines, ikinci Boeing 777 Freighter uçağının Everett'teki test uçuşlarını başarıyla tamamladı. Uçağın önümüzdeki haftalarda teslim edilmesi beklenirken, havayolu ilk B777 modelini <strong>Nisan</strong> ayında filosuna katmıştı. Geniş gövdeli filo kapasitesini artıran şirket, üçüncü ve dördüncü uçakları da yılın üçüncü çeyreğinde teslim almayı hedefliyor. National Airlines, bu yatırımlarla insani yardım, askeri lojistik ve genel kargo alanındaki küresel operasyonel gücünü pekiştirmeyi planlıyor.",
+    "title": "National Airlines İkinci B777 Kargo Uçağı İçin Test Sürüşlerini Tamamladı",
+    "summary": "ABD merkezli kargo taşıyıcısı National Airlines, Everett'te ikinci Boeing 777 kargo uçağının (B777F) test uçuşlarını tamamladı ve uçağın önümüzdeki haftalarda teslim edilmesi bekleniyor. Şirket, ilk B777F uçağını Nisan ayında teslim alarak <strong>35</strong> yıllık tarihindeki en büyük filo genişletme adımını atmıştı. Üçüncü ve dördüncü uçakların ise gelecek çeyrekte teslim alınması planlanıyor. National Airlines, geniş gövdeli uçak filosuyla küresel çapta genel kargo, insani yardım ve askeri lojistik hizmetleri sunmaya devam edecek. Boeing 777F, dünyanın en uzun menzilli çift motorlu kargo uçaklarından biri olarak biliniyor.",
     "category": "Filo & Network",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/national-airlines-completes-test-flights-for-2nd-b777-freighter-1359102",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "National Airlines'ın uzun menzilli B777 kargo uçağı filosunu hızla büyütmesi, küresel charter ve özel taşımacılık pazarında <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için rekabeti artırabilir.",
     "etkiAlani": {
       "direct": [],
       "hub": [
         "China",
-        "Middle East",
-        "Central Europe"
+        "Western Europe",
+        "Middle East"
       ]
     },
-    "etkiAlaniGerekce": "ABD merkezli bir taşıyıcının kargo uçağı kapasite artışı genel piyasa arzını etkilemektedir.",
+    "etkiAlaniGerekce": "B777 kargo uçakları kıtalararası menzile sahip olduğu için National Airlines'ın küresel kapsama alanı ve rekabet gücü artmaktadır.",
     "date": "2026-05-12 06:16:44"
   },
   {
-    "title": "Cathay Cargo Bangkok'a Haftalık Kargo Seferlerine Başladı",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span>'in kargo kolu Cathay Cargo, <strong>10</strong> yıllık aradan sonra Bangkok'a düzenli haftalık kargo uçağı seferlerini başlattı. Boeing 747-400F uçağıyla gerçekleştirilen hizmet, her Çarşamba Hong Kong çıkışlı olarak yapılacak ve Taylandlı ihracatçılara ek kapasite sağlayacak. Bu yeni servis, yolcu uçaklarında taşınması kısıtlı olan büyük boyutlu ve tehlikeli maddelerin nakliyesi için çözüm sunacak. Tayland pazarı, yüksek teknoloji üretimi ve sıcaklığa duyarlı ürünler açısından stratejik bir merkez olarak önemini koruyor.",
+    "title": "Cathay Cargo Bangkok'a Haftalık Kargo Seferi Başlattı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span> Cargo, <strong>6 Mayıs 2026</strong> tarihinde Bangkok'a yönelik haftalık kargo uçağı seferlerini başlatarak <strong>10</strong> yıl aradan sonra şehre geri döndü. Boeing 747-400F tipi uçakla Çarşamba günleri gerçekleştirilen seferler, Taylandlı ihracatçılara Hong Kong merkezi üzerinden küresel bağlantı imkanı sunuyor. Yeni servis, mevcut yolcu uçaklarının kargo kapasitesini tamamlayarak büyük boyutlu veya tehlikeli maddelerin taşınması için esneklik sağlıyor. <strong>2025</strong> yılında Tayland'dan <strong>29.000</strong> tondan fazla kargo taşıyan havayolu, Bangkok'u Güneydoğu Asya'da yükselen bir teknoloji üretim merkezi olarak değerlendiriyor.",
     "category": "Filo & Network",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/05/cathay-cargo-launches-weekly-freighter-service-bangkok/",
@@ -406,27 +454,27 @@
     "isDuplicate": false,
     "duplicateOf": "",
     "thyImpact": "risk",
-    "thyAnalysis": "Güneydoğu Asya'nın teknoloji üretim merkezi olan Tayland'da Cathay Cargo'nun kapasite artırması, Turkish Cargo'nun bölgedeki pazar payı üzerinde rekabetçi baskı oluşturabilir.",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span> Cargo'nun Bangkok'a freighter ile geri dönmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun Güneydoğu Asya'dan Avrupa ve ABD'ye yönelik kargo akışları üzerinde pazar payı baskısı oluşturabilir.",
     "etkiAlani": {
       "direct": [],
       "hub": [
-        "Western Europe",
-        "Northern America"
+        "Northern America",
+        "Western Europe"
       ]
     },
-    "etkiAlaniGerekce": "Tayland çıkışlı kargo akışları Hong Kong hub üzerinden Avrupa ve Amerika pazarlarına bağlanmaktadır.",
+    "etkiAlaniGerekce": "Bangkok-Hong Kong koridorundaki kapasite artışı, bölgedeki aktarmalı trafik için rekabeti kızıştıracaktır.",
     "date": "May 13, 2026"
   },
   {
-    "title": "Chapman Freeborn OBC, Zamana Duyarlı Çözümlerine NFO'yu Ekledi",
-    "summary": "Chapman Freeborn OBC, el bagajı kurye hizmetleri ile tam charter çözümleri arasındaki boşluğu kapatmak amacıyla Next Flight Out (NFO) servisini devreye aldı. Sevkiyatın alınmasından sonraki <strong>24 saat</strong> içinde çıkış yapmayı hedefleyen hizmet, <strong>15 dakikada</strong> fiyat teklifi sunma özelliği taşıyor. Havacılık, otomotiv ve sağlık gibi hızın kritik olduğu sektörleri hedefleyen bu çözüm, <strong>24/7</strong> operasyonel kontrolle sunulacak. Şirket, bu yeni servisle acil kargo pazarındaki konumunu güçlendirmeyi ve tedarik zinciri dayanıklılığını artırmayı amaçlıyor.",
+    "title": "Chapman Freeborn OBC Küresel Zaman Hassasiyetli Çözümlerine NFO'yu Ekledi",
+    "summary": "Chapman Freeborn OBC, acil kargo ihtiyaçları için \"Next Flight Out\" (NFO) adlı yeni premium hizmetini duyurdu. El kuryesi ve tam uçak charter hizmetleri arasındaki boşluğu kapatmak üzere tasarlanan servis, <strong>15</strong> dakika içinde fiyatlandırma ve alım sonrası <strong>24</strong> saat içinde kalkış sunuyor. Hizmet; otomotiv, elektronik, sağlık ve havacılık sektörlerindeki zaman hassasiyetli gönderilere odaklanacak. Şirketin küresel ağı ve <strong>7/24</strong> operasyon kontrolü ile desteklenen NFO, müşterilere tek bir irtibat noktası üzerinden uçtan uca lojistik destek sağlayacak. Bu yeni adımın şirketin küresel pazar konumunu güçlendirmesi bekleniyor.",
     "category": "Özel Kargo",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/05/chapman-freeborn-obc-next-flight-out-global-time-critical-solutions/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Chapman Freeborn 'Sıradaki İlk Uçuş' (NFO) Hizmetini Başlattı",
-    "thyImpact": "risk",
+    "duplicateOf": "Chapman Freeborn Acil Gönderiler İçin Yeni Servisini Başlattı",
+    "thyImpact": "notr",
     "thyAnalysis": "",
     "etkiAlani": {
       "direct": [],
@@ -436,8 +484,8 @@
     "date": "May 13, 2026"
   },
   {
-    "title": "Kuehne+Nagel, MCH Group'un Resmi Lojistik Ortağı Seçildi",
-    "summary": "Küresel lojistik devi Kuehne+Nagel, İsviçre merkezli MCH Group ile <strong>5 yıllık</strong> bir resmi lojistik ortaklığı anlaşması imzaladı. <strong>1 Temmuz 2026</strong> tarihinden itibaren geçerli olacak anlaşma, Basel, Zürih ve Lozan'daki toplam <strong>182.000 metrekarelik</strong> sergi alanlarını kapsayacak. Kuehne+Nagel, Art Basel gibi dünyaca ünlü fuarların uluslararası sevkiyatlarını ve saha içi elleçleme operasyonlarını yönetecek. İş birliği, sergi organizatörlerine ve katılımcılarına zamana duyarlı, yüksek kaliteli lojistik çözümler sunmayı hedefliyor.",
+    "title": "Kuehne+Nagel MCH Group'un Resmi Lojistik Ortağı Seçildi",
+    "summary": "İsviçre merkezli küresel etkinlik şirketi MCH Group, önümüzdeki <strong>5</strong> yıl için resmi lojistik ortağı olarak Kuehne+Nagel'i seçti. <strong>1 Temmuz 2026</strong>'da başlayacak anlaşma; Basel, Zürih ve Lozan'daki toplam <strong>182.000</strong> metrekarelik fuar alanlarını kapsıyor. Kuehne+Nagel, Art Basel gibi prestijli etkinliklerin yanı sıra ulusal sergiler için de uluslararası sevkiyat ve saha içi elleçleme hizmetleri sunacak. Ortaklık, karmaşık uluslararası etkinliklerin zaman hassasiyetli lojistik ihtiyaçlarını karşılamayı amaçlıyor. MCH Group CEO'su Roman Imgrüth, lojistik ortağının küresel erişiminin ve operasyonel güvenilirliğinin önemini vurguladı.",
     "category": "Ortaklık & İş Birlikleri",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/05/kuehnenagel-official-logistics-partner-mch-group/",
@@ -453,18 +501,18 @@
         "Northern America"
       ]
     },
-    "etkiAlaniGerekce": "İsviçre merkezli etkinlik ve fuar lojistiği pazarındaki bir ortaklıktır.",
+    "etkiAlaniGerekce": "İsviçre ve Avrupa'daki büyük sergi lojistiği kontratlarının yönetimi forwarder sektörü içindir.",
     "date": "May 13, 2026"
   },
   {
-    "title": "ACS Nick Harris'i Orta Doğu ve Hindistan Alt Kıtası Direktörlüğüne Terfi Ettirdi",
-    "summary": "Air Charter Service (ACS), Nick Harris'i Orta Doğu ve Hindistan Alt Kıtası bölgesi için Havayolu İrtibat Direktörü olarak atadığını duyurdu. Dubai merkezli görev yapacak olan Harris, havayollarıyla iş birliklerini güçlendirecek ve acil kargo operasyonlarına destek verecek. ACS, geçtiğimiz yıl dünya genelinde <strong>35.000</strong>'den fazla uçuş düzenleyerek havayollarının lojistik ihtiyaçlarına ve AOG (uçak yerde) durumlarına çözümler sunmuştur. Yeni rol, kargo ve charter bölümlerini kapsayan geniş bir yetki alanına sahip olacak.",
+    "title": "ACS Nick Harris'i Havayolu İlişkileri Direktörü Olarak Terfi Ettirdi",
+    "summary": "Air Charter Service (ACS) BAE ofisi, deneyimli yönetici Nick Harris'i Orta Doğu ve Hindistan Yarımadası Havayolu İlişkileri Direktörü olarak görevlendirdi. ACS bünyesinde yaklaşık <strong>20</strong> yıldır çalışan Harris, Londra ve Dubai ofislerinde kargo direktörlüğü dahil çeşitli görevlerde bulundu. Yeni rolünde Harris, bölgedeki havayolu ortaklarıyla ilişkileri derinleştirmeye ve kargo, özel jet ve grup charter bölümleri için stratejik destek sağlamaya odaklanacak. ACS, geçtiğimiz yıl dünya çapında <strong>35.000</strong>'den fazla uçuş organize etmişti. Özellikle acil lojistik ihtiyaçları ve uçak parçası taşımacılığı (AOG) Harris'in öncelikleri arasında yer alacak.",
     "category": "Atama & Görevlendirme",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/05/acs-promotes-nick-harris-airline-liaison-director-middle-east-indian-subcontinent/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Air Charter Service, Nick Harris'i Havayolu İrtibat Direktörü Olarak Atadı",
+    "duplicateOf": "Air Charter Service, Nick Harris'i Havayolu İlişkileri Direktörü Olarak Atadı",
     "thyImpact": "notr",
     "thyAnalysis": "",
     "etkiAlani": {
@@ -475,28 +523,30 @@
     "date": "May 13, 2026"
   },
   {
-    "title": "DHL Express Ağır Yük Sevkiyatları İçin Küresel Portföyünü Genişletiyor",
-    "summary": "DHL Express, <strong>1.000 kg</strong>'a kadar parça ağırlığı ve <strong>3.000 kg</strong>'a kadar toplam sevkiyat ağırlığı sunan Heavy Weight Express (HWX) hizmetini tanıttı. Küresel çapta devreye alınan bu hizmet, DHL'in entegre hava ve kara ağı üzerinden ekspres teslimat süreleri ve sabit fiyat garantisiyle sunulacak. Teknoloji ve otomotiv gibi kritik sektörleri hedefleyen servis için dünya genelinde özel öncelikli masalar oluşturuldu. HWX hizmeti, üretim duraksamalarını önlemeyi ve tedarik zinciri risklerini azaltmayı amaçlayan stratejik bir adım olarak değerlendiriliyor.",
-    "category": "Filo & Network",
+    "title": "DHL Express 3.000 KG'a Kadar Olan Gönderiler İçin Yeni Servisini Duyurdu",
+    "summary": "DHL Express, \"Time Definite International\" portföyüne parça başı <strong>1.000</strong> kg ve sevkiyat başı <strong>3.000</strong> kg'a kadar olan gönderiler için \"Heavy Weight Express\" (HWX) hizmetini ekledi. Bu genişleme ile DHL, <strong>220</strong>'den fazla ülkede ağır yük kargolarını ekspres hız ve güvenilirlikle taşıma kapasitesini güçlendirdi. Sabit fiyatlandırma ve gerçek zamanlı takip imkanı sunan servis, otomotiv, havacılık ve enerji gibi kritik sektörlerin tedarik zinciri kesintilerini önlemeyi hedefliyor. DHL Express CEO'su John Pearson, bu adımın küresel tedarik zincirleri için stratejik bir değer taşıdığını belirtti. Servis, DHL'in kendi uçak filosu ve kara ağının gücüyle desteklenecek.",
+    "category": "Özel Kargo",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/05/dhl-express-expands-global-portfolio-heavy-weight-express-service-shipments/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "DHL Express Küresel Portföyünü Yeni Bir Ağır Yük Servisiyle Genişletiyor",
+    "duplicateOf": "DHL Express Küresel Portföyünü Yeni Ağır Yük Servisiyle Genişletiyor",
     "thyImpact": "risk",
-    "thyAnalysis": "DHL'in ağır kargo segmentine ekspres hız ve garantiyle girmesi, Turkish Cargo'nun geleneksel kargo ve özel ürün taşımacılığındaki rekabet gücünü zorlayabilir.",
+    "thyAnalysis": "DHL'in ekspres ağını 3.000 kg kapasiteye kadar genişletmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun standart ve ekspres kargo ürünleri için özellikle yüksek değerli endüstriyel yüklerde ciddi pazar payı kaybı riski oluşturabilir.",
     "etkiAlani": {
       "direct": [],
       "hub": [
-        "ISTANBUL"
+        "Southern Asia",
+        "Middle East",
+        "South East Asia"
       ]
     },
-    "etkiAlaniGerekce": "DHL'in küresel ağında başlattığı bu ağır kargo hizmeti, Turkish Cargo'nun faaliyet gösterdiği tüm ana bölgelerde rekabet oluşturmaktadır.",
+    "etkiAlaniGerekce": "Küresel ölçekte sunulan bu hizmet, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun faaliyet gösterdiği tüm ana pazarlardaki ağır yük trafiğini etkileme potansiyeline sahiptir.",
     "date": "May 12, 2026"
   },
   {
-    "title": "Emirates SkyCargo, Pelicargo Üzerinden ABD'deki Dijital Varlığını Genişletiyor",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, çevrimiçi hava kargo platformu Pelicargo ile entegrasyon sağlayarak dijital satış kanallarını artırdı. Orta Doğu'dan Pelicargo'ya API bağlantısı kuran ilk havayolu olan şirket, bu sayede ABD'deki müşterilerine <strong>7/24</strong> anlık rezervasyon imkanı sunacak. Taze gıda, ilaç ve acil kargo gibi beş ana ürün kategorisi platformda yer alacak. Pelicargo; cargo.one, CargoAi ve WebCargo'dan sonra havayolunun dahil olduğu dördüncü dijital pazar yeri oldu.",
+    "title": "Emirates SkyCargo ABD'deki Dijital Varlığını Pelicargo ile Genişletiyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>, hizmetlerini online kargo rezervasyon platformu Pelicargo'ya entegre ederek dijital erişimini artırdı. <span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>, Pelicargo ile API bağlantısı kuran Orta Doğu merkezli ilk taşıyıcı oldu ve bu sayede <strong>7/24</strong> anlık rezervasyon imkanı sunacak. Son <strong>12</strong> ayda ABD'deki müşterilerin manuel işlemler yerine dijital kanallara yöneldiğini gözlemleyen havayolu, bu adımla binlerce yeni müşteriye ulaşmayı hedefliyor. Platformda Fresh, Pharma, Airfreight Priority ve genel kargo ürünleri dahil <strong>5</strong> ana hizmet grubu yer alacak. Pelicargo; cargo.one, CargoAi ve WebCargo'nun ardından şirketin iş birliği yaptığı dördüncü dijital pazar yeri oldu.",
     "category": "Teknoloji & Dijitalleşme",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/05/emirates-skycargo-available-pelicargo-expanding-digital-presence-us/",
@@ -504,7 +554,7 @@
     "isDuplicate": false,
     "duplicateOf": "",
     "thyImpact": "risk",
-    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo'nun ABD'de dijitalleşme hamlelerini artırması, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun pazar payı ve dijital satış hacmi üzerinde doğrudan rakip etkisi yaratabilir.",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Emirates</span>'in ABD'de Pelicargo üzerinden dijital satış kanalını genişletmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun en önemli pazarlarından biri olan ABD çıkışlı rezervasyon pastasından pay kapma riskini artırmaktadır.",
     "etkiAlani": {
       "direct": [],
       "hub": [
@@ -513,18 +563,18 @@
         "Southern Asia"
       ]
     },
-    "etkiAlaniGerekce": "ABD kargo pazarı ve Orta Doğu çıkışlı dijital satış kanallarını doğrudan etkileyen bir gelişmedir.",
+    "etkiAlaniGerekce": "ABD pazarındaki dijital kanal rekabeti, rezervasyon hızını ve müşteri sadakatini doğrudan etkilemektedir.",
     "date": "May 12, 2026"
   },
   {
-    "title": "Nabil Sultan, Steve Allen'ın Yerine dnata CEO'su Olarak Atandı",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> Group bünyesindeki dnata, <strong>15 Haziran 2026</strong> tarihinden itibaren geçerli olmak üzere Nabil Sultan'ı yeni CEO olarak atadı. Sultan, son olarak havayolunun yolcu satış birimini yönetmiş, öncesinde ise <strong>2013</strong>-<strong>2024</strong> yılları arasında <span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo'yu yönetmişti. Şirket, geçtiğimiz mali yılda kargo gelirlerini <strong>%10</strong> artırarak <strong>3,4 milyar AED</strong>'ye, kargo hacmini ise <strong>3,2 milyon tona</strong> çıkardığını raporladı. Görevi devreden Steve Allen ise dnata'nın küresel büyüme ve operasyonel dönüşüm sürecinde önemli rol oynamıştı.",
+    "title": "dnata'da Liderlik Değişimi: Nabil Sultan CEO Oldu",
+    "summary": "Küresel havacılık hizmetleri şirketi dnata, Nabil Sultan'ın <strong>15 Haziran 2026</strong> itibarıyla yeni CEO olarak atandığını duyurdu. Sultan, <strong>5</strong> yıldan uzun süredir bu görevi yürüten Steve Allen'ın yerine geçecek. <strong>1990</strong>'dan beri <span style='color:#C8102E;font-weight:700;'>Emirates</span> Group bünyesinde olan Sultan, <strong>2013</strong>-<strong>2024</strong> yılları arasında <span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>'yu yönetmişti. dnata geçtiğimiz yıl kargo hacimlerini %<strong>2,1</strong> artırarak <strong>3,2</strong> milyon tona çıkardı ve gelirlerini %<strong>10</strong> yükselterek <strong>3,4</strong> milyar AED'ye ulaştırdı. Şirketin büyümesi, BAE ve İngiltere'deki güçlü e-ticaret ivmesi ve Amsterdam'daki yeni otomatize tesis yatırımıyla desteklendi.",
     "category": "Atama & Görevlendirme",
     "source": "aircargoupdate",
     "link": "https://aircargoupdate.com/nabil-sultan-named-dnata-ceo-as-steve-allen-steps-down/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Eski Emirates SkyCargo Başkanı dnata CEO'su Oldu",
+    "duplicateOf": "Emirates SkyCargo'nun Eski Başkanı dnata'nın CEO'su Oldu",
     "thyImpact": "notr",
     "thyAnalysis": "",
     "etkiAlani": {
@@ -535,14 +585,14 @@
     "date": "Published: Wednesday, May 13, 2026"
   },
   {
-    "title": "Gökyüzünde Kültürel Miras Taşıma: 'Ahu 'ula'nın Kona'ya Yolculuğu",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>United</span> Cargo, Smithsonian Enstitüsü'nde bulunan ve Şef Kekuaokalani'ye ait olan tarihi bir tüy pelerini başarıyla Hawai'deki Kona'ya nakletti. Kültürel önemi büyük olan bu gönderi, protokol gereği adalar arası transfer yapılmadan doğrudan Washington-Denver-Kona rotasıyla taşındı. Havayolu, operasyonda hassas ve paha biçilemez eserler için geliştirilen UASecure hizmetini kullandı. Bu operasyon, tarihi eserlerin ana vatanına iadesi (repatriation) kapsamında lojistik bir dönüm noktası olarak değerlendirildi.",
+    "title": "Tarihi Miras United Cargo ile Hawaii'ye Döndü",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>United</span> Cargo, Hawaii tarihinin önemli bir parçası olan Şef Kekuaokalani'ye ait tüylü pelerini Washington'dan Kona'ya başarılı bir şekilde ulaştırdı. <strong>1819</strong> yılından kalma bu paha biçilemez eser, Smithsonian Enstitüsü'nden alınarak özel bir lojistik planlamayla taşındı. Kültürel kurallar gereği adalar arası aktarma yapılmadan, doğrudan Washington Dulles-Denver-Kona rotası izlendi. Taşıma, havayolunun yüksek değerli kargolar için sunduğu UASecure hizmeti kapsamında, minimum elleçleme ve maksimum güvenlikle tamamlandı. United Airlines yetkilileri, operasyonun sadece kargo taşımak değil, kültürleri birleştirmek adına büyük anlam taşıdığını belirtti.",
     "category": "Özel Kargo",
     "source": "aircargoupdate",
     "link": "https://aircargoupdate.com/carrying-legacy-across-the-skies-the-journey-of-the-ahuula-to-kona/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Gökyüzünde Miras Taşıma: Tarihi Hawaii Pelerini Yolculuğu",
+    "duplicateOf": "United Cargo Geçmişin Mirasını Göklere Taşıyor",
     "thyImpact": "notr",
     "thyAnalysis": "",
     "etkiAlani": {
@@ -553,16 +603,16 @@
     "date": "Published: Wednesday, May 13, 2026"
   },
   {
-    "title": "Emirates SkyCargo Pelicargo'da Yayına Girdi, ABD'deki Dijital Kanalını Genişletti",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, ABD pazarındaki etkinliğini artırmak amacıyla hava kargo platformu Pelicargo ile entegrasyon sağladı. Havayolu, bu platform üzerinden <strong>7/24</strong> anlık fiyatlandırma ve rezervasyon sunarak manuel işlemleri azaltmayı hedefliyor. İlaç, taze ürünler ve acil sevkiyatlar gibi beş ana ürün kategorisi dijital platformda yerini aldı. Pelicargo, havayolunun dahil olduğu dördüncü küresel dijital pazar yeri olarak dijitalleşme stratejisinin yeni bir adımını oluşturuyor.",
+    "title": "Emirates SkyCargo Pelicargo Entegrasyonu ile Dijitalleşmesini Artırıyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>, kargo rezervasyon platformu Pelicargo ile API bağlantısı kurarak ABD pazarındaki dijital etkinliğini genişletti. Bu entegrasyonla havayolu, bölgedeki forwarderlara <strong>7/24</strong> anlık fiyatlandırma ve rezervasyon yapma imkanı tanıyor. Şirketin ilaç, taze gıda ve acil kargo gibi <strong>5</strong> ana ürün grubu platformda yer alıyor. <span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span> Kıdemli Başkan Yardımcısı Badr Abbas, dijitalleşmenin operasyonel verimliliği ve hızı artırdığını vurguladı. Pelicargo, havayolunun dijital kanal stratejisinin önemli bir halkası olarak, binlerce yeni müşteriye doğrudan erişim sağlıyor.",
     "category": "Teknoloji & Dijitalleşme",
     "source": "aircargoupdate",
     "link": "https://aircargoupdate.com/emirates-skycargo-available-on-pelicargo-expanding-digital-presence-in-the-us/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Emirates SkyCargo, Pelicargo Üzerinden ABD'deki Dijital Varlığını Genişletiyor",
+    "duplicateOf": "Emirates SkyCargo ABD'deki Dijital Varlığını Pelicargo ile Genişletiyor",
     "thyImpact": "risk",
-    "thyAnalysis": "Emirates'in ABD pazarındaki dijital erişilebilirliğini artırması, özellikle bu bölgeden gelen transit kargo akışlarında rekabeti artırabilir.",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Emirates</span>'in ABD'de Pelicargo üzerinden dijital satış kanalını genişletmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun en önemli pazarlarından biri olan ABD çıkışlı rezervasyon pastasından pay kapma riskini artırmaktadır.",
     "etkiAlani": {
       "direct": [],
       "hub": [
@@ -571,49 +621,29 @@
         "Southern Asia"
       ]
     },
-    "etkiAlaniGerekce": "ABD pazarındaki dijitalleşme hamlesi, Türkiye üzerinden aktarılan kargo trafiklerini de etkileyebilir.",
+    "etkiAlaniGerekce": "ABD pazarındaki dijital kanal rekabeti, rezervasyon hızını ve müşteri sadakatini doğrudan etkilemektedir.",
     "date": "Published: Wednesday, May 13, 2026"
   },
   {
-    "title": "Emirates SkyCargo, Pelicargo Entegrasyonuyla ABD Dijital Erişimini Artırıyor",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, Pelicargo platformuna dahil olarak ABD'deki nakliyecilere anlık rezervasyon ve kapasite görünürlüğü sunmaya başladı. API bağlantısı sayesinde müşteriler ilaç ve gıda gibi hassas ürünleri için doğrudan dijital kanal üzerinden işlem yapabilecek. Havayolu yöneticisi Badr Abbas, dijitalleşmenin operasyonel verimlilik ve müşteri deneyimi için kilit önemde olduğunu belirtti. Pelicargo iş birliği, havayolunun küresel dijital pazar yerlerindeki varlığını güçlendirme stratejisinin bir parçasıdır.",
-    "category": "Teknoloji & Dijitalleşme",
-    "source": "aircargoupdate",
-    "link": "https://aircargoupdate.com/emirates-skycargo-available-on-pelicargo-expanding-digital-presence-in-the-us/",
-    "id": null,
-    "isDuplicate": true,
-    "duplicateOf": "Emirates SkyCargo, Pelicargo Üzerinden ABD'deki Dijital Varlığını Genişletiyor",
-    "thyImpact": "risk",
-    "thyAnalysis": "Emirates'in ABD pazarındaki dijital erişilebilirliğini artırması, özellikle bu bölgeden gelen transit kargo akışlarında rekabeti artırabilir.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": [
-        "ISTANBUL",
-        "China",
-        "Southern Asia"
-      ]
-    },
-    "etkiAlaniGerekce": "ABD pazarındaki dijitalleşme hamlesi, Türkiye üzerinden aktarılan kargo trafiklerini de etkileyebilir.",
-    "date": "Published: Wednesday, May 13, 2026"
-  },
-  {
-    "title": "DHL Express Ağır Yük Sevkiyatları İçin Yeni HWX Hizmetini Başlattı",
-    "summary": "DHL Express, Time Definite International portföyünü <strong>3.000 kg</strong>'a kadar olan sevkiyatları kapsayan Heavy Weight Express (HWX) hizmetiyle genişletti. Hizmet kapsamında tek parçada <strong>1.000 kg</strong> ağırlığa kadar kargolar, DHL'in kendi uçak filosu ve kara ağıyla taşınacak. Teknoloji, otomotiv ve sağlık gibi zaman hassasiyeti olan sektörler için tasarlanan HWX, dünya genelinde <strong>220</strong>'den fazla noktada geçerli olacak. Bu çözümün, navlun piyasasındaki kapasite kısıtlamalarına ve fiyat dalgalanmalarına karşı müşterilere istikrar sunması bekleniyor.",
-    "category": "Filo & Network",
+    "title": "DHL Express Ağır Yük Taşımacılığı İçin Küresel HWX Servisini Başlattı",
+    "summary": "DHL Express, \"Heavy Weight Express\" (HWX) hizmetini başlatarak global entegratörlük rolünü ağır yük segmentine taşıdı. Parça başına <strong>1.000</strong> kg ve sevkiyat başına <strong>3.000</strong> kg kapasite sunan yeni çözüm, <strong>220</strong>'den fazla ülkede ekspres hız ve kontrol vaat ediyor. Servis; teknoloji, otomotiv, ilaç ve enerji gibi sektörleri hedefleyerek üretim kesintilerini önlemeyi ve stok maliyetlerini düşürmeyi amaçlıyor. Müşterilere yönelik özel ağır yük öncelikli destek ekipleri, gönderilerin uçtan uca takibini ve şeffaf fiyatlandırmayı koordine edecek. DHL, kendi uçak filosu ve kara ağı sayesinde havayolu kapasite dalgalanmalarına olan bağımlılığı azaltarak istikrarlı bir hizmet sunmayı hedefliyor.",
+    "category": "Özel Kargo",
     "source": "aircargoupdate",
     "link": "https://aircargoupdate.com/dhl-express-expands-global-portfolio-with-new-heavy-weight-express-service-for-shipments/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "DHL Express Küresel Portföyünü Yeni Bir Ağır Yük Servisiyle Genişletiyor",
+    "duplicateOf": "DHL Express Küresel Portföyünü Yeni Ağır Yük Servisiyle Genişletiyor",
     "thyImpact": "risk",
-    "thyAnalysis": "DHL'in ağır kargo segmentine ekspres hız ve garantiyle girmesi, Turkish Cargo'nun geleneksel kargo ve özel ürün taşımacılığındaki rekabet gücünü zorlayabilir.",
+    "thyAnalysis": "DHL'in ekspres ağını 3.000 kg kapasiteye kadar genişletmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun standart ve ekspres kargo ürünleri için özellikle yüksek değerli endüstriyel yüklerde ciddi pazar payı kaybı riski oluşturabilir.",
     "etkiAlani": {
       "direct": [],
       "hub": [
-        "ISTANBUL"
+        "Southern Asia",
+        "Middle East",
+        "South East Asia"
       ]
     },
-    "etkiAlaniGerekce": "DHL'in küresel ağında başlattığı bu ağır kargo hizmeti, Turkish Cargo'nun faaliyet gösterdiği tüm ana bölgelerde rekabet oluşturmaktadır.",
+    "etkiAlaniGerekce": "Küresel ölçekte sunulan bu hizmet, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun faaliyet gösterdiği tüm ana pazarlardaki ağır yük trafiğini etkileme potansiyeline sahiptir.",
     "date": "Published: Wednesday, May 13, 2026"
   },
   {
