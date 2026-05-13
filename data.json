@@ -1,5 +1,71 @@
 [
   {
+    "title": "Logistics UK, Avrupa ile Ticari Uyumun Artırılması Çağrısında Bulundu",
+    "summary": "Birleşik Krallık lojistik sektörü, hükümetin Avrupa ile ticari ilişkileri kolaylaştırmayı hedefleyen Avrupa Ortaklık Yasası tasarısını desteklediğini açıkladı. Logistics UK, gümrük süreçlerindeki bürokrasinin azaltılmasının ve <strong>SPS</strong> kontrollerinde uyumun sağlanmasının tedarik zinciri maliyetlerini düşüreceğini vurguladı. Tasarı ile <strong>2026</strong> yılından itibaren gümrük ve emisyon ticareti alanlarında yeni düzenlemelerin hayata geçmesi bekleniyor. Sektör temsilcileri, bu adımın ticaret yollarındaki gecikmeleri azaltarak büyümeyi tetikleyeceğini belirtiyor.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/logistics-uk-calls-greater-european-alignment/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Birleşik Krallık ile Avrupa Birliği arasındaki gümrük ve ticaret süreçlerinin basitleşmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun bu bölgedeki transit operasyonlarının hızlanmasına ve maliyetlerin düşmesine katkı sağlayabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Birleşik Krallık ve Avrupa arasındaki lojistik bariyerlerin kalkması, bölgedeki ana hub'lar ve ticaret rotaları üzerindeki kargo akışını doğrudan etkileyen bir unsurdur.",
+    "date": ""
+  },
+  {
+    "title": "Emirates SkyCargo, Pelicargo ile ABD'deki Dijital Varlığını Genişletiyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>, ABD merkezli hava kargo rezervasyon platformu Pelicargo ile <strong>API</strong> entegrasyonu gerçekleştirerek dijital satış ağını genişletti. Orta Doğu'dan platforma katılan ilk taşıyıcı olan havayolu, ABD'deki müşterilerine <strong>7/24</strong> anlık kapasite görme ve rezervasyon yapma imkanı tanıyacak. Entegrasyon kapsamında taze gıda, ilaç ve acil kargo gibi <strong>5</strong> temel ürün grubu dijital ortamda satışa sunuldu. Şirket, ABD pazarında manuel işlemlerden dijital kanallara geçişte büyük bir ivme yakaladıklarını açıkladı.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/05/emirates-skycargo-available-pelicargo-expanding-digital-presence-us/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Rakip havayolunun ABD pazarındaki dijital platform erişilebilirliğini artırması, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun Kuzey Amerika-Orta Doğu ve Asya bağlantılı trafiğinde rekabet baskısını artırabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "South East Asia",
+        "Southern Asia"
+      ]
+    },
+    "etkiAlaniGerekce": "ABD'deki dijital rezervasyon artışı, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun güçlü olduğu Kuzey Amerika-Asya koridorundaki yük akışlarını etkileyebilir.",
+    "date": "May 12, 2026",
+    "sources": [
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/emirates-skycargo-available-on-pelicargo-expanding-digital-presence-in-the-us/"
+      }
+    ]
+  },
+  {
+    "title": "Emirates SkyCargo ABD'de Pelicargo Platformuna Entegre Oldu",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>, ABD merkezli çevrimiçi rezervasyon platformu Pelicargo ile <strong>API</strong> üzerinden tam entegrasyon sağlayarak dijital hizmetlerini genişletmeye devam ediyor. Bu iş birliği sayesinde havayolu, ABD'deki binlerce yeni freight forwarder müşterisine ulaşarak <strong>7/24</strong> anlık fiyatlandırma ve kapasite bilgisi sunabilecek. Havayolunun <strong>Pharma</strong> ve <strong>Fresh</strong> gibi özelleşmiş <strong>5</strong> ana ürünü de dijital platform üzerinden erişilebilir hale getirildi. Şirket yönetimi, dijitalleşmenin operasyonel verimlilik ve müşteri memnuniyeti için stratejik öneme sahip olduğunu belirtti.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/emirates-skycargo-available-on-pelicargo-expanding-digital-presence-in-the-us/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Emirates SkyCargo, Pelicargo ile ABD'deki Dijital Varlığını Genişletiyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>'nun ABD pazarındaki dijital erişilebilirliğini artırması, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için bu bölgedeki pazar payı rekabetini zorlaştırabilir. Dijital rezervasyon platformlarının kullanımındaki artış, forwarder tercihlerini doğrudan etkileyerek rakip havayollarına hız ve görünürlük avantajı sağlamaktadır. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun benzer API entegrasyonları ve platform ortaklıkları ile bu dijital rekabete yanıt vermesi stratejik bir gereklilik haline gelmiştir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "South East Asia",
+        "Southern Asia"
+      ]
+    },
+    "etkiAlaniGerekce": "Rakip havayolunun dijital platform entegrasyonu, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun rekabet ettiği ABD çıkışlı global koridorlarda kapasite satış hızını etkileyebilir.",
+    "date": "Published: Wednesday, May 13, 2026"
+  },
+  {
     "title": "Logistics UK, Avrupa ile Daha Güçlü Ticari Uyum Çağrısı Yaptı",
     "summary": "Logistics UK, Kral'ın Konuşması'nda (King’s Speech) duyurulan Avrupa Ortaklık Yasası'nın Birleşik Krallık ve AB arasındaki ticari engelleri kaldırmak için kritik olduğunu belirtti. Ben Fletcher, Brexit sonrası artan bürokrasinin süreçleri yavaşlattığını ve maliyetleri artırdığını vurgulayarak gümrük uyumuna öncelik verilmesini istedi. Tasarı, emisyon ticareti ve <strong>SPS</strong> (sağlık ve bitki sağlığı) önlemlerini iyileştirmeyi hedefleyerek malların sınırlardan daha hızlı geçmesini amaçlıyor. Logistics UK, tedarik zincirindeki darboğazları gidermek için daha yakın bir gümrük hizalamasının hükümetin önceliği olması gerektiğini savunuyor.",
     "category": "Diğer",
@@ -16,52 +82,6 @@
     },
     "etkiAlaniGerekce": "Birleşik Krallık ve AB arasındaki ticari düzenlemeler doğrudan Batı Avrupa pazarındaki kargo akışını ve operasyonel hızı etkilemektedir.",
     "date": "2026-05-13"
-  },
-  {
-    "title": "Emirates SkyCargo, Pelicargo ile ABD’deki Dijital Varlığını Genişletiyor",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>, hava kargo tedarik ve rezervasyon platformu Pelicargo ile entegre olarak ABD pazarındaki dijital erişimini artırdı. Orta Doğu bölgesinden Pelicargo ile <strong>API</strong> bağlantısı kuran ilk taşıyıcı olan havayolu, müşterilerine <strong>7/24</strong> anında rezervasyon imkanı sunacak. Son <strong>12</strong> ayda ABD merkezli müşterilerin dijital kanallara geçişinde büyük bir artış gözlemlenmesi bu iş birliğinin temel motivasyonu oldu. Pelicargo; cargo.one, CargoAi ve WebCargo'dan sonra havayolunun kapasitesini sunduğu <strong>4.</strong> dijital pazar yeri oldu. Platform üzerinden taze ürünler (Fresh), ilaç (Pharma) ve öncelikli kargo dahil <strong>5</strong> temel ürün grubuna ulaşılabilecek.",
-    "category": "Teknoloji & Dijitalleşme",
-    "source": "payloadasia",
-    "link": "https://payloadasia.com/2026/05/emirates-skycargo-available-pelicargo-expanding-digital-presence-us/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "risk",
-    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun en önemli pazarlarından biri olan ABD'de, ana rakibi <span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>'nun dijital kanallar üzerinden erişilebilirliğini artırması pazar payı üzerinde baskı oluşturabilir. API entegrasyonu sayesinde rakibin anlık rezervasyon kabiliyeti kazanması, hıza duyarlı kargo segmentinde rekabet avantajı sağlayabilir.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": [
-        "ISTANBUL"
-      ]
-    },
-    "etkiAlaniGerekce": "ABD pazarı THY'nin en büyük dış pazarlarından biridir ve rakibin Orta Doğu üzerinden bu bölgeye dijital kapasite sunması rekabeti doğrudan etkiler.",
-    "date": "May 12, 2026",
-    "sources": [
-      {
-        "source": "aircargoupdate",
-        "link": "https://aircargoupdate.com/emirates-skycargo-available-on-pelicargo-expanding-digital-presence-in-the-us/"
-      }
-    ]
-  },
-  {
-    "title": "Emirates SkyCargo, Pelicargo ile ABD’deki Dijital Varlığını Genişletiyor",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>, hava kargo tedarik ve rezervasyon platformu Pelicargo ile entegre olarak ABD pazarındaki dijital erişimini artırdı. Orta Doğu bölgesinden Pelicargo ile <strong>API</strong> bağlantısı kuran ilk taşıyıcı olan havayolu, müşterilerine <strong>7/24</strong> anında rezervasyon imkanı sunacak. Son <strong>12</strong> ayda ABD merkezli müşterilerin dijital kanallara geçişinde büyük bir artış gözlemlenmesi bu iş birliğinin temel motivasyonu oldu. Pelicargo; cargo.one, CargoAi ve WebCargo'dan sonra havayolunun kapasitesini sunduğu <strong>4.</strong> dijital pazar yeri oldu. Platform üzerinden taze ürünler (Fresh), ilaç (Pharma) ve öncelikli kargo dahil <strong>5</strong> temel ürün grubuna ulaşılabilecek.",
-    "category": "Teknoloji & Dijitalleşme",
-    "source": "aircargoupdate",
-    "link": "https://aircargoupdate.com/emirates-skycargo-available-on-pelicargo-expanding-digital-presence-in-the-us/",
-    "id": null,
-    "isDuplicate": true,
-    "duplicateOf": "Emirates SkyCargo, Pelicargo ile ABD’deki Dijital Varlığını Genişletiyor",
-    "thyImpact": "risk",
-    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>'nun ABD pazarındaki dijital erişilebilirliğini artırması, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için bu bölgedeki pazar payı rekabetini zorlaştırabilir. Dijital rezervasyon platformlarının kullanımındaki artış, forwarder tercihlerini doğrudan etkileyerek rakip havayollarına hız ve görünürlük avantajı sağlamaktadır. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun benzer API entegrasyonları ve platform ortaklıkları ile bu dijital rekabete yanıt vermesi stratejik bir gereklilik haline gelmiştir.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": [
-        "ISTANBUL"
-      ]
-    },
-    "etkiAlaniGerekce": "ABD pazarı THY'nin en büyük dış pazarlarından biridir ve rakibin Orta Doğu üzerinden bu bölgeye dijital kapasite sunması rekabeti doğrudan etkiler.",
-    "date": "Published: Wednesday, May 13, 2026"
   },
   {
     "title": "DSV, Geniş Gövdeli Kargo Uçağı Kapasite Sınırlılığına ve BT Değişimine Dikkat Çekti",
