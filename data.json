@@ -1,7 +1,7 @@
 [
   {
-    "title": "Motor Bakım Trendleri ve Kapasite Görünümü: Sektördeki Gelişmeler Neleri Gösteriyor?",
-    "summary": "Küresel motor bakım (MRO) pazarı yıllık yaklaşık <strong>$50-58 milyar</strong> değerine ulaşırken, sınırlı atölye kapasitesi ve uzayan teslim süreleri operasyonel bir kısıt haline gelmiştir. On yılın sonuna kadar talep ile kapasite arasında <strong>%15-20</strong> oranında bir boşluk oluşması beklenirken, yedek motor kira bedelleri aylık <strong>$200.000</strong> ile <strong>$350.000</strong> seviyelerine yükselmiştir. Parça tedarik süreleri <strong>4-6</strong> haftadan <strong>20-40</strong> haftanın üzerine çıkmış olup, <strong>2026</strong> sonuna kadar sektörde <strong>22.000</strong> teknisyen açığı öngörülmektedir. Bu kısıtlar karşısında <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Technik ve <span style='color:#C8102E;font-weight:700;'>Air France</span>-KLM gibi devler kapasiteyi uzun vadeli anlaşmalarla güvence altına alırken, yapay zeka kullanımı hata tespit oranlarını <strong>%30</strong>'dan fazla artırmaktadır. <strong>2040</strong> yılına kadar motor MRO pazarının <strong>$150 milyar</strong>ı aşacağı tahmin edilmektedir.",
+    "title": "Motor Bakım Trendleri ve Kapasite Görünümü: Sektördeki Son Gelişmeler Neler Söylüyor?",
+    "summary": "Motor bakımı, kısıtlı atölye kapasitesi ve uzayan işlem süreleri nedeniyle havayolları için stratejik bir darboğaz haline gelmiştir. Küresel motor MRO pazarı yıllık <strong>$50-58 milyar</strong> değerindeyken, talebin <strong>2030</strong> yılına kadar arzı <strong>%17</strong> aşması beklenmektedir. <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Technik ve <span style='color:#C8102E;font-weight:700;'>Air France</span>-<span style='color:#C8102E;font-weight:700;'>KLM</span> E&M gibi devler kapasiteyi uzun vadeli anlaşmalarla rezerve ederken, yedek motor kira bedelleri aylık <strong>$200.000</strong>-<strong>$350.000</strong> seviyesine çıkmıştır. Parça tedarik süreleri <strong>4-6 haftadan</strong> <strong>20-40 haftanın</strong> üzerine fırlamış ve sektörün <strong>2026</strong> sonuna kadar <strong>22.000</strong> teknisyen açığıyla karşılaşacağı öngörülmektedir. Yapay zeka entegrasyonu sayesinde kusur tespit oranlarında <strong>%30</strong> artış sağlansa da, altyapı yatırımlarının talebi karşılama hızı yetersiz kalmaktadır.",
     "category": "Altyapı",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/engine-maintenance-trends-and-capacity-outlook-what-recent-industry-developments-reveal/",
@@ -9,12 +9,12 @@
     "isDuplicate": false,
     "duplicateOf": "",
     "thyImpact": "risk",
-    "thyAnalysis": "Küresel motor bakım kapasitesindeki daralma ve yedek parça tedarik sürelerindeki aşırı artış, <span style='color:#C8102E;font-weight:700;'>Turkish Airlines</span> ve <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun operasyonel maliyetlerini artırma ve uçak kullanım oranlarını düşürme riski taşımaktadır. MRO kapasitesinin rakipler tarafından uzun vadeli kontratlarla kapatılması, filo planlamasında esnekliği kısıtlayabilir. Yedek motor ve parça maliyetlerindeki artış doğrudan karlılığı etkileyebilir.",
+    "thyAnalysis": "Küresel motor bakım kapasitesindeki daralma, Turkish Cargo'nun operasyonel maliyetlerini ve uçak kullanım oranlarını olumsuz etkileyebilir. Özellikle yeni nesil motorlardaki bakım yoğunluğu ve parça tedarikindeki gecikmeler, filo planlamasında risk oluşturmaktadır. Turkish Technic'in bakım kabiliyetleri bu riskleri hafifletse de, küresel yedek parça ve teknisyen kıtlığı stratejik bir zorluk teşkil etmektedir.",
     "etkiAlani": {
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "Bakım merkezlerinin yoğunlaştığı bölgelerdeki kapasite kısıtları ve parça tedarik zinciri darboğazları, IST merkezli filonun teknik operasyonlarını ve küresel uçuş ağındaki uçak bulunabilirliğini doğrudan etkilemektedir.",
+    "etkiAlaniGerekce": "Küresel motor bakım kapasitesindeki daralma ve parça tedarik sürelerindeki artış, Turkish Cargo'nun geniş gövdeli uçak filosunun harbe hazırlık oranlarını ve ISTANBUL merkezli operasyonel planlamasını doğrudan etkilemektedir.",
     "date": "2026-05-08"
   },
   {
