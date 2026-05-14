@@ -28,6 +28,21 @@
     --cat-other: #37474F;
   }
 
+  /* ─── LIGHT THEME ─── */
+  [data-theme="light"] {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface2: #eef0f5;
+    --border: #dde0eb;
+    --text: #1a1d2a;
+    --text-muted: #5a6280;
+  }
+  [data-theme="light"] .article-summary { color: #4a5270; }
+  [data-theme="light"] .thy-analysis-box { color: #4a5270; background: rgba(200,16,46,0.04); }
+  [data-theme="light"] .source-name { color: #5a6280; }
+  [data-theme="light"] .article-card:hover { border-color: #b8bcd0; }
+  [data-theme="light"] .card-undo-overlay { background: rgba(200,16,46,0.06); }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
@@ -256,7 +271,7 @@
     pointer-events: none;
   }
   .article-card.removed {
-    display: none;
+    opacity: 0.5;
   }
   .article-card:hover {
     border-color: #3e4560;
@@ -536,38 +551,6 @@
   .success-title { font-size: 22px; font-weight: 700; }
   .success-msg { font-size: 14px; color: var(--text-muted); max-width: 400px; line-height: 1.6; }
 
-  /* ─── EDIT INDICATOR ─── */
-  .edit-hint {
-    font-size: 11px;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .article-card:hover .edit-hint { opacity: 1; }
-  .edit-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #4CAF50;
-    display: inline-block;
-  }
-  .edited-badge {
-    display: none;
-    font-size: 10px;
-    font-weight: 700;
-    color: #4CAF50;
-    background: rgba(76,175,80,0.15);
-    border: 1px solid rgba(76,175,80,0.3);
-    border-radius: 3px;
-    padding: 1px 6px;
-    letter-spacing: 0.5px;
-    margin-left: 8px;
-    text-transform: uppercase;
-  }
-  .edited-badge.visible { display: inline-block; }
 
   /* Scroll smooth */
   html { scroll-behavior: smooth; }
@@ -603,6 +586,98 @@
     display: none;
   }
 
+  /* ─── UNDO OVERLAY (silinen kart) ─── */
+  .card-undo-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(200,16,46,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    z-index: 2;
+    border-radius: 8px;
+    backdrop-filter: blur(1px);
+  }
+  .undo-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .undo-btn {
+    background: var(--surface);
+    border: 1px solid var(--red);
+    color: var(--red);
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+    transition: background 0.15s;
+    pointer-events: all;
+  }
+  .undo-btn:hover { background: rgba(200,16,46,0.12); }
+
+  /* ─── REVERT (düzenleme geri al) ─── */
+  .card-footer-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    min-height: 20px;
+  }
+  .edited-badge {
+    display: none;
+    font-size: 10px;
+    font-weight: 700;
+    color: #4CAF50;
+    background: rgba(76,175,80,0.15);
+    border: 1px solid rgba(76,175,80,0.3);
+    border-radius: 3px;
+    padding: 1px 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .edited-badge.visible { display: inline-block; }
+  .revert-btn {
+    display: none;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 7px;
+    cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+  }
+  .revert-btn.visible { display: inline-block; }
+  .revert-btn:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* ─── THEME TOGGLE BUTTON ─── */
+  .theme-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    padding: 0;
+  }
+  .theme-btn:hover { border-color: var(--text-muted); color: var(--text); }
+  .theme-btn svg { width: 16px; height: 16px; }
+
   @media (max-width: 768px) {
     .sidebar { display: none; }
     .main { padding: 16px; }
@@ -622,6 +697,10 @@
   </div>
   <div class="topbar-right">
     <div class="stats-pill" id="stats-pill">—</div>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Tema değiştir" aria-label="Tema değiştir">
+      <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
     <button class="btn-reject" onclick="openModal('reject')">✕ Reddet</button>
     <button class="btn-approve" onclick="openModal('approve')">✓ Onayla ve Gönder</button>
   </div>
@@ -705,6 +784,7 @@ const SOURCE_META = {
 };
 
 let articles = [];
+let originalArticles = {};
 let removedIds = new Set();
 let currentAction = null;
 let resumeUrl = null;
@@ -744,6 +824,11 @@ async function init() {
     if (!resp.ok) throw new Error(`HTTP ${resp.status} — n8n webhook yanıt vermedi`);
     const data = await resp.json();
     articles = data.articles || [];
+    originalArticles = {};
+    articles.forEach(a => {
+      const key = a.id || a.title;
+      originalArticles[key] = { title: a.title, summary: a.summary, thyAnalysis: a.thyAnalysis };
+    });
     renderPage(data);
   } catch(err) {
     showError(`Veri alınamadı: ${err.message}\n\nKontrol edin:\n• n8n workflow aktif mi?\n• "Approval Data Webhook" node'u production'da mı?\n• URL: ${apiUrl}`);
@@ -917,6 +1002,10 @@ function renderArticles() {
             <div class="article-summary" contenteditable="true" data-field="summary" data-id="${encodeURIComponent(artId)}" onblur="handleEdit(this)" oninput="markEdited(this)">${a.summary||''}</div>
             ${thyHtml}
             <div class="sources-row">${sourcesHtml}${sentBadge ? `<span style="margin-left:auto">${sentBadge}</span>` : ''}</div>
+            <div class="card-footer-row" id="footer-${encodeURIComponent(artId)}">
+              <span class="edited-badge" id="edited-${encodeURIComponent(artId)}">Düzenlendi</span>
+              <button class="revert-btn" id="revert-${encodeURIComponent(artId)}" onclick="revertArticle('${encodeURIComponent(artId)}')">↩ Orijinale Dön</button>
+            </div>
           </div>
         </div>`;
     });
@@ -935,9 +1024,11 @@ function renderArticles() {
 
 // ─── EDIT HANDLING ───
 function markEdited(el) {
-  const card = el.closest('.article-card');
-  if (!card) return;
-  // Update the article object in memory on blur (handleEdit), not on every keystroke
+  const encodedId = el.dataset.id;
+  const badge = document.getElementById('edited-' + encodedId);
+  const revertBtn = document.getElementById('revert-' + encodedId);
+  if (badge) badge.classList.add('visible');
+  if (revertBtn) revertBtn.classList.add('visible');
 }
 
 function handleEdit(el) {
@@ -971,32 +1062,98 @@ function removeArticle(encodedId) {
     setTimeout(() => {
       card.classList.remove('removing');
       card.classList.add('removed');
+      // Undo overlay ekle
+      if (!document.getElementById('undo-overlay-' + encodedId)) {
+        const overlay = document.createElement('div');
+        overlay.className = 'card-undo-overlay';
+        overlay.id = 'undo-overlay-' + encodedId;
+        overlay.innerHTML = `
+          <span class="undo-label">Kaldırıldı</span>
+          <button class="undo-btn" onclick="undoRemove('${encodedId}')">↩ Geri Al</button>`;
+        card.appendChild(overlay);
+      }
       updateAfterRemove();
     }, 300);
   }
 }
 
+function undoRemove(encodedId) {
+  const artId = decodeURIComponent(encodedId);
+  removedIds.delete(artId);
+  const card = document.getElementById('card-' + encodedId);
+  if (card) {
+    const overlay = document.getElementById('undo-overlay-' + encodedId);
+    if (overlay) overlay.remove();
+    card.classList.remove('removed');
+    card.style.opacity = '0';
+    card.style.transform = 'translateX(-10px)';
+    requestAnimationFrame(() => {
+      card.style.transition = 'opacity 0.25s, transform 0.25s';
+      card.style.opacity = '';
+      card.style.transform = '';
+      setTimeout(() => { card.style.transition = ''; }, 280);
+    });
+    const section = card.closest('.cat-section');
+    if (section) section.style.display = '';
+    updateAfterRemove();
+  }
+}
+
+function revertArticle(encodedId) {
+  const artId = decodeURIComponent(encodedId);
+  const orig = originalArticles[artId];
+  if (!orig) return;
+  const article = articles.find(a => (a.id || a.title) === artId);
+  if (!article) return;
+
+  article.title = orig.title;
+  article.summary = orig.summary;
+  if (orig.thyAnalysis !== undefined) article.thyAnalysis = orig.thyAnalysis;
+
+  const titleEl = document.querySelector(`.article-title[data-id="${encodedId}"]`);
+  if (titleEl) titleEl.innerHTML = `<a href="${article.link||'#'}" target="_blank" style="color:inherit;text-decoration:none;">${orig.title||'Başlık yok'}</a>`;
+
+  const summaryEl = document.querySelector(`.article-summary[data-id="${encodedId}"]`);
+  if (summaryEl) summaryEl.innerHTML = orig.summary || '';
+
+  if (orig.thyAnalysis !== undefined) {
+    const thyEl = document.querySelector(`.thy-analysis-box[data-id="${encodedId}"]`);
+    if (thyEl) thyEl.innerHTML = `<span class="thy-analysis-label">Analiz</span>${orig.thyAnalysis}`;
+  }
+
+  const badge = document.getElementById('edited-' + encodedId);
+  const revertBtn = document.getElementById('revert-' + encodedId);
+  if (badge) badge.classList.remove('visible');
+  if (revertBtn) revertBtn.classList.remove('visible');
+}
+
 function updateAfterRemove() {
   updateStats();
   renderSidebar();
-  // Update category counts
   const grouped = groupArticles();
   Object.keys(grouped).forEach(cat => {
     const el = document.getElementById('catcount-' + slugify(cat));
     if (el) el.textContent = grouped[cat].length;
   });
-  // Check for empty sections
-  const grouped2 = groupArticles();
+  // Boş kategori bölümlerini gizle (ama kaldırılan kartları koru)
   document.querySelectorAll('.cat-section').forEach(sec => {
     const visibleCards = sec.querySelectorAll('.article-card:not(.removed)').length;
-    if (visibleCards === 0) sec.style.display = 'none';
+    const removedCards = sec.querySelectorAll('.article-card.removed').length;
+    if (visibleCards === 0 && removedCards === 0) sec.style.display = 'none';
     else sec.style.display = '';
   });
-  // Empty state
+  // Tümü kaldırıldı mesajı
   const totalActive = articles.filter(a => !removedIds.has(a.id || a.title)).length;
   const main = document.getElementById('main-content');
-  if (totalActive === 0) {
-    main.innerHTML = '<div class="empty-state visible"><div class="empty-state-icon">📭</div><span>Tüm haberler kaldırıldı.</span></div>';
+  const existingMsg = document.getElementById('all-removed-msg');
+  if (totalActive === 0 && !existingMsg) {
+    const msg = document.createElement('div');
+    msg.className = 'empty-state visible';
+    msg.id = 'all-removed-msg';
+    msg.innerHTML = '<div class="empty-state-icon">📭</div><span>Tüm haberler kaldırıldı. Geri almak için kartlara tıklayın.</span>';
+    main.prepend(msg);
+  } else if (totalActive > 0 && existingMsg) {
+    existingMsg.remove();
   }
 }
 
@@ -1067,7 +1224,31 @@ async function confirmAction() {
   }
 }
 
+// ─── THEME ───
+function initTheme() {
+  const saved = localStorage.getItem('approval-theme') || 'dark';
+  applyTheme(saved);
+}
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const moon = document.getElementById('theme-icon-moon');
+  const sun  = document.getElementById('theme-icon-sun');
+  if (theme === 'light') {
+    if (moon) moon.style.display = 'none';
+    if (sun)  sun.style.display  = '';
+  } else {
+    if (moon) moon.style.display = '';
+    if (sun)  sun.style.display  = 'none';
+  }
+  localStorage.setItem('approval-theme', theme);
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
 // ─── START ───
+initTheme();
 init();
 </script>
 </body>
