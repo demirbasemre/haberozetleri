@@ -1185,8 +1185,8 @@ function closeModal() {
 }
 
 async function confirmAction() {
-  closeModal();
   const isApprove = currentAction === 'approve';
+  closeModal();
 
   // Collect current state of articles (edited + filtered)
   const activeArticles = articles.filter(a => !removedIds.has(a.id || a.title));
