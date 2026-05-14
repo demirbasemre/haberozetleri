@@ -87,6 +87,12 @@
   ],
   "check": [
     {
+      "id": "mp54syvvmh1b",
+      "text": "Kullanıcıların chatbot'u kullanırken token limitini zorlamaması için günlük limit iyi mi kontrol et.",
+      "done": false,
+      "createdAt": 1778741569435
+    },
+    {
       "id": "mp4i90trx706",
       "text": "X tarihinde şu şirketle ilgili haberleri getir ya da x tarihindeki haberleri getir doğru çalışıyor mu?",
       "done": false,
