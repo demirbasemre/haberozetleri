@@ -2912,7 +2912,7 @@ function buildCardHTML(article) {
           <span class="card-cat-badge" style="background:${hex}">${article.category || 'Diğer'}</span>
         </div>
         <div class="card-title">${article.title || ''}</div>
-        <div class="card-summary">${article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>'}</div>
+        <div class="card-summary">${(article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>').replace(/%(<strong>)/g, '$1%')}</div>
         ${etkiHtml}
         ${hasAnalysis ? `
           <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(analysisVal||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
