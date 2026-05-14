@@ -1207,6 +1207,7 @@ async function confirmAction() {
         action: isApprove ? 'approve' : 'reject',
         summaryId: summaryId,
         editedArticles: isApprove ? activeArticles : [],
+        removedArticles: articles.filter(a => removedIds.has(a.id || a.title)),
         removedCount: removedIds.size,
         totalSent: activeArticles.length
       })
