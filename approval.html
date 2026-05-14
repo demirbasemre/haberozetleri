@@ -678,8 +678,225 @@
   .theme-btn:hover { border-color: var(--text-muted); color: var(--text); }
   .theme-btn svg { width: 16px; height: 16px; }
 
+  /* ─── RIGHT PANEL ─── */
+  .right-panel {
+    width: 300px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .rp-header {
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rp-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .rp-refresh-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+  .rp-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  /* Voter selector */
+  .rp-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .voter-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .voter-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'IBM Plex Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .voter-btn:hover { border-color: var(--text-muted); color: var(--text); }
+  .voter-btn.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+  }
+  /* Questions */
+  .survey-question {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sq-label {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .star-row {
+    display: flex;
+    gap: 4px;
+  }
+  .star-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    opacity: 0.3;
+    transition: opacity 0.1s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .star-btn:hover { opacity: 0.7; transform: scale(1.15); }
+  .star-btn.active { opacity: 1; }
+  /* Readiness */
+  .readiness-btns {
+    display: flex;
+    gap: 6px;
+  }
+  .readiness-btn {
+    flex: 1;
+    padding: 7px 4px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'IBM Plex Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .readiness-btn:hover { border-color: var(--text-muted); color: var(--text); }
+  .readiness-btn.active-yes { background: rgba(76,175,80,0.15); border-color: #4caf7d; color: #4caf7d; }
+  .readiness-btn.active-warn { background: rgba(255,152,0,0.15); border-color: #ff9800; color: #ff9800; }
+  .readiness-btn.active-no { background: rgba(200,16,46,0.15); border-color: var(--red); color: var(--red); }
+  /* Comment */
+  .survey-textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: var(--text);
+    resize: vertical;
+    min-height: 60px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .survey-textarea:focus { border-color: var(--text-muted); }
+  .survey-textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+  /* Submit */
+  .submit-vote-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'IBM Plex Sans', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    letter-spacing: 0.3px;
+  }
+  .submit-vote-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .submit-vote-btn:not(:disabled):hover { opacity: 0.85; }
+  .vote-status-msg {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    min-height: 16px;
+  }
+  .vote-status-msg.ok { color: #4caf7d; }
+  .vote-status-msg.err { color: var(--red); }
+  /* Divider */
+  .rp-divider { height: 1px; background: var(--border); margin: 0 18px; flex-shrink: 0; }
+  /* Who voted */
+  .voter-status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .voter-status-item:last-child { border-bottom: none; }
+  .vs-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .vs-dot.voted { background: #4caf7d; }
+  .vs-dot.pending { background: var(--border); }
+  .vs-name { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+  .vs-time { font-size: 10px; font-family: 'IBM Plex Mono', monospace; color: var(--text-muted); }
+  .vs-scores {
+    display: flex;
+    gap: 4px;
+    margin-top: 2px;
+  }
+  .vs-score-chip {
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--surface2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .rp-refresh-info {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    text-align: center;
+    padding: 8px;
+    opacity: 0.5;
+  }
+
   @media (max-width: 768px) {
     .sidebar { display: none; }
+    .right-panel { display: none; }
     .main { padding: 16px; }
     .topbar { padding: 0 16px; }
     .topbar-meta { display: none; }
@@ -701,7 +918,6 @@
       <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     </button>
-    <button class="btn-reject" onclick="openModal('reject')">✕ Reddet</button>
     <button class="btn-approve" onclick="openModal('approve')">✓ Onayla ve Gönder</button>
   </div>
 </div>
@@ -723,6 +939,70 @@
 
   <!-- MAIN -->
   <div class="main" id="main-content"></div>
+
+  <!-- RIGHT PANEL: SURVEY -->
+  <div class="right-panel" id="right-panel">
+    <div class="rp-header">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--red)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span class="rp-title">Değerlendirme</span>
+      <span class="rp-refresh-badge" id="rp-refresh-badge">—</span>
+    </div>
+    <div class="rp-body">
+      <!-- Voter selector -->
+      <div>
+        <div class="rp-section-label">Adınız</div>
+        <div class="voter-btns" id="voter-btns">
+          <span style="font-size:12px;color:var(--text-muted)">Yükleniyor…</span>
+        </div>
+      </div>
+
+      <div class="rp-divider" style="margin:0"></div>
+
+      <!-- Q1: Summary quality -->
+      <div class="survey-question">
+        <div class="sq-label">Haber özet metinleri ne kadar uygun?</div>
+        <div class="star-row" id="stars-summary"></div>
+      </div>
+
+      <!-- Q2: Analysis quality -->
+      <div class="survey-question">
+        <div class="sq-label">THY etki analizleri ne kadar doğru?</div>
+        <div class="star-row" id="stars-analysis"></div>
+      </div>
+
+      <!-- Q3: Readiness -->
+      <div class="survey-question">
+        <div class="sq-label">Bülten gönderime hazır mı?</div>
+        <div class="readiness-btns" id="readiness-btns">
+          <button class="readiness-btn" data-val="evet" onclick="setReadiness('evet',this)">✓ Evet</button>
+          <button class="readiness-btn" data-val="duzeltme" onclick="setReadiness('duzeltme',this)">⚠ Düzeltme</button>
+          <button class="readiness-btn" data-val="hayir" onclick="setReadiness('hayir',this)">✗ Hayır</button>
+        </div>
+      </div>
+
+      <!-- Q4: Comment -->
+      <div class="survey-question">
+        <div class="sq-label">Yorum <span style="font-weight:400;color:var(--text-muted)">(opsiyonel)</span></div>
+        <textarea class="survey-textarea" id="survey-comment" placeholder="Eklemek istediğiniz bir şey var mı?"></textarea>
+      </div>
+
+      <div>
+        <button class="submit-vote-btn" id="submit-vote-btn" onclick="submitVote()" disabled>Oyumu Gönder</button>
+        <div class="vote-status-msg" id="vote-status-msg"></div>
+      </div>
+
+      <div class="rp-divider" style="margin:0"></div>
+
+      <!-- Who voted -->
+      <div>
+        <div class="rp-section-label">Oy Durumu</div>
+        <div id="voter-status-list">
+          <span style="font-size:12px;color:var(--text-muted)">Yükleniyor…</span>
+        </div>
+        <div class="rp-refresh-info" id="rp-last-refresh">—</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- LOADING -->
@@ -953,7 +1233,9 @@ function renderArticles() {
     articles_in_cat.forEach(a => {
       const artId = a.id || a.title;
       const sentiment = a.sentiment || '';
-      const sentBadge = sentiment ? `<span class="sentiment-badge sentiment-${sentiment}">${sentiment}</span>` : '';
+      // Analiz varsa nötr badge gösterme — analiz zaten etkiyi açıklıyor
+      const showBadge = sentiment && !(sentiment === 'notr' && a.thyAnalysis && a.thyAnalysis.trim());
+      const sentBadge = showBadge ? `<span class="sentiment-badge sentiment-${sentiment}">${sentiment}</span>` : '';
       
       let pd = '';
       if (a.publishDate) {
@@ -1224,6 +1506,199 @@ async function confirmAction() {
   }
 }
 
+// ─── SURVEY ───
+const VOTERS_URL  = 'https://n8n.emredemirbas.com/webhook/oylama-voters';
+const SUBMIT_URL  = 'https://n8n.emredemirbas.com/webhook/oylama-submit';
+const RESULTS_URL = 'https://n8n.emredemirbas.com/webhook/oylama-results';
+const REFRESH_INTERVAL = 30000; // 30 sn
+
+let surveyState = {
+  voterName: null,
+  summaryScore: 0,
+  analysisScore: 0,
+  readinessStatus: null,
+};
+let resultsTimer = null;
+let refreshCountdown = 0;
+
+async function initSurvey() {
+  buildStars('stars-summary', 'summaryScore');
+  buildStars('stars-analysis', 'analysisScore');
+  try {
+    const r = await fetch(VOTERS_URL);
+    const d = await r.json();
+    renderVoterBtns(d.voters || []);
+  } catch(e) {
+    document.getElementById('voter-btns').innerHTML =
+      '<span style="font-size:11px;color:var(--red)">Liste alınamadı</span>';
+  }
+  await refreshResults();
+  startResultsTimer();
+}
+
+function buildStars(containerId, field) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'star-btn';
+    btn.dataset.val = i;
+    btn.dataset.field = field;
+    btn.textContent = '★';
+    btn.title = i + ' yıldız';
+    btn.onclick = () => setStar(field, i);
+    el.appendChild(btn);
+  }
+}
+
+function setStar(field, val) {
+  surveyState[field] = val;
+  const containerId = field === 'summaryScore' ? 'stars-summary' : 'stars-analysis';
+  document.querySelectorAll(`#${containerId} .star-btn`).forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.val) <= val);
+  });
+  checkSurveyReady();
+}
+
+function renderVoterBtns(voters) {
+  const el = document.getElementById('voter-btns');
+  el.innerHTML = '';
+  voters.forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'voter-btn';
+    btn.textContent = name;
+    btn.onclick = () => selectVoter(name, btn);
+    el.appendChild(btn);
+  });
+}
+
+function selectVoter(name, btn) {
+  surveyState.voterName = name;
+  document.querySelectorAll('.voter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  checkSurveyReady();
+}
+
+function setReadiness(val, btn) {
+  surveyState.readinessStatus = val;
+  document.querySelectorAll('.readiness-btn').forEach(b => {
+    b.className = 'readiness-btn';
+  });
+  if (val === 'evet')     btn.classList.add('active-yes');
+  if (val === 'duzeltme') btn.classList.add('active-warn');
+  if (val === 'hayir')    btn.classList.add('active-no');
+  checkSurveyReady();
+}
+
+function checkSurveyReady() {
+  const ready = surveyState.voterName &&
+                surveyState.summaryScore > 0 &&
+                surveyState.analysisScore > 0 &&
+                surveyState.readinessStatus;
+  document.getElementById('submit-vote-btn').disabled = !ready;
+}
+
+async function submitVote() {
+  const btn = document.getElementById('submit-vote-btn');
+  const msg = document.getElementById('vote-status-msg');
+  btn.disabled = true;
+  btn.textContent = 'Gönderiliyor…';
+  msg.textContent = '';
+  msg.className = 'vote-status-msg';
+  try {
+    const r = await fetch(SUBMIT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        summaryId: summaryId,
+        voterName: surveyState.voterName,
+        summaryScore: surveyState.summaryScore,
+        analysisScore: surveyState.analysisScore,
+        readinessStatus: surveyState.readinessStatus,
+        comment: document.getElementById('survey-comment').value.trim()
+      })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    msg.textContent = '✓ Oyunuz kaydedildi';
+    msg.className = 'vote-status-msg ok';
+    btn.textContent = 'Oyumu Gönder';
+    await refreshResults();
+  } catch(e) {
+    msg.textContent = '✗ Gönderilemedi: ' + e.message;
+    msg.className = 'vote-status-msg err';
+    btn.disabled = false;
+    btn.textContent = 'Oyumu Gönder';
+  }
+}
+
+async function refreshResults() {
+  try {
+    const r = await fetch(RESULTS_URL + '?summaryId=' + encodeURIComponent(summaryId || ''));
+    const d = await r.json();
+    renderVoterStatus(d);
+    const now = new Date().toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+    document.getElementById('rp-last-refresh').textContent = 'Son güncelleme: ' + now;
+  } catch(e) {
+    document.getElementById('rp-last-refresh').textContent = 'Güncellenemedi';
+  }
+}
+
+function renderVoterStatus(data) {
+  const list = document.getElementById('voter-status-list');
+  if (!list) return;
+  const allVoters = ['Dilhan', 'Emre', 'Turt'];
+  const votesMap = {};
+  (data.votes || []).forEach(v => { votesMap[v.voterName] = v; });
+
+  list.innerHTML = '';
+  allVoters.forEach(name => {
+    const v = votesMap[name];
+    const item = document.createElement('div');
+    item.className = 'voter-status-item';
+    if (v) {
+      const t = new Date(v.votedAt).toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' });
+      const readinessLabel = { evet: '✓ Evet', duzeltme: '⚠ Düzeltme', hayir: '✗ Hayır' }[v.readinessStatus] || v.readinessStatus;
+      item.innerHTML = `
+        <div class="vs-dot voted"></div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="vs-name">${name}</span>
+            <span class="vs-time">${t}</span>
+          </div>
+          <div class="vs-scores">
+            <span class="vs-score-chip" title="Haber özet">Ö:${v.summaryScore}★</span>
+            <span class="vs-score-chip" title="Analiz">A:${v.analysisScore}★</span>
+            <span class="vs-score-chip">${readinessLabel}</span>
+          </div>
+        </div>`;
+    } else {
+      item.innerHTML = `
+        <div class="vs-dot pending"></div>
+        <span class="vs-name">${name}</span>
+        <span class="vs-time" style="opacity:0.4">bekliyor</span>`;
+    }
+    list.appendChild(item);
+  });
+
+  // Toplam özet
+  const voted = (data.voted_count || 0);
+  const total = (data.total_voters || 3);
+  document.getElementById('rp-refresh-badge').textContent = `${voted}/${total} oy`;
+}
+
+function startResultsTimer() {
+  if (resultsTimer) clearInterval(resultsTimer);
+  refreshCountdown = REFRESH_INTERVAL / 1000;
+  resultsTimer = setInterval(async () => {
+    refreshCountdown--;
+    if (refreshCountdown <= 0) {
+      refreshCountdown = REFRESH_INTERVAL / 1000;
+      await refreshResults();
+    }
+  }, 1000);
+}
+
 // ─── THEME ───
 function initTheme() {
   const saved = localStorage.getItem('approval-theme') || 'dark';
@@ -1249,7 +1724,7 @@ function toggleTheme() {
 
 // ─── START ───
 initTheme();
-init();
+init().then(() => initSurvey());
 </script>
 </body>
 </html>
