@@ -1,23 +1,497 @@
 [
   {
-    "title": "Logistics UK, Avrupa ile Daha Fazla Ticari Uyum Çağrısında Bulundu",
-    "summary": "Logistics UK, Avrupa Ortaklık Yasası'nın Birleşik Krallık ve AB arasındaki ticari ilişkileri kolaylaştıracağını ve bürokrasiyi azaltacağını belirtti. İş grubu, Brexit sonrası artan idari engellerin ve sınır gecikmelerinin tedarik zinciri maliyetlerini artırdığından şikayet ediyor. Hükümetten emisyon ticareti ve gümrük uyumu konularına öncelik vermesi talep ediliyor. Özellikle <strong>2026</strong> yılı ve sonrasında ekonomik büyümenin kilidini açmak için malların sınır ötesinde hızlı hareket etmesi gerektiği vurgulanıyor. Sınırda yaşanan her gecikmenin işlem maliyetlerini artırarak doğrudan kâr marjlarını etkilediği ifade ediliyor.",
-    "category": "Diğer",
-    "source": "aircargoweek",
-    "link": "https://aircargoweek.com/logistics-uk-calls-for-greater-european-alignment/",
+    "title": "Riyadh Cargo; Mısır, Hindistan ve BAE'de GSSA Ortakları Atadı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun bölgesel rakiplerinden Riyadh Air'in kargo bölümü, uluslararası genişleme kapsamında Mısır, Hindistan ve BAE'de GSSA anlaşmaları imzaladı. Hindistan'da Air Logistics Group, BAE'de dnata Cargo ve Mısır'da M&C Aviation yerel ticari temsilci olarak yetkilendirildi. Şirket, Ocak ayında yolcu uçaklarının kargo kapasitesini kullanarak operasyonlara başlamıştı. <strong>2030</strong> yılına kadar <strong>100</strong>'den fazla destinasyona ulaşmayı hedefleyen taşıyıcının <strong>180</strong>'den fazla uçak siparişi bulunuyor. Ortaklıklar, e-ticaret ve ilaç gibi sektörlerdeki kargo trafiğini Riyadh üzerinden küresel pazarlara bağlamayı hedefliyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/gssa/2026/05/riyadh-cargo-appoints-gssa-partners-across-egypt-india-and-uae/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Riyadh Cargo; Mısır, Hindistan ve BAE'de Küresel Genişlemesini Hızlandırmak İçin GSSA Ortakları Atadı",
+    "thyImpact": "risk",
+    "thyAnalysis": "Suudi Arabistan merkezli yeni bir oyuncunun ana pazarlarımız olan Hindistan ve Mısır'da ticari ağını güçlendirmesi, bölgedeki transit kargo payımız için rekabet tehdidi oluşturabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Western Europe",
+        "Central Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Riyadh Cargo'nun bu bölgelerden gelen trafik akışını kendi hub'ı üzerinden Avrupa'ya yönlendirme stratejisi Turkish Cargo'nun pazar payını etkileyebilir.",
+    "date": "2026-05-14",
+    "sources": [
+      {
+        "source": "aircargoweek",
+        "link": "https://aircargoweek.com/riyadh-cargo-appoints-gssa-partners-across-egypt-india-and-uae/"
+      },
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/riyadh-cargo-expands-gssa-network-in-uae-india-and-egypt-1359141"
+      }
+    ]
+  },
+  {
+    "title": "CMA CGM Air Cargo Vietnam Talebinden Faydalanmak İçin Paris-Hanoi Hattını Başlattı",
+    "summary": "CMA CGM Air Cargo, Vietnam ve Fransa arasında yeni bir kargo uçağı seferi başlattığını duyurdu. Operasyonlar <strong>9 Mayıs 2026</strong> tarihinde Paris CDG'den kalkan ve dönüşte Özbekistan'ın Navoi Havalimanı'na uğrayan bir Boeing 777F ile gerçekleştirildi. Vietnam'ın hava kargo pazarı, üretimin Çin dışına çeşitlenmesiyle geçen yıl %<strong>18</strong> büyüyerek <strong>1,4</strong> milyon tona ulaştı. Yeni hat, her uçuşta yaklaşık <strong>100</strong> ton kapasite sunarak bölgedeki elektronik ve e-ticaret talebini karşılamayı hedefliyor. Bölgede artan yakıt maliyetleri nedeniyle navlun ücretlerinin geçen yıla göre %<strong>40</strong>'a varan oranlarda yükseldiği belirtiliyor.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/supply-chains/2026/05/growing-demand-from-vietnam-attracts-cma-cgm-air-cargo/",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "Birleşik Krallık ve AB arasındaki ticaretin kolaylaşması, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun her iki bölgeyi bağlayan geniş uçuş ağı için operasyonel hız ve potansiyel talep artışı anlamına gelmektedir. Gümrük süreçlerindeki sadeleşme, özellikle bozulabilir kargo ve e-ticaret sevkiyatlarında rekabet avantajı sağlayabilir.",
+    "thyImpact": "risk",
+    "thyAnalysis": "Vietnam-Avrupa koridorunda artan doğrudan kargo uçağı kapasitesi, bu bölgedeki pazar fiyatları ve Turkish Cargo'nun doluluk oranları üzerinde baskı oluşturabilir.",
     "etkiAlani": {
       "direct": [],
       "hub": [
         "ISTANBUL"
       ]
     },
-    "etkiAlaniGerekce": "Haber Birleşik Krallık ve Avrupa Birliği arasındaki gümrük ve ticaret düzenlemelerini doğrudan etkileyen yasal süreçleri kapsamaktadır.",
+    "etkiAlaniGerekce": "Vietnam'daki üretim artışı ve e-ticaret akışları Turkish Cargo'nun Hanoi frekansları ve İstanbul hub aktarmaları için kritik öneme sahiptir.",
+    "date": "2026-05-14",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/cma-cgm-air-cargo-launches-parishanoi-freighter-service-1359135"
+      }
+    ]
+  },
+  {
+    "title": "Airbus A350F Kargo Kapısı ve Yükleme Sistemlerini Test Ediyor",
+    "summary": "Airbus, yeni nesil A350 kargo uçağının (A350F) sertifikasyon süreci kapsamında ana güverte kargo kapısı ve yükleme sistemlerini fiziksel test platformlarında denemeye başladı. <strong>111</strong> ton taşıma kapasitesine sahip olan uçak, elektrikli güçle çalışan ve <strong>60</strong> saniyede açılabilen yeni nesil bir kapı mekanizması kullanıyor. Bremen ve Toulouse tesislerinde yürütülen testlerde, <strong>28</strong> tonluk ağır paletlerin hassas manevraları ve uçak gövdesindeki esnemeler simüle ediliyor. İlk uçuşun <strong>2026</strong>'nın ikinci yarısında yapılması, uçağın ise <strong>2027</strong> sonunda pazara sunulması planlanıyor. Ayrıca, kargo bölümünde yaşanabilecek tıbbi acil durumlar için kurtarma senaryoları da test ediliyor.",
+    "category": "Altyapı",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/airlines/2026/05/airbus-puts-cargo-door-and-cargo-loading-system-to-the-test/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-05-14"
+  },
+  {
+    "title": "FedEx Yönetim Kurulu FedEx Freight'in Ayrılmasını Onayladı",
+    "summary": "FedEx yönetim kurulu, daha önce duyurulan FedEx Freight iş biriminin şirketten ayrılarak bağımsız bir yapıya kavuşmasını resmen onayladı. Ayrılma süreci kapsamında hisselerin %<strong>80,1</strong>'i mevcut hissedarlara temettü olarak dağıtılacak ve yeni şirket <strong>1 Haziran 2026</strong> tarihinde New York Borsası'nda (NYSE) işlem görmeye başlayacak. FedEx, ayrılma sonrası Freight biriminin %<strong>19,9</strong>'luk hissesini elinde tutacak ancak bunları <strong>24</strong> ay içinde elden çıkaracak. Bu hamleyle parça yük taşımacılığı (LTL) pazarındaki konumun güçlendirilmesi ve operasyonel değerin maksimize edilmesi hedefleniyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/business/2026/05/fedex-board-approves-spin-off-of-fedex-freight/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Kuzey Amerika iç pazarındaki karayolu lojistiği yapılanması Turkish Cargo'nun hava kargo operasyonlarını doğrudan etkilememektedir.",
+    "date": "2026-05-14"
+  },
+  {
+    "title": "Yılın Yer Hizmetleri Şirketi Ödülü İçin Başvurular Bekleniyor",
+    "summary": "Air Cargo News Awards ekibi, küresel hava kargo endüstrisinde faaliyet gösteren yer hizmetleri sağlayıcılarını ödül başvurusu yapmaya davet ediyor. Operasyonel verimlilik, müşteri memnuniyeti ve ileri teknoloji kullanımı gibi kriterlerin değerlendirileceği ödül programı için son başvuru tarihi <strong>29 Mayıs 2026</strong> olarak belirlendi. Bu yıl <strong>42</strong>. kez düzenlenecek olan ödül töreni, <strong>21 Ekim 2026</strong> tarihinde Londra'da gerçekleştirilecek. Yarışma, havacılık sektörünün gelecekteki zorluklarına yönelik yenilikçi çözümler geliştiren tüm yer hizmetleri şirketlerine açık.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/ground-handler/2026/05/enter-the-ground-handler-of-the-year-award/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-05-14"
+  },
+  {
+    "title": "DSV Kısıtlı Geniş Gövde Kapasitesine ve IT Sistem Değişikliğine Dikkat Çekti",
+    "summary": "Lojistik devi DSV, hava kargo talebinin bu yıl küresel GSYİH artışına paralel olarak %<strong>3</strong> büyümesini bekliyor. Şirket, e-ticaret ve teknoloji odaklı talebin Asya-Pasifik bölgesinden Avrupa, Latin Amerika ve Orta Doğu'ya kaydığını belirtti. Airbus A350F ve Boeing 777-8F programlarındaki gecikmeler nedeniyle büyük hacimli kargolar için kargo uçağı kapasitesinin kısıtlı kalmaya devam edeceği uyarısı yapıldı. DSV ayrıca, DB Schenker entegrasyonu kapsamında mevcut CargoWise sisteminden Tango adlı tescilli sisteme geçiş yapacağını duyurdu. Yapay zeka yatırımlarıyla <strong>2030</strong> yılına kadar yaklaşık <strong>9</strong> milyar Dkr tasarruf sağlanması hedefleniyor.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freight-forwarder/2026/05/dsv-highlights-limited-widebody-freighter-capacity-and-it-switch/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Central Europe",
+        "Eastern Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "DSV'nin pazar analizleri, Turkish Cargo'nun ana koridorlarındaki e-ticaret ve teknoloji kargosu akışlarını doğrulamaktadır.",
     "date": "2026-05-13"
+  },
+  {
+    "title": "DP World Panama Hava Kargo Operasyonları İçin IATA Sertifikası Aldı",
+    "summary": "Lojistik operatörü DP World, Panama'daki kargo operasyonları için IATA sertifikası alarak Latin Amerika'daki yetkinliklerini güçlendirdi. Sertifika, şirketin kargo elleçleme, güvenlik ve operasyonel süreçlerinin küresel standartlara uygunluğunu tescilliyor. Panama operasyonu, bölgedeki müşterileri ana havayolları ve küresel ticaret rotalarıyla birleştiren stratejik bir merkez görevi görüyor. Şirket son dönemde bölgede gümrük antreposu yatırımı yapmış ve Brezilya operasyonları için de benzer bir sertifika almıştı. Bu adım, hava, deniz ve kara taşımacılığını birleştiren uçtan uca lojistik çözümler sunma stratejisinin bir parçasıdır.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freight-forwarder/2026/05/dp-world-gains-iata-certification-for-panama-airfreight-business/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Panama'daki forwarding yetkinliklerinin artması bölgedeki genel kargo standartlarını iyileştirse de Turkish Cargo operasyonları için doğrudan bir etki oluşturmamaktadır.",
+    "date": "2026-05-13",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/dp-world-secures-iata-certification-for-panama-air-freight-operations-1359133"
+      }
+    ]
+  },
+  {
+    "title": "Riyadh Cargo; Mısır, Hindistan ve BAE'de GSSA Ortakları Atadı",
+    "summary": "Riyadh Air'in kargo bölümü Riyadh Cargo, uluslararası büyüme stratejisi doğrultusunda Mısır, Hindistan ve BAE pazarlarında GSSA ortakları belirledi. Air Logistics Group Hindistan'da, dnata Cargo BAE'de ve M&C Aviation Mısır'da temsilci olarak atandı. <strong>180</strong>'den fazla uçak siparişi olan şirket, <strong>2030</strong> yılına kadar <strong>100</strong>'den fazla varış noktasına ulaşmayı planlıyor. Yeni ortaklıklar sayesinde e-ticaret ve ilaç gibi kritik sektörlerdeki kargo akışının Riyadh hub'ı üzerinden Avrupa ve küresel pazarlara bağlanması hedefleniyor. Şirket, Ocak ayında yolcu uçaklarının karın altı kapasitesini kullanarak operasyonlara başlamıştı.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/riyadh-cargo-appoints-gssa-partners-across-egypt-india-and-uae/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Riyadh Cargo; Mısır, Hindistan ve BAE'de GSSA Ortakları Atadı",
+    "thyImpact": "risk",
+    "thyAnalysis": "Suudi rakibimizin Türkiye'nin güçlü olduğu pazarlarda ticari temsilini artırması, bölgesel kargo akışları için doğrudan rekabet anlamına gelmektedir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Western Europe",
+        "Central Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Riyadh Cargo'nun genişleyen ağı, Turkish Cargo'nun özellikle Hindistan ve Mısır'dan Avrupa'ya taşıdığı transit kargo için bir risk teşkil edebilir.",
+    "date": "2026-05-14"
+  },
+  {
+    "title": "<span style='color:#C8102E;font-weight:700;'>Qatar Airways</span> Cargo Yeni Destinasyonlarla Küresel Ağını Güçlendiriyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Qatar Airways</span> Cargo, Asya, Amerika ve Avrupa genelinde kargo uçağı kapasitesini artırarak küresel ağını genişletiyor. Şirket, Viyana'ya Boeing 777F seferlerini yeniden başlatırken, Varşova hattındaki kargo uçağı sayısını haftalık ikiye çıkardı. <strong>22 Temmuz 2026</strong> tarihinden itibaren Caracas ve Bogota'ya yeni yolcu uçuşları başlayacak olup, Helsinki ve Tokyo Haneda seferleri de Temmuz ortasında geri dönecek. İstanbul hattındaki yolcu uçuşları haftalık <strong>17</strong> seferine yükseltilirken, mevcut iki kargo uçağıyla toplam <strong>390</strong> ton kargo kapasitesi sunulacak. Bu düzenlemelerle şirketin kargo kapasitesinde %<strong>12</strong>'lik bir artış hedefleniyor.",
+    "category": "Filo & Network",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/qatar-airways-cargo-enhances-global-network-with-new-destinations/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Rakip havayolunun İstanbul dahil birçok stratejik noktada frekans ve kapasite artırması, Turkish Cargo'nun ana pazarlarındaki rekabeti doğrudan şiddetlendirmektedir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "İstanbul çıkışlı kapasite artışı ve küresel ağ genişlemesi Turkish Cargo'nun hem yerel hem de transit trafik payı üzerinde risk oluşturmaktadır.",
+    "date": "2026-05-14",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/qatar-cargo-adds-capacity-across-asia-americas-and-europe-1359140"
+      }
+    ]
+  },
+  {
+    "title": "Menzies Aviation Yer Hizmetleri Ekipmanında %25 Elektrik Hedefine Ulaştı",
+    "summary": "Havacılık hizmetleri sağlayıcısı Menzies Aviation, <strong>200</strong> milyon dolarlık yatırım programı kapsamında küresel yer destek ekipmanlarının (GSE) %<strong>25</strong>'ini elektrikli hale getirdi. Şirket, <strong>2025</strong> yılında filosuna <strong>620</strong>'den fazla elektrikli varlık ekleyerek Avrupa operasyonlarının yarısından fazlasını elektriklendirdi. Milan Malpensa Havalimanı'nda %<strong>80</strong>, Londra Gatwick ve Kopenhag'da ise tam elektrikli yakıt ikmal araçları kullanılmaya başlandı. Tam elektrifikasyonun mümkün olmadığı noktalarda bitkisel yağ bazlı yakıt (HVO) kullanımı %<strong>50</strong> oranında artırılarak <strong>2</strong> milyon litreye ulaştı. Şirket, <strong>2045</strong> yılına kadar net sıfır emisyon hedefine ulaşmayı planlıyor.",
+    "category": "Altyapı",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/menzies-aviation-hits-25-percent-electric-ground-support-equipment-target/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Yer hizmetlerindeki elektrifikasyon sürdürülebilirlik hedefleri için önemli olsa da kargo operasyonel rekabeti üzerinde doğrudan bir etkisi bulunmamaktadır.",
+    "date": "2026-05-14"
+  },
+  {
+    "title": "Nabil Sultan dnata'nın Yeni CEO'su Oldu",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>'nun eski başkanı Nabil Sultan, <strong>15 Haziran 2026</strong> tarihi itibarıyla dnata'nın yeni CEO'su olarak göreve başlayacak. Sultan, <strong>2021</strong> yılından beri bu görevi yürüten Steve Allen'ın yerini alacak. <span style='color:#C8102E;font-weight:700;'>Emirates</span> Group bünyesinde uzun bir kariyere sahip olan Sultan, daha önce yolcu satışlarından sorumlu başkan yardımcılığı ve kargo bölümü direktörlüğü yapmıştı. dnata, son dönemde küresel yer hizmetleri, kargo lojistiği ve seyahat hizmetleri alanındaki varlığını genişletmeye devam ediyor. Bu atama, grubun operasyonel sürekliliğini ve büyüme stratejisini desteklemeyi amaçlıyor.",
+    "category": "Atama & Görevlendirme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/nabil-sultan-to-become-ceo-of-dnata/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "dnata'da Liderlik Değişimi: Nabil Sultan CEO Oldu",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Üst düzey yönetici ataması, bölgesel operasyonel stratejileri etkileyebilecek olsa da Turkish Cargo'nun ticari sonuçları üzerinde doğrudan bir etkisi yoktur.",
+    "date": "2026-05-14"
+  },
+  {
+    "title": "Logistics UK Avrupa İle Daha Fazla Uyum Çağrısında Bulundu",
+    "summary": "İş grubu Logistics UK, Birleşik Krallık ile Avrupa Birliği arasındaki ticaret ilişkilerini kolaylaştırmayı hedefleyen Avrupa Ortaklık Yasası'nı memnuniyetle karşıladığını duyurdu. Kurum, Brexit sonrası artan bürokratik engellerin ve maliyetlerin tedarik zincirlerini yavaşlattığını belirterek, gümrük süreçlerinde daha yakın bir uyum talep etti. Özellikle emisyon ticareti ve sağlık-bitki sağlığı (SPS) kurallarında yapılacak düzenlemelerin, sınır geçişlerindeki gecikmeleri azaltacağı vurgulandı. Lojistik sektörü, kıta Avrupası ile olan ticaretin büyüme potansiyelini gerçekleştirmek için idari engellerin kaldırılmasını istiyor.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/logistics-uk-calls-for-greater-european-alignment/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "İngiltere ve AB arasındaki ticaretin kolaylaşması, Turkish Cargo'nun İngiltere'den Avrupa ve ötesine yönelik transit kargo trafiğini olumlu etkileyebilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "Sınır geçişlerindeki bürokrasinin azalması, Londra ve Manchester gibi freighter noktalarımızdan gelen kargonun Avrupa içi dağıtım hızını artırabilir.",
+    "date": "2026-05-13"
+  },
+  {
+    "title": "Riyadh Cargo; Mısır, Hindistan ve BAE'de GSSA Ağını Genişletti",
+    "summary": "Riyadh Air'in kargo birimi olan Riyadh Cargo; Hindistan, BAE ve Mısır pazarlarında yeni GSSA temsilcilikleri atadı. dnata Cargo BAE'de, Air Logistics Group Hindistan'da ve M&C Aviation Mısır'da ticari operasyonlardan sorumlu olacak. <strong>180</strong>'den fazla uçak siparişi olan şirket, <strong>2030</strong> yılına kadar <strong>100</strong>'den fazla varış noktasına ulaşarak Suudi Arabistan'ın lojistik merkezi olma hedefini destekleyecek. Yeni iş birlikleri, Asya, Orta Doğu ve Afrika arasındaki büyük kargo akışlarına erişim sağlayarak bu bölgeleri Riyadh üzerinden Avrupa'ya bağlayacak.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/riyadh-cargo-expands-gssa-network-in-uae-india-and-egypt-1359141",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Riyadh Cargo; Mısır, Hindistan ve BAE'de GSSA Ortakları Atadı",
+    "thyImpact": "risk",
+    "thyAnalysis": "Riyadh Cargo'nun Hindistan ve Mısır gibi stratejik pazarlarımızda ticari ağını güçlendirmesi, bu bölgelerden gelen transit trafik için rakip bir koridor oluşturmaktadır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Western Europe",
+        "Central Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Rakip taşıyıcının özellikle e-ticaret ve ilaç kargolarına odaklanması, Turkish Cargo'nun bu dikeydeki pazar payı üzerinde baskı yaratabilir.",
+    "date": "2026-05-14 12:18:19"
+  },
+  {
+    "title": "<span style='color:#C8102E;font-weight:700;'>Qatar Airways</span> Cargo Asya, Amerika ve Avrupa'da Kapasite Artırıyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Qatar Airways</span> Cargo, artan talebe yanıt olarak kargo kapasitesini %<strong>12</strong> artıracak yeni bir ağ genişletme planı açıkladı. Hong Kong hattındaki haftalık kargo kapasitesi <strong>4.474</strong> tona çıkarılırken, Şanghay ve Kuala Lumpur seferleri de artırıldı. Amerika bölgesinde Caracas ve Bogota'ya Temmuz ayında başlayacak yeni hatlarla kargo operasyonları genişletilecek. Avrupa'da Varşova ve Viyana'ya ek kargo uçağı seferleri konulurken, Helsinki uçuşları yeniden başlatılacak. Orta Doğu'da ise Amman, Beyrut ve Bağdat gibi noktalarda frekans artışına gidilerek Doha hub'ı üzerinden bağlantılar güçlendirilecek.",
+    "category": "Filo & Network",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/qatar-cargo-adds-capacity-across-asia-americas-and-europe-1359140",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "<span style='color:#C8102E;font-weight:700;'>Qatar Airways</span> Cargo Yeni Destinasyonlarla Küresel Ağını Güçlendiriyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "Asya ve Amerika rotalarındaki bu genişleme, Turkish Cargo'nun benzer hatlardaki pazar payı ve verimlilik oranlarını doğrudan etkileyebilecek büyük bir kapasite artışıdır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "Kapasite artışının gerçekleştiği birçok nokta Turkish Cargo'nun ana operasyon alanlarıyla kesişmekte ve hub rekabetini artırmaktadır.",
+    "date": "2026-05-14 11:50:45"
+  },
+  {
+    "title": "CMA CGM Air Cargo Paris-Hanoi Kargo Seferini Başlattı",
+    "summary": "CMA CGM Air Cargo, Avrupa ve Vietnam arasındaki bağlantıyı güçlendirmek amacıyla Paris ve Hanoi arasında yeni bir kargo rotası açtı. Boeing 777F kargo uçağıyla <strong>9 Mayıs 2026</strong> tarihinde başlayan seferler, Paris-Hanoi-Navoi-Paris rotasını izliyor. Bu yeni hat, Güneydoğu Asya'dan Avrupa'ya yönelik elektronik, e-ticaret ve tekstil ürünleri talebini karşılamayı hedefliyor. Özbekistan'daki Navoi Havalimanı, dönüş yolunda teknik durak noktası olarak kullanılıyor. Vietnam, üretim merkezlerinin Çin'den kaymasıyla birlikte bölgedeki en önemli ihracat merkezlerinden biri haline gelmiştir.",
+    "category": "Filo & Network",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/cma-cgm-air-cargo-launches-parishanoi-freighter-service-1359135",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "CMA CGM Air Cargo Vietnam Talebinden Faydalanmak İçin Paris-Hanoi Hattını Başlattı",
+    "thyImpact": "risk",
+    "thyAnalysis": "Uzak Doğu'dan Avrupa'ya yeni bir freighter servisinin açılması, Turkish Cargo'nun bu rotadaki pazar payı üzerinde rekabetçi baskı oluşturmaktadır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "Vietnam ve Avrupa arasındaki üretim ve e-ticaret akışı Turkish Cargo'nun Uzak Doğu operasyonları için yüksek öncelikli bir koridordur.",
+    "date": "2026-05-14 07:24:02"
+  },
+  {
+    "title": "DP World Panama Kargo Operasyonları İçin IATA Sertifikası Aldı",
+    "summary": "Lojistik devi DP World, Panama'daki hava kargo taşımacılığı operasyonları için IATA sertifikası alarak küresel standartlara uyumluluğunu belgeledi. Bu sertifika, kargo elleçleme, güvenlik ve tehlikeli madde süreçlerinin uluslararası kurallara uygun olduğunu teyit ediyor. Panama'daki stratejik lojistik merkezi, bölgedeki havayolu ve küresel ticaret rotaları arasında köprü vazifesi görüyor. Şirket son dönemde bölgede yeni bir gümrük antreposu açmış ve Brezilya'daki hizmetleri için de sertifika almıştı. Bu gelişme, hava, deniz ve kara taşımacılığını birleştiren entegre tedarik zinciri çözümlerini desteklemeyi amaçlıyor.",
+    "category": "Diğer",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/dp-world-secures-iata-certification-for-panama-air-freight-operations-1359133",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "DP World Panama Hava Kargo Operasyonları İçin IATA Sertifikası Aldı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Lojistik operatörlerinin yerel sertifikasyonları genel pazar kalitesini artırmakla birlikte Turkish Cargo'nun stratejik hedeflerini doğrudan etkilemez.",
+    "date": "2026-05-14 05:55:29"
+  },
+  {
+    "title": "<span style='color:#C8102E;font-weight:700;'>Korean Air</span> Birleşme Sonrası Yeni Dönemi Aralık 2026'da Başlatıyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Korean Air</span> ve Asiana Airlines, beş yıllık sürecin ardından <strong>17 Aralık 2026</strong> tarihinde resmen birleşerek entegre bir bayrak taşıyıcı havayolu oluşturacak. Birleşme oranı her bir Asiana hissesine karşılık <strong>0,2736</strong> <span style='color:#C8102E;font-weight:700;'>Korean Air</span> hissesi olarak belirlendi. Şirket, Incheon Havalimanı'nu baskın bir küresel merkez haline getirmek için ağ bağlantılarını ve transit verimliliğini optimize etmeyi planlıyor. Bu süreçte uçuş ekiplerinin eğitimleri standartlaştırılacak, Incheon yakınında yeni bir motor bakım tesisi kurulacak ve yolcu sadakat programları birleştirilecek. Birleşme sonrası <span style='color:#C8102E;font-weight:700;'>Korean Air</span>'in sermayesinin yaklaşık <strong>101,7</strong> milyar KRW artması bekleniyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/05/korean-air-launch-integrated-airline-december-2026/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Uzak Doğu'da iki büyük oyuncunun birleşerek dev bir ağ oluşturması, Turkish Cargo'nun Güney Kore merkezli transit kargo akışlarındaki pazar gücünü zayıflatabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Northern America",
+        "Western Europe",
+        "Central Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Incheon Havalimanı'nın birleşme sonrası artacak transit gücü, Turkish Cargo'nun bu bölgeyi kapsayan global koridorlardaki rekabet avantajını etkileyebilir.",
+    "date": "May 14, 2026"
+  },
+  {
+    "title": "Envirotainer Hava Kargo Emisyonlarını Azaltmak İçin <span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span> İle Ortaklık Kurdu",
+    "summary": "Soğuk zincir uzmanı Envirotainer, <span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span>'in Kurumsal Sürdürülebilir Havacılık Yakıtı (SAF) programına katıldığını duyurdu. Anlaşma kapsamında Envirotainer, kargo operasyonlarında yaklaşık <strong>12.000</strong> galon SAF kullanımına eşdeğer emisyon azaltım haklarını satın alarak ilaç sevkiyatlarının karbon ayak izini düşürecek. SAF kullanımı, geleneksel jet yakıtına kıyasla %<strong>70</strong>'ten fazla karbon tasarrufu sağlıyor. Bu ortaklık, Asya-Pasifik bölgesindeki sürdürülebilir ilaç lojistiğini hızlandırmayı amaçlıyor. Şirket, hayat kurtaran ürünlerin dağıtımında hem güvenlik hem de sürdürülebilirlik sorumluluklarını birleştirmeyi hedefliyor.",
+    "category": "Diğer",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/05/envirotainer-cathay-cut-air-freight-emissions/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Sürdürülebilirlik odaklı kurumsal iş birlikleri pazar standartlarını etkilemekle birlikte Turkish Cargo operasyonları için doğrudan ticari risk veya fırsat içermemektedir.",
+    "date": "May 14, 2026"
+  },
+  {
+    "title": "Araştırma: Yapay Zekaya Rağmen İnsanlar Hala Lojistikte Entegrasyon Katmanı Görevini Görüyor",
+    "summary": "Deep Current tarafından yayınlanan yeni bir çalışma, dijitalleşme çabalarına rağmen lojistik operasyonlarının hala manuel insan gücüyle bağlanan sistemlere bağımlı olduğunu gösteriyor. Ekiplerin %<strong>61</strong>'i iletişimde hala e-posta ve elektronik tabloları kullanırken, doküman hataları sevkiyatların %<strong>57</strong>'sinde gecikmeye yol açıyor. Operatörlerin büyük kısmı aynı veriyi beş veya daha fazla platforma manuel olarak girmek zorunda kalıyor. Lojistik profesyonellerinin sadece %<strong>29</strong>'u temel operasyonel iş akışlarını tamamen dijital araçlarla yönetebiliyor. Uzmanlar, yapay zekanın iş akışlarına doğrudan gömülmek yerine üst bir katman olarak kalmasının verimlilik artışını kısıtladığını belirtiyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/05/study-humans-still-integration-layer-freight-operations-despite-ai-expansion/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "May 14, 2026"
+  },
+  {
+    "title": "<span style='color:#C8102E;font-weight:700;'>United</span> Cargo Kutsal Hawaii Mirasını Kona'ya Geri Taşıdı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>United</span> Cargo, Hawaii halkı için büyük tarihi öneme sahip bir tüylü pelerini Washington'daki Smithsonian Enstitüsü'nden Hawaii'nin Kona bölgesine başarıyla taşıdı. <strong>1819</strong> yılından kalma eser, kültürel protokoller gereği adalar arası aktarma yapılmadan doğrudan Kona'ya ulaştırıldı. Taşıma sürecinde havayolunun yüksek değerli ve hassas gönderiler için sunduğu UASecure hizmeti kullanıldı. Lojistik plan, Washington Dulles'tan Denver aktarmalı doğrudan Kona uçuşunu içerecek şekilde riskleri minimize etti. Havayolu yetkilileri, bu operasyonun sadece kargo değil, kültürleri ve toplulukları birleştirme misyonu taşıdığını belirtti.",
+    "category": "Özel Kargo",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/united-cargo-returns-sacred-hawaiian-feathered-cape-to-kona/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Tarihi Miras United Cargo ile Hawaii'ye Döndü",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Kültürel mirasların iadesine yönelik butik operasyonlar genel kargo pazarı üzerinde etkili değildir.",
+    "date": "Published: "
+  },
+  {
+    "title": "ACS, Nagib Kasbari'yi Orta Doğu Kargo Direktörü Olarak Terfi Ettirdi",
+    "summary": "Havacılık kiralama uzmanı Air Charter Service (ACS), deneyimli yönetici Nagib Kasbari'yi Orta Doğu Kargo Direktörü pozisyonuna terfi ettirdi. ACS bünyesinde <strong>10</strong> yıldır görev yapan Kasbari, Dubai kargo biriminin gelirlerini son beş yılda üç kattan fazla artırmasında kritik rol oynadı. Kasbari, görevi havayolu ilişkileri direktörlüğüne atanan Nick Harris'ten devraldı. Dubai ofisi, ortalama <strong>10</strong> yıl kıdeme sahip ekibiyle grubun en başarılı birimlerinden biri olarak öne çıkıyor. Yeni dönemde ekibin genişletilmesi ve bölgedeki pazar payının daha da artırılması hedefleniyor.",
+    "category": "Atama & Görevlendirme",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/acs-promotes-nagib-kasbari-to-cargo-director-middle-east/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Yerel personel atamaları rakip stratejileri hakkında ipucu verse de Turkish Cargo'nun bölgedeki ticari hedeflerini doğrudan etkilemez.",
+    "date": "Published: "
+  },
+  {
+    "title": "<span style='color:#C8102E;font-weight:700;'>Air France</span>-<span style='color:#C8102E;font-weight:700;'>KLM</span> Genişleme Stratejisi Kapsamında Yeniden Markalaşmayı Değerlendiriyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Air France</span>-<span style='color:#C8102E;font-weight:700;'>KLM</span> Grubu, İskandinav havayolu SAS'taki payını artırması ve TAP Air Portugal yatırımı planları doğrultusunda kurumsal kimliğini yenilemeyi planlıyor. \"The Blue Group\" çalışma başlığı altında yürütülen tartışmalar, grubun geleneksel Fransız ve Hollandalı köklerinin ötesine geçen daha nötr bir yapıya kavuşmasını hedefliyor. Ben Smith liderliğindeki strateji, IAG ve <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> gibi rakiplerin kullandığı holding yapısına benzer bir model öngörüyor. Yeniden markalaşma süreci devam etse de <span style='color:#C8102E;font-weight:700;'>Air France</span>, <span style='color:#C8102E;font-weight:700;'>KLM</span> ve SAS markaları kendi kimlikleriyle operasyonlarını sürdürecek.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/air-france-klm-weighs-major-rebrand-as-airline-group-expands/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Avrupalı rakiplerin kurumsal kimlik değişimleri operasyonel kapasiteleri doğrudan etkilememektedir.",
+    "date": "Published: "
+  },
+  {
+    "title": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span> Pelicargo Platformuna Katılarak ABD'deki Dijital Varlığını Artırdı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>, ABD merkezli hava kargo rezervasyon platformu Pelicargo ile entegrasyon sağlayarak API üzerinden anında rezervasyon imkanı sunmaya başladı. Orta Doğu bölgesinden Pelicargo'ya bağlanan ilk taşıyıcı olan havayolu, bu sayede ABD'deki binlerce yeni müşteriye ulaşmayı hedefliyor. Platform üzerinden taze ürünler (Fresh), ilaç (Pharma) ve genel kargo (Airfreight) dahil olmak üzere <strong>beş</strong> temel ürün grubuna <strong>24/7</strong> erişim sağlanacak. Pelicargo; cargo.one, CargoAi ve WebCargo'dan sonra şirketin dördüncü dijital pazar yeri ortağı oldu. Son <strong>12</strong> ayda ABD'li müşterilerin dijital kanallara geçişinde önemli bir artış kaydedildiği belirtiliyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/emirates-skycargo-available-on-pelicargo-expanding-digital-presence-in-the-us/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Emirates SkyCargo, Pelicargo Üzerinden ABD'deki Dijital Varlığını Genişletiyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "Rakip bir taşıyıcının ABD pazarında dijital erişilebilirliğini artırması, özellikle kargonun dijital pazar yerlerine kaydığı bir dönemde satış rekabetini Turkish Cargo aleyhine zorlaştırabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Western Europe",
+        "Southern Asia",
+        "South East Asia"
+      ]
+    },
+    "etkiAlaniGerekce": "Dijital kanallar üzerinden anlık rezervasyon imkanı, kargo forwarder'larının taşıyıcı seçiminde önemli bir avantaj sunmaktadır.",
+    "date": "Published: Wednesday, May 13, 2026"
+  },
+  {
+    "title": "<span style='color:#C8102E;font-weight:700;'>DHL Aviation</span> 3.000 KG'a Kadar Olan Gönderiler İçin Yeni Ağır Yük Servisini Başlattı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>DHL Aviation</span>, \"Time Definite International\" portföyünü genişleterek <strong>3.000</strong> kg'a kadar olan gönderiler için Heavy Weight Express (HWX) hizmetini başlattı. Parça başına <strong>1.000</strong> kg sınırı olan bu servis, <strong>220</strong>'den fazla ülke ve bölgeyi kapsayan küresel bir ağ üzerinden sunulacak. Teknoloji, otomotiv, ilaç ve enerji sektörlerini hedefleyen çözüm, sabit fiyatlandırma ve garantili transit süreleri vaat ediyor. Sevkiyatlar, gerçek zamanlı izleme ve müdahale sağlayan özel \"Ağır Yük Öncelikli Destek Birimleri\" tarafından takip edilecek. Bu hamleyle DHL, ağır yük kargo segmentinde ekspres hız ve güvenilirlik sunarak entegratör rolünü pekiştirmeyi amaçlıyor.",
+    "category": "Filo & Network",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/dhl-express-expands-global-portfolio-with-new-heavy-weight-express-service-for-shipments/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "DHL Express 3.000 KG'a Kadar Olan Gönderiler İçin Yeni Servisini Duyurdu",
+    "thyImpact": "risk",
+    "thyAnalysis": "Entegratörlerin klasik hava kargo pazarının alanı olan ağır yük taşımacılığına ekspres hız ve sabit fiyatla girmesi, Turkish Cargo gibi geleneksel taşıyıcılar için doğrudan pazar payı kaybı riski taşır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Southern Asia",
+        "Middle East",
+        "South East Asia"
+      ]
+    },
+    "etkiAlaniGerekce": "Ağır yük kargolarının ekspres ağa dahil edilmesi, geleneksel forwarder-havayolu iş modeline karşı güçlü bir alternatif oluşturmaktadır.",
+    "date": "Published: Wednesday, May 13, 2026"
   },
   {
     "title": "Emirates SkyCargo Pelicargo Entegrasyonu ile ABD'deki Dijital Varlığını Genişletiyor",
@@ -46,28 +520,6 @@
         "link": "https://aircargoupdate.com/emirates-skycargo-available-on-pelicargo-expanding-digital-presence-in-the-us/"
       }
     ]
-  },
-  {
-    "title": "Emirates SkyCargo Pelicargo Üzerinden ABD Dijital Rezervasyon Ağını Büyütüyor",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, dijital dönüşüm stratejisi kapsamında Pelicargo online platformuna entegre olarak ABD'deki binlerce yeni müşteriye ulaştı. Orta Doğu bölgesinden Pelicargo ile API bağlantısı kuran ilk taşıyıcı olan şirket, manuel işlemleri azaltarak verimliliği artırmayı hedefliyor. <strong>13 Mayıs 2026</strong> itibarıyla duyurulan iş birliği; taze gıda, ilaç ve acil gönderi gibi kritik ürünleri de kapsıyor. Bu adım, havayolunun mevcut dijital ortaklıklarını tamamlayarak küresel erişilebilirliğini güçlendiriyor. Müşteriler artık tarifeler ve mevcut kapasite üzerinde <strong>7/24</strong> gerçek zamanlı görünürlük elde ediyor.",
-    "category": "Teknoloji & Dijitalleşme",
-    "source": "aircargoupdate",
-    "link": "https://aircargoupdate.com/emirates-skycargo-available-on-pelicargo-expanding-digital-presence-in-the-us/",
-    "id": null,
-    "isDuplicate": true,
-    "duplicateOf": "Emirates SkyCargo Pelicargo Entegrasyonu ile ABD'deki Dijital Varlığını Genişletiyor",
-    "thyImpact": "risk",
-    "thyAnalysis": "Rakip havayolunun ABD pazarındaki dijitalleşme hamlesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için özellikle yüksek değerli ve zaman hassasiyetli kargo segmentlerinde pazar payı kaybı riski oluşturmaktadır.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": [
-        "Western Europe",
-        "Southern Asia",
-        "South East Asia"
-      ]
-    },
-    "etkiAlaniGerekce": "Haber, ABD pazarı ve Orta Doğu merkezli havayolunun küresel dijital satış ağını konu almaktadır.",
-    "date": "Published: Wednesday, May 13, 2026"
   },
   {
     "title": "Logistics UK, Avrupa ile Daha Güçlü Ticari Uyum Çağrısında Bulundu",
@@ -104,45 +556,6 @@
     },
     "etkiAlaniGerekce": "Küresel motor bakım kapasitesindeki daralma ve parça tedarik sürelerindeki artış, Turkish Cargo'nun geniş gövdeli uçak filosunun harbe hazırlık oranlarını ve ISTANBUL merkezli operasyonel planlamasını doğrudan etkilemektedir.",
     "date": "2026-05-08"
-  },
-  {
-    "title": "DSV, Geniş Gövdeli Kargo Uçağı Kapasite Sınırlılığına ve BT Değişimine Dikkat Çekti",
-    "summary": "DSV, hava kargo talebinin <strong>2026</strong> yılında küresel GSYİH beklentilerine paralel olarak yaklaşık <strong>%3</strong> büyümesini bekliyor. Şirket, yeni nesil Airbus A350F ve Boeing 777-8F teslimatlarındaki gecikmeler nedeniyle geniş gövdeli kargo uçağı kapasitesinin oldukça sınırlı kalacağı konusunda uyardı. Operasyonel verimlilik için CargoWise sisteminden Tango sistemine geçiş yapacak olan DSV, <strong>2030</strong> yılına kadar yapay zeka ve ağ optimizasyonuyla <strong>9 milyar Dkr</strong> ek tasarruf hedefliyor. Şirketin ilk çeyrek hava kargo hacmi, DB Schenker entegrasyonunun etkisiyle <strong>%55</strong> artarak <strong>518.000</strong> tona ulaştı.",
-    "category": "Teknoloji & Dijitalleşme",
-    "source": "aircargonews",
-    "link": "https://www.aircargonews.net/freight-forwarder/2026/05/dsv-highlights-limited-widebody-freighter-capacity-and-it-switch/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": [
-        "Southern & Eastern Africa",
-        "Central & Southern America"
-      ]
-    },
-    "etkiAlaniGerekce": "DSV'nin e-ticaret ve teknoloji odaklı büyüme öngörüleri ile geniş gövde kapasite kısıtı vurgusu, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun global ağındaki ana koridorları ve filo planlamasını yakından ilgilendirmektedir.",
-    "date": "2026-05-13"
-  },
-  {
-    "title": "DP World, Panama Hava Kargo İşletmesi İçin IATA Sertifikası Aldı",
-    "summary": "DP World, Panama'daki freight forwarding operasyonları için IATA sertifikası alarak Güney Amerika'daki hava kargo ağını güçlendirdi. Bu sertifika, şirketin tehlikeli madde düzenlemeleri dahil olmak üzere küresel güvenlik ve operasyonel standartlara uyumunu tescilliyor. Panama operasyonu, bölgedeki liman ve lojistik ekosistemiyle entegre bir şekilde ticaret rotalarını ana pazarlara bağlıyor. DP World ayrıca yakın zamanda Panama'da gümrüklü bir antrepo açarak bölgedeki depolama ve dağıtım kabiliyetlerini artırmıştı.",
-    "category": "Ortaklık & İş Birlikleri",
-    "source": "aircargonews",
-    "link": "https://www.aircargonews.net/freight-forwarder/2026/05/dp-world-gains-iata-certification-for-panama-airfreight-business/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "Panama'daki lojistik standartların yükselmesi ve IATA sertifikasyonu, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun Panama (PTY) destinasyonu üzerinden sağladığı Latin Amerika bağlantılarını operasyonel anlamda destekleyebilir.",
-    "date": "2026-05-13"
   },
   {
     "title": "Brüksel Havalimanı Kargo Hacimleri Nisan Ayında Artış Gösterdi",
@@ -687,7 +1100,13 @@
       ]
     },
     "etkiAlaniGerekce": "Küresel ölçekte sunulan bu hizmet, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun faaliyet gösterdiği tüm ana pazarlardaki ağır yük trafiğini etkileme potansiyeline sahiptir.",
-    "date": "May 12, 2026"
+    "date": "May 12, 2026",
+    "sources": [
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/dhl-express-expands-global-portfolio-with-new-heavy-weight-express-service-for-shipments/"
+      }
+    ]
   },
   {
     "title": "dnata'da Liderlik Değişimi: Nabil Sultan CEO Oldu",
@@ -705,7 +1124,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "Published: Wednesday, May 13, 2026"
+    "date": "Published: Wednesday, May 13, 2026",
+    "sources": [
+      {
+        "source": "aircargoweek",
+        "link": "https://aircargoweek.com/nabil-sultan-to-become-ceo-of-dnata/"
+      }
+    ]
   },
   {
     "title": "Tarihi Miras United Cargo ile Hawaii'ye Döndü",
@@ -723,29 +1148,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "Operasyon tamamen ABD iç hatları ve Hawaii özelinde gerçekleşmiştir.",
-    "date": "Published: Wednesday, May 13, 2026"
-  },
-  {
-    "title": "DHL Express Ağır Yük Taşımacılığı İçin Küresel HWX Servisini Başlattı",
-    "summary": "DHL Express, \"Heavy Weight Express\" (HWX) hizmetini başlatarak global entegratörlük rolünü ağır yük segmentine taşıdı. Parça başına <strong>1.000</strong> kg ve sevkiyat başına <strong>3.000</strong> kg kapasite sunan yeni çözüm, <strong>220</strong>'den fazla ülkede ekspres hız ve kontrol vaat ediyor. Servis; teknoloji, otomotiv, ilaç ve enerji gibi sektörleri hedefleyerek üretim kesintilerini önlemeyi ve stok maliyetlerini düşürmeyi amaçlıyor. Müşterilere yönelik özel ağır yük öncelikli destek ekipleri, gönderilerin uçtan uca takibini ve şeffaf fiyatlandırmayı koordine edecek. DHL, kendi uçak filosu ve kara ağı sayesinde havayolu kapasite dalgalanmalarına olan bağımlılığı azaltarak istikrarlı bir hizmet sunmayı hedefliyor.",
-    "category": "Özel Kargo",
-    "source": "aircargoupdate",
-    "link": "https://aircargoupdate.com/dhl-express-expands-global-portfolio-with-new-heavy-weight-express-service-for-shipments/",
-    "id": null,
-    "isDuplicate": true,
-    "duplicateOf": "DHL Express Küresel Portföyünü Yeni Ağır Yük Servisiyle Genişletiyor",
-    "thyImpact": "risk",
-    "thyAnalysis": "DHL'in ekspres ağını 3.000 kg kapasiteye kadar genişletmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun standart ve ekspres kargo ürünleri için özellikle yüksek değerli endüstriyel yüklerde ciddi pazar payı kaybı riski oluşturabilir.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": [
-        "Southern Asia",
-        "Middle East",
-        "South East Asia"
-      ]
-    },
-    "etkiAlaniGerekce": "Küresel ölçekte sunulan bu hizmet, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun faaliyet gösterdiği tüm ana pazarlardaki ağır yük trafiğini etkileme potansiyeline sahiptir.",
-    "date": "Published: Wednesday, May 13, 2026"
+    "date": "Published: Wednesday, May 13, 2026",
+    "sources": [
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/united-cargo-returns-sacred-hawaiian-feathered-cape-to-kona/"
+      }
+    ]
   },
   {
     "title": "Air Charter Service Birinci Çeyrekte Rekor Sonuçlar Açıkladı",
