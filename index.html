@@ -3972,7 +3972,6 @@ function switchTab(tab) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo'); }
 
 // ── DASHBOARD DATA ────────────────────────────────────────────
 const FRED_KEY  = 'ba29f7b58bfc036bddf0434ceb0c0534';
@@ -4925,6 +4924,8 @@ async function loadDashboard() {
     loadDataFromGitHub(); // GitHub'dan güncel veriyi çek ve re-render
   };
 })();
+
+if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo'); }
 </script>
 </body>
 </html>
