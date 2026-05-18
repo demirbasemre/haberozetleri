@@ -4525,6 +4525,7 @@ async function loadDashboard() {
   const AI_WEBHOOK      = 'https://n8n.emredemirbas.com/webhook/haber-ai-v2';
   const FEEDBACK_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/haber-ai-feedback';
   const TOP_N = 15;
+  let _lastExchange = null;
 
   fab.addEventListener('click', () => panel.classList.toggle('open'));
   closeB.addEventListener('click', () => panel.classList.remove('open'));
@@ -4699,10 +4700,12 @@ async function loadDashboard() {
     msgs.scrollTop = msgs.scrollHeight;
 
     try {
+      const payload = { question: q };
+      if (_lastExchange) { payload.prevQ = _lastExchange.q; payload.prevA = _lastExchange.a; }
       const res = await fetch(AI_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       thinking.remove();
@@ -4710,6 +4713,7 @@ async function loadDashboard() {
       const tokenInfo = data.tokensUsed ? `<div class="ai-token-info">${data.tokensUsed} token · çıktı: ${data.outputTokens || '?'}</div>` : '';
       addBotHTML(formatAIText(answerText) + tokenInfo);
       addFeedbackButtons(q, answerText);
+      _lastExchange = { q, a: answerText };
       if (data.articles && data.articles.length > 0) {
         addShowCardsPrompt(data.articles);
       }
