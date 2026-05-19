@@ -4389,32 +4389,39 @@ async function loadDashboard() {
     const jetMap   = Object.fromEntries(fJet.map(p => [p.key, p.value]));
     const brentMap = Object.fromEntries(fBrent.map(p => [p.key, p.value]));
 
-    // Smart x-axis tick formatter: month/year boundaries only, format by span
+    // Smart x-axis tick formatter — show year only at meaningful boundaries
     const TR_MONTHS = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
     const first = labels[0] ? new Date(labels[0]) : null;
     const last  = labels.length ? new Date(labels[labels.length - 1]) : null;
     const spanDays = (first && last) ? (last - first) / 86400000 : 0;
-    const mode = spanDays > 730 ? 'year' : spanDays > 365 ? 'monthYear' : 'month';
+    const multiYearOnly = spanDays > 730;
 
     const xTickCallback = function(value, index) {
       const raw = this.getLabelForValue(value);
       if (!raw) return '';
       const d = new Date(raw);
       if (isNaN(d)) return '';
-      if (mode === 'year') {
+
+      if (multiYearOnly) {
+        // > 2 yıl: yalnız yıl, yıl değişiminde
         if (index > 0) {
           const prev = new Date(this.getLabelForValue(value - 1));
           if (!isNaN(prev) && prev.getFullYear() === d.getFullYear()) return '';
         }
-        return d.getFullYear();
+        return String(d.getFullYear());
       }
-      if (index > 0) {
-        const prev = new Date(this.getLabelForValue(value - 1));
-        if (!isNaN(prev) && prev.getMonth() === d.getMonth() && prev.getFullYear() === d.getFullYear()) return '';
-      }
-      return mode === 'monthYear'
-        ? `${TR_MONTHS[d.getMonth()]} '${String(d.getFullYear()).slice(2)}`
-        : TR_MONTHS[d.getMonth()];
+
+      // ≤ 2 yıl: ay sınırında etiketle, yılı yalnız ilk tick'te VEYA yıl değişiminde göster
+      const prevRaw = index > 0 ? this.getLabelForValue(value - 1) : null;
+      const prev = prevRaw ? new Date(prevRaw) : null;
+      const prevValid = prev && !isNaN(prev);
+
+      // Aynı ay tekrarı → boş
+      if (prevValid && prev.getMonth() === d.getMonth() && prev.getFullYear() === d.getFullYear()) return '';
+
+      const month = TR_MONTHS[d.getMonth()];
+      const yearChanged = !prevValid || prev.getFullYear() !== d.getFullYear();
+      return yearChanged ? `${month} '${String(d.getFullYear()).slice(2)}` : month;
     };
 
     const jetSeries   = sortedKeys.map(k => jetMap[k] ?? null);
