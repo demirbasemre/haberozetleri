@@ -1309,6 +1309,31 @@
   .energy-period-btn { font-size:11px; font-weight:500; padding:3px 9px; border-radius:5px; border:1px solid var(--border); background:transparent; color:var(--text-3); cursor:pointer; transition:background .15s,color .15s; }
   .energy-period-btn:hover { background:var(--hover); color:var(--text); }
   .energy-period-btn.active { background:var(--primary,#1D6FE8); color:#fff; border-color:var(--primary,#1D6FE8); }
+  .crack-spread-strip {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 8px 0 12px;
+    border-top: 1px solid var(--border);
+    margin: 4px 0 10px;
+    font-size: 11px; color: var(--text-3);
+    flex-wrap: wrap;
+  }
+  .crack-spread-strip .cs-label {
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500;
+  }
+  .crack-spread-strip .cs-value {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 18px; line-height: 1; color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .crack-spread-strip .cs-unit { color: var(--text-3); font-size: 11px; margin-left: -2px; }
+  .crack-spread-strip .cs-delta {
+    font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px;
+    background: var(--hover); color: var(--text-3);
+  }
+  .crack-spread-strip .cs-delta.up   { background: rgba(34,139,87,0.10);  color: #228B57; }
+  .crack-spread-strip .cs-delta.down { background: rgba(230,57,70,0.10);  color: #C0303B; }
+  .crack-spread-strip .cs-hint { margin-left: auto; font-size: 10.5px; color: var(--text-3); font-style: italic; }
+  @media (max-width: 520px) { .crack-spread-strip .cs-hint { display: none; } }
   .dash-chart-meta {
     font-size: 10.5px;
     color: var(--text-3);
@@ -2397,10 +2422,15 @@
             <button class="energy-period-btn" data-period="6m">6 Ay</button>
             <button class="energy-period-btn" data-period="3m">3 Ay</button>
           </div>
+          <div class="crack-spread-strip" id="crack-spread-strip" aria-live="polite">
+            <span class="cs-label">Crack Spread</span>
+            <span><span class="cs-value" id="cs-value">—</span><span class="cs-unit"> /varil</span></span>
+            <span class="cs-delta" id="cs-delta">—</span>
+            <span class="cs-hint">Jet Yakıt − Brent · rafineri marjı göstergesi</span>
+          </div>
           <div class="dash-chart-wrap loading"><canvas id="chart-energy"></canvas></div>
         </div>
       </div>
-      <div class="dash-section-note">ⓘ Veri FRED (St. Louis Fed) üzerinden ücretsiz <code>DEMO_KEY</code> ile çekiliyor. Limit aşılırsa <a href="https://fredaccount.stlouisfed.org/login/secure/" target="_blank" rel="noopener">api.stlouisfed.org</a>'dan ücretsiz anahtar alınabilir.</div>
     </section>
 
     <!-- Ekonomik göstergeler -->
@@ -4084,10 +4114,24 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
           display: datasets.length > 1,
           position: extraOpts.legendPosition || 'top',
           labels: { font: { size: 11, family: 'Inter' }, boxWidth: 10, padding: 10 }
+        },
+        tooltip: {
+          ...CHART_DEFAULTS.plugins.tooltip,
+          callbacks: extraOpts.afterTooltipBody
+            ? { afterBody: extraOpts.afterTooltipBody }
+            : {}
         }
       },
       scales: {
-        x: { ticks: { maxTicksLimit: 8, font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, grid: { display: false }, border: { display: false } },
+        x: {
+          ticks: Object.assign(
+            { font: { size: 10, family: 'Inter' }, color: '#9CA3AF' },
+            extraOpts.xTickCallback
+              ? { callback: extraOpts.xTickCallback, autoSkip: false, maxRotation: 0 }
+              : { maxTicksLimit: 8 }
+          ),
+          grid: { display: false }, border: { display: false }
+        },
         y: { ticks: { font: { size: 10, family: 'Inter' }, color: '#9CA3AF', callback: yFmt || (v => v) }, grid: { color: '#F4F3EF' }, border: { display: false } }
       }
     }
@@ -4336,29 +4380,104 @@ async function loadDashboard() {
     const fJet   = jetW.filter(p => p.date >= filterDate);
     const fBrent = brentW.filter(p => p.date >= filterDate);
 
-    // Merge keys
+    // Merge keys + map to actual dates
+    const keyToDate = {};
+    [...fJet, ...fBrent].forEach(p => { keyToDate[p.key] = p.date; });
     const keySet = new Set([...fJet.map(p => p.key), ...fBrent.map(p => p.key)]);
-    const labels = [...keySet].sort();
+    const sortedKeys = [...keySet].sort();
+    const labels = sortedKeys.map(k => keyToDate[k]); // ISO date strings
     const jetMap   = Object.fromEntries(fJet.map(p => [p.key, p.value]));
     const brentMap = Object.fromEntries(fBrent.map(p => [p.key, p.value]));
+
+    // Smart x-axis tick formatter: month/year boundaries only, format by span
+    const TR_MONTHS = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+    const first = labels[0] ? new Date(labels[0]) : null;
+    const last  = labels.length ? new Date(labels[labels.length - 1]) : null;
+    const spanDays = (first && last) ? (last - first) / 86400000 : 0;
+    const mode = spanDays > 730 ? 'year' : spanDays > 365 ? 'monthYear' : 'month';
+
+    const xTickCallback = function(value, index) {
+      const raw = this.getLabelForValue(value);
+      if (!raw) return '';
+      const d = new Date(raw);
+      if (isNaN(d)) return '';
+      if (mode === 'year') {
+        if (index > 0) {
+          const prev = new Date(this.getLabelForValue(value - 1));
+          if (!isNaN(prev) && prev.getFullYear() === d.getFullYear()) return '';
+        }
+        return d.getFullYear();
+      }
+      if (index > 0) {
+        const prev = new Date(this.getLabelForValue(value - 1));
+        if (!isNaN(prev) && prev.getMonth() === d.getMonth() && prev.getFullYear() === d.getFullYear()) return '';
+      }
+      return mode === 'monthYear'
+        ? `${TR_MONTHS[d.getMonth()]} '${String(d.getFullYear()).slice(2)}`
+        : TR_MONTHS[d.getMonth()];
+    };
+
+    const jetSeries   = sortedKeys.map(k => jetMap[k] ?? null);
+    const brentSeries = sortedKeys.map(k => brentMap[k] ?? null);
+    const spreadSeries = sortedKeys.map((_, i) =>
+      (jetSeries[i] != null && brentSeries[i] != null) ? jetSeries[i] - brentSeries[i] : null
+    );
+
+    // KPI: latest spread + weekly change
+    const lastIdx = (() => { for (let i = spreadSeries.length - 1; i >= 0; i--) if (spreadSeries[i] != null) return i; return -1; })();
+    const prevIdx = (() => { for (let i = lastIdx - 1; i >= 0; i--) if (spreadSeries[i] != null) return i; return -1; })();
+    const csValEl   = document.getElementById('cs-value');
+    const csDeltaEl = document.getElementById('cs-delta');
+    if (csValEl && csDeltaEl) {
+      if (lastIdx >= 0) {
+        const cur = spreadSeries[lastIdx];
+        csValEl.textContent = '$' + cur.toFixed(2);
+        if (prevIdx >= 0) {
+          const diff = cur - spreadSeries[prevIdx];
+          const dir  = diff > 0 ? 'up' : diff < 0 ? 'down' : '';
+          const sign = diff > 0 ? '+' : '';
+          csDeltaEl.className = 'cs-delta' + (dir ? ' ' + dir : '');
+          csDeltaEl.textContent = `${sign}$${diff.toFixed(2)} haftalık`;
+        } else {
+          csDeltaEl.className = 'cs-delta';
+          csDeltaEl.textContent = '—';
+        }
+      } else {
+        csValEl.textContent = '—';
+        csDeltaEl.textContent = '—';
+        csDeltaEl.className = 'cs-delta';
+      }
+    }
 
     lineChart('chart-energy', labels,
       [
         {
           label: 'Jet Yakıt ($/varil)',
-          data: labels.map(k => jetMap[k] ?? null),
-          borderColor: '#E63946', backgroundColor: 'rgba(230,57,70,0.07)',
-          fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true
+          data: jetSeries,
+          borderColor: '#E63946', backgroundColor: 'rgba(140,120,100,0.10)',
+          fill: { target: 1 },
+          tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true,
+          order: 1
         },
         {
           label: 'Brent Ham Petrol ($/varil)',
-          data: labels.map(k => brentMap[k] ?? null),
+          data: brentSeries,
           borderColor: '#1D6FE8', backgroundColor: 'rgba(29,111,232,0.07)',
-          fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true
+          fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true,
+          order: 2
         }
       ],
       v => '$' + v.toFixed(1),
-      { legendPosition: 'bottom' }
+      {
+        legendPosition: 'bottom',
+        xTickCallback,
+        afterTooltipBody: (items) => {
+          const idx = items[0]?.dataIndex;
+          if (idx == null) return null;
+          const s = spreadSeries[idx];
+          return s != null ? ['Crack Spread: $' + s.toFixed(2)] : null;
+        }
+      }
     );
   }
 
