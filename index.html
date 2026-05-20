@@ -1416,6 +1416,27 @@
   }
   .dash-chart-wrap { position: relative; height: 185px; }
   .dash-chart-wrap.short { height: 160px; }
+
+  /* ── Chart legend chips ── */
+  .chart-legend {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 4px 14px; margin-top: 10px;
+  }
+  .chart-legend .cl-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10.5px; color: var(--text-2); font-weight: 500;
+  }
+  .chart-legend .cl-dot {
+    display: inline-block; width: 9px; height: 9px;
+    border-radius: 3px; flex-shrink: 0;
+  }
+  .chart-legend .cl-dot-forecast {
+    background: repeating-linear-gradient(
+      45deg, rgba(100,100,100,0.35) 0px, rgba(100,100,100,0.35) 2px,
+      transparent 2px, transparent 5px
+    ) !important;
+    border: 1px solid rgba(100,100,100,0.3);
+  }
   .dash-chart-error {
     display: flex;
     align-items: center;
@@ -2182,6 +2203,321 @@
     to   { opacity: 1; transform: translateY(0); }
   }
   .todo-item { animation: todoSlideIn 0.18s ease; }
+
+  /* ── SEARCH BAR ──────────────────────────────────────────── */
+  .todo-search-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }
+  .todo-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .todo-search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-3);
+    pointer-events: none;
+  }
+  .todo-search-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 36px 9px 34px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .todo-search-input::placeholder { color: var(--text-3); }
+  .todo-search-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(29,111,232,0.1);
+    background: var(--surface);
+  }
+  .todo-search-clear {
+    position: absolute;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    color: var(--text-3);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .todo-search-clear:hover { background: var(--hover); color: var(--text); }
+
+  .todo-active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 0;
+  }
+  .todo-active-filters:not(:empty) { margin-top: 10px; }
+  .todo-active-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 4px 3px 10px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 12px;
+    font-size: 11.5px;
+    font-weight: 500;
+  }
+  .todo-active-filter-chip button {
+    width: 18px; height: 18px;
+    border-radius: 50%; border: none;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .todo-active-filter-chip button:hover { background: rgba(255,255,255,0.35); }
+
+  .todo-tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 0;
+  }
+  .todo-tag-cloud:not(:empty) { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+  .todo-tag-cloud-label {
+    font-size: 10.5px;
+    color: var(--text-3);
+    margin-right: 4px;
+    align-self: center;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 600;
+  }
+  .todo-tag-cloud-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    border-radius: 11px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .todo-tag-cloud-chip:hover {
+    background: rgba(29,111,232,0.08);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .todo-tag-cloud-chip .tag-count {
+    color: var(--text-3);
+    font-size: 10px;
+  }
+
+  /* ── TEXTAREA INPUT (expandable) ─────────────────────────── */
+  .todo-input-textarea {
+    resize: none;
+    min-height: 34px;
+    max-height: 220px;
+    line-height: 1.45;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    overflow-y: auto;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ── ITEM TAGS ───────────────────────────────────────────── */
+  .todo-item-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 5px;
+  }
+  .todo-item-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 7px;
+    background: rgba(29,111,232,0.08);
+    color: var(--accent);
+    border-radius: 9px;
+    font-size: 10.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .todo-item-tag:hover {
+    background: rgba(29,111,232,0.16);
+    border-color: rgba(29,111,232,0.3);
+  }
+  .todo-item.done .todo-item-tag {
+    background: rgba(0,0,0,0.04);
+    color: var(--text-3);
+  }
+  .todo-empty-search {
+    text-align: center;
+    padding: 22px 16px;
+    color: var(--text-3);
+    font-size: 12.5px;
+    font-style: italic;
+  }
+
+  /* ── EDIT MODE ───────────────────────────────────────────── */
+  .edit-trigger {
+    position: fixed; bottom: 8px; right: 10px; width: 14px; height: 14px;
+    opacity: 0.18; cursor: pointer; z-index: 200; border-radius: 50%;
+    background: var(--text-3); border: none; padding: 0;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .edit-trigger:hover { opacity: 0.6; transform: scale(1.15); }
+  body.edit-mode .edit-trigger { opacity: 0.95; background: var(--red); }
+
+  body.edit-mode .edit-banner {
+    position: fixed; top: 60px; left: 0; right: 0; z-index: 99;
+    background: linear-gradient(90deg, #E63946, #B0202C);
+    color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .edit-banner-actions { display: flex; gap: 8px; }
+  .edit-banner button {
+    background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+    padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600;
+  }
+  .edit-banner button:hover { background: rgba(255,255,255,0.28); }
+  body:not(.edit-mode) .edit-banner { display: none; }
+
+  body.edit-mode .article-card { position: relative; outline: 1px dashed rgba(230,57,70,0.4); outline-offset: 2px; }
+  body.edit-mode .article-card:hover { outline-color: var(--red); }
+
+  .card-edit-actions {
+    position: absolute; top: 8px; right: 8px; display: none; gap: 4px; z-index: 4;
+  }
+  body.edit-mode .card-edit-actions { display: flex; }
+  .card-edit-actions button {
+    width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .card-edit-actions button:hover { background: var(--red); color: #fff; border-color: var(--red); }
+  .card-edit-actions button.edit-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+  /* Editor modal */
+  .editor-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 998;
+    display: none; backdrop-filter: blur(2px);
+  }
+  .editor-backdrop.open { display: block; }
+  .editor-modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: min(720px, 94vw); max-height: 90vh; overflow-y: auto;
+    background: var(--surface); border-radius: 14px; z-index: 999;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.35); padding: 22px;
+    display: none; color: var(--text);
+  }
+  .editor-modal.open { display: block; }
+  .editor-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+  .editor-header h3 { font-size: 16px; font-weight: 700; }
+  .editor-close {
+    background: none; border: none; cursor: pointer; font-size: 18px; color: var(--text-2);
+    width: 28px; height: 28px; border-radius: 6px;
+  }
+  .editor-close:hover { background: var(--border); color: var(--text); }
+  .editor-field { margin-bottom: 14px; }
+  .editor-field label {
+    display: block; font-size: 11px; font-weight: 600; color: var(--text-2);
+    text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px;
+  }
+  .editor-field input[type="text"],
+  .editor-field input[type="date"],
+  .editor-field input[type="url"],
+  .editor-field select {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border);
+    border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; font-size: 14px;
+  }
+  .editor-field .ce {
+    width: 100%; min-height: 44px; padding: 8px 10px; border: 1px solid var(--border);
+    border-radius: 8px; background: var(--bg); color: var(--text); font-size: 14px;
+    line-height: 1.5; outline: none;
+  }
+  .editor-field .ce.summary { min-height: 110px; }
+  .editor-field .ce:focus { border-color: var(--accent); }
+  .editor-toolbar {
+    display: flex; gap: 4px; align-items: center; flex-wrap: wrap;
+    margin-bottom: 6px; padding: 5px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px;
+  }
+  .editor-toolbar button {
+    border: 1px solid transparent; background: transparent; color: var(--text);
+    width: 28px; height: 28px; border-radius: 5px; cursor: pointer;
+    font-size: 13px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .editor-toolbar button:hover { background: var(--border); }
+  .editor-toolbar .swatch {
+    width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--surface);
+    cursor: pointer; box-shadow: 0 0 0 1px var(--border);
+  }
+  .editor-toolbar .swatch:hover { transform: scale(1.12); }
+  .editor-toolbar .sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+  .editor-toolbar input[type="color"] {
+    width: 26px; height: 26px; border: none; background: transparent; cursor: pointer; padding: 0;
+  }
+
+  .sources-list { display: flex; flex-direction: column; gap: 8px; }
+  .source-row {
+    display: grid; grid-template-columns: 150px 1fr auto; gap: 8px; align-items: center;
+  }
+  .source-row input, .source-row select {
+    padding: 7px 9px; border: 1px solid var(--border); border-radius: 7px;
+    background: var(--bg); color: var(--text); font-size: 13px;
+  }
+  .source-row button {
+    width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; color: var(--text-2);
+  }
+  .source-row button:hover { background: var(--red); color: #fff; border-color: var(--red); }
+  .add-source-btn {
+    background: var(--bg); border: 1px dashed var(--border); color: var(--text-2);
+    padding: 8px; border-radius: 8px; cursor: pointer; font-size: 12px; width: 100%; margin-top: 6px;
+  }
+  .add-source-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .editor-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); gap: 8px;
+  }
+  .editor-footer .danger-zone { display: flex; gap: 8px; }
+  .btn-primary, .btn-secondary, .btn-danger {
+    padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 600;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #1558c0; }
+  .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); }
+  .btn-danger:hover { background: var(--red); color: #fff; }
+  .btn-link-reset { background: none; border: none; color: var(--text-3); font-size: 12px; cursor: pointer; text-decoration: underline; }
+  .btn-link-reset:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -2513,9 +2849,10 @@
             <span class="dash-chart-badge">IMF NGDP_RPCH</span>
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-gdp"></canvas></div>
-          <div style="font-size:10px; color:var(--text-3); text-align:center; margin-top:8px;">
-            <span style="display:inline-block; width:8px; height:8px; background:rgba(29,111,232,0.72); border-radius:2px; margin-right:4px;"></span>Pozitif Büyüme
-            <span style="display:inline-block; width:8px; height:8px; background:rgba(230,57,70,0.72); border-radius:2px; margin-right:4px; margin-left:12px;"></span>Negatif Büyüme (Küçülme)
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(29,111,232,0.72)"></span>Büyüme</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.72)"></span>Küçülme</span>
+            <span class="cl-item"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
           </div>
         </div>
         <div class="dash-chart-card">
@@ -2535,10 +2872,11 @@
             <span class="dash-chart-badge">IMF PCPIPCH</span>
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-cpi"></canvas></div>
-          <div style="font-size:10px; color:var(--text-3); text-align:center; margin-top:8px;">
-            <span style="display:inline-block; width:8px; height:8px; background:rgba(5,150,105,0.72); border-radius:2px; margin-right:4px;"></span>≤ %3 (Düşük)
-            <span style="display:inline-block; width:8px; height:8px; background:rgba(234,88,12,0.72); border-radius:2px; margin-right:4px; margin-left:10px;"></span>%3 - %6 (Orta)
-            <span style="display:inline-block; width:8px; height:8px; background:rgba(230,57,70,0.72); border-radius:2px; margin-right:4px; margin-left:10px;"></span>> %6 (Yüksek)
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(5,150,105,0.72)"></span>≤ %3 Düşük</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(234,88,12,0.72)"></span>%3–%6 Orta</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.72)"></span>> %6 Yüksek</span>
+            <span class="cl-item"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
           </div>
         </div>
       </div>
@@ -2594,6 +2932,28 @@
 
   <!-- Yapılacaklar & Kontroller Panel -->
   <div id="todo-panel" style="display:none" class="todo-panel">
+
+    <!-- Ortak arama + aktif etiket filtreleri -->
+    <div class="todo-search-bar">
+      <div class="todo-search-wrap">
+        <svg class="todo-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          id="todo-search-input"
+          class="todo-search-input"
+          placeholder="Yapılacaklar ve kontrollerde ara… (metin ya da #etiket)"
+          autocomplete="off"
+        >
+        <button class="todo-search-clear" id="todo-search-clear" title="Temizle" aria-label="Temizle" style="display:none">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="todo-active-filters" id="todo-active-filters"></div>
+      <div class="todo-tag-cloud" id="todo-tag-cloud"></div>
+    </div>
+
     <div class="todo-cols">
 
       <!-- SOL: Yapılacaklar -->
@@ -2615,16 +2975,16 @@
           </div>
         </div>
         <div class="todo-add-row">
-          <input
-            type="text"
-            class="todo-input"
+          <textarea
+            class="todo-input todo-input-textarea"
             id="input-todo"
-            placeholder="Yeni yapılacak ekle…"
-            maxlength="200"
+            placeholder="Yeni yapılacak ekle… (#etiket ile etiketle)"
+            maxlength="600"
+            rows="1"
             autocomplete="off"
-            onkeydown="if(event.key==='Enter') addTodoItem('todo')"
-          >
-          <button class="todo-add-btn" onclick="addTodoItem('todo')" title="Ekle" aria-label="Yapılacak ekle">
+            onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();addTodoItem('todo');}"
+          ></textarea>
+          <button class="todo-add-btn" onclick="addTodoItem('todo')" title="Ekle (Enter)" aria-label="Yapılacak ekle">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
         </div>
@@ -2649,16 +3009,16 @@
           </div>
         </div>
         <div class="todo-add-row">
-          <input
-            type="text"
-            class="todo-input"
+          <textarea
+            class="todo-input todo-input-textarea"
             id="input-check"
-            placeholder="Yeni kontrol ekle…"
-            maxlength="200"
+            placeholder="Yeni kontrol ekle… (#etiket ile etiketle)"
+            maxlength="600"
+            rows="1"
             autocomplete="off"
-            onkeydown="if(event.key==='Enter') addTodoItem('check')"
-          >
-          <button class="todo-add-btn" onclick="addTodoItem('check')" title="Ekle" aria-label="Kontrol ekle">
+            onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();addTodoItem('check');}"
+          ></textarea>
+          <button class="todo-add-btn" onclick="addTodoItem('check')" title="Ekle (Enter)" aria-label="Kontrol ekle">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
         </div>
@@ -2993,7 +3353,16 @@ function buildCardHTML(article) {
     </div>`;
   }
 
+  const editKey = article.__editKey || '';
   return `
+    <div class="card-edit-actions">
+      <button class="edit-btn" title="Düzenle" onclick="window.openNewsEditor('${editKey}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+      <button title="Sil" onclick="window.deleteNewsCard('${editKey}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      </button>
+    </div>
     <div class="card-inner">
       <div class="card-left-bar" style="background:${hex}"></div>
       <div class="card-body">
@@ -3808,6 +4177,7 @@ fetch(DATA_URL)
       }
       return true;
     });
+    if (window.__applyNewsEdits) allArticles = window.__applyNewsEdits(allArticles);
     buildDatePanel(allArticles);
     buildAirlineFilter(allArticles);
     render();
@@ -4296,10 +4666,10 @@ function barChart(id, labels, data, colors, opts = {}) {
           grid: { color: 'rgba(0,0,0,0.04)' }, 
           border: { display: false } 
         },
-        y: { 
-          ticks: { font: { size: 11, family: 'Inter' }, color: '#374151', padding: 10 }, 
-          grid: { display: false }, 
-          border: { display: false } 
+        y: {
+          ticks: { font: { size: 11, family: 'Inter' }, color: '#374151', padding: 10, autoSkip: false },
+          grid: { display: false },
+          border: { display: false }
         }
       }
     },
@@ -4687,15 +5057,19 @@ async function loadDashboard() {
       const data = await imfSeriesFetch(indicator, countries);
       // For each country: pick the most recent year with a value, capped at currentYear (actual zone)
       const latestByC = {};
+      const actualCap = currentYear - 1; // IMF WEO'da önceki yıl gerçekleşen, bu yıl tahmini
       countries.forEach(c => {
         const series = data[c];
         if (!series) return;
         const yrs = Object.keys(series).map(Number).sort((a,b) => a - b);
-        // most recent year with value, prefer ≤ currentYear (actual). If none, fall back to earliest future.
+        // Önce actualCap (2025) veya öncesindeki en güncel gerçekleşeni ara
         let chosen = null;
         for (let i = yrs.length - 1; i >= 0; i--) {
-          if (yrs[i] <= currentYear && series[yrs[i]] != null) { chosen = yrs[i]; break; }
+          if (yrs[i] <= actualCap && series[yrs[i]] != null) { chosen = yrs[i]; break; }
         }
+        // Bulamazsan currentYear (tahmini) dene
+        if (chosen == null && series[currentYear] != null) chosen = currentYear;
+        // Hâlâ yoksa herhangi bir değer al
         if (chosen == null) {
           for (const y of yrs) { if (series[y] != null) { chosen = y; break; } }
         }
@@ -5156,6 +5530,44 @@ async function loadDashboard() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
   }
 
+  /* ── Search / Tag state ───────────────────────────── */
+  let searchQuery  = '';
+  const activeTags = new Set();
+
+  /* Parse "#tag" tokens from text → return { clean, tags[] }. */
+  function parseTags(raw) {
+    if (!raw) return { clean: '', tags: [] };
+    const tags = [];
+    const seen = new Set();
+    const clean = raw.replace(/(^|\s)#([A-Za-zÇĞİıÖŞÜçğöşü0-9_\-]+)/g, (m, pre, t) => {
+      const norm = t.toLowerCase();
+      if (!seen.has(norm)) { seen.add(norm); tags.push(norm); }
+      return pre;
+    }).replace(/\s+/g, ' ').trim();
+    return { clean, tags };
+  }
+
+  function itemTags(item) {
+    return Array.isArray(item.tags) ? item.tags : [];
+  }
+
+  function matchesFilters(item) {
+    const tags = itemTags(item);
+    for (const t of activeTags) {
+      if (!tags.includes(t)) return false;
+    }
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    if ((item.text || '').toLowerCase().includes(q)) return true;
+    const qTag = q.startsWith('#') ? q.slice(1) : q;
+    if (tags.some(t => t.includes(qTag))) return true;
+    return false;
+  }
+
+  function escAttr(s) {
+    return String(s).replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+  }
+
   function renderList(type) {
     const items   = data[type];
     const listEl  = document.getElementById('list-' + type);
@@ -5185,10 +5597,23 @@ async function loadDashboard() {
       return;
     }
 
-    listEl.innerHTML = items.map((item, idx) => {
+    const filtered = items
+      .map((it, idx) => ({ it, idx }))
+      .filter(x => matchesFilters(x.it));
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = `<div class="todo-empty-search">Filtreyle eşleşen kayıt yok.</div>`;
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(({ it: item, idx }) => {
       const checkIcon = item.done
         ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
         : '';
+      const tags = itemTags(item);
+      const tagsHtml = tags.length ? `<div class="todo-item-tags">${
+        tags.map(t => `<span class="todo-item-tag" onclick="todoTagClick('${escAttr(t)}')" title="Bu etiketle filtrele">#${escHtml(t)}</span>`).join('')
+      }</div>` : '';
       return `
         <div class="todo-item${item.done ? ' done' : ''}" id="item-${type}-${idx}">
           <button
@@ -5199,9 +5624,10 @@ async function loadDashboard() {
           >${checkIcon}</button>
           <div class="todo-item-body">
             <span class="todo-item-text" id="todo-text-${type}-${idx}">${escHtml(item.text)}</span>
+            ${tagsHtml}
           </div>
           <div class="todo-item-actions">
-            <button class="todo-action-btn edit-btn" onclick="todoEdit('${type}',${idx})" title="Düzenle" aria-label="Düzenle">
+            <button class="todo-action-btn edit-btn" onclick="todoEdit('${type}',${idx})" title="Düzenle (#etiket ile etiketle)" aria-label="Düzenle">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -5218,27 +5644,77 @@ async function loadDashboard() {
     }).join('');
   }
 
+  function renderActiveFilters() {
+    const el = document.getElementById('todo-active-filters');
+    if (!el) return;
+    if (activeTags.size === 0) { el.innerHTML = ''; return; }
+    el.innerHTML = Array.from(activeTags).map(t => `
+      <span class="todo-active-filter-chip">#${escHtml(t)}
+        <button onclick="todoRemoveTagFilter('${escAttr(t)}')" title="Filtreyi kaldır" aria-label="Filtreyi kaldır">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </span>`).join('');
+  }
+
+  function renderTagCloud() {
+    const el = document.getElementById('todo-tag-cloud');
+    if (!el) return;
+    const counts = new Map();
+    for (const type of ['todo','check']) {
+      for (const it of data[type]) {
+        for (const t of itemTags(it)) counts.set(t, (counts.get(t) || 0) + 1);
+      }
+    }
+    const sorted = Array.from(counts.entries())
+      .filter(([t]) => !activeTags.has(t))
+      .sort((a, b) => b[1] - a[1]);
+    if (sorted.length === 0) { el.innerHTML = ''; return; }
+    el.innerHTML = '<span class="todo-tag-cloud-label">Etiketler</span>' +
+      sorted.map(([t, c]) => `
+        <span class="todo-tag-cloud-chip" onclick="todoTagClick('${escAttr(t)}')" title="Bu etiketle filtrele">
+          #${escHtml(t)} <span class="tag-count">${c}</span>
+        </span>`).join('');
+  }
+
   function render() {
+    renderActiveFilters();
+    renderTagCloud();
     renderList('todo');
     renderList('check');
+  }
+
+  /* ── Textarea auto-grow ───────────────────────────── */
+  function autoGrow(el) {
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 220) + 'px';
   }
 
   // PUBLIC: called from HTML onclick
   window.addTodoItem = function(type) {
     const inputEl = document.getElementById('input-' + type);
-    const text = inputEl.value.trim();
-    if (!text) { inputEl.focus(); return; }
-    data[type].unshift({ id: uid(), text, done: false, createdAt: Date.now() });
+    const raw = (inputEl.value || '').trim();
+    if (!raw) { inputEl.focus(); return; }
+    const { clean, tags } = parseTags(raw);
+    if (!clean && tags.length === 0) { inputEl.focus(); return; }
+    data[type].unshift({
+      id: uid(),
+      text: clean || raw,
+      tags,
+      done: false,
+      createdAt: Date.now()
+    });
     saveData();
-    renderList(type);
     inputEl.value = '';
+    autoGrow(inputEl);
     inputEl.focus();
+    render();
   };
 
   window.todoToggle = function(type, idx) {
     data[type][idx].done = !data[type][idx].done;
     saveData();
-    renderList(type);
+    render();
   };
 
   window.todoDelete = function(type, idx) {
@@ -5250,53 +5726,529 @@ async function loadDashboard() {
       setTimeout(() => {
         data[type].splice(idx, 1);
         saveData();
-        renderList(type);
+        render();
       }, 170);
     } else {
       data[type].splice(idx, 1);
       saveData();
-      renderList(type);
+      render();
     }
   };
 
   window.todoEdit = function(type, idx) {
     const textEl = document.getElementById('todo-text-' + type + '-' + idx);
     if (!textEl) return;
-    const current = data[type][idx].text;
+    const item = data[type][idx];
+    const current = (item.text || '') + (itemTags(item).length ? ' ' + itemTags(item).map(t => '#' + t).join(' ') : '');
 
-    // Replace span with inline input
-    const inp = document.createElement('input');
-    inp.type = 'text';
+    const inp = document.createElement('textarea');
     inp.className = 'todo-item-input';
     inp.value = current;
-    inp.maxLength = 200;
+    inp.rows = 1;
+    inp.maxLength = 600;
+    inp.style.resize = 'none';
+    inp.style.minHeight = '32px';
+    inp.style.lineHeight = '1.45';
     textEl.replaceWith(inp);
+    autoGrow(inp);
     inp.focus();
-    inp.select();
+    inp.setSelectionRange(inp.value.length, inp.value.length);
+    inp.addEventListener('input', () => autoGrow(inp));
 
+    let committed = false;
     function commit() {
-      const val = inp.value.trim();
-      if (val && val !== current) {
-        data[type][idx].text = val;
+      if (committed) return;
+      committed = true;
+      const raw = inp.value.trim();
+      if (raw && raw !== current) {
+        const { clean, tags } = parseTags(raw);
+        item.text = clean || raw;
+        item.tags = tags;
         saveData();
       }
-      renderList(type);
+      render();
     }
     inp.addEventListener('blur', commit);
     inp.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') { e.preventDefault(); commit(); }
-      if (e.key === 'Escape') { renderList(type); }
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); commit(); }
+      if (e.key === 'Escape') { committed = true; render(); }
     });
   };
 
-  window.initTodo = function() {
-    loadData();          // localStorage'dan hızlı render
+  /* ── Tag/Search public handlers ───────────────────── */
+  window.todoTagClick = function(tag) {
+    if (!tag) return;
+    activeTags.add(tag);
     render();
-    loadDataFromGitHub(); // GitHub'dan güncel veriyi çek ve re-render
+  };
+
+  window.todoRemoveTagFilter = function(tag) {
+    activeTags.delete(tag);
+    render();
+  };
+
+  function wireSearch() {
+    const inp = document.getElementById('todo-search-input');
+    const clr = document.getElementById('todo-search-clear');
+    if (!inp || !clr) return;
+    inp.addEventListener('input', () => {
+      searchQuery = inp.value.trim();
+      clr.style.display = searchQuery ? '' : 'none';
+      render();
+    });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && searchQuery.startsWith('#')) {
+        e.preventDefault();
+        const tag = searchQuery.slice(1).toLowerCase().trim();
+        if (tag) {
+          activeTags.add(tag);
+          inp.value = '';
+          searchQuery = '';
+          clr.style.display = 'none';
+          render();
+        }
+      } else if (e.key === 'Escape') {
+        inp.value = '';
+        searchQuery = '';
+        clr.style.display = 'none';
+        render();
+      }
+    });
+    clr.addEventListener('click', () => {
+      inp.value = '';
+      searchQuery = '';
+      clr.style.display = 'none';
+      inp.focus();
+      render();
+    });
+  }
+
+  function wireAddInputs() {
+    ['todo','check'].forEach(type => {
+      const el = document.getElementById('input-' + type);
+      if (!el) return;
+      autoGrow(el);
+      el.addEventListener('input', () => autoGrow(el));
+      el.addEventListener('focus', () => autoGrow(el));
+    });
+  }
+
+  window.initTodo = function() {
+    loadData();
+    render();
+    wireSearch();
+    wireAddInputs();
+    loadDataFromGitHub();
   };
 })();
 
 if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo'); }
+</script>
+
+<!-- ── Hidden News Editor ───────────────────────────────────── -->
+<button class="edit-trigger" id="editTrigger" title="Düzenleme modu (Ctrl+Shift+E)" aria-label="Düzenleme modu"></button>
+<div class="edit-banner">
+  <span>✎ Düzenleme modu açık — kartların üzerine geleyin</span>
+  <div class="edit-banner-actions">
+    <button onclick="window.exportNewsEdits()">Değişiklikleri indir (JSON)</button>
+    <button onclick="window.resetAllNewsEdits()">Tümünü sıfırla</button>
+    <button onclick="window.toggleEditMode(false)">Kapat</button>
+  </div>
+</div>
+
+<div class="editor-backdrop" id="editorBackdrop" onclick="window.closeNewsEditor()"></div>
+<div class="editor-modal" id="editorModal" role="dialog" aria-modal="true" aria-label="Haber Düzenle">
+  <div class="editor-header">
+    <h3>Haberi Düzenle</h3>
+    <button class="editor-close" onclick="window.closeNewsEditor()" aria-label="Kapat">✕</button>
+  </div>
+
+  <div class="editor-field">
+    <label>Tarih</label>
+    <input type="date" id="edit-date">
+  </div>
+
+  <div class="editor-field">
+    <label>Başlık</label>
+    <div class="editor-toolbar" data-target="edit-title">
+      <button type="button" data-cmd="bold" title="Kalın"><b>B</b></button>
+      <button type="button" data-cmd="italic" title="İtalik"><i>I</i></button>
+      <span class="sep"></span>
+      <span class="swatch" data-color="#E63946" style="background:#E63946" title="Kırmızı"></span>
+      <span class="swatch" data-color="#1D6FE8" style="background:#1D6FE8" title="Mavi"></span>
+      <span class="swatch" data-color="#059669" style="background:#059669" title="Yeşil"></span>
+      <span class="swatch" data-color="#DB2777" style="background:#DB2777" title="Pembe"></span>
+      <span class="swatch" data-color="#EA580C" style="background:#EA580C" title="Turuncu"></span>
+      <span class="swatch" data-color="#C8102E" style="background:#C8102E" title="THY Kırmızı"></span>
+      <input type="color" data-cmd="foreColor" title="Özel renk">
+      <span class="sep"></span>
+      <button type="button" data-cmd="removeFormat" title="Biçimi temizle">⌫</button>
+    </div>
+    <div class="ce" id="edit-title" contenteditable="true"></div>
+  </div>
+
+  <div class="editor-field">
+    <label>Özet</label>
+    <div class="editor-toolbar" data-target="edit-summary">
+      <button type="button" data-cmd="bold" title="Kalın"><b>B</b></button>
+      <button type="button" data-cmd="italic" title="İtalik"><i>I</i></button>
+      <button type="button" data-cmd="underline" title="Altı çizili" style="text-decoration:underline">U</button>
+      <span class="sep"></span>
+      <span class="swatch" data-color="#E63946" style="background:#E63946" title="Kırmızı"></span>
+      <span class="swatch" data-color="#1D6FE8" style="background:#1D6FE8" title="Mavi"></span>
+      <span class="swatch" data-color="#059669" style="background:#059669" title="Yeşil"></span>
+      <span class="swatch" data-color="#DB2777" style="background:#DB2777" title="Pembe"></span>
+      <span class="swatch" data-color="#EA580C" style="background:#EA580C" title="Turuncu"></span>
+      <span class="swatch" data-color="#C8102E" style="background:#C8102E" title="THY Kırmızı"></span>
+      <span class="swatch" data-color="#111218" style="background:#111218;border-color:#fff" title="Siyah"></span>
+      <input type="color" data-cmd="foreColor" title="Özel renk">
+      <span class="sep"></span>
+      <button type="button" data-cmd="removeFormat" title="Biçimi temizle">⌫</button>
+    </div>
+    <div class="ce summary" id="edit-summary" contenteditable="true"></div>
+  </div>
+
+  <div class="editor-field">
+    <label>Kaynaklar</label>
+    <div class="sources-list" id="edit-sources"></div>
+    <button class="add-source-btn" type="button" onclick="window.addSourceRow()">+ Kaynak ekle</button>
+  </div>
+
+  <div class="editor-footer">
+    <div class="danger-zone">
+      <button class="btn-danger" onclick="window.deleteFromEditor()">Kartı Sil</button>
+      <button class="btn-link-reset" onclick="window.resetCurrentEdit()">Bu karttaki değişiklikleri sıfırla</button>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-secondary" onclick="window.closeNewsEditor()">İptal</button>
+      <button class="btn-primary" onclick="window.saveNewsEditor()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const EDITS_KEY = 'news-edits-v1';
+  const EDIT_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/news-card-edit';
+  const SOURCE_OPTIONS = (typeof SOURCE_LABELS === 'object' && SOURCE_LABELS) ? SOURCE_LABELS : {};
+
+  // ── Durum bildirimi (toast) ──────────────────────────────
+  function showToast(msg, type) {
+    let t = document.getElementById('__edit-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = '__edit-toast';
+      t.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(12px);z-index:9999;padding:9px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.22);transition:opacity 0.25s,transform 0.25s;opacity:0;pointer-events:none;white-space:nowrap';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.background = type === 'error' ? '#E63946' : type === 'warn' ? '#EA580C' : '#059669';
+    t.style.color = '#fff';
+    t.style.opacity = '1';
+    t.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(8px)';
+    }, 3200);
+  }
+
+  // ── GitHub'a push ───────────────────────────────────────
+  async function pushToGitHub(payload) {
+    try {
+      const res = await fetch(EDIT_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => res.status);
+        console.warn('Webhook yanıtı:', txt);
+        showToast('⚠️ GitHub\'a kaydedilemedi (' + res.status + ')', 'warn');
+        return false;
+      }
+      return true;
+    } catch(e) {
+      console.error('Webhook hatası:', e);
+      showToast('⚠️ GitHub\'a ulaşılamadı', 'warn');
+      return false;
+    }
+  }
+
+  function loadEdits() {
+    try { return JSON.parse(localStorage.getItem(EDITS_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveEdits(m) {
+    try { localStorage.setItem(EDITS_KEY, JSON.stringify(m)); } catch(e) {}
+  }
+  function keyOf(a) {
+    if (a.id != null && String(a.id).trim() && String(a.id) !== 'null') return 'id:' + String(a.id);
+    return 'tk:' + (a.title || '').trim().slice(0, 80) + '|' + (a.source || '');
+  }
+
+  window.__applyNewsEdits = function(articles) {
+    const edits = loadEdits();
+    const out = [];
+    for (const a of articles) {
+      const k = keyOf(a);
+      a.__editKey = k;
+      const o = edits[k];
+      if (!o) { out.push(a); continue; }
+      if (o.deleted) continue;
+      if (o.title != null) a.title = o.title;
+      if (o.summary != null) a.summary = o.summary;
+      if (o.date != null) a.date = o.date;
+      if (Array.isArray(o.sources) && o.sources.length) {
+        a._sources = o.sources.slice();
+        a.source = o.sources[0].source || a.source;
+        a.link = o.sources[0].link || a.link;
+      }
+      out.push(a);
+    }
+    return out;
+  };
+
+  function findArticle(key) {
+    const arr = (typeof allArticles !== 'undefined') ? allArticles : [];
+    return arr.find(a => a.__editKey === key) || null;
+  }
+
+  let currentKey = null;
+
+  function buildSourceRow(s) {
+    const row = document.createElement('div');
+    row.className = 'source-row';
+    const select = document.createElement('select');
+    const keys = Object.keys(SOURCE_OPTIONS);
+    const optBlank = document.createElement('option');
+    optBlank.value = ''; optBlank.textContent = '— Seçin —';
+    select.appendChild(optBlank);
+    keys.forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k; opt.textContent = SOURCE_OPTIONS[k];
+      select.appendChild(opt);
+    });
+    // include current value even if not in known list
+    if (s.source && !keys.includes(s.source)) {
+      const opt = document.createElement('option');
+      opt.value = s.source; opt.textContent = s.source;
+      select.appendChild(opt);
+    }
+    select.value = s.source || '';
+    const linkInp = document.createElement('input');
+    linkInp.type = 'url'; linkInp.placeholder = 'https://...';
+    linkInp.value = s.link || '';
+    const del = document.createElement('button');
+    del.type = 'button'; del.title = 'Kaynağı kaldır';
+    del.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+    del.onclick = () => row.remove();
+    row.appendChild(select); row.appendChild(linkInp); row.appendChild(del);
+    return row;
+  }
+
+  window.addSourceRow = function() {
+    document.getElementById('edit-sources').appendChild(buildSourceRow({ source: '', link: '' }));
+  };
+
+  function isoDateOf(a) {
+    if (!a || !a.date) return '';
+    const m = String(a.date).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+    const d = new Date(a.date);
+    if (!isNaN(d)) return d.toISOString().slice(0, 10);
+    return '';
+  }
+
+  window.openNewsEditor = function(key) {
+    const a = findArticle(key);
+    if (!a) { alert('Haber bulunamadı'); return; }
+    currentKey = key;
+    document.getElementById('edit-date').value = isoDateOf(a);
+    document.getElementById('edit-title').innerHTML = a.title || '';
+    document.getElementById('edit-summary').innerHTML = a.summary || '';
+    const list = document.getElementById('edit-sources');
+    list.innerHTML = '';
+    const sources = (a._sources && a._sources.length) ? a._sources : [{ source: a.source, link: a.link }];
+    sources.forEach(s => list.appendChild(buildSourceRow(s)));
+    document.getElementById('editorBackdrop').classList.add('open');
+    document.getElementById('editorModal').classList.add('open');
+  };
+
+  window.closeNewsEditor = function() {
+    currentKey = null;
+    document.getElementById('editorBackdrop').classList.remove('open');
+    document.getElementById('editorModal').classList.remove('open');
+  };
+
+  window.saveNewsEditor = async function() {
+    if (!currentKey) return;
+    const saveBtn = document.querySelector('#editorModal .btn-primary');
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Kaydediliyor…'; }
+
+    const edits = loadEdits();
+    const o = edits[currentKey] || {};
+    o.title = document.getElementById('edit-title').innerHTML.trim();
+    o.summary = document.getElementById('edit-summary').innerHTML.trim();
+    o.date = document.getElementById('edit-date').value || null;
+    const rows = Array.from(document.querySelectorAll('#edit-sources .source-row'));
+    const sources = rows.map(r => ({
+      source: r.querySelector('select').value.trim(),
+      link: r.querySelector('input[type=url]').value.trim()
+    })).filter(s => s.source || s.link);
+    o.sources = sources;
+    delete o.deleted;
+    edits[currentKey] = o;
+    saveEdits(edits);
+
+    // Apply in place to the in-memory article
+    const a = findArticle(currentKey);
+    if (a) {
+      a.title = o.title;
+      a.summary = o.summary;
+      if (o.date) a.date = o.date;
+      if (sources.length) {
+        a._sources = sources.slice();
+        a.source = sources[0].source;
+        a.link = sources[0].link;
+      }
+    }
+
+    const savedKey = currentKey; // closeNewsEditor() currentKey'i sıfırlar
+    window.closeNewsEditor();
+    if (typeof render === 'function') render();
+
+    // GitHub'a gönder (arka planda)
+    const ok = await pushToGitHub({ key: savedKey, action: 'edit', title: o.title, summary: o.summary, date: o.date, sources });
+    if (ok) showToast('✓ GitHub\'a kaydedildi', 'ok');
+
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Kaydet'; }
+  };
+
+  window.deleteFromEditor = async function() {
+    if (!currentKey) return;
+    if (!confirm('Bu kartı tamamen silmek istediğinize emin misiniz?')) return;
+    const key = currentKey;
+    const edits = loadEdits();
+    edits[key] = Object.assign({}, edits[key] || {}, { deleted: true });
+    saveEdits(edits);
+    if (typeof allArticles !== 'undefined') {
+      const i = allArticles.findIndex(a => a.__editKey === key);
+      if (i >= 0) allArticles.splice(i, 1);
+    }
+    window.closeNewsEditor();
+    if (typeof render === 'function') render();
+    const ok = await pushToGitHub({ key, action: 'delete' });
+    if (ok) showToast('✓ Kart GitHub\'dan silindi', 'ok');
+  };
+
+  window.deleteNewsCard = async function(key) {
+    if (!confirm('Bu kartı tamamen silmek istediğinize emin misiniz?')) return;
+    const edits = loadEdits();
+    edits[key] = Object.assign({}, edits[key] || {}, { deleted: true });
+    saveEdits(edits);
+    if (typeof allArticles !== 'undefined') {
+      const i = allArticles.findIndex(a => a.__editKey === key);
+      if (i >= 0) allArticles.splice(i, 1);
+    }
+    if (typeof render === 'function') render();
+    const ok = await pushToGitHub({ key, action: 'delete' });
+    if (ok) showToast('✓ Kart GitHub\'dan silindi', 'ok');
+  };
+
+  window.resetCurrentEdit = function() {
+    if (!currentKey) return;
+    if (!confirm('Bu kart için tüm değişiklikleri sıfırlamak istiyor musunuz?')) return;
+    const edits = loadEdits();
+    delete edits[currentKey];
+    saveEdits(edits);
+    window.closeNewsEditor();
+    location.reload();
+  };
+
+  window.resetAllNewsEdits = function() {
+    if (!confirm('TÜM düzenlemeleri silmek istediğinize emin misiniz?')) return;
+    localStorage.removeItem(EDITS_KEY);
+    location.reload();
+  };
+
+  window.exportNewsEdits = function() {
+    const edits = loadEdits();
+    const blob = new Blob([JSON.stringify(edits, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'news-edits-' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 500);
+  };
+
+  // Toolbar wiring: keep selection across button clicks
+  let savedRange = null;
+  function saveSelection() {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+  }
+  function restoreSelection() {
+    if (!savedRange) return false;
+    const sel = window.getSelection();
+    sel.removeAllRanges(); sel.addRange(savedRange);
+    return true;
+  }
+  document.querySelectorAll('.ce').forEach(el => {
+    el.addEventListener('mouseup', saveSelection);
+    el.addEventListener('keyup', saveSelection);
+    el.addEventListener('focus', saveSelection);
+  });
+  document.querySelectorAll('.editor-toolbar').forEach(tb => {
+    const targetId = tb.dataset.target;
+    tb.addEventListener('mousedown', e => e.preventDefault()); // prevent losing selection
+    tb.querySelectorAll('button[data-cmd]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(targetId).focus();
+        restoreSelection();
+        document.execCommand(btn.dataset.cmd, false, null);
+        saveSelection();
+      });
+    });
+    tb.querySelectorAll('.swatch').forEach(sw => {
+      sw.addEventListener('click', () => {
+        document.getElementById(targetId).focus();
+        restoreSelection();
+        document.execCommand('foreColor', false, sw.dataset.color);
+        saveSelection();
+      });
+    });
+    tb.querySelectorAll('input[type="color"]').forEach(inp => {
+      inp.addEventListener('input', () => {
+        document.getElementById(targetId).focus();
+        restoreSelection();
+        document.execCommand('foreColor', false, inp.value);
+        saveSelection();
+      });
+    });
+  });
+
+  // Hidden trigger
+  window.toggleEditMode = function(on) {
+    const want = (typeof on === 'boolean') ? on : !document.body.classList.contains('edit-mode');
+    document.body.classList.toggle('edit-mode', want);
+    try { localStorage.setItem('news-edit-mode', want ? '1' : '0'); } catch(e) {}
+  };
+  document.getElementById('editTrigger').addEventListener('click', () => window.toggleEditMode());
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
+      e.preventDefault();
+      window.toggleEditMode();
+    }
+    if (e.key === 'Escape' && document.getElementById('editorModal').classList.contains('open')) {
+      window.closeNewsEditor();
+    }
+  });
+  // Auto-enable from URL or last state
+  const qp = new URLSearchParams(location.search);
+  if (qp.has('edit') || localStorage.getItem('news-edit-mode') === '1') {
+    window.toggleEditMode(true);
+  }
+})();
 </script>
 </body>
 </html>
