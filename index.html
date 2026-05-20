@@ -4934,19 +4934,65 @@ function chartErr(id, html) {
 }
 
 // ── RELEASE CALENDAR ──────────────────────────────────────────
-const REL_USER_KEY = 'cargo_release_user_items_v1';
+const REL_USER_KEY = 'cargo_release_user_items_v1'; // localStorage cache
+const REL_DATA_URL = 'https://raw.githubusercontent.com/demirbasemre/haberozetleri/main/data/important-dates.json';
+const REL_WEBHOOK_URL = 'https://n8n.emredemirbas.com/webhook/important-dates';
 let _relRender = null;
+let _relUserItems = [];   // bellekteki güncel liste (n8n + cache merge)
+let _relBusy = false;
 
 function loadUserReleaseItems() {
+  return _relUserItems;
+}
+function setUserReleaseItems(arr) {
+  _relUserItems = Array.isArray(arr) ? arr : [];
+  try { localStorage.setItem(REL_USER_KEY, JSON.stringify(_relUserItems)); } catch (e) {}
+}
+async function fetchUserReleaseItemsRemote() {
+  // 1) Önce localStorage cache'i yükle (anında render)
   try {
     const raw = localStorage.getItem(REL_USER_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (e) { return []; }
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) _relUserItems = parsed;
+    }
+  } catch (e) {}
+  // 2) Sonra GitHub raw'dan en güncel sürümü çek
+  try {
+    const r = await fetch(REL_DATA_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if (Array.isArray(data)) {
+      setUserReleaseItems(data);
+      if (_relRender) _relRender();
+    }
+  } catch (e) {
+    console.warn('important-dates.json çekilemedi:', e);
+  }
 }
-function saveUserReleaseItems(arr) {
-  try { localStorage.setItem(REL_USER_KEY, JSON.stringify(arr)); } catch (e) {}
+async function postReleaseAction(payload) {
+  if (_relBusy) return null;
+  _relBusy = true;
+  try {
+    const r = await fetch(REL_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const txt = await r.text();
+    let json = null;
+    try { json = JSON.parse(txt); } catch(e) {}
+    if (!r.ok || !json || json.ok !== true) {
+      throw new Error('Webhook hatası: ' + (json && json.message || txt.slice(0,200)));
+    }
+    if (Array.isArray(json.items)) setUserReleaseItems(json.items);
+    return json;
+  } catch (e) {
+    alert('Sunucuya kaydedilemedi: ' + e.message);
+    return null;
+  } finally {
+    _relBusy = false;
+  }
 }
 function openReleaseAddModal() {
   const m = document.getElementById('rel-add-modal');
@@ -4965,7 +5011,7 @@ function closeReleaseAddModal() {
   const m = document.getElementById('rel-add-modal');
   if (m) m.style.display = 'none';
 }
-function saveReleaseAddModal() {
+async function saveReleaseAddModal() {
   const title  = document.getElementById('rel-add-input-title').value.trim();
   const dateS  = document.getElementById('rel-add-input-date').value;
   const source = document.getElementById('rel-add-input-source').value.trim();
@@ -4975,23 +5021,28 @@ function saveReleaseAddModal() {
     alert('Başlık ve tarih zorunlu.');
     return;
   }
-  const items = loadUserReleaseItems();
-  items.push({
-    id: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
-    title, dateISO: dateS,
-    source: source || 'Kullanıcı',
-    cadence: note || 'Özel tarih',
-    link: link || ''
+  const saveBtn = document.querySelector('.rel-add-save');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Kaydediliyor…'; }
+  const res = await postReleaseAction({
+    action: 'add',
+    item: {
+      id: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      title, dateISO: dateS,
+      source: source || 'Kullanıcı',
+      cadence: note || 'Özel tarih',
+      link: link || ''
+    }
   });
-  saveUserReleaseItems(items);
-  closeReleaseAddModal();
-  if (_relRender) _relRender();
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Ekle'; }
+  if (res) {
+    closeReleaseAddModal();
+    if (_relRender) _relRender();
+  }
 }
-function deleteUserReleaseItem(id) {
+async function deleteUserReleaseItem(id) {
   if (!confirm('Bu özel tarihi silmek istiyor musun?')) return;
-  const items = loadUserReleaseItems().filter(x => x.id !== id);
-  saveUserReleaseItems(items);
-  if (_relRender) _relRender();
+  const res = await postReleaseAction({ action: 'delete', id });
+  if (res && _relRender) _relRender();
 }
 
 function buildReleaseCalendar() {
@@ -5211,6 +5262,8 @@ function buildReleaseCalendar() {
   });
   _relRender = () => renderMonth(activeKey);
   renderMonth(activeKey);
+  // Önemli tarihleri GitHub raw'dan çek, geldikçe yeniden render et
+  fetchUserReleaseItemsRemote();
 
   // Modal: arka plana tıklayınca kapat, ESC ile kapat
   const modal = document.getElementById('rel-add-modal');
