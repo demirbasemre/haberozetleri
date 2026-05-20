@@ -1637,6 +1637,152 @@
   .dash-rel-cadence { font-size: 10px; color: var(--text-3); margin-top: 1px; font-style: italic; }
   .dash-rel-empty   { grid-column: 1/-1; text-align: center; color: var(--text-3); font-size: 12px; padding: 28px 0; }
 
+  /* Etkinlik (hava kargo trafiği etkileyen) kartı → amber */
+  .dash-release-item.event {
+    background: hsl(33, 92%, 95%);
+    border-color: hsl(33, 78%, 80%);
+  }
+  .dash-release-item.event .dash-rel-date {
+    background: hsl(28, 78%, 46%);
+  }
+  [data-theme="dark"] .dash-release-item.event {
+    background: hsl(28, 40%, 16%);
+    border-color: hsl(28, 32%, 30%);
+  }
+  [data-theme="dark"] .dash-release-item.event .dash-rel-date {
+    background: hsl(28, 48%, 36%);
+  }
+  .dash-rel-badge.event-badge {
+    background: hsl(28, 80%, 88%);
+    color: hsl(20, 70%, 30%);
+  }
+  [data-theme="dark"] .dash-rel-badge.event-badge {
+    background: hsl(28, 30%, 24%);
+    color: hsl(28, 60%, 70%);
+  }
+
+  /* Kullanıcı eklediği özel kart */
+  .dash-release-item.custom {
+    background: hsl(264, 60%, 96%);
+    border-color: hsl(264, 40%, 82%);
+  }
+  .dash-release-item.custom .dash-rel-date {
+    background: hsl(264, 55%, 50%);
+  }
+  [data-theme="dark"] .dash-release-item.custom {
+    background: hsl(264, 30%, 18%);
+    border-color: hsl(264, 24%, 32%);
+  }
+  [data-theme="dark"] .dash-release-item.custom .dash-rel-date {
+    background: hsl(264, 40%, 38%);
+  }
+  .dash-rel-del {
+    position: absolute;
+    top: 6px; right: 8px;
+    background: transparent;
+    border: 0;
+    color: var(--text-3);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+  }
+  .dash-release-item.custom { position: relative; }
+  .dash-release-item.custom:hover .dash-rel-del { opacity: 1; }
+  .dash-rel-del:hover { background: hsl(0, 70%, 92%); color: hsl(0, 70%, 40%); }
+
+  /* "+" Ekle kartı */
+  .dash-release-add {
+    background: transparent;
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 78px;
+    cursor: pointer;
+    color: var(--text-3);
+    font-size: 11.5px;
+    font-weight: 500;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  .dash-release-add:hover {
+    border-color: hsl(211, 60%, 55%);
+    color: hsl(211, 60%, 45%);
+    background: hsl(211, 65%, 97%);
+  }
+  [data-theme="dark"] .dash-release-add:hover {
+    background: hsl(211, 25%, 16%);
+    color: hsl(211, 50%, 68%);
+  }
+  .dash-release-add svg {
+    width: 22px; height: 22px;
+    stroke: currentColor;
+  }
+
+  /* Ekleme modali */
+  .rel-add-modal {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(15, 23, 42, 0.55);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+  }
+  .rel-add-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px 16px;
+    width: 100%; max-width: 380px;
+    display: flex; flex-direction: column; gap: 10px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .rel-add-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .rel-add-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .rel-add-x {
+    background: transparent; border: 0; color: var(--text-3);
+    font-size: 22px; line-height: 1; cursor: pointer; padding: 0 4px;
+  }
+  .rel-add-x:hover { color: var(--text); }
+  .rel-add-field { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--text-2); font-weight: 600; }
+  .rel-add-field input {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 7px 9px;
+    font-size: 12.5px;
+    font-family: inherit;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .rel-add-field input:focus { border-color: hsl(211, 60%, 55%); }
+  .rel-add-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
+  .rel-add-cancel, .rel-add-save {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-2);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .rel-add-cancel:hover { background: var(--surface); color: var(--text); }
+  .rel-add-save {
+    background: hsl(211, 68%, 42%);
+    border-color: transparent;
+    color: white;
+  }
+  .rel-add-save:hover { background: hsl(211, 68%, 36%); }
+
   /* ── VERİ TAKVİMİ TIMELINE ─────────────────────────── */
   .dash-tl { margin-bottom: 14px; }
   .dash-tl-header {
@@ -2980,13 +3126,47 @@
 
     <!-- Veri takvimi -->
     <section class="dash-section" id="dash-sec-takvim">
-      <h2 class="dash-section-title">Veri Yayın Takvimi</h2>
+      <h2 class="dash-section-title">Veri Yayın Takvimi ve Önemli Tarihler</h2>
       <div class="dash-tl">
         <div class="dash-tl-track" id="tl-track"></div>
       </div>
       <div class="dash-releases" id="dash-releases"></div>
-      <div class="dash-section-note">ⓘ Tarihler yaklaşık olup yayıncı tarafından değiştirilebilir.</div>
+      <div class="dash-section-note">ⓘ Tarihler yaklaşık olup yayıncı tarafından değiştirilebilir. Kullanıcı eklemeleri tarayıcınızda saklanır.</div>
     </section>
+
+    <!-- Kullanıcı tarihi ekleme modali -->
+    <div id="rel-add-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="rel-add-title">
+      <div class="rel-add-card">
+        <div class="rel-add-head">
+          <div id="rel-add-title" class="rel-add-title">Yeni tarih ekle</div>
+          <button class="rel-add-x" onclick="closeReleaseAddModal()" aria-label="Kapat">×</button>
+        </div>
+        <label class="rel-add-field">
+          <span>Başlık</span>
+          <input id="rel-add-input-title" type="text" maxlength="80" placeholder="Örn: TIACA Air Cargo Forum">
+        </label>
+        <label class="rel-add-field">
+          <span>Tarih</span>
+          <input id="rel-add-input-date" type="date">
+        </label>
+        <label class="rel-add-field">
+          <span>Kaynak / Konum (opsiyonel)</span>
+          <input id="rel-add-input-source" type="text" maxlength="60" placeholder="Örn: Miami / IATA">
+        </label>
+        <label class="rel-add-field">
+          <span>Not (opsiyonel)</span>
+          <input id="rel-add-input-note" type="text" maxlength="80" placeholder="Örn: Yıllık · sektör etkinliği">
+        </label>
+        <label class="rel-add-field">
+          <span>Bağlantı (opsiyonel)</span>
+          <input id="rel-add-input-link" type="url" placeholder="https://...">
+        </label>
+        <div class="rel-add-actions">
+          <button class="rel-add-cancel" onclick="closeReleaseAddModal()">İptal</button>
+          <button class="rel-add-save" onclick="saveReleaseAddModal()">Ekle</button>
+        </div>
+      </div>
+    </div>
 
   </div><!-- /dashboard-panel -->
 
@@ -4754,60 +4934,257 @@ function chartErr(id, html) {
 }
 
 // ── RELEASE CALENDAR ──────────────────────────────────────────
+const REL_USER_KEY = 'cargo_release_user_items_v1'; // localStorage cache
+const REL_DATA_URL = 'https://raw.githubusercontent.com/demirbasemre/haberozetleri/main/data/important-dates.json';
+const REL_WEBHOOK_URL = 'https://n8n.emredemirbas.com/webhook/important-dates';
+let _relRender = null;
+let _relUserItems = [];   // bellekteki güncel liste (n8n + cache merge)
+let _relBusy = false;
+
+function loadUserReleaseItems() {
+  return _relUserItems;
+}
+function setUserReleaseItems(arr) {
+  _relUserItems = Array.isArray(arr) ? arr : [];
+  try { localStorage.setItem(REL_USER_KEY, JSON.stringify(_relUserItems)); } catch (e) {}
+}
+async function fetchUserReleaseItemsRemote() {
+  // 1) Önce localStorage cache'i yükle (anında render)
+  try {
+    const raw = localStorage.getItem(REL_USER_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) _relUserItems = parsed;
+    }
+  } catch (e) {}
+  // 2) Sonra GitHub raw'dan en güncel sürümü çek
+  try {
+    const r = await fetch(REL_DATA_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    if (Array.isArray(data)) {
+      setUserReleaseItems(data);
+      if (_relRender) _relRender();
+    }
+  } catch (e) {
+    console.warn('important-dates.json çekilemedi:', e);
+  }
+}
+async function postReleaseAction(payload) {
+  if (_relBusy) return null;
+  _relBusy = true;
+  try {
+    const r = await fetch(REL_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const txt = await r.text();
+    let json = null;
+    try { json = JSON.parse(txt); } catch(e) {}
+    if (!r.ok || !json || json.ok !== true) {
+      throw new Error('Webhook hatası: ' + (json && json.message || txt.slice(0,200)));
+    }
+    if (Array.isArray(json.items)) setUserReleaseItems(json.items);
+    return json;
+  } catch (e) {
+    alert('Sunucuya kaydedilemedi: ' + e.message);
+    return null;
+  } finally {
+    _relBusy = false;
+  }
+}
+function openReleaseAddModal() {
+  const m = document.getElementById('rel-add-modal');
+  if (!m) return;
+  document.getElementById('rel-add-input-title').value = '';
+  const today = new Date();
+  const iso = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  document.getElementById('rel-add-input-date').value = iso;
+  document.getElementById('rel-add-input-source').value = '';
+  document.getElementById('rel-add-input-note').value = '';
+  document.getElementById('rel-add-input-link').value = '';
+  m.style.display = 'flex';
+  setTimeout(() => document.getElementById('rel-add-input-title').focus(), 30);
+}
+function closeReleaseAddModal() {
+  const m = document.getElementById('rel-add-modal');
+  if (m) m.style.display = 'none';
+}
+async function saveReleaseAddModal() {
+  const title  = document.getElementById('rel-add-input-title').value.trim();
+  const dateS  = document.getElementById('rel-add-input-date').value;
+  const source = document.getElementById('rel-add-input-source').value.trim();
+  const note   = document.getElementById('rel-add-input-note').value.trim();
+  const link   = document.getElementById('rel-add-input-link').value.trim();
+  if (!title || !dateS) {
+    alert('Başlık ve tarih zorunlu.');
+    return;
+  }
+  const saveBtn = document.querySelector('.rel-add-save');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Kaydediliyor…'; }
+  const res = await postReleaseAction({
+    action: 'add',
+    item: {
+      id: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      title, dateISO: dateS,
+      source: source || 'Kullanıcı',
+      cadence: note || 'Özel tarih',
+      link: link || ''
+    }
+  });
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Ekle'; }
+  if (res) {
+    closeReleaseAddModal();
+    if (_relRender) _relRender();
+  }
+}
+async function deleteUserReleaseItem(id) {
+  if (!confirm('Bu özel tarihi silmek istiyor musun?')) return;
+  const res = await postReleaseAction({ action: 'delete', id });
+  if (res && _relRender) _relRender();
+}
+
 function buildReleaseCalendar() {
   const now = new Date();
   const TR_M      = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
   const TR_M_FULL = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
-  function abs(y, m, day) { return new Date(y, m, day); }
-  function nextWed() {
-    const d = new Date(now);
-    d.setDate(d.getDate() + ((3 - d.getDay() + 7) % 7 || 7));
-    return d;
+  function abs(y, m, day) { return new Date(y, m - 1, day); } // m: 1–12 (gerçek ay)
+
+  // Sonraki 4 Çarşambayı üret (EIA haftalık raporu için)
+  function nextWednesdays(n) {
+    const out = [];
+    const d = new Date(now); d.setHours(0,0,0,0);
+    const offset = ((3 - d.getDay() + 7) % 7) || 7; // bir sonraki Çarşamba
+    d.setDate(d.getDate() + offset);
+    for (let i = 0; i < n; i++) {
+      out.push(new Date(d));
+      d.setDate(d.getDate() + 7);
+    }
+    return out;
   }
 
-  const allItems = [
-    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,1,6),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
-    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,1,11), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/', announced: true },
-    { title: 'IATA Hava Kargo Aylık Analizi',        source: 'IATA',       date: abs(2026,1,26), cadence: 'Aylık · ~4. hafta',                    link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/', announced: true },
-    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,2,6),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
-    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,2,12), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/', announced: true },
-    { title: 'IATA Hava Kargo Aylık Analizi',        source: 'IATA',       date: abs(2026,2,26), cadence: 'Aylık · ~4. hafta',                    link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/', announced: true },
-    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,3,3),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
-    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,3,11), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/', announced: true },
-    { title: 'IATA Hava Kargo Aylık Analizi',        source: 'IATA',       date: abs(2026,3,24), cadence: 'Aylık · ~4. hafta',                    link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/', announced: true },
-    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,4,2),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm', announced: true },
-    { title: 'EIA Weekly Petroleum Status Report',   source: 'U.S. EIA',   date: abs(2026,4,7),  cadence: 'Her Çarşamba',                        link: 'https://www.eia.gov/petroleum/supply/weekly/', announced: true },
-    { title: 'EIA Weekly Petroleum Status Report',   source: 'U.S. EIA',   date: nextWed(),      cadence: 'Her Çarşamba',                        link: 'https://www.eia.gov/petroleum/supply/weekly/' },
-    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,4,13), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/' },
-    { title: 'IATA Hava Kargo Aylık Analizi',        source: 'IATA',       date: abs(2026,4,28), cadence: 'Aylık · ~4. hafta',                    link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'OECD Economic Outlook',                source: 'OECD',       date: abs(2026,5,4),  cadence: 'Yılda 2x · Haz & Kas',                link: 'https://www.oecd.org/economic-outlook/' },
-    { title: 'World Bank Global Economic Prospects', source: 'World Bank', date: abs(2026,5,11), cadence: 'Yılda 2x · Oca & Haz',                link: 'https://www.worldbank.org/en/publication/global-economic-prospects' },
-    { title: 'ABD İstihdam Raporu (NFP)',            source: 'BLS',        date: abs(2026,5,5),  cadence: 'Aylık · İlk Cuma',                    link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
-    { title: 'ABD TÜFE Raporu',                      source: 'BLS',        date: abs(2026,5,11), cadence: 'Aylık · ~13–15.',                      link: 'https://www.bls.gov/cpi/' },
-    { title: 'IMF World Economic Outlook Update',    source: 'IMF',        date: abs(2026,6,15), cadence: 'Yılda 4x · Oca Nis Tem Eki',          link: 'https://www.imf.org/en/Publications/WEO' },
-  ].sort((a, b) => a.date - b.date);
+  // Veri yayın takvimi 2026 — yayıncıların duyurduğu/öngörülen tarihler
+  const dataItems = [
+    // BLS — İstihdam Raporu (NFP) · her ayın ilk Cuma'sı
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026, 1, 2),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026, 2, 6),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026, 3, 6),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026, 4, 3),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026, 5, 1),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026, 6, 5),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026, 7, 2),  cadence: 'Aylık · İlk Cuma (4 Tem öncesi)', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026, 8, 7),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026, 9, 4),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026,10, 2),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026,11, 6),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
+    { title: 'ABD İstihdam Raporu (NFP)', source: 'BLS', date: abs(2026,12, 4),  cadence: 'Aylık · İlk Cuma', link: 'https://www.bls.gov/news.release/empsit.toc.htm' },
 
-  const todayKey = `${now.getFullYear()}-${now.getMonth()}`;
-  const monthKeys = [...new Set(allItems.map(r => `${r.date.getFullYear()}-${r.date.getMonth()}`))];
+    // BLS — TÜFE (CPI) · genelde 10–15 arası
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026, 1, 14), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026, 2, 11), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026, 3, 12), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026, 4, 14), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026, 5, 13), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026, 6, 11), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026, 7, 14), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026, 8, 12), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026, 9, 10), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026,10, 14), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026,11, 12), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
+    { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026,12, 10), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
 
-  let activeKey = monthKeys.includes(todayKey)
-    ? todayKey
-    : monthKeys.find(k => k > todayKey) || monthKeys[monthKeys.length - 1];
+    // IATA — Hava Kargo Aylık Analizi · ~ayın son haftası
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 1, 28), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 2, 25), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 3, 25), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 4, 29), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 5, 28), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 6, 24), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 7, 29), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 8, 26), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 9, 30), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026,10, 28), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026,11, 25), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026,12, 16), cadence: 'Aylık · yıl sonu', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
 
+    // Diğer küresel makro yayınlar
+    { title: 'IMF World Economic Outlook Update', source: 'IMF',        date: abs(2026, 1, 20), cadence: 'Yılda 4x · Oca Nis Tem Eki', link: 'https://www.imf.org/en/Publications/WEO' },
+    { title: 'World Bank Global Economic Prospects', source: 'World Bank', date: abs(2026, 6, 9),  cadence: 'Yılda 2x · Oca & Haz',       link: 'https://www.worldbank.org/en/publication/global-economic-prospects' },
+    { title: 'IMF World Economic Outlook',         source: 'IMF',        date: abs(2026, 4, 14), cadence: 'Yılda 4x',                  link: 'https://www.imf.org/en/Publications/WEO' },
+    { title: 'OECD Economic Outlook',              source: 'OECD',       date: abs(2026, 6, 3),  cadence: 'Yılda 2x · Haz & Kas',       link: 'https://www.oecd.org/economic-outlook/' },
+    { title: 'OECD Economic Outlook',              source: 'OECD',       date: abs(2026,11,25), cadence: 'Yılda 2x · Haz & Kas',       link: 'https://www.oecd.org/economic-outlook/' },
+
+    // EIA — Haftalık Petrol Stok Raporu (önümüzdeki 4 Çarşamba)
+    ...nextWednesdays(4).map(d => ({
+      title: 'EIA Weekly Petroleum Status Report',
+      source: 'U.S. EIA', date: d, cadence: 'Her Çarşamba',
+      link: 'https://www.eia.gov/petroleum/supply/weekly/'
+    })),
+  ];
+
+  // Hava kargo trafiğini etkileyen önemli tarihler 2026
+  const eventItems = [
+    { title: 'Çin Yeni Yılı (At Yılı)',                          source: 'Çin',          date: abs(2026, 2, 17), cadence: 'Fabrikalar ~1–2 hafta kapalı · ön-tatil sevkiyat zirvesi', kind: 'event' },
+    { title: 'CNY Resmi Tatil Dönemi',                           source: 'Çin',          date: abs(2026, 2, 16), cadence: '16–22 Şub · doğu-batı kapasitesi sıkışır',                 kind: 'event' },
+    { title: 'Ramazan Başlangıcı',                               source: 'MEASA',        date: abs(2026, 2, 17), cadence: 'Körfez & MENA trafiğinde yavaşlama',                       kind: 'event' },
+    { title: 'IATA World Cargo Symposium',                       source: 'IATA · Hong Kong', date: abs(2026, 3, 10), cadence: 'Yıllık sektör zirvesi (10–12 Mar, tahmini)',           kind: 'event', link: 'https://www.iata.org/en/events/wcs/' },
+    { title: 'Ramazan Bayramı (Eid al-Fitr)',                    source: 'MEASA',        date: abs(2026, 3, 20), cadence: 'Körfez & Türkiye 3–4 gün resmi tatil',                     kind: 'event' },
+    { title: 'Paskalya',                                         source: 'Avrupa & ABD', date: abs(2026, 4, 5),  cadence: 'AB & ABD’de uzun hafta sonu · perakende öncesi',          kind: 'event' },
+    { title: 'Hannover Messe',                                   source: 'Almanya',      date: abs(2026, 4, 20), cadence: 'Endüstri fuarı · AB içi kargo hareketliliği',              kind: 'event' },
+    { title: 'Çin İşçi Bayramı Golden Week',                     source: 'Çin',          date: abs(2026, 5, 1),  cadence: '1–5 May · fabrika kapanışı, kapasite daralması',          kind: 'event' },
+    { title: 'ABD Memorial Day',                                 source: 'ABD',          date: abs(2026, 5, 25), cadence: 'ABD tatili · kargo işleme yavaşlar',                       kind: 'event' },
+    { title: 'Kurban Bayramı (Eid al-Adha)',                     source: 'MEASA',        date: abs(2026, 5, 27), cadence: 'Körfez & Türkiye uzun tatil',                              kind: 'event' },
+    { title: 'Farnborough International Air Show',               source: 'UK',           date: abs(2026, 7, 20), cadence: '20–24 Tem · havacılık sektör buluşması',                   kind: 'event', link: 'https://www.farnboroughairshow.com/' },
+    { title: 'ABD Bağımsızlık Günü',                             source: 'ABD',          date: abs(2026, 7, 3),  cadence: '4 Tem (Cumartesi) → 3 Tem resmi · ABD yavaşlar',          kind: 'event' },
+    { title: 'Çin Milli Bayramı Golden Week',                    source: 'Çin',          date: abs(2026,10, 1),  cadence: '1–7 Eki · Çin üretimi durur',                              kind: 'event' },
+    { title: 'Diwali',                                           source: 'Hindistan',    date: abs(2026,11, 8),  cadence: 'Güney Asya trafiğinde tatil etkisi',                       kind: 'event' },
+    { title: 'Çin Uluslararası İthalat Fuarı (CIIE)',            source: 'Şanghay',      date: abs(2026,11, 5),  cadence: '5–10 Kas · Çin gümrük & lojistik yoğunluğu',               kind: 'event', link: 'https://www.ciie.org/' },
+    { title: 'Singles’ Day (11.11)',                             source: 'Çin',          date: abs(2026,11,11),  cadence: 'Çin e-ticaret zirvesi · cross-border kapasite zirvesi',    kind: 'event' },
+    { title: 'ABD Şükran Günü',                                  source: 'ABD',          date: abs(2026,11,26),  cadence: 'ABD tatili · Black Friday öncesi',                         kind: 'event' },
+    { title: 'Black Friday',                                     source: 'Küresel',      date: abs(2026,11,27),  cadence: 'Perakende zirvesi · ekspres kargo doruğu',                 kind: 'event' },
+    { title: 'Cyber Monday',                                     source: 'Küresel',      date: abs(2026,11,30),  cadence: 'Online perakende zirvesi · ekspres kargo doruğu',          kind: 'event' },
+    { title: 'Yılbaşı Sevkiyat Cut-off',                         source: 'Küresel',      date: abs(2026,12,15),  cadence: 'Çoğu havayolu yılbaşı son sevkiyat tarihi',                 kind: 'event' },
+    { title: 'Noel',                                             source: 'Avrupa & ABD', date: abs(2026,12,25),  cadence: 'Batı pazarlarında uzun tatil',                              kind: 'event' },
+  ];
+
+  function combinedItems() {
+    const user = loadUserReleaseItems().map(u => ({
+      title:   u.title,
+      source:  u.source || 'Kullanıcı',
+      date:    new Date(u.dateISO + 'T00:00:00'),
+      cadence: u.cadence || '',
+      link:    u.link || '',
+      kind:    'custom',
+      id:      u.id
+    }));
+    return [...dataItems, ...eventItems, ...user]
+      .filter(r => r.date instanceof Date && !isNaN(r.date))
+      .sort((a, b) => a.date - b.date);
+  }
+
+  // Ay başlığı seçici — tüm 12 ay görünsün
+  const year = now.getFullYear();
+  const monthKeys = [];
+  for (let m = 0; m < 12; m++) monthKeys.push(`${year}-${m}`);
+  const todayKey = `${year}-${now.getMonth()}`;
+
+  let activeKey = todayKey;
   const track = document.getElementById('tl-track');
   track.innerHTML = monthKeys.map(k => {
     const [ky, km] = k.split('-').map(Number);
-    const isPast    = k < todayKey;
-    const isToday   = k === todayKey;
-    const dot       = isToday ? '<span class="dash-tl-dot"></span>' : '';
-    const yearSuffix = ky !== now.getFullYear() ? ` ${ky}` : '';
+    const isPast  = k < todayKey;
+    const isToday = k === todayKey;
+    const dot     = isToday ? '<span class="dash-tl-dot"></span>' : '';
     return `<button class="dash-tl-pill${isPast ? ' past' : ''}${isToday ? ' today-month' : ''}"
-      data-key="${k}" aria-label="${TR_M_FULL[km]}${yearSuffix}"
-    >${dot}${TR_M[km]}${yearSuffix ? `<span style="opacity:.65;font-weight:400;font-size:10px"> ${ky}</span>` : ''}</button>`;
+      data-key="${k}" aria-label="${TR_M_FULL[km]} ${ky}"
+    >${dot}${TR_M[km]}</button>`;
   }).join('');
 
   const checkSvg = `<svg width="9" height="9" viewBox="0 0 10 10" fill="none" style="flex-shrink:0"><path d="M1.5 5l2.8 2.8 4.2-5.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const eventSvg = `<svg width="9" height="9" viewBox="0 0 10 10" fill="none" style="flex-shrink:0"><circle cx="5" cy="5" r="3.4" stroke="currentColor" stroke-width="1.6"/></svg>`;
+  const plusSvg  = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`;
 
   function renderMonth(key) {
     activeKey = key;
@@ -4815,30 +5192,56 @@ function buildReleaseCalendar() {
     const activePill = track.querySelector('.dash-tl-pill.active');
     if (activePill) activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
-    const items = allItems.filter(r => `${r.date.getFullYear()}-${r.date.getMonth()}` === key);
+    const all = combinedItems();
+    const items = all.filter(r => `${r.date.getFullYear()}-${r.date.getMonth()}` === key);
+    const addCardHtml = `
+      <button class="dash-release-add" type="button" onclick="openReleaseAddModal()" aria-label="Yeni tarih ekle">
+        ${plusSvg}
+        <span>Yeni tarih ekle</span>
+      </button>`;
+
     if (!items.length) {
       document.getElementById('dash-releases').innerHTML =
-        '<div class="dash-rel-empty">Bu ay için planlanmış yayın bulunamadı.</div>';
+        `<div class="dash-rel-empty">Bu ay için kayıtlı tarih yok.</div>` + addCardHtml;
       return;
     }
 
     document.getElementById('dash-releases').innerHTML = items.map(r => {
-      const isAnnounced = !!r.announced;
+      const isEvent  = r.kind === 'event';
+      const isCustom = r.kind === 'custom';
+      const isAnnounced = !isEvent && !isCustom && (r.date < now);
+
       let fadeAttr = '';
-      if (isAnnounced) {
+      let itemClass = 'dash-release-item ';
+      if (isCustom) itemClass += 'custom';
+      else if (isEvent) itemClass += 'event';
+      else if (isAnnounced) {
         const daysSince = Math.max(0, (now - r.date) / 86400000);
         const fade = Math.min(daysSince / 90, 1).toFixed(3);
         fadeAttr = ` style="--fade:${fade}"`;
-      }
-      const itemClass = `dash-release-item ${isAnnounced ? 'announced' : 'upcoming'}`;
-      const tag       = isAnnounced ? 'a' : 'div';
-      const linkAttr  = isAnnounced ? ` href="${r.link}" target="_blank" rel="noopener"` : '';
-      const badge     = isAnnounced ? `<div class="dash-rel-badge">${checkSvg} Veri Açıklandı</div>` : '';
-      const titleInner = isAnnounced
+        itemClass += 'announced';
+      } else itemClass += 'upcoming';
+
+      const hasLink   = !!r.link;
+      const tag       = hasLink && (isAnnounced || isEvent) ? 'a' : 'div';
+      const linkAttr  = (tag === 'a') ? ` href="${r.link}" target="_blank" rel="noopener"` : '';
+
+      let badge = '';
+      if (isCustom)      badge = `<div class="dash-rel-badge event-badge" style="background:hsl(264,55%,90%);color:hsl(264,55%,32%)">Özel</div>`;
+      else if (isEvent)  badge = `<div class="dash-rel-badge event-badge">${eventSvg} Sektör/Tatil</div>`;
+      else if (isAnnounced) badge = `<div class="dash-rel-badge">${checkSvg} Veri Açıklandı</div>`;
+
+      const titleInner = (tag === 'a' || !hasLink)
         ? r.title
         : `<a href="${r.link}" target="_blank" rel="noopener">${r.title}</a>`;
+
+      const delBtn = isCustom
+        ? `<button class="dash-rel-del" onclick="event.preventDefault();event.stopPropagation();deleteUserReleaseItem('${r.id}')" aria-label="Sil" title="Sil">×</button>`
+        : '';
+
       return `
       <${tag} class="${itemClass}"${linkAttr}${fadeAttr}>
+        ${delBtn}
         <div class="dash-rel-date">
           <div class="dash-rel-date-m">${TR_M[r.date.getMonth()]}</div>
           <div class="dash-rel-date-d">${r.date.getDate()}</div>
@@ -4846,18 +5249,32 @@ function buildReleaseCalendar() {
         <div>
           ${badge}
           <div class="dash-rel-title">${titleInner}</div>
-          <div class="dash-rel-source">${r.source}</div>
-          <div class="dash-rel-cadence">${r.cadence}</div>
+          <div class="dash-rel-source">${r.source || ''}</div>
+          <div class="dash-rel-cadence">${r.cadence || ''}</div>
         </div>
       </${tag}>`;
-    }).join('');
+    }).join('') + addCardHtml;
   }
 
   track.addEventListener('click', e => {
     const pill = e.target.closest('.dash-tl-pill');
     if (pill) renderMonth(pill.dataset.key);
   });
+  _relRender = () => renderMonth(activeKey);
   renderMonth(activeKey);
+  // Önemli tarihleri GitHub raw'dan çek, geldikçe yeniden render et
+  fetchUserReleaseItemsRemote();
+
+  // Modal: arka plana tıklayınca kapat, ESC ile kapat
+  const modal = document.getElementById('rel-add-modal');
+  if (modal) {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeReleaseAddModal();
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeReleaseAddModal();
+  });
 }
 
 // ── MAIN LOAD ─────────────────────────────────────────────────
