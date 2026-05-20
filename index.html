@@ -4702,6 +4702,7 @@ function barChart(id, labels, data, colors, opts = {}) {
     options: {
       ...CHART_DEFAULTS,
       indexAxis: 'y',
+      interaction: { mode: 'nearest', axis: 'y', intersect: true },
       layout: { padding: { left: 80, right: 60, top: 10, bottom: 10 } },
       onClick: onBarClick ? (evt, els) => {
         if (els && els.length) onBarClick(els[0].index, evt);
@@ -5092,8 +5093,9 @@ async function loadDashboard() {
       `IMF WEO · ${yearTag}`
     );
 
-    // Tıklanınca Türkiye detay popover'ı aç (chart-gdp cache hazır olduktan sonra çalışır)
+    // Tıklanınca Türkiye detay popover'ı aç — chart modunda değilse
     document.getElementById('dc-imf').addEventListener('click', () => {
+      if (document.getElementById('dc-imf').classList.contains('is-chart-mode')) return;
       if (_imfCache['chart-gdp']) {
         openForecastPopover('chart-gdp', 'TUR');
       }
@@ -5344,10 +5346,11 @@ async function loadDashboard() {
     const indLabel = isCpi ? 'TÜFE Enflasyonu' : 'GSYH Büyümesi';
     card.querySelector('.dcimf-hd-title').textContent = `${countryName} · ${indLabel}`;
 
-    // Kart: grafik moduna geç
+    // Kart: grafik moduna geç — önce CSS uygulansın, sonra Chart.js canvas ölçsün
     card.classList.add('is-chart-mode');
     card.classList.remove('dash-card-clickable');
 
+    requestAnimationFrame(() => { requestAnimationFrame(() => {
     _dcImfLineChart = new Chart(canvas.getContext('2d'), {
       type: 'line',
       data: {
@@ -5414,6 +5417,7 @@ async function loadDashboard() {
       card.classList.remove('is-chart-mode');
       card.classList.add('dash-card-clickable');
     };
+    }); }); // requestAnimationFrame kapanışı
   }
 }
 </script>
