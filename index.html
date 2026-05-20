@@ -1371,10 +1371,14 @@
     font-weight: 600; color: var(--text); letter-spacing: 0.01em;
   }
   #forecast-popover .fpop-year em {
-    font-style: normal; font-weight: 500; font-size: 9.5px;
-    text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--text-3, #6B7280); margin-left: 4px;
+    font-style: normal; font-weight: 500; font-size: 9px;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    margin-left: 5px; padding: 1px 5px; border-radius: 4px;
+    vertical-align: middle;
   }
+  #forecast-popover .fpop-year em.actual   { background: rgba(16,185,129,0.12); color: #059669; }
+  #forecast-popover .fpop-year em.estimate { background: rgba(245,158,11,0.14); color: #D97706; }
+  #forecast-popover .fpop-year em.forecast { background: rgba(99,102,241,0.12); color: #6366F1; }
   #forecast-popover .fpop-bar-track {
     position: relative; height: 8px; background: var(--hover, rgba(0,0,0,0.04));
     border-radius: 999px; overflow: hidden;
@@ -1393,6 +1397,7 @@
     margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border, #e5e7eb);
     font-size: 10.5px; color: var(--text-3, #6B7280); font-style: italic;
   }
+  #forecast-popover .fpop-foot a { color: inherit; text-decoration: underline; }
   .dash-chart-meta {
     font-size: 10.5px;
     color: var(--text-3);
@@ -2376,14 +2381,7 @@
   }
 
   /* ── EDIT MODE ───────────────────────────────────────────── */
-  .edit-trigger {
-    position: fixed; bottom: 8px; right: 10px; width: 14px; height: 14px;
-    opacity: 0.18; cursor: pointer; z-index: 200; border-radius: 50%;
-    background: var(--text-3); border: none; padding: 0;
-    transition: opacity 0.2s, transform 0.2s;
-  }
-  .edit-trigger:hover { opacity: 0.6; transform: scale(1.15); }
-  body.edit-mode .edit-trigger { opacity: 0.95; background: var(--red); }
+  .edit-trigger { display: none; }
 
   body.edit-mode .edit-banner {
     position: fixed; top: 60px; left: 0; right: 0; z-index: 99;
@@ -3186,7 +3184,7 @@ function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
   if (isNaN(d)) return dateStr;
-  return d.toLocaleDateString('tr-TR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function formatDateShort(dateStr) {
@@ -4479,11 +4477,11 @@ async function fxFetch() {
 }
 
 async function imfFetch() {
-  const currentYear = new Date().getFullYear();
-  const periods = [currentYear - 1, currentYear, currentYear + 1].join(',');
-  const r = await fetch(`https://www.imf.org/external/datamapper/api/v1/NGDP_RPCH?periods=${periods}`);
-  if (!r.ok) throw new Error('IMF ' + r.status);
-  return r.json();
+  // n8n webhook üzerinden çek (IMF API CORS engelliyor)
+  const j = await _fetchN8nImf();
+  // n8n formatı: { NGDP_RPCH: { WEOWORLD: { "2025": 3.2, ... } } }
+  // Eski imf.values.NGDP_RPCH.WEOWORLD formatıyla uyumlu hale getir
+  return { values: j };
 }
 
 // n8n webhook'tan gelen IMF verisi cache'i (tek fetch, hem GDP hem CPI)
@@ -5118,7 +5116,9 @@ async function loadDashboard() {
       const yearCounts = {};
       dataC.forEach(c => { const y = latestByC[c].year; yearCounts[y] = (yearCounts[y]||0)+1; });
       const dominantYear = Object.entries(yearCounts).sort((a,b) => b[1]-a[1])[0][0];
-      document.getElementById(metaId).textContent = `Son veri: ${dominantYear} · IMF WEO`;
+      const domYearNum = Number(dominantYear);
+      const domLabel = domYearNum <= 2024 ? 'gerçekleşen' : domYearNum === 2025 ? 'tahmini' : 'öngörü';
+      document.getElementById(metaId).textContent = `Son veri: ${dominantYear} (${domLabel}) · IMF WEO`;
 
       // ── Update section note dynamically (runs after both charts load) ──
       const noteEl = document.getElementById('imf-section-note');
@@ -5137,7 +5137,7 @@ async function loadDashboard() {
         const forecastPart = forecastMin
           ? `; <strong>${forecastMin}–${forecastMax}</strong> yılları IMF tahmini`
           : '';
-        noteEl.innerHTML = `ⓘ Gösterilen veri <strong>${dominantYear}</strong> yılına aittir (IMF WEO, fiili/tahmin karışık)${forecastPart}. Bir çubuğa tıklayarak geçmişi ve tahminleri görebilirsin. Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a>`;
+        noteEl.innerHTML = `ⓘ Gösterilen değer <strong>${dominantYear}</strong> yılına aittir · ≤2024 gerçekleşen, 2025 tahmini${forecastMin ? `, ${forecastMin}–${forecastMax} öngörü` : ''}. Tüm veriler <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>'dan alınmaktadır. Çubuğa tıklayarak yıllık dizi görüntülenebilir.`;
       }
     } catch (e) {
       console.error('[IMF chart error]', chartId, e?.message || e);
@@ -5172,22 +5172,28 @@ async function loadDashboard() {
       return '#059669';
     };
 
+    // IMF WEO Nisan 2026: ≤2024 gerçekleşen, 2025 tahmini, ≥2026 öngörü
+    const ACTUAL_MAX = 2024;
+    const ESTIMATE_YEAR = 2025;
+
     const maxAbs = Math.max(...shown.map(y => Math.abs(series[y])), 1);
     const rows = shown.map(y => {
       const v = series[y];
-      const isFuture = y > currentYear;
+      const isForecast = y >= ESTIMATE_YEAR;
       const barW = (Math.abs(v) / maxAbs) * 100;
       const sign = v > 0 ? '+' : '';
-      return `<div class="fpop-row${isFuture ? ' fpop-future' : ''}">
-        <span class="fpop-year">${y}${isFuture ? ' <em>tahmin</em>' : ''}</span>
+      let yearLabel;
+      if (y <= ACTUAL_MAX)       yearLabel = `${y} <em class="fpop-tag actual">Gerçekleşen</em>`;
+      else if (y === ESTIMATE_YEAR) yearLabel = `${y} <em class="fpop-tag estimate">Tahmini</em>`;
+      else                       yearLabel = `${y} <em class="fpop-tag forecast">Öngörü</em>`;
+      return `<div class="fpop-row${isForecast ? ' fpop-future' : ''}">
+        <span class="fpop-year">${yearLabel}</span>
         <span class="fpop-bar-track"><span class="fpop-bar-fill" style="width:${barW.toFixed(1)}%; background:${colorFor(v)}"></span></span>
         <span class="fpop-val" style="color:${colorFor(v)}">${sign}${v.toFixed(1)}%</span>
       </div>`;
     }).join('');
 
-    const futureNote = future.length
-      ? `<div class="fpop-foot">İleri yıllar IMF Nisan 2026 WEO tahminidir.</div>`
-      : `<div class="fpop-foot">Bu ülke için ileri yıl tahmini bulunmuyor.</div>`;
+    const futureNote = `<div class="fpop-foot">Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>${future.length ? ' · ' + future.length + ' yıl öngörü içerir' : ' · Öngörü yok'}</div>`;
 
     const pop = document.getElementById('forecast-popover');
     pop.innerHTML = `
@@ -5874,14 +5880,6 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
       <button type="button" data-cmd="bold" title="Kalın"><b>B</b></button>
       <button type="button" data-cmd="italic" title="İtalik"><i>I</i></button>
       <span class="sep"></span>
-      <span class="swatch" data-color="#E63946" style="background:#E63946" title="Kırmızı"></span>
-      <span class="swatch" data-color="#1D6FE8" style="background:#1D6FE8" title="Mavi"></span>
-      <span class="swatch" data-color="#059669" style="background:#059669" title="Yeşil"></span>
-      <span class="swatch" data-color="#DB2777" style="background:#DB2777" title="Pembe"></span>
-      <span class="swatch" data-color="#EA580C" style="background:#EA580C" title="Turuncu"></span>
-      <span class="swatch" data-color="#C8102E" style="background:#C8102E" title="THY Kırmızı"></span>
-      <input type="color" data-cmd="foreColor" title="Özel renk">
-      <span class="sep"></span>
       <button type="button" data-cmd="removeFormat" title="Biçimi temizle">⌫</button>
     </div>
     <div class="ce" id="edit-title" contenteditable="true"></div>
@@ -6227,25 +6225,17 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
     });
   });
 
-  // Hidden trigger
+  // Düzenleme modu — yalnızca URL parametresiyle (?edit=1)
   window.toggleEditMode = function(on) {
     const want = (typeof on === 'boolean') ? on : !document.body.classList.contains('edit-mode');
     document.body.classList.toggle('edit-mode', want);
-    try { localStorage.setItem('news-edit-mode', want ? '1' : '0'); } catch(e) {}
   };
-  document.getElementById('editTrigger').addEventListener('click', () => window.toggleEditMode());
   document.addEventListener('keydown', e => {
-    if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
-      e.preventDefault();
-      window.toggleEditMode();
-    }
     if (e.key === 'Escape' && document.getElementById('editorModal').classList.contains('open')) {
       window.closeNewsEditor();
     }
   });
-  // Auto-enable from URL or last state
-  const qp = new URLSearchParams(location.search);
-  if (qp.has('edit') || localStorage.getItem('news-edit-mode') === '1') {
+  if (new URLSearchParams(location.search).has('edit')) {
     window.toggleEditMode(true);
   }
 })();
