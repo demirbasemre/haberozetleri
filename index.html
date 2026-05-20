@@ -1354,6 +1354,39 @@
     font-size: 18px; line-height: 1; color: var(--text-3, #6B7280); cursor: pointer;
   }
   #forecast-popover .fpop-close:hover { background: var(--hover, rgba(0,0,0,0.04)); color: var(--text); }
+  /* Popover — grafik düğmesi */
+  .fpop-chart-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 8px; padding: 5px 10px;
+    background: rgba(29,111,232,0.08); border: 1px solid rgba(29,111,232,0.2);
+    border-radius: 7px; color: #1D6FE8; font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: background .15s, border-color .15s;
+  }
+  .fpop-chart-btn:hover { background: rgba(29,111,232,0.14); border-color: rgba(29,111,232,0.35); }
+  .fpop-chart-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+  /* dc-imf kart — chart mode */
+  #dc-imf-chart-mode { display: none; flex-direction: column; gap: 6px; height: 100%; }
+  #dc-imf.is-chart-mode { cursor: default; min-height: 210px; }
+  #dc-imf.is-chart-mode #dc-imf-normal { display: none; }
+  #dc-imf.is-chart-mode #dc-imf-chart-mode { display: flex; }
+  .dcimf-hd { display: flex; align-items: center; justify-content: space-between; }
+  .dcimf-hd-title { font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--text-3, #6B7280); }
+  .dcimf-back {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 5px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-3); cursor: pointer;
+    transition: background .15s; flex-shrink: 0;
+  }
+  .dcimf-back:hover { background: var(--hover); color: var(--text); }
+  .dcimf-back svg { width: 12px; height: 12px; }
+  .dcimf-canvas-wrap { flex: 1; min-height: 120px; position: relative; }
+  .dcimf-canvas-wrap canvas { position: absolute; inset: 0; }
+  .dcimf-leg { display: flex; gap: 10px; flex-wrap: wrap; }
+  .dcimf-leg-i { font-size: 9.5px; color: var(--text-3); font-weight: 500;
+    display: flex; align-items: center; gap: 4px; }
+  .dcimf-leg-i::before { content: ''; display: inline-block; width: 8px; height: 8px;
+    border-radius: 2px; background: var(--c); flex-shrink: 0; }
   #forecast-popover .fpop-head { margin-bottom: 14px; padding-right: 26px; }
   #forecast-popover .fpop-country {
     font-family: 'DM Serif Display', Georgia, serif;
@@ -2785,11 +2818,29 @@
           <div class="dash-card-note">ER-API · Günlük</div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-imf" title="Türkiye yıllık dizi için tıkla">
-          <div class="dash-card-label">Türkiye GSYH Büyümesi</div>
-          <div class="dash-card-value skeleton">&nbsp;</div>
-          <div class="dash-card-change"></div>
-          <div class="dash-card-sub">—</div>
-          <div class="dash-card-note">IMF WEO · Detay için tıkla ↗</div>
+          <!-- Normal görünüm -->
+          <div id="dc-imf-normal">
+            <div class="dash-card-label">Türkiye GSYH Büyümesi</div>
+            <div class="dash-card-value skeleton">&nbsp;</div>
+            <div class="dash-card-change"></div>
+            <div class="dash-card-sub">—</div>
+            <div class="dash-card-note">IMF WEO · Detay için tıkla ↗</div>
+          </div>
+          <!-- Grafik modu (gizli) -->
+          <div id="dc-imf-chart-mode">
+            <div class="dcimf-hd">
+              <span class="dcimf-hd-title">Türkiye · GSYH Büyümesi</span>
+              <button class="dcimf-back" id="dc-imf-back" aria-label="Normal görünüme dön" title="Geri dön">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+              </button>
+            </div>
+            <div class="dcimf-canvas-wrap"><canvas id="dc-imf-canvas"></canvas></div>
+            <div class="dcimf-leg">
+              <span class="dcimf-leg-i" style="--c:#1D6FE8">Gerçekleşen</span>
+              <span class="dcimf-leg-i" style="--c:#D97706">Tahmini</span>
+              <span class="dcimf-leg-i" style="--c:#6366F1">Öngörü</span>
+            </div>
+          </div>
         </div>
         <div class="dash-card" id="dc-gdp">
           <div class="dash-card-label">Küresel GDP Büyümesi</div>
@@ -5217,16 +5268,36 @@ async function loadDashboard() {
 
     const futureNote = `<div class="fpop-foot">Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>${future.length ? ' · ' + future.length + ' yıl öngörü içerir' : ' · Öngörü yok'}</div>`;
 
+    // Grafik düğmesi: GDP chart'ından açıldıysa göster
+    const chartBtnHtml = (chartId === 'chart-gdp')
+      ? `<button class="fpop-chart-btn" id="fpop-chart-trigger" aria-label="Çizgi grafik olarak göster">
+           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+             <polyline points="1,12 5,7 8,9 12,4 15,6"/>
+             <line x1="1" y1="15" x2="15" y2="15"/>
+           </svg>
+           Çizgi grafik
+         </button>`
+      : '';
+
     const pop = document.getElementById('forecast-popover');
     pop.innerHTML = `
       <button class="fpop-close" aria-label="Kapat" onclick="document.getElementById('forecast-popover').classList.remove('open')">×</button>
       <div class="fpop-head">
         <div class="fpop-country">${name}</div>
         <div class="fpop-indicator">${indicatorLabel}</div>
+        ${chartBtnHtml}
       </div>
       <div class="fpop-rows">${rows}</div>
       ${futureNote}`;
     pop.classList.add('open');
+
+    // Grafik düğmesine tıklanınca kartı çizgi grafiğe dönüştür
+    if (chartId === 'chart-gdp') {
+      document.getElementById('fpop-chart-trigger')?.addEventListener('click', () => {
+        pop.classList.remove('open');
+        activateImfCardChart(countryCode, series, WB_LABELS[countryCode] || countryCode);
+      });
+    }
   }
 
   document.addEventListener('click', (e) => {
@@ -5246,6 +5317,104 @@ async function loadDashboard() {
 
   updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
   updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
+
+  // ── IMF kart → çizgi grafik dönüşümü ──────────────────────────────
+  let _dcImfLineChart = null;
+
+  function activateImfCardChart(countryCode, series, countryName) {
+    const card   = document.getElementById('dc-imf');
+    const canvas = document.getElementById('dc-imf-canvas');
+    if (!card || !canvas) return;
+
+    // Mevcut grafik varsa yok et
+    if (_dcImfLineChart) { _dcImfLineChart.destroy(); _dcImfLineChart = null; }
+
+    const currentYear = new Date().getFullYear();
+    const years  = Object.keys(series).map(Number)
+                    .filter(y => y >= 2015 && y <= 2031 && series[y] != null).sort((a,b)=>a-b);
+    const values = years.map(y => series[y]);
+
+    // Her noktanın rengi: gerçekleşen / tahmini / öngörü
+    const ptColor = y => y < currentYear ? '#1D6FE8' : y === currentYear ? '#D97706' : '#6366F1';
+
+    // Segment rengi ve çizgi stili (Chart.js segment API)
+    const segColor = ctx => ptColor(years[ctx.p1DataIndex]);
+    const segDash  = ctx => years[ctx.p1DataIndex] > currentYear ? [4, 3] : undefined;
+
+    // Başlık güncelle
+    card.querySelector('.dcimf-hd-title').textContent = `${countryName} · GSYH Büyümesi`;
+
+    // Kart: grafik moduna geç
+    card.classList.add('is-chart-mode');
+    card.classList.remove('dash-card-clickable');
+
+    _dcImfLineChart = new Chart(canvas.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: years.map(String),
+        datasets: [{
+          data: values,
+          borderWidth: 2,
+          fill: true,
+          backgroundColor: ctx => {
+            const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height);
+            g.addColorStop(0, 'rgba(29,111,232,0.12)');
+            g.addColorStop(1, 'rgba(29,111,232,0)');
+            return g;
+          },
+          tension: 0.35,
+          pointBackgroundColor: years.map(ptColor),
+          pointBorderColor:     years.map(ptColor),
+          pointRadius: 3.5,
+          pointHoverRadius: 5,
+          segment: { borderColor: segColor, borderDash: segDash }
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 400, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const y = years[ctx.dataIndex];
+                const tag = y < currentYear ? 'Gerçekleşen' : y === currentYear ? 'Tahmini' : 'Öngörü';
+                const v = ctx.parsed.y;
+                return ` ${(v>0?'+':'')}${v.toFixed(1)}%  (${tag})`;
+              }
+            },
+            backgroundColor: 'rgba(15,23,42,0.85)',
+            titleFont: { size: 11 }, bodyFont: { size: 11.5 },
+            padding: 8, cornerRadius: 7
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: { font: { size: 9, family: 'Inter' }, color: '#9CA3AF', maxRotation: 0 }
+          },
+          y: {
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            border: { display: false, dash: [3, 3] },
+            ticks: {
+              font: { size: 9, family: 'Inter' }, color: '#9CA3AF',
+              callback: v => v + '%'
+            }
+          }
+        }
+      }
+    });
+
+    // Geri düğmesi
+    document.getElementById('dc-imf-back').onclick = (e) => {
+      e.stopPropagation();
+      if (_dcImfLineChart) { _dcImfLineChart.destroy(); _dcImfLineChart = null; }
+      card.classList.remove('is-chart-mode');
+      card.classList.add('dash-card-clickable');
+    };
+  }
 }
 </script>
 
