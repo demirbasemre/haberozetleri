@@ -3301,7 +3301,7 @@ function getFilteredArticles() {
     const catMatch      = activeCat === 'all' || a.category === activeCat;
     const dateMatch     = (() => {
       if (!activeDateYear && !activeDateMonth && !activeDateDay) return true;
-      const parts = extractDateParts(a.date || '');
+      const parts = extractDateParts(a.date || a.publishDate || '');
       if (!parts) return false;
       if (activeDateYear  && parts.y   !== activeDateYear)  return false;
       if (activeDateMonth && parts.m   !== activeDateMonth) return false;
@@ -3484,8 +3484,8 @@ function renderCards(articles) {
   // Group visible articles by normalised date key (YYYY-MM-DD)
   const byDate = {};
   visible.forEach(a => {
-    const parts = extractDateParts(a.date || '');
-    const d = parts ? `${parts.y}-${parts.m}-${parts.day}` : (a.date || 'Tarihsiz');
+    const parts = extractDateParts(a.date || a.publishDate || '');
+    const d = parts ? `${parts.y}-${parts.m}-${parts.day}` : (a.date || a.publishDate || 'Tarihsiz');
     if (!byDate[d]) byDate[d] = [];
     byDate[d].push(a);
   });
@@ -3651,7 +3651,7 @@ function buildDatePanel(articles) {
   // Index: year → month → Set<day>  (normalised via extractDateParts)
   const idx = {};
   articles.forEach(a => {
-    const parts = extractDateParts(a.date);
+    const parts = extractDateParts(a.date || a.publishDate);
     if (!parts) return;
     const { y, m, day } = parts;
     if (!idx[y]) idx[y] = {};
