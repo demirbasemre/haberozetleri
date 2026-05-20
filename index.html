@@ -2542,7 +2542,7 @@
           </div>
         </div>
       </div>
-      <div class="dash-section-note">ⓘ Veri IMF World Economic Outlook (Nisan 2026); en güncel yıl actual/estimate karması, ileri yıllar tahmindir. Bir çubuğa tıklayarak tahminleri ve geçmişi açabilirsin. Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a></div>
+      <div class="dash-section-note" id="imf-section-note">ⓘ IMF World Economic Outlook verileri yükleniyor… Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a></div>
     </section>
 
     <!-- Takip gereken endeksler -->
@@ -4738,9 +4738,34 @@ async function loadDashboard() {
       dataC.forEach(c => { const y = latestByC[c].year; yearCounts[y] = (yearCounts[y]||0)+1; });
       const dominantYear = Object.entries(yearCounts).sort((a,b) => b[1]-a[1])[0][0];
       document.getElementById(metaId).textContent = `Son veri: ${dominantYear} · IMF WEO`;
+
+      // ── Update section note dynamically (runs after both charts load) ──
+      const noteEl = document.getElementById('imf-section-note');
+      if (noteEl) {
+        // Detect forecast years from the loaded data (any year > dominantYear with values)
+        let forecastMin = null, forecastMax = null;
+        Object.values(data).forEach(s => {
+          Object.keys(s).forEach(y => {
+            const n = Number(y);
+            if (s[y] != null && n > Number(dominantYear)) {
+              if (forecastMin == null || n < forecastMin) forecastMin = n;
+              if (forecastMax == null || n > forecastMax) forecastMax = n;
+            }
+          });
+        });
+        const forecastPart = forecastMin
+          ? `; <strong>${forecastMin}–${forecastMax}</strong> yılları IMF tahmini`
+          : '';
+        noteEl.innerHTML = `ⓘ Gösterilen veri <strong>${dominantYear}</strong> yılına aittir (IMF WEO, fiili/tahmin karışık)${forecastPart}. Bir çubuğa tıklayarak geçmişi ve tahminleri görebilirsin. Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a>`;
+      }
     } catch (e) {
+      console.error('[IMF chart error]', chartId, e?.message || e);
       chartErr(chartId, 'Veri alınamadı');
       document.getElementById(metaId).textContent = 'Veri alınamadı';
+      const noteEl = document.getElementById('imf-section-note');
+      if (noteEl && noteEl.innerHTML.includes('yükleniyor')) {
+        noteEl.innerHTML = `ⓘ IMF WEO verileri yüklenemedi (${e?.message || 'ağ hatası'}). Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a>`;
+      }
     }
   }
 
