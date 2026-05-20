@@ -4126,8 +4126,10 @@ async function imfSeriesFetch(indicator, countries) {
     const m = IMF_MAP[c] || c;
     codeMap[c] = m; inverse[m] = c;
   });
-  const list = Object.values(codeMap).join('/');
-  const r = await fetch(`https://www.imf.org/external/datamapper/api/v1/${indicator}/${list}`);
+  // Limit to a reasonable year window to avoid ~2MB full-dataset responses
+  const cy = new Date().getFullYear();
+  const periods = Array.from({length: 12}, (_, i) => cy - 5 + i).join(',');
+  const r = await fetch(`https://www.imf.org/external/datamapper/api/v1/${indicator}?periods=${periods}`);
   if (!r.ok) throw new Error('IMF series ' + r.status);
   const j = await r.json();
   const raw = (j.values && j.values[indicator]) || {};
