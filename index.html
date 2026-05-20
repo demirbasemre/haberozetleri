@@ -1354,19 +1354,21 @@
     font-size: 18px; line-height: 1; color: var(--text-3, #6B7280); cursor: pointer;
   }
   #forecast-popover .fpop-close:hover { background: var(--hover, rgba(0,0,0,0.04)); color: var(--text); }
-  /* Popover — grafik düğmesi */
+  /* Popover — grafik düğmesi (sağ alt) */
+  .fpop-foot-row { display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; flex-wrap: wrap; }
   .fpop-chart-btn {
-    display: inline-flex; align-items: center; gap: 5px;
-    margin-top: 8px; padding: 5px 10px;
-    background: rgba(29,111,232,0.08); border: 1px solid rgba(29,111,232,0.2);
-    border-radius: 7px; color: #1D6FE8; font-size: 11px; font-weight: 600;
-    cursor: pointer; transition: background .15s, border-color .15s;
+    display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0;
+    padding: 4px 9px;
+    background: rgba(29,111,232,0.08); border: 1px solid rgba(29,111,232,0.18);
+    border-radius: 6px; color: #1D6FE8; font-size: 10.5px; font-weight: 600;
+    cursor: pointer; transition: background .15s, border-color .15s; font-style: normal;
   }
-  .fpop-chart-btn:hover { background: rgba(29,111,232,0.14); border-color: rgba(29,111,232,0.35); }
-  .fpop-chart-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .fpop-chart-btn:hover { background: rgba(29,111,232,0.15); border-color: rgba(29,111,232,0.4); }
+  .fpop-chart-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
   /* dc-imf kart — chart mode */
-  #dc-imf-chart-mode { display: none; flex-direction: column; gap: 6px; height: 100%; }
-  #dc-imf.is-chart-mode { cursor: default; min-height: 210px; }
+  #dc-imf-chart-mode { display: none; flex-direction: column; gap: 6px; }
+  #dc-imf.is-chart-mode { cursor: default; }
   #dc-imf.is-chart-mode #dc-imf-normal { display: none; }
   #dc-imf.is-chart-mode #dc-imf-chart-mode { display: flex; }
   .dcimf-hd { display: flex; align-items: center; justify-content: space-between; }
@@ -1380,14 +1382,14 @@
   }
   .dcimf-back:hover { background: var(--hover); color: var(--text); }
   .dcimf-back svg { width: 12px; height: 12px; }
-  .dcimf-canvas-wrap { flex: 1; min-height: 120px; position: relative; }
-  .dcimf-canvas-wrap canvas { position: absolute; inset: 0; }
-  .dcimf-leg { display: flex; gap: 10px; flex-wrap: wrap; }
+  /* Canvas: Chart.js responsive için wrapper'ın yüksekliği sabit olmalı */
+  .dcimf-canvas-wrap { height: 140px; }
+  .dcimf-leg { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 2px; }
   .dcimf-leg-i { font-size: 9.5px; color: var(--text-3); font-weight: 500;
     display: flex; align-items: center; gap: 4px; }
   .dcimf-leg-i::before { content: ''; display: inline-block; width: 8px; height: 8px;
     border-radius: 2px; background: var(--c); flex-shrink: 0; }
-  #forecast-popover .fpop-head { margin-bottom: 14px; padding-right: 26px; }
+  #forecast-popover .fpop-head { margin-bottom: 14px; padding-right: 30px; }
   #forecast-popover .fpop-country {
     font-family: 'DM Serif Display', Georgia, serif;
     font-size: 22px; line-height: 1.1; letter-spacing: -0.01em; color: var(--text);
@@ -5266,18 +5268,19 @@ async function loadDashboard() {
       </div>`;
     }).join('');
 
-    const futureNote = `<div class="fpop-foot">Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>${future.length ? ' · ' + future.length + ' yıl öngörü içerir' : ' · Öngörü yok'}</div>`;
+    // Çizgi grafik düğmesi — hem GDP hem CPI için
+    const chartIconSvg = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="1,12 5,7 8,9 12,4 15,6"/>
+        <line x1="1" y1="15" x2="15" y2="15"/>
+      </svg>`;
+    const chartBtnHtml = `<button class="fpop-chart-btn" id="fpop-chart-trigger" aria-label="Çizgi grafik">${chartIconSvg} Çizgi grafik</button>`;
 
-    // Grafik düğmesi: GDP chart'ından açıldıysa göster
-    const chartBtnHtml = (chartId === 'chart-gdp')
-      ? `<button class="fpop-chart-btn" id="fpop-chart-trigger" aria-label="Çizgi grafik olarak göster">
-           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-             <polyline points="1,12 5,7 8,9 12,4 15,6"/>
-             <line x1="1" y1="15" x2="15" y2="15"/>
-           </svg>
-           Çizgi grafik
-         </button>`
-      : '';
+    const futureNote = `
+      <div class="fpop-foot fpop-foot-row">
+        <span>Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>${future.length ? ' · ' + future.length + ' yıl öngörü' : ''}</span>
+        ${chartBtnHtml}
+      </div>`;
 
     const pop = document.getElementById('forecast-popover');
     pop.innerHTML = `
@@ -5285,19 +5288,16 @@ async function loadDashboard() {
       <div class="fpop-head">
         <div class="fpop-country">${name}</div>
         <div class="fpop-indicator">${indicatorLabel}</div>
-        ${chartBtnHtml}
       </div>
       <div class="fpop-rows">${rows}</div>
       ${futureNote}`;
     pop.classList.add('open');
 
     // Grafik düğmesine tıklanınca kartı çizgi grafiğe dönüştür
-    if (chartId === 'chart-gdp') {
-      document.getElementById('fpop-chart-trigger')?.addEventListener('click', () => {
-        pop.classList.remove('open');
-        activateImfCardChart(countryCode, series, WB_LABELS[countryCode] || countryCode);
-      });
-    }
+    document.getElementById('fpop-chart-trigger')?.addEventListener('click', () => {
+      pop.classList.remove('open');
+      activateImfCardChart(countryCode, series, WB_LABELS[countryCode] || countryCode, cache.kind);
+    });
   }
 
   document.addEventListener('click', (e) => {
@@ -5321,7 +5321,7 @@ async function loadDashboard() {
   // ── IMF kart → çizgi grafik dönüşümü ──────────────────────────────
   let _dcImfLineChart = null;
 
-  function activateImfCardChart(countryCode, series, countryName) {
+  function activateImfCardChart(countryCode, series, countryName, kind) {
     const card   = document.getElementById('dc-imf');
     const canvas = document.getElementById('dc-imf-canvas');
     if (!card || !canvas) return;
@@ -5330,19 +5330,19 @@ async function loadDashboard() {
     if (_dcImfLineChart) { _dcImfLineChart.destroy(); _dcImfLineChart = null; }
 
     const currentYear = new Date().getFullYear();
+    const isCpi = kind === 'cpi';
     const years  = Object.keys(series).map(Number)
                     .filter(y => y >= 2015 && y <= 2031 && series[y] != null).sort((a,b)=>a-b);
     const values = years.map(y => series[y]);
 
-    // Her noktanın rengi: gerçekleşen / tahmini / öngörü
+    // Nokta ve segment renkleri
     const ptColor = y => y < currentYear ? '#1D6FE8' : y === currentYear ? '#D97706' : '#6366F1';
-
-    // Segment rengi ve çizgi stili (Chart.js segment API)
     const segColor = ctx => ptColor(years[ctx.p1DataIndex]);
     const segDash  = ctx => years[ctx.p1DataIndex] > currentYear ? [4, 3] : undefined;
 
     // Başlık güncelle
-    card.querySelector('.dcimf-hd-title').textContent = `${countryName} · GSYH Büyümesi`;
+    const indLabel = isCpi ? 'TÜFE Enflasyonu' : 'GSYH Büyümesi';
+    card.querySelector('.dcimf-hd-title').textContent = `${countryName} · ${indLabel}`;
 
     // Kart: grafik moduna geç
     card.classList.add('is-chart-mode');
