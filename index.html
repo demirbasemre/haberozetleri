@@ -5298,7 +5298,8 @@ async function loadDashboard() {
     pop.classList.add('open');
 
     // Grafik düğmesine tıklanınca popup içinde çizgi grafiğe geç
-    document.getElementById('fpop-chart-trigger')?.addEventListener('click', () => {
+    document.getElementById('fpop-chart-trigger')?.addEventListener('click', (e) => {
+      e.stopPropagation();
       showPopoverLineChart(pop, chartId, countryCode, series, name, indicatorLabel, cache.kind);
     });
   }
@@ -5359,7 +5360,8 @@ async function loadDashboard() {
       pop.classList.remove('open', 'fpop-chart-mode');
       if (_fpopLineChart) { _fpopLineChart.destroy(); _fpopLineChart = null; }
     };
-    document.getElementById('fpop-back-btn').onclick = () => {
+    document.getElementById('fpop-back-btn').onclick = (e) => {
+      e.stopPropagation();
       if (_fpopLineChart) { _fpopLineChart.destroy(); _fpopLineChart = null; }
       pop.classList.remove('fpop-chart-mode');
       openForecastPopover(chartId, countryCode);
