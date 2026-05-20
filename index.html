@@ -2907,7 +2907,7 @@
           <div class="chart-legend">
             <span class="cl-item"><span class="cl-dot" style="background:rgba(29,111,232,0.72)"></span>Büyüme</span>
             <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.72)"></span>Küçülme</span>
-            <span class="cl-item"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
+            <span class="cl-item" id="gdp-legend-forecast" style="display:none"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
           </div>
         </div>
         <div class="dash-chart-card">
@@ -2931,7 +2931,7 @@
             <span class="cl-item"><span class="cl-dot" style="background:rgba(5,150,105,0.72)"></span>≤ %3 Düşük</span>
             <span class="cl-item"><span class="cl-dot" style="background:rgba(234,88,12,0.72)"></span>%3–%6 Orta</span>
             <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.72)"></span>> %6 Yüksek</span>
-            <span class="cl-item"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
+            <span class="cl-item" id="cpi-legend-forecast" style="display:none"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
           </div>
         </div>
       </div>
@@ -5197,6 +5197,11 @@ async function loadDashboard() {
       const domYearNum = Number(dominantYear);
       const domLabel = domYearNum < currentYear ? 'gerçekleşen' : domYearNum === currentYear ? 'tahmini' : 'öngörü';
       document.getElementById(metaId).textContent = `Son veri: ${dominantYear} (${domLabel}) · IMF WEO`;
+
+      // Tahmin/Öngörü legend: sadece gösterilen yıllar gerçekleşen değilse göster
+      const legendId = kind === 'gdp' ? 'gdp-legend-forecast' : 'cpi-legend-forecast';
+      const legendEl = document.getElementById(legendId);
+      if (legendEl) legendEl.style.display = domYearNum >= currentYear ? '' : 'none';
 
       // ── Update section note dynamically (runs after both charts load) ──
       const noteEl = document.getElementById('imf-section-note');
