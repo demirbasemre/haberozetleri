@@ -1345,9 +1345,11 @@
     border: 1px solid var(--border, #e5e7eb); border-radius: 12px;
     box-shadow: 0 18px 60px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.06);
     padding: 18px 18px 14px; opacity: 0; visibility: hidden;
-    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+    transition: opacity .18s ease, transform .18s ease, visibility .18s, width .2s ease;
   }
   #forecast-popover.open { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+  #forecast-popover.fpop-chart-mode { width: min(540px, 94vw); }
+  .fpop-chart-canvas-wrap { height: 260px; margin: 10px 0 8px; }
   #forecast-popover .fpop-close {
     position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
     background: transparent; border: 0; border-radius: 6px;
@@ -5295,10 +5297,9 @@ async function loadDashboard() {
       ${futureNote}`;
     pop.classList.add('open');
 
-    // Grafik düğmesine tıklanınca kartı çizgi grafiğe dönüştür
+    // Grafik düğmesine tıklanınca popup içinde çizgi grafiğe geç
     document.getElementById('fpop-chart-trigger')?.addEventListener('click', () => {
-      pop.classList.remove('open');
-      activateImfCardChart(countryCode, series, WB_LABELS[countryCode] || countryCode, cache.kind);
+      showPopoverLineChart(pop, chartId, countryCode, series, name, indicatorLabel, cache.kind);
     });
   }
 
@@ -5306,12 +5307,16 @@ async function loadDashboard() {
     const pop = document.getElementById('forecast-popover');
     if (!pop || !pop.classList.contains('open')) return;
     if (pop.contains(e.target)) return;
-    // Don't close if click was on a chart canvas (which opens the popover)
     if (e.target.tagName === 'CANVAS') return;
-    pop.classList.remove('open');
+    pop.classList.remove('open', 'fpop-chart-mode');
+    if (_fpopLineChart) { _fpopLineChart.destroy(); _fpopLineChart = null; }
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') document.getElementById('forecast-popover')?.classList.remove('open');
+    if (e.key === 'Escape') {
+      const pop = document.getElementById('forecast-popover');
+      pop?.classList.remove('open', 'fpop-chart-mode');
+      if (_fpopLineChart) { _fpopLineChart.destroy(); _fpopLineChart = null; }
+    }
   });
 
   document.getElementById('sel-gdp-group').addEventListener('change', () => updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp'));
@@ -5319,6 +5324,108 @@ async function loadDashboard() {
 
   updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
   updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
+
+  // ── Popover → çizgi grafik modu ────────────────────────────────────
+  let _fpopLineChart = null;
+
+  function showPopoverLineChart(pop, chartId, countryCode, series, countryName, indicatorLabel, kind) {
+    if (_fpopLineChart) { _fpopLineChart.destroy(); _fpopLineChart = null; }
+    const currentYear = new Date().getFullYear();
+    const isCpi = kind === 'cpi';
+    const years  = Object.keys(series).map(Number)
+                    .filter(y => y >= 2015 && y <= 2031 && series[y] != null).sort((a,b) => a-b);
+    const values = years.map(y => series[y]);
+    const ptColor = y => y < currentYear ? '#1D6FE8' : y === currentYear ? '#D97706' : '#6366F1';
+
+    pop.classList.add('fpop-chart-mode');
+    pop.innerHTML = `
+      <button class="fpop-close" id="fpop-cm-close" aria-label="Kapat">×</button>
+      <div class="fpop-head">
+        <div class="fpop-country">${countryName}</div>
+        <div class="fpop-indicator">${indicatorLabel}</div>
+      </div>
+      <div class="fpop-chart-canvas-wrap"><canvas id="fpop-line-canvas"></canvas></div>
+      <div class="dcimf-leg">
+        <span class="dcimf-leg-i" style="--c:#1D6FE8">Gerçekleşen</span>
+        <span class="dcimf-leg-i" style="--c:#D97706">Tahmini</span>
+        <span class="dcimf-leg-i" style="--c:#6366F1">Öngörü</span>
+      </div>
+      <div class="fpop-foot fpop-foot-row" style="margin-top:10px">
+        <span>Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a></span>
+        <button class="fpop-chart-btn" id="fpop-back-btn">← Tablo</button>
+      </div>`;
+
+    document.getElementById('fpop-cm-close').onclick = () => {
+      pop.classList.remove('open', 'fpop-chart-mode');
+      if (_fpopLineChart) { _fpopLineChart.destroy(); _fpopLineChart = null; }
+    };
+    document.getElementById('fpop-back-btn').onclick = () => {
+      if (_fpopLineChart) { _fpopLineChart.destroy(); _fpopLineChart = null; }
+      pop.classList.remove('fpop-chart-mode');
+      openForecastPopover(chartId, countryCode);
+    };
+
+    requestAnimationFrame(() => { requestAnimationFrame(() => {
+      const canvas = document.getElementById('fpop-line-canvas');
+      if (!canvas) return;
+      _fpopLineChart = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: years.map(String),
+          datasets: [{
+            data: values,
+            borderWidth: 2,
+            fill: true,
+            backgroundColor: ctx => {
+              const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height);
+              g.addColorStop(0, 'rgba(29,111,232,0.10)');
+              g.addColorStop(1, 'rgba(29,111,232,0)');
+              return g;
+            },
+            tension: 0.35,
+            pointBackgroundColor: years.map(ptColor),
+            pointBorderColor: years.map(ptColor),
+            pointRadius: 4, pointHoverRadius: 6,
+            segment: {
+              borderColor: ctx => ptColor(years[ctx.p1DataIndex]),
+              borderDash:  ctx => years[ctx.p1DataIndex] > currentYear ? [5, 3] : undefined
+            }
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          animation: { duration: 350, easing: 'easeOutQuart' },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => {
+                  const y = years[ctx.dataIndex];
+                  const tag = y < currentYear ? 'Gerçekleşen' : y === currentYear ? 'Tahmini' : 'Öngörü';
+                  const v = ctx.parsed.y;
+                  return ` ${v > 0 ? '+' : ''}${v.toFixed(1)}%  (${tag})`;
+                }
+              },
+              backgroundColor: 'rgba(15,23,42,0.88)',
+              titleFont: { size: 11 }, bodyFont: { size: 12 },
+              padding: 9, cornerRadius: 7
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false }, border: { display: false },
+              ticks: { font: { size: 9.5, family: 'Inter' }, color: '#9CA3AF', maxRotation: 0 }
+            },
+            y: {
+              grid: { color: 'rgba(0,0,0,0.05)' }, border: { display: false },
+              ticks: { font: { size: 9.5, family: 'Inter' }, color: '#9CA3AF',
+                callback: v => (isCpi ? '' : (v > 0 ? '+' : '')) + v + '%' }
+            }
+          }
+        }
+      });
+    }); });
+  }
 
   // ── IMF kart → çizgi grafik dönüşümü ──────────────────────────────
   let _dcImfLineChart = null;
