@@ -4116,29 +4116,36 @@ async function imfFetch() {
   return r.json();
 }
 
+// n8n webhook'tan gelen IMF verisi cache'i (tek fetch, hem GDP hem CPI)
+let _n8nImfCache = null;
+let _n8nImfFetchPromise = null;
+
+async function _fetchN8nImf() {
+  if (_n8nImfCache) return _n8nImfCache;
+  if (_n8nImfFetchPromise) return _n8nImfFetchPromise;
+  _n8nImfFetchPromise = fetch('https://n8n.emredemirbas.com/webhook/imf-data')
+    .then(r => { if (!r.ok) throw new Error('n8n IMF ' + r.status); return r.json(); })
+    .then(j => { _n8nImfCache = j; return j; });
+  return _n8nImfFetchPromise;
+}
+
 // Multi-country, multi-year IMF WEO series. Returns { CODE: { year: value, ... } }
 async function imfSeriesFetch(indicator, countries) {
-  // IMF uses different codes for aggregates: WEOWORLD, EURO
+  // IMF country code mapping (WB → IMF)
   const IMF_MAP = { WLD: 'WEOWORLD', EMU: 'EURO' };
-  const codeMap = {}; // input -> IMF
-  const inverse  = {}; // IMF -> input
-  countries.forEach(c => {
-    const m = IMF_MAP[c] || c;
-    codeMap[c] = m; inverse[m] = c;
-  });
-  // Limit to a reasonable year window to avoid ~2MB full-dataset responses
-  const cy = new Date().getFullYear();
-  const periods = Array.from({length: 12}, (_, i) => cy - 5 + i).join(',');
-  const r = await fetch(`https://www.imf.org/external/datamapper/api/v1/${indicator}?periods=${periods}`);
-  if (!r.ok) throw new Error('IMF series ' + r.status);
-  const j = await r.json();
-  const raw = (j.values && j.values[indicator]) || {};
-  const wanted = new Set(Object.values(codeMap));
+  const inverse = {};
+  countries.forEach(c => { const m = IMF_MAP[c] || c; inverse[m] = c; });
+
+  const j = await _fetchN8nImf();
+  const raw = j[indicator] || {};
   const out = {};
   Object.entries(raw).forEach(([imfCode, years]) => {
-    if (!wanted.has(imfCode)) return;
     const orig = inverse[imfCode] || imfCode;
-    out[orig] = years;
+    // sadece istenen ülkeleri döndür
+    if (!countries.includes(orig) && !Object.values(IMF_MAP).includes(imfCode)) return;
+    // eğer inverse'te varsa orijinal koda map et
+    if (inverse[imfCode]) out[inverse[imfCode]] = years;
+    else if (countries.includes(imfCode)) out[imfCode] = years;
   });
   return out;
 }
