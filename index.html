@@ -1224,6 +1224,8 @@
   }
   .dash-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: rgba(29,111,232,0.2); }
   .dash-card:hover::after { opacity: 1; }
+  .dash-card-clickable { cursor: pointer; }
+  .dash-card-clickable:hover { border-color: rgba(29,111,232,0.35); }
   .dash-card-label {
     font-size: 10.5px;
     font-weight: 700;
@@ -2782,12 +2784,12 @@
           <div class="dash-card-sub"></div>
           <div class="dash-card-note">ER-API · Günlük</div>
         </div>
-        <div class="dash-card" id="dc-imf">
-          <div class="dash-card-label">IMF Büyüme Tahmini</div>
+        <div class="dash-card dash-card-clickable" id="dc-imf" title="Türkiye yıllık dizi için tıkla">
+          <div class="dash-card-label">Türkiye GSYH Büyümesi</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Küresel GSYH Büyümesi</div>
-          <div class="dash-card-note">IMF WEO · Yıllık</div>
+          <div class="dash-card-sub">—</div>
+          <div class="dash-card-note">IMF WEO · Detay için tıkla ↗</div>
         </div>
         <div class="dash-card" id="dc-gdp">
           <div class="dash-card-label">Küresel GDP Büyümesi</div>
@@ -5012,18 +5014,37 @@ async function loadDashboard() {
       `ER-API · ${dateStr}`);
   }).catch(() => setCard('dc-usd', '—', null, '', 'Kur verisi alınamadı'));
 
-  // ── IMF Büyüme Tahmini ─────────────────────────────
+  // ── IMF Büyüme Tahmini — Türkiye odaklı ─────────────────────────────
   imfFetch().then(imf => {
-    const worldData = imf.values.NGDP_RPCH.WEOWORLD;
+    const gdp = imf.values.NGDP_RPCH;
+    const turData  = gdp.TUR       || {};
+    const wldData  = gdp.WEOWORLD  || {};
+    const euroData = gdp.EURO      || {};
     const currentYear = new Date().getFullYear();
-    const currentVal = worldData[currentYear];
-    const nextVal = worldData[currentYear + 1];
-    setCard('dc-imf', 
-      currentVal ? currentVal.toFixed(1) + '%' : '—',
+    const prevYear = currentYear - 1; // 2025 — gerçekleşen
+
+    // Türkiye: önce geçen yıl (gerçekleşen), yoksa bu yıl (tahmini)
+    const turVal  = turData[prevYear]  ?? turData[currentYear]  ?? null;
+    const turYear = turData[prevYear]  != null ? prevYear : currentYear;
+    const wldVal  = wldData[prevYear]  ?? wldData[currentYear]  ?? null;
+    const euroVal = euroData[prevYear] ?? euroData[currentYear] ?? null;
+
+    const fmt = v => v != null ? (v > 0 ? '+' : '') + v.toFixed(1) + '%' : '—';
+    const yearTag = turYear === prevYear ? `${prevYear} gerçekleşen` : `${currentYear} tahmini`;
+
+    setCard('dc-imf',
+      turVal != null ? fmt(turVal) : '—',
       null,
-      `${currentYear+1} Tahmini: ${nextVal ? nextVal.toFixed(1) + '%' : '—'}`,
-      `IMF WEO · ${currentYear} Küresel`
+      `Dünya: ${fmt(wldVal)} · Euro B.: ${fmt(euroVal)}`,
+      `IMF WEO · ${yearTag}`
     );
+
+    // Tıklanınca Türkiye detay popover'ı aç (chart-gdp cache hazır olduktan sonra çalışır)
+    document.getElementById('dc-imf').addEventListener('click', () => {
+      if (_imfCache['chart-gdp']) {
+        openForecastPopover('chart-gdp', 'TUR');
+      }
+    });
   }).catch(() => setCard('dc-imf', '—', null, '', 'IMF verisi alınamadı'));
 
   // ── World Bank: GDP ve CPI ─────────────────────────
@@ -5117,7 +5138,7 @@ async function loadDashboard() {
       dataC.forEach(c => { const y = latestByC[c].year; yearCounts[y] = (yearCounts[y]||0)+1; });
       const dominantYear = Object.entries(yearCounts).sort((a,b) => b[1]-a[1])[0][0];
       const domYearNum = Number(dominantYear);
-      const domLabel = domYearNum <= 2024 ? 'gerçekleşen' : domYearNum === 2025 ? 'tahmini' : 'öngörü';
+      const domLabel = domYearNum < currentYear ? 'gerçekleşen' : domYearNum === currentYear ? 'tahmini' : 'öngörü';
       document.getElementById(metaId).textContent = `Son veri: ${dominantYear} (${domLabel}) · IMF WEO`;
 
       // ── Update section note dynamically (runs after both charts load) ──
@@ -5137,7 +5158,7 @@ async function loadDashboard() {
         const forecastPart = forecastMin
           ? `; <strong>${forecastMin}–${forecastMax}</strong> yılları IMF tahmini`
           : '';
-        noteEl.innerHTML = `ⓘ Gösterilen değer <strong>${dominantYear}</strong> yılına aittir · ≤2024 gerçekleşen, 2025 tahmini${forecastMin ? `, ${forecastMin}–${forecastMax} öngörü` : ''}. Tüm veriler <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>'dan alınmaktadır. Çubuğa tıklayarak yıllık dizi görüntülenebilir.`;
+        noteEl.innerHTML = `ⓘ Gösterilen değer <strong>${dominantYear}</strong> yılına aittir · ≤${currentYear-1} gerçekleşen, ${currentYear} tahmini${forecastMin ? `, ${forecastMin}–${forecastMax} öngörü` : ''}. Tüm veriler <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>'dan alınmaktadır. Çubuğa tıklayarak yıllık dizi görüntülenebilir.`;
       }
     } catch (e) {
       console.error('[IMF chart error]', chartId, e?.message || e);
@@ -5172,9 +5193,10 @@ async function loadDashboard() {
       return '#059669';
     };
 
-    // IMF WEO Nisan 2026: ≤2024 gerçekleşen, 2025 tahmini, ≥2026 öngörü
-    const ACTUAL_MAX = 2024;
-    const ESTIMATE_YEAR = 2025;
+    // IMF WEO Nisan 2026: ≤2025 gerçekleşen/tahmin, 2026 tahmini, ≥2027 öngörü
+    // Mayıs 2026 itibarıyla 2025 verileri büyük ölçüde kesinleşmiştir
+    const ACTUAL_MAX = currentYear - 1;   // 2025
+    const ESTIMATE_YEAR = currentYear;    // 2026
 
     const maxAbs = Math.max(...shown.map(y => Math.abs(series[y])), 1);
     const rows = shown.map(y => {
