@@ -1334,6 +1334,65 @@
   .crack-spread-strip .cs-delta.down { background: rgba(230,57,70,0.10);  color: #C0303B; }
   .crack-spread-strip .cs-hint { margin-left: auto; font-size: 10.5px; color: var(--text-3); font-style: italic; }
   @media (max-width: 520px) { .crack-spread-strip .cs-hint { display: none; } }
+
+  /* Forecast popover (IMF WEO) */
+  #forecast-popover {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.96);
+    z-index: 550; width: min(420px, 92vw);
+    background: var(--card, #fff); color: var(--text, #0F172A);
+    border: 1px solid var(--border, #e5e7eb); border-radius: 12px;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.06);
+    padding: 18px 18px 14px; opacity: 0; visibility: hidden;
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  }
+  #forecast-popover.open { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+  #forecast-popover .fpop-close {
+    position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
+    background: transparent; border: 0; border-radius: 6px;
+    font-size: 18px; line-height: 1; color: var(--text-3, #6B7280); cursor: pointer;
+  }
+  #forecast-popover .fpop-close:hover { background: var(--hover, rgba(0,0,0,0.04)); color: var(--text); }
+  #forecast-popover .fpop-head { margin-bottom: 14px; padding-right: 26px; }
+  #forecast-popover .fpop-country {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: 22px; line-height: 1.1; letter-spacing: -0.01em; color: var(--text);
+  }
+  #forecast-popover .fpop-indicator {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-3, #6B7280); margin-top: 4px;
+  }
+  #forecast-popover .fpop-rows { display: flex; flex-direction: column; gap: 6px; }
+  #forecast-popover .fpop-row {
+    display: grid; grid-template-columns: 62px 1fr 62px; align-items: center;
+    column-gap: 10px; font-size: 12px;
+  }
+  #forecast-popover .fpop-row.fpop-future { opacity: 0.78; }
+  #forecast-popover .fpop-year {
+    font-weight: 600; color: var(--text); letter-spacing: 0.01em;
+  }
+  #forecast-popover .fpop-year em {
+    font-style: normal; font-weight: 500; font-size: 9.5px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-3, #6B7280); margin-left: 4px;
+  }
+  #forecast-popover .fpop-bar-track {
+    position: relative; height: 8px; background: var(--hover, rgba(0,0,0,0.04));
+    border-radius: 999px; overflow: hidden;
+  }
+  #forecast-popover .fpop-row.fpop-future .fpop-bar-fill {
+    background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(255,255,255,0.35) 4px 6px) !important;
+  }
+  #forecast-popover .fpop-bar-fill {
+    height: 100%; border-radius: 999px; transition: width .25s ease;
+  }
+  #forecast-popover .fpop-val {
+    text-align: right; font-variant-numeric: tabular-nums; font-weight: 600;
+    font-size: 12.5px;
+  }
+  #forecast-popover .fpop-foot {
+    margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border, #e5e7eb);
+    font-size: 10.5px; color: var(--text-3, #6B7280); font-style: italic;
+  }
   .dash-chart-meta {
     font-size: 10.5px;
     color: var(--text-3);
@@ -2401,7 +2460,7 @@
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Yıllık büyüme oranı</div>
-          <div class="dash-card-note">World Bank · Yıllık</div>
+          <div class="dash-card-note">IMF WEO · Yıllık</div>
         </div>
       </div>
     </section>
@@ -2435,7 +2494,7 @@
 
     <!-- Ekonomik göstergeler -->
     <section class="dash-section" id="dash-sec-ekonomi">
-      <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">World Bank</span></h2>
+      <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">IMF WEO</span></h2>
       <div class="dash-charts">
         <div class="dash-chart-card">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -2451,7 +2510,7 @@
           </div>
           <div class="dash-chart-meta">
             <span id="gdp-meta-note">Yükleniyor…</span>
-            <span class="dash-chart-badge">NY.GDP.MKTP.KD.ZG</span>
+            <span class="dash-chart-badge">IMF NGDP_RPCH</span>
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-gdp"></canvas></div>
           <div style="font-size:10px; color:var(--text-3); text-align:center; margin-top:8px;">
@@ -2473,7 +2532,7 @@
           </div>
           <div class="dash-chart-meta">
             <span id="cpi-meta-note">Yükleniyor…</span>
-            <span class="dash-chart-badge">FP.CPI.TOTL.ZG</span>
+            <span class="dash-chart-badge">IMF PCPIPCH</span>
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-cpi"></canvas></div>
           <div style="font-size:10px; color:var(--text-3); text-align:center; margin-top:8px;">
@@ -2483,7 +2542,7 @@
           </div>
         </div>
       </div>
-      <div class="dash-section-note">ⓘ World Bank yıllık veri yayınlar; en son yıl için 6–18 ay gecikme olabilir. Veri: <a href="https://data.worldbank.org" target="_blank" rel="noopener">data.worldbank.org</a></div>
+      <div class="dash-section-note">ⓘ Veri IMF World Economic Outlook (Nisan 2026); en güncel yıl actual/estimate karması, ileri yıllar tahmindir. Bir çubuğa tıklayarak tahminleri ve geçmişi açabilirsin. Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a></div>
     </section>
 
     <!-- Takip gereken endeksler -->
@@ -3764,6 +3823,9 @@ fetch(DATA_URL)
   });
 </script>
 
+<!-- Forecast Popover -->
+<div id="forecast-popover" role="dialog" aria-modal="true" aria-label="Yıl bazlı veriler ve tahminler"></div>
+
 <!-- Etki Alanı Popup -->
 <div id="etki-backdrop" style="position:fixed;inset:0;z-index:499;display:none" onclick="closeEtkiPopup()"></div>
 <div id="etki-popup" class="etki-popup" style="display:none" role="dialog" aria-modal="true" aria-label="Etki Alanı Analizi">
@@ -4054,6 +4116,31 @@ async function imfFetch() {
   return r.json();
 }
 
+// Multi-country, multi-year IMF WEO series. Returns { CODE: { year: value, ... } }
+async function imfSeriesFetch(indicator, countries) {
+  // IMF uses different codes for aggregates: WEOWORLD, EURO
+  const IMF_MAP = { WLD: 'WEOWORLD', EMU: 'EURO' };
+  const codeMap = {}; // input -> IMF
+  const inverse  = {}; // IMF -> input
+  countries.forEach(c => {
+    const m = IMF_MAP[c] || c;
+    codeMap[c] = m; inverse[m] = c;
+  });
+  const list = Object.values(codeMap).join('/');
+  const r = await fetch(`https://www.imf.org/external/datamapper/api/v1/${indicator}/${list}`);
+  if (!r.ok) throw new Error('IMF series ' + r.status);
+  const j = await r.json();
+  const raw = (j.values && j.values[indicator]) || {};
+  const wanted = new Set(Object.values(codeMap));
+  const out = {};
+  Object.entries(raw).forEach(([imfCode, years]) => {
+    if (!wanted.has(imfCode)) return;
+    const orig = inverse[imfCode] || imfCode;
+    out[orig] = years;
+  });
+  return out;
+}
+
 // ── CARD HELPERS ──────────────────────────────────────────────
 function setCard(id, value, change, sub, note) {
   const el = document.getElementById(id);
@@ -4138,7 +4225,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   });
 }
 
-function barChart(id, labels, data, colors) {
+function barChart(id, labels, data, colors, opts = {}) {
   const ctx = document.getElementById(id);
   if (!ctx) return;
   const existingChart = Chart.getChart(ctx);
@@ -4173,6 +4260,10 @@ function barChart(id, labels, data, colors) {
     }
   };
 
+  const tooltipFooter = opts.tooltipFooter; // (index) => string|null
+  const onBarClick = opts.onClick;          // (index, event) => void
+  if (onBarClick) ctx.style.cursor = 'pointer';
+
   new Chart(ctx, {
     type: 'bar',
     data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
@@ -4180,9 +4271,15 @@ function barChart(id, labels, data, colors) {
       ...CHART_DEFAULTS,
       indexAxis: 'y',
       layout: { padding: { left: 80, right: 60, top: 10, bottom: 10 } },
+      onClick: onBarClick ? (evt, els) => {
+        if (els && els.length) onBarClick(els[0].index, evt);
+      } : undefined,
       plugins: {
         ...CHART_DEFAULTS.plugins,
-        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: c => ' ' + (c.raw > 0 ? '+' : '') + c.raw.toFixed(1) + '%' } }
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
+          label: c => ' ' + (c.raw > 0 ? '+' : '') + c.raw.toFixed(1) + '%',
+          footer: tooltipFooter ? (items) => tooltipFooter(items[0]?.dataIndex) : undefined
+        } }
       },
       scales: {
         x: { 
@@ -4570,39 +4667,149 @@ async function loadDashboard() {
     KOR:'G. Kore', IDN:'Endonezya', VNM:'Vietnam', SGP:'Singapur', IRN:'İran'
   };
 
-  async function updateWbChart(indicator, selId, chartId, metaId) {
+  // Cache last fetched IMF series per chart so popover can read it
+  const _imfCache = {};
+
+  async function updateImfChart(indicator, selId, chartId, metaId, kind) {
     const groupKey = document.getElementById(selId).value;
     const countries = WB_GROUPS[groupKey];
+    const currentYear = new Date().getFullYear();
     try {
-      const data = await wbFetch(indicator, countries);
-      const dataC = countries.filter(c => data[c]);
-      if (dataC.length) {
-        const vals = dataC.map(c => data[c].value);
-        let colors;
-        if (indicator === 'NY.GDP.MKTP.KD.ZG') {
-          colors = vals.map(v => v >= 0 ? 'rgba(29,111,232,0.72)' : 'rgba(230,57,70,0.72)');
-          if (groupKey === 'default' && data.WLD) {
-            setCard('dc-gdp', data.WLD.value.toFixed(1) + '%', null, `Küresel büyüme (${data.WLD.date})`, 'World Bank · Yıllık');
-          }
-        } else {
-          colors = vals.map(v => v > 6 ? 'rgba(230,57,70,0.72)' : v > 3 ? 'rgba(234,88,12,0.72)' : 'rgba(5,150,105,0.72)');
+      const data = await imfSeriesFetch(indicator, countries);
+      // For each country: pick the most recent year with a value, capped at currentYear (actual zone)
+      const latestByC = {};
+      countries.forEach(c => {
+        const series = data[c];
+        if (!series) return;
+        const yrs = Object.keys(series).map(Number).sort((a,b) => a - b);
+        // most recent year with value, prefer ≤ currentYear (actual). If none, fall back to earliest future.
+        let chosen = null;
+        for (let i = yrs.length - 1; i >= 0; i--) {
+          if (yrs[i] <= currentYear && series[yrs[i]] != null) { chosen = yrs[i]; break; }
         }
-        barChart(chartId, dataC.map(c => WB_LABELS[c] || c), vals, colors);
-        document.getElementById(metaId).textContent = `Son veri: ${data[dataC[0]].date} · World Bank`;
-      } else {
+        if (chosen == null) {
+          for (const y of yrs) { if (series[y] != null) { chosen = y; break; } }
+        }
+        if (chosen != null) latestByC[c] = { year: chosen, value: series[chosen] };
+      });
+
+      const dataC = countries.filter(c => latestByC[c]);
+      if (!dataC.length) {
         chartErr(chartId, 'Veri alınamadı');
         document.getElementById(metaId).textContent = 'Veri alınamadı';
+        return;
       }
+
+      const vals = dataC.map(c => latestByC[c].value);
+      let colors;
+      if (kind === 'gdp') {
+        colors = vals.map(v => v >= 0 ? 'rgba(29,111,232,0.72)' : 'rgba(230,57,70,0.72)');
+        if (groupKey === 'default' && latestByC.WLD) {
+          setCard('dc-gdp', latestByC.WLD.value.toFixed(1) + '%', null,
+            `Küresel büyüme (${latestByC.WLD.year})`, 'IMF WEO · Yıllık');
+        }
+      } else {
+        colors = vals.map(v => v > 6 ? 'rgba(230,57,70,0.72)' : v > 3 ? 'rgba(234,88,12,0.72)' : 'rgba(5,150,105,0.72)');
+      }
+
+      // Hint for tooltip: indicate whether each bar has future forecasts
+      const futureCount = dataC.map(c => {
+        const s = data[c] || {};
+        return Object.keys(s).filter(y => Number(y) > currentYear && s[y] != null).length;
+      });
+
+      // Cache for popover
+      _imfCache[chartId] = { series: data, countries: dataC, kind, indicator };
+
+      barChart(chartId, dataC.map(c => WB_LABELS[c] || c), vals, colors, {
+        onClick: (idx) => openForecastPopover(chartId, dataC[idx]),
+        tooltipFooter: (idx) => {
+          if (idx == null) return null;
+          return futureCount[idx] > 0
+            ? `Tıkla → ${futureCount[idx]} yıl tahmin`
+            : 'Tıkla → tüm yıllar';
+        }
+      });
+
+      // Latest year label: use the most common year across countries
+      const yearCounts = {};
+      dataC.forEach(c => { const y = latestByC[c].year; yearCounts[y] = (yearCounts[y]||0)+1; });
+      const dominantYear = Object.entries(yearCounts).sort((a,b) => b[1]-a[1])[0][0];
+      document.getElementById(metaId).textContent = `Son veri: ${dominantYear} · IMF WEO`;
     } catch (e) {
       chartErr(chartId, 'Veri alınamadı');
+      document.getElementById(metaId).textContent = 'Veri alınamadı';
     }
   }
 
-  document.getElementById('sel-gdp-group').addEventListener('change', () => updateWbChart('NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note'));
-  document.getElementById('sel-cpi-group').addEventListener('change', () => updateWbChart('FP.CPI.TOTL.ZG', 'sel-cpi-group', 'chart-cpi', 'cpi-meta-note'));
-  
-  updateWbChart('NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note');
-  updateWbChart('FP.CPI.TOTL.ZG', 'sel-cpi-group', 'chart-cpi', 'cpi-meta-note');
+  // ── Forecast popover ───────────────────────────────────────────
+  function openForecastPopover(chartId, countryCode) {
+    const cache = _imfCache[chartId];
+    if (!cache) return;
+    const series = cache.series[countryCode] || {};
+    const currentYear = new Date().getFullYear();
+    const allYears = Object.keys(series).map(Number).filter(y => series[y] != null).sort((a,b) => a-b);
+    if (!allYears.length) return;
+    // Limit to a reasonable window: last 5 actual + all future
+    const past = allYears.filter(y => y <= currentYear).slice(-5);
+    const future = allYears.filter(y => y > currentYear);
+    const shown = [...past, ...future];
+
+    const name = WB_LABELS[countryCode] || countryCode;
+    const indicatorLabel = cache.kind === 'gdp' ? 'GDP Büyüme Oranı' : 'TÜFE Enflasyon';
+    const colorFor = (v) => {
+      if (cache.kind === 'gdp') return v >= 0 ? '#1D6FE8' : '#E63946';
+      if (v > 6) return '#E63946';
+      if (v > 3) return '#EA580C';
+      return '#059669';
+    };
+
+    const maxAbs = Math.max(...shown.map(y => Math.abs(series[y])), 1);
+    const rows = shown.map(y => {
+      const v = series[y];
+      const isFuture = y > currentYear;
+      const barW = (Math.abs(v) / maxAbs) * 100;
+      const sign = v > 0 ? '+' : '';
+      return `<div class="fpop-row${isFuture ? ' fpop-future' : ''}">
+        <span class="fpop-year">${y}${isFuture ? ' <em>tahmin</em>' : ''}</span>
+        <span class="fpop-bar-track"><span class="fpop-bar-fill" style="width:${barW.toFixed(1)}%; background:${colorFor(v)}"></span></span>
+        <span class="fpop-val" style="color:${colorFor(v)}">${sign}${v.toFixed(1)}%</span>
+      </div>`;
+    }).join('');
+
+    const futureNote = future.length
+      ? `<div class="fpop-foot">İleri yıllar IMF Nisan 2026 WEO tahminidir.</div>`
+      : `<div class="fpop-foot">Bu ülke için ileri yıl tahmini bulunmuyor.</div>`;
+
+    const pop = document.getElementById('forecast-popover');
+    pop.innerHTML = `
+      <button class="fpop-close" aria-label="Kapat" onclick="document.getElementById('forecast-popover').classList.remove('open')">×</button>
+      <div class="fpop-head">
+        <div class="fpop-country">${name}</div>
+        <div class="fpop-indicator">${indicatorLabel}</div>
+      </div>
+      <div class="fpop-rows">${rows}</div>
+      ${futureNote}`;
+    pop.classList.add('open');
+  }
+
+  document.addEventListener('click', (e) => {
+    const pop = document.getElementById('forecast-popover');
+    if (!pop || !pop.classList.contains('open')) return;
+    if (pop.contains(e.target)) return;
+    // Don't close if click was on a chart canvas (which opens the popover)
+    if (e.target.tagName === 'CANVAS') return;
+    pop.classList.remove('open');
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') document.getElementById('forecast-popover')?.classList.remove('open');
+  });
+
+  document.getElementById('sel-gdp-group').addEventListener('change', () => updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp'));
+  document.getElementById('sel-cpi-group').addEventListener('change', () => updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi'));
+
+  updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
+  updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
 }
 </script>
 
