@@ -2747,6 +2747,32 @@
   .btn-secondary:hover { background: var(--border); }
   .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); }
   .btn-danger:hover { background: var(--red); color: #fff; }
+
+  /* ── Silme Onay Modalı ─────────────────────────────── */
+  .del-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 1100;
+  }
+  .del-backdrop.open { display: block; }
+  .del-modal {
+    display: none; position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.96);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow-md);
+    width: 360px; max-width: calc(100vw - 32px);
+    z-index: 1101; padding: 24px;
+    opacity: 0; transition: opacity 0.15s, transform 0.15s;
+  }
+  .del-modal.open { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .del-modal-icon { color: var(--red); margin-bottom: 12px; }
+  .del-modal h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .del-modal-article { font-size: 13px; color: var(--text-2); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin-bottom: 14px; line-height: 1.4; }
+  .del-modal p { font-size: 13px; color: var(--text-2); margin-bottom: 10px; line-height: 1.5; }
+  .del-modal-input { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-weight: 600; background: var(--bg); color: var(--text); outline: none; letter-spacing: 0.05em; transition: border-color 0.15s; }
+  .del-modal-input:focus { border-color: var(--red); }
+  .del-modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+  .del-confirm-btn { padding: 7px 18px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: var(--red); color: #fff; transition: opacity 0.15s; }
+  .del-confirm-btn:disabled { opacity: 0.35; cursor: not-allowed; }
   .btn-link-reset { background: none; border: none; color: var(--text-3); font-size: 12px; cursor: pointer; text-decoration: underline; }
   .btn-link-reset:hover { color: var(--text); }
 </style>
@@ -6700,6 +6726,21 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   </div>
 </div>
 
+<div class="del-backdrop" id="delBackdrop" onclick="window.closeDeleteConfirm()"></div>
+<div class="del-modal" id="delModal" role="dialog" aria-modal="true" aria-label="Silme onayı">
+  <div class="del-modal-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+  </div>
+  <h4>Kartı kalıcı olarak sil</h4>
+  <div class="del-modal-article" id="delModalTitle"></div>
+  <p>Bu işlem geri alınamaz. Onaylamak için aşağıya <strong>SİL</strong> yazın:</p>
+  <input class="del-modal-input" id="delModalInput" type="text" placeholder="SİL" autocomplete="off" oninput="window._onDelInput()">
+  <div class="del-modal-footer">
+    <button class="btn-secondary" onclick="window.closeDeleteConfirm()">İptal</button>
+    <button class="del-confirm-btn" id="delConfirmBtn" disabled onclick="window._execDelete()">Sil</button>
+  </div>
+</div>
+
 <div class="editor-backdrop" id="editorBackdrop" onclick="window.closeNewsEditor()"></div>
 <div class="editor-modal" id="editorModal" role="dialog" aria-modal="true" aria-label="Haber Düzenle">
   <div class="editor-header">
@@ -6981,37 +7022,68 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Kaydet'; }
   };
 
-  window.deleteFromEditor = async function() {
-    if (!currentKey) return;
-    if (!confirm('Bu kartı tamamen silmek istediğinize emin misiniz?')) return;
-    const key = currentKey;
-    const a = findArticle(key);
-    const edits = loadEdits();
-    edits[key] = Object.assign({}, edits[key] || {}, { deleted: true });
-    saveEdits(edits);
-    if (typeof allArticles !== 'undefined') {
-      const i = allArticles.findIndex(x => x.__editKey === key);
-      if (i >= 0) allArticles.splice(i, 1);
-    }
-    window.closeNewsEditor();
-    if (typeof render === 'function') render();
-    const ok = await pushToGitHub({ key, action: 'delete', articleUrl: a && a.link, articleTitle: a && a.title });
-    if (ok) showToast('✓ Kart silindi', 'ok');
+  // ── Silme onay modalı ───────────────────────────────────
+  let _delCallback = null;
+
+  window.openDeleteConfirm = function(title, callback) {
+    _delCallback = callback;
+    document.getElementById('delModalTitle').textContent = title || '(başlıksız)';
+    document.getElementById('delModalInput').value = '';
+    document.getElementById('delConfirmBtn').disabled = true;
+    document.getElementById('delBackdrop').classList.add('open');
+    document.getElementById('delModal').classList.add('open');
+    setTimeout(() => document.getElementById('delModalInput').focus(), 80);
   };
 
-  window.deleteNewsCard = async function(key) {
-    if (!confirm('Bu kartı tamamen silmek istediğinize emin misiniz?')) return;
+  window.closeDeleteConfirm = function() {
+    _delCallback = null;
+    document.getElementById('delBackdrop').classList.remove('open');
+    document.getElementById('delModal').classList.remove('open');
+  };
+
+  window._onDelInput = function() {
+    const val = document.getElementById('delModalInput').value.trim().toLocaleUpperCase('tr');
+    document.getElementById('delConfirmBtn').disabled = (val !== 'SİL');
+  };
+
+  window._execDelete = function() {
+    if (_delCallback) _delCallback();
+    window.closeDeleteConfirm();
+  };
+
+  window.deleteFromEditor = function() {
+    if (!currentKey) return;
+    const key = currentKey;
     const a = findArticle(key);
-    const edits = loadEdits();
-    edits[key] = Object.assign({}, edits[key] || {}, { deleted: true });
-    saveEdits(edits);
-    if (typeof allArticles !== 'undefined') {
-      const i = allArticles.findIndex(x => x.__editKey === key);
-      if (i >= 0) allArticles.splice(i, 1);
-    }
-    if (typeof render === 'function') render();
-    const ok = await pushToGitHub({ key, action: 'delete', articleUrl: a && a.link, articleTitle: a && a.title });
-    if (ok) showToast('✓ Kart silindi', 'ok');
+    window.openDeleteConfirm(a && a.title, async function() {
+      const edits = loadEdits();
+      edits[key] = Object.assign({}, edits[key] || {}, { deleted: true });
+      saveEdits(edits);
+      if (typeof allArticles !== 'undefined') {
+        const i = allArticles.findIndex(x => x.__editKey === key);
+        if (i >= 0) allArticles.splice(i, 1);
+      }
+      window.closeNewsEditor();
+      if (typeof render === 'function') render();
+      const ok = await pushToGitHub({ key, action: 'delete', articleUrl: a && a.link, articleTitle: a && a.title });
+      if (ok) showToast('✓ Kart silindi', 'ok');
+    });
+  };
+
+  window.deleteNewsCard = function(key) {
+    const a = findArticle(key);
+    window.openDeleteConfirm(a && a.title, async function() {
+      const edits = loadEdits();
+      edits[key] = Object.assign({}, edits[key] || {}, { deleted: true });
+      saveEdits(edits);
+      if (typeof allArticles !== 'undefined') {
+        const i = allArticles.findIndex(x => x.__editKey === key);
+        if (i >= 0) allArticles.splice(i, 1);
+      }
+      if (typeof render === 'function') render();
+      const ok = await pushToGitHub({ key, action: 'delete', articleUrl: a && a.link, articleTitle: a && a.title });
+      if (ok) showToast('✓ Kart silindi', 'ok');
+    });
   };
 
   // ── Birleştirme (merge) ──────────────────────────────────
