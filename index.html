@@ -3694,7 +3694,7 @@ function buildCardHTML(article) {
   }
 
   const editKey = article.__editKey || '';
-  const editKeyAttr = editKey.replace(/"/g, '&quot;');
+  const editKeyAttr = editKey.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return `
     <div class="card-edit-actions">
       <button class="edit-btn" title="Düzenle" data-edit-key="${editKeyAttr}" onclick="window.openNewsEditor(this.dataset.editKey)">
@@ -6997,9 +6997,10 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   function saveEdits(m) {
     try { localStorage.setItem(EDITS_KEY, JSON.stringify(m)); } catch(e) {}
   }
+  function stripHtml(s) { return (s || '').replace(/<[^>]+>/g, ''); }
   function keyOf(a) {
     if (a.id != null && String(a.id).trim() && String(a.id) !== 'null') return 'id:' + String(a.id);
-    return 'tk:' + (a.title || '').trim().slice(0, 80) + '|' + (a.source || '');
+    return 'tk:' + stripHtml(a.title || '').trim().slice(0, 80) + '|' + (a.source || '');
   }
 
   window.__applyNewsEdits = function(articles) {
