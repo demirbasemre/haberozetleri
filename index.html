@@ -5214,7 +5214,8 @@ function buildReleaseCalendar() {
   const track = document.getElementById('tl-track');
   track.innerHTML = monthKeys.map(k => {
     const [ky, km] = k.split('-').map(Number);
-    const isPast  = k < todayKey;
+    // String karşılaştırması değil, sayısal karşılaştırma (10/11 bug'ını önler)
+    const isPast  = ky < now.getFullYear() || (ky === now.getFullYear() && km < now.getMonth());
     const isToday = k === todayKey;
     const dot     = isToday ? '<span class="dash-tl-dot"></span>' : '';
     return `<button class="dash-tl-pill${isPast ? ' past' : ''}${isToday ? ' today-month' : ''}"
@@ -5279,7 +5280,11 @@ function buildReleaseCalendar() {
       kind: 'today',
       link: ''
     };
-    const allWithToday = [todayMarker, ...items].sort((a, b) => a.date - b.date);
+    const [viewY, viewM] = key.split('-').map(Number);
+    const isCurrentMonth = viewY === now.getFullYear() && viewM === now.getMonth();
+    const allWithToday = isCurrentMonth
+      ? [todayMarker, ...items].sort((a, b) => a.date - b.date)
+      : items;
 
     document.getElementById('dash-releases').innerHTML = allWithToday.map(r => {
       const isEvent  = r.kind === 'event';
