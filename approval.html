@@ -978,12 +978,19 @@ function renderArticles() {
       const sentBadge = showBadge ? `<span class="sentiment-badge sentiment-${sentiment}">${sentiment}</span>` : '';
       
       let pd = '';
-      if (a.publishDate) {
+      const dateVal = a.publishDate || a.date;
+      if (dateVal) {
         try {
-          const d = new Date(a.publishDate);
-          if (!isNaN(d.getTime())) pd = d.toLocaleDateString('tr-TR', {day:'numeric',month:'long',year:'numeric'});
-          else pd = a.publishDate;
-        } catch(e) { pd = a.publishDate; }
+          const cleanDate = String(dateVal).replace(/^Published\s*:\s*/i, '').replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*/i, '').trim();
+          if (cleanDate !== '') {
+            const d = new Date(cleanDate);
+            if (!isNaN(d.getTime())) {
+              pd = d.toLocaleDateString('tr-TR', {day:'numeric',month:'long',year:'numeric'});
+            } else {
+              pd = cleanDate;
+            }
+          }
+        } catch(e) { pd = dateVal; }
       }
 
       // Sources
