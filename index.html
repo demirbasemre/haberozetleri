@@ -3365,7 +3365,8 @@ const SOURCE_LABELS = {
   'aircargoweek':   'AirCargoWeek',
   'stattimes':      'StatTimes',
   'aircargoupdate': 'AirCargoUpdate',
-  'payloadasia':    'PayloadAsia'
+  'payloadasia':    'PayloadAsia',
+  'IATA':           'IATA Pressroom'
 };
 
 const TR_MONTHS_SHORT = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
@@ -3485,7 +3486,8 @@ function getFavicon(source) {
     'aircargonews':   'aircargonews.net',
     'aircargoweek':   'aircargoweek.com',
     'stattimes':      'stattimes.com',
-    'payloadasia':    'payloadasia.com'
+    'payloadasia':    'payloadasia.com',
+    'IATA':           'iata.org'
   };
   const domain = domains[source] || source;
   return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
