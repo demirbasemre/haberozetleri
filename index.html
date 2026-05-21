@@ -4893,9 +4893,21 @@ fetch(DATA_URL, { cache: 'no-store' })
     });
     if (window.__applyNewsEdits) allArticles = window.__applyNewsEdits(allArticles);
     buildDatePanel(allArticles);
-    autoDiscoverEntities(allArticles);
     buildAirlineFilter(allArticles);
     render();
+    // Dinamik keşif: render bittikten sonra boşta çalıştır
+    const runDiscovery = () => {
+      autoDiscoverEntities(allArticles);
+      // Yeni şirket bulunduysa filtreyi güncelle (açık değilse sadece data'yı yenile)
+      if (DYNAMIC_AIRLINE_DEFS.length > 0 || DYNAMIC_GSA_DEFS.length > 0) {
+        buildAirlineFilter(allArticles);
+      }
+    };
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(runDiscovery, { timeout: 3000 });
+    } else {
+      setTimeout(runDiscovery, 200);
+    }
   })
   .catch(err => {
     elLoading.innerHTML = `
