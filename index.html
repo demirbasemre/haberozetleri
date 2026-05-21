@@ -3433,12 +3433,14 @@ const TK_SHORT = {
 // Returns { y:'2026', m:'04', day:'27' } from any common format
 function extractDateParts(dateStr) {
   if (!dateStr) return null;
-  const s = String(dateStr);
+  const s = String(dateStr).trim();
+  if (s === '' || s.toLowerCase() === 'published:') return null;
   // ISO YYYY-MM-DD (possibly with time suffix)
   const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (iso) return { y: iso[1], m: iso[2], day: iso[3] };
   // Strip "Published: Weekday, " prefix → "May 4, 2026"
-  const stripped = s.replace(/^Published\s*:\s*/i, '').replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*/i, '');
+  const stripped = s.replace(/^Published\s*:\s*/i, '').replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*/i, '').trim();
+  if (stripped === '') return null;
   const d = new Date(stripped);
   if (!isNaN(d)) {
     return {
@@ -3586,7 +3588,7 @@ function getFilteredArticles() {
     const catMatch      = activeCat === 'all' || a.category === activeCat;
     const dateMatch     = (() => {
       if (!activeDateYear && !activeDateMonth && !activeDateDay) return true;
-      const parts = extractDateParts(a.date || a.publishDate || '');
+      const parts = extractDateParts(a.date) || extractDateParts(a.publishDate);
       if (!parts) return false;
       if (activeDateYear  && parts.y   !== activeDateYear)  return false;
       if (activeDateMonth && parts.m   !== activeDateMonth) return false;
@@ -3770,8 +3772,8 @@ function renderCards(articles) {
   // Group visible articles by normalised date key (YYYY-MM-DD)
   const byDate = {};
   visible.forEach(a => {
-    const parts = extractDateParts(a.date || a.publishDate || '');
-    const d = parts ? `${parts.y}-${parts.m}-${parts.day}` : (a.date || a.publishDate || 'Tarihsiz');
+    const parts = extractDateParts(a.date) || extractDateParts(a.publishDate);
+    const d = parts ? `${parts.y}-${parts.m}-${parts.day}` : 'Tarihsiz';
     if (!byDate[d]) byDate[d] = [];
     byDate[d].push(a);
   });
@@ -3937,7 +3939,7 @@ function buildDatePanel(articles) {
   // Index: year → month → Set<day>  (normalised via extractDateParts)
   const idx = {};
   articles.forEach(a => {
-    const parts = extractDateParts(a.date || a.publishDate);
+    const parts = extractDateParts(a.date) || extractDateParts(a.publishDate);
     if (!parts) return;
     const { y, m, day } = parts;
     if (!idx[y]) idx[y] = {};
@@ -7030,11 +7032,27 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   };
 
   function isoDateOf(a) {
-    if (!a || !a.date) return '';
-    const m = String(a.date).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!a) return '';
+    const dateVal = a.date || a.publishDate || '';
+    if (!dateVal) return '';
+    const s = String(dateVal).trim();
+    if (s === '' || s.toLowerCase() === 'published:') return '';
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
     if (m) return `${m[1]}-${m[2]}-${m[3]}`;
-    const d = new Date(a.date);
+    const stripped = s.replace(/^Published\s*:\s*/i, '').replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*/i, '').trim();
+    if (stripped === '') {
+      if (a.publishDate && a.publishDate !== a.date) {
+        const pd = new Date(a.publishDate);
+        if (!isNaN(pd)) return pd.toISOString().slice(0, 10);
+      }
+      return '';
+    }
+    const d = new Date(stripped);
     if (!isNaN(d)) return d.toISOString().slice(0, 10);
+    if (a.publishDate && a.publishDate !== a.date) {
+      const pd = new Date(a.publishDate);
+      if (!isNaN(pd)) return pd.toISOString().slice(0, 10);
+    }
     return '';
   }
 
