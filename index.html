@@ -4566,9 +4566,9 @@ document.getElementById('search').addEventListener('input', e => {
 buildRegionDropdown();
 
 // Load data
-const DATA_URL = 'data.json';
+const DATA_URL = 'data.json?t=' + Date.now();
 
-fetch(DATA_URL)
+fetch(DATA_URL, { cache: 'no-store' })
   .then(r => {
     if (!r.ok) throw new Error('Veri kaynağına ulaşılamadı');
     return r.json();
@@ -6962,7 +6962,6 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
       t.style.transform = 'translateX(-50%) translateY(8px)';
     }, 3200);
   }
-
   // ── GitHub'a push ───────────────────────────────────────
   async function pushToGitHub(payload) {
     try {
@@ -6972,15 +6971,22 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
         body: JSON.stringify(payload)
       });
       if (!res.ok) {
-        const txt = await res.text().catch(() => res.status);
-        console.warn('Webhook yanıtı:', txt);
-        showToast('⚠️ GitHub\'a kaydedilemedi (' + res.status + ')', 'warn');
+        const txt = await res.text().catch(() => '');
+        let errorMsg = 'GitHub\'a kaydedilemedi (' + res.status + ')';
+        try {
+          const json = JSON.parse(txt);
+          if (json && json.error) {
+            errorMsg = json.error;
+          }
+        } catch (e) {}
+        console.warn('Webhook hatası:', txt || res.status);
+        showToast('⚠️ ' + errorMsg, 'error');
         return false;
       }
       return true;
     } catch(e) {
       console.error('Webhook hatası:', e);
-      showToast('⚠️ GitHub\'a ulaşılamadı', 'warn');
+      showToast('⚠️ GitHub\'a ulaşılamadı', 'error');
       return false;
     }
   }
