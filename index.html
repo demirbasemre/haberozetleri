@@ -3765,9 +3765,18 @@ function renderCards(articles) {
   }
   elEmpty.style.display = 'none';
 
+  // Sort articles to put 'Tarihsiz' (undated/date-problematic) at the very beginning
+  const sorted = [...articles].sort((a, b) => {
+    const aUndated = !(extractDateParts(a.date) || extractDateParts(a.publishDate));
+    const bUndated = !(extractDateParts(b.date) || extractDateParts(b.publishDate));
+    if (aUndated && !bUndated) return -1;
+    if (!aUndated && bUndated) return 1;
+    return 0;
+  });
+
   // Slice to current display limit
-  const visible = articles.slice(0, displayLimit);
-  const hasMore = articles.length > displayLimit;
+  const visible = sorted.slice(0, displayLimit);
+  const hasMore = sorted.length > displayLimit;
 
   // Group visible articles by normalised date key (YYYY-MM-DD)
   const byDate = {};
@@ -3777,7 +3786,11 @@ function renderCards(articles) {
     if (!byDate[d]) byDate[d] = [];
     byDate[d].push(a);
   });
-  const dates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+  const dates = Object.keys(byDate).sort((a, b) => {
+    if (a === 'Tarihsiz') return -1;
+    if (b === 'Tarihsiz') return 1;
+    return b.localeCompare(a);
+  });
 
   // Save scroll position before rebuild to avoid jump on "load more"
   const savedY = window.scrollY;

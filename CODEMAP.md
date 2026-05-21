@@ -109,10 +109,10 @@ fetch('data.json') → allArticles[] → render()
 
 ### Temel fonksiyonlar
 - `buildCardHTML(article)` — tek kart HTML'i
-- `renderCards(articles)` — DOM'a yazar
+- `renderCards(articles)` — DOM'a yazar (Tarihsiz/tarihi hatalı haberleri en üste sabitlemek için pagination öncesi listeyi sıralar ve "Tarihsiz" grubunu en üstte konumlandırır).
 - `getFilteredArticles()` — aktif filtreleri uygular
 - `render()` — `getFilteredArticles()` → `renderCards()` + `updateStats()`
-- `extractDateParts(dateStr)` — Tarih metinlerini normalize eder, \"Published:\" ön eklerini ve gün adlarını ayıklar, `{ y, m, day }` döner.
+- `extractDateParts(dateStr)` — Tarih metinlerini normalize eder, "Published:" ön eklerini ve gün adlarını ayıklar, `{ y, m, day }` döner.
 - `isoDateOf(a)` — Makalenin `date` veya `publishDate` değerini `YYYY-MM-DD` formatına çevirir.
 
 ### Filtreler (state global değişkenlerde)
