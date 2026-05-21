@@ -50,6 +50,14 @@ Veri: `data.json` (fetch ile yüklenir, n8n pushlar).
 
 ---
 
+## Arka Plan n8n Akışları
+
+| Akış Adı | ID | Tetikleyici | Amaç |
+|----------|----|-------------|------|
+| `Haber Embedding Olustur` | `plj2qFJcMKdsRJLT` | Schedule (2 saatte bir) | Seen Articles tablosundan haberleri çekip Gemini ile embedding oluşturur, Article Embeddings tablosuna kaydeder. Sahipsiz embeddingleri siler. |
+
+---
+
 ## Dashboard Bölümleri (`#dashboard-panel`)
 
 | Section ID | İçerik | Veri Kaynağı |
