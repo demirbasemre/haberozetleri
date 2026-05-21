@@ -7125,6 +7125,19 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
 
     const edits = loadEdits();
     const o = edits[currentKey] || {};
+
+    // Backup old states for rollback in case of server failure
+    const oldEditsState = edits[currentKey] ? JSON.parse(JSON.stringify(edits[currentKey])) : undefined;
+    const a = findArticle(currentKey);
+    const oldArticleState = a ? {
+      title: a.title,
+      summary: a.summary,
+      date: a.date,
+      _sources: a._sources ? a._sources.slice() : undefined,
+      source: a.source,
+      link: a.link
+    } : null;
+
     o.title = document.getElementById('edit-title').innerHTML.trim();
     o.summary = document.getElementById('edit-summary').innerHTML.trim();
     o.date = document.getElementById('edit-date').value || null;
@@ -7139,11 +7152,10 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
     saveEdits(edits);
 
     // Apply in place to the in-memory article
-    const a = findArticle(currentKey);
     if (a) {
       a.title = o.title;
       a.summary = o.summary;
-      if (o.date) a.date = o.date;
+      a.date = o.date;
       if (sources.length) {
         a._sources = sources.slice();
         a.source = sources[0].source;
@@ -7157,7 +7169,34 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
 
     // GitHub'a gönder (arka planda)
     const ok = await pushToGitHub({ key: savedKey, action: 'edit', title: o.title, summary: o.summary, date: o.date, sources });
-    if (ok) showToast('✓ GitHub\'a kaydedildi', 'ok');
+    if (ok) {
+      showToast('✓ GitHub\'a kaydedildi', 'ok');
+    } else {
+      // Rollback edits in localStorage
+      const currentEdits = loadEdits();
+      if (oldEditsState === undefined) {
+        delete currentEdits[savedKey];
+      } else {
+        currentEdits[savedKey] = oldEditsState;
+      }
+      saveEdits(currentEdits);
+
+      // Rollback in-memory article
+      if (a && oldArticleState) {
+        a.title = oldArticleState.title;
+        a.summary = oldArticleState.summary;
+        a.date = oldArticleState.date;
+        if (oldArticleState._sources) {
+          a._sources = oldArticleState._sources;
+        } else {
+          delete a._sources;
+        }
+        a.source = oldArticleState.source;
+        a.link = oldArticleState.link;
+      }
+
+      if (typeof render === 'function') render();
+    }
 
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Kaydet'; }
   };
