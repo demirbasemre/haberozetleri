@@ -2614,12 +2614,13 @@
   .edit-trigger { display: none; }
 
   body.edit-mode .edit-banner {
-    position: fixed; top: 60px; left: 0; right: 0; z-index: 99;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 150;
     background: linear-gradient(90deg, #E63946, #B0202C);
     color: #fff; padding: 8px 16px; font-size: 13px; font-weight: 600;
     display: flex; align-items: center; justify-content: center; gap: 14px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
+  body.edit-mode header { top: 38px; }
   .edit-banner-actions { display: flex; gap: 8px; }
   .edit-banner button {
     background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.3);
@@ -6691,7 +6692,6 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
 <div class="edit-banner">
   <span>✎ Düzenleme modu açık — kartların üzerine geleyin</span>
   <div class="edit-banner-actions">
-    <button onclick="window.exportNewsEdits()">Değişiklikleri indir (JSON)</button>
     <button onclick="window.resetAllNewsEdits()">Tümünü sıfırla</button>
     <button onclick="window.toggleEditMode(false)">Kapat</button>
   </div>
@@ -7060,17 +7060,19 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
     });
   });
 
-  // Düzenleme modu — yalnızca URL parametresiyle (?edit=1)
+  // Düzenleme modu — localStorage + URL parametresi (?edit=1)
   window.toggleEditMode = function(on) {
     const want = (typeof on === 'boolean') ? on : !document.body.classList.contains('edit-mode');
     document.body.classList.toggle('edit-mode', want);
+    if (want) localStorage.setItem('editMode', '1');
+    else localStorage.removeItem('editMode');
   };
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && document.getElementById('editorModal').classList.contains('open')) {
       window.closeNewsEditor();
     }
   });
-  if (new URLSearchParams(location.search).has('edit')) {
+  if (new URLSearchParams(location.search).has('edit') || localStorage.getItem('editMode')) {
     window.toggleEditMode(true);
   }
 })();
