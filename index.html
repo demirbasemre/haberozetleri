@@ -4580,14 +4580,30 @@ fetch(DATA_URL)
     const titleMap = new Map();
     raw.forEach(a => {
       a._sources = [{ source: a.source, link: a.link }];
-      if (a.id != null) idMap.set(String(a.id), a);
-      if (a.title) titleMap.set(a.title.trim(), a);
+      if (a.id != null) {
+        const idStr = String(a.id);
+        if (!idMap.has(idStr) || (idMap.get(idStr).isDuplicate && !a.isDuplicate)) {
+          idMap.set(idStr, a);
+        }
+      }
+      if (a.title) {
+        const trimmed = a.title.trim();
+        if (!titleMap.has(trimmed) || (titleMap.get(trimmed).isDuplicate && !a.isDuplicate)) {
+          titleMap.set(trimmed, a);
+        }
+      }
     });
     allArticles = raw.filter(a => {
       if (a.isDuplicate && a.duplicateOf) {
         const key = String(a.duplicateOf);
         const orig = idMap.get(key) || titleMap.get(key.trim());
-        if (orig && orig !== a) { orig._sources.push({ source: a.source, link: a.link }); return false; }
+        if (orig && orig !== a) {
+          const linkExists = orig._sources.some(s => s.link === a.link);
+          if (!linkExists) {
+            orig._sources.push({ source: a.source, link: a.link });
+          }
+          return false;
+        }
       }
       return true;
     });
