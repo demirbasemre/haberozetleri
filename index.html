@@ -3592,14 +3592,107 @@ const GSA_DEFS = [
   { id: 'celebi',    label: 'Çelebi',         kw: ['celebi','çelebi'] },
 ];
 
+// Runtime-discovered companies (populated by autoDiscoverEntities)
+let DYNAMIC_AIRLINE_DEFS = [];
+let DYNAMIC_GSA_DEFS     = [];
+
+// Merge helper — all current definitions
+function allAirlineDefs() { return [...AIRLINE_DEFS, ...DYNAMIC_AIRLINE_DEFS]; }
+function allGSADefs()     { return [...GSA_DEFS,     ...DYNAMIC_GSA_DEFS]; }
+
 function detectGSA(article) {
   const text = (' ' + stripHtml(article.title || '') + ' ' + stripHtml(article.summary || '') + ' ').toLowerCase();
-  return GSA_DEFS.filter(g => g.kw.some(kw => text.includes(kw))).map(g => g.id);
+  return allGSADefs().filter(g => g.kw.some(kw => text.includes(kw))).map(g => g.id);
 }
 
 function detectAirlines(article) {
   const text = (' ' + stripHtml(article.title || '') + ' ' + stripHtml(article.summary || '') + ' ').toLowerCase();
-  return AIRLINE_DEFS.filter(a => a.kw.some(kw => text.includes(kw))).map(a => a.id);
+  return allAirlineDefs().filter(a => a.kw.some(kw => text.includes(kw))).map(a => a.id);
+}
+
+// ── Otomatik keşif ────────────────────────────────────────────
+// Makale başlıklarındaki kalıplardan bilinmeyen havayolu / GSA
+// şirketleri 2+ makalede geçiyorsa listeye eklenir.
+function autoDiscoverEntities(articles) {
+  // Tüm bilinen keyword'ler (eşleşme dışlamak için)
+  const knownAirlineKw = new Set(AIRLINE_DEFS.flatMap(a => a.kw));
+  const knownGSAKw     = new Set(GSA_DEFS.flatMap(g => g.kw));
+
+  // Çok sık geçen ama havayolu olmayan genel kelimeler (false-positive engeli)
+  const STOPWORDS = new Set([
+    'air mail','air freight','air cargo','air transport','air traffic',
+    'air force','air quality','air show','air space','air bridge',
+    'air travel','air park','air india','open air','fresh air',
+    'american','national','international','regional','global','central',
+    'new','old','first','second','third','next','last','best','top',
+    'cargo news','cargo update','cargo week',
+  ]);
+
+  // Şirket adı → makale sayısı
+  const airlineCount = new Map();
+  const gsaCount     = new Map();
+
+  // Regex: "Büyük harfle başlayan 1-3 sözcük  +  yeterlilik son eki"
+  const airlineRx = /\b([A-ZÜĞIŞÖÇ][a-zA-ZüğışöçÜĞİŞÖÇ]{1,}(?:\s+[A-Za-zÜĞİŞÖÇüğışöç]{2,}){0,2})\s+(Air Lines|Air Cargo|Airlines|Airways|Cargo|Kargo|Air\b|Aviation|Freight)\b/g;
+  const gsaRx     = /\b([A-ZÜĞIŞÖÇ][a-zA-ZüğışöçÜĞİŞÖÇ]{1,}(?:\s+[A-Za-zÜĞİŞÖÇüğışöç]{2,}){0,2})\s+(Ground Handling|Ground Services|Handling|GSSA|Ground Handler)\b/gi;
+
+  articles.forEach(a => {
+    const raw = (a.title || '') + ' ' + (a.summary || '');
+
+    // Havayolu kalıpları
+    airlineRx.lastIndex = 0;
+    let m;
+    while ((m = airlineRx.exec(raw)) !== null) {
+      const full = (m[1].trim() + ' ' + m[2].trim()).toLowerCase();
+      const base = m[1].trim().toLowerCase();
+      if (STOPWORDS.has(full) || STOPWORDS.has(base)) continue;
+      if (base.length < 3) continue;
+      // Zaten bilinen bir keyword mi?
+      if ([...knownAirlineKw].some(kw => full.includes(kw) || kw.includes(base))) continue;
+      airlineCount.set(full, (airlineCount.get(full) || 0) + 1);
+    }
+
+    // GSA kalıpları
+    gsaRx.lastIndex = 0;
+    while ((m = gsaRx.exec(raw)) !== null) {
+      const base = m[1].trim().toLowerCase();
+      if (base.length < 3) continue;
+      if ([...knownGSAKw].some(kw => base.includes(kw) || kw.includes(base))) continue;
+      gsaCount.set(base, (gsaCount.get(base) || 0) + 1);
+    }
+  });
+
+  // ── Havayolu ──
+  DYNAMIC_AIRLINE_DEFS = [];
+  airlineCount.forEach((count, fullLower) => {
+    if (count < 2) return;
+    // Grup: cargo suffix'i varsa cargo, yoksa combo
+    const isCargoType = /\b(cargo|kargo|air lines|freight)\b/.test(fullLower);
+    const label = fullLower.replace(/\b\w/g, c => c.toUpperCase()); // Title Case
+    const id    = 'dyn_' + fullLower.replace(/[^a-z0-9]/g, '_');
+    // Domain tahmini: ilk 2 sözcük + .com
+    const words      = fullLower.split(/\s+/).slice(0, 2).join('').replace(/[^a-z0-9]/g, '');
+    const domainGuess = words + '.com';
+    DYNAMIC_AIRLINE_DEFS.push({
+      id, label, group: isCargoType ? 'cargo' : 'combo', isDynamic: true,
+      kw:      [fullLower],
+      logoUrl: `https://www.google.com/s2/favicons?sz=32&domain=${domainGuess}`,
+    });
+  });
+
+  // ── GSA ──
+  DYNAMIC_GSA_DEFS = [];
+  gsaCount.forEach((count, base) => {
+    if (count < 2) return;
+    const label = base.replace(/\b\w/g, c => c.toUpperCase());
+    const id    = 'dyn_' + base.replace(/[^a-z0-9]/g, '_');
+    const words = base.split(/\s+/).slice(0, 2).join('').replace(/[^a-z0-9]/g, '');
+    DYNAMIC_GSA_DEFS.push({
+      id, label, isDynamic: true,
+      kw:      [base],
+      logoUrl: `https://www.google.com/s2/favicons?sz=32&domain=${words}.com`,
+    });
+  });
 }
 
 function formatDate(dateStr) {
@@ -3663,6 +3756,9 @@ function getAirlineLogo(airlineId) {
     'latam':           'https://www.google.com/s2/favicons?sz=32&domain=latamairlines.com',
     'avianca':         'https://www.google.com/s2/favicons?sz=32&domain=aviancacargo.com',
   };
+  // Dinamik girişin logoUrl'si varsa doğrudan kullan
+  const dyn = DYNAMIC_AIRLINE_DEFS.find(a => a.id === airlineId);
+  if (dyn?.logoUrl) return dyn.logoUrl;
   return logos[airlineId] || null;
 }
 
@@ -3675,6 +3771,8 @@ function getGSALogo(gsaId) {
     'acs':       'https://www.google.com/s2/favicons?sz=32&domain=aircharterservice.com',
     'celebi':    'https://www.google.com/s2/favicons?sz=32&domain=celebiaviation.com',
   };
+  const dyn = DYNAMIC_GSA_DEFS.find(g => g.id === gsaId);
+  if (dyn?.logoUrl) return dyn.logoUrl;
   return logos[gsaId] || null;
 }
 
@@ -4182,7 +4280,7 @@ function buildAirlineFilter(articles) {
   const found = new Set();
   articles.forEach(a => a._airlines.forEach(id => found.add(id)));
 
-  const relevant = AIRLINE_DEFS.filter(a => found.has(a.id));
+  const relevant = allAirlineDefs().filter(a => found.has(a.id));
 
   const dropdown = document.getElementById('airline-dropdown');
   dropdown.innerHTML = '';
@@ -4274,7 +4372,7 @@ function buildGSADropdown(articles) {
   const found = new Set();
   articles.forEach(a => (a._gsa || []).forEach(id => found.add(id)));
 
-  const relevant = GSA_DEFS.filter(g => found.has(g.id));
+  const relevant = allGSADefs().filter(g => found.has(g.id));
   if (relevant.length === 0) {
     panel.innerHTML = '<div style="padding:10px 14px;font-size:12px;color:var(--text-2)">Veri yok</div>';
     return;
@@ -4321,7 +4419,7 @@ function syncGSABtn() {
   if (count > 0) {
     btn.classList.add('active');
     lbl.textContent = count === 1
-      ? GSA_DEFS.find(g => activeGSA.has(g.id))?.label || 'GSA & Yer Hizm.'
+      ? allGSADefs().find(g => activeGSA.has(g.id))?.label || 'GSA & Yer Hizm.'
       : `${count} Şirket`;
     const badge = document.createElement('span');
     badge.className = 'gsa-count';
@@ -4343,7 +4441,7 @@ function syncAirlineBtn() {
   if (count > 0) {
     btn.classList.add('active');
     lbl.textContent = count === 1
-      ? AIRLINE_DEFS.find(a => activeAirlines.has(a.id))?.label || 'Havayolu'
+      ? allAirlineDefs().find(a => activeAirlines.has(a.id))?.label || 'Havayolu'
       : `${count} Havayolu`;
     const badge = document.createElement('span');
     badge.className = 'airline-count';
@@ -4375,7 +4473,7 @@ function syncAirlineGroupUI() {
   // Sync column header states
   dropdown.querySelectorAll('.airline-col-header[data-group]').forEach(hdr => {
     const grpId  = hdr.dataset.group;
-    const members = AIRLINE_DEFS.filter(a => a.group === grpId && dropdown.querySelector(`.airline-col-item[data-id="${a.id}"]`));
+    const members = allAirlineDefs().filter(a => a.group === grpId && dropdown.querySelector(`.airline-col-item[data-id="${a.id}"]`));
     const allSel  = members.length > 0 && members.every(a => activeAirlines.has(a.id));
     const anySel  = members.some(a => activeAirlines.has(a.id));
     hdr.classList.toggle('selected', anySel);
@@ -4795,6 +4893,7 @@ fetch(DATA_URL, { cache: 'no-store' })
     });
     if (window.__applyNewsEdits) allArticles = window.__applyNewsEdits(allArticles);
     buildDatePanel(allArticles);
+    autoDiscoverEntities(allArticles);
     buildAirlineFilter(allArticles);
     render();
   })
