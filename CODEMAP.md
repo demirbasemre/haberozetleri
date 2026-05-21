@@ -112,6 +112,8 @@ fetch('data.json') → allArticles[] → render()
 - `renderCards(articles)` — DOM'a yazar
 - `getFilteredArticles()` — aktif filtreleri uygular
 - `render()` — `getFilteredArticles()` → `renderCards()` + `updateStats()`
+- `extractDateParts(dateStr)` — Tarih metinlerini normalize eder, \"Published:\" ön eklerini ve gün adlarını ayıklar, `{ y, m, day }` döner.
+- `isoDateOf(a)` — Makalenin `date` veya `publishDate` değerini `YYYY-MM-DD` formatına çevirir.
 
 ### Filtreler (state global değişkenlerde)
 - Tarih: `activeMonths`, `activeDays` — `buildDatePanel()` ile inşa edilir
@@ -207,4 +209,4 @@ Chart instance:   _dcImfLineChart (destroy edilip yeniden oluşturulur)
 
 ---
 
-*Son güncelleme: 2026-05-20*
+*Son güncelleme: 2026-05-21*
