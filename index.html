@@ -1685,17 +1685,20 @@
     color: hsl(211, 52%, 68%);
   }
 
-  /* Etkinlik kartı — GEÇMİŞ → nötr gri (görevini tamamladı) */
+  /* Etkinlik kartı — GEÇMİŞ → yeşil (veri kartlarıyla aynı, --fade:0) */
   .dash-release-item.event-past {
-    background: var(--surface);
-    border-color: var(--border);
-    opacity: 0.70;
+    background: hsl(142, 52%, 94%);
+    border-color: hsl(142, 38%, 82%);
   }
   .dash-release-item.event-past .dash-rel-date {
-    background: hsl(220, 10%, 52%);
+    background: hsl(142, 48%, 44%);
   }
   [data-theme="dark"] .dash-release-item.event-past {
-    opacity: 0.55;
+    background: hsl(142, 28%, 16%);
+    border-color: hsl(142, 22%, 28%);
+  }
+  [data-theme="dark"] .dash-release-item.event-past .dash-rel-date {
+    background: hsl(142, 32%, 26%);
   }
 
   /* Kullanıcı eklediği özel kart */
@@ -5269,10 +5272,10 @@ function buildReleaseCalendar() {
 
     // "Bugün" kalıcı kartı — her zaman turuncu, her zaman görünür
     const todayMarker = {
-      title: `${TR_DAYS_TR[now.getDay()]}, ${now.getDate()} ${TR_M_FULL[now.getMonth()]} ${now.getFullYear()}`,
-      source: 'Bugün',
+      title: `${now.getDate()} ${TR_M_FULL[now.getMonth()]} ${now.getFullYear()}, ${TR_DAYS_TR[now.getDay()]}`,
+      source: '',
       date: new Date(todayStart),
-      cadence: 'Güncel tarih göstergesi',
+      cadence: '',
       kind: 'today',
       link: ''
     };
@@ -5330,7 +5333,7 @@ function buildReleaseCalendar() {
         : '';
 
       // Sağ-alt dekoratif çizim
-      const illus = isTodayCard ? illustEvent : (isCustom ? illustCustom : (isEvent ? illustEvent : illustData));
+      const illus = isTodayCard ? '' : (isCustom ? illustCustom : (isEvent ? illustEvent : illustData));
 
       return `
       <${tag} class="${itemClass}"${linkAttr}>
