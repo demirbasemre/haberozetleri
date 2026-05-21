@@ -3637,7 +3637,7 @@ function autoDiscoverEntities(articles) {
   const gsaRx     = /\b([A-ZÜĞIŞÖÇ][a-zA-ZüğışöçÜĞİŞÖÇ]{1,}(?:\s+[A-Za-zÜĞİŞÖÇüğışöç]{2,}){0,2})\s+(Ground Handling|Ground Services|Handling|GSSA|Ground Handler)\b/gi;
 
   articles.forEach(a => {
-    const raw = (a.title || '') + ' ' + (a.summary || '');
+    const raw = stripHtml(a.title || '') + ' ' + stripHtml(a.summary || '');
 
     // Havayolu kalıpları
     airlineRx.lastIndex = 0;
