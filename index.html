@@ -389,6 +389,26 @@
     padding: 4px 8px 2px;
   }
 
+  .airline-group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--navy);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    margin-top: 4px;
+    user-select: none;
+  }
+  .airline-group-header:first-child { margin-top: 0; }
+  .airline-group-header:hover { background: var(--bg); }
+  .airline-group-header.selected { background: rgba(13,17,23,0.04); }
+  [data-theme="dark"] .airline-group-header { color: var(--accent); border-bottom-color: rgba(255,255,255,0.08); }
+  [data-theme="dark"] .airline-group-header:hover { background: rgba(255,255,255,0.05); }
   .airline-option {
     display: flex;
     align-items: center;
@@ -3463,28 +3483,35 @@ TK_HIERARCHY.forEach(tk => tk.subs.forEach(s => { SUB_TO_TK[s] = tk.id; }));
 TK_HIERARCHY.forEach(tk => { SUB_TO_TK[tk.id] = tk.id; });
 
 // ── Airline keyword definitions ──────────────────────────────
+const AIRLINE_GROUPS = [
+  { id: 'primary',  label: 'Öncelikli' },
+  { id: 'cargo',    label: 'Kargo Havayolları' },
+  { id: 'combo',    label: 'Kombine Havayolları' },
+  { id: 'services', label: 'Yer Hizmetleri & GSA' },
+];
+
 const AIRLINE_DEFS = [
-  { id: 'turkishairlines', label: 'Turkish Airlines', isPrimary: true,
+  { id: 'turkishairlines', label: 'Turkish Airlines', isPrimary: true, group: 'primary',
     kw: ['turkish cargo','turkish airlines','türk hava','türk kargo'] },
-  { id: 'fedex',     label: 'FedEx',          kw: ['fedex'] },
-  { id: 'ups',       label: 'UPS',            kw: [' ups ',' ups,', 'ups kargo'] },
-  { id: 'dhl',       label: 'DHL',            kw: ['dhl'] },
-  { id: 'emirates',  label: 'Emirates',       kw: ['emirates'] },
-  { id: 'qatar',     label: 'Qatar Airways',  kw: ['qatar airways','qatar cargo'] },
-  { id: 'lufthansa', label: 'Lufthansa',      kw: ['lufthansa'] },
-  { id: 'cathay',    label: 'Cathay Pacific', kw: ['cathay'] },
-  { id: 'atlas',     label: 'Atlas Air',      kw: ['atlas air'] },
-  { id: 'airfrance', label: 'Air France',     kw: ['air france'] },
-  { id: 'korean',    label: 'Korean Air',     kw: ['korean air'] },
-  { id: 'singapore', label: 'Singapore Airlines', kw: ['singapore airlines'] },
-  { id: 'cargolux',  label: 'Cargolux',       kw: ['cargolux'] },
-  { id: 'amazon',    label: 'Amazon Air',     kw: ['amazon air'] },
-  { id: 'geosky',    label: 'Geosky',         kw: ['geosky'] },
-  { id: 'wizz',      label: 'Wizz Air',       kw: ['wizz air'] },
-  { id: 'ecs',       label: 'ECS Group',      kw: ['ecs group'] },
-  { id: 'menzies',   label: 'Menzies',        kw: ['menzies'] },
-  { id: 'cargojet',  label: 'Cargojet',       kw: ['cargojet'] },
-  { id: 'aeromexico',label: 'Aeromexico',     kw: ['aeromexico'] },
+  { id: 'fedex',     label: 'FedEx',          group: 'cargo',    kw: ['fedex'] },
+  { id: 'ups',       label: 'UPS',            group: 'cargo',    kw: [' ups ',' ups,', 'ups kargo'] },
+  { id: 'dhl',       label: 'DHL',            group: 'cargo',    kw: ['dhl'] },
+  { id: 'atlas',     label: 'Atlas Air',      group: 'cargo',    kw: ['atlas air'] },
+  { id: 'cargolux',  label: 'Cargolux',       group: 'cargo',    kw: ['cargolux'] },
+  { id: 'amazon',    label: 'Amazon Air',     group: 'cargo',    kw: ['amazon air'] },
+  { id: 'geosky',    label: 'Geosky',         group: 'cargo',    kw: ['geosky'] },
+  { id: 'cargojet',  label: 'Cargojet',       group: 'cargo',    kw: ['cargojet'] },
+  { id: 'emirates',  label: 'Emirates',       group: 'combo',    kw: ['emirates'] },
+  { id: 'qatar',     label: 'Qatar Airways',  group: 'combo',    kw: ['qatar airways','qatar cargo'] },
+  { id: 'lufthansa', label: 'Lufthansa',      group: 'combo',    kw: ['lufthansa'] },
+  { id: 'cathay',    label: 'Cathay Pacific', group: 'combo',    kw: ['cathay'] },
+  { id: 'airfrance', label: 'Air France',     group: 'combo',    kw: ['air france'] },
+  { id: 'korean',    label: 'Korean Air',     group: 'combo',    kw: ['korean air'] },
+  { id: 'singapore', label: 'Singapore Airlines', group: 'combo', kw: ['singapore airlines'] },
+  { id: 'wizz',      label: 'Wizz Air',       group: 'combo',    kw: ['wizz air'] },
+  { id: 'aeromexico',label: 'Aeromexico',     group: 'combo',    kw: ['aeromexico'] },
+  { id: 'ecs',       label: 'ECS Group',      group: 'services', kw: ['ecs group'] },
+  { id: 'menzies',   label: 'Menzies',        group: 'services', kw: ['menzies'] },
 ];
 
 function detectAirlines(article) {
@@ -3528,17 +3555,17 @@ function getAirlineLogo(airlineId) {
     'fedex':           'https://www.google.com/s2/favicons?sz=32&domain=fedex.com',
     'ups':             'https://www.google.com/s2/favicons?sz=32&domain=ups.com',
     'dhl':             'https://www.google.com/s2/favicons?sz=32&domain=dhl.com',
-    'emirates':        'https://www.google.com/s2/favicons?sz=32&domain=emirates.com',
+    'emirates':        'https://www.google.com/s2/favicons?sz=32&domain=skycargo.com',
     'qatar':           'https://www.google.com/s2/favicons?sz=32&domain=qatarairways.com',
     'lufthansa':       'https://www.google.com/s2/favicons?sz=32&domain=lufthansa.com',
     'cathay':          'https://www.google.com/s2/favicons?sz=32&domain=cathaypacific.com',
     'atlas':           'https://www.google.com/s2/favicons?sz=32&domain=atlasair.com',
-    'airfrance':       'https://www.google.com/s2/favicons?sz=32&domain=airfrancecargo.com',
+    'airfrance':       'https://www.google.com/s2/favicons?sz=32&domain=airfrance.com',
     'korean':          'https://www.google.com/s2/favicons?sz=32&domain=koreanair.com',
     'singapore':       'https://www.google.com/s2/favicons?sz=32&domain=singaporeair.com',
     'cargolux':        'https://www.google.com/s2/favicons?sz=32&domain=cargolux.com',
     'amazon':          'https://www.google.com/s2/favicons?sz=32&domain=amazon.com',
-    'geosky':          'https://www.google.com/s2/favicons?sz=32&domain=geosky.aero',
+    'geosky':          'https://unavatar.io/geosky.aero',
     'wizz':            'https://www.google.com/s2/favicons?sz=32&domain=wizzair.com',
     'ecs':             'https://www.google.com/s2/favicons?sz=32&domain=ecsgroup.aero',
     'menzies':         'https://www.google.com/s2/favicons?sz=32&domain=menziesaviation.com',
@@ -4047,49 +4074,71 @@ function buildAirlineFilter(articles) {
   const dropdown = document.getElementById('airline-dropdown');
   dropdown.innerHTML = '';
 
-  // (no section label — removed per user request)
+  // Group airlines by their group field, preserving AIRLINE_GROUPS order
+  const byGroup = {};
+  relevant.forEach(a => {
+    const g = a.group || 'combo';
+    if (!byGroup[g]) byGroup[g] = [];
+    byGroup[g].push(a);
+  });
 
-  relevant.forEach((airline, idx) => {
-    // Divider after primary airline
-    if (idx > 0 && !airline.isPrimary && relevant[idx - 1].isPrimary) {
-      const div = document.createElement('div');
-      div.className = 'dropdown-divider';
-      dropdown.appendChild(div);
-    }
+  AIRLINE_GROUPS.forEach(grp => {
+    const members = byGroup[grp.id];
+    if (!members || members.length === 0) return;
 
-    const opt = document.createElement('div');
-    opt.className = 'airline-option';
-    opt.dataset.id = airline.id;
-    opt.setAttribute('role', 'option');
-    opt.setAttribute('aria-selected', 'false');
-    const airlineLogoUrl = getAirlineLogo(airline.id);
-    opt.innerHTML = `
-      <div class="airline-check">
-        <svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="1 3.5 3.5 6 8 1"/>
-        </svg>
-      </div>
-      ${airlineLogoUrl ? `<img class="source-favicon-filter" src="${airlineLogoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
-      <span class="airline-label">${airline.label}</span>
-    `;
-
-    opt.addEventListener('click', e => {
+    // Group header (clickable — selects/deselects all in group)
+    const header = document.createElement('div');
+    header.className = 'airline-group-header';
+    header.dataset.group = grp.id;
+    header.innerHTML = `<div class="airline-check">${CHECK_SVG}</div><span style="flex:1">${grp.label}</span>`;
+    header.addEventListener('click', e => {
       e.stopPropagation();
-      if (activeAirlines.has(airline.id)) {
-        activeAirlines.delete(airline.id);
-        opt.classList.remove('selected');
-        opt.setAttribute('aria-selected', 'false');
-      } else {
-        activeAirlines.add(airline.id);
-        opt.classList.add('selected');
-        opt.setAttribute('aria-selected', 'true');
-      }
+      const allSel = members.every(a => activeAirlines.has(a.id));
+      members.forEach(a => allSel ? activeAirlines.delete(a.id) : activeAirlines.add(a.id));
+      syncAirlineGroupUI();
       syncAirlineBtn();
       render();
     });
+    dropdown.appendChild(header);
 
-    dropdown.appendChild(opt);
+    // Member rows
+    members.forEach(airline => {
+      const opt = document.createElement('div');
+      opt.className = 'airline-option';
+      opt.dataset.id = airline.id;
+      opt.dataset.group = grp.id;
+      opt.setAttribute('role', 'option');
+      opt.setAttribute('aria-selected', 'false');
+      const airlineLogoUrl = getAirlineLogo(airline.id);
+      opt.innerHTML = `
+        <div class="airline-check">
+          <svg width="9" height="7" viewBox="0 0 9 7" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 3.5 3.5 6 8 1"/>
+          </svg>
+        </div>
+        ${airlineLogoUrl ? `<img class="source-favicon-filter" src="${airlineLogoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
+        <span class="airline-label">${airline.label}</span>
+      `;
+      opt.addEventListener('click', e => {
+        e.stopPropagation();
+        if (activeAirlines.has(airline.id)) {
+          activeAirlines.delete(airline.id);
+          opt.classList.remove('selected');
+          opt.setAttribute('aria-selected', 'false');
+        } else {
+          activeAirlines.add(airline.id);
+          opt.classList.add('selected');
+          opt.setAttribute('aria-selected', 'true');
+        }
+        syncAirlineGroupUI();
+        syncAirlineBtn();
+        render();
+      });
+      dropdown.appendChild(opt);
+    });
   });
+
+  dropdown.addEventListener('click', e => e.stopPropagation());
 
   // (filter bar is always visible)
 }
@@ -4114,6 +4163,44 @@ function syncAirlineBtn() {
     lbl.textContent = 'Havayolu';
   }
   syncClearBtn();
+}
+
+function syncAirlineGroupUI() {
+  const dropdown = document.getElementById('airline-dropdown');
+  if (!dropdown) return;
+
+  // Sync individual option states
+  dropdown.querySelectorAll('.airline-option[data-id]').forEach(opt => {
+    const sel = activeAirlines.has(opt.dataset.id);
+    opt.classList.toggle('selected', sel);
+    opt.setAttribute('aria-selected', sel ? 'true' : 'false');
+  });
+
+  // Sync group header states
+  dropdown.querySelectorAll('.airline-group-header[data-group]').forEach(hdr => {
+    const grpId = hdr.dataset.group;
+    const grp = AIRLINE_GROUPS.find(g => g.id === grpId);
+    if (!grp) return;
+    const members = AIRLINE_DEFS.filter(a => a.group === grpId && dropdown.querySelector(`.airline-option[data-id="${a.id}"]`));
+    const allSel = members.length > 0 && members.every(a => activeAirlines.has(a.id));
+    const anySel = members.some(a => activeAirlines.has(a.id));
+    hdr.classList.toggle('selected', anySel);
+    const ch = hdr.querySelector('.airline-check');
+    if (anySel) {
+      ch.style.background  = 'var(--navy)';
+      ch.style.borderColor = 'var(--navy)';
+      if (allSel) {
+        ch.innerHTML = CHECK_SVG;
+        ch.querySelector('svg').style.display = 'block';
+      } else {
+        ch.innerHTML = `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>`;
+      }
+    } else {
+      ch.style.background  = '';
+      ch.style.borderColor = '';
+      ch.innerHTML = CHECK_SVG;
+    }
+  });
 }
 
 function buildSourceDropdown() {
