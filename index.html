@@ -768,6 +768,25 @@
     opacity: 0.5;
     flex-shrink: 0;
   }
+
+  /* ── Odak modu: yıldız buton ve ikonlar gereksiz, gizle ── */
+  /* Normal modda (non-edit) odak satırlarda inline yıldız göster */
+  .airline-focus-star {
+    flex-shrink: 0;
+    opacity: 0.85;
+    transition: opacity 0.15s ease;
+  }
+  /* Odak modu açıkken: yıldız buton ve inline yıldız gizle — tüm satırlar zaten odak */
+  #airline-dropdown.airline-odak-active .airline-star-btn {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  #airline-dropdown.airline-odak-active .airline-focus-star {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+  }
+  /* Odak modu kapalı, edit modu: yıldız buton hover/focused kuralları aktif (üstte tanımlı) */
   .airline-edit-panel-row label { flex: 1; }
   .airline-edit-save-btn {
     padding: 5px 12px;
@@ -5287,6 +5306,8 @@ function buildAirlineFilter(articles) {
 
   const dropdown = document.getElementById('airline-dropdown');
   dropdown.innerHTML = '';
+  // Odak modunu class olarak yansıt — CSS ile yıldız buton/ikonlar gizlenir
+  dropdown.classList.toggle('airline-odak-active', airlineFocusMode);
 
   if (relevant.length === 0) return;
 
