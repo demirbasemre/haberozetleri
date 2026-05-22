@@ -4135,8 +4135,8 @@ let onlyMultiSource  = false;
 // ── Havayolu konfigürasyon sistemi ───────────────────────────
 const IS_EDIT_MODE = new URLSearchParams(location.search).get('edit') === '1';
 let airlineFocusMode = false;
-let AIRLINE_CONFIG_OVERRIDES = []; // n8n'den yüklenen overrides
-const AIRLINE_CONFIG_URL = 'https://n8n.emredemirbas.com/webhook/airline-config';
+let AIRLINE_CONFIG_OVERRIDES = []; // GitHub'dan yüklenen overrides
+const AIRLINE_CONFIG_URL = 'https://raw.githubusercontent.com/demirbasemre/haberozetleri/main/airline-config.json';
 const AIRLINE_CONFIG_SAVE_URL = 'https://n8n.emredemirbas.com/webhook/airline-config/save';
 
 function applyAirlineConfigOverrides() {
