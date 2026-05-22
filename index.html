@@ -4851,13 +4851,36 @@ buildRegionDropdown();
 
 // Load data
 const DATA_URL = 'data.json?t=' + Date.now();
+const CUSTOM_ENTITIES_URL = 'https://raw.githubusercontent.com/demirbasemre/haberozetleri/main/custom_entities.json';
 
-fetch(DATA_URL, { cache: 'no-store' })
-  .then(r => {
-    if (!r.ok) throw new Error('Veri kaynağına ulaşılamadı');
-    return r.json();
-  })
-  .then(data => {
+function loadCustomEntities() {
+  return fetch(CUSTOM_ENTITIES_URL + '?t=' + Date.now(), { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : null)
+    .catch(() => null)
+    .then(entities => {
+      if (!entities) return;
+      if (Array.isArray(entities.airlines) && entities.airlines.length > 0) {
+        DYNAMIC_AIRLINE_DEFS = entities.airlines.map(e => ({
+          id: e.id, label: e.label, group: e.group || 'combo',
+          kw: e.kw || [e.label.toLowerCase()],
+          ...(e.logoUrl ? { logoUrl: e.logoUrl } : {})
+        }));
+      }
+      if (Array.isArray(entities.gsa) && entities.gsa.length > 0) {
+        DYNAMIC_GSA_DEFS = entities.gsa.map(e => ({
+          id: e.id, label: e.label,
+          kw: e.kw || [e.label.toLowerCase()],
+          ...(e.logoUrl ? { logoUrl: e.logoUrl } : {})
+        }));
+      }
+    });
+}
+
+Promise.all([
+  fetch(DATA_URL, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('Veri kaynağına ulaşılamadı'); return r.json(); }),
+  loadCustomEntities()
+])
+  .then(([data]) => {
     const raw = Array.isArray(data) ? data : (data.articles || []);
     // Merge duplicates: attach extra sources to the original article
     const idMap = new Map();
@@ -4895,18 +4918,20 @@ fetch(DATA_URL, { cache: 'no-store' })
     buildDatePanel(allArticles);
     buildAirlineFilter(allArticles);
     render();
-    // Dinamik keşif: render bittikten sonra boşta çalıştır
-    const runDiscovery = () => {
-      autoDiscoverEntities(allArticles);
-      // Yeni şirket bulunduysa filtreyi güncelle (açık değilse sadece data'yı yenile)
-      if (DYNAMIC_AIRLINE_DEFS.length > 0 || DYNAMIC_GSA_DEFS.length > 0) {
-        buildAirlineFilter(allArticles);
+    // İstemci taraflı keşif: yalnızca sunucu taraflı veri yoksa çalıştır (fallback)
+    const hasServerEntities = DYNAMIC_AIRLINE_DEFS.length > 0 || DYNAMIC_GSA_DEFS.length > 0;
+    if (!hasServerEntities) {
+      const runDiscovery = () => {
+        autoDiscoverEntities(allArticles);
+        if (DYNAMIC_AIRLINE_DEFS.length > 0 || DYNAMIC_GSA_DEFS.length > 0) {
+          buildAirlineFilter(allArticles);
+        }
+      };
+      if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(runDiscovery, { timeout: 3000 });
+      } else {
+        setTimeout(runDiscovery, 200);
       }
-    };
-    if (typeof requestIdleCallback === 'function') {
-      requestIdleCallback(runDiscovery, { timeout: 3000 });
-    } else {
-      setTimeout(runDiscovery, 200);
     }
   })
   .catch(err => {
