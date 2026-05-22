@@ -397,45 +397,74 @@
     overflow-x: hidden;
     padding-bottom: 6px;
   }
+  /* ── Segmented toggle — sliding pill ── */
   .airline-mode-toggle {
     display: flex;
     background: var(--bg);
-    border-radius: 8px;
+    border-radius: 9px;
     padding: 3px;
     margin: 8px 8px 5px;
-    gap: 2px;
+    gap: 0;
     position: sticky;
     top: 0;
-    z-index: 1;
-    backdrop-filter: blur(8px);
+    z-index: 2;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .airline-mode-indicator {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc(50% - 3px);
+    background: white;
+    border-radius: 7px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.14), 0 1px 2px rgba(0,0,0,0.07);
+    transition: transform 220ms cubic-bezier(0.34, 1.4, 0.64, 1);
+    pointer-events: none;
+  }
+  .airline-mode-indicator.mode-integrator { transform: translateX(100%); }
+  [data-theme="dark"] .airline-mode-indicator {
+    background: rgba(255,255,255,0.11);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
   }
   .airline-mode-btn {
     flex: 1;
-    padding: 5px 8px;
-    border-radius: 6px;
+    padding: 6px 8px;
+    border-radius: 7px;
     font-size: 11.5px;
     font-weight: 500;
     border: none;
     background: transparent;
     cursor: pointer;
-    transition: all 180ms ease;
+    transition: color 160ms ease;
     color: var(--text-2);
     white-space: nowrap;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
-    min-height: 28px;
+    min-height: 30px;
+    position: relative;
+    z-index: 1;
+    user-select: none;
   }
-  .airline-mode-btn:hover { color: var(--text); }
-  .airline-mode-btn.active {
-    background: white;
-    color: var(--text);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.13), 0 1px 1px rgba(0,0,0,0.06);
-  }
-  [data-theme="dark"] .airline-mode-btn.active {
-    background: var(--surface);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  .airline-mode-btn:hover:not(.active) { color: var(--text); }
+  .airline-mode-btn.active { color: var(--text); font-weight: 600; }
+  /* Airline initials fallback badge */
+  .airline-init-badge {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.3px;
+    flex-shrink: 0;
+    line-height: 1;
   }
   /* Turkish Airlines — en üstte sabit */
   .airline-pinned-wrap {
@@ -3884,13 +3913,11 @@ function getAirlineLogo(airlineId) {
     'british':         F('britishairways.com'),
     'cargolux':        F('cargolux.com'),
     'wizz':            F('wizzair.com'),
-    'geosky':          F('geosky.aero'),
-    'iag':             F('iagcargo.com'),
     'klm':             F('klm.com'),
     'tap':             F('flytap.com'),
     'ita':             F('ita-airways.com'),
     'skyup':           F('skyup.aero'),
-    'cmacgm':          F('cmacgm.com'),
+    'cmacgm':          F('cma-cgm.com'),
     // Orta Doğu
     'emirates':        F('emirates.com'),
     'etihad':          F('etihadcargo.com'),
@@ -3902,7 +3929,6 @@ function getAirlineLogo(airlineId) {
     // Afrika
     'ethiopian':       F('ethiopianairlines.com'),
     'kenya':           F('kenya-airways.com'),
-    'astral':          F('astralaviation.com'),
     'rwandair':        F('rwandair.com'),
     // Asya Pasifik
     'cathay':          F('cathaypacific.com'),
@@ -3914,26 +3940,42 @@ function getAirlineLogo(airlineId) {
     'silkway':         F('silkwaywest.com'),
     'asiana':          F('flyasiana.com'),
     'chinaeastern':    F('ceair.com'),
-    'nippon':          F('anacargo.com'),
     'jal':             F('jal.com'),
-    'airindia':        F('airindia.com'),
+    'airindia':        F('airindia.in'),
     // Amerika
     'atlas':           F('atlasair.com'),
     'cargojet':        F('cargojet.com'),
     'latam':           F('latamairlines.com'),
-    'avianca':         F('aviancacargo.com'),
+    'avianca':         F('avianca.com'),
     'aeromexico':      F('aeromexico.com'),
     'united':          F('unitedcargo.com'),
     'american':        F('aa.com'),
     'aircanada':       F('aircanada.com'),
     'alaska':          F('alaskaair.com'),
-    'spirit':          F('spirit.com'),
-    'nationalcargo':   F('nationalairlines.com'),
   };
   // Dinamik girişin logoUrl'si varsa doğrudan kullan
   const dyn = DYNAMIC_AIRLINE_DEFS.find(a => a.id === airlineId);
   if (dyn?.logoUrl) return dyn.logoUrl;
   return logos[airlineId] || null;
+}
+
+// Renkli initials badge — logo yoksa veya yüklenemezse kullanılır
+const REGION_BADGE_COLORS = {
+  'turkiye': '#BE123C', 'europe': '#1D4ED8', 'mideast': '#15803D',
+  'africa': '#92400E',  'asiapac': '#C2410C', 'americas': '#7E22CE', 'other': '#6B7280'
+};
+function airlineLogoHtml(airline, logoUrl) {
+  const words   = (airline.label || '').trim().split(/\s+/);
+  const initials = (words.length >= 2
+    ? words[0][0] + words[words.length - 1][0]
+    : (words[0] || '??').slice(0, 2)
+  ).toUpperCase();
+  const color   = REGION_BADGE_COLORS[airline.region || 'other'] || '#6B7280';
+  const badge   = `<div class="airline-init-badge" style="background:${color}" aria-hidden="true">${initials}</div>`;
+  if (!logoUrl) return badge;
+  return `<img class="source-favicon-filter" src="${logoUrl}" alt="" loading="lazy" width="16" height="16"
+    data-init="${initials}" data-color="${color}"
+    onerror="var b=document.createElement('div');b.className='airline-init-badge';b.style.background=this.dataset.color;b.textContent=this.dataset.init;this.parentNode.replaceChild(b,this)">`;
 }
 
 function getGSALogo(gsaId) {
@@ -4459,12 +4501,20 @@ function buildAirlineFilter(articles) {
 
   if (relevant.length === 0) return;
 
-  // ── Mode toggle ──
+  // ── Mode toggle — sliding pill ──
   const toggle = document.createElement('div');
   toggle.className = 'airline-mode-toggle';
+  toggle.style.position = 'relative';
 
-  const regionSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`;
-  const typeSvg   = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19.5 2.5c-1.5-1.5-3.5-1.5-5 0L11 6 2.8 4.2l-1.4 1.4 4.9 4.9-.4.4-2.1-.7-.9.9 3 3-1.2 1.2 1.8 1.8 1.2-1.2 3 3 .9-.9-.7-2.1.4-.4 4.9 4.9 1.4-1.4Z"/></svg>`;
+  // Sliding indicator pill
+  const indicator = document.createElement('div');
+  indicator.className = 'airline-mode-indicator' + (airlineFilterMode === 'integrator' ? ' mode-integrator' : '');
+  toggle.appendChild(indicator);
+
+  // Map-pin icon for Bölge (geographic clustering)
+  const regionSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+  // Tag/label icon for Tür (type classification)
+  const typeSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`;
 
   [['region', regionSvg, 'Bölge'], ['integrator', typeSvg, 'Tür']].forEach(([mode, icon, label]) => {
     const btn = document.createElement('button');
@@ -4491,9 +4541,8 @@ function buildAirlineFilter(articles) {
     row.dataset.id = 'turkishairlines';
     row.setAttribute('role', 'option');
     row.setAttribute('aria-selected', isSel ? 'true' : 'false');
-    const logoUrl = getAirlineLogo('turkishairlines');
-    const chk = `<div class="airline-check${isSel ? ' selected-check' : ''}" style="${isSel ? 'background:var(--red);border-color:var(--red)' : ''}">${isSel ? CHECK_SVG.replace('display:none','display:block') : CHECK_SVG}</div>`;
-    row.innerHTML = `${chk}${logoUrl ? `<img class="source-favicon-filter" src="${logoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}<span class="airline-label">Turkish Airlines</span>`;
+    const chk = `<div class="airline-check" style="${isSel ? 'background:var(--red);border-color:var(--red)' : ''}">${CHECK_SVG}</div>`;
+    row.innerHTML = `${chk}${airlineLogoHtml(tkDef, getAirlineLogo('turkishairlines'))}<span class="airline-label">Turkish Airlines</span>`;
     row.addEventListener('click', e => {
       e.stopPropagation();
       activeAirlines.has('turkishairlines') ? activeAirlines.delete('turkishairlines') : activeAirlines.add('turkishairlines');
@@ -4508,8 +4557,15 @@ function buildAirlineFilter(articles) {
     dropdown.appendChild(sep);
   }
 
-  // Türkiye grubunu gizlemek için Turkish Airlines'ı çıkar
-  const groupRelevant = relevant.filter(a => a.id !== 'turkishairlines');
+  // Turkish Airlines'ı gruplardan çıkar; label bazında duplicate'leri temizle
+  const staticLabels = new Set(AIRLINE_DEFS.map(a => a.label.toLowerCase()));
+  const groupRelevant = relevant.filter(a => {
+    if (a.id === 'turkishairlines') return false;
+    // Dynamic entry ise ve aynı label'da static var ise kaldır
+    const isStatic = AIRLINE_DEFS.some(s => s.id === a.id);
+    if (!isStatic && staticLabels.has(a.label.toLowerCase())) return false;
+    return true;
+  });
 
   // ── Group definitions for current mode ──
   const groupDefs  = airlineFilterMode === 'region' ? AIRLINE_REGION_GROUPS : AIRLINE_INTEGRATOR_GROUPS;
@@ -4564,7 +4620,7 @@ function buildAirlineFilter(articles) {
       const logoUrl = getAirlineLogo(airline.id);
       opt.innerHTML = `
         <div class="airline-check">${CHECK_SVG}</div>
-        ${logoUrl ? `<img class="source-favicon-filter" src="${logoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}
+        ${airlineLogoHtml(airline, logoUrl)}
         <span class="airline-label">${airline.label}</span>
       `;
       opt.addEventListener('click', e => {
