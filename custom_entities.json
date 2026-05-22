@@ -1,0 +1,2051 @@
+{
+  "lastScannedId": 1105,
+  "lastScanned": "2026-05-22T07:32:45.569Z",
+  "scannedCount": 624,
+  "airlines": [
+    {
+      "id": "dyn_kat_na_kard_frankfurt_cargo",
+      "label": "KatıNa çıKardı Frankfurt Cargo",
+      "group": "cargo",
+      "kw": [
+        "katına çıkardı frankfurt cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=katnakard.com"
+    },
+    {
+      "id": "dyn_swissport_fas_kargo",
+      "label": "Swissport Fas Kargo",
+      "group": "cargo",
+      "kw": [
+        "swissport fas kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=swissportfas.com"
+    },
+    {
+      "id": "dyn_iag_cargo",
+      "label": "Iag Cargo",
+      "group": "cargo",
+      "kw": [
+        "iag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iagcargo.com"
+    },
+    {
+      "id": "dyn_rotas_n_ekledi_iag_cargo",
+      "label": "RotasıNı Ekledi Iag Cargo",
+      "group": "cargo",
+      "kw": [
+        "rotasını ekledi iag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=rotasnekledi.com"
+    },
+    {
+      "id": "dyn_b_y_yor_air",
+      "label": "BüYüYor Air",
+      "group": "combo",
+      "kw": [
+        "büyüyor air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=byyorair.com"
+    },
+    {
+      "id": "dyn_hizmete_a_t_iag_cargo",
+      "label": "Hizmete AçTı Iag Cargo",
+      "group": "cargo",
+      "kw": [
+        "hizmete açtı iag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hizmeteat.com"
+    },
+    {
+      "id": "dyn_paris_kazas_nda_air",
+      "label": "Paris KazasıNda Air",
+      "group": "combo",
+      "kw": [
+        "paris kazasında air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=pariskazasnda.com"
+    },
+    {
+      "id": "dyn_b_y_k_hava_kargo",
+      "label": "BüYüK Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "büyük hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bykhava.com"
+    },
+    {
+      "id": "dyn_program_ba_latt_iag_cargo",
+      "label": "Programı BaşLattı Iag Cargo",
+      "group": "cargo",
+      "kw": [
+        "programı başlattı iag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=programbalatt.com"
+    },
+    {
+      "id": "dyn_a_t_air",
+      "label": "AçTı Air",
+      "group": "combo",
+      "kw": [
+        "açtı air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=atair.com"
+    },
+    {
+      "id": "dyn_geni_g_vdeli_kargo",
+      "label": "Geniş GöVdeli Kargo",
+      "group": "cargo",
+      "kw": [
+        "geniş gövdeli kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=genigvdeli.com"
+    },
+    {
+      "id": "dyn_rotalarla_b_y_yor_iag_cargo",
+      "label": "Rotalarla BüYüYor Iag Cargo",
+      "group": "cargo",
+      "kw": [
+        "rotalarla büyüyor iag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=rotalarlabyyor.com"
+    },
+    {
+      "id": "dyn_iata_kargo",
+      "label": "Iata Kargo",
+      "group": "cargo",
+      "kw": [
+        "iata kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iatakargo.com"
+    },
+    {
+      "id": "dyn_k_resel_hava_kargo",
+      "label": "KüResel Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "küresel hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kreselhava.com"
+    },
+    {
+      "id": "dyn_iata_d_nya_kargo",
+      "label": "Iata DüNya Kargo",
+      "group": "cargo",
+      "kw": [
+        "iata dünya kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iatadnya.com"
+    },
+    {
+      "id": "dyn_d_nya_kargo",
+      "label": "DüNya Kargo",
+      "group": "cargo",
+      "kw": [
+        "dünya kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=dnyakargo.com"
+    },
+    {
+      "id": "dyn_sempozyumu_konu_mas_iata_kargo",
+      "label": "Sempozyumu KonuşMası Iata Kargo",
+      "group": "cargo",
+      "kw": [
+        "sempozyumu konuşması iata kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=sempozyumukonumas.com"
+    },
+    {
+      "id": "dyn_iata_hava_kargo",
+      "label": "Iata Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "iata hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iatahava.com"
+    },
+    {
+      "id": "dyn_aksakl_klar_kargo",
+      "label": "AksaklıKlar Kargo",
+      "group": "cargo",
+      "kw": [
+        "aksaklıklar kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aksaklklarkargo.com"
+    },
+    {
+      "id": "dyn_globe_air_cargo",
+      "label": "Globe Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "globe air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=globeair.com"
+    },
+    {
+      "id": "dyn_fransa_ve_air",
+      "label": "Fransa Ve Air",
+      "group": "combo",
+      "kw": [
+        "fransa ve air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=fransave.com"
+    },
+    {
+      "id": "dyn_group_i_tiraki_globe_air_cargo",
+      "label": "Group IşTiraki Globe Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "group iştiraki globe air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=groupitiraki.com"
+    },
+    {
+      "id": "dyn_avrupa_genelinde_air",
+      "label": "Avrupa Genelinde Air",
+      "group": "combo",
+      "kw": [
+        "avrupa genelinde air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=avrupagenelinde.com"
+    },
+    {
+      "id": "dyn_havaliman_nda_ayr_ca_air",
+      "label": "HavalimanıNda AyrıCa Air",
+      "group": "combo",
+      "kw": [
+        "havalimanında ayrıca air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=havalimanndaayrca.com"
+    },
+    {
+      "id": "dyn_nolu_kargo",
+      "label": "Nolu Kargo",
+      "group": "cargo",
+      "kw": [
+        "nolu kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=nolukargo.com"
+    },
+    {
+      "id": "dyn_aksakl_klara_ra_men_kargo",
+      "label": "AksaklıKlara RağMen Kargo",
+      "group": "cargo",
+      "kw": [
+        "aksaklıklara rağmen kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aksaklklararamen.com"
+    },
+    {
+      "id": "dyn_milyon_tonun_zerinde_kargo",
+      "label": "Milyon Tonun üZerinde Kargo",
+      "group": "cargo",
+      "kw": [
+        "milyon tonun üzerinde kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=milyontonun.com"
+    },
+    {
+      "id": "dyn_daha_y_ksek_kargo",
+      "label": "Daha YüKsek Kargo",
+      "group": "cargo",
+      "kw": [
+        "daha yüksek kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=dahayksek.com"
+    },
+    {
+      "id": "dyn_spirit_airlines",
+      "label": "Spirit Airlines",
+      "group": "combo",
+      "kw": [
+        "spirit airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=spiritairlines.com"
+    },
+    {
+      "id": "dyn_yeniden_ekillendiriyor_spirit_airlines",
+      "label": "Yeniden şEkillendiriyor Spirit Airlines",
+      "group": "combo",
+      "kw": [
+        "yeniden şekillendiriyor spirit airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=yenidenekillendiriyor.com"
+    },
+    {
+      "id": "dyn_u_a_n_eklemeye_haz_rlan_yor_air",
+      "label": "UçAğıNı Eklemeye HazıRlanıYor Air",
+      "group": "combo",
+      "kw": [
+        "uçağını eklemeye hazırlanıyor air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=uaneklemeye.com"
+    },
+    {
+      "id": "dyn_meta_ve_hungary_airlines",
+      "label": "Meta Ve Hungary Airlines",
+      "group": "combo",
+      "kw": [
+        "meta ve hungary airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=metave.com"
+    },
+    {
+      "id": "dyn_hungary_airlines",
+      "label": "Hungary Airlines",
+      "group": "combo",
+      "kw": [
+        "hungary airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hungaryairlines.com"
+    },
+    {
+      "id": "dyn_american_airlines_cargo",
+      "label": "American Airlines Cargo",
+      "group": "cargo",
+      "kw": [
+        "american airlines cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=americanairlines.com"
+    },
+    {
+      "id": "dyn_veriyor_american_airlines_cargo",
+      "label": "Veriyor American Airlines Cargo",
+      "group": "cargo",
+      "kw": [
+        "veriyor american airlines cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=veriyoramerican.com"
+    },
+    {
+      "id": "dyn_geni_lemesini_s_rd_r_yor_asl_airlines",
+      "label": "GenişLemesini SüRdüRüYor Asl Airlines",
+      "group": "combo",
+      "kw": [
+        "genişlemesini sürdürüyor asl airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=genilemesinisrdryor.com"
+    },
+    {
+      "id": "dyn_sistemine_kat_ld_american_airlines",
+      "label": "Sistemine KatıLdı American Airlines",
+      "group": "combo",
+      "kw": [
+        "sistemine katıldı american airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=sisteminekatld.com"
+    },
+    {
+      "id": "dyn_geodis_hava_kargo",
+      "label": "Geodis Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "geodis hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=geodishava.com"
+    },
+    {
+      "id": "dyn_ba_nda_k_resel_hava_kargo",
+      "label": "BaşıNda KüResel Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "başında küresel hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bandakresel.com"
+    },
+    {
+      "id": "dyn_awesome_cargo",
+      "label": "Awesome Cargo",
+      "group": "cargo",
+      "kw": [
+        "awesome cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=awesomecargo.com"
+    },
+    {
+      "id": "dyn_meksika_merkezli_awesome_cargo",
+      "label": "Meksika Merkezli Awesome Cargo",
+      "group": "cargo",
+      "kw": [
+        "meksika merkezli awesome cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=meksikamerkezli.com"
+    },
+    {
+      "id": "dyn_geodis_k_resel_hava_kargo",
+      "label": "Geodis KüResel Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "geodis küresel hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=geodiskresel.com"
+    },
+    {
+      "id": "dyn_evcil_hayvanlar_n_kargo",
+      "label": "Evcil HayvanlarıN Kargo",
+      "group": "cargo",
+      "kw": [
+        "evcil hayvanların kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=evcilhayvanlarn.com"
+    },
+    {
+      "id": "dyn_ekledi_meksikal_awesome_cargo",
+      "label": "Ekledi Meksikalı Awesome Cargo",
+      "group": "cargo",
+      "kw": [
+        "ekledi meksikalı awesome cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ekledimeksikal.com"
+    },
+    {
+      "id": "dyn_banglade_hava_kargo",
+      "label": "Bangladeş Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "bangladeş hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bangladehava.com"
+    },
+    {
+      "id": "dyn_air_canada_cargo",
+      "label": "Air Canada Cargo",
+      "group": "cargo",
+      "kw": [
+        "air canada cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aircanada.com"
+    },
+    {
+      "id": "dyn_saf_s_nav_sas_aviation",
+      "label": "Saf SıNavı Sas Aviation",
+      "group": "combo",
+      "kw": [
+        "saf sınavı sas aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=safsnav.com"
+    },
+    {
+      "id": "dyn_blue_city_aviation",
+      "label": "Blue City Aviation",
+      "group": "combo",
+      "kw": [
+        "blue city aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bluecity.com"
+    },
+    {
+      "id": "dyn_gssa_devi_world_freight",
+      "label": "Gssa Devi World Freight",
+      "group": "cargo",
+      "kw": [
+        "gssa devi world freight"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=gssadevi.com"
+    },
+    {
+      "id": "dyn_gssa_gruplar_ndan_world_freight",
+      "label": "Gssa GruplarıNdan World Freight",
+      "group": "cargo",
+      "kw": [
+        "gssa gruplarından world freight"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=gssagruplarndan.com"
+    },
+    {
+      "id": "dyn_kategoriler_aras_nda_y_l_n_kargo",
+      "label": "Kategoriler ArasıNda YıLıN Kargo",
+      "group": "cargo",
+      "kw": [
+        "kategoriler arasında yılın kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kategorilerarasnda.com"
+    },
+    {
+      "id": "dyn_y_l_n_gen_hava_kargo",
+      "label": "YıLıN Genç Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "yılın genç hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ylngen.com"
+    },
+    {
+      "id": "dyn_kenya_airways",
+      "label": "Kenya Airways",
+      "group": "combo",
+      "kw": [
+        "kenya airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kenyaairways.com"
+    },
+    {
+      "id": "dyn_ortakl_k_kapsam_nda_kenya_airways",
+      "label": "OrtaklıK KapsamıNda Kenya Airways",
+      "group": "combo",
+      "kw": [
+        "ortaklık kapsamında kenya airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ortaklkkapsamnda.com"
+    },
+    {
+      "id": "dyn_yeniden_markala_may_de_erlendiriyor_air",
+      "label": "Yeniden MarkalaşMayı DeğErlendiriyor Air",
+      "group": "combo",
+      "kw": [
+        "yeniden markalaşmayı değerlendiriyor air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=yenidenmarkalamay.com"
+    },
+    {
+      "id": "dyn_tap_air",
+      "label": "Tap Air",
+      "group": "combo",
+      "kw": [
+        "tap air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=tapair.com"
+    },
+    {
+      "id": "dyn_orta_do_u_kargo",
+      "label": "Orta DoğU Kargo",
+      "group": "cargo",
+      "kw": [
+        "orta doğu kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ortadou.com"
+    },
+    {
+      "id": "dyn_havac_l_k_kiralama_uzman_air",
+      "label": "HavacıLıK Kiralama Uzmanı Air",
+      "group": "combo",
+      "kw": [
+        "havacılık kiralama uzmanı air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=havaclkkiralama.com"
+    },
+    {
+      "id": "dyn_united_cargo",
+      "label": "United Cargo",
+      "group": "cargo",
+      "kw": [
+        "united cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=unitedcargo.com"
+    },
+    {
+      "id": "dyn_geri_ta_d_united_cargo",
+      "label": "Geri TaşıDı United Cargo",
+      "group": "cargo",
+      "kw": [
+        "geri taşıdı united cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=geritad.com"
+    },
+    {
+      "id": "dyn_envirotainer_hava_kargo",
+      "label": "Envirotainer Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "envirotainer hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=envirotainerhava.com"
+    },
+    {
+      "id": "dyn_asiana_airlines",
+      "label": "Asiana Airlines",
+      "group": "combo",
+      "kw": [
+        "asiana airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=asianaairlines.com"
+    },
+    {
+      "id": "dyn_dp_world_panama_kargo",
+      "label": "Dp World Panama Kargo",
+      "group": "cargo",
+      "kw": [
+        "dp world panama kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=dpworld.com"
+    },
+    {
+      "id": "dyn_cma_cgm_air_cargo",
+      "label": "Cma Cgm Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "cma cgm air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=cmacgm.com"
+    },
+    {
+      "id": "dyn_hanoi_kargo",
+      "label": "Hanoi Kargo",
+      "group": "cargo",
+      "kw": [
+        "hanoi kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hanoikargo.com"
+    },
+    {
+      "id": "dyn_ba_latt_cma_cgm_air_cargo",
+      "label": "BaşLattı Cma Cgm Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "başlattı cma cgm air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=balattcma.com"
+    },
+    {
+      "id": "dyn_riyadh_cargo",
+      "label": "Riyadh Cargo",
+      "group": "cargo",
+      "kw": [
+        "riyadh cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=riyadhcargo.com"
+    },
+    {
+      "id": "dyn_a_n_geni_letti_riyadh_air",
+      "label": "AğıNı GenişLetti Riyadh Air",
+      "group": "combo",
+      "kw": [
+        "ağını genişletti riyadh air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=angeniletti.com"
+    },
+    {
+      "id": "dyn_menzies_aviation",
+      "label": "Menzies Aviation",
+      "group": "combo",
+      "kw": [
+        "menzies aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=menziesaviation.com"
+    },
+    {
+      "id": "dyn_ortaklar_atad_riyadh_air",
+      "label": "Ortakları Atadı Riyadh Air",
+      "group": "combo",
+      "kw": [
+        "ortakları atadı riyadh air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ortaklaratad.com"
+    },
+    {
+      "id": "dyn_world_panama_hava_kargo",
+      "label": "World Panama Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "world panama hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=worldpanama.com"
+    },
+    {
+      "id": "dyn_ba_vurular_bekleniyor_air_cargo",
+      "label": "BaşVurular Bekleniyor Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "başvurular bekleniyor air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bavurularbekleniyor.com"
+    },
+    {
+      "id": "dyn_riyadh_air",
+      "label": "Riyadh Air",
+      "group": "combo",
+      "kw": [
+        "riyadh air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=riyadhair.com"
+    },
+    {
+      "id": "dyn_olarak_terfi_ettirdi_air",
+      "label": "Olarak Terfi Ettirdi Air",
+      "group": "combo",
+      "kw": [
+        "olarak terfi ettirdi air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=olarakterfi.com"
+    },
+    {
+      "id": "dyn_tarihi_miras_united_cargo",
+      "label": "Tarihi Miras United Cargo",
+      "group": "cargo",
+      "kw": [
+        "tarihi miras united cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=tarihimiras.com"
+    },
+    {
+      "id": "dyn_d_nd_united_cargo",
+      "label": "DöNdü United Cargo",
+      "group": "cargo",
+      "kw": [
+        "döndü united cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=dndunited.com"
+    },
+    {
+      "id": "dyn_united_airlines",
+      "label": "United Airlines",
+      "group": "combo",
+      "kw": [
+        "united airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=unitedairlines.com"
+    },
+    {
+      "id": "dyn_haftal_k_kargo",
+      "label": "HaftalıK Kargo",
+      "group": "cargo",
+      "kw": [
+        "haftalık kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=haftalkkargo.com"
+    },
+    {
+      "id": "dyn_kadar_olan_kargo",
+      "label": "Kadar Olan Kargo",
+      "group": "cargo",
+      "kw": [
+        "kadar olan kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kadarolan.com"
+    },
+    {
+      "id": "dyn_br_ksel_havaliman_kargo",
+      "label": "BrüKsel Havalimanı Kargo",
+      "group": "cargo",
+      "kw": [
+        "brüksel havalimanı kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=brkselhavaliman.com"
+    },
+    {
+      "id": "dyn_baltic_air_freight",
+      "label": "Baltic Air Freight",
+      "group": "cargo",
+      "kw": [
+        "baltic air freight"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=balticair.com"
+    },
+    {
+      "id": "dyn_haz_rlan_yor_cargo",
+      "label": "HazıRlanıYor Cargo",
+      "group": "cargo",
+      "kw": [
+        "hazırlanıyor cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hazrlanyorcargo.com"
+    },
+    {
+      "id": "dyn_g_klere_ta_yor_united_cargo",
+      "label": "GöKlere TaşıYor United Cargo",
+      "group": "cargo",
+      "kw": [
+        "göklere taşıyor united cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=gkleretayor.com"
+    },
+    {
+      "id": "dyn_terfi_ettirdi_air",
+      "label": "Terfi Ettirdi Air",
+      "group": "combo",
+      "kw": [
+        "terfi ettirdi air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=terfiettirdi.com"
+    },
+    {
+      "id": "dyn_gerilim_kargo",
+      "label": "Gerilim Kargo",
+      "group": "cargo",
+      "kw": [
+        "gerilim kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=gerilimkargo.com"
+    },
+    {
+      "id": "dyn_kategorisi_ba_vurular_ba_lad_air_cargo",
+      "label": "Kategorisi BaşVuruları BaşLadı Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "kategorisi başvuruları başladı air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kategorisibavurular.com"
+    },
+    {
+      "id": "dyn_direkt_r_olarak_atad_air",
+      "label": "DirektöRü Olarak Atadı Air",
+      "group": "combo",
+      "kw": [
+        "direktörü olarak atadı air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=direktrolarak.com"
+    },
+    {
+      "id": "dyn_ba_lad_hindistan_uluslararas_kargo",
+      "label": "BaşLadı Hindistan Uluslararası Kargo",
+      "group": "cargo",
+      "kw": [
+        "başladı hindistan uluslararası kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=baladhindistan.com"
+    },
+    {
+      "id": "dyn_mile_air",
+      "label": "Mile Air",
+      "group": "combo",
+      "kw": [
+        "mile air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=mileair.com"
+    },
+    {
+      "id": "dyn_hava_kiralama_irketi_air",
+      "label": "Hava Kiralama şIrketi Air",
+      "group": "combo",
+      "kw": [
+        "hava kiralama şirketi air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=havakiralama.com"
+    },
+    {
+      "id": "dyn_iag_kargo",
+      "label": "Iag Kargo",
+      "group": "cargo",
+      "kw": [
+        "iag kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iagkargo.com"
+    },
+    {
+      "id": "dyn_y_l_sonra_bangkok_kargo",
+      "label": "YıL Sonra Bangkok Kargo",
+      "group": "cargo",
+      "kw": [
+        "yıl sonra bangkok kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ylsonra.com"
+    },
+    {
+      "id": "dyn_bae_aras_nda_kargo",
+      "label": "Bae ArasıNda Kargo",
+      "group": "cargo",
+      "kw": [
+        "bae arasında kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=baearasnda.com"
+    },
+    {
+      "id": "dyn_kadar_yeni_bir_kargo",
+      "label": "Kadar Yeni Bir Kargo",
+      "group": "cargo",
+      "kw": [
+        "kadar yeni bir kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kadaryeni.com"
+    },
+    {
+      "id": "dyn_asmara_aras_nda_kargo",
+      "label": "Asmara ArasıNda Kargo",
+      "group": "cargo",
+      "kw": [
+        "asmara arasında kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=asmaraarasnda.com"
+    },
+    {
+      "id": "dyn_astral_aviation",
+      "label": "Astral Aviation",
+      "group": "combo",
+      "kw": [
+        "astral aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=astralaviation.com"
+    },
+    {
+      "id": "dyn_yeni_hava_kargo",
+      "label": "Yeni Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "yeni hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=yenihava.com"
+    },
+    {
+      "id": "dyn_avrupa_hava_kargo",
+      "label": "Avrupa Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "avrupa hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=avrupahava.com"
+    },
+    {
+      "id": "dyn_iag_b_nyesindeki_db_cargo",
+      "label": "Iag BüNyesindeki Db Cargo",
+      "group": "cargo",
+      "kw": [
+        "iag bünyesindeki db cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iagbnyesindeki.com"
+    },
+    {
+      "id": "dyn_arkas_nda_k_resel_bir_kargo",
+      "label": "ArkasıNda KüResel Bir Kargo",
+      "group": "cargo",
+      "kw": [
+        "arkasında küresel bir kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=arkasndakresel.com"
+    },
+    {
+      "id": "dyn_china_eastern_airlines",
+      "label": "China Eastern Airlines",
+      "group": "combo",
+      "kw": [
+        "china eastern airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=chinaeastern.com"
+    },
+    {
+      "id": "dyn_fuarda_db_cargo",
+      "label": "Fuarda Db Cargo",
+      "group": "cargo",
+      "kw": [
+        "fuarda db cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=fuardadb.com"
+    },
+    {
+      "id": "dyn_rekor_b_y_me_ve_kargo",
+      "label": "Rekor BüYüMe Ve Kargo",
+      "group": "cargo",
+      "kw": [
+        "rekor büyüme ve kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=rekorbyme.com"
+    },
+    {
+      "id": "dyn_group_ve_alaska_airlines",
+      "label": "Group Ve Alaska Airlines",
+      "group": "combo",
+      "kw": [
+        "group ve alaska airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=groupve.com"
+    },
+    {
+      "id": "dyn_alaska_airlines",
+      "label": "Alaska Airlines",
+      "group": "combo",
+      "kw": [
+        "alaska airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alaskaairlines.com"
+    },
+    {
+      "id": "dyn_ta_d_charter_broker_air",
+      "label": "TaşıDı Charter Brokerı Air",
+      "group": "combo",
+      "kw": [
+        "taşıdı charter brokerı air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=tadcharter.com"
+    },
+    {
+      "id": "dyn_ita_airways",
+      "label": "Ita Airways",
+      "group": "combo",
+      "kw": [
+        "ita airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=itaairways.com"
+    },
+    {
+      "id": "dyn_zay_f_dolar_iag_cargo",
+      "label": "ZayıF Dolar Iag Cargo",
+      "group": "cargo",
+      "kw": [
+        "zayıf dolar iag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=zayfdolar.com"
+    },
+    {
+      "id": "dyn_verilerini_etkiledi_iag_cargo",
+      "label": "Verilerini Etkiledi Iag Cargo",
+      "group": "cargo",
+      "kw": [
+        "verilerini etkiledi iag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=verilerinietkiledi.com"
+    },
+    {
+      "id": "dyn_d_neminde_kargo",
+      "label": "DöNeminde Kargo",
+      "group": "cargo",
+      "kw": [
+        "döneminde kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=dnemindekargo.com"
+    },
+    {
+      "id": "dyn_seattle_hatt_kargo",
+      "label": "Seattle Hattı Kargo",
+      "group": "cargo",
+      "kw": [
+        "seattle hattı kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=seattlehatt.com"
+    },
+    {
+      "id": "dyn_se_ti_alaska_airlines",
+      "label": "SeçTi Alaska Airlines",
+      "group": "combo",
+      "kw": [
+        "seçti alaska airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=setialaska.com"
+    },
+    {
+      "id": "dyn_acs_i_lk_eyrekte_kargo",
+      "label": "Acs İLk çEyrekte Kargo",
+      "group": "cargo",
+      "kw": [
+        "acs i̇lk çeyrekte kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=acsilk.com"
+    },
+    {
+      "id": "dyn_ediyor_charter_broker_air",
+      "label": "Ediyor Charter Brokerı Air",
+      "group": "combo",
+      "kw": [
+        "ediyor charter brokerı air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ediyorcharter.com"
+    },
+    {
+      "id": "dyn_balt_k_havalimanlar_nda_skyup_airlines",
+      "label": "BaltıK HavalimanlarıNda Skyup Airlines",
+      "group": "combo",
+      "kw": [
+        "baltık havalimanlarında skyup airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=baltkhavalimanlarnda.com"
+    },
+    {
+      "id": "dyn_skyup_airlines",
+      "label": "Skyup Airlines",
+      "group": "combo",
+      "kw": [
+        "skyup airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=skyupairlines.com"
+    },
+    {
+      "id": "dyn_havaliman_b_nyesindeki_kargo",
+      "label": "Havalimanı BüNyesindeki Kargo",
+      "group": "cargo",
+      "kw": [
+        "havalimanı bünyesindeki kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=havalimanbnyesindeki.com"
+    },
+    {
+      "id": "dyn_singapur_hava_kargo",
+      "label": "Singapur Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "singapur hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=singapurhava.com"
+    },
+    {
+      "id": "dyn_sitesi_ile_hava_kargo",
+      "label": "Sitesi Ile Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "sitesi ile hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=sitesiile.com"
+    },
+    {
+      "id": "dyn_awery_aviation",
+      "label": "Awery Aviation",
+      "group": "combo",
+      "kw": [
+        "awery aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aweryaviation.com"
+    },
+    {
+      "id": "dyn_zafer_kazand_awery_aviation",
+      "label": "Zafer Kazandı Awery Aviation",
+      "group": "combo",
+      "kw": [
+        "zafer kazandı awery aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=zaferkazand.com"
+    },
+    {
+      "id": "dyn_y_l_n_hava_kargo",
+      "label": "YıLıN Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "yılın hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ylnhava.com"
+    },
+    {
+      "id": "dyn_kategorisi_ba_vurulara_a_ld_air_cargo",
+      "label": "Kategorisi BaşVurulara AçıLdı Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "kategorisi başvurulara açıldı air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kategorisibavurulara.com"
+    },
+    {
+      "id": "dyn_kazand_awery_aviation",
+      "label": "Kazandı Awery Aviation",
+      "group": "combo",
+      "kw": [
+        "kazandı awery aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kazandawery.com"
+    },
+    {
+      "id": "dyn_iata_zel_kargo",
+      "label": "Iata öZel Kargo",
+      "group": "cargo",
+      "kw": [
+        "iata özel kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iatazel.com"
+    },
+    {
+      "id": "dyn_abu_dabi_zerinden_kargo",
+      "label": "Abu Dabi üZerinden Kargo",
+      "group": "cargo",
+      "kw": [
+        "abu dabi üzerinden kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=abudabi.com"
+    },
+    {
+      "id": "dyn_u_ak_kiralama_uzman_air",
+      "label": "UçAk Kiralama Uzmanı Air",
+      "group": "combo",
+      "kw": [
+        "uçak kiralama uzmanı air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=uakkiralama.com"
+    },
+    {
+      "id": "dyn_france_klm_martinair_cargo",
+      "label": "France Klm Martinair Cargo",
+      "group": "cargo",
+      "kw": [
+        "france klm martinair cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=franceklm.com"
+    },
+    {
+      "id": "dyn_ta_d_air",
+      "label": "TaşıDı Air",
+      "group": "combo",
+      "kw": [
+        "taşıdı air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=tadair.com"
+    },
+    {
+      "id": "dyn_frankfurt_kargo",
+      "label": "Frankfurt Kargo",
+      "group": "cargo",
+      "kw": [
+        "frankfurt kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=frankfurtkargo.com"
+    },
+    {
+      "id": "dyn_zeka_talebi_hava_kargo",
+      "label": "Zeka Talebi Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "zeka talebi hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=zekatalebi.com"
+    },
+    {
+      "id": "dyn_yurt_i_i_talep_air",
+      "label": "Yurt İçI Talep Air",
+      "group": "combo",
+      "kw": [
+        "yurt i̇çi talep air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=yurtii.com"
+    },
+    {
+      "id": "dyn_kargo_gelirlerini_art_rd_air",
+      "label": "Kargo Gelirlerini ArtıRdı Air",
+      "group": "cargo",
+      "kw": [
+        "kargo gelirlerini artırdı air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kargogelirlerini.com"
+    },
+    {
+      "id": "dyn_af_klm_cargo",
+      "label": "Af Klm Cargo",
+      "group": "cargo",
+      "kw": [
+        "af klm cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=afklm.com"
+    },
+    {
+      "id": "dyn_ancak_gelirleri_d_t_air",
+      "label": "Ancak Gelirleri DüşTü Air",
+      "group": "combo",
+      "kw": [
+        "ancak gelirleri düştü air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ancakgelirleri.com"
+    },
+    {
+      "id": "dyn_wiremind_cargo",
+      "label": "Wiremind Cargo",
+      "group": "cargo",
+      "kw": [
+        "wiremind cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=wiremindcargo.com"
+    },
+    {
+      "id": "dyn_g_l_trafik_ve_kargo",
+      "label": "GüçLü Trafik Ve Kargo",
+      "group": "cargo",
+      "kw": [
+        "güçlü trafik ve kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=gltrafik.com"
+    },
+    {
+      "id": "dyn_ticaret_ve_kargo",
+      "label": "Ticaret Ve Kargo",
+      "group": "cargo",
+      "kw": [
+        "ticaret ve kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ticaretve.com"
+    },
+    {
+      "id": "dyn_skycargo_haftal_k_toronto_kargo",
+      "label": "Skycargo HaftalıK Toronto Kargo",
+      "group": "cargo",
+      "kw": [
+        "skycargo haftalık toronto kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=skycargohaftalk.com"
+    },
+    {
+      "id": "dyn_bengaluru_havaliman_kargo",
+      "label": "Bengaluru Havalimanı Kargo",
+      "group": "cargo",
+      "kw": [
+        "bengaluru havalimanı kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bengaluruhavaliman.com"
+    },
+    {
+      "id": "dyn_kapasite_daralmas_hava_kargo",
+      "label": "Kapasite Daralması Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "kapasite daralması hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kapasitedaralmas.com"
+    },
+    {
+      "id": "dyn_gelecekteki_havaliman_cargo",
+      "label": "Gelecekteki Havalimanı Cargo",
+      "group": "cargo",
+      "kw": [
+        "gelecekteki havalimanı cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=gelecektekihavaliman.com"
+    },
+    {
+      "id": "dyn_tonluk_kargo",
+      "label": "Tonluk Kargo",
+      "group": "cargo",
+      "kw": [
+        "tonluk kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=tonlukkargo.com"
+    },
+    {
+      "id": "dyn_frankfurt_havaliman_kargo",
+      "label": "Frankfurt Havalimanı Kargo",
+      "group": "cargo",
+      "kw": [
+        "frankfurt havalimanı kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=frankfurthavaliman.com"
+    },
+    {
+      "id": "dyn_y_l_n_kargo",
+      "label": "YıLıN Kargo",
+      "group": "cargo",
+      "kw": [
+        "yılın kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ylnkargo.com"
+    },
+    {
+      "id": "dyn_toronto_seferlerini_ba_latarak_kargo",
+      "label": "Toronto Seferlerini BaşLatarak Kargo",
+      "group": "cargo",
+      "kw": [
+        "toronto seferlerini başlatarak kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=torontoseferlerini.com"
+    },
+    {
+      "id": "dyn_aerfin_ve_national_air_cargo",
+      "label": "Aerfin Ve National Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "aerfin ve national air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aerfinve.com"
+    },
+    {
+      "id": "dyn_national_air_cargo",
+      "label": "National Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "national air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=nationalair.com"
+    },
+    {
+      "id": "dyn_ascend_airways",
+      "label": "Ascend Airways",
+      "group": "combo",
+      "kw": [
+        "ascend airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ascendairways.com"
+    },
+    {
+      "id": "dyn_nordic_hava_kargo",
+      "label": "Nordic Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "nordic hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=nordichava.com"
+    },
+    {
+      "id": "dyn_kolkata_aras_nda_kargo",
+      "label": "Kolkata ArasıNda Kargo",
+      "group": "cargo",
+      "kw": [
+        "kolkata arasında kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kolkataarasnda.com"
+    },
+    {
+      "id": "dyn_kalk_ta_hatt_nda_kargo",
+      "label": "KalküTa HattıNda Kargo",
+      "group": "cargo",
+      "kw": [
+        "kalküta hattında kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kalktahattnda.com"
+    },
+    {
+      "id": "dyn_aviation_kenya_kargo",
+      "label": "Aviation Kenya Kargo",
+      "group": "cargo",
+      "kw": [
+        "aviation kenya kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aviationkenya.com"
+    },
+    {
+      "id": "dyn_pazar_na_girdi_elebi_aviation",
+      "label": "PazarıNa Girdi çElebi Aviation",
+      "group": "combo",
+      "kw": [
+        "pazarına girdi çelebi aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=pazarnagirdi.com"
+    },
+    {
+      "id": "dyn_transglobal_cargo",
+      "label": "Transglobal Cargo",
+      "group": "cargo",
+      "kw": [
+        "transglobal cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=transglobalcargo.com"
+    },
+    {
+      "id": "dyn_noktaya_kard_menzies_aviation",
+      "label": "Noktaya çıKardı Menzies Aviation",
+      "group": "combo",
+      "kw": [
+        "noktaya çıkardı menzies aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=noktayakard.com"
+    },
+    {
+      "id": "dyn_haz_rlan_yor_kargo",
+      "label": "HazıRlanıYor Kargo",
+      "group": "cargo",
+      "kw": [
+        "hazırlanıyor kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hazrlanyorkargo.com"
+    },
+    {
+      "id": "dyn_milyon_ton_kargo",
+      "label": "Milyon Ton Kargo",
+      "group": "cargo",
+      "kw": [
+        "milyon ton kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=milyonton.com"
+    },
+    {
+      "id": "dyn_ediyor_balt_k_hava_kargo",
+      "label": "Ediyor BaltıK Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "ediyor baltık hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ediyorbaltk.com"
+    },
+    {
+      "id": "dyn_avrupa_y_ksek_de_erli_kargo",
+      "label": "Avrupa YüKsek DeğErli Kargo",
+      "group": "cargo",
+      "kw": [
+        "avrupa yüksek değerli kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=avrupayksek.com"
+    },
+    {
+      "id": "dyn_uzatt_norse_atlantic_airways",
+      "label": "Uzattı Norse Atlantic Airways",
+      "group": "combo",
+      "kw": [
+        "uzattı norse atlantic airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=uzattnorse.com"
+    },
+    {
+      "id": "dyn_ana_g_verte_kargo",
+      "label": "Ana GüVerte Kargo",
+      "group": "cargo",
+      "kw": [
+        "ana güverte kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=anagverte.com"
+    },
+    {
+      "id": "dyn_do_u_krizi_hava_kargo",
+      "label": "DoğU Krizi Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "doğu krizi hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=doukrizi.com"
+    },
+    {
+      "id": "dyn_china_central_longhao_airlines",
+      "label": "China Central Longhao Airlines",
+      "group": "combo",
+      "kw": [
+        "china central longhao airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=chinacentral.com"
+    },
+    {
+      "id": "dyn_my_freighter_stratejik_kargo",
+      "label": "My Freighter Stratejik Kargo",
+      "group": "cargo",
+      "kw": [
+        "my freighter stratejik kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=myfreighter.com"
+    },
+    {
+      "id": "dyn_my_freighter_kargo",
+      "label": "My Freighter Kargo",
+      "group": "cargo",
+      "kw": [
+        "my freighter kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=myfreighter.com"
+    },
+    {
+      "id": "dyn_ticaret_yava_larken_hava_kargo",
+      "label": "Ticaret YavaşLarken Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "ticaret yavaşlarken hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ticaretyavalarken.com"
+    },
+    {
+      "id": "dyn_flyus_aviation",
+      "label": "Flyus Aviation",
+      "group": "combo",
+      "kw": [
+        "flyus aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=flyusaviation.com"
+    },
+    {
+      "id": "dyn_danimarka_aras_kargo",
+      "label": "Danimarka Arası Kargo",
+      "group": "cargo",
+      "kw": [
+        "danimarka arası kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=danimarkaaras.com"
+    },
+    {
+      "id": "dyn_havayollar_n_n_kargo",
+      "label": "HavayollarıNıN Kargo",
+      "group": "cargo",
+      "kw": [
+        "havayollarının kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=havayollarnnkargo.com"
+    },
+    {
+      "id": "dyn_buna_kar_n_american_airlines",
+      "label": "Buna KarşıN American Airlines",
+      "group": "combo",
+      "kw": [
+        "buna karşın american airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bunakarn.com"
+    },
+    {
+      "id": "dyn_kopenhag_hatt_nda_kargo",
+      "label": "Kopenhag HattıNda Kargo",
+      "group": "cargo",
+      "kw": [
+        "kopenhag hattında kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kopenhaghattnda.com"
+    },
+    {
+      "id": "dyn_ba_vurular_ba_lad_air_cargo",
+      "label": "BaşVuruları BaşLadı Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "başvuruları başladı air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bavurularbalad.com"
+    },
+    {
+      "id": "dyn_quick_cargo",
+      "label": "Quick Cargo",
+      "group": "cargo",
+      "kw": [
+        "quick cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=quickcargo.com"
+    },
+    {
+      "id": "dyn_maskargo_g_neydo_u_asya_kargo",
+      "label": "Maskargo GüNeydoğU Asya Kargo",
+      "group": "cargo",
+      "kw": [
+        "maskargo güneydoğu asya kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=maskargogneydou.com"
+    },
+    {
+      "id": "dyn_sonras_nda_hava_kargo",
+      "label": "SonrasıNda Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "sonrasında hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=sonrasndahava.com"
+    },
+    {
+      "id": "dyn_anla_mas_i_mzalad_globe_air_cargo",
+      "label": "AnlaşMası İMzaladı Globe Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "anlaşması i̇mzaladı globe air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=anlamasimzalad.com"
+    },
+    {
+      "id": "dyn_s_rd_r_yor_baltic_hava_kargo",
+      "label": "SüRdüRüYor Baltic Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "sürdürüyor baltic hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=srdryorbaltic.com"
+    },
+    {
+      "id": "dyn_aras_ndaki_y_ksek_de_erli_kargo",
+      "label": "ArasıNdaki YüKsek DeğErli Kargo",
+      "group": "cargo",
+      "kw": [
+        "arasındaki yüksek değerli kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=arasndakiyksek.com"
+    },
+    {
+      "id": "dyn_atad_hong_kong_air_cargo",
+      "label": "Atadı Hong Kong Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "atadı hong kong air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=atadhong.com"
+    },
+    {
+      "id": "dyn_ba_latt_china_eastern_airlines",
+      "label": "BaşLattı China Eastern Airlines",
+      "group": "combo",
+      "kw": [
+        "başlattı china eastern airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=balattchina.com"
+    },
+    {
+      "id": "dyn_colombo_merkezli_freight",
+      "label": "Colombo Merkezli Freight",
+      "group": "cargo",
+      "kw": [
+        "colombo merkezli freight"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=colombomerkezli.com"
+    },
+    {
+      "id": "dyn_hong_kong_hava_kargo",
+      "label": "Hong Kong Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "hong kong hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hongkong.com"
+    },
+    {
+      "id": "dyn_havaliman_ve_united_cargo",
+      "label": "Havalimanı Ve United Cargo",
+      "group": "cargo",
+      "kw": [
+        "havalimanı ve united cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=havalimanve.com"
+    },
+    {
+      "id": "dyn_yeni_kargo",
+      "label": "Yeni Kargo",
+      "group": "cargo",
+      "kw": [
+        "yeni kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=yenikargo.com"
+    },
+    {
+      "id": "dyn_teleport_g_neydo_u_asya_kargo",
+      "label": "Teleport GüNeydoğU Asya Kargo",
+      "group": "cargo",
+      "kw": [
+        "teleport güneydoğu asya kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=teleportgneydou.com"
+    },
+    {
+      "id": "dyn_msc_air_cargo",
+      "label": "Msc Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "msc air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=mscair.com"
+    },
+    {
+      "id": "dyn_karanl_ktaki_kargo",
+      "label": "KaranlıKtaki Kargo",
+      "group": "cargo",
+      "kw": [
+        "karanlıktaki kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=karanlktakikargo.com"
+    },
+    {
+      "id": "dyn_avrupa_kargo",
+      "label": "Avrupa Kargo",
+      "group": "cargo",
+      "kw": [
+        "avrupa kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=avrupakargo.com"
+    },
+    {
+      "id": "dyn_air_europa_cargo",
+      "label": "Air Europa Cargo",
+      "group": "cargo",
+      "kw": [
+        "air europa cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aireuropa.com"
+    },
+    {
+      "id": "dyn_allied_aviation",
+      "label": "Allied Aviation",
+      "group": "combo",
+      "kw": [
+        "allied aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alliedaviation.com"
+    },
+    {
+      "id": "dyn_arz_daraltt_k_a_hava_kargo",
+      "label": "Arzı DaralttıKçA Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "arzı daralttıkça hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=arzdaralttka.com"
+    },
+    {
+      "id": "dyn_ate_kesi_sonras_hava_kargo",
+      "label": "AteşKesi Sonrası Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "ateşkesi sonrası hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=atekesisonras.com"
+    },
+    {
+      "id": "dyn_delta_cargo",
+      "label": "Delta Cargo",
+      "group": "cargo",
+      "kw": [
+        "delta cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=deltacargo.com"
+    },
+    {
+      "id": "dyn_qantas_freight",
+      "label": "Qantas Freight",
+      "group": "cargo",
+      "kw": [
+        "qantas freight"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=qantasfreight.com"
+    },
+    {
+      "id": "dyn_astral_aviation_nemli_kargo",
+      "label": "Astral Aviation öNemli Kargo",
+      "group": "cargo",
+      "kw": [
+        "astral aviation önemli kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=astralaviation.com"
+    },
+    {
+      "id": "dyn_do_u_at_mas_hava_kargo",
+      "label": "DoğU çAtışMası Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "doğu çatışması hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=douatmas.com"
+    },
+    {
+      "id": "dyn_otonomi_k_resel_l_ekte_kargo",
+      "label": "Otonomi KüResel öLçEkte Kargo",
+      "group": "cargo",
+      "kw": [
+        "otonomi küresel ölçekte kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=otonomikresel.com"
+    },
+    {
+      "id": "dyn_en_b_y_k_havaliman_kargo",
+      "label": "En BüYüK Havalimanı Kargo",
+      "group": "cargo",
+      "kw": [
+        "en büyük havalimanı kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=enbyk.com"
+    },
+    {
+      "id": "dyn_acc_aviation",
+      "label": "Acc Aviation",
+      "group": "combo",
+      "kw": [
+        "acc aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=accaviation.com"
+    },
+    {
+      "id": "dyn_do_u_at_mas_havaliman_kargo",
+      "label": "DoğU çAtışMası Havalimanı Kargo",
+      "group": "cargo",
+      "kw": [
+        "doğu çatışması havalimanı kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=douatmas.com"
+    },
+    {
+      "id": "dyn_stratos_freight",
+      "label": "Stratos Freight",
+      "group": "cargo",
+      "kw": [
+        "stratos freight"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=stratosfreight.com"
+    },
+    {
+      "id": "dyn_magma_aviation",
+      "label": "Magma Aviation",
+      "group": "combo",
+      "kw": [
+        "magma aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=magmaaviation.com"
+    },
+    {
+      "id": "dyn_nippon_cargo_airlines",
+      "label": "Nippon Cargo Airlines",
+      "group": "cargo",
+      "kw": [
+        "nippon cargo airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=nipponcargo.com"
+    },
+    {
+      "id": "dyn_ana_cargo",
+      "label": "Ana Cargo",
+      "group": "cargo",
+      "kw": [
+        "ana cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=anacargo.com"
+    },
+    {
+      "id": "dyn_japan_airlines",
+      "label": "Japan Airlines",
+      "group": "combo",
+      "kw": [
+        "japan airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=japanairlines.com"
+    },
+    {
+      "id": "dyn_kad_nlar_hava_kargo",
+      "label": "KadıNlar Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "kadınlar hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kadnlarhava.com"
+    },
+    {
+      "id": "dyn_primeflight_cargo",
+      "label": "Primeflight Cargo",
+      "group": "cargo",
+      "kw": [
+        "primeflight cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=primeflightcargo.com"
+    },
+    {
+      "id": "dyn_vietjet_air",
+      "label": "Vietjet Air",
+      "group": "combo",
+      "kw": [
+        "vietjet air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=vietjetair.com"
+    },
+    {
+      "id": "dyn_binani_air",
+      "label": "Binani Air",
+      "group": "combo",
+      "kw": [
+        "binani air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=binaniair.com"
+    }
+  ],
+  "gsa": [
+    {
+      "id": "dyn_d_nyan_n_en_b_y_k",
+      "label": "DüNyanıN En BüYüK",
+      "kw": [
+        "dünyanın en büyük"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=dnyannen.com"
+    },
+    {
+      "id": "dyn_m_s_r_pazarlar_nda_yeni",
+      "label": "MıSıR PazarlarıNda Yeni",
+      "kw": [
+        "mısır pazarlarında yeni"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=msrpazarlarnda.com"
+    },
+    {
+      "id": "dyn_ve_bae_pazarlar_nda",
+      "label": "Ve Bae PazarlarıNda",
+      "kw": [
+        "ve bae pazarlarında"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=vebae.com"
+    },
+    {
+      "id": "dyn_geni_lemesini_h_zland_rmak_i_in",
+      "label": "GenişLemesini HıZlandıRmak İçIn",
+      "kw": [
+        "genişlemesini hızlandırmak i̇çin"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=genilemesinihzlandrmak.com"
+    },
+    {
+      "id": "dyn_amac_yla_yeni",
+      "label": "AmacıYla üç Yeni",
+      "kw": [
+        "amacıyla üç yeni"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=amacyla.com"
+    },
+    {
+      "id": "dyn_i_in_resmi_kargo",
+      "label": "IçIn Resmi Kargo",
+      "kw": [
+        "için resmi kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iinresmi.com"
+    },
+    {
+      "id": "dyn_hizmetleri_ve_kargo",
+      "label": "Hizmetleri Ve Kargo",
+      "kw": [
+        "hizmetleri ve kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hizmetlerive.com"
+    },
+    {
+      "id": "dyn_yak_t_sa_lay_c_s_baltic",
+      "label": "YakıT SağLayıCıSı Baltic",
+      "kw": [
+        "yakıt sağlayıcısı baltic"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=yaktsalaycs.com"
+    },
+    {
+      "id": "dyn_yan_kurulu_u_gatwick",
+      "label": "Yan KuruluşU Gatwick",
+      "kw": [
+        "yan kuruluşu gatwick"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=yankuruluu.com"
+    },
+    {
+      "id": "dyn_hizmet_veren_cv",
+      "label": "Hizmet Veren Cv",
+      "kw": [
+        "hizmet veren cv"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hizmetveren.com"
+    },
+    {
+      "id": "dyn_hizmetleri_veren_cv",
+      "label": "Hizmetleri Veren Cv",
+      "kw": [
+        "hizmetleri veren cv"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hizmetleriveren.com"
+    },
+    {
+      "id": "dyn_sa_lay_c_s_olan_cv",
+      "label": "SağLayıCıSı Olan Cv",
+      "kw": [
+        "sağlayıcısı olan cv"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=salaycsolan.com"
+    },
+    {
+      "id": "dyn_hizmetleri_sa_layan_cv",
+      "label": "Hizmetleri SağLayan Cv",
+      "kw": [
+        "hizmetleri sağlayan cv"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hizmetlerisalayan.com"
+    },
+    {
+      "id": "dyn_i_tiraki_olan_gatwick",
+      "label": "IşTiraki Olan Gatwick",
+      "kw": [
+        "iştiraki olan gatwick"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=itirakiolan.com"
+    },
+    {
+      "id": "dyn_y_l_n",
+      "label": "YıLıN",
+      "kw": [
+        "yılın"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=yln.com"
+    },
+    {
+      "id": "dyn_art_ran_en_iyi",
+      "label": "ArtıRan En Iyi",
+      "kw": [
+        "artıran en iyi"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=artranen.com"
+    },
+    {
+      "id": "dyn_birle_ik_krall_k_i_in",
+      "label": "BirleşIk KrallıK İçIn",
+      "kw": [
+        "birleşik krallık i̇çin"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=birleikkrallk.com"
+    },
+    {
+      "id": "dyn_kapasitesinin_y_netimini_stlenerek",
+      "label": "Kapasitesinin YöNetimini üStlenerek",
+      "kw": [
+        "kapasitesinin yönetimini üstlenerek"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kapasitesininynetimini.com"
+    },
+    {
+      "id": "dyn_in_yeni",
+      "label": "In Yeni",
+      "kw": [
+        "in yeni"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=inyeni.com"
+    }
+  ]
+}
