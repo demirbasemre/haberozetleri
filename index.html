@@ -418,6 +418,11 @@
       min-width: 0;
     }
     .airline-col-group:last-child { border-right: none; }
+    /* Devam sütunları spacer başlık */
+    .airline-group-header--spacer {
+      visibility: hidden;
+      pointer-events: none;
+    }
     /* Grup başlığı sütun tepesinde yapışık */
     .airline-col-group .airline-group-header {
       position: sticky;
@@ -633,6 +638,13 @@
     min-height: 28px;
     transition: background 0.13s;
     white-space: nowrap;
+    overflow: hidden;
+  }
+  .airline-col-item .airline-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
   }
   .airline-col-item:hover { background: var(--bg); }
   .airline-col-item.selected { background: rgba(13,17,23,0.04); color: var(--text); }
@@ -3747,7 +3759,6 @@ const AIRLINE_REGION_GROUPS = [
   { id: 'africa',   label: 'Afrika',        color: '#92400E' },
   { id: 'asiapac',  label: 'Asya Pasifik',  color: '#C2410C' },
   { id: 'americas', label: 'Amerika',       color: '#7E22CE' },
-  { id: 'other',    label: 'Diğer',         color: '#6B7280' },
 ];
 
 const AIRLINE_INTEGRATOR_GROUPS = [
@@ -3789,7 +3800,7 @@ const AIRLINE_DEFS = [
   { id: 'aeromexico',    label: 'Aeromexico',               group: 'combo',  region: 'americas', integrator: false, kw: ['aeromexico'] },
   // Avrupa — ek havayolları
   { id: 'iag',           label: 'IAG Cargo',                group: 'cargo',  region: 'europe',   integrator: false, kw: ['iag cargo'] },
-  { id: 'klm',           label: 'KLM Cargo',                group: 'combo',  region: 'europe',   integrator: false, kw: ['klm cargo','af klm','france klm','martinair cargo','klm martinair'] },
+  { id: 'klm',           label: 'AF-KLM Cargo',             group: 'combo',  region: 'europe',   integrator: false, kw: ['klm cargo','af klm','france klm','martinair cargo','klm martinair'] },
   { id: 'tap',           label: 'TAP Air Portugal',         group: 'combo',  region: 'europe',   integrator: false, kw: ['tap air','tap portugal'] },
   { id: 'ita',           label: 'ITA Airways',              group: 'combo',  region: 'europe',   integrator: false, kw: ['ita airways'] },
   { id: 'skyup',         label: 'SkyUp Airlines',           group: 'combo',  region: 'europe',   integrator: false, kw: ['skyup airlines','skyup'] },
@@ -3984,7 +3995,7 @@ function getAirlineLogo(airlineId) {
     'ita':             F('ita-airways.com'),
     'skyup':           F('skyup.aero'),
     'cmacgm':          F('cma-cgm.com'),
-    'iag':             F('iagcargo.com'),
+    'iag':             'https://upload.wikimedia.org/wikipedia/en/6/61/IAG_Cargo_logo.svg',
     // Orta Doğu
     'emirates':        F('emirates.com'),
     'etihad':          F('etihadcargo.com'),
@@ -3997,14 +4008,14 @@ function getAirlineLogo(airlineId) {
     'ethiopian':       F('ethiopianairlines.com'),
     'kenya':           F('kenya-airways.com'),
     'rwandair':        F('rwandair.com'),
-    'astral':          C('astralaviationltd.com'),
-    'geosky':          'https://geosky.ge/favicon.ico',
+    'astral':          'https://upload.wikimedia.org/wikipedia/en/3/34/Astral_Aviation_logo.svg',
+    'geosky':          'https://airgeosky.com/assets/img/logo/blue.svg',
     // Asya Pasifik
     'cathay':          F('cathaypacific.com'),
     'korean':          F('koreanair.com'),
     'singapore':       F('singaporeair.com'),
-    'airchina':        F('airchina.com'),
-    'chinasouthern':   F('csair.com'),
+    'airchina':        'https://www.airchina.us/go/2026.5-16/images/bottomnavbar/WZ_AirchinaLogo.gif',
+    'chinasouthern':   'https://companieslogo.com/img/orig/600029.SS-e7ea2d1d.png?t=1720244490',
     'indigo':          F('goindigo.in'),
     'silkway':         F('silkwaywest.com'),
     'asiana':          F('flyasiana.com'),
@@ -4693,50 +4704,68 @@ function buildAirlineFilter(articles) {
 
   const visibleGroups = groupDefs.filter(grp => byGroup[grp.id]?.length > 0);
 
-  // Desktop multi-column grid (her grup = bir sütun)
-  const colCount = visibleGroups.length; // tüm gruplar tek sırada
-  dropdown.classList.add('airline-grid-mode');
+  // ── Sütun tanımları: Tür modunda non-entegratörleri 3 eşit parçaya böl ──
+  const columnDefs = [];
+  visibleGroups.forEach(grp => {
+    const members = byGroup[grp.id];
+    if (airlineFilterMode === 'integrator' && grp.id === 'nonintegrator' && members.length > 6) {
+      const splitN    = 3;
+      const chunkSize = Math.ceil(members.length / splitN);
+      for (let i = 0; i < splitN; i++) {
+        const chunk = members.slice(i * chunkSize, (i + 1) * chunkSize);
+        if (chunk.length === 0) break;
+        columnDefs.push({ grp, chunk, allMembers: members, isFirst: i === 0 });
+      }
+    } else {
+      columnDefs.push({ grp, chunk: members, allMembers: members, isFirst: true });
+    }
+  });
 
-  // Dinamik genişlik: her sütun min 195px (nowrap için yeterli alan)
+  dropdown.classList.add('airline-grid-mode');
   const minColPx = 195;
-  const desiredW = Math.min(colCount * minColPx + 20, Math.floor(window.innerWidth * 0.94));
+  const desiredW = Math.min(columnDefs.length * minColPx + 20, Math.floor(window.innerWidth * 0.94));
   dropdown.style.setProperty('--airline-min-width', desiredW + 'px');
 
   const grid = document.createElement('div');
   grid.className = 'airline-col-grid';
-  grid.style.setProperty('--airline-cols', colCount);
+  grid.style.setProperty('--airline-cols', columnDefs.length);
 
-  visibleGroups.forEach(grp => {
-    const members = byGroup[grp.id];
-
+  columnDefs.forEach(({ grp, chunk, allMembers, isFirst }) => {
     const col = document.createElement('div');
     col.className = 'airline-col-group';
 
-    // Group header
-    const hdr = document.createElement('div');
-    hdr.className = 'airline-group-header';
-    hdr.dataset.group = grp.id;
-    hdr.innerHTML = `
-      <div class="airline-group-check">${CHECK_SVG}</div>
-      <span class="airline-group-dot" style="background:${grp.color}"></span>
-      <span class="airline-group-label">${grp.label}</span>
-      <span class="airline-group-count">${members.length}</span>
-    `;
-    hdr.addEventListener('click', e => {
-      e.stopPropagation();
-      const allSel = members.every(a => activeAirlines.has(a.id));
-      members.forEach(a => allSel ? activeAirlines.delete(a.id) : activeAirlines.add(a.id));
-      syncAirlineGroupUI();
-      syncAirlineBtn();
-      render();
-    });
-    col.appendChild(hdr);
+    if (isFirst) {
+      // Grup başlığı — tüm üyeleri seçer
+      const hdr = document.createElement('div');
+      hdr.className = 'airline-group-header';
+      hdr.dataset.group = grp.id;
+      hdr.innerHTML = `
+        <div class="airline-group-check">${CHECK_SVG}</div>
+        <span class="airline-group-dot" style="background:${grp.color}"></span>
+        <span class="airline-group-label">${grp.label}</span>
+        <span class="airline-group-count">${allMembers.length}</span>
+      `;
+      hdr.addEventListener('click', e => {
+        e.stopPropagation();
+        const allSel = allMembers.every(a => activeAirlines.has(a.id));
+        allMembers.forEach(a => allSel ? activeAirlines.delete(a.id) : activeAirlines.add(a.id));
+        syncAirlineGroupUI();
+        syncAirlineBtn();
+        render();
+      });
+      col.appendChild(hdr);
+    } else {
+      // Devam sütunu: hizalamayı korumak için görünmez spacer
+      const spacer = document.createElement('div');
+      spacer.className = 'airline-group-header airline-group-header--spacer';
+      col.appendChild(spacer);
+    }
 
-    // Scrollable item body
+    // Öğe listesi
     const body = document.createElement('div');
     body.className = 'airline-col-group-body';
 
-    members.forEach(airline => {
+    chunk.forEach(airline => {
       const opt = document.createElement('div');
       opt.className = 'airline-col-item' + (airline.isPrimary ? ' airline-primary' : '');
       opt.dataset.id    = airline.id;
