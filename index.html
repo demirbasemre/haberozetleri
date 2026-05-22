@@ -3964,6 +3964,7 @@ function getFavicon(source) {
 
 function getAirlineLogo(airlineId) {
   const F = d => `https://www.google.com/s2/favicons?sz=32&domain=${d}`;
+  const C = d => `https://logo.clearbit.com/${d}`;
   const logos = {
     // Türkiye
     'turkishairlines': F('turkishcargo.com'),
@@ -3983,8 +3984,9 @@ function getAirlineLogo(airlineId) {
     'ita':             F('ita-airways.com'),
     'skyup':           F('skyup.aero'),
     'cmacgm':          F('cma-cgm.com'),
+    'iag':             C('iagcargo.com'),
     // Orta Doğu
-    'emirates':        'https://logo.clearbit.com/emirates.com',
+    'emirates':        F('emirates.com'),
     'etihad':          F('etihadcargo.com'),
     'qatar':           F('qatarairways.com'),
     'saudia':          F('saudia.com'),
@@ -3995,18 +3997,22 @@ function getAirlineLogo(airlineId) {
     'ethiopian':       F('ethiopianairlines.com'),
     'kenya':           F('kenya-airways.com'),
     'rwandair':        F('rwandair.com'),
+    'astral':          C('astralaviationltd.com'),
+    'geosky':          'https://geosky.ge/favicon.ico',
     // Asya Pasifik
     'cathay':          F('cathaypacific.com'),
     'korean':          F('koreanair.com'),
     'singapore':       F('singaporeair.com'),
-    'airchina':        F('airchina.com'),
-    'chinasouthern':   F('csair.com'),
+    'airchina':        C('airchina.com'),
+    'chinasouthern':   C('csair.com'),
     'indigo':          F('goindigo.in'),
     'silkway':         F('silkwaywest.com'),
     'asiana':          F('flyasiana.com'),
     'chinaeastern':    F('ceair.com'),
     'jal':             F('jal.com'),
     'airindia':        F('airindia.in'),
+    'nippon':          F('nca.anahd.co.jp'),
+    'longhao':         C('chinacentral-ca.com'),
     // Amerika
     'atlas':           F('atlasair.com'),
     'cargojet':        F('cargojet.com'),
@@ -4017,6 +4023,10 @@ function getAirlineLogo(airlineId) {
     'american':        F('aa.com'),
     'aircanada':       F('aircanada.com'),
     'alaska':          F('alaskaair.com'),
+    'spirit':          F('spirit.com'),
+    'nationalcargo':   F('nationalaircargogroup.com'),
+    // Küçük havayolları / charter
+    'ascend':          'https://www.ascendworldwide.com/favicon.ico',
   };
   // Dinamik girişin logoUrl'si varsa doğrudan kullan
   const dyn = DYNAMIC_AIRLINE_DEFS.find(a => a.id === airlineId);
@@ -4399,8 +4409,26 @@ function closeDropdown(id) {
 }
 function openDropdown(id) {
   ALL_DROPDOWNS.forEach(d => { if (d !== id) closeDropdown(d); });
-  document.getElementById(panelId(id))?.classList.add('open');
+  const panel = document.getElementById(panelId(id));
+  if (!panel) return;
+  panel.classList.add('open');
   document.getElementById(`${id}-btn`)?.setAttribute('aria-expanded', 'true');
+  // Viewport sağ taşmasını önle
+  if (window.innerWidth >= 769) {
+    requestAnimationFrame(() => {
+      const wrap = panel.closest('.fdd-wrap');
+      if (!wrap) return;
+      const wrapLeft = wrap.getBoundingClientRect().left;
+      const ddWidth  = panel.getBoundingClientRect().width;
+      if (ddWidth === 0) return;
+      const maxRight = window.innerWidth - 12;
+      if (wrapLeft + ddWidth > maxRight) {
+        panel.style.left = Math.max(12 - wrapLeft, -(ddWidth - wrap.offsetWidth)) + 'px';
+      } else {
+        panel.style.left = '0';
+      }
+    });
+  }
 }
 function closeAllDropdowns() { ALL_DROPDOWNS.forEach(closeDropdown); }
 
