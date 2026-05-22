@@ -1,1 +1,296 @@
-{"lastScannedId":0,"lastScanned":"","scannedCount":0,"airlines":[],"gsa":[]}
+{
+  "lastScannedId": 1106,
+  "lastScanned": "2026-05-22T08:41:45.885Z",
+  "scannedCount": 624,
+  "airlines": [
+    {
+      "id": "dyn_iag_cargo",
+      "label": "Iag Cargo",
+      "group": "cargo",
+      "kw": [
+        "iag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iagcargo.com"
+    },
+    {
+      "id": "dyn_spirit_airlines",
+      "label": "Spirit Airlines",
+      "group": "combo",
+      "kw": [
+        "spirit airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=spirit.com"
+    },
+    {
+      "id": "dyn_american_airlines_cargo",
+      "label": "American Airlines Cargo",
+      "group": "cargo",
+      "kw": [
+        "american airlines cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aacargo.com"
+    },
+    {
+      "id": "dyn_awesome_cargo",
+      "label": "Awesome Cargo",
+      "group": "cargo",
+      "kw": [
+        "awesome cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=awesomecargo.com.mx"
+    },
+    {
+      "id": "dyn_air_canada_cargo",
+      "label": "Air Canada Cargo",
+      "group": "cargo",
+      "kw": [
+        "air canada cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aircanadacargo.com"
+    },
+    {
+      "id": "dyn_kenya_airways",
+      "label": "Kenya Airways",
+      "group": "combo",
+      "kw": [
+        "kenya airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kenya-airways.com"
+    },
+    {
+      "id": "dyn_tap_air",
+      "label": "Tap Air",
+      "group": "combo",
+      "kw": [
+        "tap air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=flytap.com"
+    },
+    {
+      "id": "dyn_united_cargo",
+      "label": "United Cargo",
+      "group": "cargo",
+      "kw": [
+        "united cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=unitedcargo.com"
+    },
+    {
+      "id": "dyn_asiana_airlines",
+      "label": "Asiana Airlines",
+      "group": "combo",
+      "kw": [
+        "asiana airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=flyasiana.com"
+    },
+    {
+      "id": "dyn_cma_cgm_air_cargo",
+      "label": "Cma Cgm Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "cma cgm air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=cma-cgm.com"
+    },
+    {
+      "id": "dyn_riyadh_air",
+      "label": "Riyadh Air",
+      "group": "combo",
+      "kw": [
+        "riyadh air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=riyadhair.com"
+    },
+    {
+      "id": "dyn_united_airlines",
+      "label": "United Airlines",
+      "group": "combo",
+      "kw": [
+        "united airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=united.com"
+    },
+    {
+      "id": "dyn_astral_aviation",
+      "label": "Astral Aviation",
+      "group": "cargo",
+      "kw": [
+        "astral aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=astral-aviation.com"
+    },
+    {
+      "id": "dyn_china_eastern_airlines",
+      "label": "China Eastern Airlines",
+      "group": "combo",
+      "kw": [
+        "china eastern airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ceair.com"
+    },
+    {
+      "id": "dyn_alaska_airlines",
+      "label": "Alaska Airlines",
+      "group": "combo",
+      "kw": [
+        "alaska airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alaskaair.com"
+    },
+    {
+      "id": "dyn_ita_airways",
+      "label": "Ita Airways",
+      "group": "combo",
+      "kw": [
+        "ita airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ita-airways.com"
+    },
+    {
+      "id": "dyn_skyup_airlines",
+      "label": "Skyup Airlines",
+      "group": "combo",
+      "kw": [
+        "skyup airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=skyup.aero"
+    },
+    {
+      "id": "dyn_france_klm_martinair_cargo",
+      "label": "France Klm Martinair Cargo",
+      "group": "cargo",
+      "kw": [
+        "france klm martinair cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=afklcargo.com"
+    },
+    {
+      "id": "dyn_af_klm_cargo",
+      "label": "Af Klm Cargo",
+      "group": "cargo",
+      "kw": [
+        "af klm cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=afklcargo.com"
+    },
+    {
+      "id": "dyn_national_air_cargo",
+      "label": "National Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "national air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=nationalairlines.com"
+    },
+    {
+      "id": "dyn_ascend_airways",
+      "label": "Ascend Airways",
+      "group": "combo",
+      "kw": [
+        "ascend airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ascendairways.com"
+    },
+    {
+      "id": "dyn_china_central_longhao_airlines",
+      "label": "China Central Longhao Airlines",
+      "group": "cargo",
+      "kw": [
+        "china central longhao airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=airlonghao.com"
+    },
+    {
+      "id": "dyn_my_freighter_kargo",
+      "label": "My Freighter Kargo",
+      "group": "cargo",
+      "kw": [
+        "my freighter kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=myfreighter.uz"
+    },
+    {
+      "id": "dyn_msc_air_cargo",
+      "label": "Msc Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "msc air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=mscaircargo.com"
+    },
+    {
+      "id": "dyn_air_europa_cargo",
+      "label": "Air Europa Cargo",
+      "group": "cargo",
+      "kw": [
+        "air europa cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aireuropa-cargo.com"
+    },
+    {
+      "id": "dyn_delta_cargo",
+      "label": "Delta Cargo",
+      "group": "cargo",
+      "kw": [
+        "delta cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=deltacargo.com"
+    },
+    {
+      "id": "dyn_qantas_freight",
+      "label": "Qantas Freight",
+      "group": "cargo",
+      "kw": [
+        "qantas freight"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=qantasfreight.com"
+    },
+    {
+      "id": "dyn_magma_aviation",
+      "label": "Magma Aviation",
+      "group": "cargo",
+      "kw": [
+        "magma aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=magma-aviation.com"
+    },
+    {
+      "id": "dyn_nippon_cargo_airlines",
+      "label": "Nippon Cargo Airlines",
+      "group": "cargo",
+      "kw": [
+        "nippon cargo airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=nca.aero"
+    },
+    {
+      "id": "dyn_ana_cargo",
+      "label": "Ana Cargo",
+      "group": "cargo",
+      "kw": [
+        "ana cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=anacargo.jp"
+    },
+    {
+      "id": "dyn_japan_airlines",
+      "label": "Japan Airlines",
+      "group": "combo",
+      "kw": [
+        "japan airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=jal.com"
+    },
+    {
+      "id": "dyn_vietjet_air",
+      "label": "Vietjet Air",
+      "group": "combo",
+      "kw": [
+        "vietjet air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=vietjetair.com"
+    }
+  ],
+  "gsa": []
+}
