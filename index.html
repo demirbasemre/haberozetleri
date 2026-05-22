@@ -457,68 +457,245 @@
     .airline-col-group-body { max-height: none; overflow: visible; }
   }
   /* ── Segmented toggle — sliding pill ── */
-  .airline-mode-toggle {
+  /* Integrators bar — horizontal chip strip */
+  .airline-integrators-bar {
     display: flex;
-    background: var(--bg);
+    align-items: center;
+    gap: 4px;
+    padding: 5px 6px;
+    margin: 4px 4px 0;
+    background: rgba(3, 105, 161, 0.05);
+    border: 1px solid rgba(3, 105, 161, 0.12);
     border-radius: 9px;
-    padding: 3px;
-    margin: 8px 8px 5px;
-    gap: 0;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    flex-wrap: wrap;
   }
-  @media (min-width: 769px) {
-    #airline-dropdown.airline-grid-mode .airline-mode-toggle {
-      position: relative;
-      top: auto;
-    }
-    #airline-dropdown.airline-grid-mode .airline-pinned-row {
-      justify-content: center;
-    }
-  }
-  .airline-mode-indicator {
-    position: absolute;
-    top: 3px;
-    bottom: 3px;
-    left: 3px;
-    width: calc(50% - 3px);
-    background: white;
-    border-radius: 7px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.14), 0 1px 2px rgba(0,0,0,0.07);
-    transition: transform 220ms cubic-bezier(0.34, 1.4, 0.64, 1);
-    pointer-events: none;
-  }
-  .airline-mode-indicator.mode-integrator { transform: translateX(100%); }
-  [data-theme="dark"] .airline-mode-indicator {
-    background: rgba(255,255,255,0.11);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
-  }
-  .airline-mode-btn {
-    flex: 1;
-    padding: 6px 8px;
-    border-radius: 7px;
-    font-size: 11.5px;
-    font-weight: 500;
-    border: none;
-    background: transparent;
+  .airline-integrators-hdr {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     cursor: pointer;
-    transition: color 160ms ease;
+    padding: 2px 6px 2px 2px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    transition: background 0.12s;
+  }
+  .airline-integrators-hdr:hover { background: rgba(3,105,161,0.08); }
+  /* İşaretçi hizalaması: TK(22) / Int(20) / Col(15) → hepsi 22px'e taşı */
+  .airline-integrators-hdr .airline-group-check { margin-left: 2px; }
+  .airline-group-header[data-group] .airline-group-check { margin-left: 7px; }
+
+  /* ── Dropdown üst bar (TK + Odak butonu) ── */
+  .airline-top-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px 0;
+  }
+  .airline-top-bar .airline-pinned-wrap {
+    flex: 1;
+    padding: 0;
+  }
+  .airline-focus-toggle {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 7px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
     color: var(--text-2);
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    user-select: none;
     white-space: nowrap;
+  }
+  .airline-focus-toggle:hover { background: var(--bg); color: var(--text); }
+  .airline-focus-toggle.active {
+    background: rgba(234, 179, 8, 0.1);
+    border-color: rgba(234, 179, 8, 0.4);
+    color: #854d0e;
+  }
+  [data-theme="dark"] .airline-focus-toggle.active {
+    background: rgba(234, 179, 8, 0.12);
+    border-color: rgba(234, 179, 8, 0.3);
+    color: #fbbf24;
+  }
+
+  /* ── Edit mode ── */
+  .airline-edit-mode-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    margin: 4px 6px 0;
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    border-radius: 6px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #6d28d9;
+    letter-spacing: 0.02em;
+  }
+  [data-theme="dark"] .airline-edit-mode-badge { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.2); color: #a78bfa; }
+  .airline-col-item { position: relative; }
+  .airline-edit-btn {
+    display: none;
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.12s, background 0.12s;
+    flex-shrink: 0;
+    padding: 0;
+  }
+  .airline-col-item:hover .airline-edit-btn,
+  .airline-pinned-row:hover .airline-edit-btn { display: flex; }
+  .airline-edit-btn:hover { opacity: 1; background: var(--bg); }
+  .airline-integrator-chip { position: relative; }
+  .airline-integrator-chip:hover .airline-edit-btn { display: flex; }
+
+  /* Edit panel — inline form below airline row */
+  .airline-edit-panel {
+    background: var(--surface);
+    border: 1px solid rgba(124, 58, 237, 0.25);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 2px 4px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .airline-edit-panel label {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+  .airline-edit-panel input,
+  .airline-edit-panel select {
+    padding: 4px 7px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-size: 12px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+  }
+  .airline-edit-panel input:focus,
+  .airline-edit-panel select:focus { border-color: #7C3AED; }
+  .airline-edit-panel-row {
+    display: flex;
+    gap: 7px;
+    align-items: flex-end;
+  }
+  .airline-edit-panel-row label { flex: 1; }
+  .airline-edit-save-btn {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: none;
+    background: #7C3AED;
+    color: white;
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s;
+  }
+  .airline-edit-save-btn:hover { background: #6d28d9; }
+  .airline-edit-save-btn.saving { opacity: 0.6; pointer-events: none; }
+  .airline-edit-focus-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11.5px;
+    color: var(--text-2);
+    cursor: pointer;
+  }
+  .airline-edit-focus-row input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; }
+  .airline-focus-star { flex-shrink: 0; margin-left: auto; opacity: 0.8; }
+  .airline-integrators-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #0369A1;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .airline-integrator-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 9px 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: background 0.12s, border-color 0.12s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .airline-integrator-chip:hover { background: var(--bg); border-color: var(--border); }
+  .airline-integrator-chip.selected {
+    background: rgba(3, 105, 161, 0.08);
+    border-color: rgba(3, 105, 161, 0.3);
+    color: #0369A1;
+  }
+  .airline-integrator-chip .airline-check {
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    border: 1.5px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    min-height: 30px;
-    position: relative;
-    z-index: 1;
-    user-select: none;
+    flex-shrink: 0;
+    transition: background 0.12s, border-color 0.12s;
   }
-  .airline-mode-btn:hover:not(.active) { color: var(--text); }
-  .airline-mode-btn.active { color: var(--text); font-weight: 600; }
+  .airline-integrator-chip.selected .airline-check {
+    background: #0369A1;
+    border-color: #0369A1;
+  }
+  .airline-integrator-chip .airline-check svg { display: none; }
+  .airline-integrator-chip.selected .airline-check svg { display: block; }
+  [data-theme="dark"] .airline-integrators-bar {
+    background: rgba(56,189,248,0.06);
+    border-color: rgba(56,189,248,0.12);
+  }
+  [data-theme="dark"] .airline-integrators-label { color: #38BDF8; }
+  [data-theme="dark"] .airline-integrator-chip.selected {
+    background: rgba(56,189,248,0.1);
+    border-color: rgba(56,189,248,0.25);
+    color: #38BDF8;
+  }
+  [data-theme="dark"] .airline-integrator-chip.selected .airline-check {
+    background: #0284C7;
+    border-color: #0284C7;
+  }
+  @media (min-width: 769px) {
+    #airline-dropdown.airline-grid-mode .airline-pinned-row {
+      justify-content: center;
+    }
+    .airline-integrators-bar { flex-wrap: nowrap; }
+  }
   /* Airline initials fallback badge */
   .airline-init-badge {
     width: 16px;
@@ -3722,9 +3899,124 @@ let activeAirlines   = new Set();
 let activeGSA        = new Set();
 let activeRegions    = new Set();
 let activeSources    = new Set();
-let airlineFilterMode = 'region'; // 'region' | 'integrator'
+// airline filter uses unified region+integrator layout (no mode toggle)
 let onlyAnalysis     = false;
 let onlyMultiSource  = false;
+
+// ── Havayolu konfigürasyon sistemi ───────────────────────────
+const IS_EDIT_MODE = new URLSearchParams(location.search).get('edit') === '1';
+let airlineFocusMode = false;
+let AIRLINE_CONFIG_OVERRIDES = []; // n8n'den yüklenen overrides
+const AIRLINE_CONFIG_URL = 'https://n8n.emredemirbas.com/webhook/airline-config';
+const AIRLINE_CONFIG_SAVE_URL = 'https://n8n.emredemirbas.com/webhook/airline-config/save';
+
+function applyAirlineConfigOverrides() {
+  AIRLINE_CONFIG_OVERRIDES.forEach(cfg => {
+    const defs = [
+      ...AIRLINE_DEFS,
+      ...DYNAMIC_AIRLINE_DEFS
+    ].filter(a => a.id === cfg.airline_id);
+    defs.forEach(def => {
+      if (cfg.label)    def.label = cfg.label;
+      if (cfg.region)   def.region = cfg.region;
+      def.focus = cfg.focus === true || cfg.focus === 'true';
+      if (cfg.icon_url) def._iconOverride = cfg.icon_url;
+      if (cfg.keywords) def._kwOverride = cfg.keywords.split(',').map(k => k.trim()).filter(Boolean);
+    });
+  });
+  if (allArticles.length > 0) buildAirlineFilter(allArticles);
+}
+
+async function loadAirlineConfig() {
+  try {
+    const resp = await fetch(AIRLINE_CONFIG_URL);
+    if (!resp.ok) return;
+    const data = await resp.json();
+    AIRLINE_CONFIG_OVERRIDES = Array.isArray(data) ? data : (data.configs || []);
+    applyAirlineConfigOverrides();
+  } catch(e) { console.warn('Airline config yüklenemedi:', e); }
+}
+
+async function saveAirlineConfig(cfg) {
+  const resp = await fetch(AIRLINE_CONFIG_SAVE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(cfg)
+  });
+  if (!resp.ok) throw new Error('Kayıt başarısız');
+  const idx = AIRLINE_CONFIG_OVERRIDES.findIndex(c => c.airline_id === cfg.airline_id);
+  if (idx >= 0) AIRLINE_CONFIG_OVERRIDES[idx] = cfg;
+  else AIRLINE_CONFIG_OVERRIDES.push(cfg);
+  applyAirlineConfigOverrides();
+}
+
+function openAirlineEditPanel(airlineId, anchorEl, containerEl) {
+  // Zaten açık bir panel varsa kapat
+  const existing = containerEl.querySelector('.airline-edit-panel[data-for]');
+  if (existing) {
+    if (existing.dataset.for === airlineId) { existing.remove(); return; }
+    existing.remove();
+  }
+
+  const def = allAirlineDefs().find(a => a.id === airlineId) || {};
+  const override = AIRLINE_CONFIG_OVERRIDES.find(c => c.airline_id === airlineId) || {};
+
+  const currentLabel   = override.label   || def.label   || airlineId;
+  const currentRegion  = override.region  || def.region  || 'other';
+  const currentFocus   = override.focus === true || override.focus === 'true' || def.focus === true || false;
+  const currentIconUrl = override.icon_url || def._iconOverride || '';
+
+  const regionOptions = AIRLINE_REGION_GROUPS.map(g =>
+    `<option value="${g.id}" ${currentRegion === g.id ? 'selected' : ''}>${g.label}</option>`
+  ).join('');
+
+  const panel = document.createElement('div');
+  panel.className = 'airline-edit-panel';
+  panel.dataset.for = airlineId;
+  panel.innerHTML = `
+    <div class="airline-edit-panel-row">
+      <label>Havayolu Adı<input type="text" name="label" value="${currentLabel.replace(/"/g,'&quot;')}" placeholder="Havayolu adı"></label>
+      <label>Bölge<select name="region">${regionOptions}</select></label>
+    </div>
+    <label>Logo URL<input type="text" name="icon_url" value="${currentIconUrl.replace(/"/g,'&quot;')}" placeholder="https://..."></label>
+    <div class="airline-edit-focus-row">
+      <input type="checkbox" name="focus" id="focus-chk-${airlineId}" ${currentFocus ? 'checked' : ''}>
+      <label for="focus-chk-${airlineId}" style="cursor:pointer;font-size:11.5px;color:var(--text-2)">⭐ Odak havayolu</label>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:2px">
+      <button class="airline-edit-save-btn" type="button">Kaydet</button>
+    </div>
+  `;
+
+  panel.querySelector('.airline-edit-save-btn').addEventListener('click', async () => {
+    const btn = panel.querySelector('.airline-edit-save-btn');
+    btn.classList.add('saving');
+    btn.textContent = 'Kaydediliyor…';
+    try {
+      const cfg = {
+        airline_id: airlineId,
+        label:    panel.querySelector('[name=label]').value.trim(),
+        region:   panel.querySelector('[name=region]').value,
+        focus:    panel.querySelector('[name=focus]').checked,
+        icon_url: panel.querySelector('[name=icon_url]').value.trim(),
+        keywords: def._kwOverride ? def._kwOverride.join(',') : (def.kw || []).join(','),
+      };
+      await saveAirlineConfig(cfg);
+      panel.remove();
+    } catch(e) {
+      btn.classList.remove('saving');
+      btn.textContent = 'Hata — Tekrar dene';
+      btn.style.background = '#DC2626';
+    }
+  });
+
+  // anchor sonrasına ekle
+  if (anchorEl.nextSibling) {
+    containerEl.insertBefore(panel, anchorEl.nextSibling);
+  } else {
+    containerEl.appendChild(panel);
+  }
+}
 
 // ── Infinite scroll state ────────────────────────────────────
 const PAGE_SIZE    = 20;
@@ -3759,6 +4051,7 @@ const AIRLINE_REGION_GROUPS = [
   { id: 'africa',   label: 'Afrika',        color: '#92400E' },
   { id: 'asiapac',  label: 'Asya Pasifik',  color: '#C2410C' },
   { id: 'americas', label: 'Amerika',       color: '#7E22CE' },
+  { id: 'other',    label: 'Diğer',         color: '#6B7280' },
 ];
 
 const AIRLINE_INTEGRATOR_GROUPS = [
@@ -3974,6 +4267,10 @@ function getFavicon(source) {
 }
 
 function getAirlineLogo(airlineId) {
+  // Config override'ı önce kontrol et
+  const defOverride = allAirlineDefs().find(a => a.id === airlineId);
+  if (defOverride?._iconOverride) return defOverride._iconOverride;
+
   const F = d => `https://www.google.com/s2/favicons?sz=32&domain=${d}`;
   const C = d => `https://logo.clearbit.com/${d}`;
   const logos = {
@@ -4617,36 +4914,18 @@ function buildAirlineFilter(articles) {
 
   if (relevant.length === 0) return;
 
-  // ── Mode toggle — sliding pill ──
-  const toggle = document.createElement('div');
-  toggle.className = 'airline-mode-toggle';
-  toggle.style.position = 'relative';
+  // ── Edit mode badge ──
+  if (IS_EDIT_MODE) {
+    const badge = document.createElement('div');
+    badge.className = 'airline-edit-mode-badge';
+    badge.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Düzenleme Modu`;
+    dropdown.appendChild(badge);
+  }
 
-  // Sliding indicator pill
-  const indicator = document.createElement('div');
-  indicator.className = 'airline-mode-indicator' + (airlineFilterMode === 'integrator' ? ' mode-integrator' : '');
-  toggle.appendChild(indicator);
+  // ── Top bar: Turkish Airlines (pinned) + Odak toggle ──
+  const topBar = document.createElement('div');
+  topBar.className = 'airline-top-bar';
 
-  // Map-pin icon for Bölge (geographic clustering)
-  const regionSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
-  // Tag/label icon for Tür (type classification)
-  const typeSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`;
-
-  [['region', regionSvg, 'Bölge'], ['integrator', typeSvg, 'Tür']].forEach(([mode, icon, label]) => {
-    const btn = document.createElement('button');
-    btn.className = 'airline-mode-btn' + (airlineFilterMode === mode ? ' active' : '');
-    btn.dataset.mode = mode;
-    btn.innerHTML = icon + label;
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      airlineFilterMode = mode;
-      buildAirlineFilter(allArticles);
-    });
-    toggle.appendChild(btn);
-  });
-  dropdown.appendChild(toggle);
-
-  // ── Turkish Airlines — pinned at top ──
   const tkDef = allAirlineDefs().find(a => a.id === 'turkishairlines');
   if (tkDef && found.has('turkishairlines')) {
     const wrap = document.createElement('div');
@@ -4659,7 +4938,16 @@ function buildAirlineFilter(articles) {
     row.setAttribute('aria-selected', isSel ? 'true' : 'false');
     const chk = `<div class="airline-check" style="${isSel ? 'background:var(--red);border-color:var(--red)' : ''}">${CHECK_SVG}</div>`;
     row.innerHTML = `${chk}${airlineLogoHtml(tkDef, getAirlineLogo('turkishairlines'))}<span class="airline-label">Turkish Airlines</span>`;
+    if (IS_EDIT_MODE) {
+      const editBtn = document.createElement('button');
+      editBtn.className = 'airline-edit-btn';
+      editBtn.title = 'Düzenle';
+      editBtn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+      editBtn.addEventListener('click', e => { e.stopPropagation(); openAirlineEditPanel('turkishairlines', row, wrap); });
+      row.appendChild(editBtn);
+    }
     row.addEventListener('click', e => {
+      if (e.target.closest('.airline-edit-btn')) return;
       e.stopPropagation();
       activeAirlines.has('turkishairlines') ? activeAirlines.delete('turkishairlines') : activeAirlines.add('turkishairlines');
       syncAirlineGroupUI();
@@ -4667,27 +4955,113 @@ function buildAirlineFilter(articles) {
       render();
     });
     wrap.appendChild(row);
-    dropdown.appendChild(wrap);
-    const sep = document.createElement('div');
-    sep.className = 'airline-pinned-sep';
-    dropdown.appendChild(sep);
+    topBar.appendChild(wrap);
   }
 
-  // Turkish Airlines'ı gruplardan çıkar; label bazında duplicate'leri temizle
+  // Odak toggle
+  const focusToggle = document.createElement('div');
+  focusToggle.className = 'airline-focus-toggle' + (airlineFocusMode ? ' active' : '');
+  focusToggle.setAttribute('role', 'button');
+  focusToggle.setAttribute('aria-pressed', airlineFocusMode ? 'true' : 'false');
+  focusToggle.title = airlineFocusMode ? 'Tüm havayollarını göster' : 'Yalnızca odak havayollarını göster';
+  focusToggle.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="${airlineFocusMode ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Odak`;
+  focusToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    airlineFocusMode = !airlineFocusMode;
+    buildAirlineFilter(allArticles);
+    syncAirlineBtn();
+    render();
+  });
+  topBar.appendChild(focusToggle);
+
+  dropdown.appendChild(topBar);
+  const sep = document.createElement('div');
+  sep.className = 'airline-pinned-sep';
+  dropdown.appendChild(sep);
+
+  // Turkish Airlines ve entegratörleri gruplardan çıkar; label bazında duplicate'leri temizle
   const staticLabels = new Set(AIRLINE_DEFS.map(a => a.label.toLowerCase()));
   const groupRelevant = relevant.filter(a => {
     if (a.id === 'turkishairlines') return false;
+    if (a.integrator) return false; // entegratörler ayrı barda gösterilecek
     // Dynamic entry ise ve aynı label'da static var ise kaldır
     const isStatic = AIRLINE_DEFS.some(s => s.id === a.id);
     if (!isStatic && staticLabels.has(a.label.toLowerCase())) return false;
+    // Odak modunda sadece focus:true olanları göster
+    if (airlineFocusMode && !a.focus) return false;
     return true;
   });
 
-  // ── Group definitions for current mode ──
-  const groupDefs  = airlineFilterMode === 'region' ? AIRLINE_REGION_GROUPS : AIRLINE_INTEGRATOR_GROUPS;
-  const getGroupId = a => airlineFilterMode === 'region'
-    ? (a.region || 'other')
-    : (a.integrator ? 'integrator' : 'nonintegrator');
+  // ── Entegratörler yatay çip çubuğu ──
+  const integratorDefs = relevant.filter(a => a.integrator && a.id !== 'turkishairlines');
+  if (integratorDefs.length > 0) {
+    const bar = document.createElement('div');
+    bar.className = 'airline-integrators-bar';
+
+    // "Tümünü seç" işaret alanı + etiket
+    const allIntSel  = integratorDefs.every(a => activeAirlines.has(a.id));
+    const anyIntSel  = integratorDefs.some(a => activeAirlines.has(a.id));
+    const intHdr = document.createElement('div');
+    intHdr.className = 'airline-integrators-hdr';
+    intHdr.setAttribute('role', 'button');
+    intHdr.setAttribute('aria-label', 'Tüm entegratörleri seç');
+    intHdr.innerHTML = `
+      <div class="airline-group-check" id="int-all-check" style="${anyIntSel ? 'background:var(--navy);border-color:var(--navy)' : ''}">
+        ${allIntSel ? CHECK_SVG : anyIntSel ? `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>` : CHECK_SVG}
+      </div>
+      <span class="airline-integrators-label">Entegratörler</span>
+    `;
+    if (!anyIntSel) {
+      const sv = intHdr.querySelector('.airline-group-check svg');
+      if (sv) sv.style.display = 'none';
+    }
+    intHdr.addEventListener('click', e => {
+      e.stopPropagation();
+      const allSel = integratorDefs.every(a => activeAirlines.has(a.id));
+      integratorDefs.forEach(a => allSel ? activeAirlines.delete(a.id) : activeAirlines.add(a.id));
+      syncAirlineGroupUI();
+      syncAirlineBtn();
+      render();
+    });
+    bar.appendChild(intHdr);
+
+    integratorDefs.forEach(airline => {
+      const chip = document.createElement('div');
+      const isSel = activeAirlines.has(airline.id);
+      chip.className = 'airline-integrator-chip' + (isSel ? ' selected' : '');
+      chip.dataset.id = airline.id;
+      chip.setAttribute('role', 'option');
+      chip.setAttribute('aria-selected', isSel ? 'true' : 'false');
+      const logoUrl = getAirlineLogo(airline.id);
+      chip.innerHTML = `<div class="airline-check">${CHECK_SVG}</div>${airlineLogoHtml(airline, logoUrl)}<span class="airline-label">${airline.label}</span>`;
+      if (IS_EDIT_MODE) {
+        const editBtn = document.createElement('button');
+        editBtn.className = 'airline-edit-btn';
+        editBtn.title = 'Düzenle';
+        editBtn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+        editBtn.addEventListener('click', e => { e.stopPropagation(); openAirlineEditPanel(airline.id, chip, bar); });
+        chip.appendChild(editBtn);
+      }
+      chip.addEventListener('click', e => {
+        if (e.target.closest('.airline-edit-btn')) return;
+        e.stopPropagation();
+        activeAirlines.has(airline.id) ? activeAirlines.delete(airline.id) : activeAirlines.add(airline.id);
+        syncAirlineGroupUI();
+        syncAirlineBtn();
+        render();
+      });
+      bar.appendChild(chip);
+    });
+    dropdown.appendChild(bar);
+    const sep2 = document.createElement('div');
+    sep2.className = 'airline-pinned-sep';
+    sep2.style.margin = '5px 8px 2px';
+    dropdown.appendChild(sep2);
+  }
+
+  // ── Bölge grupları (entegratörler hariç) ──
+  const groupDefs  = AIRLINE_REGION_GROUPS;
+  const getGroupId = a => a.region || 'other';
 
   const byGroup = {};
   groupRelevant.forEach(a => {
@@ -4704,21 +5078,11 @@ function buildAirlineFilter(articles) {
 
   const visibleGroups = groupDefs.filter(grp => byGroup[grp.id]?.length > 0);
 
-  // ── Sütun tanımları: Tür modunda non-entegratörleri 3 eşit parçaya böl ──
+  // ── Sütun tanımları ──
   const columnDefs = [];
   visibleGroups.forEach(grp => {
     const members = byGroup[grp.id];
-    if (airlineFilterMode === 'integrator' && grp.id === 'nonintegrator' && members.length > 6) {
-      const splitN    = 3;
-      const chunkSize = Math.ceil(members.length / splitN);
-      for (let i = 0; i < splitN; i++) {
-        const chunk = members.slice(i * chunkSize, (i + 1) * chunkSize);
-        if (chunk.length === 0) break;
-        columnDefs.push({ grp, chunk, allMembers: members, isFirst: i === 0 });
-      }
-    } else {
-      columnDefs.push({ grp, chunk: members, allMembers: members, isFirst: true });
-    }
+    columnDefs.push({ grp, chunk: members, allMembers: members, isFirst: true });
   });
 
   dropdown.classList.add('airline-grid-mode');
@@ -4767,7 +5131,7 @@ function buildAirlineFilter(articles) {
 
     chunk.forEach(airline => {
       const opt = document.createElement('div');
-      opt.className = 'airline-col-item' + (airline.isPrimary ? ' airline-primary' : '');
+      opt.className = 'airline-col-item' + (airline.isPrimary ? ' airline-primary' : '') + (airline.focus ? ' airline-focus' : '');
       opt.dataset.id    = airline.id;
       opt.dataset.group = grp.id;
       opt.setAttribute('role', 'option');
@@ -4777,8 +5141,18 @@ function buildAirlineFilter(articles) {
         <div class="airline-check">${CHECK_SVG}</div>
         ${airlineLogoHtml(airline, logoUrl)}
         <span class="airline-label">${airline.label}</span>
+        ${airline.focus ? `<svg class="airline-focus-star" width="9" height="9" viewBox="0 0 24 24" fill="#ca8a04" stroke="#ca8a04" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` : ''}
       `;
+      if (IS_EDIT_MODE) {
+        const editBtn = document.createElement('button');
+        editBtn.className = 'airline-edit-btn';
+        editBtn.title = 'Düzenle';
+        editBtn.innerHTML = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+        editBtn.addEventListener('click', e => { e.stopPropagation(); openAirlineEditPanel(airline.id, opt, body); });
+        opt.appendChild(editBtn);
+      }
       opt.addEventListener('click', e => {
+        if (e.target.closest('.airline-edit-btn')) return;
         e.stopPropagation();
         activeAirlines.has(airline.id) ? activeAirlines.delete(airline.id) : activeAirlines.add(airline.id);
         syncAirlineGroupUI();
@@ -4905,6 +5279,32 @@ function syncAirlineGroupUI() {
     }
   }
 
+  // Sync integrators "select all" check
+  const intHdr = dropdown.querySelector('.airline-integrators-hdr');
+  if (intHdr) {
+    const chips = [...dropdown.querySelectorAll('.airline-integrator-chip[data-id]')];
+    const allSel = chips.length > 0 && chips.every(c => activeAirlines.has(c.dataset.id));
+    const anySel = chips.some(c => activeAirlines.has(c.dataset.id));
+    const ch = intHdr.querySelector('.airline-group-check');
+    if (ch) {
+      ch.style.background  = anySel ? 'var(--navy)' : '';
+      ch.style.borderColor = anySel ? 'var(--navy)' : '';
+      ch.innerHTML = allSel
+        ? CHECK_SVG
+        : anySel
+          ? `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>`
+          : CHECK_SVG;
+      if (!anySel) { const s = ch.querySelector('svg'); if (s) s.style.display = 'none'; }
+    }
+  }
+
+  // Sync integrator chips
+  dropdown.querySelectorAll('.airline-integrator-chip[data-id]').forEach(chip => {
+    const sel = activeAirlines.has(chip.dataset.id);
+    chip.classList.toggle('selected', sel);
+    chip.setAttribute('aria-selected', sel ? 'true' : 'false');
+  });
+
   // Sync individual item check states
   dropdown.querySelectorAll('.airline-col-item[data-id]').forEach(opt => {
     const sel = activeAirlines.has(opt.dataset.id);
@@ -4923,9 +5323,7 @@ function syncAirlineGroupUI() {
   dropdown.querySelectorAll('.airline-group-header[data-group]').forEach(hdr => {
     const grpId  = hdr.dataset.group;
     const members = allAirlineDefs().filter(a => {
-      const gid = airlineFilterMode === 'region'
-        ? (a.region || 'other')
-        : (a.integrator ? 'integrator' : 'nonintegrator');
+      const gid = a.region || 'other';
       return gid === grpId && dropdown.querySelector(`.airline-col-item[data-id="${a.id}"]`);
     });
     const allSel = members.length > 0 && members.every(a => activeAirlines.has(a.id));
@@ -5372,6 +5770,7 @@ Promise.all([
     buildDatePanel(allArticles);
     buildAirlineFilter(allArticles);
     render();
+    loadAirlineConfig(); // n8n'den airline config overrides yükle
     // İstemci taraflı keşif: yalnızca sunucu taraflı veri yoksa çalıştır (fallback)
     const hasServerEntities = DYNAMIC_AIRLINE_DEFS.length > 0 || DYNAMIC_GSA_DEFS.length > 0;
     if (!hasServerEntities) {
