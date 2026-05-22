@@ -4356,11 +4356,12 @@ async function quickToggleFocus(airlineId, starBtn) {
   try {
     const cfg = {
       airline_id: airlineId,
-      label:    override.label    || def.label    || airlineId,
-      region:   override.region   || def.region   || 'other',
-      focus:    newFocus,
-      icon_url: override.icon_url || def._iconOverride || '',
-      keywords: def._kwOverride ? def._kwOverride.join(',') : (def.kw || []).join(','),
+      label:      override.label    || def.label    || airlineId,
+      region:     override.region   || def.region   || 'other',
+      focus:      newFocus,
+      icon_url:   override.icon_url || def._iconOverride || '',
+      keywords:   def._kwOverride ? def._kwOverride.join(',') : (def.kw || []).join(','),
+      merge_with: Array.isArray(override.merge_with) ? override.merge_with : [], // mevcut birleştirmeleri koru
     };
     await saveAirlineConfig(cfg);
     // applyAirlineConfigOverrides içinde buildAirlineFilter çağrılır
@@ -4757,16 +4758,31 @@ function getFilteredArticles() {
       if (activeDateDay   && parts.day !== activeDateDay)   return false;
       return true;
     })();
-    const airlineMatch  = activeAirlines.size === 0 ||
-                          (a._airlines && a._airlines.some(id => {
-                            if (activeAirlines.has(id)) return true;
-                            // Birleştirilmiş havayollarından gelen haber de eşleşsin
-                            for (const activeId of activeAirlines) {
-                              const cfg = AIRLINE_CONFIG_OVERRIDES.find(c => c.airline_id === activeId);
-                              if (cfg?.merge_with && cfg.merge_with.includes(id)) return true;
-                            }
-                            return false;
-                          }));
+    const airlineMatch  = (() => {
+      // Hiçbir filtre yoksa tüm haberler geçer
+      if (activeAirlines.size === 0 && !airlineFocusMode) return true;
+      if (!a._airlines || a._airlines.length === 0) return false;
+      return a._airlines.some(id => {
+        // Manuel seçim eşleşmesi
+        if (activeAirlines.has(id)) return true;
+        // merge_with eşleşmesi (seçili havayoluna birleştirilmiş)
+        for (const activeId of activeAirlines) {
+          const cfg = AIRLINE_CONFIG_OVERRIDES.find(c => c.airline_id === activeId);
+          if (cfg?.merge_with && cfg.merge_with.includes(id)) return true;
+        }
+        // Odak modu: yıldızlı havayollarına ait haberler gelsin
+        if (airlineFocusMode && activeAirlines.size === 0) {
+          const def = allAirlineDefs().find(d => d.id === id);
+          if (def?.focus) return true;
+          // Odak havayoluna merge edilmiş haberler de gelsin
+          const focusedWithMerge = AIRLINE_CONFIG_OVERRIDES.filter(c => c.focus === true || c.focus === 'true');
+          for (const fcfg of focusedWithMerge) {
+            if (fcfg.merge_with && fcfg.merge_with.includes(id)) return true;
+          }
+        }
+        return false;
+      });
+    })();
     const regionMatch   = activeRegions.size === 0 ||
                           (() => {
                             const { direct, hub } = parseEtkiAlani(a.etkiAlani);
@@ -5323,9 +5339,10 @@ function buildAirlineFilter(articles) {
   focusToggle.addEventListener('click', e => {
     e.stopPropagation();
     airlineFocusMode = !airlineFocusMode;
-    buildAirlineFilter(allArticles); // dropdown içeriğini günceller
+    buildAirlineFilter(allArticles); // dropdown: yalnızca odak havayollarını göster/gizle
     syncAirlineBtn();                // filtre buton etiketini günceller
-    // render() çağrılmıyor — seçili havayolu değişmedi, haber listesi değişmemeli
+    // Manuel seçim yoksa odak modu haberleri de filtreler → render gerekli
+    if (activeAirlines.size === 0) render();
   });
   topBar.appendChild(focusToggle);
 
