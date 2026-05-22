@@ -3913,7 +3913,7 @@ function autoDiscoverEntities(articles) {
     DYNAMIC_AIRLINE_DEFS.push({
       id, label, group: isCargoType ? 'cargo' : 'combo', isDynamic: true,
       kw:      [fullLower],
-      logoUrl: `https://www.google.com/s2/favicons?sz=32&domain=${domainGuess}`,
+      logoUrl: `https://logo.clearbit.com/${domainGuess}`,
     });
   });
 
@@ -3927,7 +3927,7 @@ function autoDiscoverEntities(articles) {
     DYNAMIC_GSA_DEFS.push({
       id, label, isDynamic: true,
       kw:      [base],
-      logoUrl: `https://www.google.com/s2/favicons?sz=32&domain=${words}.com`,
+      logoUrl: `https://logo.clearbit.com/${words}.com`,
     });
   });
 }
@@ -3984,7 +3984,7 @@ function getAirlineLogo(airlineId) {
     'ita':             F('ita-airways.com'),
     'skyup':           F('skyup.aero'),
     'cmacgm':          F('cma-cgm.com'),
-    'iag':             C('iagcargo.com'),
+    'iag':             F('iagcargo.com'),
     // Orta Doğu
     'emirates':        F('emirates.com'),
     'etihad':          F('etihadcargo.com'),
@@ -4003,8 +4003,8 @@ function getAirlineLogo(airlineId) {
     'cathay':          F('cathaypacific.com'),
     'korean':          F('koreanair.com'),
     'singapore':       F('singaporeair.com'),
-    'airchina':        C('airchina.com'),
-    'chinasouthern':   C('csair.com'),
+    'airchina':        F('airchina.com'),
+    'chinasouthern':   F('csair.com'),
     'indigo':          F('goindigo.in'),
     'silkway':         F('silkwaywest.com'),
     'asiana':          F('flyasiana.com'),
@@ -4012,7 +4012,13 @@ function getAirlineLogo(airlineId) {
     'jal':             F('jal.com'),
     'airindia':        F('airindia.in'),
     'nippon':          F('nca.anahd.co.jp'),
-    'longhao':         C('chinacentral-ca.com'),
+    'longhao':         'https://www.airlonghao.com/favicon.ico',
+    // Dinamik entry override'ları (ID bazlı sabit URL)
+    'dyn_awesome_cargo':                   'https://www.awesomecargo.com.mx/favicon.ico',
+    'dyn_china_central_longhao_airlines':  'https://www.airlonghao.com/favicon.ico',
+    'dyn_af_klm_cargo':                    F('afklmcargo.com'),
+    'dyn_france_klm_martinair_cargo':      F('afklmcargo.com'),
+    'dyn_tap_air':                         F('flytap.com'),
     // Amerika
     'atlas':           F('atlasair.com'),
     'cargojet':        F('cargojet.com'),
@@ -4028,10 +4034,16 @@ function getAirlineLogo(airlineId) {
     // Küçük havayolları / charter
     'ascend':          'https://www.ascendworldwide.com/favicon.ico',
   };
-  // Dinamik girişin logoUrl'si varsa doğrudan kullan
+  // Statik map öncelikli — dinamik girişin logoUrl'si fallback
+  if (logos[airlineId]) return logos[airlineId];
   const dyn = DYNAMIC_AIRLINE_DEFS.find(a => a.id === airlineId);
-  if (dyn?.logoUrl) return dyn.logoUrl;
-  return logos[airlineId] || null;
+  if (dyn?.logoUrl) {
+    // Google Favicon URL'lerini Clearbit'e çevir (404 → initials badge fallback)
+    const m = dyn.logoUrl.match(/[?&]domain=([^&]+)/);
+    if (m) return `https://logo.clearbit.com/${m[1]}`;
+    return dyn.logoUrl;
+  }
+  return null;
 }
 
 // Renkli initials badge — logo yoksa veya yüklenemezse kullanılır
