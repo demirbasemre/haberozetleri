@@ -4286,28 +4286,37 @@ function openAirlineEditPanel(airlineId, anchorEl, _containerEl) {
     }
   });
 
-  // Dropdown'a absolute olarak ekle, anchor'ın altına hizala
-  dropdown.style.position = 'relative';
-  panel.style.position = 'absolute';
-  panel.style.zIndex = '50';
-  panel.style.width = '290px';
-  panel.style.margin = '0';
-  dropdown.appendChild(panel);
+  // Body'e fixed olarak ekle — dropdown layout'unu bozmaz
+  panel.style.position = 'fixed';
+  panel.style.zIndex   = '9999';
+  panel.style.width    = '290px';
+  panel.style.margin   = '0';
+  document.body.appendChild(panel);
 
-  // Pozisyon hesapla
+  // Viewport'a göre pozisyon hesapla
   requestAnimationFrame(() => {
     const anchorRect = anchorEl.getBoundingClientRect();
-    const dropRect   = dropdown.getBoundingClientRect();
-    let left = anchorRect.left - dropRect.left;
-    let top  = anchorRect.bottom - dropRect.top + dropdown.scrollTop + 3;
-    // Sağa taşma önle
     const panelW = 290;
-    if (left + panelW > dropRect.width - 6) left = dropRect.width - panelW - 6;
-    if (left < 4) left = 4;
+    const panelH = panel.offsetHeight || 260;
+    let left = anchorRect.left;
+    let top  = anchorRect.bottom + 4;
+    // Sağ kenar taşmasını önle
+    if (left + panelW > window.innerWidth - 8) left = window.innerWidth - panelW - 8;
+    if (left < 8) left = 8;
+    // Alt kenar taşmasını önle — üste aç
+    if (top + panelH > window.innerHeight - 8) top = anchorRect.top - panelH - 4;
     panel.style.left = left + 'px';
     panel.style.top  = top + 'px';
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
+
+  // Dışarı tıklanınca kapat
+  const closeOnOutside = e => {
+    if (!panel.contains(e.target) && !anchorEl.contains(e.target)) {
+      panel.remove();
+      document.removeEventListener('mousedown', closeOnOutside, true);
+    }
+  };
+  setTimeout(() => document.addEventListener('mousedown', closeOnOutside, true), 10);
 }
 
 // ⭐ + ✏️ butonlarını birlikte ekler (edit modunda)
