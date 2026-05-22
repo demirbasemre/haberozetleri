@@ -389,66 +389,163 @@
     padding: 4px 8px 2px;
   }
 
-  /* Airline tree — sütunlu layout (Etki Alanı benzeri) */
+  /* Airline filter — mode toggle + grouped list */
   #airline-dropdown {
-    min-width: min(560px, 94vw);
-    max-height: none;
-    overflow: visible;
+    min-width: min(270px, 94vw);
+    max-height: 420px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 6px;
   }
-  .airline-tree {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 6px;
-    padding: 2px 0;
-  }
-  .airline-column {
+  .airline-mode-toggle {
     display: flex;
-    flex-direction: column;
-    border-right: 1px solid var(--border-soft);
-    padding: 0 4px;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 3px;
+    margin: 8px 8px 5px;
+    gap: 2px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    backdrop-filter: blur(8px);
   }
-  .airline-column:last-child { border-right: none; }
-  .airline-col-header {
+  .airline-mode-btn {
+    flex: 1;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 180ms ease;
+    color: var(--text-2);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 28px;
+  }
+  .airline-mode-btn:hover { color: var(--text); }
+  .airline-mode-btn.active {
+    background: white;
+    color: var(--text);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.13), 0 1px 1px rgba(0,0,0,0.06);
+  }
+  [data-theme="dark"] .airline-mode-btn.active {
+    background: var(--surface);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+  }
+  /* Turkish Airlines — en üstte sabit */
+  .airline-pinned-wrap {
+    padding: 4px 4px 0;
+  }
+  .airline-pinned-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 8px;
+    padding: 6px 10px;
     border-radius: 7px;
     cursor: pointer;
-    font-size: 11.5px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
     color: var(--text);
     user-select: none;
     min-height: 32px;
     transition: background 0.13s;
-    letter-spacing: 0.01em;
+    background: rgba(190,18,60,0.05);
+    border: 1px solid rgba(190,18,60,0.12);
   }
-  .airline-col-header:hover { background: var(--bg); }
-  .airline-col-header.selected { background: rgba(13,17,23,0.06); }
+  .airline-pinned-row:hover { background: rgba(190,18,60,0.08); }
+  .airline-pinned-row.selected {
+    background: rgba(190,18,60,0.1);
+    border-color: rgba(190,18,60,0.22);
+  }
+  .airline-pinned-row .airline-check.selected-check {
+    background: #BE123C !important;
+    border-color: #BE123C !important;
+  }
+  [data-theme="dark"] .airline-pinned-row {
+    background: rgba(255,80,80,0.06);
+    border-color: rgba(255,80,80,0.12);
+  }
+  [data-theme="dark"] .airline-pinned-row.selected {
+    background: rgba(255,80,80,0.1);
+  }
+  .airline-pinned-sep {
+    height: 1px;
+    background: var(--border-soft);
+    margin: 6px 8px 2px;
+  }
+  .airline-group-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 8px 5px 8px;
+    cursor: pointer;
+    border-radius: 7px;
+    margin: 4px 4px 1px;
+    user-select: none;
+    min-height: 30px;
+    transition: background 0.13s;
+  }
+  .airline-group-header:hover { background: var(--bg); }
+  .airline-group-check {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    background: white;
+  }
+  [data-theme="dark"] .airline-group-check { background: #2a2d3a; }
+  .airline-group-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .airline-group-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    flex: 1;
+  }
+  .airline-group-count {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 1px 6px;
+  }
   .airline-col-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 5px 8px;
+    padding: 5px 8px 5px 30px;
     border-radius: 6px;
+    margin: 0 4px;
     cursor: pointer;
-    font-size: 11.5px;
+    font-size: 12px;
     color: var(--text-2);
     user-select: none;
     min-height: 28px;
     transition: background 0.13s;
   }
   .airline-col-item:hover { background: var(--bg); }
-  .airline-col-item.selected { background: rgba(13,17,23,0.05); color: var(--text); }
+  .airline-col-item.selected { background: rgba(13,17,23,0.04); color: var(--text); }
   .airline-col-item.airline-primary { font-weight: 600; color: var(--text); }
-  [data-theme="dark"] .airline-col-header.selected { background: rgba(255,255,255,0.07); }
-  [data-theme="dark"] .airline-col-item.selected   { background: rgba(255,255,255,0.06); }
+  [data-theme="dark"] .airline-col-item.selected { background: rgba(255,255,255,0.05); }
   @media (max-width: 768px) {
-    #airline-dropdown { min-width: 220px; max-height: 340px; overflow-y: auto; }
-    .airline-tree { grid-template-columns: 1fr; gap: 0; }
-    .airline-column { border-right: none; border-bottom: 1px solid var(--border-soft); padding: 4px 0; }
-    .airline-column:last-child { border-bottom: none; }
-    .airline-col-item { padding-left: 22px; }
+    #airline-dropdown { min-width: 240px; max-height: 360px; }
   }
   .airline-option {
     display: flex;
@@ -3519,6 +3616,7 @@ let activeAirlines   = new Set();
 let activeGSA        = new Set();
 let activeRegions    = new Set();
 let activeSources    = new Set();
+let airlineFilterMode = 'region'; // 'region' | 'integrator'
 let onlyAnalysis     = false;
 let onlyMultiSource  = false;
 
@@ -3548,38 +3646,83 @@ const AIRLINE_GROUPS = [
   { id: 'combo', label: 'Kombine Havayolları' },
 ];
 
+const AIRLINE_REGION_GROUPS = [
+  { id: 'turkiye',  label: 'Türkiye',       color: '#BE123C' },
+  { id: 'europe',   label: 'Avrupa',        color: '#1D4ED8' },
+  { id: 'mideast',  label: 'Orta Doğu',     color: '#15803D' },
+  { id: 'africa',   label: 'Afrika',        color: '#92400E' },
+  { id: 'asiapac',  label: 'Asya Pasifik',  color: '#C2410C' },
+  { id: 'americas', label: 'Amerika',       color: '#7E22CE' },
+  { id: 'other',    label: 'Diğer',         color: '#6B7280' },
+];
+
+const AIRLINE_INTEGRATOR_GROUPS = [
+  { id: 'integrator',    label: 'Entegratörler',     color: '#0369A1' },
+  { id: 'nonintegrator', label: 'Non-entegratörler', color: '#374151' },
+];
+
 const AIRLINE_DEFS = [
   // Kargo
   { id: 'turkishairlines', label: 'Turkish Airlines', isPrimary: true, group: 'cargo',
-    kw: ['turkish cargo','turkish airlines','türk hava','türk kargo'] },
-  { id: 'fedex',     label: 'FedEx',          group: 'cargo',  kw: ['fedex'] },
-  { id: 'ups',       label: 'UPS',            group: 'cargo',  kw: [' ups ',' ups,','ups kargo'] },
-  { id: 'dhl',       label: 'DHL',            group: 'cargo',  kw: ['dhl'] },
-  { id: 'atlas',     label: 'Atlas Air',      group: 'cargo',  kw: ['atlas air'] },
-  { id: 'cargolux',  label: 'Cargolux',       group: 'cargo',  kw: ['cargolux'] },
-  { id: 'amazon',    label: 'Amazon Air',     group: 'cargo',  kw: ['amazon air'] },
-  { id: 'geosky',    label: 'Geosky',         group: 'cargo',  kw: ['geosky'] },
-  { id: 'cargojet',  label: 'Cargojet',       group: 'cargo',  kw: ['cargojet'] },
-  { id: 'silkway',   label: 'Silk Way West',  group: 'cargo',  kw: ['silk way'] },
+    region: 'turkiye',  integrator: false, kw: ['turkish cargo','turkish airlines','türk hava','türk kargo'] },
+  { id: 'fedex',     label: 'FedEx',          group: 'cargo',  region: 'americas', integrator: true,  kw: ['fedex'] },
+  { id: 'ups',       label: 'UPS',            group: 'cargo',  region: 'americas', integrator: true,  kw: [' ups ',' ups,','ups kargo'] },
+  { id: 'dhl',       label: 'DHL',            group: 'cargo',  region: 'europe',   integrator: true,  kw: ['dhl'] },
+  { id: 'atlas',     label: 'Atlas Air',      group: 'cargo',  region: 'americas', integrator: false, kw: ['atlas air'] },
+  { id: 'cargolux',  label: 'Cargolux',       group: 'cargo',  region: 'europe',   integrator: false, kw: ['cargolux'] },
+  { id: 'amazon',    label: 'Amazon Air',     group: 'cargo',  region: 'americas', integrator: true,  kw: ['amazon air'] },
+  { id: 'geosky',    label: 'Geosky',         group: 'cargo',  region: 'europe',   integrator: false, kw: ['geosky'] },
+  { id: 'cargojet',  label: 'Cargojet',       group: 'cargo',  region: 'americas', integrator: false, kw: ['cargojet'] },
+  { id: 'silkway',   label: 'Silk Way West',  group: 'cargo',  region: 'asiapac',  integrator: false, kw: ['silk way'] },
   // Kombine
-  { id: 'emirates',  label: 'Emirates',       group: 'combo',  kw: ['emirates'] },
-  { id: 'etihad',    label: 'Etihad',         group: 'combo',  kw: ['etihad'] },
-  { id: 'saudia',    label: 'Saudia',         group: 'combo',  kw: ['saudia'] },
-  { id: 'qatar',     label: 'Qatar Airways',  group: 'combo',  kw: ['qatar airways','qatar cargo'] },
-  { id: 'lufthansa', label: 'Lufthansa',      group: 'combo',  kw: ['lufthansa'] },
-  { id: 'airfrance', label: 'Air France',     group: 'combo',  kw: ['air france'] },
-  { id: 'british',   label: 'British Airways',group: 'combo',  kw: ['british airways'] },
-  { id: 'cathay',    label: 'Cathay Pacific', group: 'combo',  kw: ['cathay'] },
-  { id: 'korean',    label: 'Korean Air',     group: 'combo',  kw: ['korean air'] },
-  { id: 'singapore', label: 'Singapore Airlines', group: 'combo', kw: ['singapore airlines'] },
-  { id: 'airchina',  label: 'Air China',      group: 'combo',  kw: ['air china'] },
-  { id: 'chinasouthern', label: 'China Southern', group: 'combo', kw: ['china southern'] },
-  { id: 'ethiopian', label: 'Ethiopian Airlines', group: 'combo', kw: ['ethiopian airlines','ethiopian cargo'] },
-  { id: 'indigo',    label: 'IndiGo',         group: 'combo',  kw: ['indigo'] },
-  { id: 'latam',     label: 'LATAM',          group: 'combo',  kw: ['latam'] },
-  { id: 'avianca',   label: 'Avianca',        group: 'combo',  kw: ['avianca'] },
-  { id: 'wizz',      label: 'Wizz Air',       group: 'combo',  kw: ['wizz air'] },
-  { id: 'aeromexico',label: 'Aeromexico',     group: 'combo',  kw: ['aeromexico'] },
+  { id: 'emirates',  label: 'Emirates',       group: 'combo',  region: 'mideast',  integrator: false, kw: ['emirates'] },
+  { id: 'etihad',    label: 'Etihad',         group: 'combo',  region: 'mideast',  integrator: false, kw: ['etihad'] },
+  { id: 'saudia',    label: 'Saudia',         group: 'combo',  region: 'mideast',  integrator: false, kw: ['saudia'] },
+  { id: 'qatar',     label: 'Qatar Airways',  group: 'combo',  region: 'mideast',  integrator: false, kw: ['qatar airways','qatar cargo'] },
+  { id: 'lufthansa', label: 'Lufthansa',      group: 'combo',  region: 'europe',   integrator: false, kw: ['lufthansa'] },
+  { id: 'airfrance', label: 'Air France',     group: 'combo',  region: 'europe',   integrator: false, kw: ['air france'] },
+  { id: 'british',   label: 'British Airways',group: 'combo',  region: 'europe',   integrator: false, kw: ['british airways'] },
+  { id: 'cathay',    label: 'Cathay Pacific', group: 'combo',  region: 'asiapac',  integrator: false, kw: ['cathay'] },
+  { id: 'korean',    label: 'Korean Air',     group: 'combo',  region: 'asiapac',  integrator: false, kw: ['korean air'] },
+  { id: 'singapore', label: 'Singapore Airlines', group: 'combo', region: 'asiapac', integrator: false, kw: ['singapore airlines'] },
+  { id: 'airchina',  label: 'Air China',      group: 'combo',  region: 'asiapac',  integrator: false, kw: ['air china'] },
+  { id: 'chinasouthern', label: 'China Southern', group: 'combo', region: 'asiapac', integrator: false, kw: ['china southern'] },
+  { id: 'ethiopian', label: 'Ethiopian Airlines', group: 'combo', region: 'africa',  integrator: false, kw: ['ethiopian airlines','ethiopian cargo'] },
+  { id: 'indigo',    label: 'IndiGo',         group: 'combo',  region: 'asiapac',  integrator: false, kw: ['indigo'] },
+  { id: 'latam',     label: 'LATAM',          group: 'combo',  region: 'americas', integrator: false, kw: ['latam'] },
+  { id: 'avianca',   label: 'Avianca',        group: 'combo',  region: 'americas', integrator: false, kw: ['avianca'] },
+  { id: 'wizz',      label: 'Wizz Air',       group: 'combo',  region: 'europe',   integrator: false, kw: ['wizz air'] },
+  { id: 'aeromexico',    label: 'Aeromexico',               group: 'combo',  region: 'americas', integrator: false, kw: ['aeromexico'] },
+  // Avrupa — ek havayolları
+  { id: 'iag',           label: 'IAG Cargo',                group: 'cargo',  region: 'europe',   integrator: false, kw: ['iag cargo'] },
+  { id: 'klm',           label: 'KLM Cargo',                group: 'combo',  region: 'europe',   integrator: false, kw: ['klm cargo','af klm','france klm','martinair cargo','klm martinair'] },
+  { id: 'tap',           label: 'TAP Air Portugal',         group: 'combo',  region: 'europe',   integrator: false, kw: ['tap air','tap portugal'] },
+  { id: 'ita',           label: 'ITA Airways',              group: 'combo',  region: 'europe',   integrator: false, kw: ['ita airways'] },
+  { id: 'skyup',         label: 'SkyUp Airlines',           group: 'combo',  region: 'europe',   integrator: false, kw: ['skyup airlines','skyup'] },
+  { id: 'ascend',        label: 'Ascend Airways',           group: 'cargo',  region: 'europe',   integrator: false, kw: ['ascend airways'] },
+  { id: 'cmacgm',        label: 'CMA CGM Air Cargo',        group: 'cargo',  region: 'europe',   integrator: false, kw: ['cma cgm air cargo','cma cgm air'] },
+  // Orta Doğu — ek havayolları
+  { id: 'riyadhair',     label: 'Riyadh Air',               group: 'combo',  region: 'mideast',  integrator: false, kw: ['riyadh air'] },
+  { id: 'flydubai',      label: 'flydubai',                 group: 'combo',  region: 'mideast',  integrator: false, kw: ['flydubai','fly dubai'] },
+  { id: 'omanair',       label: 'Oman Air',                 group: 'combo',  region: 'mideast',  integrator: false, kw: ['oman air'] },
+  // Afrika — ek havayolları
+  { id: 'kenya',         label: 'Kenya Airways',            group: 'combo',  region: 'africa',   integrator: false, kw: ['kenya airways','kenya cargo'] },
+  { id: 'astral',        label: 'Astral Aviation',          group: 'cargo',  region: 'africa',   integrator: false, kw: ['astral aviation','astral cargo'] },
+  { id: 'rwandair',      label: 'RwandAir',                 group: 'combo',  region: 'africa',   integrator: false, kw: ['rwandair'] },
+  // Asya Pasifik — ek havayolları
+  { id: 'asiana',        label: 'Asiana Airlines',          group: 'combo',  region: 'asiapac',  integrator: false, kw: ['asiana airlines','asiana cargo'] },
+  { id: 'chinaeastern',  label: 'China Eastern Airlines',   group: 'combo',  region: 'asiapac',  integrator: false, kw: ['china eastern airlines','china eastern cargo'] },
+  { id: 'longhao',       label: 'China Central Longhao',    group: 'cargo',  region: 'asiapac',  integrator: false, kw: ['china central longhao','longhao airlines'] },
+  { id: 'nippon',        label: 'ANA Cargo',                group: 'combo',  region: 'asiapac',  integrator: false, kw: ['ana cargo','all nippon cargo'] },
+  { id: 'jal',           label: 'Japan Airlines Cargo',     group: 'combo',  region: 'asiapac',  integrator: false, kw: ['jal cargo','japan airlines cargo'] },
+  { id: 'airindia',      label: 'Air India',                group: 'combo',  region: 'asiapac',  integrator: false, kw: ['air india cargo','air india'] },
+  // Amerika — ek havayolları
+  { id: 'united',        label: 'United Cargo',             group: 'combo',  region: 'americas', integrator: false, kw: ['united cargo','united airlines cargo'] },
+  { id: 'american',      label: 'American Airlines Cargo',  group: 'combo',  region: 'americas', integrator: false, kw: ['american airlines cargo','american airlines'] },
+  { id: 'aircanada',     label: 'Air Canada Cargo',         group: 'combo',  region: 'americas', integrator: false, kw: ['air canada cargo','air canada'] },
+  { id: 'alaska',        label: 'Alaska Airlines',          group: 'combo',  region: 'americas', integrator: false, kw: ['alaska airlines','alaska cargo'] },
+  { id: 'spirit',        label: 'Spirit Airlines',          group: 'combo',  region: 'americas', integrator: false, kw: ['spirit airlines'] },
+  { id: 'nationalcargo', label: 'National Air Cargo',       group: 'cargo',  region: 'americas', integrator: false, kw: ['national air cargo'] },
 ];
 
 // ── GSA / Ground Handler definitions ─────────────────────────
@@ -3726,35 +3869,66 @@ function getFavicon(source) {
 }
 
 function getAirlineLogo(airlineId) {
+  const F = d => `https://www.google.com/s2/favicons?sz=32&domain=${d}`;
   const logos = {
-    'turkishairlines': 'https://www.google.com/s2/favicons?sz=32&domain=turkishcargo.com',
-    'fedex':           'https://www.google.com/s2/favicons?sz=32&domain=fedex.com',
-    'ups':             'https://www.google.com/s2/favicons?sz=32&domain=ups.com',
-    'dhl':             'https://www.google.com/s2/favicons?sz=32&domain=dhl.com',
-    'emirates':        'https://www.google.com/s2/favicons?sz=32&domain=skycargo.com',
-    'qatar':           'https://www.google.com/s2/favicons?sz=32&domain=qatarairways.com',
-    'lufthansa':       'https://www.google.com/s2/favicons?sz=32&domain=lufthansa.com',
-    'cathay':          'https://www.google.com/s2/favicons?sz=32&domain=cathaypacific.com',
-    'atlas':           'https://www.google.com/s2/favicons?sz=32&domain=atlasair.com',
-    'airfrance':       'https://www.google.com/s2/favicons?sz=32&domain=airfrance.com',
-    'korean':          'https://www.google.com/s2/favicons?sz=32&domain=koreanair.com',
-    'singapore':       'https://www.google.com/s2/favicons?sz=32&domain=singaporeair.com',
-    'cargolux':        'https://www.google.com/s2/favicons?sz=32&domain=cargolux.com',
-    'amazon':          'https://www.google.com/s2/favicons?sz=32&domain=amazon.com',
-    'geosky':          'https://unavatar.io/geosky.aero',
-    'wizz':            'https://www.google.com/s2/favicons?sz=32&domain=wizzair.com',
-    'cargojet':        'https://www.google.com/s2/favicons?sz=32&domain=cargojet.com',
-    'aeromexico':      'https://www.google.com/s2/favicons?sz=32&domain=aeromexico.com',
-    'silkway':         'https://www.google.com/s2/favicons?sz=32&domain=silkwaywest.com',
-    'etihad':          'https://www.google.com/s2/favicons?sz=32&domain=etihadcargo.com',
-    'saudia':          'https://www.google.com/s2/favicons?sz=32&domain=saudia.com',
-    'british':         'https://www.google.com/s2/favicons?sz=32&domain=iagcargo.com',
-    'airchina':        'https://www.google.com/s2/favicons?sz=32&domain=airchina.com',
-    'chinasouthern':   'https://www.google.com/s2/favicons?sz=32&domain=csair.com',
-    'ethiopian':       'https://www.google.com/s2/favicons?sz=32&domain=ethiopianairlines.com',
-    'indigo':          'https://www.google.com/s2/favicons?sz=32&domain=goindigo.in',
-    'latam':           'https://www.google.com/s2/favicons?sz=32&domain=latamairlines.com',
-    'avianca':         'https://www.google.com/s2/favicons?sz=32&domain=aviancacargo.com',
+    // Türkiye
+    'turkishairlines': F('turkishcargo.com'),
+    // Entegratörler
+    'fedex':           F('fedex.com'),
+    'ups':             F('ups.com'),
+    'dhl':             F('dhl.com'),
+    'amazon':          F('amazon.com'),
+    // Avrupa
+    'lufthansa':       F('lufthansa.com'),
+    'airfrance':       F('airfrance.com'),
+    'british':         F('britishairways.com'),
+    'cargolux':        F('cargolux.com'),
+    'wizz':            F('wizzair.com'),
+    'geosky':          F('geosky.aero'),
+    'iag':             F('iagcargo.com'),
+    'klm':             F('klm.com'),
+    'tap':             F('flytap.com'),
+    'ita':             F('ita-airways.com'),
+    'skyup':           F('skyup.aero'),
+    'cmacgm':          F('cmacgm.com'),
+    // Orta Doğu
+    'emirates':        F('emirates.com'),
+    'etihad':          F('etihadcargo.com'),
+    'qatar':           F('qatarairways.com'),
+    'saudia':          F('saudia.com'),
+    'riyadhair':       F('riyadhair.com'),
+    'flydubai':        F('flydubai.com'),
+    'omanair':         F('omanair.com'),
+    // Afrika
+    'ethiopian':       F('ethiopianairlines.com'),
+    'kenya':           F('kenya-airways.com'),
+    'astral':          F('astralaviation.com'),
+    'rwandair':        F('rwandair.com'),
+    // Asya Pasifik
+    'cathay':          F('cathaypacific.com'),
+    'korean':          F('koreanair.com'),
+    'singapore':       F('singaporeair.com'),
+    'airchina':        F('airchina.com'),
+    'chinasouthern':   F('csair.com'),
+    'indigo':          F('goindigo.in'),
+    'silkway':         F('silkwaywest.com'),
+    'asiana':          F('flyasiana.com'),
+    'chinaeastern':    F('ceair.com'),
+    'nippon':          F('anacargo.com'),
+    'jal':             F('jal.com'),
+    'airindia':        F('airindia.com'),
+    // Amerika
+    'atlas':           F('atlasair.com'),
+    'cargojet':        F('cargojet.com'),
+    'latam':           F('latamairlines.com'),
+    'avianca':         F('aviancacargo.com'),
+    'aeromexico':      F('aeromexico.com'),
+    'united':          F('unitedcargo.com'),
+    'american':        F('aa.com'),
+    'aircanada':       F('aircanada.com'),
+    'alaska':          F('alaskaair.com'),
+    'spirit':          F('spirit.com'),
+    'nationalcargo':   F('nationalairlines.com'),
   };
   // Dinamik girişin logoUrl'si varsa doğrudan kullan
   const dyn = DYNAMIC_AIRLINE_DEFS.find(a => a.id === airlineId);
@@ -4270,13 +4444,11 @@ function render() {
 
 // ── Airline filter builder (sütunlu layout) ──────────────────
 function buildAirlineFilter(articles) {
-  // Tag each article with matching airlines & GSA
   articles.forEach(a => {
     a._airlines = detectAirlines(a);
     a._gsa      = detectGSA(a);
   });
 
-  // Find which airline IDs actually appear in the data
   const found = new Set();
   articles.forEach(a => a._airlines.forEach(id => found.add(id)));
 
@@ -4287,37 +4459,91 @@ function buildAirlineFilter(articles) {
 
   if (relevant.length === 0) return;
 
-  // Group by group field
+  // ── Mode toggle ──
+  const toggle = document.createElement('div');
+  toggle.className = 'airline-mode-toggle';
+
+  const regionSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`;
+  const typeSvg   = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19.5 2.5c-1.5-1.5-3.5-1.5-5 0L11 6 2.8 4.2l-1.4 1.4 4.9 4.9-.4.4-2.1-.7-.9.9 3 3-1.2 1.2 1.8 1.8 1.2-1.2 3 3 .9-.9-.7-2.1.4-.4 4.9 4.9 1.4-1.4Z"/></svg>`;
+
+  [['region', regionSvg, 'Bölge'], ['integrator', typeSvg, 'Tür']].forEach(([mode, icon, label]) => {
+    const btn = document.createElement('button');
+    btn.className = 'airline-mode-btn' + (airlineFilterMode === mode ? ' active' : '');
+    btn.dataset.mode = mode;
+    btn.innerHTML = icon + label;
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      airlineFilterMode = mode;
+      buildAirlineFilter(allArticles);
+    });
+    toggle.appendChild(btn);
+  });
+  dropdown.appendChild(toggle);
+
+  // ── Turkish Airlines — pinned at top ──
+  const tkDef = allAirlineDefs().find(a => a.id === 'turkishairlines');
+  if (tkDef && found.has('turkishairlines')) {
+    const wrap = document.createElement('div');
+    wrap.className = 'airline-pinned-wrap';
+    const isSel = activeAirlines.has('turkishairlines');
+    const row = document.createElement('div');
+    row.className = 'airline-pinned-row' + (isSel ? ' selected' : '');
+    row.dataset.id = 'turkishairlines';
+    row.setAttribute('role', 'option');
+    row.setAttribute('aria-selected', isSel ? 'true' : 'false');
+    const logoUrl = getAirlineLogo('turkishairlines');
+    const chk = `<div class="airline-check${isSel ? ' selected-check' : ''}" style="${isSel ? 'background:var(--red);border-color:var(--red)' : ''}">${isSel ? CHECK_SVG.replace('display:none','display:block') : CHECK_SVG}</div>`;
+    row.innerHTML = `${chk}${logoUrl ? `<img class="source-favicon-filter" src="${logoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">` : ''}<span class="airline-label">Turkish Airlines</span>`;
+    row.addEventListener('click', e => {
+      e.stopPropagation();
+      activeAirlines.has('turkishairlines') ? activeAirlines.delete('turkishairlines') : activeAirlines.add('turkishairlines');
+      syncAirlineGroupUI();
+      syncAirlineBtn();
+      render();
+    });
+    wrap.appendChild(row);
+    dropdown.appendChild(wrap);
+    const sep = document.createElement('div');
+    sep.className = 'airline-pinned-sep';
+    dropdown.appendChild(sep);
+  }
+
+  // Türkiye grubunu gizlemek için Turkish Airlines'ı çıkar
+  const groupRelevant = relevant.filter(a => a.id !== 'turkishairlines');
+
+  // ── Group definitions for current mode ──
+  const groupDefs  = airlineFilterMode === 'region' ? AIRLINE_REGION_GROUPS : AIRLINE_INTEGRATOR_GROUPS;
+  const getGroupId = a => airlineFilterMode === 'region'
+    ? (a.region || 'other')
+    : (a.integrator ? 'integrator' : 'nonintegrator');
+
   const byGroup = {};
-  relevant.forEach(a => {
-    const g = a.group || 'combo';
+  groupRelevant.forEach(a => {
+    const g = getGroupId(a);
     if (!byGroup[g]) byGroup[g] = [];
     byGroup[g].push(a);
   });
 
-  // Sort within each group: isPrimary first, then alphabetical
   Object.values(byGroup).forEach(arr => arr.sort((a, b) => {
     if (a.isPrimary) return -1;
     if (b.isPrimary) return 1;
     return a.label.localeCompare(b.label, 'tr');
   }));
 
-  // Build sütunlu tree
-  const tree = document.createElement('div');
-  tree.className = 'airline-tree';
+  const visibleGroups = groupDefs.filter(grp => byGroup[grp.id]?.length > 0);
 
-  AIRLINE_GROUPS.forEach(grp => {
+  visibleGroups.forEach((grp, gi) => {
     const members = byGroup[grp.id];
-    if (!members || members.length === 0) return;
 
-    const col = document.createElement('div');
-    col.className = 'airline-column';
-
-    // Column header (tıklanabilir — tüm grubu seç/kaldır)
     const hdr = document.createElement('div');
-    hdr.className = 'airline-col-header';
+    hdr.className = 'airline-group-header';
     hdr.dataset.group = grp.id;
-    hdr.innerHTML = `<div class="airline-check">${CHECK_SVG}</div><span style="flex:1">${grp.label}</span>`;
+    hdr.innerHTML = `
+      <div class="airline-group-check">${CHECK_SVG}</div>
+      <span class="airline-group-dot" style="background:${grp.color}"></span>
+      <span class="airline-group-label">${grp.label}</span>
+      <span class="airline-group-count">${members.length}</span>
+    `;
     hdr.addEventListener('click', e => {
       e.stopPropagation();
       const allSel = members.every(a => activeAirlines.has(a.id));
@@ -4326,16 +4552,15 @@ function buildAirlineFilter(articles) {
       syncAirlineBtn();
       render();
     });
-    col.appendChild(hdr);
+    dropdown.appendChild(hdr);
 
-    // Member rows
     members.forEach(airline => {
       const opt = document.createElement('div');
       opt.className = 'airline-col-item' + (airline.isPrimary ? ' airline-primary' : '');
       opt.dataset.id    = airline.id;
       opt.dataset.group = grp.id;
       opt.setAttribute('role', 'option');
-      opt.setAttribute('aria-selected', 'false');
+      opt.setAttribute('aria-selected', activeAirlines.has(airline.id) ? 'true' : 'false');
       const logoUrl = getAirlineLogo(airline.id);
       opt.innerHTML = `
         <div class="airline-check">${CHECK_SVG}</div>
@@ -4344,22 +4569,22 @@ function buildAirlineFilter(articles) {
       `;
       opt.addEventListener('click', e => {
         e.stopPropagation();
-        if (activeAirlines.has(airline.id)) {
-          activeAirlines.delete(airline.id);
-        } else {
-          activeAirlines.add(airline.id);
-        }
+        activeAirlines.has(airline.id) ? activeAirlines.delete(airline.id) : activeAirlines.add(airline.id);
         syncAirlineGroupUI();
         syncAirlineBtn();
         render();
       });
-      col.appendChild(opt);
+      dropdown.appendChild(opt);
     });
 
-    tree.appendChild(col);
+    if (gi < visibleGroups.length - 1) {
+      const divider = document.createElement('div');
+      divider.className = 'dropdown-divider';
+      divider.style.margin = '4px 10px';
+      dropdown.appendChild(divider);
+    }
   });
 
-  dropdown.appendChild(tree);
   dropdown.addEventListener('click', e => e.stopPropagation());
 }
 
@@ -4458,7 +4683,21 @@ function syncAirlineGroupUI() {
   const dropdown = document.getElementById('airline-dropdown');
   if (!dropdown) return;
 
-  // Sync individual item states
+  // Sync pinned Turkish Airlines row
+  const pinnedRow = dropdown.querySelector('.airline-pinned-row');
+  if (pinnedRow) {
+    const sel = activeAirlines.has('turkishairlines');
+    pinnedRow.classList.toggle('selected', sel);
+    pinnedRow.setAttribute('aria-selected', sel ? 'true' : 'false');
+    const ch = pinnedRow.querySelector('.airline-check');
+    if (ch) {
+      ch.style.background  = sel ? 'var(--red)' : '';
+      ch.style.borderColor = sel ? 'var(--red)' : '';
+      const s = ch.querySelector('svg'); if (s) s.style.display = sel ? 'block' : '';
+    }
+  }
+
+  // Sync individual item check states
   dropdown.querySelectorAll('.airline-col-item[data-id]').forEach(opt => {
     const sel = activeAirlines.has(opt.dataset.id);
     opt.classList.toggle('selected', sel);
@@ -4467,22 +4706,29 @@ function syncAirlineGroupUI() {
     if (ch) {
       ch.style.background  = sel ? 'var(--navy)' : '';
       ch.style.borderColor = sel ? 'var(--navy)' : '';
+      if (sel) { const s = ch.querySelector('svg'); if (s) s.style.display = 'block'; }
+      else     { const s = ch.querySelector('svg'); if (s) s.style.display = ''; }
     }
   });
 
-  // Sync column header states
-  dropdown.querySelectorAll('.airline-col-header[data-group]').forEach(hdr => {
+  // Sync group header check states
+  dropdown.querySelectorAll('.airline-group-header[data-group]').forEach(hdr => {
     const grpId  = hdr.dataset.group;
-    const members = allAirlineDefs().filter(a => a.group === grpId && dropdown.querySelector(`.airline-col-item[data-id="${a.id}"]`));
-    const allSel  = members.length > 0 && members.every(a => activeAirlines.has(a.id));
-    const anySel  = members.some(a => activeAirlines.has(a.id));
-    hdr.classList.toggle('selected', anySel);
-    const ch = hdr.querySelector('.airline-check');
+    const members = allAirlineDefs().filter(a => {
+      const gid = airlineFilterMode === 'region'
+        ? (a.region || 'other')
+        : (a.integrator ? 'integrator' : 'nonintegrator');
+      return gid === grpId && dropdown.querySelector(`.airline-col-item[data-id="${a.id}"]`);
+    });
+    const allSel = members.length > 0 && members.every(a => activeAirlines.has(a.id));
+    const anySel = members.some(a => activeAirlines.has(a.id));
+    const ch = hdr.querySelector('.airline-group-check');
+    if (!ch) return;
     if (anySel) {
       ch.style.background  = 'var(--navy)';
       ch.style.borderColor = 'var(--navy)';
       ch.innerHTML = allSel
-        ? CHECK_SVG + ''
+        ? CHECK_SVG
         : `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>`;
       if (allSel) { const s = ch.querySelector('svg'); if (s) s.style.display = 'block'; }
     } else {
