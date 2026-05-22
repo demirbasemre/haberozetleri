@@ -430,9 +430,7 @@
     }
     .airline-col-group .airline-group-header:hover { background: var(--bg); }
     .airline-col-group-body {
-      overflow-y: auto;
-      max-height: 280px;
-      scrollbar-width: thin;
+      overflow: visible;
     }
   }
   /* Mobil: tek sütun, normal scroll */
@@ -471,6 +469,9 @@
     #airline-dropdown.airline-grid-mode .airline-mode-toggle {
       position: relative;
       top: auto;
+    }
+    #airline-dropdown.airline-grid-mode .airline-pinned-row {
+      justify-content: center;
     }
   }
   .airline-mode-indicator {
@@ -608,6 +609,7 @@
     text-transform: uppercase;
     color: var(--text-2);
     flex: 1;
+    white-space: nowrap;
   }
   .airline-group-count {
     font-size: 10px;
@@ -630,6 +632,7 @@
     user-select: none;
     min-height: 28px;
     transition: background 0.13s;
+    white-space: nowrap;
   }
   .airline-col-item:hover { background: var(--bg); }
   .airline-col-item.selected { background: rgba(13,17,23,0.04); color: var(--text); }
@@ -4654,8 +4657,8 @@ function buildAirlineFilter(articles) {
   const colCount = visibleGroups.length; // tüm gruplar tek sırada
   dropdown.classList.add('airline-grid-mode');
 
-  // Dinamik genişlik: her sütun min 145px + padding
-  const minColPx = 145;
+  // Dinamik genişlik: her sütun min 195px (nowrap için yeterli alan)
+  const minColPx = 195;
   const desiredW = Math.min(colCount * minColPx + 20, Math.floor(window.innerWidth * 0.94));
   dropdown.style.setProperty('--airline-min-width', desiredW + 'px');
 
