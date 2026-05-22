@@ -397,6 +397,62 @@
     overflow-x: hidden;
     padding-bottom: 6px;
   }
+  /* Desktop: çok sütunlu grid modu */
+  @media (min-width: 769px) {
+    #airline-dropdown.airline-grid-mode {
+      min-width: var(--airline-min-width, min(500px, 94vw));
+      max-height: none;
+      overflow: visible;
+      padding-bottom: 0;
+    }
+    .airline-col-grid {
+      display: grid;
+      grid-template-columns: repeat(var(--airline-cols, 3), minmax(0, 1fr));
+      gap: 0;
+      padding: 4px 0 6px;
+    }
+    .airline-col-group {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border-soft);
+      min-width: 0;
+    }
+    .airline-col-group:last-child { border-right: none; }
+    /* Grup başlığı sütun tepesinde yapışık */
+    .airline-col-group .airline-group-header {
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      border-bottom: 1px solid var(--border-soft);
+      border-radius: 0;
+      margin: 0;
+    }
+    .airline-col-group .airline-group-header:hover { background: var(--bg); }
+    .airline-col-group-body {
+      overflow-y: auto;
+      max-height: 280px;
+      scrollbar-width: thin;
+    }
+  }
+  /* Mobil: tek sütun, normal scroll */
+  @media (max-width: 768px) {
+    #airline-dropdown.airline-grid-mode {
+      min-width: min(240px, 94vw);
+      max-height: 380px;
+      overflow-y: auto;
+    }
+    .airline-col-grid {
+      display: flex;
+      flex-direction: column;
+    }
+    .airline-col-group {
+      border-right: none;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .airline-col-group:last-child { border-bottom: none; }
+    .airline-col-group-body { max-height: none; overflow: visible; }
+  }
   /* ── Segmented toggle — sliding pill ── */
   .airline-mode-toggle {
     display: flex;
@@ -410,6 +466,12 @@
     z-index: 2;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+  }
+  @media (min-width: 769px) {
+    #airline-dropdown.airline-grid-mode .airline-mode-toggle {
+      position: relative;
+      top: auto;
+    }
   }
   .airline-mode-indicator {
     position: absolute;
@@ -3919,7 +3981,7 @@ function getAirlineLogo(airlineId) {
     'skyup':           F('skyup.aero'),
     'cmacgm':          F('cma-cgm.com'),
     // Orta Doğu
-    'emirates':        F('emirates.com'),
+    'emirates':        'https://logo.clearbit.com/emirates.com',
     'etihad':          F('etihadcargo.com'),
     'qatar':           F('qatarairways.com'),
     'saudia':          F('saudia.com'),
@@ -4588,9 +4650,26 @@ function buildAirlineFilter(articles) {
 
   const visibleGroups = groupDefs.filter(grp => byGroup[grp.id]?.length > 0);
 
-  visibleGroups.forEach((grp, gi) => {
+  // Desktop multi-column grid (her grup = bir sütun)
+  const colCount = visibleGroups.length; // tüm gruplar tek sırada
+  dropdown.classList.add('airline-grid-mode');
+
+  // Dinamik genişlik: her sütun min 145px + padding
+  const minColPx = 145;
+  const desiredW = Math.min(colCount * minColPx + 20, Math.floor(window.innerWidth * 0.94));
+  dropdown.style.setProperty('--airline-min-width', desiredW + 'px');
+
+  const grid = document.createElement('div');
+  grid.className = 'airline-col-grid';
+  grid.style.setProperty('--airline-cols', colCount);
+
+  visibleGroups.forEach(grp => {
     const members = byGroup[grp.id];
 
+    const col = document.createElement('div');
+    col.className = 'airline-col-group';
+
+    // Group header
     const hdr = document.createElement('div');
     hdr.className = 'airline-group-header';
     hdr.dataset.group = grp.id;
@@ -4608,7 +4687,11 @@ function buildAirlineFilter(articles) {
       syncAirlineBtn();
       render();
     });
-    dropdown.appendChild(hdr);
+    col.appendChild(hdr);
+
+    // Scrollable item body
+    const body = document.createElement('div');
+    body.className = 'airline-col-group-body';
 
     members.forEach(airline => {
       const opt = document.createElement('div');
@@ -4630,17 +4713,14 @@ function buildAirlineFilter(articles) {
         syncAirlineBtn();
         render();
       });
-      dropdown.appendChild(opt);
+      body.appendChild(opt);
     });
 
-    if (gi < visibleGroups.length - 1) {
-      const divider = document.createElement('div');
-      divider.className = 'dropdown-divider';
-      divider.style.margin = '4px 10px';
-      dropdown.appendChild(divider);
-    }
+    col.appendChild(body);
+    grid.appendChild(col);
   });
 
+  dropdown.appendChild(grid);
   dropdown.addEventListener('click', e => e.stopPropagation());
 }
 
