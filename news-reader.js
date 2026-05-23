@@ -345,10 +345,19 @@
     onStep && onStep('clean');
     const docClone = doc.cloneNode(true);
 
-    // ── Clean up duplicate featured images ──────────────────────────
+    // ── Clean up duplicate featured images & non-content elements ──
     try {
       // 1. Remove by class names commonly used for featured images
       docClone.querySelectorAll('img.wp-post-image, img.post-featured-img, img.attachment-post-thumbnail, .featured-media img, .featured-image img, .post-thumbnail img').forEach(el => el.remove());
+      
+      // 2. Remove non-content elements that confuse Readability (author boxes, share buttons, newsletter forms, comments, etc.)
+      docClone.querySelectorAll([
+        '.elementor-widget-author-box', '.author-box', '.author-profile', '.about-author',
+        '.elementor-widget-share-buttons', '.share-buttons', '.social-share', '.post-sharing', '.share-post',
+        '.elementor-widget-form', '.subscribe-box', '.newsletter-signup', '.newsletter-section', '.subform_holder',
+        '#comments', '.comments-area', '#respond',
+        'aside', '.sidebar', '.widget-area'
+      ].join(',')).forEach(el => el.remove());
       
       // 2. Remove first image if it matches the hero image filename
       if (ogImage) {
