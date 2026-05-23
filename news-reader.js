@@ -39,6 +39,8 @@
   let stylesInjected = false;
   let currentArticle = null;
   let currentSourceUrl = null;
+  let isSyncScrolling = false;
+  let activeScrollSource = null;
 
   // ── CSS — bir kez DOM'a eklenir ──────────────────────────────────
   function injectStyles() {
@@ -310,6 +312,40 @@
   background: rgba(29, 111, 232, 0.08);
   border-color: var(--accent, #1D6FE8);
   color: var(--accent, #1D6FE8);
+}
+
+.reader-sync-btn {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.13s;
+  margin-right: 4px;
+}
+.reader-sync-btn:hover { background: var(--bg); color: var(--text); }
+.reader-sync-btn.active {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: #10b981;
+  color: #10b981;
+}
+.reader-window.translate-open #reader-sync-scroll {
+  display: inline-flex;
+}
+
+.reader-text-segment {
+  transition: background-color 0.15s ease;
+  border-radius: 2px;
+}
+.reader-text-segment.highlight {
+  background-color: rgba(29, 111, 232, 0.12) !important;
 }
 
 @media (max-width: 768px) {
@@ -629,33 +665,66 @@
   }
 
   async function translateArticleContent(contentNode) {
-    const cloned = contentNode.cloneNode(true);
-    const elements = Array.from(cloned.querySelectorAll('p, h2, h3, li, blockquote'));
-    
-    if (elements.length === 0) {
-      const txt = cloned.innerText;
-      if (txt) {
-        cloned.innerText = await translateText(txt);
+    // 1. Collect all text nodes with letters in the live contentNode
+    const textNodes = [];
+    function collectTextNodes(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const txt = node.nodeValue.trim();
+        // Only collect text nodes that have at least one letter (a-z, A-Z) to avoid translating bullet points, numbers, or pure symbols
+        if (txt.length > 0 && /[a-zA-Z]/.test(txt)) {
+          textNodes.push({ node, text: txt });
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'SPAN') {
+          for (const child of Array.from(node.childNodes)) {
+            collectTextNodes(child);
+          }
+        }
       }
-      return cloned.innerHTML;
     }
+    collectTextNodes(contentNode);
     
+    // 2. Wrap them in span.reader-text-segment with data-segment-id
+    const segments = [];
+    textNodes.forEach((item, idx) => {
+      const orig = item.node.nodeValue;
+      const startSpace = orig.match(/^\s*/)[0];
+      const endSpace = orig.match(/\s*$/)[0];
+      
+      const span = document.createElement('span');
+      span.className = 'reader-text-segment';
+      span.dataset.segmentId = idx;
+      span.textContent = item.text;
+      
+      const parent = item.node.parentNode;
+      if (startSpace) {
+        parent.insertBefore(document.createTextNode(startSpace), item.node);
+      }
+      parent.insertBefore(span, item.node);
+      if (endSpace) {
+        parent.insertBefore(document.createTextNode(endSpace), item.node);
+      }
+      parent.removeChild(item.node);
+      
+      segments.push({ span, text: item.text, id: idx });
+    });
+    
+    const cloned = contentNode.cloneNode(true);
+    if (segments.length === 0) return cloned.innerHTML;
+    
+    // 3. Batch translate the segments
     const batches = [];
     let currentBatch = [];
     let currentLen = 0;
     
-    for (const el of elements) {
-      const text = el.textContent.trim();
-      if (!text) continue;
-      
-      if (currentLen + text.length > 2000 && currentBatch.length > 0) {
+    for (const item of segments) {
+      if (currentLen + item.text.length > 1800 && currentBatch.length > 0) {
         batches.push(currentBatch);
         currentBatch = [];
         currentLen = 0;
       }
-      
-      currentBatch.push({ el, text });
-      currentLen += text.length;
+      currentBatch.push(item);
+      currentLen += item.text.length;
     }
     if (currentBatch.length > 0) {
       batches.push(currentBatch);
@@ -668,18 +737,27 @@
         const translatedTexts = translatedJoined.split(/\n\s*\n/);
         
         if (translatedTexts.length !== batch.length) {
-          throw new Error('Split length mismatch');
+          throw new Error('Split length mismatch: ' + translatedTexts.length + ' vs ' + batch.length);
         }
         
         batch.forEach((item, idx) => {
-          const trans = translatedTexts[idx] || item.text;
-          item.el.innerText = trans.trim();
+          const trans = translatedTexts[idx];
+          if (trans) {
+            const targetSpan = cloned.querySelector(`.reader-text-segment[data-segment-id="${item.id}"]`);
+            if (targetSpan) {
+              targetSpan.textContent = trans.trim();
+            }
+          }
         });
       } catch (err) {
-        console.error('Batch translation failed or length mismatched, falling back to individual translation:', err);
+        console.error('Batch translation failed or length mismatched, translating segments individually:', err);
         for (const item of batch) {
           try {
-            item.el.innerText = await translateText(item.text);
+            const trans = await translateText(item.text);
+            const targetSpan = cloned.querySelector(`.reader-text-segment[data-segment-id="${item.id}"]`);
+            if (targetSpan) {
+              targetSpan.textContent = trans.trim();
+            }
           } catch (_) {}
         }
       }
@@ -703,6 +781,12 @@
       win.classList.remove('translate-open');
       btn.classList.remove('active');
       if (wrapper) wrapper.classList.remove('translate-active');
+      
+      // Reset scroll sync when closed
+      isSyncScrolling = false;
+      const syncBtn = modal.querySelector('#reader-sync-scroll');
+      if (syncBtn) syncBtn.classList.remove('active');
+      
       setTimeout(() => { panel.style.display = 'none'; }, 300);
     } else {
       panel.style.display = 'block';
@@ -710,6 +794,11 @@
       win.classList.add('translate-open');
       btn.classList.add('active');
       if (wrapper) wrapper.classList.add('translate-active');
+      
+      // Auto-enable sync scroll when translation is opened
+      isSyncScrolling = true;
+      const syncBtn = modal.querySelector('#reader-sync-scroll');
+      if (syncBtn) syncBtn.classList.add('active');
       
       const cacheKey = currentSourceUrl;
       if (translationCache.has(cacheKey)) {
@@ -801,6 +890,12 @@
                 </svg>
                 Çevir
               </button>
+              <button class="reader-sync-btn" id="reader-sync-scroll" title="Eş Zamanlı Kaydır">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;">
+                  <path d="M17 3v18M7 3v18M3 7l4-4 4 4M13 17l4 4 4-4"/>
+                </svg>
+                Eş Zamanlı Kaydır
+              </button>
               <a class="reader-external-btn" id="reader-external" target="_blank" rel="noopener noreferrer" title="Kaynağı yeni sekmede aç">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
@@ -831,6 +926,66 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
     });
+
+    const bodyEl = modal.querySelector('#reader-body');
+    const panelEl = modal.querySelector('#reader-translate-panel');
+    const syncBtn = modal.querySelector('#reader-sync-scroll');
+    const bodyWrapper = modal.querySelector('#reader-body-wrapper');
+
+    const handleScroll = (e) => {
+      if (!isSyncScrolling) return;
+      const target = e.currentTarget;
+      if (activeScrollSource && activeScrollSource !== target) return;
+      activeScrollSource = target;
+
+      const other = target === bodyEl ? panelEl : bodyEl;
+      
+      const targetMax = target.scrollHeight - target.clientHeight;
+      if (targetMax <= 0) return;
+      const percentage = target.scrollTop / targetMax;
+      
+      const otherMax = other.scrollHeight - other.clientHeight;
+      other.scrollTop = percentage * otherMax;
+
+      clearTimeout(target.scrollTimeout);
+      target.scrollTimeout = setTimeout(() => {
+        activeScrollSource = null;
+      }, 50);
+    };
+
+    bodyEl.addEventListener('scroll', handleScroll, { passive: true });
+    panelEl.addEventListener('scroll', handleScroll, { passive: true });
+
+    syncBtn?.addEventListener('click', () => {
+      isSyncScrolling = !isSyncScrolling;
+      syncBtn.classList.toggle('active', isSyncScrolling);
+    });
+
+    // Segment Hover Highlights
+    bodyWrapper?.addEventListener('mouseover', e => {
+      const segment = e.target.closest('.reader-text-segment');
+      if (!segment) return;
+      
+      const id = segment.dataset.segmentId;
+      if (id === undefined) return;
+      
+      bodyWrapper.querySelectorAll(`.reader-text-segment[data-segment-id="${id}"]`).forEach(el => {
+        el.classList.add('highlight');
+      });
+    });
+    
+    bodyWrapper?.addEventListener('mouseout', e => {
+      const segment = e.target.closest('.reader-text-segment');
+      if (!segment) return;
+      
+      const id = segment.dataset.segmentId;
+      if (id === undefined) return;
+      
+      bodyWrapper.querySelectorAll(`.reader-text-segment[data-segment-id="${id}"]`).forEach(el => {
+        el.classList.remove('highlight');
+      });
+    });
+
     return modal;
   }
 
@@ -853,6 +1008,11 @@
     if (panel) panel.style.display = 'none';
     if (btn) btn.classList.remove('active');
     if (wrapper) wrapper.classList.remove('translate-active');
+
+    // Reset scroll sync state
+    isSyncScrolling = false;
+    const syncBtn = modal.querySelector('#reader-sync-scroll');
+    if (syncBtn) syncBtn.classList.remove('active');
   }
 
   // ── Public API: open(article) ─────────────────────────────────
@@ -877,6 +1037,11 @@
       if (btn) btn.classList.remove('active');
       if (wrapper) wrapper.classList.remove('translate-active');
       if (content) content.innerHTML = '';
+
+      // Reset scroll sync state
+      isSyncScrolling = false;
+      const syncBtn = modal.querySelector('#reader-sync-scroll');
+      if (syncBtn) syncBtn.classList.remove('active');
 
       activeIdx = idx;
       renderSourceTabs(sources, idx, loadSource);
