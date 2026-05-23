@@ -16,5 +16,14 @@
     "icon_url": "",
     "keywords": "qatar airways,qatar cargo",
     "merge_with": []
+  },
+  {
+    "airline_id": "etihad",
+    "label": "Etihad",
+    "region": "mideast",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "etihad",
+    "merge_with": []
   }
 ]
