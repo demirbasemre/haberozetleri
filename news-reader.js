@@ -344,6 +344,38 @@
 
     onStep && onStep('clean');
     const docClone = doc.cloneNode(true);
+
+    // ── Clean up duplicate featured images ──────────────────────────
+    try {
+      // 1. Remove by class names commonly used for featured images
+      docClone.querySelectorAll('img.wp-post-image, img.post-featured-img, img.attachment-post-thumbnail, .featured-media img, .featured-image img, .post-thumbnail img').forEach(el => el.remove());
+      
+      // 2. Remove first image if it matches the hero image filename
+      if (ogImage) {
+        const getBaseFilename = (urlStr) => {
+          try {
+            const pathname = new URL(urlStr, url).pathname;
+            const filename = pathname.substring(pathname.lastIndexOf('/') + 1);
+            const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+            return nameWithoutExt.replace(/-(scaled|\d+x\d+)$/i, '');
+          } catch (_) { return ''; }
+        };
+        const ogBase = getBaseFilename(ogImage);
+        if (ogBase) {
+          const firstImg = docClone.querySelector('img');
+          if (firstImg) {
+            const firstImgSrc = firstImg.src || firstImg.getAttribute('data-src') || firstImg.getAttribute('src') || '';
+            if (firstImgSrc && getBaseFilename(firstImgSrc) === ogBase) {
+              // Only remove if it's not inside a figure (to preserve captioned body images if they happen to be first)
+              if (!firstImg.closest('figure')) {
+                firstImg.remove();
+              }
+            }
+          }
+        }
+      }
+    } catch (_) {}
+
     const reader = new Readability(docClone, { charThreshold: 200 });
     const result = reader.parse();
 
