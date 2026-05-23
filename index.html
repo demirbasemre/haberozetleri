@@ -88,7 +88,6 @@
     top: 0;
     z-index: 100;
     border-bottom: 1px solid rgba(255,255,255,0.06);
-    will-change: transform;
   }
 
   .header-inner {
@@ -99,14 +98,6 @@
     display: flex;
     align-items: center;
     gap: 20px;
-  }
-
-  .site-name-group {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 2px;
-    flex-shrink: 0;
   }
 
   .site-name {
@@ -132,8 +123,19 @@
 
   .search-wrap {
     flex: 1;
-    max-width: 360px;
+    max-width: 520px;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
     position: relative;
+    overflow: hidden;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .search-wrap:focus-within {
+    background: rgba(255,255,255,0.11);
+    border-color: rgba(255,255,255,0.22);
   }
 
   .search-icon {
@@ -145,23 +147,39 @@
     pointer-events: none;
     width: 15px;
     height: 15px;
+    flex-shrink: 0;
   }
 
   #search {
-    width: 100%;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 8px 12px 8px 34px;
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    padding: 8px 8px 8px 34px;
     color: #fff;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
     outline: none;
-    transition: background 0.2s, border-color 0.2s;
     touch-action: manipulation;
   }
-  #search::placeholder { color: rgba(255,255,255,0.3); }
-  #search:focus { background: rgba(255,255,255,0.11); border-color: rgba(255,255,255,0.22); }
+  #search::placeholder { color: rgba(255,255,255,0.28); }
+
+  .search-stats {
+    position: absolute;
+    left: 34px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: rgba(255,255,255,0.28);
+    white-space: nowrap;
+    pointer-events: none;
+    font-variant-numeric: tabular-nums;
+    transition: opacity 0.15s;
+  }
+  .search-stats b { color: rgba(255,255,255,0.28); font-weight: 400; }
+  .search-wrap:focus-within .search-stats,
+  .search-wrap.has-value .search-stats { opacity: 0; }
+
 
   .search-right-icon {
     position: absolute;
@@ -182,20 +200,11 @@
     user-select: none;
   }
 
-  .header-stat {
-    font-size: 11.5px;
-    color: rgba(255,255,255,0.38);
-    flex-shrink: 0;
-    font-variant-numeric: tabular-nums;
-    text-align: left;
-    line-height: 1.3;
-  }
-  .header-stat b { color: rgba(255,255,255,0.75); font-weight: 600; }
-  .stat-line-1 { white-space: nowrap; }
+  .header-stat { display: none; }
+  .stat-line-1 { white-space: nowrap; font-size: 11px; }
   .stat-line-2 { display: none; }
-  .stat-reg { white-space: nowrap; cursor: help; color: rgba(255,255,255,0.35); }
-  .stat-reg b { font-size: 10.5px; color: rgba(255,255,255,0.7); font-weight: 600; }
-  .stat-sep { color: rgba(255,255,255,0.18); font-size: 10px; }
+  .stat-reg { display: none; }
+  .stat-sep { display: none; }
 
   /* ── HEADER PREF BUTTONS (font, density) ─────── */
   .hdr-pref-wrap { position: relative; flex-shrink: 0; }
@@ -331,7 +340,6 @@
     top: 122px;
     z-index: 90;
     overflow: visible;
-    will-change: transform;
   }
 
   /* Scroll-fade — nested inside .filter-bar, absolutely positioned below it.
@@ -1997,7 +2005,7 @@
     .header-stat { display: none; }
     .header-divider { display: none; }
     .site-name { font-size: 17px; }
-    .header-stat { font-size: 10px; }
+    .search-stats { display: none; }
     .article-grid { grid-template-columns: 1fr; gap: 12px; }
     .main { padding: 20px 16px 56px; }
     .filter-bar-inner { padding: 8px 16px; }
@@ -2029,7 +2037,6 @@
     position: sticky;
     top: 60px;
     z-index: 95;
-    will-change: transform;
     background-image: linear-gradient(
       to bottom,
       var(--navy)   0px,
@@ -4100,6 +4107,7 @@
     text-decoration: none;
     white-space: nowrap;
     flex-shrink: 0;
+    margin-left: auto;
     transition: background 0.2s, border-color 0.2s, color 0.2s;
   }
   .design-switch-btn:hover {
@@ -4386,16 +4394,14 @@
 
 <header>
   <div class="header-inner">
-    <div class="site-name-group">
-      <div class="site-name">Hava Kargo<span> Bülteni</span></div>
-      <div class="header-stat" id="header-stats"></div>
-    </div>
+    <div class="site-name">Hava Kargo<span> Bülteni</span></div>
     <div class="header-divider"></div>
     <div class="search-wrap">
       <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
       </svg>
-      <input type="search" id="search" placeholder="Haberlerde ara…" autocomplete="off">
+      <input type="search" id="search" placeholder="" autocomplete="off">
+      <div class="search-stats" id="header-stats"></div>
     </div>
 
     <!-- Eski tasarıma dön -->
@@ -6096,10 +6102,7 @@ function updateStats(filteredArticles, totalCount) {
       return `${sep}<span class="stat-reg"${subDetail ? ` title="${subDetail}"` : ''}>${TK_SHORT[tk.id]} <b>${tkCounts[tk.id]}</b></span>`;
     }).join('');
 
-  el.innerHTML = `
-    <div class="stat-line-1">${line1}${analysisCount ? ` · <b>${analysisCount}</b> analiz` : ''}</div>
-    ${regionHtml ? `<div class="stat-line-2">${regionHtml}</div>` : ''}
-  `;
+  el.innerHTML = `${line1}${analysisCount ? ` · <b>${analysisCount}</b> analiz` : ''} içinde ara`;
 }
 
 const CAT_SHORT = {
@@ -7095,6 +7098,7 @@ document.getElementById('clear-filters').addEventListener('click', () => {
 // Search
 let searchTimer;
 document.getElementById('search').addEventListener('input', e => {
+  e.target.closest('.search-wrap').classList.toggle('has-value', e.target.value.length > 0);
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
     searchQuery = e.target.value;
