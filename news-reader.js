@@ -352,17 +352,60 @@
 }
 
 @media (max-width: 768px) {
+  .reader-window {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
   .reader-window.translate-open {
-    width: calc(100vw - 24px) !important;
+    width: 100% !important;
+  }
+  .reader-head-meta {
+    flex-wrap: nowrap !important;
+    gap: 4px;
+    padding: 8px 0;
+  }
+  .reader-source-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .reader-source-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .reader-btn-text {
+    display: none;
+  }
+  .reader-translate-btn svg,
+  .reader-sync-btn svg,
+  .reader-external-btn svg {
+    margin-right: 0 !important;
   }
   .reader-body-wrapper.translate-active {
     flex-direction: column;
   }
   .reader-window.translate-open .reader-translate-panel {
-    width: 100%;
+    width: 100% !important;
     border-left: none;
     border-top: 1px solid var(--border);
     height: 50%;
+  }
+  .reader-body, .reader-translate-panel {
+    -webkit-overflow-scrolling: touch;
+  }
+  .reader-article {
+    padding: 20px 16px 32px !important;
+  }
+  .reader-title {
+    font-size: 22px !important;
+  }
+  .reader-content {
+    font-size: 15px !important;
+    line-height: 1.65 !important;
   }
 }
     `;
@@ -896,13 +939,13 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;">
                   <path d="m5 8 6 6M4 14l6-6M2 2h10v10H2zM12 12h10v10H12z"/>
                 </svg>
-                Çevir
+                <span class="reader-btn-text">Çevir</span>
               </button>
               <button class="reader-sync-btn" id="reader-sync-scroll" title="Eş Zamanlı Kaydır">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;">
                   <path d="M17 3v18M7 3v18M3 7l4-4 4 4M13 17l4 4 4-4"/>
                 </svg>
-                Eş Zamanlı Kaydır
+                <span class="reader-btn-text">Eş Zamanlı Kaydır</span>
               </button>
               <a class="reader-external-btn" id="reader-external" target="_blank" rel="noopener noreferrer" title="Kaynağı yeni sekmede aç">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -910,7 +953,7 @@
                   <polyline points="15 3 21 3 21 9"/>
                   <line x1="10" y1="14" x2="21" y2="3"/>
                 </svg>
-                Yeni sekmede aç
+                <span class="reader-btn-text">Yeni sekmede aç</span>
               </a>
               <button class="reader-close" data-close="1" aria-label="Kapat">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -1078,9 +1121,8 @@
     loadSource(0);
   }
 
-  // ── Click delegation (desktop only) ──────────────────────────────
+  // ── Click delegation ─────────────────────────────────────────────
   document.addEventListener('click', e => {
-    if (window.innerWidth < DESKTOP_BREAKPOINT) return;
     const card = e.target.closest('.article-card');
     if (!card) return;
     if (e.target.closest('button, a, .card-edit-actions, .etki-info-btn, .analysis-toggle, .source-toggle')) return;
