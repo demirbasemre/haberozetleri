@@ -287,7 +287,7 @@
   display: block;
 }
 .reader-window.translate-open .reader-hero {
-  display: none;
+  display: none !important;
 }
 
 .reader-translate-btn {
