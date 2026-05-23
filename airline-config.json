@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "airline_id": "emirates",
+    "label": "Emirates",
+    "region": "mideast",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "emirates",
+    "merge_with": []
+  }
+]
