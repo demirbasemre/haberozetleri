@@ -11,6 +11,11 @@
   // Proxy zinciri — sırayla denenir; ilk başarılı olan kullanılır
   const PROXIES = [
     {
+      name: 'cf-worker',
+      url: u => 'https://haberozetleri-proxy.demirbasemre.workers.dev/?url=' + encodeURIComponent(u),
+      parse: async r => r.text()
+    },
+    {
       name: 'allorigins',
       url: u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u),
       parse: async r => { const d = await r.json(); if (!d.contents) throw new Error('Boş yanıt'); return d.contents; }
