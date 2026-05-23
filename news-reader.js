@@ -224,9 +224,11 @@
     if (!card) return;
     // Ignore interactive children
     if (e.target.closest('button, a, .card-edit-actions, .etki-info-btn, .analysis-toggle, .source-toggle')) return;
-    const id = card.dataset.articleId;
-    if (!id) return;
-    const article = (window.allArticles || []).find(a => String(a.id) === id);
+    const link = card.dataset.articleLink;
+    const id   = card.dataset.articleId;
+    const article = (window.allArticles || []).find(a =>
+      (link && a.link === link) || (id && String(a.id) === id)
+    );
     if (!article) return;
     e.preventDefault();
     openReader(article);

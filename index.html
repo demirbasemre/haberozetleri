@@ -5913,6 +5913,7 @@ function renderCards(articles) {
       const card = document.createElement('div');
       card.className = 'article-card';
       if (article.id != null) card.dataset.articleId = String(article.id);
+      if (article.link) card.dataset.articleLink = article.link;
       card.style.animationDelay = `${Math.min(cardIdx, 8) * 35}ms`;
       card.innerHTML = buildCardHTML(article);
       grid.appendChild(card);
@@ -7076,6 +7077,7 @@ Promise.all([
       return true;
     });
     if (window.__applyNewsEdits) allArticles = window.__applyNewsEdits(allArticles);
+    window.allArticles = allArticles; // news-reader.js için
     buildDatePanel(allArticles);
     await loadAirlineConfig(); // config önce yüklensin, sonra filtre kurulsun
     buildAirlineFilter(allArticles);
