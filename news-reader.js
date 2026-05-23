@@ -530,11 +530,7 @@
   // ── Source tabs ──────────────────────────────────────────────────
   function renderSourceTabs(sources, activeIdx, onPick) {
     const wrap = modal.querySelector('#reader-source-tabs');
-    if (sources.length <= 1) {
-      const s = sources[0] || {};
-      wrap.innerHTML = `<div class="reader-source-single">${escapeHtml(getSourceLabel(s.source) || 'Kaynak')}</div>`;
-      return;
-    }
+
     wrap.innerHTML = `
       <div class="reader-source-label">Kaynak:</div>
       ${sources.map((s, i) => `
