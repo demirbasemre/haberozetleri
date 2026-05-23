@@ -1,19 +1,155 @@
 [
-  { "airline_id": "turkishairlines", "label": "Turkish Airlines", "region": "turkiye",  "focus": true, "icon_url": "", "keywords": "turkish airlines,turkish cargo,tk", "merge_with": [] },
-  { "airline_id": "dhl",            "label": "DHL",              "region": "europe",   "focus": true, "icon_url": "", "keywords": "dhl",                                "merge_with": [] },
-  { "airline_id": "cargolux",       "label": "Cargolux",         "region": "europe",   "focus": true, "icon_url": "", "keywords": "cargolux",                           "merge_with": [] },
-  { "airline_id": "lufthansa",      "label": "Lufthansa",        "region": "europe",   "focus": true, "icon_url": "", "keywords": "lufthansa",                          "merge_with": [] },
-  { "airline_id": "airfrance",      "label": "Air France",       "region": "europe",   "focus": true, "icon_url": "", "keywords": "air france",                         "merge_with": [] },
-  { "airline_id": "klm",            "label": "AF-KLM Cargo",     "region": "europe",   "focus": true, "icon_url": "", "keywords": "klm cargo,af klm,france klm,martinair cargo,klm martinair", "merge_with": [] },
-  { "airline_id": "british",        "label": "British Airways",  "region": "europe",   "focus": true, "icon_url": "", "keywords": "british airways",                    "merge_with": [] },
-  { "airline_id": "iag",            "label": "IAG Cargo",        "region": "europe",   "focus": true, "icon_url": "", "keywords": "iag cargo",                          "merge_with": [] },
-  { "airline_id": "emirates",       "label": "Emirates",         "region": "mideast",  "focus": true, "icon_url": "", "keywords": "emirates",                           "merge_with": [] },
-  { "airline_id": "qatar",          "label": "Qatar Airways",    "region": "mideast",  "focus": true, "icon_url": "", "keywords": "qatar airways,qatar cargo",           "merge_with": [] },
-  { "airline_id": "etihad",         "label": "Etihad",           "region": "mideast",  "focus": true, "icon_url": "", "keywords": "etihad",                             "merge_with": [] },
-  { "airline_id": "ethiopian",      "label": "Ethiopian Airlines","region": "africa",   "focus": true, "icon_url": "", "keywords": "ethiopian airlines,ethiopian cargo",  "merge_with": [] },
-  { "airline_id": "cathay",         "label": "Cathay Pacific",   "region": "asiapac",  "focus": true, "icon_url": "", "keywords": "cathay",                             "merge_with": [] },
-  { "airline_id": "korean",         "label": "Korean Air",       "region": "asiapac",  "focus": true, "icon_url": "", "keywords": "korean air",                         "merge_with": [] },
-  { "airline_id": "chinasouthern",  "label": "China Southern",   "region": "asiapac",  "focus": true, "icon_url": "", "keywords": "china southern",                     "merge_with": [] },
-  { "airline_id": "latam",          "label": "LATAM",            "region": "americas", "focus": true, "icon_url": "", "keywords": "latam",                              "merge_with": [] },
-  { "airline_id": "avianca",        "label": "Avianca",          "region": "americas", "focus": true, "icon_url": "", "keywords": "avianca",                            "merge_with": [] }
+  {
+    "airline_id": "turkishairlines",
+    "label": "Turkish Airlines",
+    "region": "turkiye",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "turkish airlines,turkish cargo,tk",
+    "merge_with": []
+  },
+  {
+    "airline_id": "dhl",
+    "label": "DHL",
+    "region": "europe",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "dhl",
+    "merge_with": []
+  },
+  {
+    "airline_id": "cargolux",
+    "label": "Cargolux",
+    "region": "europe",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "cargolux",
+    "merge_with": []
+  },
+  {
+    "airline_id": "lufthansa",
+    "label": "Lufthansa",
+    "region": "europe",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "lufthansa",
+    "merge_with": []
+  },
+  {
+    "airline_id": "airfrance",
+    "label": "Air France",
+    "region": "europe",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "air france",
+    "merge_with": []
+  },
+  {
+    "airline_id": "klm",
+    "label": "AF-KLM Cargo",
+    "region": "europe",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "klm cargo,af klm,france klm,martinair cargo,klm martinair",
+    "merge_with": []
+  },
+  {
+    "airline_id": "british",
+    "label": "British Airways",
+    "region": "europe",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "british airways",
+    "merge_with": []
+  },
+  {
+    "airline_id": "iag",
+    "label": "IAG Cargo",
+    "region": "europe",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "iag cargo",
+    "merge_with": []
+  },
+  {
+    "airline_id": "emirates",
+    "label": "Emirates",
+    "region": "mideast",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "emirates",
+    "merge_with": []
+  },
+  {
+    "airline_id": "qatar",
+    "label": "Qatar Airways",
+    "region": "mideast",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "qatar airways,qatar cargo",
+    "merge_with": []
+  },
+  {
+    "airline_id": "etihad",
+    "label": "Etihad",
+    "region": "mideast",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "etihad",
+    "merge_with": []
+  },
+  {
+    "airline_id": "ethiopian",
+    "label": "Ethiopian Airlines",
+    "region": "africa",
+    "focus": false,
+    "icon_url": "",
+    "keywords": "ethiopian airlines,ethiopian cargo",
+    "merge_with": []
+  },
+  {
+    "airline_id": "cathay",
+    "label": "Cathay Pacific",
+    "region": "asiapac",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "cathay",
+    "merge_with": []
+  },
+  {
+    "airline_id": "korean",
+    "label": "Korean Air",
+    "region": "asiapac",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "korean air",
+    "merge_with": []
+  },
+  {
+    "airline_id": "chinasouthern",
+    "label": "China Southern",
+    "region": "asiapac",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "china southern",
+    "merge_with": []
+  },
+  {
+    "airline_id": "latam",
+    "label": "LATAM",
+    "region": "americas",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "latam",
+    "merge_with": []
+  },
+  {
+    "airline_id": "avianca",
+    "label": "Avianca",
+    "region": "americas",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "avianca",
+    "merge_with": []
+  }
 ]
