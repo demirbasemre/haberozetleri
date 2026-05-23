@@ -3749,17 +3749,17 @@
 
   /* Background texture overrides */
   body[data-tweak-texture="dots"] {
-    background-image: radial-gradient(circle at 1px 1px, rgba(10,23,54,0.06) 1px, transparent 0) !important;
+    background-image: radial-gradient(circle at 1px 1px, rgba(10,23,54,0.015) 1px, transparent 0) !important;
     background-size: 22px 22px !important;
   }
   body[data-tweak-texture="lines"] {
-    background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(10,23,54,0.05) 39px 40px) !important;
+    background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(10,23,54,0.012) 39px 40px) !important;
   }
   [data-theme="dark"] body[data-tweak-texture="dots"] {
-    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0) !important;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.015) 1px, transparent 0) !important;
   }
   [data-theme="dark"] body[data-tweak-texture="lines"] {
-    background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,0.04) 39px 40px) !important;
+    background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,0.015) 39px 40px) !important;
   }
 
   /* Density — 3 distinct modes */
@@ -7396,7 +7396,7 @@ function switchTab(tab) {
   if (isDash && !_dashInit) { _dashInit = true; loadDashboard(); }
   if (isTodo && !_todoInit) { _todoInit = true; initTodo(); }
   document.getElementById('tab-todo-btn').style.display = isTodo ? '' : 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
 
