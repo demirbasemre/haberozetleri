@@ -1,0 +1,9 @@
+services:
+  fetch-proxy:
+    image: node:20-alpine
+    container_name: fetch-proxy
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    command: >
+      sh -c "wget -qO /server.js https://raw.githubusercontent.com/demirbasemre/haberozetleri/main/cf-proxy/fetch-proxy/server.js && node /server.js"
