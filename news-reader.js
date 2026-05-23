@@ -1,19 +1,259 @@
 /* ═══════════════════════════════════════════════════════════════════
    Haber Okuyucu Modal — masaüstünde haber sitesini in-page açar
-   Mozilla Readability.js + allorigins CORS proxy ile temiz metin + görsel
+   Readability.js + çoklu proxy fallback + adımlı animasyonlu yükleme
    ═══════════════════════════════════════════════════════════════════ */
 (() => {
   'use strict';
 
   const READABILITY_CDN = 'https://cdn.jsdelivr.net/npm/@mozilla/readability@0.5.0/Readability.js';
-  const PROXY_URL = u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u);
   const DESKTOP_BREAKPOINT = 769;
 
-  const cache = new Map(); // url → {title, content, image, byline}
+  // Proxy zinciri — sırayla denenir; ilk başarılı olan kullanılır
+  const PROXIES = [
+    {
+      name: 'allorigins',
+      url: u => 'https://api.allorigins.win/get?url=' + encodeURIComponent(u),
+      parse: async r => { const d = await r.json(); if (!d.contents) throw new Error('Boş yanıt'); return d.contents; }
+    },
+    {
+      name: 'corsproxy.io',
+      url: u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+      parse: async r => r.text()
+    },
+    {
+      name: 'thingproxy',
+      url: u => 'https://thingproxy.freeboard.io/fetch/' + u,
+      parse: async r => r.text()
+    }
+  ];
+
+  const cache = new Map();
   let modal = null;
   let readabilityLoaded = null;
+  let stylesInjected = false;
 
-  // ── Load Readability.js once on demand ───────────────────────────
+  // ── CSS — bir kez DOM'a eklenir ──────────────────────────────────
+  function injectStyles() {
+    if (stylesInjected) return;
+    stylesInjected = true;
+    const el = document.createElement('style');
+    el.textContent = `
+/* ── Reader Steps Loading ──────────────────── */
+.reader-steps-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 52px 32px 48px;
+  min-height: 320px;
+}
+.reader-steps-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 32px;
+  letter-spacing: -0.01em;
+}
+.reader-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  max-width: 300px;
+}
+.reader-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  position: relative;
+}
+/* Connecting line between steps */
+.reader-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 32px;
+  width: 2px;
+  height: 28px;
+  background: var(--border);
+  border-radius: 1px;
+  transition: background 0.3s ease;
+}
+.reader-step.rs-done:not(:last-child)::after {
+  background: #10b981;
+}
+.reader-step-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  z-index: 1;
+}
+.reader-step-text {
+  padding-top: 6px;
+  padding-bottom: 28px;
+}
+.reader-step-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-3);
+  transition: color 0.25s ease;
+  line-height: 1.4;
+}
+.reader-step-sub {
+  font-size: 11.5px;
+  color: var(--text-3);
+  margin-top: 2px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  line-height: 1.5;
+}
+
+/* Active step */
+.reader-step.rs-active .reader-step-icon {
+  border-color: var(--accent, #1D6FE8);
+  background: rgba(29,111,232,0.08);
+  box-shadow: 0 0 0 4px rgba(29,111,232,0.12);
+  animation: rsPulse 1.6s ease-in-out infinite;
+}
+.reader-step.rs-active .reader-step-label {
+  color: var(--text);
+  font-weight: 600;
+}
+.reader-step.rs-active .reader-step-sub {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Done step */
+.reader-step.rs-done .reader-step-icon {
+  border-color: #10b981;
+  background: rgba(16,185,129,0.1);
+  box-shadow: none;
+  animation: none;
+}
+.reader-step.rs-done .reader-step-label {
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+@keyframes rsPulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(29,111,232,0.12); }
+  50%       { box-shadow: 0 0 0 8px rgba(29,111,232,0.06); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reader-step.rs-active .reader-step-icon { animation: none; }
+}
+
+/* Step SVGs */
+.rs-icon-pending { color: var(--border); }
+.rs-icon-active  { color: var(--accent, #1D6FE8); }
+.rs-icon-done    { color: #10b981; }
+
+/* ── Error state ────────────────────────────── */
+.reader-error-v2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 52px 32px 48px;
+  text-align: center;
+  animation: rsSlideUp 0.22s ease-out;
+}
+@keyframes rsSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reader-error-v2-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(239,68,68,0.08);
+  border: 1.5px solid rgba(239,68,68,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  margin-bottom: 4px;
+}
+.reader-error-v2-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.reader-error-v2-msg {
+  font-size: 13px;
+  color: var(--text-2);
+  max-width: 340px;
+  line-height: 1.6;
+}
+.reader-error-v2-hint {
+  font-size: 12px;
+  color: var(--text-3);
+  max-width: 320px;
+  line-height: 1.5;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-soft);
+}
+.reader-error-v2-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+.reader-error-v2-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s ease;
+}
+.reader-error-v2-retry:hover {
+  border-color: var(--accent, #1D6FE8);
+  color: var(--accent, #1D6FE8);
+  background: rgba(29,111,232,0.05);
+}
+.reader-error-v2-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1.5px solid transparent;
+  background: var(--accent, #1D6FE8);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+.reader-error-v2-open:hover { opacity: 0.88; }
+    `;
+    document.head.appendChild(el);
+  }
+
+  // ── Load Readability.js once ─────────────────────────────────────
   function loadReadability() {
     if (readabilityLoaded) return readabilityLoaded;
     readabilityLoaded = new Promise((resolve, reject) => {
@@ -26,35 +266,50 @@
     return readabilityLoaded;
   }
 
-  // ── Fetch + extract ──────────────────────────────────────────────
-  async function extractArticle(url) {
-    if (cache.has(url)) return cache.get(url);
-    const [Readability] = await Promise.all([loadReadability(), 0]);
+  // ── Fetch HTML through proxy chain ───────────────────────────────
+  async function fetchHtml(url, onProxy) {
+    let lastErr;
+    for (const proxy of PROXIES) {
+      try {
+        onProxy && onProxy(proxy.name);
+        const resp = await fetch(proxy.url(url), { signal: AbortSignal.timeout(12000) });
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const html = await proxy.parse(resp);
+        if (!html || html.length < 200) throw new Error('Çok kısa yanıt');
+        return html;
+      } catch (e) {
+        lastErr = e;
+      }
+    }
+    throw new Error('Tüm kaynaklar başarısız oldu: ' + (lastErr?.message || ''));
+  }
 
-    const resp = await fetch(PROXY_URL(url), { cache: 'force-cache' });
-    if (!resp.ok) throw new Error('Kaynak yüklenemedi (HTTP ' + resp.status + ')');
-    const data = await resp.json();
-    if (!data.contents) throw new Error('Kaynak boş döndü');
+  // ── Fetch + extract with step callbacks ──────────────────────────
+  async function extractArticle(url, onStep) {
+    if (cache.has(url)) { onStep && onStep('done'); return cache.get(url); }
 
-    // Parse HTML — set base URL so relative paths resolve
+    onStep && onStep('connect');
+    const [Readability] = await Promise.all([loadReadability()]);
+
+    onStep && onStep('fetch');
+    const html = await fetchHtml(url, () => {});
+
+    onStep && onStep('extract');
     const parser = new DOMParser();
-    const doc = parser.parseFromString(data.contents, 'text/html');
+    const doc = parser.parseFromString(html, 'text/html');
     if (!doc.head.querySelector('base')) {
       const base = doc.createElement('base');
       base.href = url;
       doc.head.prepend(base);
     }
 
-    // Lead image — try OG before Readability strips it
     const ogImage = doc.querySelector('meta[property="og:image"]')?.content
                  || doc.querySelector('meta[name="twitter:image"]')?.content
                  || doc.querySelector('article img, main img, [class*="hero"] img')?.src
                  || null;
-
-    // Title fallback
     const ogTitle = doc.querySelector('meta[property="og:title"]')?.content || doc.title;
 
-    // Run Readability (mutates doc — pass clone)
+    onStep && onStep('clean');
     const docClone = doc.cloneNode(true);
     const reader = new Readability(docClone, { charThreshold: 200 });
     const result = reader.parse();
@@ -71,83 +326,115 @@
     return out;
   }
 
-  // ── Build modal once ─────────────────────────────────────────────
-  function buildModal() {
-    if (modal) return modal;
-    modal = document.createElement('div');
-    modal.id = 'reader-modal';
-    modal.innerHTML = `
-      <div class="reader-backdrop" data-close="1"></div>
-      <div class="reader-window" role="dialog" aria-modal="true" aria-label="Haber okuyucu">
-        <div class="reader-head">
-          <div class="reader-head-meta">
-            <div class="reader-source-tabs" id="reader-source-tabs"></div>
-            <div class="reader-head-right">
-              <a class="reader-external-btn" id="reader-external" target="_blank" rel="noopener noreferrer" title="Kaynağı yeni sekmede aç">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                  <polyline points="15 3 21 3 21 9"/>
-                  <line x1="10" y1="14" x2="21" y2="3"/>
-                </svg>
-                Yeni sekmede aç
-              </a>
-              <button class="reader-close" data-close="1" aria-label="Kapat">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-              </button>
+  // ── Step definitions ─────────────────────────────────────────────
+  const STEPS = [
+    {
+      id: 'connect',
+      label: 'Kaynağa bağlanılıyor',
+      sub: 'Güvenli proxy üzerinden bağlantı kuruluyor…',
+      icon: pending => pending
+        ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`
+        : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+    },
+    {
+      id: 'fetch',
+      label: 'Sayfa indiriliyor',
+      sub: 'HTML içeriği aktarılıyor…',
+      icon: pending => pending
+        ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v10M8 8l4 4 4-4"/><rect x="3" y="16" width="18" height="6" rx="1"/></svg>`
+        : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+    },
+    {
+      id: 'extract',
+      label: 'Metin ve görseller çıkarılıyor',
+      sub: 'Readability ile ana içerik belirleniyor…',
+      icon: pending => pending
+        ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`
+        : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+    },
+    {
+      id: 'clean',
+      label: 'Reklam ve gereksiz kısımlar eleniyor',
+      sub: 'Temiz okuma modu hazırlanıyor…',
+      icon: pending => pending
+        ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>`
+        : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+    },
+  ];
+
+  // ── Animated step loading UI ─────────────────────────────────────
+  function setStepLoading(sourceLabel) {
+    const body = modal.querySelector('#reader-body');
+    body.innerHTML = `
+      <div class="reader-steps-wrap" aria-live="polite" aria-label="Yükleniyor">
+        <div class="reader-steps-title">${escapeHtml(sourceLabel || 'Kaynak')} okunuyor</div>
+        <div class="reader-steps" id="rs-steps">
+          ${STEPS.map((s, i) => `
+            <div class="reader-step" id="rs-step-${s.id}" data-idx="${i}">
+              <div class="reader-step-icon" id="rs-icon-${s.id}">
+                <span class="rs-icon-pending">${s.icon(true)}</span>
+              </div>
+              <div class="reader-step-text">
+                <div class="reader-step-label">${escapeHtml(s.label)}</div>
+                <div class="reader-step-sub">${escapeHtml(s.sub)}</div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="reader-body" id="reader-body"></div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    modal.addEventListener('click', e => {
-      if (e.target.closest('[data-close]')) closeModal();
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-    });
-    return modal;
-  }
-
-  function openModal() {
-    if (!modal) buildModal();
-    document.body.style.overflow = 'hidden';
-    modal.classList.add('open');
-  }
-  function closeModal() {
-    if (!modal) return;
-    modal.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  // ── Render article into modal ────────────────────────────────────
-  function setLoading(sourceLabel) {
-    const body = modal.querySelector('#reader-body');
-    body.innerHTML = `
-      <div class="reader-loading">
-        <div class="reader-spinner"></div>
-        <div class="reader-loading-text">
-          <strong>${escapeHtml(sourceLabel || 'Kaynak')}</strong> okunuyor…
-          <span class="reader-loading-sub">İçerik çıkarılıyor, gereksiz kısımlar elenip görseller yükleniyor.</span>
+          `).join('')}
         </div>
       </div>
     `;
   }
 
-  function setError(message, link) {
+  function advanceStep(stepId) {
+    const stepIdx = STEPS.findIndex(s => s.id === stepId);
+    if (stepIdx < 0) return;
+    STEPS.forEach((s, i) => {
+      const el = modal?.querySelector(`#rs-step-${s.id}`);
+      const iconEl = modal?.querySelector(`#rs-icon-${s.id}`);
+      if (!el) return;
+      el.classList.remove('rs-active', 'rs-done');
+      if (i < stepIdx) {
+        el.classList.add('rs-done');
+        if (iconEl) iconEl.innerHTML = `<span class="rs-icon-done">${s.icon(false)}</span>`;
+      } else if (i === stepIdx) {
+        el.classList.add('rs-active');
+        if (iconEl) iconEl.innerHTML = `<span class="rs-icon-active">${s.icon(true)}</span>`;
+      }
+    });
+  }
+
+  // ── Error state v2 ───────────────────────────────────────────────
+  function setError(message, link, onRetry) {
     const body = modal.querySelector('#reader-body');
     body.innerHTML = `
-      <div class="reader-error">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        <div class="reader-error-title">Kaynak alınamadı</div>
-        <div class="reader-error-msg">${escapeHtml(message)}</div>
-        ${link ? `<a class="reader-error-link" href="${link}" target="_blank" rel="noopener noreferrer">Kaynağı yeni sekmede aç →</a>` : ''}
+      <div class="reader-error-v2" role="alert">
+        <div class="reader-error-v2-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div class="reader-error-v2-title">Sayfa alınamadı</div>
+        <div class="reader-error-v2-msg">Haber sitesi proxy üzerinden yüklenemedi. Site erişimi engelliyor olabilir.</div>
+        <div class="reader-error-v2-hint">
+          💡 Yeni sekmede açarak haberin tamamını okuyabilirsin.
+        </div>
+        <div class="reader-error-v2-actions">
+          ${onRetry ? `<button class="reader-error-v2-retry" id="rs-retry">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Tekrar dene
+          </button>` : ''}
+          ${link ? `<a class="reader-error-v2-open" href="${link}" target="_blank" rel="noopener noreferrer">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Yeni sekmede aç
+          </a>` : ''}
+        </div>
       </div>
     `;
+    if (onRetry) {
+      body.querySelector('#rs-retry')?.addEventListener('click', onRetry);
+    }
   }
 
   function setContent(article, sourceUrl) {
@@ -188,7 +475,58 @@
     });
   }
 
-  // ── Public API: open(article) ───────────────────────────────────
+  // ── Build modal once ─────────────────────────────────────────────
+  function buildModal() {
+    if (modal) return modal;
+    injectStyles();
+    modal = document.createElement('div');
+    modal.id = 'reader-modal';
+    modal.innerHTML = `
+      <div class="reader-backdrop" data-close="1"></div>
+      <div class="reader-window" role="dialog" aria-modal="true" aria-label="Haber okuyucu">
+        <div class="reader-head">
+          <div class="reader-head-meta">
+            <div class="reader-source-tabs" id="reader-source-tabs"></div>
+            <div class="reader-head-right">
+              <a class="reader-external-btn" id="reader-external" target="_blank" rel="noopener noreferrer" title="Kaynağı yeni sekmede aç">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+                Yeni sekmede aç
+              </a>
+              <button class="reader-close" data-close="1" aria-label="Kapat">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="reader-body" id="reader-body"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => {
+      if (e.target.closest('[data-close]')) closeModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+    return modal;
+  }
+
+  function openModal() {
+    if (!modal) buildModal();
+    document.body.style.overflow = 'hidden';
+    modal.classList.add('open');
+  }
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── Public API: open(article) ─────────────────────────────────
   async function openReader(article) {
     const sources = (article._sources && article._sources.length > 0)
       ? article._sources
@@ -197,21 +535,28 @@
     openModal();
 
     let activeIdx = 0;
-    const loadSource = async (idx) => {
+    const loadSource = async (idx, isRetry) => {
       activeIdx = idx;
       renderSourceTabs(sources, idx, loadSource);
       const src = sources[idx];
-      if (!src || !src.link) {
-        setError('Bu kaynağın linki yok.');
-        return;
-      }
+      if (!src || !src.link) { setError('Bu kaynağın linki yok.', null, null); return; }
       modal.querySelector('#reader-external').href = src.link;
-      setLoading(getSourceLabel(src.source));
+
+      setStepLoading(getSourceLabel(src.source) || src.source);
+      // Küçük bir delay ile ilk adımı göster (animasyon görünsün)
+      await delay(60);
+      advanceStep('connect');
+
       try {
-        const result = await extractArticle(src.link);
+        const result = await extractArticle(src.link, step => {
+          // delay ile adım geçişleri daha görünür olsun
+          setTimeout(() => advanceStep(step), step === 'fetch' ? 100 : step === 'extract' ? 200 : step === 'clean' ? 300 : 0);
+        });
+        // Temizleme adımını tamamlanmış göster
+        await delay(350);
         setContent(result, src.link);
       } catch (e) {
-        setError(e.message || 'Bilinmeyen hata', src.link);
+        setError(e.message, src.link, () => loadSource(idx, true));
       }
     };
     loadSource(0);
@@ -219,10 +564,9 @@
 
   // ── Click delegation (desktop only) ──────────────────────────────
   document.addEventListener('click', e => {
-    if (window.innerWidth < DESKTOP_BREAKPOINT) return; // mobile: skip
+    if (window.innerWidth < DESKTOP_BREAKPOINT) return;
     const card = e.target.closest('.article-card');
     if (!card) return;
-    // Ignore interactive children
     if (e.target.closest('button, a, .card-edit-actions, .etki-info-btn, .analysis-toggle, .source-toggle')) return;
     const link = card.dataset.articleLink;
     const id   = card.dataset.articleId;
@@ -238,6 +582,8 @@
   window.openNewsReader = openReader;
 
   // ── Helpers ──────────────────────────────────────────────────────
+  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, c => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -249,8 +595,6 @@
   function getFavicon(s) {
     return typeof window.getFavicon === 'function' ? window.getFavicon(s) : '';
   }
-  // Light HTML sanitization — Readability already strips dangerous stuff,
-  // but we also drop script/style/iframe just in case
   function sanitize(html) {
     const tmp = document.createElement('div');
     tmp.innerHTML = html;

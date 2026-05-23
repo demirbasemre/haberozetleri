@@ -2124,6 +2124,33 @@
     .main-tabs-wrap { padding: 10px 16px 0; top: 100px; }
   }
 
+  /* ── Mobil gradient override: background-attachment:fixed iOS'ta çalışmaz ── */
+  @media (max-width: 768px) {
+    .main-tabs-wrap {
+      background-image: linear-gradient(to bottom, var(--navy) 0%, #2a2a2a 45%, #d0d0d0 100%);
+      background-attachment: scroll;
+      background-size: auto;
+    }
+    .filter-bar {
+      background-image: none;
+      background-attachment: scroll;
+      background-color: var(--bg);
+    }
+    [data-theme="dark"] .main-tabs-wrap {
+      background-image: linear-gradient(to bottom, var(--navy) 0%, #0d0d10 45%, #1e2030 100%);
+    }
+    [data-theme="dark"] .filter-bar {
+      background-color: var(--bg);
+    }
+    /* Mobil kaydırma oku gölgeleri — var(--bg) ile eşleştir */
+    .filter-bar::before {
+      background: linear-gradient(90deg, var(--bg), transparent) !important;
+    }
+    .filter-bar::after {
+      background: linear-gradient(270deg, var(--bg), transparent) !important;
+    }
+  }
+
   /* ── DASHBOARD ───────────────────────────────────── */
   .dash-section { margin-bottom: 44px; scroll-margin-top: 190px; }
 
