@@ -316,12 +316,12 @@
       var(--navy)   0px,
       var(--navy)   60px,
       #2a2a2a       88px,
-      #787878       122px,
-      #d0d0d0       174px,
-      var(--bg)     210px
+      #888888       122px,
+      #e2e2e2       158px,
+      var(--bg)     174px
     );
     background-attachment: fixed;
-    background-size: 100% 210px;
+    background-size: 100% 174px;
     background-position: 0 0;
     background-repeat: no-repeat;
     background-color: var(--bg);
@@ -391,9 +391,9 @@
     font-size: 12.5px;
     font-weight: 500;
     cursor: pointer;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--text-2);
+    border: 1.5px solid rgba(0,0,0,0.12);
+    background: rgba(255,255,255,0.92);
+    color: var(--text);
     font-family: 'Inter', sans-serif;
     transition: all 0.18s;
     min-height: 32px;
@@ -401,7 +401,7 @@
     user-select: none;
     white-space: nowrap;
   }
-  .fdd-btn:hover { background: var(--bg); border-color: #d1d5db; color: var(--text); }
+  .fdd-btn:hover { background: #fff; border-color: rgba(0,0,0,0.2); color: var(--text); }
   .fdd-btn.active { background: var(--navy); color: white; border-color: transparent; }
   .fdd-btn.active:hover { background: #1a2332; }
 
@@ -746,10 +746,9 @@
   }
   .airline-star-btn:hover { opacity: 1 !important; background: rgba(234,179,8,0.2); border-color: rgba(234,179,8,0.6); }
 
-  /* Hover'da sağ kenardan gradient: metin soluklaşır, butonlar öne çıkar */
-  /* Renk değişkeni: default beyaz/bg. Bölge renkleri JS'de --region-fade ile override edilir */
-  .airline-col-item:hover::after,
-  .airline-integrator-chip:hover::after {
+  /* Hover fade gradient — sadece düzenleme modunda göster (edit butonları için) */
+  body.edit-mode .airline-col-item:hover::after,
+  body.edit-mode .airline-integrator-chip:hover::after {
     content: '';
     position: absolute;
     right: 0; top: 0; bottom: 0;
@@ -760,22 +759,21 @@
     border-radius: 0 6px 6px 0;
     transition: opacity 0.18s ease;
   }
-  /* Bölge gradyanları — hover::after için bölge rengiyle fade */
-  .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(254,241,244,0.97) 55%); }
-  .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(239,246,255,0.97) 55%); }
-  .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(240,253,244,0.97) 55%); }
-  .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(254,243,199,0.97) 55%); }
-  .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(255,247,237,0.97) 55%); }
-  .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(250,245,255,0.97) 55%); }
-  .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(249,250,251,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(30,4,10,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(4,10,28,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(4,20,10,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(20,12,4,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(22,10,4,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(16,4,22,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(12,14,18,0.97) 55%); }
-  .airline-pinned-row:hover::after {
+  body.edit-mode .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(254,241,244,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(239,246,255,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(240,253,244,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(254,243,199,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(255,247,237,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(250,245,255,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(249,250,251,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(30,4,10,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(4,10,28,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(4,20,10,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(20,12,4,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(22,10,4,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(16,4,22,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(12,14,18,0.97) 55%); }
+  body.edit-mode .airline-pinned-row:hover::after {
     content: '';
     position: absolute;
     right: 0; top: 0; bottom: 0;
@@ -785,11 +783,11 @@
     z-index: 1;
     border-radius: 0 7px 7px 0;
   }
-  [data-theme="dark"] .airline-col-item:hover::after,
-  [data-theme="dark"] .airline-integrator-chip:hover::after {
+  [data-theme="dark"] body.edit-mode .airline-col-item:hover::after,
+  [data-theme="dark"] body.edit-mode .airline-integrator-chip:hover::after {
     background: linear-gradient(to right, transparent, var(--bg) 55%);
   }
-  [data-theme="dark"] .airline-pinned-row:hover::after {
+  [data-theme="dark"] body.edit-mode .airline-pinned-row:hover::after {
     background: linear-gradient(to right, transparent, rgba(20,8,12,0.95) 55%);
   }
   @media (prefers-reduced-motion: reduce) {
@@ -1368,9 +1366,9 @@
     font-size: 12.5px;
     font-weight: 500;
     cursor: pointer;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--text-2);
+    border: 1.5px solid rgba(0,0,0,0.12);
+    background: rgba(255,255,255,0.92);
+    color: var(--text);
     font-family: 'Inter', sans-serif;
     transition: all 0.18s;
     min-height: 32px;
@@ -1379,7 +1377,7 @@
     white-space: nowrap;
     flex-shrink: 0;
   }
-  .fdd-toggle:hover { background: var(--bg); border-color: #d1d5db; color: var(--text); }
+  .fdd-toggle:hover { background: #fff; border-color: rgba(0,0,0,0.2); color: var(--text); }
   .fdd-toggle.active { background: #1a3a2a; color: #4ade80; border-color: transparent; }
   .fdd-toggle.active svg { stroke: #4ade80; }
 
@@ -2030,28 +2028,28 @@
       var(--navy)   0px,
       var(--navy)   60px,
       #2a2a2a       88px,
-      #787878       122px,
-      #d0d0d0       174px,
-      var(--bg)     210px
+      #888888       122px,
+      #e2e2e2       158px,
+      var(--bg)     174px
     );
     background-attachment: fixed;
-    background-size: 100% 210px;
+    background-size: 100% 174px;
     background-position: 0 0;
     background-repeat: no-repeat;
     background-color: var(--bg);
     border-bottom: none;
   }
   .main-tab {
-    background: transparent;
-    border: none;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.14);
     font-family: 'Inter', sans-serif;
     font-size: 13.5px;
     font-weight: 600;
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,255,255,0.78);
     padding: 9px 22px;
     cursor: pointer;
     border-radius: 10px;
-    transition: color 0.18s, background 0.18s, transform 0.12s;
+    transition: color 0.18s, background 0.18s, border-color 0.18s, transform 0.12s;
     display: inline-flex;
     align-items: center;
     gap: 7px;
@@ -2060,12 +2058,17 @@
     position: relative;
     margin: 0;
   }
-  .main-tab svg { opacity: 0.7; transition: opacity 0.18s; }
-  .main-tab:hover { color: #fff; background: rgba(255,255,255,0.1); }
+  .main-tab svg { opacity: 0.8; transition: opacity 0.18s; }
+  .main-tab:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.25);
+  }
   .main-tab:hover svg { opacity: 1; }
   .main-tab.main-tab-active {
     color: #FFFFFF;
     background: var(--red);
+    border-color: transparent;
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(230,57,70,0.35), 0 1px 2px rgba(0,0,0,0.1);
   }
@@ -2080,11 +2083,39 @@
       var(--navy)   0px,
       var(--navy)   60px,
       #0d0d10       88px,
-      #22222c       122px,
-      #1a1d28       174px,
-      var(--bg)     210px
+      #252530       122px,
+      #1e2030       158px,
+      var(--bg)     174px
     );
+    background-attachment: fixed;
+    background-size: 100% 174px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
     background-color: var(--bg);
+  }
+  [data-theme="dark"] .fdd-btn,
+  [data-theme="dark"] .fdd-toggle,
+  [data-theme="dark"] .dash-nav-link {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.13);
+    color: rgba(255,255,255,0.82);
+  }
+  [data-theme="dark"] .fdd-btn:hover,
+  [data-theme="dark"] .fdd-toggle:hover,
+  [data-theme="dark"] .dash-nav-link:hover {
+    background: rgba(255,255,255,0.13);
+    border-color: rgba(255,255,255,0.22);
+    color: #fff;
+  }
+  [data-theme="dark"] .fdd-btn.active {
+    background: var(--accent);
+    border-color: transparent;
+    color: #fff;
+  }
+  [data-theme="dark"] .fdd-toggle.active {
+    background: #1a3a2a;
+    border-color: transparent;
+    color: #4ade80;
   }
 
   @media (max-width: 640px) {
@@ -2094,7 +2125,7 @@
   }
 
   /* ── DASHBOARD ───────────────────────────────────── */
-  .dash-section { margin-bottom: 44px; }
+  .dash-section { margin-bottom: 44px; scroll-margin-top: 190px; }
 
   .dash-nav-link {
     display: inline-flex;
@@ -2104,9 +2135,9 @@
     border-radius: 20px;
     font-size: 12.5px;
     font-weight: 500;
-    color: var(--text-2);
-    background: transparent;
-    border: 1.5px solid var(--border);
+    color: var(--text);
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid rgba(0,0,0,0.12);
     text-decoration: none;
     transition: background .15s, color .15s, border-color .15s;
     white-space: nowrap;
@@ -2114,8 +2145,8 @@
     font-family: 'Inter', sans-serif;
   }
   .dash-nav-link:hover {
-    background: var(--bg);
-    border-color: #d1d5db;
+    background: #fff;
+    border-color: rgba(0,0,0,0.2);
     color: var(--text);
   }
   .dash-section-title {
@@ -7365,10 +7396,17 @@ let _todoInit = false;
 function dashScrollTo(id) {
   const el = document.getElementById(id);
   if (!el) return;
-  const offset = 110; // header + filter bar height
+  // header(60) + tabs-wrap(62) + filter-bar(52) + 16px breathing room
+  const offset = 190;
   const top = el.getBoundingClientRect().top + window.scrollY - offset;
   window.scrollTo({ top, behavior: 'smooth' });
 }
+
+// Prevent href="#" jump on dash-nav-link clicks
+document.addEventListener('click', e => {
+  const link = e.target.closest('.dash-nav-link');
+  if (link) e.preventDefault();
+}, true); // capture phase — fires before inline onclick
 
 function switchTab(tab) {
   const isNews  = tab === 'news';
