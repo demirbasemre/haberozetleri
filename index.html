@@ -1187,8 +1187,24 @@
   @media (max-width: 768px) {
     #airline-dropdown { min-width: 240px; max-height: 70dvh; }
     /* Filtre çubukları yatay kaydırmalı + sol/sağ ok butonları */
-    .filter-bar { position: relative; }
-    .filter-bar-inner { padding: 6px 44px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-behavior: smooth; }
+    .filter-bar {
+      position: sticky;
+      top: 108px;
+      z-index: 90;
+      height: 48px;
+      background-color: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-bar-inner {
+      height: 100%;
+      padding: 0 44px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+      display: flex;
+      align-items: center;
+    }
     .filter-bar-inner::-webkit-scrollbar { display: none; }
     #news-filter-content, #dash-filter-content { flex-wrap: nowrap; padding-right: 8px; }
 
@@ -2007,7 +2023,6 @@
     .search-stats { display: none; }
     .article-grid { grid-template-columns: 1fr; gap: 12px; }
     .main { padding: 20px 16px 56px; }
-    .filter-bar-inner { padding: 8px 16px; }
     .header-inner { padding: 0 16px; gap: 12px; }
     .fdd-panel { min-width: 180px; }
   }
@@ -2134,15 +2149,23 @@
   @media (max-width: 640px) {
     .main-tabs { border-radius: 12px; padding: 4px; }
     .main-tab { padding: 8px 16px; font-size: 13px; }
-    .main-tabs-wrap { padding: 10px 16px 0; top: 100px; }
+    .main-tabs-wrap { padding: 0 16px; top: 60px; }
   }
 
   /* ── Mobil gradient override: background-attachment:fixed iOS'ta çalışmaz ── */
   @media (max-width: 768px) {
     .main-tabs-wrap {
-      background-image: linear-gradient(to bottom, var(--navy) 0%, #2a2a2a 45%, #d0d0d0 100%);
-      background-attachment: scroll;
-      background-size: auto;
+      position: sticky;
+      top: 60px;
+      z-index: 95;
+      height: 48px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: none;
+      background-color: var(--navy);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .filter-bar {
       background-image: none;
@@ -2150,7 +2173,8 @@
       background-color: var(--bg);
     }
     [data-theme="dark"] .main-tabs-wrap {
-      background-image: linear-gradient(to bottom, var(--navy) 0%, #0d0d10 45%, #1e2030 100%);
+      background-image: none;
+      background-color: var(--navy);
     }
     [data-theme="dark"] .filter-bar {
       background-color: var(--bg);
