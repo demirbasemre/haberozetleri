@@ -311,7 +311,7 @@
 
   /* ── FILTER BAR ──────────────────────────────── */
   .filter-bar {
-    background: linear-gradient(to bottom, var(--surface) 0%, var(--bg) 100%);
+    background: linear-gradient(to bottom, #dde2ea 0%, var(--bg) 100%);
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 122px;
@@ -2018,7 +2018,7 @@
     position: sticky;
     top: 60px;
     z-index: 95;
-    background: linear-gradient(to bottom, var(--navy) 0%, var(--surface) 100%);
+    background: linear-gradient(to bottom, var(--navy) 0%, #dde2ea 100%);
     border-bottom: none;
   }
   .main-tab {
@@ -2054,7 +2054,10 @@
     box-shadow: 0 2px 12px rgba(255,77,90,0.45), 0 1px 2px rgba(0,0,0,0.4);
   }
   [data-theme="dark"] .main-tabs-wrap {
-    background: linear-gradient(to bottom, var(--navy) 0%, var(--surface) 100%);
+    background: linear-gradient(to bottom, var(--navy) 0%, #1c2130 100%);
+  }
+  [data-theme="dark"] .filter-bar {
+    background: linear-gradient(to bottom, #1c2130 0%, var(--bg) 100%);
   }
 
   @media (max-width: 640px) {
