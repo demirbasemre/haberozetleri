@@ -374,9 +374,12 @@
   .filter-sep {
     width: 1px;
     height: 20px;
-    background: var(--border);
+    background: rgba(0,0,0,0.22);
     flex-shrink: 0;
     margin: 0 4px;
+  }
+  [data-theme="dark"] .filter-sep {
+    background: rgba(255,255,255,0.25);
   }
 
   /* ── FILTER DROPDOWNS ────────────────────────── */
@@ -1409,7 +1412,7 @@
 
   /* ── DATE SECTION ────────────────────────────── */
   .date-section { margin-bottom: 52px; }
-  .date-section:first-child { margin-top: 28px; }
+  .date-section:first-child { margin-top: 44px; }
 
   .date-section-header {
     display: flex;
@@ -3628,6 +3631,7 @@
   body.edit-mode header        { top: 38px; }
   body.edit-mode .main-tabs-wrap { top: 98px; }
   body.edit-mode .filter-bar   { top: 176px; }
+  body.edit-mode .main         { padding-top: 60px; }
   .edit-banner-actions { display: flex; gap: 8px; }
   .edit-banner button {
     background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.3);

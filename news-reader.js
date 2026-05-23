@@ -285,8 +285,36 @@
   }
 
   // ── Fetch + extract with step callbacks ──────────────────────────
-  async function extractArticle(url, onStep) {
+  const CACHE_BASE = 'https://raw.githubusercontent.com/demirbasemre/haberozetleri/main/news-cache';
+
+  async function extractArticle(url, onStep, cacheKey) {
     if (cache.has(url)) { onStep && onStep('done'); return cache.get(url); }
+
+    // Try GitHub static cache first (instant, no proxy needed)
+    if (cacheKey && cacheKey.source && cacheKey.id) {
+      try {
+        const cacheUrl = `${CACHE_BASE}/${cacheKey.source}/${cacheKey.id}.json`;
+        const res = await fetch(cacheUrl, { signal: AbortSignal.timeout(5000) });
+        if (res.ok) {
+          const cached = await res.json();
+          if (cached.content && cached.content.length > 100) {
+            onStep && onStep('done');
+            const out = {
+              title: cached.title || '',
+              content: '<p>' + cached.content
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>') + '</p>',
+              excerpt: cached.content.slice(0, 200),
+              byline: '',
+              image: null,
+              siteName: (() => { try { return new URL(url).hostname; } catch { return ''; } })()
+            };
+            cache.set(url, out);
+            return out;
+          }
+        }
+      } catch (_) { /* cache miss — fall through to proxy */ }
+    }
 
     onStep && onStep('connect');
     const [Readability] = await Promise.all([loadReadability()]);
@@ -551,7 +579,7 @@
         const result = await extractArticle(src.link, step => {
           // delay ile adım geçişleri daha görünür olsun
           setTimeout(() => advanceStep(step), step === 'fetch' ? 100 : step === 'extract' ? 200 : step === 'clean' ? 300 : 0);
-        });
+        }, { source: src.source || article.source, id: String(article.id || '') });
         // Temizleme adımını tamamlanmış göster
         await delay(350);
         setContent(result, src.link);
