@@ -34,5 +34,14 @@
     "icon_url": "",
     "keywords": "british airways",
     "merge_with": []
+  },
+  {
+    "airline_id": "lufthansa",
+    "label": "Lufthansa",
+    "region": "europe",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "lufthansa",
+    "merge_with": []
   }
 ]
