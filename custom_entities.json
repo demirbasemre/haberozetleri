@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 1106,
-  "lastScanned": "2026-05-22T08:41:45.885Z",
-  "scannedCount": 624,
+  "lastScannedId": 1114,
+  "lastScanned": "2026-05-23T23:15:54.177Z",
+  "scannedCount": 8,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -290,6 +290,33 @@
         "vietjet air"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=vietjetair.com"
+    },
+    {
+      "id": "dyn_g_l_yolcu_ve_kargo",
+      "label": "GüçLü Yolcu Ve Kargo",
+      "group": "passenger",
+      "kw": [
+        "güçlü yolcu ve kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=turkishairlines.com"
+    },
+    {
+      "id": "dyn_hub_odakl_k_resel_kargo",
+      "label": "Hub Odaklı KüResel Kargo",
+      "group": "cargo",
+      "kw": [
+        "hub odaklı küresel kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=turkishcargo.com"
+    },
+    {
+      "id": "dyn_y_l_n_k_resel_kargo",
+      "label": "YıLıN KüResel Kargo",
+      "group": "cargo",
+      "kw": [
+        "yılın küresel kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=turkishcargo.com"
     }
   ],
   "gsa": []
