@@ -4153,7 +4153,6 @@ function applyAirlineConfigOverrides() {
       if (cfg.keywords) def._kwOverride = cfg.keywords.split(',').map(k => k.trim()).filter(Boolean);
     });
   });
-  if (allArticles.length > 0) buildAirlineFilter(allArticles);
 }
 
 async function loadAirlineConfig() {
@@ -4177,6 +4176,7 @@ async function saveAirlineConfig(cfg) {
   if (idx >= 0) AIRLINE_CONFIG_OVERRIDES[idx] = cfg;
   else AIRLINE_CONFIG_OVERRIDES.push(cfg);
   applyAirlineConfigOverrides();
+  if (allArticles.length > 0) buildAirlineFilter(allArticles);
 }
 
 function openAirlineEditPanel(airlineId, anchorEl, _containerEl) {
@@ -6173,9 +6173,9 @@ Promise.all([
     });
     if (window.__applyNewsEdits) allArticles = window.__applyNewsEdits(allArticles);
     buildDatePanel(allArticles);
+    await loadAirlineConfig(); // config önce yüklensin, sonra filtre kurulsun
     buildAirlineFilter(allArticles);
     render();
-    loadAirlineConfig(); // n8n'den airline config overrides yükle
     // İstemci taraflı keşif: yalnızca sunucu taraflı veri yoksa çalıştır (fallback)
     const hasServerEntities = DYNAMIC_AIRLINE_DEFS.length > 0 || DYNAMIC_GSA_DEFS.length > 0;
     if (!hasServerEntities) {
