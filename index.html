@@ -610,10 +610,9 @@
   }
   .airline-star-btn:hover { opacity: 1 !important; background: rgba(234,179,8,0.2); border-color: rgba(234,179,8,0.6); }
 
-  /* Hover'da sağ kenardan gradient: metin soluklaşır, butonlar öne çıkar */
-  /* Renk değişkeni: default beyaz/bg. Bölge renkleri JS'de --region-fade ile override edilir */
-  .airline-col-item:hover::after,
-  .airline-integrator-chip:hover::after {
+  /* Hover'da sağ kenardan gradient: sadece düzenleme modunda, butonlar için yer açar */
+  body.edit-mode .airline-col-item:hover::after,
+  body.edit-mode .airline-integrator-chip:hover::after {
     content: '';
     position: absolute;
     right: 0; top: 0; bottom: 0;
@@ -624,22 +623,22 @@
     border-radius: 0 6px 6px 0;
     transition: opacity 0.18s ease;
   }
-  /* Bölge gradyanları — hover::after için bölge rengiyle fade */
-  .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(254,241,244,0.97) 55%); }
-  .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(239,246,255,0.97) 55%); }
-  .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(240,253,244,0.97) 55%); }
-  .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(254,243,199,0.97) 55%); }
-  .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(255,247,237,0.97) 55%); }
-  .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(250,245,255,0.97) 55%); }
-  .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(249,250,251,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(30,4,10,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(4,10,28,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(4,20,10,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(20,12,4,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(22,10,4,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(16,4,22,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(12,14,18,0.97) 55%); }
-  .airline-pinned-row:hover::after {
+  /* Bölge gradyanları — sadece düzenleme modunda */
+  body.edit-mode .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(254,241,244,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(239,246,255,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(240,253,244,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(254,243,199,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(255,247,237,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(250,245,255,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(249,250,251,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(30,4,10,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(4,10,28,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(4,20,10,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(20,12,4,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(22,10,4,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(16,4,22,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(12,14,18,0.97) 55%); }
+  body.edit-mode .airline-pinned-row:hover::after {
     content: '';
     position: absolute;
     right: 0; top: 0; bottom: 0;
@@ -649,11 +648,11 @@
     z-index: 1;
     border-radius: 0 7px 7px 0;
   }
-  [data-theme="dark"] .airline-col-item:hover::after,
-  [data-theme="dark"] .airline-integrator-chip:hover::after {
+  [data-theme="dark"] body.edit-mode .airline-col-item:hover::after,
+  [data-theme="dark"] body.edit-mode .airline-integrator-chip:hover::after {
     background: linear-gradient(to right, transparent, var(--bg) 55%);
   }
-  [data-theme="dark"] .airline-pinned-row:hover::after {
+  [data-theme="dark"] body.edit-mode .airline-pinned-row:hover::after {
     background: linear-gradient(to right, transparent, rgba(20,8,12,0.95) 55%);
   }
   @media (prefers-reduced-motion: reduce) {
