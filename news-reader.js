@@ -519,9 +519,7 @@
         <h1 class="reader-title">${escapeHtml(article.title)}</h1>
         ${article.byline ? `<div class="reader-byline">${escapeHtml(article.byline)} · ${escapeHtml(article.siteName)}</div>` : `<div class="reader-byline">${escapeHtml(article.siteName)}</div>`}
         <div class="reader-content">${sanitize(article.content)}</div>
-        <div class="reader-end-note">
-          Mozilla Readability ile çıkarılmıştır · <a href="${sourceUrl}" target="_blank" rel="noopener noreferrer">Orijinal kaynak</a>
-        </div>
+        <div class="reader-end-note"></div>
       </article>
     `;
     body.scrollTop = 0;
