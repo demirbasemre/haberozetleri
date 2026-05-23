@@ -5,36 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hava Kargo Bülteni</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Lato:wght@400;700;900&family=DM+Sans:wght@400;500;700&family=Manrope:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-<!-- FOUC prevention — apply saved prefs to <html> before render -->
-<script>
-(function() {
-  try {
-    const t = JSON.parse(localStorage.getItem('haber-bulteni-tweaks-v1') || '{}');
-    const r = document.documentElement;
-    if (t.headingFont) {
-      r.style.setProperty('--tweak-heading-font', "'" + t.headingFont + "', Georgia, serif");
-      r.setAttribute('data-tweak-font', '1');
-    }
-    if (t.density && t.density !== 'off') r.setAttribute('data-tweak-density', t.density);
-  } catch(e) {}
-})();
-</script>
 <style>
   :root {
-    --bg: #F4F4F5;
+    --bg: #F1F0EC;
     --surface: #FFFFFF;
     --navy: #0D1117;
     --navy-soft: #161B22;
-    --red: #E30613;
-    --red-muted: rgba(227,6,19,0.08);
+    --red: #E63946;
+    --red-muted: rgba(230,57,70,0.08);
     --accent: #1D6FE8;
     --text: #111218;
     --text-2: #4B5563;
     --text-3: #9CA3AF;
-    --border: #E5E5E5;
-    --border-soft: #EEEEEE;
+    --border: #E4E3DF;
+    --border-soft: #EDECЕ8;
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
     --shadow-hover: 0 12px 40px rgba(0,0,0,0.13), 0 4px 12px rgba(0,0,0,0.07);
@@ -196,92 +182,6 @@
   .stat-reg b { font-size: 10.5px; color: rgba(255,255,255,0.7); font-weight: 600; }
   .stat-sep { color: rgba(255,255,255,0.18); font-size: 10px; }
 
-  /* ── HEADER PREF BUTTONS (font, density) ─────── */
-  .hdr-pref-wrap { position: relative; flex-shrink: 0; }
-  .hdr-pref-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.07);
-    color: rgba(255,255,255,0.7);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-  }
-  .hdr-pref-btn:hover,
-  .hdr-pref-btn[aria-expanded="true"] {
-    background: rgba(255,255,255,0.14);
-    border-color: rgba(255,255,255,0.28);
-    color: #fff;
-  }
-  .hdr-pref-btn svg { pointer-events: none; }
-
-  .hdr-pref-panel {
-    position: absolute;
-    top: calc(100% + 8px);
-    right: 0;
-    min-width: 200px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    box-shadow: 0 8px 28px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.08);
-    padding: 6px;
-    display: none;
-    z-index: 9999;
-    animation: hdrPanelIn 0.16s ease;
-  }
-  .hdr-pref-panel.open { display: block; }
-  @keyframes hdrPanelIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .hdr-pref-section {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-3);
-    padding: 6px 10px 8px;
-  }
-  .hdr-pref-opt {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 8px 10px;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 13px;
-    text-align: left;
-    transition: background 0.12s;
-    font-family: 'Inter', sans-serif;
-  }
-  .hdr-pref-opt:hover { background: var(--bg); }
-  .hdr-pref-opt.on { background: var(--red-muted); color: var(--red); font-weight: 600; }
-  .hdr-pref-opt .opt-check {
-    width: 14px; height: 14px; flex-shrink: 0;
-    opacity: 0;
-    transition: opacity 0.12s;
-  }
-  .hdr-pref-opt.on .opt-check { opacity: 1; }
-  .hdr-pref-opt .opt-sub {
-    margin-left: auto;
-    font-size: 10.5px;
-    color: var(--text-3);
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: 0;
-    font-family: 'Inter', sans-serif;
-  }
-  .hdr-pref-opt.on .opt-sub { color: var(--red); opacity: 0.7; }
-
   /* ── THEME TOGGLE ───────────────────────────── */
   .theme-toggle {
     flex-shrink: 0;
@@ -314,38 +214,9 @@
     background: var(--surface);
     border-bottom: 1px solid var(--border);
     position: sticky;
-    top: 122px;
+    top: 60px;
     z-index: 90;
-    overflow: visible;
   }
-
-  /* Scroll-fade — nested inside .filter-bar, absolutely positioned below it.
-     Variable filter-bar height (wrap to 2 lines) doesn't break it. */
-  .scroll-fade {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    height: 28px;
-    z-index: 85;
-    pointer-events: none;
-    background: linear-gradient(to bottom,
-      var(--surface) 0%,
-      var(--surface) 35%,
-      rgba(255,255,255,0) 100%);
-  }
-  [data-theme="dark"] .scroll-fade {
-    background: linear-gradient(to bottom,
-      var(--surface) 0%,
-      var(--surface) 35%,
-      rgba(15,17,23,0) 100%);
-  }
-  @media (max-width: 768px) {
-    .scroll-fade { height: 22px; }
-  }
-
-  /* Mobile-only filter scroll arrows — hidden on desktop */
-  .filter-scroll-arrow { display: none; }
 
   .filter-bar-inner {
     max-width: 1280px;
@@ -739,10 +610,9 @@
   }
   .airline-star-btn:hover { opacity: 1 !important; background: rgba(234,179,8,0.2); border-color: rgba(234,179,8,0.6); }
 
-  /* Hover'da sağ kenardan gradient: metin soluklaşır, butonlar öne çıkar */
-  /* Renk değişkeni: default beyaz/bg. Bölge renkleri JS'de --region-fade ile override edilir */
-  .airline-col-item:hover::after,
-  .airline-integrator-chip:hover::after {
+  /* Hover'da sağ kenardan gradient: sadece düzenleme modunda, butonlar için yer açar */
+  body.edit-mode .airline-col-item:hover::after,
+  body.edit-mode .airline-integrator-chip:hover::after {
     content: '';
     position: absolute;
     right: 0; top: 0; bottom: 0;
@@ -753,22 +623,22 @@
     border-radius: 0 6px 6px 0;
     transition: opacity 0.18s ease;
   }
-  /* Bölge gradyanları — hover::after için bölge rengiyle fade */
-  .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(254,241,244,0.97) 55%); }
-  .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(239,246,255,0.97) 55%); }
-  .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(240,253,244,0.97) 55%); }
-  .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(254,243,199,0.97) 55%); }
-  .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(255,247,237,0.97) 55%); }
-  .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(250,245,255,0.97) 55%); }
-  .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(249,250,251,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(30,4,10,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(4,10,28,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(4,20,10,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(20,12,4,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(22,10,4,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(16,4,22,0.97) 55%); }
-  [data-theme="dark"] .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(12,14,18,0.97) 55%); }
-  .airline-pinned-row:hover::after {
+  /* Bölge gradyanları — sadece düzenleme modunda */
+  body.edit-mode .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(254,241,244,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(239,246,255,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(240,253,244,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(254,243,199,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(255,247,237,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(250,245,255,0.97) 55%); }
+  body.edit-mode .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(249,250,251,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="turkiye"]:hover::after  { background: linear-gradient(to right, transparent, rgba(30,4,10,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="europe"]:hover::after   { background: linear-gradient(to right, transparent, rgba(4,10,28,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="mideast"]:hover::after  { background: linear-gradient(to right, transparent, rgba(4,20,10,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="africa"]:hover::after   { background: linear-gradient(to right, transparent, rgba(20,12,4,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="asiapac"]:hover::after  { background: linear-gradient(to right, transparent, rgba(22,10,4,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="americas"]:hover::after { background: linear-gradient(to right, transparent, rgba(16,4,22,0.97) 55%); }
+  [data-theme="dark"] body.edit-mode .airline-col-item[data-group="other"]:hover::after    { background: linear-gradient(to right, transparent, rgba(12,14,18,0.97) 55%); }
+  body.edit-mode .airline-pinned-row:hover::after {
     content: '';
     position: absolute;
     right: 0; top: 0; bottom: 0;
@@ -778,11 +648,11 @@
     z-index: 1;
     border-radius: 0 7px 7px 0;
   }
-  [data-theme="dark"] .airline-col-item:hover::after,
-  [data-theme="dark"] .airline-integrator-chip:hover::after {
+  [data-theme="dark"] body.edit-mode .airline-col-item:hover::after,
+  [data-theme="dark"] body.edit-mode .airline-integrator-chip:hover::after {
     background: linear-gradient(to right, transparent, var(--bg) 55%);
   }
-  [data-theme="dark"] .airline-pinned-row:hover::after {
+  [data-theme="dark"] body.edit-mode .airline-pinned-row:hover::after {
     background: linear-gradient(to right, transparent, rgba(20,8,12,0.95) 55%);
   }
   @media (prefers-reduced-motion: reduce) {
@@ -1165,69 +1035,10 @@
   /* ── Mobile responsive ───────────────────────────── */
   @media (max-width: 768px) {
     #airline-dropdown { min-width: 240px; max-height: 70dvh; }
-    /* Filtre çubukları yatay kaydırmalı + sol/sağ ok butonları */
-    .filter-bar { position: relative; }
-    .filter-bar-inner { padding: 6px 44px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; scroll-behavior: smooth; }
+    /* Filtre çubukları yatay kaydırmalı */
+    .filter-bar-inner { padding: 6px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .filter-bar-inner::-webkit-scrollbar { display: none; }
     #news-filter-content, #dash-filter-content { flex-wrap: nowrap; padding-right: 8px; }
-
-    /* Arrow buttons — visible only on mobile */
-    .filter-scroll-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 5;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      transition: opacity 0.18s, background 0.15s, color 0.15s, transform 0.15s;
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
-    }
-    .filter-scroll-arrow:active { transform: translateY(-50%) scale(0.92); }
-    .filter-scroll-arrow:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
-    .filter-scroll-left { left: 6px; }
-    .filter-scroll-right { right: 6px; }
-    /* Fade-out gradient hint that more content exists */
-    .filter-bar::before,
-    .filter-bar::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 36px;
-      pointer-events: none;
-      z-index: 4;
-      transition: opacity 0.2s;
-    }
-    .filter-bar::before {
-      left: 40px;
-      background: linear-gradient(90deg, var(--surface), transparent);
-    }
-    .filter-bar::after {
-      right: 40px;
-      background: linear-gradient(270deg, var(--surface), transparent);
-    }
-    /* Boundary hide */
-    .filter-bar[data-scroll-left="0"] .filter-scroll-left,
-    .filter-bar[data-scroll-left="0"]::before {
-      opacity: 0;
-      pointer-events: none;
-    }
-    .filter-bar[data-scroll-right="0"] .filter-scroll-right,
-    .filter-bar[data-scroll-right="0"]::after {
-      opacity: 0;
-      pointer-events: none;
-    }
     /* Airline grid mobilde max 2 sütun */
     .airline-col-grid { grid-template-columns: repeat(2, 1fr) !important; }
     /* Daha büyük dokunma hedefleri */
@@ -1400,47 +1211,30 @@
 
   /* ── DATE SECTION ────────────────────────────── */
   .date-section { margin-bottom: 52px; }
-  .date-section:first-child { margin-top: 28px; }
 
   .date-section-header {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 12px;
-    margin-bottom: 22px;
-    padding-bottom: 0;
-    border-bottom: none;
-    position: relative;
-  }
-
-  .date-section-header::before {
-    content: '';
-    width: 4px;
-    height: 24px;
-    background: var(--red);
-    border-radius: 2px;
-    flex-shrink: 0;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1.5px solid var(--border);
   }
 
   .date-heading {
     font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 22px;
+    font-size: 20px;
     color: var(--text);
-    letter-spacing: -0.015em;
-    line-height: 1;
+    letter-spacing: -0.01em;
   }
 
   .date-count {
-    font-size: 11px;
-    color: var(--text-2);
-    font-weight: 600;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 4px 10px;
+    font-size: 12px;
+    color: var(--text-3);
+    font-weight: 400;
+    background: var(--border-soft);
+    padding: 2px 8px;
     border-radius: 20px;
-    letter-spacing: 0.02em;
-    font-variant-numeric: tabular-nums;
-    flex-shrink: 0;
-    margin-left: auto;
   }
 
   /* ── ARTICLE GRID ────────────────────────────── */
@@ -1522,9 +1316,6 @@
     flex-direction: column;
     min-width: 0;
   }
-
-  /* Spacer — pushes Analiz button + footer to bottom regardless of content height */
-  .card-spacer { flex: 1; min-height: 8px; }
 
   .card-meta {
     display: flex;
@@ -1997,64 +1788,35 @@
 
   /* ── TABS ───────────────────────────────────────── */
   .main-tabs {
-    display: inline-flex;
-    gap: 8px;
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    box-shadow: none;
-    border: none;
-    width: auto;
-  }
-  .main-tabs-wrap {
     display: flex;
-    justify-content: center;
-    margin: 0;
-    padding: 14px 24px 14px;
+    gap: 0;
+    margin: 0 -24px 24px;
+    padding: 6px 24px 0;
+    border-bottom: 2px solid var(--border);
     position: sticky;
-    top: 60px;
-    z-index: 95;
-    background: var(--surface);
-    border-bottom: none;
+    top: 112px;
+    z-index: 80;
+    background: var(--bg);
   }
   .main-tab {
-    background: transparent;
+    background: none;
     border: none;
     font-family: 'Inter', sans-serif;
     font-size: 13.5px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-3);
-    padding: 9px 22px;
+    padding: 8px 18px 10px;
     cursor: pointer;
-    border-radius: 10px;
-    transition: color 0.18s, background 0.18s, transform 0.12s;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     white-space: nowrap;
-    letter-spacing: 0.01em;
-    position: relative;
-    margin: 0;
   }
-  .main-tab svg { opacity: 0.7; transition: opacity 0.18s; }
-  .main-tab:hover { color: var(--text); background: var(--bg); }
-  .main-tab:hover svg { opacity: 1; }
-  .main-tab.main-tab-active {
-    color: #FFFFFF;
-    background: var(--red);
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(230,57,70,0.35), 0 1px 2px rgba(0,0,0,0.1);
-  }
-  .main-tab.main-tab-active svg { opacity: 1; }
-  [data-theme="dark"] .main-tab.main-tab-active {
-    box-shadow: 0 2px 12px rgba(255,77,90,0.45), 0 1px 2px rgba(0,0,0,0.4);
-  }
-
-  @media (max-width: 640px) {
-    .main-tabs { border-radius: 12px; padding: 4px; }
-    .main-tab { padding: 8px 16px; font-size: 13px; }
-    .main-tabs-wrap { padding: 10px 16px 0; top: 100px; }
-  }
+  .main-tab:hover { color: var(--text-2); }
+  .main-tab.main-tab-active { color: var(--text); border-bottom-color: var(--navy); font-weight: 600; }
 
   /* ── DASHBOARD ───────────────────────────────────── */
   .dash-section { margin-bottom: 44px; }
@@ -3528,8 +3290,8 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
   body.edit-mode header        { top: 38px; }
-  body.edit-mode .main-tabs-wrap { top: 98px; }
-  body.edit-mode .filter-bar   { top: 176px; }
+  body.edit-mode .filter-bar   { top: 98px; }
+  body.edit-mode .main-tabs    { top: 150px; }
   .edit-banner-actions { display: flex; gap: 8px; }
   .edit-banner button {
     background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.3);
@@ -3682,598 +3444,6 @@
   .del-confirm-btn:disabled { opacity: 0.35; cursor: not-allowed; }
   .btn-link-reset { background: none; border: none; color: var(--text-3); font-size: 12px; cursor: pointer; text-decoration: underline; }
   .btn-link-reset:hover { color: var(--text); }
-
-  /* ═══════════════════════════════════════════════════════════════════
-     ✦ Tweaks Panel (preview-only, opt-in via data attrs)
-     Original design stays untouched unless a tweak is selected.
-     ═══════════════════════════════════════════════════════════════════ */
-
-  /* Heading font override — only applies to news cards (title + summary) when user picks one */
-  [data-tweak-font] .card-title {
-    font-family: var(--tweak-heading-font) !important;
-    font-weight: 700 !important;
-  }
-  [data-tweak-font] .card-summary {
-    font-family: var(--tweak-heading-font) !important;
-  }
-
-  /* Background texture overrides */
-  body[data-tweak-texture="dots"] {
-    background-image: radial-gradient(circle at 1px 1px, rgba(10,23,54,0.06) 1px, transparent 0) !important;
-    background-size: 22px 22px !important;
-  }
-  body[data-tweak-texture="lines"] {
-    background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(10,23,54,0.05) 39px 40px) !important;
-  }
-  [data-theme="dark"] body[data-tweak-texture="dots"] {
-    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0) !important;
-  }
-  [data-theme="dark"] body[data-tweak-texture="lines"] {
-    background-image: repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,0.04) 39px 40px) !important;
-  }
-
-  /* Density — 3 distinct modes */
-  [data-tweak-density="compact"] .article-grid { gap: 10px !important; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important; }
-  [data-tweak-density="compact"] .dash-cards { gap: 10px !important; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important; }
-  [data-tweak-density="compact"] .card-body { padding: 11px 13px 10px !important; }
-  [data-tweak-density="compact"] .card-title { font-size: 13.5px !important; line-height: 1.25 !important; }
-  [data-tweak-density="compact"] .card-summary { font-size: 12px !important; line-height: 1.5 !important; }
-  [data-tweak-density="compact"] .dash-card { padding: 11px 12px 9px !important; }
-  [data-tweak-density="compact"] .dash-card-value { font-size: 22px !important; }
-
-  [data-tweak-density="standard"] .article-grid { gap: 18px !important; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)) !important; }
-  [data-tweak-density="standard"] .dash-cards { gap: 18px !important; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important; }
-  [data-tweak-density="standard"] .card-body { padding: 20px 22px 18px !important; }
-  [data-tweak-density="standard"] .card-title { font-size: 16.5px !important; line-height: 1.3 !important; }
-  [data-tweak-density="standard"] .dash-card { padding: 18px 18px 16px !important; }
-
-  [data-tweak-density="spacious"] .article-grid { gap: 28px !important; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)) !important; }
-  [data-tweak-density="spacious"] .dash-cards { gap: 24px !important; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important; }
-  [data-tweak-density="spacious"] .card-body { padding: 26px 28px 22px !important; }
-  [data-tweak-density="spacious"] .card-title { font-size: 18px !important; line-height: 1.3 !important; }
-  [data-tweak-density="spacious"] .card-summary { font-size: 14px !important; }
-  [data-tweak-density="spacious"] .dash-card { padding: 24px 22px 20px !important; }
-  [data-tweak-density="spacious"] .dash-card-value { font-size: 30px !important; }
-
-  /* Left accent style */
-  [data-tweak-accent="gold"] .card-accent,
-  [data-tweak-accent="gold"] .card-left-bar {
-    background: var(--tweak-accent-color, #B89154) !important;
-  }
-  [data-tweak-accent="none"] .card-accent,
-  [data-tweak-accent="none"] .card-left-bar {
-    display: none !important;
-  }
-
-  /* ───────────── PANEL UI ───────────── */
-
-  #tw-panel {
-    position: fixed;
-    right: 16px;
-    bottom: 16px;
-    width: 320px;
-    max-height: calc(100dvh - 32px);
-    background: rgba(10, 23, 54, 0.97);
-    color: #ECE7D5;
-    border: 1px solid rgba(212, 178, 106, 0.35);
-    border-radius: 10px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(212, 178, 106, 0.06);
-    z-index: 9999999;
-    font-family: 'Inter Tight', system-ui, sans-serif;
-    font-size: 12px;
-    display: none;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  #tw-panel * { box-sizing: border-box; }
-  #tw-panel .tw-header {
-    padding: 14px 16px 12px;
-    border-bottom: 1px solid rgba(212, 178, 106, 0.18);
-    position: relative;
-    flex-shrink: 0;
-    background: linear-gradient(180deg, rgba(212,178,106,0.06), transparent);
-  }
-  #tw-panel .tw-title {
-    font-family: 'Fraunces', Georgia, serif;
-    font-size: 17px;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    color: #D8BC85;
-  }
-  #tw-panel .tw-title::before { content: '✦ '; color: #C8102E; }
-  #tw-panel .tw-sub {
-    font-size: 10px;
-    color: rgba(236, 231, 213, 0.5);
-    margin-top: 2px;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  #tw-panel .tw-close {
-    position: absolute; right: 10px; top: 10px;
-    width: 24px; height: 24px;
-    border: none; background: transparent;
-    color: rgba(236, 231, 213, 0.5);
-    cursor: pointer; border-radius: 4px; font-size: 12px;
-    transition: background 0.15s, color 0.15s;
-  }
-  #tw-panel .tw-close:hover { background: rgba(255, 255, 255, 0.08); color: #ECE7D5; }
-  #tw-panel .tw-body {
-    padding: 14px 16px 16px;
-    overflow-y: auto;
-    flex: 1;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(212,178,106,0.3) transparent;
-  }
-  #tw-panel .tw-body::-webkit-scrollbar { width: 6px; }
-  #tw-panel .tw-body::-webkit-scrollbar-thumb { background: rgba(212,178,106,0.25); border-radius: 3px; }
-
-  #tw-panel .tw-section { margin-bottom: 18px; }
-  #tw-panel .tw-section-title {
-    font-size: 10px; font-weight: 600;
-    letter-spacing: 0.10em; text-transform: uppercase;
-    color: rgba(216, 188, 133, 0.7); margin-bottom: 9px;
-  }
-
-  #tw-panel .tw-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  #tw-panel .tw-palette {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 6px; padding: 8px; text-align: left; cursor: pointer;
-    color: inherit; font-family: inherit;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  #tw-panel .tw-palette:hover { border-color: rgba(212,178,106,0.4); background: rgba(255,255,255,0.06); }
-  #tw-panel .tw-palette.on { border-color: #D4A85A; background: rgba(212,168,90,0.10); box-shadow: 0 0 0 1px #D4A85A inset; }
-  #tw-panel .tw-pal-swatches { display: flex; gap: 2px; margin-bottom: 6px; }
-  #tw-panel .tw-pal-swatches span { flex: 1; height: 14px; border-radius: 2px; }
-  #tw-panel .tw-pal-label { font-size: 12px; font-weight: 600; color: #ECE7D5; }
-  #tw-panel .tw-pal-sub { font-size: 10px; color: rgba(236,231,213,0.5); margin-top: 1px; line-height: 1.3; }
-
-  #tw-panel .tw-swatch-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  #tw-panel .tw-sw {
-    display: flex; align-items: center; gap: 7px;
-    padding: 6px 8px; border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
-    cursor: pointer; color: inherit; font-family: inherit; font-size: 11px;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  #tw-panel .tw-sw:hover { border-color: rgba(212,178,106,0.4); }
-  #tw-panel .tw-sw.on { border-color: var(--c, #D4A85A); background: rgba(255,255,255,0.06); box-shadow: 0 0 0 1px var(--c, #D4A85A) inset; }
-  #tw-panel .tw-sw-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18); }
-  #tw-panel .tw-sw-name { color: #ECE7D5; }
-
-  #tw-panel .tw-radio-col { display: flex; flex-direction: column; gap: 4px; }
-  #tw-panel .tw-radio {
-    display: flex; align-items: center; gap: 9px;
-    padding: 8px 10px; border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
-    color: #ECE7D5; cursor: pointer; font-size: 12px;
-    text-align: left;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  #tw-panel .tw-radio:hover { border-color: rgba(212,178,106,0.4); }
-  #tw-panel .tw-radio.on { border-color: #D4A85A; background: rgba(212,168,90,0.10); }
-  #tw-panel .tw-radio-dot {
-    width: 12px; height: 12px; border-radius: 50%;
-    border: 1.5px solid rgba(236,231,213,0.4);
-    flex-shrink: 0; transition: all 0.15s;
-  }
-  #tw-panel .tw-radio.on .tw-radio-dot {
-    border-color: #D4A85A;
-    background: radial-gradient(circle, #D4A85A 0, #D4A85A 40%, transparent 50%);
-  }
-
-  #tw-panel .tw-slider-wrap { display: flex; align-items: center; gap: 12px; }
-  #tw-panel .tw-slider {
-    flex: 1; -webkit-appearance: none; appearance: none;
-    height: 4px; background: rgba(255,255,255,0.1);
-    border-radius: 2px; outline: none;
-  }
-  #tw-panel .tw-slider::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-    background: #D4A85A; cursor: pointer; border: 2px solid #0A1736;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
-  }
-  #tw-panel .tw-slider::-moz-range-thumb {
-    width: 16px; height: 16px; border-radius: 50%;
-    background: #D4A85A; cursor: pointer; border: 2px solid #0A1736;
-  }
-  #tw-panel .tw-num {
-    font-family: 'Inter Tight', monospace;
-    font-variant-numeric: tabular-nums;
-    font-size: 11px; color: #D8BC85;
-    min-width: 36px; text-align: right; font-weight: 600;
-  }
-
-  #tw-panel .tw-seg {
-    display: flex;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 4px; padding: 2px; gap: 2px;
-  }
-  #tw-panel .tw-seg-btn {
-    flex: 1; padding: 6px 4px;
-    background: transparent; border: none;
-    color: rgba(236,231,213,0.6); cursor: pointer;
-    font-family: inherit; font-size: 11px; border-radius: 3px;
-    transition: background 0.15s, color 0.15s;
-  }
-  #tw-panel .tw-seg-btn:hover { color: #ECE7D5; }
-  #tw-panel .tw-seg-btn.on {
-    background: rgba(212,168,90,0.18);
-    color: #E8C788;
-    box-shadow: inset 0 -1px 0 #D4A85A;
-  }
-
-  #tw-panel .tw-footer {
-    padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    display: flex; justify-content: flex-end;
-  }
-  #tw-panel .tw-reset {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(236,231,213,0.7);
-    padding: 6px 12px; border-radius: 4px;
-    cursor: pointer; font-family: inherit; font-size: 11px;
-    letter-spacing: 0.04em; text-transform: uppercase;
-    transition: all 0.15s;
-  }
-  #tw-panel .tw-reset:hover {
-    border-color: #C8102E; color: #fff; background: rgba(200,16,46,0.18);
-  }
-
-  @media (max-width: 640px) {
-    #tw-panel { width: calc(100vw - 24px); right: 12px; bottom: 12px; }
-  }
-
-  /* ── MOBILE GEAR: tools group ─────────────────── */
-  .hdr-tools-trigger {
-    display: none;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.07);
-    color: rgba(255,255,255,0.7);
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    padding: 0;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-  }
-  .hdr-tools-trigger:hover,
-  .hdr-tools-trigger[aria-expanded="true"] {
-    background: rgba(255,255,255,0.14);
-    border-color: rgba(255,255,255,0.28);
-    color: #fff;
-  }
-  .hdr-tools-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-  }
-  @media (max-width: 768px) {
-    .hdr-tools-trigger { display: flex; }
-    .hdr-tools-group {
-      display: none;
-      position: absolute;
-      top: calc(100% + 6px);
-      right: 12px;
-      background: var(--navy-soft);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
-      padding: 8px;
-      gap: 6px;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.35);
-      z-index: 200;
-    }
-    .hdr-tools-group.open { display: flex; }
-  }
-
-  /* ── ESKİ/YENİ TASARIM BUTONU ──────────────────── */
-  .design-switch-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 11px;
-    border-radius: 20px;
-    font-size: 11.5px;
-    font-weight: 500;
-    cursor: pointer;
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.07);
-    color: rgba(255,255,255,0.65);
-    font-family: 'Inter', sans-serif;
-    text-decoration: none;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-  }
-  .design-switch-btn:hover {
-    background: rgba(255,255,255,0.13);
-    border-color: rgba(255,255,255,0.3);
-    color: #fff;
-  }
-  @media (max-width: 560px) {
-    .design-switch-btn span { display: none; }
-    .design-switch-btn { padding: 7px 9px; border-radius: 50%; width: 34px; height: 34px; justify-content: center; }
-  }
-
-  /* ── READER MODAL ───────────────────────────────── */
-  #reader-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-  }
-  #reader-modal.open { display: flex; }
-
-  .reader-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    cursor: pointer;
-  }
-
-  .reader-window {
-    position: relative;
-    width: min(860px, calc(100vw - 48px));
-    max-height: calc(100vh - 48px);
-    margin: auto;
-    background: var(--surface);
-    border-radius: 16px;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: readerIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  @keyframes readerIn {
-    from { opacity: 0; transform: scale(0.96) translateY(8px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
-  .reader-head {
-    flex-shrink: 0;
-    border-bottom: 1px solid var(--border);
-    padding: 0 16px;
-  }
-  .reader-head-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 52px;
-    flex-wrap: wrap;
-  }
-
-  .reader-source-tabs {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex: 1;
-    flex-wrap: wrap;
-  }
-  .reader-source-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-3);
-    white-space: nowrap;
-  }
-  .reader-source-single {
-    font-size: 12.5px;
-    font-weight: 600;
-    color: var(--text-2);
-  }
-  .reader-source-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--text-2);
-    font-size: 12.5px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    transition: all 0.13s;
-    white-space: nowrap;
-  }
-  .reader-source-tab:hover { background: var(--bg); border-color: #c1c5cc; }
-  .reader-source-tab.on {
-    background: var(--navy);
-    color: #fff;
-    border-color: transparent;
-  }
-  .reader-source-fav {
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
-    object-fit: contain;
-  }
-
-  .reader-head-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-  .reader-external-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 11px;
-    border-radius: 20px;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--text-2);
-    font-size: 12px;
-    font-weight: 500;
-    text-decoration: none;
-    font-family: 'Inter', sans-serif;
-    white-space: nowrap;
-    transition: all 0.13s;
-  }
-  .reader-external-btn:hover { background: var(--bg); color: var(--text); }
-  .reader-close {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1.5px solid var(--border);
-    background: transparent;
-    color: var(--text-2);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.13s;
-    padding: 0;
-    flex-shrink: 0;
-  }
-  .reader-close:hover { background: var(--red-muted); border-color: var(--red); color: var(--red); }
-
-  .reader-body {
-    flex: 1;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-  .reader-body::-webkit-scrollbar { width: 5px; }
-  .reader-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  .reader-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 60px 32px;
-    text-align: center;
-  }
-  .reader-spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .reader-loading-text {
-    font-size: 14px;
-    color: var(--text-2);
-    line-height: 1.6;
-  }
-  .reader-loading-text strong { color: var(--text); display: block; margin-bottom: 4px; }
-  .reader-loading-sub { font-size: 12.5px; color: var(--text-3); }
-
-  .reader-error {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    padding: 56px 32px;
-    text-align: center;
-    color: var(--text-3);
-  }
-  .reader-error-title { font-size: 15px; font-weight: 600; color: var(--text); }
-  .reader-error-msg { font-size: 13px; color: var(--text-2); max-width: 360px; line-height: 1.5; }
-  .reader-error-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 8px;
-    padding: 7px 16px;
-    border-radius: 20px;
-    border: 1.5px solid var(--accent);
-    color: var(--accent);
-    font-size: 13px;
-    text-decoration: none;
-    transition: all 0.13s;
-  }
-  .reader-error-link:hover { background: rgba(29,111,232,0.08); }
-
-  .reader-article {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 32px 24px 48px;
-  }
-  .reader-hero {
-    margin: 0 -24px 28px;
-    border-radius: 0;
-    overflow: hidden;
-    max-height: 340px;
-  }
-  .reader-hero img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .reader-title {
-    font-family: var(--tweak-heading-font, 'DM Serif Display', Georgia, serif);
-    font-size: 26px;
-    line-height: 1.3;
-    color: var(--text);
-    margin-bottom: 10px;
-    letter-spacing: -0.01em;
-  }
-  .reader-byline {
-    font-size: 12.5px;
-    color: var(--text-3);
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-soft);
-  }
-  .reader-content {
-    font-size: 16px;
-    line-height: 1.75;
-    color: var(--text);
-  }
-  .reader-content p { margin: 0 0 1.2em; }
-  .reader-content h2, .reader-content h3 {
-    font-family: var(--tweak-heading-font, 'DM Serif Display', Georgia, serif);
-    margin: 1.6em 0 0.5em;
-    color: var(--text);
-  }
-  .reader-content h2 { font-size: 20px; }
-  .reader-content h3 { font-size: 17px; }
-  .reader-content img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin: 1em 0;
-    display: block;
-  }
-  .reader-content a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
-  .reader-content blockquote {
-    border-left: 3px solid var(--border);
-    margin: 1em 0;
-    padding: 4px 16px;
-    color: var(--text-2);
-    font-style: italic;
-  }
-  .reader-end-note {
-    margin-top: 40px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border-soft);
-    font-size: 11.5px;
-    color: var(--text-3);
-    text-align: center;
-  }
-  .reader-end-note a { color: var(--text-3); text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -4289,50 +3459,11 @@
       <input type="search" id="search" placeholder="Haberlerde ara…" autocomplete="off">
     </div>
     <div class="header-stat" id="header-stats"></div>
-
-    <!-- Eski tasarıma dön -->
-    <a href="index_eski.html" class="design-switch-btn" title="Eski tasarıma dön">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-        <path d="M3 3v5h5"/>
-      </svg>
-      <span>Eski tasarım</span>
+    <!-- Yeni tasarıma geç -->
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:20px;font-size:11.5px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.65);font-family:'Inter',sans-serif;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:background .2s" title="Yeni tasarıma geç">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>Yeni tasarım</span>
     </a>
-
-    <!-- Mobile gear trigger — sadece dar ekranlarda görünür -->
-    <button class="hdr-tools-trigger" id="hdr-tools-trigger" aria-label="Görünüm ayarları" aria-expanded="false" aria-controls="hdr-tools-group">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-      </svg>
-    </button>
-
-    <div class="hdr-tools-group" id="hdr-tools-group">
-
-    <!-- Yazı tipi seçici -->
-    <div class="hdr-pref-wrap">
-      <button class="hdr-pref-btn" id="hdr-font-btn" aria-label="Yazı tipi" title="Yazı tipi" aria-haspopup="true" aria-expanded="false">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/>
-          <path d="M9 20h6"/>
-          <path d="M12 4v16"/>
-        </svg>
-      </button>
-      <div class="hdr-pref-panel" id="hdr-font-panel" role="menu"></div>
-    </div>
-
-    <!-- Bilgi yoğunluğu seçici -->
-    <div class="hdr-pref-wrap">
-      <button class="hdr-pref-btn" id="hdr-density-btn" aria-label="Bilgi yoğunluğu" title="Bilgi yoğunluğu" aria-haspopup="true" aria-expanded="false">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="4" y1="6" x2="20" y2="6"/>
-          <line x1="4" y1="12" x2="20" y2="12"/>
-          <line x1="4" y1="18" x2="20" y2="18"/>
-        </svg>
-      </button>
-      <div class="hdr-pref-panel" id="hdr-density-panel" role="menu"></div>
-    </div>
-
     <!-- Theme toggle -->
     <button class="theme-toggle" id="theme-toggle-btn" aria-label="Tema değiştir" title="Karanlık / Aydınlık">
       <!-- Sun (shown in dark mode) -->
@@ -4348,31 +3479,7 @@
   </div>
 </header>
 
-<!-- Tab navigation (between header and filter bar) -->
-<div class="main-tabs-wrap">
-  <div class="main-tabs">
-    <button class="main-tab main-tab-active" id="tab-news-btn" onclick="switchTab('news')">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
-      Haberler
-    </button>
-    <button class="main-tab" id="tab-dash-btn" onclick="switchTab('dashboard')">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="6" height="8" rx="1"/><rect x="10" y="3" width="12" height="4" rx="1"/><rect x="10" y="11" width="12" height="4" rx="1"/><rect x="2" y="15" width="6" height="6" rx="1"/><rect x="10" y="19" width="12" height="2" rx="1"/></svg>
-      Dashboard
-    </button>
-    <button class="main-tab" id="tab-todo-btn" onclick="switchTab('todo')" style="display:none">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-      Yapılacaklar &amp; Kontroller
-    </button>
-  </div>
-</div>
-
 <div class="filter-bar">
-  <button class="filter-scroll-arrow filter-scroll-left" type="button" aria-label="Filtreleri sola kaydır">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-  </button>
-  <button class="filter-scroll-arrow filter-scroll-right" type="button" aria-label="Filtreleri sağa kaydır">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-  </button>
   <div class="filter-bar-inner">
 
     <!-- News filters (shown when Haberler tab is active) -->
@@ -4560,10 +3667,25 @@
     </div>
 
   </div>
-  <div class="scroll-fade" aria-hidden="true"></div>
 </div>
 
 <main class="main" id="main">
+
+  <!-- Tab navigation -->
+  <div class="main-tabs">
+    <button class="main-tab main-tab-active" id="tab-news-btn" onclick="switchTab('news')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
+      Haberler
+    </button>
+    <button class="main-tab" id="tab-dash-btn" onclick="switchTab('dashboard')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="6" height="8" rx="1"/><rect x="10" y="3" width="12" height="4" rx="1"/><rect x="10" y="11" width="12" height="4" rx="1"/><rect x="2" y="15" width="6" height="6" rx="1"/><rect x="10" y="19" width="12" height="2" rx="1"/></svg>
+      Dashboard
+    </button>
+    <button class="main-tab" id="tab-todo-btn" onclick="switchTab('todo')" style="display:none">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Yapılacaklar &amp; Kontroller
+    </button>
+  </div>
 
   <!-- News panel -->
   <div id="news-panel">
@@ -5802,16 +4924,9 @@ function buildCardHTML(article) {
         <div class="card-title">${article.title || ''}</div>
         <div class="card-summary">${article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>'}</div>
         ${etkiHtml}
-        <div class="card-spacer"></div>
         ${hasAnalysis ? `
           <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(analysisVal||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 3v18h18"/>
-              <path d="M7 14l4-4 3 3 5-6"/>
-              <circle cx="11" cy="10" r="1" fill="currentColor" stroke="none"/>
-              <circle cx="14" cy="13" r="1" fill="currentColor" stroke="none"/>
-              <circle cx="19" cy="7" r="1.4" fill="currentColor" stroke="none"/>
-            </svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
             Analiz
           </button>
         ` : ''}
@@ -5912,7 +5027,6 @@ function renderCards(articles) {
     byDate[date].forEach((article, i) => {
       const card = document.createElement('div');
       card.className = 'article-card';
-      if (article.id != null) card.dataset.articleId = String(article.id);
       card.style.animationDelay = `${Math.min(cardIdx, 8) * 35}ms`;
       card.innerHTML = buildCardHTML(article);
       grid.appendChild(card);
@@ -7024,21 +6138,7 @@ function loadCustomEntities() {
 }
 
 Promise.all([
-  (async () => {
-    let lastErr;
-    for (let attempt = 0; attempt < 5; attempt++) {
-      try {
-        const url = attempt === 0 ? DATA_URL : ('data.json?retry=' + attempt + '_' + Date.now());
-        const r = await fetch(url, { cache: 'no-store' });
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return await r.json();
-      } catch (e) {
-        lastErr = e;
-        if (attempt < 4) await new Promise(res => setTimeout(res, 300 * Math.pow(2, attempt)));
-      }
-    }
-    throw new Error('Veri kaynağına ulaşılamadı: ' + (lastErr && lastErr.message));
-  })(),
+  fetch(DATA_URL, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('Veri kaynağına ulaşılamadı'); return r.json(); }),
   loadCustomEntities()
 ])
   .then(async ([data]) => {
@@ -7151,7 +6251,7 @@ Promise.all([
   <div class="analysis-drawer-handle"></div>
   <div class="analysis-drawer-header">
     <span class="analysis-drawer-label">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;margin-right:4px"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
       Analiz
     </span>
     <button class="analysis-drawer-close" onclick="closeAnalysisDrawer()" aria-label="Kapat">&#x2715;</button>
@@ -9947,189 +9047,5 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   }
 })();
 </script>
-<!-- Mobile filter-bar scroll arrows -->
-<script>
-(() => {
-  const bar = document.querySelector('.filter-bar');
-  const inner = document.querySelector('.filter-bar-inner');
-  const leftArr = document.querySelector('.filter-scroll-left');
-  const rightArr = document.querySelector('.filter-scroll-right');
-  if (!bar || !inner || !leftArr || !rightArr) return;
-
-  function updateBoundaries() {
-    const sl = inner.scrollLeft;
-    const max = inner.scrollWidth - inner.clientWidth;
-    bar.dataset.scrollLeft  = sl <= 2 ? '0' : '1';
-    bar.dataset.scrollRight = (max - sl) <= 2 ? '0' : '1';
-  }
-
-  function step(dir) {
-    const amount = Math.max(140, inner.clientWidth * 0.7);
-    inner.scrollBy({ left: dir * amount, behavior: 'smooth' });
-  }
-
-  leftArr.addEventListener('click', () => step(-1));
-  rightArr.addEventListener('click', () => step(1));
-  inner.addEventListener('scroll', updateBoundaries, { passive: true });
-  window.addEventListener('resize', updateBoundaries);
-  // Re-check when tab switches (chips may change)
-  const mo = new MutationObserver(() => requestAnimationFrame(updateBoundaries));
-  mo.observe(inner, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
-  // Initial
-  setTimeout(updateBoundaries, 100);
-  updateBoundaries();
-})();
-</script>
-<!-- Header preferences: font + density (user-facing, persisted to localStorage) -->
-<script>
-(() => {
-  'use strict';
-  const STORAGE_KEY = 'haber-bulteni-tweaks-v1';
-
-  const FONTS = [
-    ['', 'Varsayılan'],
-    ['Fraunces', 'Fraunces'],
-    ['Playfair Display', 'Playfair'],
-    ['Lato', 'Lato'],
-    ['DM Sans', 'DM Sans'],
-    ['Manrope', 'Manrope'],
-    ['Source Sans 3', 'Source Sans'],
-    ['Inter Tight', 'Inter Tight']
-  ];
-  const DENSITIES = [
-    ['compact', 'Sıkışık'],
-    ['off', 'Standart'],
-    ['spacious', 'Ferah']
-  ];
-
-  const checkSvg = '<svg class="opt-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-
-  function loadPrefs() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
-    catch(e) { return {}; }
-  }
-  function savePrefs(p) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch(e) {}
-  }
-  function applyFont(font) {
-    const r = document.documentElement;
-    if (font) {
-      r.style.setProperty('--tweak-heading-font', "'" + font + "', Georgia, serif");
-      r.setAttribute('data-tweak-font', '1');
-    } else {
-      r.style.removeProperty('--tweak-heading-font');
-      r.removeAttribute('data-tweak-font');
-    }
-  }
-  function applyDensity(d) {
-    const r = document.documentElement;
-    if (d && d !== 'off') r.setAttribute('data-tweak-density', d);
-    else r.removeAttribute('data-tweak-density');
-  }
-
-  function isSelected(val, current, fallbackEmpty) {
-    if (val === current) return true;
-    if (!current && (val === '' || (fallbackEmpty && val === 'off'))) return true;
-    return false;
-  }
-
-  function buildPanel(panelEl, opts, currentVal, fallbackEmpty, onPick) {
-    panelEl.innerHTML = opts.map(([val, label, sub]) => `
-      <button class="hdr-pref-opt ${isSelected(val, currentVal, fallbackEmpty) ? 'on' : ''}" data-val="${val}" style="${val && val !== 'off' ? "font-family:'" + val + "',Georgia,serif" : ''}">
-        ${checkSvg}
-        <span>${label}</span>
-        ${sub ? `<span class="opt-sub">${sub}</span>` : ''}
-      </button>
-    `).join('');
-    panelEl.querySelectorAll('.hdr-pref-opt').forEach(btn => {
-      btn.addEventListener('click', () => onPick(btn.dataset.val));
-    });
-  }
-
-  const fontBtn = document.getElementById('hdr-font-btn');
-  const densityBtn = document.getElementById('hdr-density-btn');
-  const fontPanel = document.getElementById('hdr-font-panel');
-  const densityPanel = document.getElementById('hdr-density-panel');
-  if (!fontBtn || !densityBtn || !fontPanel || !densityPanel) return;
-
-  function rebuildPanels() {
-    const prefs = loadPrefs();
-    buildPanel(fontPanel, FONTS, prefs.headingFont, false, val => {
-      prefs.headingFont = val;
-      savePrefs(prefs);
-      applyFont(val);
-      rebuildPanels();
-      closeAll();
-    });
-    buildPanel(densityPanel, DENSITIES, prefs.density, true, val => {
-      prefs.density = val;
-      savePrefs(prefs);
-      applyDensity(val);
-      rebuildPanels();
-      closeAll();
-    });
-  }
-
-  function closeAll() {
-    fontPanel.classList.remove('open');
-    densityPanel.classList.remove('open');
-    fontBtn.setAttribute('aria-expanded', 'false');
-    densityBtn.setAttribute('aria-expanded', 'false');
-  }
-
-  function togglePanel(btn, panel) {
-    const isOpen = panel.classList.contains('open');
-    closeAll();
-    if (!isOpen) {
-      panel.classList.add('open');
-      btn.setAttribute('aria-expanded', 'true');
-    }
-  }
-
-  fontBtn.addEventListener('click', e => { e.stopPropagation(); togglePanel(fontBtn, fontPanel); });
-  densityBtn.addEventListener('click', e => { e.stopPropagation(); togglePanel(densityBtn, densityPanel); });
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.hdr-pref-wrap')) closeAll();
-  });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeAll();
-  });
-
-  // Apply current prefs (head script already applied; this re-syncs)
-  const prefs = loadPrefs();
-  applyFont(prefs.headingFont || '');
-  applyDensity(prefs.density || '');
-
-  rebuildPanels();
-})();
-</script>
-
-<script>
-// Mobile gear: toggle hdr-tools-group visibility
-(function() {
-  const trigger = document.getElementById('hdr-tools-trigger');
-  const group = document.getElementById('hdr-tools-group');
-  if (!trigger || !group) return;
-  trigger.addEventListener('click', function(e) {
-    e.stopPropagation();
-    const open = group.classList.toggle('open');
-    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('#hdr-tools-group') && !e.target.closest('#hdr-tools-trigger')) {
-      group.classList.remove('open');
-      trigger.setAttribute('aria-expanded', 'false');
-    }
-  });
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      group.classList.remove('open');
-      trigger.setAttribute('aria-expanded', 'false');
-    }
-  });
-})();
-</script>
-
-<script src="news-reader.js"></script>
 </body>
 </html>
