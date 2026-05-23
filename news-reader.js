@@ -33,9 +33,12 @@
   ];
 
   const cache = new Map();
+  const translationCache = new Map();
   let modal = null;
   let readabilityLoaded = null;
   let stylesInjected = false;
+  let currentArticle = null;
+  let currentSourceUrl = null;
 
   // ── CSS — bir kez DOM'a eklenir ──────────────────────────────────
   function injectStyles() {
@@ -254,6 +257,72 @@
   transition: opacity 0.15s ease;
 }
 .reader-error-v2-open:hover { opacity: 0.88; }
+
+/* ── Reader Translate Panel ────────────────── */
+.reader-body-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.reader-translate-panel {
+  display: none;
+  width: 50%;
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  background: var(--surface-2, #fafafa);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.reader-translate-panel::-webkit-scrollbar { width: 5px; }
+.reader-translate-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.reader-window {
+  transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.reader-window.translate-open {
+  width: min(1300px, calc(100vw - 48px)) !important;
+}
+.reader-window.translate-open .reader-translate-panel {
+  display: block;
+}
+
+.reader-translate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.13s;
+}
+.reader-translate-btn:hover { background: var(--bg); color: var(--text); }
+.reader-translate-btn.active {
+  background: rgba(29, 111, 232, 0.08);
+  border-color: var(--accent, #1D6FE8);
+  color: var(--accent, #1D6FE8);
+}
+
+@media (max-width: 768px) {
+  .reader-window.translate-open {
+    width: calc(100vw - 24px) !important;
+  }
+  .reader-body-wrapper.translate-active {
+    flex-direction: column;
+  }
+  .reader-window.translate-open .reader-translate-panel {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    height: 50%;
+  }
+}
     `;
     document.head.appendChild(el);
   }
@@ -543,6 +612,173 @@
     });
   }
 
+  // ── Translation Utilities ────────────────────────────────────────
+  async function translateText(text, targetLang = 'tr') {
+    if (!text || !text.trim()) return '';
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data && data[0]) {
+      return data[0].map(x => x ? x[0] : '').join('');
+    }
+    throw new Error('Geçersiz yanıt');
+  }
+
+  async function translateArticleContent(contentNode) {
+    const cloned = contentNode.cloneNode(true);
+    const elements = Array.from(cloned.querySelectorAll('p, h2, h3, li, blockquote'));
+    
+    if (elements.length === 0) {
+      const txt = cloned.innerText;
+      if (txt) {
+        cloned.innerText = await translateText(txt);
+      }
+      return cloned.innerHTML;
+    }
+    
+    const batches = [];
+    let currentBatch = [];
+    let currentLen = 0;
+    
+    for (const el of elements) {
+      const text = el.textContent.trim();
+      if (!text) continue;
+      
+      if (currentLen + text.length > 2000 && currentBatch.length > 0) {
+        batches.push(currentBatch);
+        currentBatch = [];
+        currentLen = 0;
+      }
+      
+      currentBatch.push({ el, text });
+      currentLen += text.length;
+    }
+    if (currentBatch.length > 0) {
+      batches.push(currentBatch);
+    }
+    
+    for (const batch of batches) {
+      const joinedText = batch.map(item => item.text).join('\n\n');
+      try {
+        const translatedJoined = await translateText(joinedText);
+        const translatedTexts = translatedJoined.split(/\n\s*\n/);
+        
+        if (translatedTexts.length !== batch.length) {
+          throw new Error('Split length mismatch');
+        }
+        
+        batch.forEach((item, idx) => {
+          const trans = translatedTexts[idx] || item.text;
+          item.el.innerText = trans.trim();
+        });
+      } catch (err) {
+        console.error('Batch translation failed or length mismatched, falling back to individual translation:', err);
+        for (const item of batch) {
+          try {
+            item.el.innerText = await translateText(item.text);
+          } catch (_) {}
+        }
+      }
+    }
+    
+    return cloned.innerHTML;
+  }
+
+  async function toggleTranslation() {
+    const win = modal.querySelector('#reader-window');
+    const panel = modal.querySelector('#reader-translate-panel');
+    const content = modal.querySelector('#reader-translate-content');
+    const btn = modal.querySelector('#reader-translate');
+    const wrapper = modal.querySelector('#reader-body-wrapper');
+    
+    if (!win || !panel || !content || !btn) return;
+    
+    const isOpen = win.classList.contains('translate-open');
+    
+    if (isOpen) {
+      win.classList.remove('translate-open');
+      btn.classList.remove('active');
+      if (wrapper) wrapper.classList.remove('translate-active');
+      setTimeout(() => { panel.style.display = 'none'; }, 300);
+    } else {
+      panel.style.display = 'block';
+      panel.offsetHeight; // Reflow
+      win.classList.add('translate-open');
+      btn.classList.add('active');
+      if (wrapper) wrapper.classList.add('translate-active');
+      
+      const cacheKey = currentSourceUrl;
+      if (translationCache.has(cacheKey)) {
+        content.innerHTML = translationCache.get(cacheKey);
+      } else {
+        content.innerHTML = `
+          <div class="reader-loading">
+            <div class="reader-spinner"></div>
+            <div class="reader-loading-text">
+              <strong>Türkçe'ye çevriliyor...</strong>
+              <span class="reader-loading-sub">Google Translate kullanılıyor.</span>
+            </div>
+          </div>
+        `;
+        
+        try {
+          const articleContentNode = modal.querySelector('#reader-body .reader-content');
+          const articleTitleNode = modal.querySelector('#reader-body .reader-title');
+          const articleBylineNode = modal.querySelector('#reader-body .reader-byline');
+          
+          if (!articleContentNode) {
+            content.innerHTML = '<div class="reader-error"><div class="reader-error-title">Hata</div><div class="reader-error-msg">Okunacak içerik bulunamadı.</div></div>';
+            return;
+          }
+          
+          const originalTitle = articleTitleNode ? articleTitleNode.textContent : (currentArticle ? currentArticle.title : '');
+          const originalBylineText = articleBylineNode ? articleBylineNode.textContent : '';
+          
+          const [translatedTitle, translatedByline, translatedContentHtml] = await Promise.all([
+            translateText(originalTitle),
+            originalBylineText ? translateText(originalBylineText) : Promise.resolve(''),
+            translateArticleContent(articleContentNode)
+          ]);
+          
+          const html = `
+            <article class="reader-article">
+              <h1 class="reader-title">${escapeHtml(translatedTitle)}</h1>
+              ${translatedByline ? `<div class="reader-byline">${escapeHtml(translatedByline)}</div>` : ''}
+              <div class="reader-content">${translatedContentHtml}</div>
+            </article>
+          `;
+          
+          translationCache.set(cacheKey, html);
+          content.innerHTML = html;
+        } catch (err) {
+          content.innerHTML = `
+            <div class="reader-error-v2">
+              <div class="reader-error-v2-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              </div>
+              <div class="reader-error-v2-title">Çeviri Başarısız</div>
+              <div class="reader-error-v2-msg">Haber metni çevrilemedi. Lütfen daha sonra tekrar deneyin.</div>
+              <div class="reader-error-v2-hint">${escapeHtml(err.message)}</div>
+              <div class="reader-error-v2-actions">
+                <button class="reader-error-v2-retry" id="rs-translate-retry">Tekrar dene</button>
+              </div>
+            </div>
+          `;
+          content.querySelector('#rs-translate-retry')?.addEventListener('click', () => {
+            translationCache.delete(cacheKey);
+            toggleTranslation();
+            toggleTranslation();
+          });
+        }
+      }
+    }
+  }
+
   // ── Build modal once ─────────────────────────────────────────────
   function buildModal() {
     if (modal) return modal;
@@ -551,11 +787,17 @@
     modal.id = 'reader-modal';
     modal.innerHTML = `
       <div class="reader-backdrop" data-close="1"></div>
-      <div class="reader-window" role="dialog" aria-modal="true" aria-label="Haber okuyucu">
+      <div class="reader-window" id="reader-window" role="dialog" aria-modal="true" aria-label="Haber okuyucu">
         <div class="reader-head">
           <div class="reader-head-meta">
             <div class="reader-source-tabs" id="reader-source-tabs"></div>
             <div class="reader-head-right">
+              <button class="reader-translate-btn" id="reader-translate" title="Türkçe'ye Çevir">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;">
+                  <path d="m5 8 6 6M4 14l6-6M2 2h10v10H2zM12 12h10v10H12z"/>
+                </svg>
+                Çevir
+              </button>
               <a class="reader-external-btn" id="reader-external" target="_blank" rel="noopener noreferrer" title="Kaynağı yeni sekmede aç">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
@@ -570,10 +812,16 @@
             </div>
           </div>
         </div>
-        <div class="reader-body" id="reader-body"></div>
+        <div class="reader-body-wrapper" id="reader-body-wrapper">
+          <div class="reader-body" id="reader-body"></div>
+          <div class="reader-translate-panel" id="reader-translate-panel">
+            <div class="reader-translate-content" id="reader-translate-content"></div>
+          </div>
+        </div>
       </div>
     `;
     document.body.appendChild(modal);
+    modal.querySelector('#reader-translate')?.addEventListener('click', toggleTranslation);
     modal.addEventListener('click', e => {
       if (e.target.closest('[data-close]')) closeModal();
     });
@@ -592,10 +840,21 @@
     if (!modal) return;
     modal.classList.remove('open');
     document.body.style.overflow = '';
+
+    // Reset translation panel states
+    const win = modal.querySelector('#reader-window');
+    const panel = modal.querySelector('#reader-translate-panel');
+    const btn = modal.querySelector('#reader-translate');
+    const wrapper = modal.querySelector('#reader-body-wrapper');
+    if (win) win.classList.remove('translate-open');
+    if (panel) panel.style.display = 'none';
+    if (btn) btn.classList.remove('active');
+    if (wrapper) wrapper.classList.remove('translate-active');
   }
 
   // ── Public API: open(article) ─────────────────────────────────
   async function openReader(article) {
+    currentArticle = article;
     const sources = (article._sources && article._sources.length > 0)
       ? article._sources
       : [{ source: article.source, link: article.link }];
@@ -604,11 +863,24 @@
 
     let activeIdx = 0;
     const loadSource = async (idx, isRetry) => {
+      // Reset translation state for this source load
+      const win = modal.querySelector('#reader-window');
+      const panel = modal.querySelector('#reader-translate-panel');
+      const btn = modal.querySelector('#reader-translate');
+      const wrapper = modal.querySelector('#reader-body-wrapper');
+      const content = modal.querySelector('#reader-translate-content');
+      if (win) win.classList.remove('translate-open');
+      if (panel) panel.style.display = 'none';
+      if (btn) btn.classList.remove('active');
+      if (wrapper) wrapper.classList.remove('translate-active');
+      if (content) content.innerHTML = '';
+
       activeIdx = idx;
       renderSourceTabs(sources, idx, loadSource);
       const src = sources[idx];
       if (!src || !src.link) { setError('Bu kaynağın linki yok.', null, null); return; }
       modal.querySelector('#reader-external').href = src.link;
+      currentSourceUrl = src.link;
 
       setStepLoading(getSourceLabel(src.source) || src.source);
       // Küçük bir delay ile ilk adımı göster (animasyon görünsün)
