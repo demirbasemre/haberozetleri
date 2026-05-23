@@ -1,0 +1,14 @@
+.DS_Store
+.agent/
+.claude/
+*.pyc
+__pycache__/
+data.json
+get.json
+jet.json
+test_*.js
+apply_duplicates.py
+find_duplicates_dryrun.py
+approval.html
+CODEMAP.md
+Antigravity/
