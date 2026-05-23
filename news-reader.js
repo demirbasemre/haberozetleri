@@ -344,8 +344,11 @@
   transition: background-color 0.15s ease;
   border-radius: 2px;
 }
-.reader-text-segment.highlight {
+#reader-body .reader-text-segment.highlight {
   background-color: rgba(29, 111, 232, 0.12) !important;
+}
+#reader-translate-panel .reader-text-segment.highlight {
+  background-color: rgba(16, 185, 129, 0.12) !important;
 }
 
 @media (max-width: 768px) {
@@ -665,14 +668,16 @@
   }
 
   async function translateArticleContent(contentNode) {
+    const sentenceRegex = /((?<!\b[a-zA-Z]\.)(?<!\b(?:Inc|Corp|Co|Ltd|Mr|Mrs|Ms|Dr|vs|eg|ie|ca|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec|vol|ed|pp|al|U\.S)\.)(?<=[.!?])\s+)/gi;
+
     // 1. Collect all text nodes with letters in the live contentNode
     const textNodes = [];
     function collectTextNodes(node) {
       if (node.nodeType === Node.TEXT_NODE) {
         const txt = node.nodeValue.trim();
-        // Only collect text nodes that have at least one letter (a-z, A-Z) to avoid translating bullet points, numbers, or pure symbols
+        // Only collect text nodes that have at least one letter
         if (txt.length > 0 && /[a-zA-Z]/.test(txt)) {
-          textNodes.push({ node, text: txt });
+          textNodes.push(node);
         }
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE' && node.tagName !== 'SPAN') {
@@ -684,29 +689,32 @@
     }
     collectTextNodes(contentNode);
     
-    // 2. Wrap them in span.reader-text-segment with data-segment-id
+    // 2. Split each text node into sentences, and wrap them in span.reader-text-segment with data-segment-id
     const segments = [];
-    textNodes.forEach((item, idx) => {
-      const orig = item.node.nodeValue;
-      const startSpace = orig.match(/^\s*/)[0];
-      const endSpace = orig.match(/\s*$/)[0];
+    let segmentIdx = 0;
+    
+    textNodes.forEach(node => {
+      const parent = node.parentNode;
+      const textVal = node.nodeValue;
       
-      const span = document.createElement('span');
-      span.className = 'reader-text-segment';
-      span.dataset.segmentId = idx;
-      span.textContent = item.text;
+      const parts = textVal.split(sentenceRegex);
       
-      const parent = item.node.parentNode;
-      if (startSpace) {
-        parent.insertBefore(document.createTextNode(startSpace), item.node);
-      }
-      parent.insertBefore(span, item.node);
-      if (endSpace) {
-        parent.insertBefore(document.createTextNode(endSpace), item.node);
-      }
-      parent.removeChild(item.node);
+      parts.forEach(part => {
+        if (part.trim().length > 0 && /[a-zA-Z]/.test(part)) {
+          const span = document.createElement('span');
+          span.className = 'reader-text-segment';
+          span.dataset.segmentId = segmentIdx;
+          span.textContent = part;
+          
+          parent.insertBefore(span, node);
+          segments.push({ span, text: part.trim(), id: segmentIdx });
+          segmentIdx++;
+        } else if (part.length > 0) {
+          parent.insertBefore(document.createTextNode(part), node);
+        }
+      });
       
-      segments.push({ span, text: item.text, id: idx });
+      parent.removeChild(node);
     });
     
     const cloned = contentNode.cloneNode(true);
