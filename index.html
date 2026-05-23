@@ -311,7 +311,7 @@
 
   /* ── FILTER BAR ──────────────────────────────── */
   .filter-bar {
-    background: var(--surface);
+    background: linear-gradient(to bottom, var(--surface) 0%, var(--bg) 100%);
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 122px;
@@ -330,14 +330,14 @@
     z-index: 85;
     pointer-events: none;
     background: linear-gradient(to bottom,
-      var(--surface) 0%,
-      var(--surface) 35%,
-      rgba(255,255,255,0) 100%);
+      var(--bg) 0%,
+      var(--bg) 35%,
+      rgba(244,244,245,0) 100%);
   }
   [data-theme="dark"] .scroll-fade {
     background: linear-gradient(to bottom,
-      var(--surface) 0%,
-      var(--surface) 35%,
+      var(--bg) 0%,
+      var(--bg) 35%,
       rgba(15,17,23,0) 100%);
   }
   @media (max-width: 768px) {
