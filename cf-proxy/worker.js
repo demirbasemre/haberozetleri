@@ -4,6 +4,9 @@ const ALLOWED_ORIGINS = [
   'http://127.0.0.1:3457',
 ];
 
+// Tailscale Funnel üzerindeki fetch-proxy (ev IP'si ile çeker)
+const FUNNEL_URL = 'https://tower.tail2cc03.ts.net';
+
 export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
@@ -38,7 +41,6 @@ export default {
       });
     }
 
-    // Only allow http/https
     if (!['http:', 'https:'].includes(parsed.protocol)) {
       return new Response(JSON.stringify({ error: 'protocol not allowed' }), {
         status: 403,
@@ -46,6 +48,28 @@ export default {
       });
     }
 
+    // Önce Tailscale Funnel üzerindeki ev proxy'sini dene
+    try {
+      const funnelResp = await fetch(
+        `${FUNNEL_URL}/?url=${encodeURIComponent(targetUrl)}`,
+        { signal: AbortSignal.timeout(15000) }
+      );
+      if (funnelResp.ok) {
+        const contentType = funnelResp.headers.get('content-type') || 'text/html';
+        const body = await funnelResp.text();
+        return new Response(body, {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': contentType,
+            'X-Proxy': 'tailscale-funnel',
+            'Cache-Control': 'public, max-age=300',
+          },
+        });
+      }
+    } catch (_) { /* funnel erişilemez — doğrudan dene */ }
+
+    // Fallback: CF datacenter'ından doğrudan çek
     try {
       const response = await fetch(targetUrl, {
         headers: {
@@ -65,6 +89,7 @@ export default {
         headers: {
           ...corsHeaders,
           'Content-Type': contentType,
+          'X-Proxy': 'cf-direct',
           'X-Proxy-Status': String(response.status),
           'Cache-Control': 'public, max-age=300',
         },
