@@ -311,7 +311,20 @@
 
   /* ── FILTER BAR ──────────────────────────────── */
   .filter-bar {
-    background: linear-gradient(to bottom, #d8d8d8 0%, var(--bg) 100%);
+    background-image: linear-gradient(
+      to bottom,
+      var(--navy)   0px,
+      var(--navy)   60px,
+      #2a2a2a       88px,
+      #787878       122px,
+      #d0d0d0       174px,
+      var(--bg)     210px
+    );
+    background-attachment: fixed;
+    background-size: 100% 210px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-color: var(--bg);
     border-bottom: 1px solid var(--border);
     position: sticky;
     top: 122px;
@@ -326,19 +339,13 @@
     top: 100%;
     left: 0;
     right: 0;
-    height: 28px;
+    height: 32px;
     z-index: 85;
     pointer-events: none;
-    background: linear-gradient(to bottom,
-      var(--bg) 0%,
-      var(--bg) 35%,
-      rgba(244,244,245,0) 100%);
+    background: linear-gradient(to bottom, var(--bg) 0%, rgba(244,244,245,0) 100%);
   }
   [data-theme="dark"] .scroll-fade {
-    background: linear-gradient(to bottom,
-      var(--bg) 0%,
-      var(--bg) 35%,
-      rgba(15,17,23,0) 100%);
+    background: linear-gradient(to bottom, var(--bg) 0%, rgba(15,17,23,0) 100%);
   }
   @media (max-width: 768px) {
     .scroll-fade { height: 22px; }
@@ -2018,13 +2025,20 @@
     position: sticky;
     top: 60px;
     z-index: 95;
-    background: linear-gradient(
+    background-image: linear-gradient(
       to bottom,
-      var(--navy)  0%,
-      #1c1c1c     30%,
-      #787878     65%,
-      #d8d8d8    100%
+      var(--navy)   0px,
+      var(--navy)   60px,
+      #2a2a2a       88px,
+      #787878       122px,
+      #d0d0d0       174px,
+      var(--bg)     210px
     );
+    background-attachment: fixed;
+    background-size: 100% 210px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-color: var(--bg);
     border-bottom: none;
   }
   .main-tab {
@@ -2059,17 +2073,18 @@
   [data-theme="dark"] .main-tab.main-tab-active {
     box-shadow: 0 2px 12px rgba(255,77,90,0.45), 0 1px 2px rgba(0,0,0,0.4);
   }
-  [data-theme="dark"] .main-tabs-wrap {
-    background: linear-gradient(
-      to bottom,
-      var(--navy)  0%,
-      #0d1120     30%,
-      #161d2e     65%,
-      #1c2130    100%
-    );
-  }
+  [data-theme="dark"] .main-tabs-wrap,
   [data-theme="dark"] .filter-bar {
-    background: linear-gradient(to bottom, #1c2130 0%, var(--bg) 100%);
+    background-image: linear-gradient(
+      to bottom,
+      var(--navy)   0px,
+      var(--navy)   60px,
+      #0d0d10       88px,
+      #22222c       122px,
+      #1a1d28       174px,
+      var(--bg)     210px
+    );
+    background-color: var(--bg);
   }
 
   @media (max-width: 640px) {
