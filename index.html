@@ -357,7 +357,7 @@
     background: linear-gradient(to bottom, var(--bg) 0%, rgba(15,17,23,0) 100%);
   }
   @media (max-width: 768px) {
-    .scroll-fade { height: 22px; }
+    .scroll-fade { display: none; }
   }
 
   /* Mobile-only filter scroll arrows — hidden on desktop */
@@ -1192,7 +1192,7 @@
       top: 108px;
       z-index: 90;
       height: 48px;
-      background-color: var(--bg);
+      background: var(--bg) !important;
       border-bottom: 1px solid var(--border);
     }
     .filter-bar-inner {
@@ -2163,21 +2163,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-image: none;
-      background-color: var(--navy);
+      background: var(--navy) !important;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .filter-bar {
-      background-image: none;
-      background-attachment: scroll;
-      background-color: var(--bg);
+      background: var(--bg) !important;
     }
     [data-theme="dark"] .main-tabs-wrap {
-      background-image: none;
-      background-color: var(--navy);
+      background: var(--navy) !important;
     }
     [data-theme="dark"] .filter-bar {
-      background-color: var(--bg);
+      background: var(--bg) !important;
     }
     /* Mobil kaydırma oku gölgeleri — var(--bg) ile eşleştir */
     .filter-bar::before {
