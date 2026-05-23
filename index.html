@@ -9023,9 +9023,15 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   // Düzenleme modu — localStorage + URL parametresi (?edit=1)
   window.toggleEditMode = function(on) {
     const want = (typeof on === 'boolean') ? on : !document.body.classList.contains('edit-mode');
-    document.body.classList.toggle('edit-mode', want);
-    if (want) localStorage.setItem('editMode', '1');
-    else localStorage.removeItem('editMode');
+    if (!want) {
+      localStorage.removeItem('editMode');
+      const url = new URL(location.href);
+      url.searchParams.delete('edit');
+      location.replace(url.toString()); // URL'den ?edit=1 kaldır + sayfayı yenile
+      return;
+    }
+    document.body.classList.add('edit-mode');
+    localStorage.setItem('editMode', '1');
   };
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && document.getElementById('editorModal').classList.contains('open')) {
