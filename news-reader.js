@@ -286,6 +286,9 @@
 .reader-window.translate-open .reader-translate-panel {
   display: block;
 }
+.reader-window.translate-open .reader-hero {
+  display: none;
+}
 
 .reader-translate-btn {
   display: inline-flex;
