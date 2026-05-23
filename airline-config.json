@@ -25,5 +25,14 @@
     "icon_url": "",
     "keywords": "etihad",
     "merge_with": []
+  },
+  {
+    "airline_id": "british",
+    "label": "British Airways",
+    "region": "europe",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "british airways",
+    "merge_with": []
   }
 ]
