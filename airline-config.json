@@ -7,5 +7,14 @@
     "icon_url": "",
     "keywords": "emirates",
     "merge_with": []
+  },
+  {
+    "airline_id": "qatar",
+    "label": "Qatar Airways",
+    "region": "mideast",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "qatar airways,qatar cargo",
+    "merge_with": []
   }
 ]
