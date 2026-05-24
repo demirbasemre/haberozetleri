@@ -567,21 +567,22 @@
             const pathname = new URL(urlStr, url).pathname;
             const filename = pathname.substring(pathname.lastIndexOf('/') + 1);
             const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
-            return nameWithoutExt.replace(/-(scaled|\d+x\d+)$/i, '');
+            return nameWithoutExt.toLowerCase().replace(/-(scaled|\d+x\d+)$/i, '');
           } catch (_) { return ''; }
         };
         const ogBase = getBaseFilename(ogImage);
         if (ogBase) {
-          const firstImg = docClone.querySelector('img');
-          if (firstImg) {
-            const firstImgSrc = firstImg.src || firstImg.getAttribute('data-src') || firstImg.getAttribute('src') || '';
-            if (firstImgSrc && getBaseFilename(firstImgSrc) === ogBase) {
-              // Only remove if it's not inside a figure (to preserve captioned body images if they happen to be first)
-              if (!firstImg.closest('figure')) {
-                firstImg.remove();
+          docClone.querySelectorAll('img').forEach(img => {
+            const imgSrc = img.src || img.getAttribute('data-src') || img.getAttribute('src') || '';
+            if (imgSrc && getBaseFilename(imgSrc) === ogBase) {
+              const parentFig = img.closest('figure');
+              if (parentFig) {
+                parentFig.remove();
+              } else {
+                img.remove();
               }
             }
-          }
+          });
         }
       }
     } catch (_) {}
