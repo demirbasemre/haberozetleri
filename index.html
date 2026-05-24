@@ -3338,6 +3338,79 @@
     vertical-align: middle;
   }
 
+  /* ── AI Title Clickable Link Style ── */
+  .ai-title-link {
+    color: var(--red);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .ai-title-link:hover {
+    color: #ff1c2a;
+    text-decoration-style: solid;
+    background: var(--red-muted);
+    border-radius: 4px;
+    padding: 0 4px;
+    margin: 0 -4px;
+  }
+  [data-theme="dark"] .ai-title-link:hover {
+    color: #ff4d5a;
+  }
+
+  /* ── Glassmorphism Reset Bar ── */
+  #ai-filter-reset-container {
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: var(--shadow-sm);
+    animation: fadeUp 0.3s ease-out both;
+  }
+  [data-theme="dark"] #ai-filter-reset-container {
+    background: rgba(26, 29, 39, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  .ai-filter-reset-label {
+    font-size: 13.5px;
+    color: var(--text);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #ai-filter-reset-btn {
+    border: none;
+    background: var(--red);
+    color: #ffffff;
+    padding: 8px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(227, 6, 19, 0.2);
+  }
+  #ai-filter-reset-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(227, 6, 19, 0.35);
+    background: #ff1c2a;
+  }
+  #ai-filter-reset-btn:active {
+    transform: translateY(0);
+  }
+
   /* ── Dropdown and Header Title Styles ── */
   #ai-header-title-container {
     cursor: pointer;
@@ -5253,6 +5326,16 @@
       <h3>Sonuç bulunamadı</h3>
       <p>Farklı arama veya filtre deneyin.</p>
     </div>
+    <div id="ai-filter-reset-container">
+      <span class="ai-filter-reset-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        <span>Yapay zeka yanıtına göre filtrelendi</span>
+      </span>
+      <button id="ai-filter-reset-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Sıfırla
+      </button>
+    </div>
     <div id="cards-container"></div>
   </div>
 
@@ -6878,6 +6961,8 @@ function render() {
   const filtered = getFilteredArticles();
   renderCards(filtered);
   updateStats(filtered, allArticles.length);
+  const resetContainer = document.getElementById('ai-filter-reset-container');
+  if (resetContainer) resetContainer.style.display = 'none';
 }
 
 // ── Airline filter builder (sütunlu layout) ──────────────────
@@ -10271,27 +10356,43 @@ async function loadDashboard() {
     const escaped = text
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     
-    // Replace [N] references with styled HTML links matching webhook metadata
-    const parsedText = escaped.replace(/\[(\d+)\]/g, (match, num) => {
-      const idx = parseInt(num) - 1;
-      if (articlesMeta && articlesMeta[idx]) {
-        const art = articlesMeta[idx];
-        return `<a href="${art.url || '#'}" target="_blank" class="ai-citation-pill" title="${art.title || ''}">${num}</a>`;
-      }
-      return `<span class="ai-citation-pill-plain">${match}</span>`;
-    });
-
-    const lines = parsedText.split('\n');
+    const lines = escaped.split('\n');
     return lines.map(line => {
       const trimmed = line.trim();
       if (!trimmed) return '<span class="ai-line-empty"></span>';
-      const bulletMatch = trimmed.match(/^[•\-\*]\s+(.+)/);
-      if (bulletMatch) {
-        const content = bulletMatch[1].replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        return `<span class="ai-bullet-line">${content}</span>`;
+      
+      // Check if there is a citation like [N] in this line
+      const citationMatch = trimmed.match(/\[(\d+)\]/);
+      let art = null;
+      if (citationMatch) {
+        const idx = parseInt(citationMatch[1]) - 1;
+        if (articlesMeta && articlesMeta[idx]) {
+          art = articlesMeta[idx];
+        }
       }
-      const content = trimmed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-      return `<span class="ai-line">${content}</span>`;
+
+      // Remove the citation [N] from the line text, also clean up nearby colons and spaces
+      const cleanLine = trimmed.replace(/\s*\[\d+\]\s*:\s*/g, ': ').replace(/\s*\[\d+\]/g, '');
+
+      // Format bold text **...**
+      // If there is an associated article, we wrap the bold text in a clickable link.
+      // Otherwise, we wrap it in a strong tag.
+      let formattedContent = cleanLine;
+      if (art) {
+        const targetUrl = art.url || art.link || '';
+        const encodedUrl = encodeURIComponent(targetUrl);
+        formattedContent = cleanLine.replace(/\*\*(.*?)\*\*/g, (m, p1) => {
+          return `<a href="#" onclick="window.filterByArticle(event, '${encodedUrl}')" class="ai-title-link" title="Karta git: ${p1}">${p1}</a>`;
+        });
+      } else {
+        formattedContent = cleanLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      }
+
+      const bulletMatch = formattedContent.match(/^[•\-\*]\s+(.+)/);
+      if (bulletMatch) {
+        return `<span class="ai-bullet-line">${bulletMatch[1]}</span>`;
+      }
+      return `<span class="ai-line">${formattedContent}</span>`;
     }).join('');
   }
 
@@ -10338,8 +10439,20 @@ async function loadDashboard() {
     panel.classList.remove('open');
     renderCards(matched);
     updateStats(matched, allA.length);
-    const cardsEl = document.getElementById('cards');
+    const cardsEl = document.getElementById('cards-container');
     if (cardsEl) setTimeout(() => cardsEl.scrollIntoView({ behavior: 'smooth' }), 100);
+
+    const resetContainer = document.getElementById('ai-filter-reset-container');
+    if (resetContainer) {
+      resetContainer.style.display = 'flex';
+      resetContainer.style.opacity = '0';
+      resetContainer.style.transform = 'translateY(12px)';
+      requestAnimationFrame(() => {
+        resetContainer.style.transition = 'all 0.3s ease-out';
+        resetContainer.style.opacity = '1';
+        resetContainer.style.transform = 'translateY(0)';
+      });
+    }
   }
 
   // ── Bottom Feedback Container Management ───────────────────────────
@@ -10475,6 +10588,56 @@ async function loadDashboard() {
       addMsg('Bağlantı hatası. Lütfen tekrar deneyin.', 'bot');
     }
     sendB.disabled = false;
+  }
+
+  // Expose global filtering function called by clicked AI titles
+  window.filterByArticle = function(event, encodedUrl) {
+    if (event) event.preventDefault();
+    const url = decodeURIComponent(encodedUrl);
+    if (!url) return;
+    
+    // Find the matching article in allArticles
+    const allA = (typeof allArticles !== 'undefined') ? allArticles : [];
+    const matched = allA.filter(a => a.link === url || a.articleUrl === url);
+    if (matched.length === 0) return;
+    
+    // Close AI panel
+    if (panel) panel.classList.remove('open');
+    if (dropdown) dropdown.classList.remove('open');
+    if (titleRow) titleRow.classList.remove('dropdown-active');
+    
+    // Render just this card
+    renderCards(matched);
+    updateStats(matched, allA.length);
+    
+    // Scroll to cards container
+    const cardsEl = document.getElementById('cards-container');
+    if (cardsEl) setTimeout(() => cardsEl.scrollIntoView({ behavior: 'smooth' }), 100);
+    
+    // Show the reset button!
+    const resetContainer = document.getElementById('ai-filter-reset-container');
+    if (resetContainer) {
+      resetContainer.style.display = 'flex';
+      resetContainer.style.opacity = '0';
+      resetContainer.style.transform = 'translateY(12px)';
+      requestAnimationFrame(() => {
+        resetContainer.style.transition = 'all 0.3s ease-out';
+        resetContainer.style.opacity = '1';
+        resetContainer.style.transform = 'translateY(0)';
+      });
+    }
+  };
+
+  // Setup click listener for AI reset button
+  const resetBtn = document.getElementById('ai-filter-reset-btn');
+  const resetContainer = document.getElementById('ai-filter-reset-container');
+  if (resetBtn && resetContainer) {
+    resetBtn.addEventListener('click', () => {
+      resetContainer.style.display = 'none';
+      if (typeof render === 'function') {
+        render();
+      }
+    });
   }
 
   // Load conversation from local history on startup
