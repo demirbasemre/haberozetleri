@@ -9987,7 +9987,7 @@ async function loadDashboard() {
   </div>
 
   <div id="ai-messages">
-    <div class="ai-msg bot">Hava kargo arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>
+    <div class="ai-msg bot">Hava kargo <span style="color: var(--red); font-weight: 600;">bülten</span> arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>
   </div>
   <div id="ai-suggestions">
     <button class="ai-chip">Son haftanın öne çıkan haberleri</button>
@@ -10079,7 +10079,7 @@ async function loadDashboard() {
         document.getElementById('ai-panel-title').textContent = activeConv.title;
       }
     } else {
-      msgs.innerHTML = '<div class="ai-msg bot">Hava kargo arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>';
+      msgs.innerHTML = '<div class="ai-msg bot">Hava kargo <span style="color: var(--red); font-weight: 600;">bülten</span> arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>';
       document.getElementById('ai-suggestions').style.display = 'flex';
       document.getElementById('ai-panel-title').textContent = 'Haber Asistanı';
     }
