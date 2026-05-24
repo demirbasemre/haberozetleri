@@ -3234,23 +3234,43 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-                padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 100px;
+    max-height: 120px;
     opacity: 1;
     overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                padding 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                margin 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   }
   #ai-suggestions.hidden {
-    opacity: 0;
-    transform: translateY(-8px);
     max-height: 0;
+    opacity: 0;
     padding-top: 0;
     padding-bottom: 0;
     margin-top: 0;
     margin-bottom: 0;
     pointer-events: none;
+  }
+  
+  .welcome-msg {
+    transition: max-height 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                padding 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                margin 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                border 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    max-height: 150px;
+    opacity: 1;
+    overflow: hidden;
+  }
+  .welcome-msg.hidden {
+    max-height: 0 !important;
+    opacity: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    border-width: 0 !important;
+    box-shadow: none !important;
   }
   .ai-chip {
     font-size: 11.5px; padding: 6px 12px; border-radius: 20px;
@@ -3285,19 +3305,39 @@
     cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     transition: background .2s, transform .1s, box-shadow .2s;
   }
-  #ai-send:hover:not(:disabled) {
+  #ai-send.generating {
+    background: #475569 !important; /* Slate color for pause state */
+    cursor: pointer !important;
+  }
+  #ai-send.generating:hover {
+    background: #334155 !important;
+    transform: scale(1.04);
+    box-shadow: 0 4px 12px rgba(71, 85, 105, 0.25);
+  }
+  #ai-send.generating svg {
+    animation: aiPausePulse 1.5s infinite ease-in-out;
+  }
+  @keyframes aiPausePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(0.9); opacity: 0.8; }
+  }
+  #ai-send.generating .icon-send { display: none !important; }
+  #ai-send.generating .icon-pause { display: block !important; }
+  #ai-send:not(.generating) .icon-pause { display: none !important; }
+  #ai-send:not(.generating) .icon-send { display: block !important; }
+  #ai-send:hover:not(:disabled):not(.generating) {
     background: #c2040d;
     transform: scale(1.04);
     box-shadow: 0 4px 12px rgba(227, 6, 19, 0.25);
   }
-  [data-theme="dark"] #ai-send:hover:not(:disabled) {
+  [data-theme="dark"] #ai-send:hover:not(:disabled):not(.generating) {
     background: #e03b47;
     box-shadow: 0 4px 12px rgba(255, 77, 90, 0.25);
   }
   #ai-send:active:not(:disabled) { transform: scale(0.96); }
   #ai-send svg { width: 16px; height: 16px; fill: #fff; transition: transform 0.25s ease; }
-  #ai-send:hover:not(:disabled) svg { transform: translateX(2px) translateY(-1px); }
-  #ai-send:disabled { background: var(--border); cursor: not-allowed; }
+  #ai-send:hover:not(:disabled):not(.generating) svg { transform: translateX(2px) translateY(-1px); }
+  #ai-send:disabled:not(.generating) { background: var(--border); cursor: not-allowed; }
   
   .ai-source-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
   .ai-source-pill { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: var(--red-muted); color: var(--red); }
@@ -10094,7 +10134,7 @@ async function loadDashboard() {
   </div>
 
   <div id="ai-messages">
-    <div class="ai-msg bot">Hava kargo <span style="color: var(--red); font-weight: 600;">bülten</span> arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>
+    <div class="ai-msg bot welcome-msg">Hava kargo <span style="color: var(--red); font-weight: 600;">bülten</span> arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>
   </div>
   <div id="ai-suggestions">
     <button class="ai-chip">Son haftanın öne çıkan haberleri</button>
@@ -10103,8 +10143,9 @@ async function loadDashboard() {
   </div>
   <div id="ai-input-row">
     <textarea id="ai-input" rows="1" placeholder="Bir soru sor…"></textarea>
-    <button id="ai-send">
-      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    <button id="ai-send" aria-label="Gönder / Duraklat">
+      <svg class="icon-send" viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      <svg class="icon-pause" viewBox="0 0 24 24" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
     </button>
   </div>
   <!-- Bottom Feedback Container -->
@@ -10134,6 +10175,7 @@ async function loadDashboard() {
 
   let currentConvId = null;
   let activeHistory = []; // array of {q, a, articlesMeta}
+  let currentAbortController = null;
 
   // ── LocalStorage History Helpers ───────────────────────────
   function getConversations() {
@@ -10186,7 +10228,7 @@ async function loadDashboard() {
         document.getElementById('ai-panel-title').textContent = activeConv.title;
       }
     } else {
-      msgs.innerHTML = '<div class="ai-msg bot">Hava kargo <span style="color: var(--red); font-weight: 600;">bülten</span> arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>';
+      msgs.innerHTML = '<div class="ai-msg bot welcome-msg">Hava kargo <span style="color: var(--red); font-weight: 600;">bülten</span> arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>';
       document.getElementById('ai-suggestions').classList.remove('hidden');
       document.getElementById('ai-panel-title').textContent = 'Haber Asistanı';
     }
@@ -10336,7 +10378,12 @@ async function loadDashboard() {
   }));
 
   input.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAI(); }
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!sendB.classList.contains('generating')) {
+        askAI();
+      }
+    }
   });
   sendB.addEventListener('click', askAI);
 
@@ -10542,11 +10589,27 @@ async function loadDashboard() {
 
   // ── Main ask ─────────────────────────────────────────
   async function askAI() {
+    if (sendB.classList.contains('generating')) {
+      if (currentAbortController) {
+        currentAbortController.abort();
+      }
+      return;
+    }
+
     const q = input.value.trim();
     if (!q) return;
     input.value = '';
-    sendB.disabled = true;
+    
+    // Set generating state (enables pause button)
+    sendB.classList.add('generating');
     document.getElementById('ai-suggestions').classList.add('hidden');
+
+    // Animate welcome message away
+    const welcome = msgs.querySelector('.welcome-msg');
+    if (welcome) {
+      welcome.classList.add('hidden');
+      setTimeout(() => { welcome.remove(); }, 400);
+    }
 
     // Reset feedback bar
     feedbackContainer.classList.remove('open');
@@ -10558,7 +10621,7 @@ async function loadDashboard() {
       startNewConversation();
       addMsg(q, 'user');
       addBotHTML('Sohbet geçmişi temizlendi. Yeni bir konuşma başlattık. Size nasıl yardımcı olabilirim?');
-      sendB.disabled = false;
+      sendB.classList.remove('generating');
       return;
     }
 
@@ -10566,11 +10629,14 @@ async function loadDashboard() {
     const thinking = addMsg('Yanıt hazırlanıyor…', 'bot thinking');
     msgs.scrollTop = msgs.scrollHeight;
 
+    currentAbortController = new AbortController();
+
     try {
       const res = await fetch(AI_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q, history: activeHistory.map(h => ({ q: h.q, a: h.a })) })
+        body: JSON.stringify({ question: q, history: activeHistory.map(h => ({ q: h.q, a: h.a })) }),
+        signal: currentAbortController.signal
       });
       const data = await res.json();
       thinking.remove();
@@ -10612,9 +10678,15 @@ async function loadDashboard() {
       }
     } catch(e) {
       thinking.remove();
-      addMsg('Bağlantı hatası. Lütfen tekrar deneyin.', 'bot');
+      if (e.name === 'AbortError') {
+        addMsg('İşlem kullanıcı tarafından iptal edildi.', 'bot thinking');
+      } else {
+        addMsg('Bağlantı hatası. Lütfen tekrar deneyin.', 'bot');
+      }
+    } finally {
+      sendB.classList.remove('generating');
+      currentAbortController = null;
     }
-    sendB.disabled = false;
   }
 
   // Expose global filtering function called by clicked AI titles
