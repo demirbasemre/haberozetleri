@@ -3731,6 +3731,45 @@
     overflow-y: auto; flex: 1; padding-right: 4px;
     scrollbar-width: thin;
   }
+  .changelog-milestones {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-bottom: 20px; padding: 12px 16px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .milestone-item {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .milestone-title {
+    font-size: 10.5px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .milestone-title svg { color: var(--accent); }
+  .milestone-date {
+    font-size: 13px; font-weight: 700; color: var(--text);
+  }
+  .changelog-controls {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; padding: 0 4px;
+  }
+  .control-label {
+    font-size: 12px; font-weight: 600; color: var(--text-2);
+  }
+  .sort-toggle-btn {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+    padding: 5px 10px; font-size: 11px; font-weight: 500; color: var(--text-2);
+    display: flex; align-items: center; gap: 6px; cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .sort-toggle-btn:hover {
+    background: var(--bg); border-color: var(--accent); color: var(--text);
+  }
+  .sort-toggle-btn svg {
+    color: var(--text-3);
+    transition: color 0.15s;
+  }
+  .sort-toggle-btn:hover svg {
+    color: var(--accent);
+  }
   .changelog-month-group {
     margin-bottom: 24px;
   }
@@ -7584,6 +7623,30 @@ initTheme();
   let changelogData = null;
   let isChangelogEditing = false;
   let openMonths = {};
+  let changelogSortOrder = 'desc';
+
+  const monthMap = {
+    'ocak': 1, 'şubat': 2, 'mart': 3, 'nisan': 4, 'mayıs': 5, 'haziran': 6,
+    'temmuz': 7, 'ağustos': 8, 'eylül': 9, 'ekim': 10, 'kasım': 11, 'aralık': 12
+  };
+
+  function parseMonthYear(monthStr) {
+    const parts = monthStr.toLowerCase().split(' ');
+    const m = monthMap[parts[0]] || 1;
+    const y = parseInt(parts[1]) || 2026;
+    return y * 12 + m;
+  }
+
+  function getSortedChangelog() {
+    if (!changelogData) return [];
+    const data = [...changelogData];
+    data.sort((a, b) => {
+      const valA = parseMonthYear(a.month);
+      const valB = parseMonthYear(b.month);
+      return changelogSortOrder === 'desc' ? (valB - valA) : (valA - valB);
+    });
+    return data;
+  }
 
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, c => ({
@@ -7593,6 +7656,18 @@ initTheme();
 
   window.toggleChangelogMonth = function(month) {
     openMonths[month] = !openMonths[month];
+    renderChangelogHTML();
+  };
+
+  window.toggleChangelogSort = function() {
+    changelogSortOrder = changelogSortOrder === 'desc' ? 'asc' : 'desc';
+    const sorted = getSortedChangelog();
+    openMonths = {};
+    if (sorted.length > 0) {
+      sorted.forEach((group, idx) => {
+        openMonths[group.month] = (idx === 0);
+      });
+    }
     renderChangelogHTML();
   };
 
@@ -7629,7 +7704,8 @@ initTheme();
       // Initialize accordion state: topmost is open, others closed
       openMonths = {};
       if (changelogData && changelogData.length > 0) {
-        changelogData.forEach((group, idx) => {
+        const sorted = getSortedChangelog();
+        sorted.forEach((group, idx) => {
           openMonths[group.month] = (idx === 0);
         });
       }
@@ -7653,8 +7729,35 @@ initTheme();
       return;
     }
     
-    let html = '';
-    changelogData.forEach(group => {
+    const sorted = getSortedChangelog();
+    
+    let html = `
+      <div class="changelog-milestones">
+        <div class="milestone-item">
+          <div class="milestone-title">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            İlk Sürüm Yayını
+          </div>
+          <div class="milestone-date">22 Nisan 2026</div>
+        </div>
+        <div class="milestone-item">
+          <div class="milestone-title">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Yeni Tasarım Geçişi
+          </div>
+          <div class="milestone-date">23 Mayıs 2026</div>
+        </div>
+      </div>
+      <div class="changelog-controls">
+        <span class="control-label">Aylık Gelişmeler</span>
+        <button class="sort-toggle-btn" onclick="window.toggleChangelogSort()" title="Sıralamayı Değiştir">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4M7 20V4M21 8l-4-4-4 4M17 4v16"/></svg>
+          <span class="sort-text">${changelogSortOrder === 'desc' ? 'Yeniden Eskiye' : 'Eskiden Yeniye'}</span>
+        </button>
+      </div>
+    `;
+    
+    sorted.forEach(group => {
       const isOpen = !!openMonths[group.month];
       const count = group.items.length;
       html += `
@@ -7706,17 +7809,46 @@ initTheme();
     document.getElementById('changelog-save-btn').style.display = 'none';
   };
 
-  window.saveChangelogEdit = function() {
+  window.saveChangelogEdit = async function() {
+    const CHANGELOG_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/changelog-edit';
     const txt = document.getElementById('changelogTextarea').value;
+    let parsed;
     try {
-      const parsed = JSON.parse(txt);
+      parsed = JSON.parse(txt);
+    } catch (e) {
+      alert('Geçersiz JSON formatı: ' + e.message);
+      return;
+    }
+
+    const saveBtn = document.getElementById('changelog-save-btn');
+    const cancelBtn = document.getElementById('changelog-cancel-btn');
+    let originalText = 'Kaydet';
+    if (saveBtn) {
+      originalText = saveBtn.textContent;
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Kaydediliyor...';
+    }
+    if (cancelBtn) cancelBtn.disabled = true;
+
+    try {
+      const resp = await fetch(CHANGELOG_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ changelog: parsed })
+      });
+
+      if (!resp.ok) {
+        throw new Error('HTTP hata kodu: ' + resp.status);
+      }
+
       changelogData = parsed;
       localStorage.setItem('changelog-override', JSON.stringify(parsed));
       
       // Update openMonths keys based on new data
       openMonths = {};
       if (changelogData && changelogData.length > 0) {
-        changelogData.forEach((group, idx) => {
+        const sorted = getSortedChangelog();
+        sorted.forEach((group, idx) => {
           openMonths[group.month] = (idx === 0);
         });
       }
@@ -7726,12 +7858,24 @@ initTheme();
       
       const toastFunc = window.__showToast || (typeof showToast === 'function' ? showToast : null);
       if (toastFunc) {
-        toastFunc('✓ Değişiklikler tarayıcıya kaydedildi', 'ok');
+        toastFunc('✓ Değişiklikler GitHub\'a kaydedildi', 'ok');
       } else {
-        alert('Değişiklikler kaydedildi.');
+        alert('Değişiklikler GitHub\'a başarıyla kaydedildi.');
       }
-    } catch (e) {
-      alert('Geçersiz JSON formatı: ' + e.message);
+    } catch (err) {
+      console.error('Changelog save error:', err);
+      const toastFunc = window.__showToast || (typeof showToast === 'function' ? showToast : null);
+      if (toastFunc) {
+        toastFunc('⚠️ GitHub\'a kaydedilemedi: ' + err.message, 'error');
+      } else {
+        alert('Değişiklikler GitHub\'a kaydedilemedi: ' + err.message);
+      }
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = originalText;
+      }
+      if (cancelBtn) cancelBtn.disabled = false;
     }
   };
 
@@ -9900,6 +10044,7 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
       t.style.transform = 'translateX(-50%) translateY(8px)';
     }, 3200);
   }
+  window.__showToast = showToast;
   // ── GitHub'a push ───────────────────────────────────────
   async function pushToGitHub(payload) {
     try {
