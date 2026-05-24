@@ -9138,6 +9138,19 @@ async function loadDashboard() {
         return;
       }
       
+      const ctx = document.getElementById('chart-wci');
+      if (ctx) {
+        console.log("Canvas clientWidth:", ctx.clientWidth, "clientHeight:", ctx.clientHeight);
+        // Fail-safe: Eğer tarayıcı boyutları sıfır hesapladıysa, manuel olarak set et.
+        if (ctx.clientWidth === 0 || ctx.clientHeight === 0) {
+          console.warn("Canvas boyutu sıfır çıktı, fail-safe boyutlar atanıyor.");
+          ctx.width = 560;
+          ctx.height = 320;
+          ctx.style.width = '560px';
+          ctx.style.height = '320px';
+        }
+      }
+      
       let allData = [..._wciHistory];
       if (_wciLatest && _wciLatest.price) {
         const latestIso = convertDrewryDate(_wciLatest.date);
