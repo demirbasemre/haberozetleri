@@ -9096,6 +9096,35 @@ async function loadDashboard() {
   updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
 
   // ── WCI (Drewry) Verisini Çek ───────────────────────────────────
+  const WCI_DEFAULT_HISTORY = [
+    {"date": "2025-05-15", "value": 2300},
+    {"date": "2025-05-29", "value": 2400},
+    {"date": "2025-06-12", "value": 3100},
+    {"date": "2025-06-26", "value": 3400},
+    {"date": "2025-07-10", "value": 3400},
+    {"date": "2025-07-24", "value": 3000},
+    {"date": "2025-08-07", "value": 2800},
+    {"date": "2025-08-21", "value": 2600},
+    {"date": "2025-09-04", "value": 2400},
+    {"date": "2025-09-18", "value": 2200},
+    {"date": "2025-10-02", "value": 2000},
+    {"date": "2025-10-16", "value": 1800},
+    {"date": "2025-10-30", "value": 1700},
+    {"date": "2025-11-13", "value": 1800},
+    {"date": "2025-11-27", "value": 2000},
+    {"date": "2025-12-11", "value": 1900},
+    {"date": "2025-12-25", "value": 2213},
+    {"date": "2026-01-15", "value": 2400},
+    {"date": "2026-01-29", "value": 2200},
+    {"date": "2026-02-12", "value": 2000},
+    {"date": "2026-02-26", "value": 1900},
+    {"date": "2026-03-12", "value": 2100},
+    {"date": "2026-03-26", "value": 2200},
+    {"date": "2026-04-09", "value": 2300},
+    {"date": "2026-04-23", "value": 2200},
+    {"date": "2026-05-07", "value": 2400}
+  ];
+
   let _wciHistory = [];
   let _wciLatest = null;
 
@@ -9146,10 +9175,10 @@ async function loadDashboard() {
   }
 
   Promise.all([
-    fetch('wci-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
+    fetch('wci-history.json').then(r => r.ok ? r.json() : WCI_DEFAULT_HISTORY).catch(() => WCI_DEFAULT_HISTORY),
     fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci').then(r => r.ok ? r.json() : null).catch(() => null)
   ]).then(([history, latest]) => {
-    _wciHistory = history;
+    _wciHistory = history && history.length ? history : WCI_DEFAULT_HISTORY;
     _wciLatest = latest;
 
     if (latest && latest.price) {
