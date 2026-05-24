@@ -5020,9 +5020,9 @@
     <section class="dash-section" id="dash-sec-endeks">
       <h2 class="dash-section-title">Hava Kargo Endeksleri <span class="dash-section-badge">Manuel Takip</span></h2>
       <div class="dash-cards">
-        <div class="dash-card">
+        <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
           <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
-          <div class="dash-card-value" style="font-size:18px;color:var(--text-3)">API Yok</div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">40' konteyner başına ortalama spot fiyat</div>
           <div class="dash-card-note">Drewry · Haftalık · <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a></div>
@@ -5091,6 +5091,19 @@
         <div class="rel-add-actions">
           <button class="rel-add-cancel" onclick="closeReleaseAddModal()">İptal</button>
           <button class="rel-add-save" onclick="saveReleaseAddModal()">Ekle</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- WCI Grafik Modali -->
+    <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
+      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+        <div class="rel-add-head">
+          <div id="wci-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Drewry Dünya Konteyner Endeksi (WCI) Grafiği</div>
+          <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-wci" style="width: 100%; height: 100%;"></canvas>
         </div>
       </div>
     </div>
@@ -8258,6 +8271,17 @@ function closeReleaseAddModal() {
   const m = document.getElementById('rel-add-modal');
   if (m) m.style.display = 'none';
 }
+function openWciChartModal() {
+  const m = document.getElementById('wci-chart-modal');
+  if (m) {
+    m.style.display = 'flex';
+    requestAnimationFrame(() => renderWciChart());
+  }
+}
+function closeWciChartModal() {
+  const m = document.getElementById('wci-chart-modal');
+  if (m) m.style.display = 'none';
+}
 async function saveReleaseAddModal() {
   const title  = document.getElementById('rel-add-input-title').value.trim();
   const dateS  = document.getElementById('rel-add-input-date').value;
@@ -8581,8 +8605,17 @@ function buildReleaseCalendar() {
       if (e.target === modal) closeReleaseAddModal();
     });
   }
+  const wciM = document.getElementById('wci-chart-modal');
+  if (wciM) {
+    wciM.addEventListener('click', e => {
+      if (e.target === wciM) closeWciChartModal();
+    });
+  }
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeReleaseAddModal();
+    if (e.key === 'Escape') {
+      closeReleaseAddModal();
+      closeWciChartModal();
+    }
   });
 }
 
@@ -9061,6 +9094,76 @@ async function loadDashboard() {
 
   updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
   updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
+
+  // ── WCI (Drewry) Verisini Çek ───────────────────────────────────
+  let _wciHistory = [];
+  let _wciLatest = null;
+
+  function renderWciChart() {
+    if (!_wciHistory || !_wciHistory.length) return;
+    
+    // Combine history with latest live value if it's newer
+    let allData = [..._wciHistory];
+    if (_wciLatest && _wciLatest.price) {
+      const latestIso = convertDrewryDate(_wciLatest.date);
+      const lastHist = allData[allData.length - 1];
+      if (latestIso && (!lastHist || lastHist.date < latestIso)) {
+        allData.push({ date: latestIso, value: _wciLatest.price });
+      }
+    }
+
+    const labels = allData.map(d => formatDateShort(d.date));
+    const prices = allData.map(d => d.value);
+
+    lineChart('chart-wci', labels,
+      [
+        {
+          label: 'Dünya Konteyner Endeksi (WCI)',
+          data: prices,
+          borderColor: '#1D6FE8',
+          backgroundColor: 'rgba(29,111,232,0.07)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 2,
+          borderWidth: 2
+        }
+      ],
+      v => '$' + v.toLocaleString('en-US')
+    );
+  }
+
+  function convertDrewryDate(dStr) {
+    if (!dStr) return null;
+    const parts = dStr.split(' ');
+    if (parts.length < 3) return null;
+    const day = parts[0].padStart(2, '0');
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthIdx = monthNames.findIndex(m => parts[1].toLowerCase().startsWith(m.toLowerCase()));
+    if (monthIdx === -1) return null;
+    const month = String(monthIdx + 1).padStart(2, '0');
+    const year = parts[2];
+    return `${year}-${month}-${day}`;
+  }
+
+  Promise.all([
+    fetch('wci-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
+    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci').then(r => r.ok ? r.json() : null).catch(() => null)
+  ]).then(([history, latest]) => {
+    _wciHistory = history;
+    _wciLatest = latest;
+
+    if (latest && latest.price) {
+      const formattedPrice = '$' + latest.price.toLocaleString('en-US');
+      setCard('dc-wci',
+        formattedPrice,
+        latest.change,
+        "40' konteyner başına ortalama spot fiyat",
+        `Son veri: ${latest.date} · Kaynak: <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a>`
+      );
+    } else {
+      setCard('dc-wci', '—', null, '', 'Veri alınamadı');
+    }
+  });
 
   // ── Popover → çizgi grafik modu ────────────────────────────────────
   let _fpopLineChart = null;

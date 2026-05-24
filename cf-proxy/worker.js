@@ -7,6 +7,47 @@ const ALLOWED_ORIGINS = [
 // Tailscale Funnel üzerindeki fetch-proxy (ev IP'si ile çeker)
 const FUNNEL_URL = 'https://tower.tail2cc03.ts.net';
 
+function parseWCI(html) {
+  // Raporun yayınlanma tarihini bul
+  const dateMatch = html.match(/Our detailed assessment for [A-Za-z]+,\s+([\d]+\s+[A-Za-z]+\s+[\d]{4})/i);
+  const dateStr = dateMatch ? dateMatch[1] : null;
+
+  // Birincil regex eşleşmesi
+  const wciRegex = /The Drewry World Container Index \(WCI\)\s+(increased|decreased|remained(?:\s+(?:steady|unchanged))?|dropped|declined|surged|fell|rose|changed)(?:\s+by)?\s*(?:([\d.]+)(?:%)?)?\s*(?:to|at)?\s*\$([\d,]+)/i;
+  let match = html.match(wciRegex);
+
+  // Alternatif regex 1: "composite index" ifadeleri için
+  if (!match) {
+    const fallbackRegex = /composite index\s+(increased|decreased|remained(?:\s+(?:steady|unchanged))?|dropped|declined|surged|fell|rose|changed)(?:\s+by)?\s*(?:([\d.]+)(?:%)?)?\s*(?:to|at)?\s*\$([\d,]+)/i;
+    match = html.match(fallbackRegex);
+  }
+
+  if (!match) {
+    return {
+      success: false,
+      error: 'Could not find WCI match'
+    };
+  }
+
+  const directionStr = match[1].toLowerCase();
+  const changePercentVal = match[2] ? parseFloat(match[2]) : 0;
+  const priceStr = match[3].replace(/,/g, '');
+  const price = parseFloat(priceStr);
+
+  let changePercent = changePercentVal;
+  if (['decreased', 'dropped', 'declined', 'fell'].includes(directionStr)) {
+    changePercent = -changePercentVal;
+  }
+
+  return {
+    success: true,
+    price,
+    change: changePercent,
+    date: dateStr,
+    direction: ['increased', 'surged', 'rose'].includes(directionStr) ? 'up' : ['decreased', 'dropped', 'declined', 'fell'].includes(directionStr) ? 'down' : 'flat'
+  };
+}
+
 export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
@@ -21,9 +62,86 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
-    const { searchParams } = new URL(request.url);
-    const targetUrl = searchParams.get('url');
+    const urlObj = new URL(request.url);
 
+    // Çekme ve yedekleme (Funnel -> Doğrudan) mantığını gerçekleştiren yardımcı fonksiyon
+    async function doFetch(url) {
+      // Önce Tailscale Funnel üzerindeki ev proxy'sini dene
+      try {
+        const funnelResp = await fetch(
+          `${FUNNEL_URL}/?url=${encodeURIComponent(url)}`,
+          { signal: AbortSignal.timeout(15000) }
+        );
+        if (funnelResp.ok) {
+          const body = await funnelResp.text();
+          return {
+            body,
+            proxy: 'tailscale-funnel',
+            status: funnelResp.status,
+            contentType: funnelResp.headers.get('content-type') || 'text/html'
+          };
+        }
+      } catch (_) { /* funnel erişilemez veya hata verdi — doğrudan dene */ }
+
+      // Fallback: CF datacenter'ından doğrudan çek
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+        },
+        redirect: 'follow',
+        cf: { cacheTtl: 300, cacheEverything: true },
+      });
+
+      const body = await response.text();
+      return {
+        body,
+        proxy: 'cf-direct',
+        status: response.status,
+        contentType: response.headers.get('content-type') || 'text/html'
+      };
+    }
+
+    // ── /wci Özel Rotası ──
+    if (urlObj.pathname === '/wci' || urlObj.searchParams.get('wci') === '1') {
+      const drewryUrl = 'https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry';
+      try {
+        const res = await doFetch(drewryUrl);
+        if (res.status !== 200) {
+          return new Response(JSON.stringify({ error: 'Drewry page fetch failed', status: res.status }), {
+            status: 502,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        const parsed = parseWCI(res.body);
+        if (!parsed || !parsed.success) {
+          return new Response(JSON.stringify({ error: 'Could not parse WCI data', detail: parsed ? parsed.error : 'unknown' }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        return new Response(JSON.stringify(parsed), {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            'X-Proxy': res.proxy,
+            'Cache-Control': 'public, max-age=3600', // 1 saat önbelleğe al (Drewry haftalık güncellenir)
+          },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 502,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // ── Genel Proxy Rotası ──
+    const targetUrl = urlObj.searchParams.get('url');
     if (!targetUrl) {
       return new Response(JSON.stringify({ error: 'url param required' }), {
         status: 400,
@@ -48,49 +166,15 @@ export default {
       });
     }
 
-    // Önce Tailscale Funnel üzerindeki ev proxy'sini dene
     try {
-      const funnelResp = await fetch(
-        `${FUNNEL_URL}/?url=${encodeURIComponent(targetUrl)}`,
-        { signal: AbortSignal.timeout(15000) }
-      );
-      if (funnelResp.ok) {
-        const contentType = funnelResp.headers.get('content-type') || 'text/html';
-        const body = await funnelResp.text();
-        return new Response(body, {
-          status: 200,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': contentType,
-            'X-Proxy': 'tailscale-funnel',
-            'Cache-Control': 'public, max-age=300',
-          },
-        });
-      }
-    } catch (_) { /* funnel erişilemez — doğrudan dene */ }
-
-    // Fallback: CF datacenter'ından doğrudan çek
-    try {
-      const response = await fetch(targetUrl, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.9',
-        },
-        redirect: 'follow',
-        cf: { cacheTtl: 300, cacheEverything: true },
-      });
-
-      const contentType = response.headers.get('content-type') || 'text/html';
-      const body = await response.text();
-
-      return new Response(body, {
-        status: response.status,
+      const res = await doFetch(targetUrl);
+      return new Response(res.body, {
+        status: res.status,
         headers: {
           ...corsHeaders,
-          'Content-Type': contentType,
-          'X-Proxy': 'cf-direct',
-          'X-Proxy-Status': String(response.status),
+          'Content-Type': res.contentType,
+          'X-Proxy': res.proxy,
+          'X-Proxy-Status': String(res.status),
           'Cache-Control': 'public, max-age=300',
         },
       });
