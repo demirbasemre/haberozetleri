@@ -9129,36 +9129,50 @@ async function loadDashboard() {
   let _wciLatest = null;
 
   function renderWciChart() {
-    if (!_wciHistory || !_wciHistory.length) return;
-    
-    // Combine history with latest live value if it's newer
-    let allData = [..._wciHistory];
-    if (_wciLatest && _wciLatest.price) {
-      const latestIso = convertDrewryDate(_wciLatest.date);
-      const lastHist = allData[allData.length - 1];
-      if (latestIso && (!lastHist || lastHist.date < latestIso)) {
-        allData.push({ date: latestIso, value: _wciLatest.price });
+    console.log("renderWciChart tetiklendi. _wciHistory:", _wciHistory, "_wciLatest:", _wciLatest);
+    const titleEl = document.getElementById('wci-chart-title');
+    try {
+      if (!_wciHistory || !_wciHistory.length) {
+        console.warn("WCI geçmiş verisi yok veya yüklenmedi.");
+        if (titleEl) titleEl.textContent = "Drewry WCI Grafiği (Veri yüklenemedi!)";
+        return;
       }
-    }
-
-    const labels = allData.map(d => formatDateShort(d.date));
-    const prices = allData.map(d => d.value);
-
-    lineChart('chart-wci', labels,
-      [
-        {
-          label: 'Dünya Konteyner Endeksi (WCI)',
-          data: prices,
-          borderColor: '#1D6FE8',
-          backgroundColor: 'rgba(29,111,232,0.07)',
-          fill: true,
-          tension: 0.35,
-          pointRadius: 2,
-          borderWidth: 2
+      
+      let allData = [..._wciHistory];
+      if (_wciLatest && _wciLatest.price) {
+        const latestIso = convertDrewryDate(_wciLatest.date);
+        const lastHist = allData[allData.length - 1];
+        if (latestIso && (!lastHist || lastHist.date < latestIso)) {
+          allData.push({ date: latestIso, value: _wciLatest.price });
+          console.log("Canlı veri grafiğe eklendi:", latestIso, _wciLatest.price);
         }
-      ],
-      v => v != null ? '$' + Number(v).toLocaleString('en-US') : ''
-    );
+      }
+
+      const labels = allData.map(d => formatDateShort(d.date));
+      const prices = allData.map(d => d.value);
+      
+      console.log("Grafik çiziliyor. Labels:", labels, "Prices:", prices);
+
+      lineChart('chart-wci', labels,
+        [
+          {
+            label: 'Dünya Konteyner Endeksi (WCI)',
+            data: prices,
+            borderColor: '#1D6FE8',
+            backgroundColor: 'rgba(29,111,232,0.07)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 2,
+            borderWidth: 2
+          }
+        ],
+        v => v != null ? '$' + Number(v).toLocaleString('en-US') : ''
+      );
+      if (titleEl) titleEl.textContent = "Drewry Dünya Konteyner Endeksi (WCI) Grafiği";
+    } catch (err) {
+      console.error("WCI Grafik çizim hatası:", err);
+      if (titleEl) titleEl.textContent = "Hata: " + err.message;
+    }
   }
 
   function convertDrewryDate(dStr) {
