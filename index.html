@@ -3229,7 +3229,29 @@
   .ai-msg.bot.thinking { color: var(--text-3); font-style: italic; background: rgba(0,0,0,0.02); box-shadow: none; border-style: dashed; }
   [data-theme="dark"] .ai-msg.bot.thinking { background: rgba(255,255,255,0.02); }
   
-  #ai-suggestions { padding: 0 16px 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+  #ai-suggestions {
+    padding: 0 16px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 100px;
+    opacity: 1;
+    overflow: hidden;
+  }
+  #ai-suggestions.hidden {
+    opacity: 0;
+    transform: translateY(-8px);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+  }
   .ai-chip {
     font-size: 11.5px; padding: 6px 12px; border-radius: 20px;
     border: 1px solid var(--border); background: var(--surface); color: var(--text-2);
@@ -10157,7 +10179,7 @@ async function loadDashboard() {
         addMsg(h.q, 'user');
         addBotHTML(formatAIText(h.a, h.articlesMeta), h.articlesMeta);
       });
-      document.getElementById('ai-suggestions').style.display = 'none';
+      document.getElementById('ai-suggestions').classList.add('hidden');
       
       const activeConv = getConversations().find(c => c.id === currentConvId);
       if (activeConv && activeConv.title) {
@@ -10165,7 +10187,7 @@ async function loadDashboard() {
       }
     } else {
       msgs.innerHTML = '<div class="ai-msg bot">Hava kargo <span style="color: var(--red); font-weight: 600;">bülten</span> arşivine dayanarak sorularını yanıtlayabilirim. Ne öğrenmek istersin?</div>';
-      document.getElementById('ai-suggestions').style.display = 'flex';
+      document.getElementById('ai-suggestions').classList.remove('hidden');
       document.getElementById('ai-panel-title').textContent = 'Haber Asistanı';
     }
     msgs.scrollTop = msgs.scrollHeight;
@@ -10524,7 +10546,7 @@ async function loadDashboard() {
     if (!q) return;
     input.value = '';
     sendB.disabled = true;
-    document.getElementById('ai-suggestions').style.display = 'none';
+    document.getElementById('ai-suggestions').classList.add('hidden');
 
     // Reset feedback bar
     feedbackContainer.classList.remove('open');
