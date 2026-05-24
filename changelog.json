@@ -1,0 +1,20 @@
+[
+  {
+    "month": "Mayıs 2026",
+    "items": [
+      { "text": "Haberlerin \"Readability\" (Okuma Modu) görünümünde lazy-load görsellerinin ve göreceli URL adreslerinin yüklenmesi sağlandı.", "major": true },
+      { "text": "Sonsuz kaydırmada yeni yüklenen kartlar için pürüzsüz fade-up geçiş animasyonu ve 400ms sentinel gecikmesi eklendi.", "major": true },
+      { "text": "Okuma modunda senkronize kaydırma (scroll sync) ve çift yönlü cümle bazlı vurgulama (hover highlight) özellikleri geliştirildi.", "major": true },
+      { "text": "Gelişmiş havayolu ve GSA filtre sistemi (bölge/tür ayrımı, odak modu, initials badge) eklendi.", "major": true },
+      { "text": "Bulut entegrasyonu (n8n, Cloudflare Worker ve Tailscale Funnel proxy fallback) kuruldu.", "major": true },
+      { "text": "Alt kısımdaki koyu renkli footer şeffaf hale getirilerek uyumlu metin rengine kavuşturuldu.", "major": false },
+      { "text": "Haber okuma modunda mükerrer kapak görseli gösterimi engellendi.", "major": false },
+      { "text": "Mobil görünümde üst sekmelerin ve filtre çubuğunun yapışkan (sticky) hizalamaları düzeltildi.", "major": false },
+      { "text": "Arama istatistikleri ve filtre çubuğu arayüz tasarımı güncellendi.", "major": false },
+      { "text": "Yapılacaklar & Kontroller sekmesi ile todo verilerinin n8n proxy üzerinden GitHub'a kaydı sağlandı.", "major": true },
+      { "text": "Veri takvimi zaman slider'ı ve ay pill navigasyonu eklendi.", "major": true },
+      { "text": "Kaynak filtresi ve logolu seçilebilir dropdown yapısı kuruldu.", "major": false },
+      { "text": "AI asistan token kullanımı göstergesi ve kart eşleşme doğrulaması geliştirildi.", "major": false }
+    ]
+  }
+]
