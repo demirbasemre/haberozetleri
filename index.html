@@ -8092,7 +8092,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
       scales: {
         x: {
           ticks: Object.assign(
-            { font: { size: 10, family: 'Inter' }, color: '#9CA3AF' },
+            { font: extraOpts.xTickFont || { size: 10, family: 'Inter' }, color: '#9CA3AF' },
             extraOpts.xTickCallback
               ? { callback: extraOpts.xTickCallback, autoSkip: false, maxRotation: 0 }
               : { maxTicksLimit: 8 }
@@ -8699,6 +8699,26 @@ async function loadDashboard() {
     const spanDays = (first && last) ? (last - first) / 86400000 : 0;
     const multiYearOnly = spanDays > 730;
 
+    // Başlangıçtaki çakışmaları (May '25 ve Haz gibi) engellemek için filtreleme dizisi
+    const allowedTickIndices = [];
+    let lastMonthVal = null;
+    let lastYearVal = null;
+    let lastAddedIdx = -999;
+    labels.forEach((dateStr, idx) => {
+      const d = new Date(dateStr);
+      if (isNaN(d)) return;
+      const m = d.getMonth();
+      const y = d.getFullYear();
+      if (lastMonthVal === null || m !== lastMonthVal || y !== lastYearVal) {
+        if (lastMonthVal === null || (idx - lastAddedIdx >= 3)) {
+          allowedTickIndices.push(idx);
+          lastAddedIdx = idx;
+        }
+        lastMonthVal = m;
+        lastYearVal = y;
+      }
+    });
+
     const xTickCallback = function(value, index) {
       const raw = this.getLabelForValue(value);
       if (!raw) return '';
@@ -8714,13 +8734,12 @@ async function loadDashboard() {
         return String(d.getFullYear());
       }
 
-      // ≤ 2 yıl: ay sınırında etiketle, yılı yalnız ilk tick'te VEYA yıl değişiminde göster
-      const prevRaw = index > 0 ? this.getLabelForValue(value - 1) : null;
-      const prev = prevRaw ? new Date(prevRaw) : null;
-      const prevValid = prev && !isNaN(prev);
+      if (!allowedTickIndices.includes(value)) return '';
 
-      // Aynı ay tekrarı → boş
-      if (prevValid && prev.getMonth() === d.getMonth() && prev.getFullYear() === d.getFullYear()) return '';
+      const currentAllowedPos = allowedTickIndices.indexOf(value);
+      const prevAllowedValue = currentAllowedPos > 0 ? allowedTickIndices[currentAllowedPos - 1] : null;
+      const prev = prevAllowedValue !== null ? new Date(labels[prevAllowedValue]) : null;
+      const prevValid = prev && !isNaN(prev);
 
       const month = TR_MONTHS[d.getMonth()];
       const yearChanged = !prevValid || prev.getFullYear() !== d.getFullYear();
@@ -8781,6 +8800,15 @@ async function loadDashboard() {
       {
         legendPosition: 'bottom',
         xTickCallback,
+        xTickFont: function(context) {
+          const label = context.tick ? context.tick.label : '';
+          const isBold = label && (label.includes("'25") || label.includes("'26"));
+          return {
+            size: 10,
+            family: 'Inter',
+            weight: isBold ? 'bold' : 'normal'
+          };
+        },
         afterTooltipBody: (items) => {
           const idx = items[0]?.dataIndex;
           if (idx == null) return null;
@@ -9283,7 +9311,16 @@ async function loadDashboard() {
         ],
         v => v != null ? '$' + Number(v).toLocaleString('en-US') : '',
         {
-          plugins: [wciAnnotationsPlugin]
+          plugins: [wciAnnotationsPlugin],
+          xTickFont: function(context) {
+            const label = context.tick ? context.tick.label : '';
+            const isBold = label && (label.includes("'25") || label.includes("'26"));
+            return {
+              size: 10,
+              family: 'Inter',
+              weight: isBold ? 'bold' : 'normal'
+            };
+          }
         }
       );
       if (titleEl) titleEl.textContent = "Drewry Dünya Konteyner Endeksi (WCI) Grafiği";
