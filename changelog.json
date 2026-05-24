@@ -16,5 +16,18 @@
       { "text": "Kaynak filtresi ve logolu seçilebilir dropdown yapısı kuruldu.", "major": false },
       { "text": "AI asistan token kullanımı göstergesi ve kart eşleşme doğrulaması geliştirildi.", "major": false }
     ]
+  },
+  {
+    "month": "Nisan 2026",
+    "items": [
+      { "text": "Projenin yayına başlaması, Seen Articles tablosu bağlantısı ve temel hava kargo haber bülteni tasarımı yapıldı.", "major": true },
+      { "text": "Tam tasarım yenilemesi gerçekleştirilerek özet kartları, arama ve filtre altyapısı kuruldu.", "major": true },
+      { "text": "Hiyerarşik bölge ve alt bölge seçimi sunan gelişmiş \"Etki Alanı\" filtresi ve etki alanı rozetleri eklendi.", "major": true },
+      { "text": "Analiz detaylarını inline açmak yerine ekran altından kayarak açılan \"Bottom Drawer\" (analiz çekmecesi) paneli geliştirildi.", "major": true },
+      { "text": "Statik veri modeli (data.json) yapısına geçilerek veri erişim hızı optimize edildi.", "major": true },
+      { "text": "Filtrelerin tek satırlı logolu dropdown yapılara dönüştürülmesi sağlandı.", "major": false },
+      { "text": "Dropdown panellerinin ekran dışına taşma (viewport clip) sorunları düzeltildi.", "major": false },
+      { "text": "Havayolu ve analiz filtrelerinin ilk sürümleri devreye alındı.", "major": false }
+    ]
   }
 ]

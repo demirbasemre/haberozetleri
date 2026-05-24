@@ -3734,9 +3734,43 @@
   .changelog-month-group {
     margin-bottom: 24px;
   }
-  .changelog-month-title {
-    font-size: 14px; font-weight: 700; color: var(--accent);
-    margin-bottom: 12px; padding-bottom: 4px; border-bottom: 1px dashed var(--border);
+  .changelog-month-header {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 13px; font-weight: 700; color: var(--accent);
+    padding: 10px 14px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: 12px; cursor: pointer; user-select: none;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .changelog-month-header:hover {
+    background: rgba(29, 111, 232, 0.05);
+    border-color: var(--accent);
+  }
+  .changelog-month-header .month-name {
+    flex: 1;
+  }
+  .changelog-month-header .month-count {
+    font-size: 10.5px; font-weight: 500; color: var(--text-3);
+    background: var(--surface); border: 1px solid var(--border); padding: 2px 8px; border-radius: 10px;
+    margin-right: 12px;
+  }
+  .changelog-month-header .month-chevron {
+    font-size: 9px; color: var(--text-3);
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+  .changelog-month-content {
+    display: none;
+    margin-bottom: 24px;
+    padding: 0 4px;
+  }
+  .changelog-month-content.open {
+    display: block;
+    animation: changelogFadeIn 0.22s ease;
+  }
+  @keyframes changelogFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   .changelog-list {
     list-style: none; padding: 0; margin: 0;
@@ -7549,12 +7583,18 @@ initTheme();
 (() => {
   let changelogData = null;
   let isChangelogEditing = false;
+  let openMonths = {};
 
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, c => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
     }[c]));
   }
+
+  window.toggleChangelogMonth = function(month) {
+    openMonths[month] = !openMonths[month];
+    renderChangelogHTML();
+  };
 
   window.openChangelog = async function() {
     document.getElementById('changelogBackdrop').classList.add('open');
@@ -7585,6 +7625,14 @@ initTheme();
           changelogData = [];
         }
       }
+
+      // Initialize accordion state: topmost is open, others closed
+      openMonths = {};
+      if (changelogData && changelogData.length > 0) {
+        changelogData.forEach((group, idx) => {
+          openMonths[group.month] = (idx === 0);
+        });
+      }
     } catch (e) {
       console.error('Changelog load error:', e);
       changelogData = [];
@@ -7607,16 +7655,24 @@ initTheme();
     
     let html = '';
     changelogData.forEach(group => {
+      const isOpen = !!openMonths[group.month];
+      const count = group.items.length;
       html += `
         <div class="changelog-month-group">
-          <div class="changelog-month-title">${escapeHtml(group.month)}</div>
-          <ul class="changelog-list">
-            ${group.items.map(item => `
-              <li class="changelog-item ${item.major ? 'major' : ''}">
-                ${escapeHtml(item.text)}
-              </li>
-            `).join('')}
-          </ul>
+          <div class="changelog-month-header" onclick="window.toggleChangelogMonth('${escapeHtml(group.month)}')">
+            <span class="month-name">${escapeHtml(group.month)}</span>
+            <span class="month-count">${count} geliştirme</span>
+            <span class="month-chevron" style="transform: ${isOpen ? 'rotate(180deg)' : 'rotate(0)'}">▼</span>
+          </div>
+          <div class="changelog-month-content ${isOpen ? 'open' : ''}">
+            <ul class="changelog-list">
+              ${group.items.map(item => `
+                <li class="changelog-item ${item.major ? 'major' : ''}">
+                  ${escapeHtml(item.text)}
+                </li>
+              `).join('')}
+            </ul>
+          </div>
         </div>
       `;
     });
@@ -7656,6 +7712,14 @@ initTheme();
       const parsed = JSON.parse(txt);
       changelogData = parsed;
       localStorage.setItem('changelog-override', JSON.stringify(parsed));
+      
+      // Update openMonths keys based on new data
+      openMonths = {};
+      if (changelogData && changelogData.length > 0) {
+        changelogData.forEach((group, idx) => {
+          openMonths[group.month] = (idx === 0);
+        });
+      }
       
       cancelChangelogEdit();
       renderChangelogHTML();
