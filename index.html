@@ -10439,9 +10439,6 @@ async function loadDashboard() {
     panel.classList.remove('open');
     renderCards(matched);
     updateStats(matched, allA.length);
-    const cardsEl = document.getElementById('cards-container');
-    if (cardsEl) setTimeout(() => cardsEl.scrollIntoView({ behavior: 'smooth' }), 100);
-
     const resetContainer = document.getElementById('ai-filter-reset-container');
     if (resetContainer) {
       resetContainer.style.display = 'flex';
@@ -10452,6 +10449,14 @@ async function loadDashboard() {
         resetContainer.style.opacity = '1';
         resetContainer.style.transform = 'translateY(0)';
       });
+      setTimeout(() => {
+        const offset = 190;
+        const top = resetContainer.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }, 100);
+    } else {
+      const cardsEl = document.getElementById('cards-container');
+      if (cardsEl) setTimeout(() => cardsEl.scrollIntoView({ behavior: 'smooth' }), 100);
     }
   }
 
@@ -10610,11 +10615,7 @@ async function loadDashboard() {
     renderCards(matched);
     updateStats(matched, allA.length);
     
-    // Scroll to cards container
-    const cardsEl = document.getElementById('cards-container');
-    if (cardsEl) setTimeout(() => cardsEl.scrollIntoView({ behavior: 'smooth' }), 100);
-    
-    // Show the reset button!
+    // Show the reset button and scroll
     const resetContainer = document.getElementById('ai-filter-reset-container');
     if (resetContainer) {
       resetContainer.style.display = 'flex';
@@ -10625,6 +10626,14 @@ async function loadDashboard() {
         resetContainer.style.opacity = '1';
         resetContainer.style.transform = 'translateY(0)';
       });
+      setTimeout(() => {
+        const offset = 190;
+        const top = resetContainer.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }, 100);
+    } else {
+      const cardsEl = document.getElementById('cards-container');
+      if (cardsEl) setTimeout(() => cardsEl.scrollIntoView({ behavior: 'smooth' }), 100);
     }
   };
 
