@@ -9157,7 +9157,7 @@ async function loadDashboard() {
           borderWidth: 2
         }
       ],
-      v => '$' + v.toLocaleString('en-US')
+      v => v != null ? '$' + Number(v).toLocaleString('en-US') : ''
     );
   }
 

@@ -65,23 +65,25 @@ export default {
     const urlObj = new URL(request.url);
 
     // Çekme ve yedekleme (Funnel -> Doğrudan) mantığını gerçekleştiren yardımcı fonksiyon
-    async function doFetch(url) {
-      // Önce Tailscale Funnel üzerindeki ev proxy'sini dene
-      try {
-        const funnelResp = await fetch(
-          `${FUNNEL_URL}/?url=${encodeURIComponent(url)}`,
-          { signal: AbortSignal.timeout(15000) }
-        );
-        if (funnelResp.ok) {
-          const body = await funnelResp.text();
-          return {
-            body,
-            proxy: 'tailscale-funnel',
-            status: funnelResp.status,
-            contentType: funnelResp.headers.get('content-type') || 'text/html'
-          };
-        }
-      } catch (_) { /* funnel erişilemez veya hata verdi — doğrudan dene */ }
+    async function doFetch(url, forceDirect = false) {
+      // forceDirect değilse önce Tailscale Funnel üzerindeki ev proxy'sini dene
+      if (!forceDirect) {
+        try {
+          const funnelResp = await fetch(
+            `${FUNNEL_URL}/?url=${encodeURIComponent(url)}`,
+            { signal: AbortSignal.timeout(15000) }
+          );
+          if (funnelResp.ok) {
+            const body = await funnelResp.text();
+            return {
+              body,
+              proxy: 'tailscale-funnel',
+              status: funnelResp.status,
+              contentType: funnelResp.headers.get('content-type') || 'text/html'
+            };
+          }
+        } catch (_) { /* funnel erişilemez veya hata verdi — doğrudan dene */ }
+      }
 
       // Fallback: CF datacenter'ından doğrudan çek
       const response = await fetch(url, {
@@ -106,8 +108,9 @@ export default {
     // ── /wci Özel Rotası ──
     if (urlObj.pathname === '/wci' || urlObj.searchParams.get('wci') === '1') {
       const drewryUrl = 'https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry';
+      const forceDirect = urlObj.searchParams.get('direct') === '1';
       try {
-        const res = await doFetch(drewryUrl);
+        const res = await doFetch(drewryUrl, forceDirect);
         if (res.status !== 200) {
           return new Response(JSON.stringify({ error: 'Drewry page fetch failed', status: res.status }), {
             status: 502,
