@@ -7617,10 +7617,38 @@ initTheme();
     document.getElementById('changelog-save-btn').style.display = 'none';
   };
 
-  window.saveChangelogEdit = function() {
+  window.saveChangelogEdit = async function() {
+    const CHANGELOG_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/changelog-edit';
     const txt = document.getElementById('changelogTextarea').value;
+    let parsed;
     try {
-      const parsed = JSON.parse(txt);
+      parsed = JSON.parse(txt);
+    } catch (e) {
+      alert('Geçersiz JSON formatı: ' + e.message);
+      return;
+    }
+
+    const saveBtn = document.getElementById('changelog-save-btn');
+    const cancelBtn = document.getElementById('changelog-cancel-btn');
+    let originalText = 'Kaydet';
+    if (saveBtn) {
+      originalText = saveBtn.textContent;
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Kaydediliyor...';
+    }
+    if (cancelBtn) cancelBtn.disabled = true;
+
+    try {
+      const resp = await fetch(CHANGELOG_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ changelog: parsed })
+      });
+
+      if (!resp.ok) {
+        throw new Error('HTTP hata kodu: ' + resp.status);
+      }
+
       changelogData = parsed;
       localStorage.setItem('changelog-override', JSON.stringify(parsed));
       
@@ -7637,12 +7665,24 @@ initTheme();
       
       const toastFunc = window.__showToast || (typeof showToast === 'function' ? showToast : null);
       if (toastFunc) {
-        toastFunc('✓ Değişiklikler tarayıcıya kaydedildi', 'ok');
+        toastFunc('✓ Değişiklikler GitHub\'a kaydedildi', 'ok');
       } else {
-        alert('Değişiklikler kaydedildi.');
+        alert('Değişiklikler GitHub\'a başarıyla kaydedildi.');
       }
-    } catch (e) {
-      alert('Geçersiz JSON formatı: ' + e.message);
+    } catch (err) {
+      console.error('Changelog save error:', err);
+      const toastFunc = window.__showToast || (typeof showToast === 'function' ? showToast : null);
+      if (toastFunc) {
+        toastFunc('⚠️ GitHub\'a kaydedilemedi: ' + err.message, 'error');
+      } else {
+        alert('Değişiklikler GitHub\'a kaydedilemedi: ' + err.message);
+      }
+    } finally {
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = originalText;
+      }
+      if (cancelBtn) cancelBtn.disabled = false;
     }
   };
 
@@ -9804,6 +9844,7 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
       t.style.transform = 'translateX(-50%) translateY(8px)';
     }, 3200);
   }
+  window.__showToast = showToast;
   // ── GitHub'a push ───────────────────────────────────────
   async function pushToGitHub(payload) {
     try {
