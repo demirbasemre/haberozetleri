@@ -8072,6 +8072,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   new Chart(ctx, {
     type: 'line',
     data: { labels, datasets },
+    plugins: extraOpts.plugins || [],
     options: {
       ...CHART_DEFAULTS,
       plugins: {
@@ -9167,9 +9168,78 @@ async function loadDashboard() {
         }
       }
 
-      const labels = allData.map(d => formatDateShort(d.date));
+      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const labels = allData.map(d => {
+        const dateObj = new Date(d.date);
+        if (isNaN(dateObj)) return d.date;
+        const day = dateObj.getDate();
+        const month = monthNamesTR[dateObj.getMonth()];
+        const year = dateObj.getFullYear();
+        return `${day} ${month} '${String(year).slice(-2)}`;
+      });
       const prices = allData.map(d => d.value);
-      
+      const rawDates = allData.map(d => d.date);
+
+      // Önemli tarihleri grafikte vurgulamak için özel eklenti
+      const wciAnnotationsPlugin = {
+        id: 'wciAnnotations',
+        afterDatasetsDraw(chart) {
+          const { ctx, chartArea: { top, bottom }, scales: { x } } = chart;
+          ctx.save();
+          
+          const events = [
+            { dateIso: '2026-02-26', label: 'Ortadoğu Savaşı (28 Şub)', color: '#E63946' }
+          ];
+          
+          events.forEach(event => {
+            const index = rawDates.indexOf(event.dateIso);
+            if (index === -1) return;
+            
+            const xPos = x.getPixelForValue(index);
+            
+            // Dikey kesikli çizgi
+            ctx.strokeStyle = event.color;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(xPos, top);
+            ctx.lineTo(xPos, bottom);
+            ctx.stroke();
+            
+            // Veri noktasını kırmızı daireyle vurgula
+            const meta = chart.getDatasetMeta(0);
+            const point = meta.data[index];
+            if (point) {
+              ctx.fillStyle = event.color;
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.fill();
+              
+              ctx.strokeStyle = '#FFFFFF';
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([]);
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.stroke();
+            }
+            
+            // Etiket metni
+            ctx.setLineDash([]);
+            ctx.fillStyle = event.color;
+            ctx.font = 'bold 10px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            
+            // Metin okunabilirliği için beyaz dış çeper çizelim
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.lineWidth = 3.5;
+            ctx.strokeText(event.label, xPos, top + 15);
+            ctx.fillText(event.label, xPos, top + 15);
+          });
+          
+          ctx.restore();
+        }
+      };
+
       console.log("Grafik çiziliyor. Labels:", labels, "Prices:", prices);
 
       lineChart('chart-wci', labels,
@@ -9185,7 +9255,10 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? '$' + Number(v).toLocaleString('en-US') : ''
+        v => v != null ? '$' + Number(v).toLocaleString('en-US') : '',
+        {
+          plugins: [wciAnnotationsPlugin]
+        }
       );
       if (titleEl) titleEl.textContent = "Drewry Dünya Konteyner Endeksi (WCI) Grafiği";
     } catch (err) {
