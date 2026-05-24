@@ -8275,7 +8275,13 @@ function openWciChartModal() {
   const m = document.getElementById('wci-chart-modal');
   if (m) {
     m.style.display = 'flex';
-    setTimeout(() => renderWciChart(), 150);
+    setTimeout(() => {
+      if (typeof window.renderWciChart === 'function') {
+        window.renderWciChart();
+      } else {
+        console.warn("window.renderWciChart henüz hazır değil.");
+      }
+    }, 150);
   }
 }
 function closeWciChartModal() {
@@ -9187,6 +9193,7 @@ async function loadDashboard() {
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
     }
   }
+  window.renderWciChart = renderWciChart;
 
   function convertDrewryDate(dStr) {
     if (!dStr) return null;
