@@ -465,7 +465,7 @@
                 .replace(/\n{2,}/g, '</p><p>').replace(/\n/g, '<br>') + '</p>',
               excerpt: cached.content.slice(0, 200),
               byline: '',
-              image: null,
+              image: cached.image || cached.lead_image_url || cached.og_image || null,
               siteName: (() => { try { return new URL(url).hostname; } catch { return ''; } })()
             };
             cache.set(url, out);
@@ -490,10 +490,57 @@
       doc.head.prepend(base);
     }
 
-    const ogImage = doc.querySelector('meta[property="og:image"]')?.content
+    // ── Preprocess lazy-loaded image sources & absolute-resolve them ──
+    try {
+      doc.querySelectorAll('img').forEach(img => {
+        const candidates = [
+          img.getAttribute('data-lazy-src'),
+          img.getAttribute('data-src'),
+          img.getAttribute('data-original'),
+          img.getAttribute('data-fallback-src'),
+          img.getAttribute('data-srcset'),
+          img.getAttribute('srcset'),
+          img.getAttribute('src'),
+          img.src
+        ];
+        
+        let realSrc = null;
+        for (const candidate of candidates) {
+          if (candidate && typeof candidate === 'string' && candidate.trim()) {
+            if (candidate.includes(' ') && (candidate.includes(',') || candidate.includes('w') || candidate.includes('x'))) {
+              const first = candidate.trim().split(/[\s,]+/)[0];
+              if (first && !first.startsWith('data:image')) {
+                realSrc = first;
+                break;
+              }
+            } else if (!candidate.startsWith('data:image')) {
+              realSrc = candidate;
+              break;
+            }
+          }
+        }
+        
+        if (realSrc) {
+          try {
+            img.src = new URL(realSrc, url).href;
+          } catch (_) {
+            img.src = realSrc;
+          }
+        }
+      });
+    } catch (_) {}
+
+    let ogImage = doc.querySelector('meta[property="og:image"]')?.content
                  || doc.querySelector('meta[name="twitter:image"]')?.content
-                 || doc.querySelector('article img, main img, [class*="hero"] img')?.src
+                 || doc.querySelector('article img, main img, [class*="hero"] img, img.wp-post-image, img.post-featured-img, .entry-content img, .post-content img')?.src
                  || null;
+
+    if (ogImage) {
+      try {
+        ogImage = new URL(ogImage, url).href;
+      } catch (_) {}
+    }
+
     const ogTitle = doc.querySelector('meta[property="og:title"]')?.content || doc.title;
 
     onStep && onStep('clean');
