@@ -32,8 +32,42 @@
     }
   ];
 
-  const cache = new Map();
-  const translationCache = new Map();
+  const cache = {
+    get: (key) => {
+      try {
+        const val = sessionStorage.getItem('reader_cache_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch (_) { return null; }
+    },
+    set: (key, val) => {
+      try {
+        sessionStorage.setItem('reader_cache_' + key, JSON.stringify(val));
+      } catch (_) {}
+    },
+    has: (key) => {
+      try {
+        return sessionStorage.getItem('reader_cache_' + key) !== null;
+      } catch (_) { return false; }
+    }
+  };
+
+  const translationCache = {
+    get: (key) => {
+      try {
+        return sessionStorage.getItem('trans_cache_' + key);
+      } catch (_) { return null; }
+    },
+    set: (key, val) => {
+      try {
+        sessionStorage.setItem('trans_cache_' + key, val);
+      } catch (_) {}
+    },
+    has: (key) => {
+      try {
+        return sessionStorage.getItem('trans_cache_' + key) !== null;
+      } catch (_) { return false; }
+    }
+  };
   let modal = null;
   let readabilityLoaded = null;
   let stylesInjected = false;
@@ -761,7 +795,10 @@
   async function translateArticleContent(contentNode) {
     const sentenceRegex = /((?<!\b[a-zA-Z]\.)(?<!\b(?:Inc|Corp|Co|Ltd|Mr|Mrs|Ms|Dr|vs|eg|ie|ca|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Oct|Nov|Dec|vol|ed|pp|al|U\.S)\.)(?<=[.!?])\s+)/gi;
 
-    // 1. Collect all text nodes with letters in the live contentNode
+    // Clone node first to perform sentence splitting offline
+    const workingNode = contentNode.cloneNode(true);
+
+    // 1. Collect all text nodes with letters in the cloned workingNode
     const textNodes = [];
     function collectTextNodes(node) {
       if (node.nodeType === Node.TEXT_NODE) {
@@ -778,7 +815,7 @@
         }
       }
     }
-    collectTextNodes(contentNode);
+    collectTextNodes(workingNode);
     
     // 2. Split each text node into sentences, and wrap them in span.reader-text-segment with data-segment-id
     const segments = [];
@@ -798,7 +835,7 @@
           span.textContent = part;
           
           parent.insertBefore(span, node);
-          segments.push({ span, text: part.trim(), id: segmentIdx });
+          segments.push({ text: part.trim(), id: segmentIdx });
           segmentIdx++;
         } else if (part.length > 0) {
           parent.insertBefore(document.createTextNode(part), node);
@@ -808,7 +845,10 @@
       parent.removeChild(node);
     });
     
-    const cloned = contentNode.cloneNode(true);
+    // Update the live DOM contentNode in exactly one transaction to prevent layout thrashing
+    contentNode.innerHTML = workingNode.innerHTML;
+    
+    const cloned = workingNode.cloneNode(true);
     if (segments.length === 0) return cloned.innerHTML;
     
     // 3. Batch translate the segments
