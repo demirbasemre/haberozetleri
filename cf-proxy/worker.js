@@ -4,8 +4,21 @@ const ALLOWED_ORIGINS = [
   'http://127.0.0.1:3457',
 ];
 
-// Tailscale Funnel üzerindeki fetch-proxy (ev IP'si ile çeker)
-const FUNNEL_URL = 'https://tower.tail2cc03.ts.net';
+// Genel proxy rotası için izin verilen hostlar (SSRF koruması)
+const PROXY_ALLOWED_HOSTS = new Set([
+  'www.drewry.co.uk',
+  'drewry.co.uk',
+  'aircargonews.net',
+  'www.aircargonews.net',
+  'aircargoweek.com',
+  'www.aircargoweek.com',
+  'stattimes.com',
+  'www.stattimes.com',
+  'payloadasia.com',
+  'www.payloadasia.com',
+  'iata.org',
+  'www.iata.org',
+]);
 
 function parseWCI(html) {
   // Raporun yayınlanma tarihini bul
@@ -64,10 +77,12 @@ export default {
 
     const urlObj = new URL(request.url);
 
+    const FUNNEL_URL = env.FUNNEL_URL || '';
+
     // Çekme ve yedekleme (Funnel -> Doğrudan) mantığını gerçekleştiren yardımcı fonksiyon
     async function doFetch(url, forceDirect = false) {
       // forceDirect değilse önce Tailscale Funnel üzerindeki ev proxy'sini dene
-      if (!forceDirect) {
+      if (!forceDirect && FUNNEL_URL) {
         try {
           const headers = {};
           if (env.PROXY_TOKEN) {
@@ -171,6 +186,13 @@ export default {
 
     if (!['http:', 'https:'].includes(parsed.protocol)) {
       return new Response(JSON.stringify({ error: 'protocol not allowed' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!PROXY_ALLOWED_HOSTS.has(parsed.hostname)) {
+      return new Response(JSON.stringify({ error: 'host not allowed' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
