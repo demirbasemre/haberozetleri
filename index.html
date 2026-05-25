@@ -538,7 +538,22 @@
     <section class="dash-section" id="dash-sec-takvim">
       <h2 class="dash-section-title">Veri Yayın Takvimi ve Önemli Tarihler</h2>
       <div class="rel-cf-wrap" id="rel-cf-wrap">
-        <div class="rel-cf-pills" id="rel-cf-pills"></div>
+        <div class="rel-cf-selector" id="rel-cf-selector">
+          <button class="rel-cf-btn" id="rel-cf-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Ülke bayrağı filtresi">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span id="rel-cf-label">Ülke Bayramları</span>
+            <span class="rel-cf-count" id="rel-cf-count" style="display:none">0</span>
+            <svg class="rel-cf-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="rel-cf-dropdown" id="rel-cf-dropdown" role="listbox" aria-multiselectable="true">
+            <div class="rel-cf-search-row">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="rel-cf-search" class="rel-cf-search" placeholder="Ülke ara…" autocomplete="off" spellcheck="false" aria-label="Ülke ara">
+              <button class="rel-cf-clear-all" id="rel-cf-clear-all" style="display:none" aria-label="Filtreyi temizle">Temizle</button>
+            </div>
+            <div class="rel-cf-list" id="rel-cf-list" role="group" aria-label="Ülke listesi"></div>
+          </div>
+        </div>
       </div>
       <div class="dash-tl">
         <div class="dash-tl-track" id="tl-track"></div>
@@ -4270,19 +4285,55 @@ function buildReleaseCalendar() {
     <circle cx="15" cy="14" r="4" stroke="currentColor" stroke-width="1.8"/>
   </svg>`;
 
-  // Ülke filtre şeridini çizer
+  // Ülke filtre dropdown'ını çizer
   function renderCountryFilter() {
-    const wrap = document.getElementById('rel-cf-pills');
-    if (!wrap) return;
-    const allActive = activeHolidayCountries.size === 0;
-    wrap.innerHTML = [
-      `<button class="rel-cf-pill${allActive ? ' active' : ''}" data-cc="" aria-label="Tüm ülkeler">🌍 Tümü</button>`,
-      ...HOLIDAY_COUNTRIES.map(c => {
-        const isActive = activeHolidayCountries.has(c.code);
-        const cnt = holidayItems.filter(hi => hi.countryCode === c.code).length;
-        return `<button class="rel-cf-pill${isActive ? ' active' : ''}" data-cc="${c.code}" title="${c.name} — ${cnt} resmi tatil">${c.flag} ${c.name}</button>`;
-      })
-    ].join('');
+    const list    = document.getElementById('rel-cf-list');
+    const label   = document.getElementById('rel-cf-label');
+    const count   = document.getElementById('rel-cf-count');
+    const clearAll= document.getElementById('rel-cf-clear-all');
+    const trigger = document.getElementById('rel-cf-trigger');
+    if (!list) return;
+
+    const searchVal = (document.getElementById('rel-cf-search')?.value || '').toLowerCase().trim();
+    const filtered = HOLIDAY_COUNTRIES.filter(c =>
+      !searchVal || c.name.toLowerCase().includes(searchVal) || c.code.toLowerCase().includes(searchVal)
+    );
+
+    const allRow = searchVal ? '' : `<button class="rel-cf-item${activeHolidayCountries.size === 0 ? ' selected' : ''}" data-cc="" role="option" aria-selected="${activeHolidayCountries.size === 0}">
+      <span class="rel-cf-item-check">${activeHolidayCountries.size === 0 ? '✓' : ''}</span>
+      <span class="rel-cf-item-flag">🌍</span>
+      <span class="rel-cf-item-name">Tüm Ülkeler</span>
+      <span class="rel-cf-item-cnt">${holidayItems.length}</span>
+    </button>`;
+
+    list.innerHTML = allRow + filtered.map(c => {
+      const isSel = activeHolidayCountries.has(c.code);
+      const cnt = holidayItems.filter(hi => hi.countryCode === c.code).length;
+      return `<button class="rel-cf-item${isSel ? ' selected' : ''}" data-cc="${c.code}" role="option" aria-selected="${isSel}">
+        <span class="rel-cf-item-check">${isSel ? '✓' : ''}</span>
+        <span class="rel-cf-item-flag">${c.flag}</span>
+        <span class="rel-cf-item-name">${c.name}</span>
+        <span class="rel-cf-item-cnt">${cnt}</span>
+      </button>`;
+    }).join('');
+
+    const selCount = activeHolidayCountries.size;
+    if (trigger) trigger.classList.toggle('active', selCount > 0);
+    if (selCount === 0) {
+      if (label) label.textContent = 'Ülke Bayramları';
+      if (count) count.style.display = 'none';
+      if (clearAll) clearAll.style.display = 'none';
+    } else if (selCount === 1) {
+      const cc = [...activeHolidayCountries][0];
+      const c = HOLIDAY_COUNTRIES.find(x => x.code === cc);
+      if (label) label.textContent = c ? `${c.flag} ${c.name}` : 'Ülke Bayramları';
+      if (count) count.style.display = 'none';
+      if (clearAll) clearAll.style.display = 'inline-flex';
+    } else {
+      if (label) label.textContent = 'Ülke Bayramları';
+      if (count) { count.textContent = selCount; count.style.display = 'inline-flex'; }
+      if (clearAll) clearAll.style.display = 'inline-flex';
+    }
   }
 
   function renderMonth(key) {
@@ -4420,16 +4471,53 @@ function buildReleaseCalendar() {
     if (pill) renderMonth(pill.dataset.key);
   });
 
-  // Ülke filtresi — event delegation
-  const cfWrap = document.getElementById('rel-cf-pills');
-  if (cfWrap) {
-    cfWrap.addEventListener('click', e => {
-      const btn = e.target.closest('.rel-cf-pill');
+  // Ülke filtresi — dropdown
+  const cfTrigger  = document.getElementById('rel-cf-trigger');
+  const cfDropdown = document.getElementById('rel-cf-dropdown');
+  const cfSearch   = document.getElementById('rel-cf-search');
+  const cfClearAll = document.getElementById('rel-cf-clear-all');
+  const cfList     = document.getElementById('rel-cf-list');
+  const cfSelector = document.getElementById('rel-cf-selector');
+
+  function openCfDropdown() {
+    cfDropdown.classList.add('open');
+    cfSelector.classList.add('open');
+    cfTrigger.setAttribute('aria-expanded', 'true');
+    if (cfSearch) { cfSearch.value = ''; cfSearch.focus(); renderCountryFilter(); }
+  }
+  function closeCfDropdown() {
+    cfDropdown.classList.remove('open');
+    cfSelector.classList.remove('open');
+    cfTrigger.setAttribute('aria-expanded', 'false');
+    if (cfSearch) cfSearch.value = '';
+    renderCountryFilter();
+  }
+
+  if (cfTrigger) {
+    cfTrigger.addEventListener('click', e => {
+      e.stopPropagation();
+      cfDropdown.classList.contains('open') ? closeCfDropdown() : openCfDropdown();
+    });
+  }
+  if (cfSearch) {
+    cfSearch.addEventListener('input', () => renderCountryFilter());
+    cfSearch.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); closeCfDropdown(); } });
+  }
+  if (cfClearAll) {
+    cfClearAll.addEventListener('click', e => {
+      e.stopPropagation();
+      activeHolidayCountries.clear();
+      renderCountryFilter();
+      if (_relRender) _relRender();
+    });
+  }
+  if (cfList) {
+    cfList.addEventListener('click', e => {
+      const btn = e.target.closest('.rel-cf-item');
       if (!btn) return;
       const cc = btn.dataset.cc;
-      if (!cc) {
-        activeHolidayCountries.clear();
-      } else {
+      if (!cc) { activeHolidayCountries.clear(); }
+      else {
         if (activeHolidayCountries.has(cc)) activeHolidayCountries.delete(cc);
         else activeHolidayCountries.add(cc);
       }
@@ -4437,6 +4525,12 @@ function buildReleaseCalendar() {
       if (_relRender) _relRender();
     });
   }
+  document.addEventListener('click', e => {
+    if (cfDropdown?.classList.contains('open') && !e.target.closest('#rel-cf-selector')) closeCfDropdown();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && cfDropdown?.classList.contains('open')) closeCfDropdown();
+  });
 
   renderCountryFilter();
   _relRender = () => renderMonth(activeKey);
