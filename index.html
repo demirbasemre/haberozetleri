@@ -926,7 +926,8 @@ function openAirlineEditPanel(airlineId, anchorEl, _containerEl) {
         <button type="button" class="merge-add-btn">Ekle</button>
       </div>
     </div>
-    <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:2px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:2px">
+      <button class="airline-edit-delete-btn" type="button">Sil</button>
       <button class="airline-edit-save-btn" type="button">Kaydet</button>
     </div>
   `;
@@ -997,6 +998,34 @@ function openAirlineEditPanel(airlineId, anchorEl, _containerEl) {
       btn.style.background = '#DC2626';
     }
   });
+
+  const deleteBtn = panel.querySelector('.airline-edit-delete-btn');
+  if (deleteBtn) {
+    deleteBtn.addEventListener('click', async () => {
+      const name = panel.querySelector('[name=label]').value.trim() || currentLabel;
+      if (!confirm(`"${name}" havayolunu listeden kaldırmak istediğinize emin misiniz?`)) return;
+      deleteBtn.classList.add('deleting');
+      deleteBtn.textContent = 'Siliniyor…';
+      try {
+        const cfg = {
+          airline_id: airlineId,
+          label:      panel.querySelector('[name=label]').value.trim(),
+          region:     panel.querySelector('[name=region]').value,
+          focus:      currentFocus,
+          icon_url:   panel.querySelector('[name=icon_url]').value.trim(),
+          keywords:   def._kwOverride ? def._kwOverride.join(',') : (def.kw || []).join(','),
+          merge_with: mergeWith,
+          deleted:    true
+        };
+        await saveAirlineConfig(cfg);
+        panel.remove();
+      } catch(e) {
+        deleteBtn.classList.remove('deleting');
+        deleteBtn.textContent = 'Hata';
+        deleteBtn.style.borderColor = '#DC2626';
+      }
+    });
+  }
 
   // Body'e fixed olarak ekle — dropdown layout'unu bozmaz
   panel.style.position = 'fixed';
@@ -1203,7 +1232,13 @@ let DYNAMIC_AIRLINE_DEFS = [];
 let DYNAMIC_GSA_DEFS     = [];
 
 // Merge helper — all current definitions
-function allAirlineDefs() { return [...AIRLINE_DEFS, ...DYNAMIC_AIRLINE_DEFS]; }
+function allAirlineDefs() {
+  const all = [...AIRLINE_DEFS, ...DYNAMIC_AIRLINE_DEFS];
+  return all.filter(a => {
+    const override = AIRLINE_CONFIG_OVERRIDES.find(c => c.airline_id === a.id);
+    return !(override && (override.deleted === true || override.deleted === 'true'));
+  });
+}
 function allGSADefs()     { return [...GSA_DEFS,     ...DYNAMIC_GSA_DEFS]; }
 
 function detectGSA(article) {
