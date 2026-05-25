@@ -2823,6 +2823,98 @@
     stroke: currentColor;
   }
 
+  /* ── ÜLKE BAYRAMLARI FİLTRE ŞERİDİ ─────────────────────────── */
+  .rel-cf-wrap {
+    margin-bottom: 10px;
+  }
+  .rel-cf-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 2px 0 4px;
+  }
+  .rel-cf-pill {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+  .rel-cf-pill:hover { border-color: var(--text-3); color: var(--text); }
+  .rel-cf-pill.active {
+    background: hsl(345, 60%, 44%);
+    border-color: transparent;
+    color: white;
+  }
+  .rel-cf-pill[data-cc=""].active {
+    background: hsl(211, 68%, 42%);
+  }
+  [data-theme="dark"] .rel-cf-pill.active { background: hsl(345, 45%, 36%); }
+  [data-theme="dark"] .rel-cf-pill[data-cc=""].active { background: hsl(211, 50%, 34%); }
+
+  /* ── RESMİ TATİL KARTI (holiday) ─────────────────────────── */
+  .dash-release-item.holiday {
+    background: hsl(345, 70%, 96%);
+    border-color: hsl(345, 50%, 84%);
+  }
+  .dash-release-item.holiday .dash-rel-date {
+    background: hsl(345, 55%, 44%);
+  }
+  [data-theme="dark"] .dash-release-item.holiday {
+    background: hsl(345, 22%, 17%);
+    border-color: hsl(345, 20%, 30%);
+  }
+  [data-theme="dark"] .dash-release-item.holiday .dash-rel-date {
+    background: hsl(345, 35%, 34%);
+  }
+
+  /* Resmi Tatil rozeti */
+  .dash-rel-badge.holiday-badge {
+    background: hsl(345, 65%, 88%);
+    color: hsl(345, 60%, 30%);
+  }
+  [data-theme="dark"] .dash-rel-badge.holiday-badge {
+    background: hsl(345, 25%, 24%);
+    color: hsl(345, 50%, 68%);
+  }
+
+  /* Sağ-alt ülke bayrağı + adı */
+  .dash-rel-country {
+    position: absolute;
+    bottom: 7px;
+    right: 10px;
+    text-align: center;
+    pointer-events: none;
+    line-height: 1.3;
+    user-select: none;
+  }
+  .dash-rel-country-flag {
+    font-size: 20px;
+    display: block;
+    opacity: 0.65;
+    line-height: 1.2;
+  }
+  .dash-rel-country-name {
+    font-size: 7.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: currentColor;
+    opacity: 0.4;
+    display: block;
+    margin-top: 1px;
+  }
+
   /* Ekleme modali */
   .rel-add-modal {
     position: fixed; inset: 0; z-index: 9999;
