@@ -10563,21 +10563,21 @@ async function loadDashboard() {
     }).join('');
   }
 
-  function addMsg(text, role) {
+  function addMsg(text, role, autoScroll = true) {
     const div = document.createElement('div');
     div.className = `ai-msg ${role}`;
     div.textContent = text;
     msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
+    if (autoScroll) msgs.scrollTop = msgs.scrollHeight;
     return div;
   }
 
-  function addBotHTML(html, articlesMeta = []) {
+  function addBotHTML(html, articlesMeta = [], autoScroll = true) {
     const div = document.createElement('div');
     div.className = 'ai-msg bot';
     div.innerHTML = html;
     msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
+    if (autoScroll) msgs.scrollTop = msgs.scrollHeight;
     return div;
   }
 
@@ -10600,7 +10600,7 @@ async function loadDashboard() {
     return div;
   }
 
-  function addShowCardsPrompt(articles) {
+  function addShowCardsPrompt(articles, autoScroll = true) {
     const div = document.createElement('div');
     div.className = 'ai-msg bot';
     div.innerHTML = `<span class="ai-line">Bu haberler için sayfadaki kartları getireyim mi?</span><div class="ai-card-btns"><button class="ai-card-yes">Evet, göster</button><button class="ai-card-no">Hayır</button></div>`;
@@ -10614,7 +10614,7 @@ async function loadDashboard() {
     });
 
     msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
+    if (autoScroll) msgs.scrollTop = msgs.scrollHeight;
   }
 
   function showMatchingCards(articles) {
@@ -10742,7 +10742,7 @@ async function loadDashboard() {
       return;
     }
 
-    addMsg(q, 'user');
+    const userBubble = addMsg(q, 'user');
     const thinking = addThinkingMsg();
 
     currentAbortController = new AbortController();
@@ -10760,7 +10760,7 @@ async function loadDashboard() {
       const tokenInfo = data.tokensUsed ? `<div class="ai-token-info">${data.tokensUsed} token · çıktı: ${data.outputTokens || '?'}</div>` : '';
       
       const articlesMeta = data.articlesMeta || [];
-      addBotHTML(formatAIText(answerText, articlesMeta) + tokenInfo, articlesMeta);
+      addBotHTML(formatAIText(answerText, articlesMeta) + tokenInfo, articlesMeta, false);
       showFeedbackBar(q, answerText);
       
       // Update history
@@ -10790,7 +10790,18 @@ async function loadDashboard() {
       saveConversations(conversations);
       
       if (data.articles && data.articles.length > 0) {
-        addShowCardsPrompt(data.articles);
+        addShowCardsPrompt(data.articles, false);
+      }
+
+      // Smoothly scroll the user's question bubble to the top of the messages panel
+      if (userBubble) {
+        const msgsRect = msgs.getBoundingClientRect();
+        const bubbleRect = userBubble.getBoundingClientRect();
+        const relativeTop = bubbleRect.top - msgsRect.top + msgs.scrollTop;
+        msgs.scrollTo({
+          top: relativeTop - 12,
+          behavior: 'smooth'
+        });
       }
     } catch(e) {
       thinking.remove();
