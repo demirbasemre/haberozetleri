@@ -51,10 +51,6 @@ Uygulama, zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interakt
 * **Sorgu Hizalama (Scroll to Top):** Asistan cevabı tamamladığında ekranın kontrolsüzce kayması önlenir ve sorulan soru sohbet panelinin en tepesine (`-12px` boşlukla) yumuşakça hizalanır.
 * **Akıllı Selamlama & Kısalık Kuralları:** İlk soruda asistan *"Merhaba,"* diyerek başlar; takip eden sorularda ise gereksiz kalıplardan kaçınarak doğrudan, net ve kısa yanıtlar verir.
 
-### 4. Gizli Haber Düzenleme Modu (`#news-editor-panel`)
-* `Ctrl + Shift + E` kısayoluyla açılan bu gizli panel sayesinde, haber kartlarının içerikleri tarayıcı üzerinden kolayca güncellenerek n8n Webhook aracılığıyla GitHub'a otomatik kaydedilebilir.
-
----
 
 ## 🛠️ Teknoloji Yığını
 
