@@ -44,9 +44,28 @@ function fetchUrl(targetUrl, res) {
 }
 
 const server = http.createServer((req, res) => {
+  // CORS preflight requests
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET' });
+    res.writeHead(204, { 
+      'Access-Control-Allow-Origin': '*', 
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, X-Proxy-Token'
+    });
     return res.end();
+  }
+
+  // Token doğrulama (Token verification)
+  const expectedToken = process.env.PROXY_TOKEN;
+  if (!expectedToken) {
+    console.error("HATA: PROXY_TOKEN çevre değişkeni (environment variable) ayarlanmamış!");
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ error: 'Proxy server configuration error: PROXY_TOKEN is missing' }));
+  }
+
+  const clientToken = req.headers['x-proxy-token'];
+  if (clientToken !== expectedToken) {
+    res.writeHead(403, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ error: 'Unauthorized: Invalid proxy token' }));
   }
 
   const qs = new URL(req.url, `http://localhost`).searchParams;
@@ -63,3 +82,4 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`fetch-proxy listening on port ${PORT}`);
 });
+
