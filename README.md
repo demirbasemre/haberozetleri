@@ -4,33 +4,7 @@ Hava Kargo Bülteni, hava kargo sektörü haberlerini, küresel makro-ekonomik v
 
 Uygulama, zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interaktif Chart.js grafik entegrasyonları ve **n8n + Gemini API** tabanlı yapay zeka altyapısıyla sektör profesyonellerine yönelik geliştirilmiştir.
 
----
 
-## 📸 Ekran Görüntüleri
-
-### 📊 Makro-Ekonomi & Petrol Fiyat Göstergeleri
-![Makro-Ekonomi Dashboard](./docs/images/dashboard_economics.png)
-*FRED ve IMF verileriyle beslenen interaktif Chart.js çizgi ve bar grafikleri içeren KPI gösterge paneli.*
-
----
-
-### 🤖 Yapay Zeka Asistanı (Sohbet Arayüzü)
-![Yapay Zeka Haber Asistanı](./docs/images/ai_assistant.png)
-*Haber arşivine ve embedding veritabanına dayalı akıllı arama, duraklatma kontrolü, iskelet (skeleton) yükleme efektleri ve otomatik hizalanan soru yapısı.*
-
----
-
-### 💡 Hazır Soru Önerileri (Çipler)
-![Hazır Soru Önerileri](./docs/images/ai_suggestions.png)
-*Entegratör ve havayolu bazlı hızlı soru sorma çipleri ve yumuşak geçiş animasyonları.*
-
----
-
-### 📰 Haber Filtreleme ve Arama Arayüzü
-![Haber Akışı Arayüzü](./docs/images/news_feed.png)
-*Havayolu, kaynak, bölge ve kategori bazlı filtreleme, çoklu kaynak desteği ve interaktif kart yapısı.*
-
----
 
 ## 🚀 Temel Özellikler
 
@@ -51,6 +25,12 @@ Uygulama, zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interakt
 * **Sorgu Hizalama (Scroll to Top):** Asistan cevabı tamamladığında ekranın kontrolsüzce kayması önlenir ve sorulan soru sohbet panelinin en tepesine (`-12px` boşlukla) yumuşakça hizalanır.
 * **Akıllı Selamlama & Kısalık Kuralları:** İlk soruda asistan *"Merhaba,"* diyerek başlar; takip eden sorularda ise gereksiz kalıplardan kaçınarak doğrudan, net ve kısa yanıtlar verir.
 
+### 4. Gelişmiş Haber Okuyucu ve Yan Yana Çeviri Modülü
+* **Temiz Sayfada Tek Tıkla Erişim:** Herhangi bir haber kartına tıklandığında, kullanıcının dış sitelere gitmesine gerek kalmadan, reklam ve dikkat dağıtıcı öğelerden tamamen arındırılmış temiz bir okuma modalı (`#reader-modal`) açılır.
+* **Sayfa Bütününü Çevirme (Translation):** Yabancı kaynaklı haberler tek tıkla ("Çevir" butonu aracılığıyla) Google Translate API entegrasyonu sayesinde Türkçe'ye çevrilebilir.
+* **Eş Zamanlı Kaydırma (Sync Scroll):** Orijinal metin ile Türkçe çeviriyi yan yana (Split-screen) gösteren yapıda, bir taraf kaydırıldığında diğer tarafın da eş zamanlı ve senkronize olarak kaydırılması sağlanır.
+* **Cümle Bazlı Vurgulama (Segment Highlight):** Okuyucu panelinde fare ile bir cümlenin (segment) üzerine gelindiğinde, cümlenin orijinal dildeki karşılığı ile Türkçe çevirisindeki karşılığı aynı anda vurgulanarak okuma takibi kolaylaştırılır.
+* **Kaynak Sekmeleri:** Aynı haberin birden fazla farklı kaynağı mevcutsa, okuyucu penceresinin en üstünde sekmeler halinde listelenir ve kaynaklar arasında tek tıkla geçiş yapılabilir.
 
 ## 🛠️ Teknoloji Yığını
 
