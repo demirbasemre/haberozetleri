@@ -4231,7 +4231,7 @@ function buildReleaseCalendar() {
     h('BR','Cumhuriyet İlanı',11,15), h('BR','Siyah Bilinç Günü',11,20), h('BR','Noel',12,25),
   ];
 
-  let activeHolidayCountries = new Set();
+  let activeHolidayCountries = new Set(['TR']);
 
   function combinedItems() {
     const user = loadUserReleaseItems().map(u => ({
