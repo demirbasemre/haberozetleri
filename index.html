@@ -834,7 +834,7 @@ const IS_EDIT_MODE = new URLSearchParams(location.search).get('edit') === '1';
 let airlineFocusMode = false;
 let AIRLINE_CONFIG_OVERRIDES = []; // GitHub'dan yüklenen overrides
 const AIRLINE_CONFIG_URL = './airline-config.json';
-const AIRLINE_CONFIG_SAVE_URL = 'https://n8n.emredemirbas.com/webhook/airline-config/save';
+const AIRLINE_CONFIG_SAVE_URL = 'https://n8n.emredemirbas.com/webhook/admin/airline-config/save';
 
 function applyAirlineConfigOverrides() {
   AIRLINE_CONFIG_OVERRIDES.forEach(cfg => {
@@ -865,6 +865,7 @@ async function loadAirlineConfig() {
 async function saveAirlineConfig(cfg) {
   const resp = await fetch(AIRLINE_CONFIG_SAVE_URL, {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(cfg)
   });
@@ -3377,7 +3378,7 @@ initTheme();
   };
 
   window.saveChangelogEdit = async function() {
-    const CHANGELOG_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/changelog-edit';
+    const CHANGELOG_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/admin/changelog-edit';
     const txt = document.getElementById('changelogTextarea').value;
     let parsed;
     try {
@@ -3400,6 +3401,7 @@ initTheme();
     try {
       const resp = await fetch(CHANGELOG_WEBHOOK, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ changelog: parsed })
       });
@@ -3802,7 +3804,7 @@ function chartErr(id, html) {
 // ── RELEASE CALENDAR ──────────────────────────────────────────
 const REL_USER_KEY = 'cargo_release_user_items_v1'; // localStorage cache
 const REL_DATA_URL = './data/important-dates.json';
-const REL_WEBHOOK_URL = 'https://n8n.emredemirbas.com/webhook/important-dates';
+const REL_WEBHOOK_URL = 'https://n8n.emredemirbas.com/webhook/admin/important-dates';
 let _relRender = null;
 let _relUserItems = [];   // bellekteki güncel liste (n8n + cache merge)
 let _relBusy = false;
@@ -3842,6 +3844,7 @@ async function postReleaseAction(payload) {
   try {
     const r = await fetch(REL_WEBHOOK_URL, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
@@ -5499,7 +5502,8 @@ async function loadDashboard() {
   // ── UI helpers ────────────────────────────────────────
   function formatAIText(text, articlesMeta = []) {
     const escaped = text
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     
     const lines = escaped.split('\n');
     return lines.map(line => {
@@ -5855,7 +5859,7 @@ async function loadDashboard() {
 // ── YAPILACAKLAR & KONTROLLER ────────────────────────────────
 (function() {
   const STORE_KEY  = 'hk-todo-v1';          // localStorage cache
-  const GH_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/todos';
+  const GH_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/admin/todos';
   let data = { todo: [], check: [] };
   let _saving = false;
   let _pendingSave = false;
@@ -5875,7 +5879,7 @@ async function loadDashboard() {
 
   async function loadDataFromGitHub() {
     try {
-      const res  = await fetch(GH_WEBHOOK, { cache: 'no-store' });
+      const res  = await fetch(GH_WEBHOOK, { cache: 'no-store', credentials: 'include' });
       const json = await res.json();
       if (json && (Array.isArray(json.todo) || Array.isArray(json.check))) {
         data.todo  = json.todo  || [];
@@ -5898,6 +5902,7 @@ async function loadDashboard() {
     const payload = JSON.parse(JSON.stringify(data));
     fetch(GH_WEBHOOK, {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
@@ -6361,8 +6366,37 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
 <script>
 (function(){
   const EDITS_KEY = 'news-edits-v1';
-  const EDIT_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/news-card-edit';
+  const EDIT_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/admin/news-card-edit';
   const SOURCE_OPTIONS = (typeof SOURCE_LABELS === 'object' && SOURCE_LABELS) ? SOURCE_LABELS : {};
+
+  // ── Admin login prompt (CF Access 401) ──────────────────
+  function showAdminLoginPrompt() {
+    let modal = document.getElementById('__admin-login-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = '__admin-login-modal';
+      modal.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center';
+      modal.innerHTML = `
+        <div style="background:#1e293b;color:#f1f5f9;border-radius:14px;padding:32px 28px;max-width:340px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.5);text-align:center">
+          <div style="font-size:32px;margin-bottom:12px">🔐</div>
+          <div style="font-size:16px;font-weight:700;margin-bottom:8px">Yönetici Girişi Gerekli</div>
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:24px">Email OTP ile giriş yap, ardından tekrar dene.</div>
+          <button id="__admin-login-btn" style="background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;margin-right:8px">Giriş Yap</button>
+          <button id="__admin-login-close" style="background:#334155;color:#cbd5e1;border:none;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer">Kapat</button>
+        </div>`;
+      document.body.appendChild(modal);
+      document.getElementById('__admin-login-btn').onclick = () => {
+        window.open('https://n8n.emredemirbas.com/webhook/admin/news-card-edit', '_blank');
+        modal.style.display = 'none';
+      };
+      document.getElementById('__admin-login-close').onclick = () => {
+        modal.style.display = 'none';
+      };
+    } else {
+      modal.style.display = 'flex';
+    }
+  }
+  window.adminLogin = showAdminLoginPrompt;
 
   // ── Durum bildirimi (toast) ──────────────────────────────
   function showToast(msg, type) {
@@ -6390,9 +6424,14 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
     try {
       const res = await fetch(EDIT_WEBHOOK, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+      if (res.status === 401 || res.status === 403) {
+        showAdminLoginPrompt();
+        return false;
+      }
       if (!res.ok) {
         const txt = await res.text().catch(() => '');
         let errorMsg = 'GitHub\'a kaydedilemedi (' + res.status + ')';
