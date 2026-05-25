@@ -537,7 +537,8 @@
     <!-- Veri takvimi -->
     <section class="dash-section" id="dash-sec-takvim">
       <h2 class="dash-section-title">Veri Yayın Takvimi ve Önemli Tarihler</h2>
-      <div class="rel-cf-wrap" id="rel-cf-wrap">
+      <div class="rel-filter-bar">
+        <!-- Ülke bayramı filtresi -->
         <div class="rel-cf-selector" id="rel-cf-selector">
           <button class="rel-cf-btn" id="rel-cf-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Ülke bayrağı filtresi">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -554,10 +555,19 @@
             <div class="rel-cf-list" id="rel-cf-list" role="group" aria-label="Ülke listesi"></div>
           </div>
         </div>
+        <!-- Ay seçimi filtresi -->
+        <div class="rel-mo-selector" id="rel-mo-selector">
+          <button class="rel-cf-btn rel-mo-btn" id="rel-mo-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Ay seçimi">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="rel-mo-label">Ay</span>
+            <svg class="rel-cf-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="rel-mo-dropdown" id="rel-mo-dropdown" role="listbox">
+            <div class="rel-mo-list" id="rel-mo-list"></div>
+          </div>
+        </div>
       </div>
-      <div class="dash-tl">
-        <div class="dash-tl-track" id="tl-track"></div>
-      </div>
+      <div style="display:none"><div class="dash-tl-track" id="tl-track"></div></div>
       <div class="dash-releases" id="dash-releases"></div>
       <div class="dash-section-note">ⓘ Tarihler yaklaşık olup yayıncı tarafından değiştirilebilir. Kullanıcı eklemeleri tarayıcınızda saklanır.</div>
     </section>
@@ -4248,17 +4258,28 @@ function buildReleaseCalendar() {
   const todayKey = `${year}-${now.getMonth()}`;
 
   let activeKey = todayKey;
-  const track = document.getElementById('tl-track');
-  track.innerHTML = monthKeys.map(k => {
-    const [ky, km] = k.split('-').map(Number);
-    // String karşılaştırması değil, sayısal karşılaştırma (10/11 bug'ını önler)
-    const isPast  = ky < now.getFullYear() || (ky === now.getFullYear() && km < now.getMonth());
-    const isToday = k === todayKey;
-    const dot     = isToday ? '<span class="dash-tl-dot"></span>' : '';
-    return `<button class="dash-tl-pill${isPast ? ' past' : ''}${isToday ? ' today-month' : ''}"
-      data-key="${k}" aria-label="${TR_M_FULL[km]} ${ky}"
-    >${dot}${TR_M[km]}</button>`;
-  }).join('');
+  const track = document.getElementById('tl-track'); // gizli, eski kod için korunur
+
+  // Ay dropdown listesini doldur
+  const moListEl = document.getElementById('rel-mo-list');
+  if (moListEl) {
+    moListEl.innerHTML = monthKeys.map(k => {
+      const [ky, km] = k.split('-').map(Number);
+      const isPast  = ky < now.getFullYear() || (ky === now.getFullYear() && km < now.getMonth());
+      const isToday = k === todayKey;
+      const dotHtml = isToday ? '<span class="rel-mo-dot"></span>' : '';
+      const cls = ['rel-mo-item', isPast ? 'past' : '', isToday ? 'today' : '', k === activeKey ? 'selected' : ''].filter(Boolean).join(' ');
+      return `<button class="${cls}" data-key="${k}" role="option" aria-selected="${k === activeKey}">
+        ${dotHtml}<span class="rel-mo-item-name">${TR_M_FULL[km]}</span><span class="rel-mo-item-year">${ky}</span>
+      </button>`;
+    }).join('');
+  }
+  // Trigger label'ı başlat
+  const moLabelEl = document.getElementById('rel-mo-label');
+  if (moLabelEl) {
+    const [aky, akm] = activeKey.split('-').map(Number);
+    moLabelEl.textContent = `${TR_M_FULL[akm]} ${aky}`;
+  }
 
   const checkSvg    = `<svg width="9" height="9" viewBox="0 0 10 10" fill="none" style="flex-shrink:0"><path d="M1.5 5l2.8 2.8 4.2-5.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   const eventSvg    = `<svg width="9" height="9" viewBox="0 0 10 10" fill="none" style="flex-shrink:0"><circle cx="5" cy="5" r="3.4" stroke="currentColor" stroke-width="1.6"/></svg>`;
@@ -4338,9 +4359,20 @@ function buildReleaseCalendar() {
 
   function renderMonth(key) {
     activeKey = key;
-    track.querySelectorAll('.dash-tl-pill').forEach(p => p.classList.toggle('active', p.dataset.key === key));
-    const activePill = track.querySelector('.dash-tl-pill.active');
-    if (activePill) activePill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    // Ay dropdown'ını güncelle
+    const moLabel = document.getElementById('rel-mo-label');
+    const moList  = document.getElementById('rel-mo-list');
+    if (moLabel) {
+      const [ky, km] = key.split('-').map(Number);
+      moLabel.textContent = `${TR_M_FULL[km]} ${ky}`;
+    }
+    if (moList) {
+      moList.querySelectorAll('.rel-mo-item').forEach(item => {
+        const sel = item.dataset.key === key;
+        item.classList.toggle('selected', sel);
+        item.setAttribute('aria-selected', sel);
+      });
+    }
 
     const all = combinedItems();
     const items = all.filter(r => `${r.date.getFullYear()}-${r.date.getMonth()}` === key);
@@ -4466,9 +4498,43 @@ function buildReleaseCalendar() {
     }).join('') + addCardHtml;
   }
 
-  track.addEventListener('click', e => {
-    const pill = e.target.closest('.dash-tl-pill');
-    if (pill) renderMonth(pill.dataset.key);
+  // Ay dropdown event handlers
+  const moTrigger  = document.getElementById('rel-mo-trigger');
+  const moDropdown = document.getElementById('rel-mo-dropdown');
+  const moSelector = document.getElementById('rel-mo-selector');
+
+  function openMoDropdown() {
+    moDropdown.classList.add('open');
+    moSelector.classList.add('open');
+    moTrigger.setAttribute('aria-expanded', 'true');
+    const sel = moDropdown.querySelector('.rel-mo-item.selected');
+    if (sel) sel.scrollIntoView({ block: 'nearest' });
+  }
+  function closeMoDropdown() {
+    moDropdown.classList.remove('open');
+    moSelector.classList.remove('open');
+    moTrigger.setAttribute('aria-expanded', 'false');
+  }
+
+  if (moTrigger) {
+    moTrigger.addEventListener('click', e => {
+      e.stopPropagation();
+      moDropdown.classList.contains('open') ? closeMoDropdown() : openMoDropdown();
+    });
+  }
+  if (moDropdown) {
+    moDropdown.addEventListener('click', e => {
+      const btn = e.target.closest('.rel-mo-item');
+      if (!btn) return;
+      renderMonth(btn.dataset.key);
+      closeMoDropdown();
+    });
+  }
+  document.addEventListener('click', e => {
+    if (moDropdown?.classList.contains('open') && !e.target.closest('#rel-mo-selector')) closeMoDropdown();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && moDropdown?.classList.contains('open')) closeMoDropdown();
   });
 
   // Ülke filtresi — dropdown

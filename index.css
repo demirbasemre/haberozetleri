@@ -2823,8 +2823,16 @@
     stroke: currentColor;
   }
 
+  /* ── FİLTRE SATIRI (ülke + ay yan yana) ─────────────────────── */
+  .rel-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
   /* ── ÜLKE BAYRAMLARI FİLTRE DROPDOWN ─────────────────────────── */
-  .rel-cf-wrap { margin-bottom: 10px; }
   .rel-cf-selector { position: relative; display: inline-block; }
   .rel-cf-btn {
     display: inline-flex;
@@ -2938,6 +2946,53 @@
     border-radius: 10px;
     padding: 1px 6px;
   }
+
+  /* ── AY SEÇİMİ DROPDOWN ─────────────────────────── */
+  .rel-mo-selector { position: relative; display: inline-block; }
+  .rel-mo-btn.active { background: hsl(211, 68%, 42%); color: white; border-color: transparent; }
+  [data-theme="dark"] .rel-mo-btn.active { background: hsl(211, 50%, 34%); }
+  .rel-mo-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    min-width: 190px;
+    z-index: 9999;
+    display: none;
+    overflow: hidden;
+  }
+  .rel-mo-dropdown.open { display: block; animation: dropIn 0.16s ease; }
+  .rel-mo-list { padding: 4px 0; }
+  .rel-mo-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    padding: 7px 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--text);
+    text-align: left;
+    transition: background 0.12s;
+  }
+  .rel-mo-item:hover { background: var(--hover); }
+  .rel-mo-item.past { color: hsl(142, 38%, 36%); }
+  [data-theme="dark"] .rel-mo-item.past { color: hsl(142, 30%, 56%); }
+  .rel-mo-item.today { font-weight: 600; color: hsl(211, 60%, 38%); }
+  [data-theme="dark"] .rel-mo-item.today { color: hsl(211, 50%, 65%); }
+  .rel-mo-item.selected { background: hsl(211, 65%, 94%); font-weight: 600; color: hsl(211, 60%, 35%); }
+  [data-theme="dark"] .rel-mo-item.selected { background: hsl(211, 28%, 20%); color: hsl(211, 50%, 68%); }
+  .rel-mo-item.past.selected { background: hsl(142, 30%, 93%); color: hsl(142, 38%, 30%); }
+  [data-theme="dark"] .rel-mo-item.past.selected { background: hsl(142, 18%, 18%); color: hsl(142, 30%, 58%); }
+  .rel-mo-dot { width: 6px; height: 6px; border-radius: 50%; background: hsl(211, 68%, 48%); flex-shrink: 0; }
+  .rel-mo-item.selected .rel-mo-dot { background: hsl(211, 60%, 38%); }
+  .rel-mo-item-name { flex: 1; }
+  .rel-mo-item-year { font-size: 10.5px; color: var(--text-3); flex-shrink: 0; }
 
   /* ── RESMİ TATİL KARTI (holiday) ─────────────────────────── */
   .dash-release-item.holiday {
