@@ -69,9 +69,16 @@ export default {
       // forceDirect değilse önce Tailscale Funnel üzerindeki ev proxy'sini dene
       if (!forceDirect) {
         try {
+          const headers = {};
+          if (env.PROXY_TOKEN) {
+            headers['X-Proxy-Token'] = env.PROXY_TOKEN;
+          }
           const funnelResp = await fetch(
             `${FUNNEL_URL}/?url=${encodeURIComponent(url)}`,
-            { signal: AbortSignal.timeout(15000) }
+            { 
+              headers,
+              signal: AbortSignal.timeout(15000) 
+            }
           );
           if (funnelResp.ok) {
             const body = await funnelResp.text();

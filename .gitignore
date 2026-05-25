@@ -15,3 +15,5 @@ Antigravity/
 .wrangler/
 cf-proxy/.wrangler/
 wrangler-account.json
+.env
+cf-proxy/fetch-proxy/.env
