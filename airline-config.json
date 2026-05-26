@@ -151,5 +151,14 @@
     "icon_url": "",
     "keywords": "avianca",
     "merge_with": []
+  },
+  {
+    "airline_id": "dyn_g_l_yolcu_ve_kargo",
+    "label": "GüçLü Yolcu Ve Kargo",
+    "region": "other",
+    "focus": false,
+    "icon_url": "",
+    "keywords": "güçlü yolcu ve kargo",
+    "merge_with": []
   }
 ]
