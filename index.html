@@ -4084,7 +4084,23 @@ function buildReleaseCalendar() {
   function hc(code) { return HOLIDAY_COUNTRIES.find(c => c.code === code) || { code, name: code, flag: '' }; }
   function h(code, title, m, d, cadence) {
     const c = hc(code);
-    return { title, source: c.name, date: abs(2026, m, d), cadence: cadence || 'Resmi tatil', kind: 'holiday', countryCode: code, countryName: c.name, countryFlag: c.flag };
+    const startDate = abs(2026, m, d);
+    let endDate = null;
+    if (cadence) {
+      // "X gün" pattern → startDate + (X-1) days
+      const gunMatch = cadence.match(/^(\d+)\s*g[üu]n/i);
+      if (gunMatch) {
+        const days = parseInt(gunMatch[1], 10);
+        if (days > 1) { endDate = new Date(startDate); endDate.setDate(endDate.getDate() + days - 1); }
+      }
+      // "D1–D2 ..." or "D1-D2 ..." pattern → explicit range within same month
+      const rangeMatch = cadence.match(/^(\d+)[–\-](\d+)/);
+      if (rangeMatch) {
+        endDate = new Date(startDate);
+        endDate.setDate(parseInt(rangeMatch[2], 10));
+      }
+    }
+    return { title, source: c.name, date: startDate, endDate, cadence: cadence || 'Resmi tatil', kind: 'holiday', countryCode: code, countryName: c.name, countryFlag: c.flag };
   }
 
   const holidayItems = [
@@ -4473,7 +4489,7 @@ function buildReleaseCalendar() {
         ${delBtn}
         <div class="dash-rel-date">
           <div class="dash-rel-date-m">${TR_M[r.date.getMonth()]}</div>
-          <div class="dash-rel-date-d">${r.date.getDate()}</div>
+          <div class="dash-rel-date-d${r.endDate ? ' is-range' : ''}">${r.endDate ? `${r.date.getDate()}<span class="dash-rel-date-sep">–</span>${r.endDate.getDate()}` : r.date.getDate()}</div>
         </div>
         <div style="flex:1;min-width:0">
           ${badge}
