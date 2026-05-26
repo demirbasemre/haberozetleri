@@ -694,7 +694,6 @@
               <button class="stats-chart-type-btn" data-type="line">Çizgi</button>
             </div>
           </div>
-          <div class="dash-chart-meta"><span>Aylık toplam · kaynak bazlı</span></div>
           <div class="stats-source-legend" id="stats-source-legend"></div>
           <div class="dash-chart-wrap" style="position:relative;height:280px;margin-top:12px;">
             <canvas id="chart-source-trend"></canvas>
@@ -7742,14 +7741,14 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
 
 // ── Renk paleti ──────────────────────────────────────────────
 const SOURCE_COLORS = {
-  aircargoweek:   { bg: 'rgba(29,111,232,0.75)',  border: '#1D6FE8' },
-  aircargonews:   { bg: 'rgba(5,150,105,0.75)',   border: '#059669' },
-  stattimes:      { bg: 'rgba(234,88,12,0.75)',   border: '#EA580C' },
-  aircargoupdate: { bg: 'rgba(124,58,237,0.75)',  border: '#7C3AED' },
-  payloadasia:    { bg: 'rgba(219,39,119,0.75)',  border: '#DB2777' },
-  IATA:           { bg: 'rgba(8,145,178,0.75)',   border: '#0891B2' },
+  aircargoweek:   { bg: 'rgba(29,111,232,0.75)',  border: '#1D6FE8', domain: 'aircargoweek.com' },
+  aircargonews:   { bg: 'rgba(5,150,105,0.75)',   border: '#059669', domain: 'aircargonews.net' },
+  stattimes:      { bg: 'rgba(234,88,12,0.75)',   border: '#EA580C', domain: 'stattimes.com' },
+  aircargoupdate: { bg: 'rgba(124,58,237,0.75)',  border: '#7C3AED', domain: 'aircargoupdate.com' },
+  payloadasia:    { bg: 'rgba(219,39,119,0.75)',  border: '#DB2777', domain: 'payloadasia.com' },
+  IATA:           { bg: 'rgba(8,145,178,0.75)',   border: '#0891B2', domain: 'iata.org' },
 };
-const SOURCE_FALLBACK = { bg: 'rgba(107,114,128,0.75)', border: '#6B7280' };
+const SOURCE_FALLBACK = { bg: 'rgba(107,114,128,0.75)', border: '#6B7280', domain: null };
 
 const CAT_COLORS = {
   'Filo & Network':            'rgba(29,111,232,0.75)',
@@ -7858,11 +7857,14 @@ function buildSourceChart(articles, chartType) {
     };
   });
 
-  // Legend pills
+  // Legend pills (logo + isim, sayı yok)
   const legend = document.getElementById('stats-source-legend');
   legend.innerHTML = allSources.map(src => {
     const c = SOURCE_COLORS[src] || SOURCE_FALLBACK;
-    return `<span class="stats-src-pill" style="--pill-color:${c.border}">${src} <strong>${srcCount[src]}</strong></span>`;
+    const logoHtml = c.domain
+      ? `<img class="stats-src-logo" src="https://www.google.com/s2/favicons?domain=${c.domain}&sz=16" alt="" aria-hidden="true">`
+      : `<span class="stats-src-dot" style="background:${c.border}"></span>`;
+    return `<span class="stats-src-pill" style="--pill-color:${c.border}">${logoHtml}${src}</span>`;
   }).join('');
 
   // Chart
