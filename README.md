@@ -29,8 +29,8 @@ Uygulama; zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interakt
 ### 4. Gelişmiş Haber Okuyucu ve Çeviri Modülü
 * **Temiz Sayfada Tek Tıkla Erişim:** Herhangi bir haber kartına tıklandığında, kullanıcının dış sitelere gitmesine gerek kalmadan, reklam ve dikkat dağıtıcı öğelerden tamamen arındırılmış temiz bir okuma ekranı açılır.
 * **Sayfa Bütününü Çevirme:** Yabancı kaynaklı haberler tek tıkla ("Çevir" butonu aracılığıyla) Google Translate API entegrasyonu sayesinde Türkçe'ye çevrilebilir.
-* **Eş Zamanlı Kaydırma (Sync Scroll):** Orijinal metin ile Türkçe çeviriyi yan yana gösteren yapıda, bir taraf kaydırıldığında diğer tarafın da eş zamanlı sağlanır. Orijinal metin ile çevirilerin yakın hizalanması için haber görseli gösterimi kapatılır.
-* **Cümle Bazlı Vurgulama (Segment Highlight):** Okuyucu panelinde fare ile bir cümlenin üzerine gelindiğinde, cümlenin orijinal dildeki karşılığı ile Türkçe  karşılığı aynı anda vurgulanarak okuma takibi kolaylaştırılır.
+* **Eş Zamanlı Kaydırma:** Orijinal metin ile Türkçe çeviriyi yan yana gösteren yapıda, bir taraf kaydırıldığında diğer tarafın da eş zamanlı sağlanır. Orijinal metin ile çevirilerin yakın hizalanması için haber görseli gösterimi kapatılır.
+* **Cümle Bazlı Vurgulama:** Okuyucu panelinde fare ile bir cümlenin üzerine gelindiğinde, cümlenin orijinal dildeki karşılığı ile Türkçe  karşılığı aynı anda vurgulanarak okuma takibi kolaylaştırılır.
 * **Kaynak Sekmeleri:** Aynı haberin birden fazla kaynağı mevcutsa, okuyucu penceresinin en üstünde sekmeler halinde listelenir ve kaynaklar arasında tek tıkla geçiş yapılabilir.
 
 ## 🛠️ Kullanılan Teknolojiler
