@@ -8095,7 +8095,7 @@ function buildStatsAirlineFilter() {
       syncStatsAirlineGroupUI();
       syncStatsAirlineBtn();
       syncStatsClearBtn();
-      buildAirlineChart(_statsArticles);
+      renderAll();
     });
     wrap.appendChild(row);
     topBar.appendChild(wrap);
@@ -8154,7 +8154,7 @@ function buildStatsAirlineFilter() {
       syncStatsAirlineGroupUI();
       syncStatsAirlineBtn();
       syncStatsClearBtn();
-      buildAirlineChart(_statsArticles);
+      renderAll();
     });
     bar.appendChild(intHdr);
     integratorDefs.forEach(airline => {
@@ -8171,7 +8171,7 @@ function buildStatsAirlineFilter() {
         syncStatsAirlineGroupUI();
         syncStatsAirlineBtn();
         syncStatsClearBtn();
-        buildAirlineChart(_statsArticles);
+        renderAll();
       });
       bar.appendChild(chip);
     });
@@ -8238,7 +8238,7 @@ function buildStatsAirlineFilter() {
       syncStatsAirlineGroupUI();
       syncStatsAirlineBtn();
       syncStatsClearBtn();
-      buildAirlineChart(_statsArticles);
+      renderAll();
     });
     col.appendChild(hdr);
 
@@ -8263,7 +8263,7 @@ function buildStatsAirlineFilter() {
         syncStatsAirlineGroupUI();
         syncStatsAirlineBtn();
         syncStatsClearBtn();
-        buildAirlineChart(_statsArticles);
+        renderAll();
       });
       body.appendChild(opt);
     });
@@ -8485,10 +8485,21 @@ function initAirlineDropdown() {
 }
 
 // ── Tüm grafikleri yeniden çiz ────────────────────────────────
+function effectiveArticles() {
+  if (_statsAirlines.size === 0) return _statsArticles;
+  const defs = typeof allAirlineDefs !== 'undefined' ? allAirlineDefs() : [];
+  const selectedDefs = defs.filter(d => _statsAirlines.has(d.id));
+  return _statsArticles.filter(a => {
+    const text = (' ' + (a.title||'') + ' ' + (a.summary||'') + ' ').toLowerCase();
+    return selectedDefs.some(def => def.kw.some(kw => text.includes(kw)));
+  });
+}
+
 function renderAll() {
-  updateKPIs(_statsArticles, _statsArticles);
-  buildSourceChart(_statsArticles, _sourceChartType);
-  buildCatChart(_statsArticles, _statsCatType);
+  const eff = effectiveArticles();
+  updateKPIs(eff, _statsArticles);
+  buildSourceChart(eff, _sourceChartType);
+  buildCatChart(eff, _statsCatType);
   buildAirlineChart(_statsArticles);
 }
 
