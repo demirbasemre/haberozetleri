@@ -608,6 +608,50 @@
     .stats-chart-summary { padding: 7px 11px; }
     .stats-chart-summary-value { font-size: 20px; }
   }
+
+  /* Cover overlay for non-automated dashboard cards */
+  .card-automated-overlay-container {
+    position: relative;
+    overflow: hidden;
+  }
+  .card-automated-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(4.5px);
+    -webkit-backdrop-filter: blur(4.5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 0.25s ease;
+  }
+  [data-theme="dark"] .card-automated-overlay {
+    background: rgba(15, 23, 42, 0.6);
+  }
+  .card-automated-overlay span {
+    background: rgba(255, 255, 255, 0.95);
+    color: #1e293b;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    letter-spacing: -0.01em;
+    text-align: center;
+    white-space: nowrap;
+  }
+  [data-theme="dark"] .card-automated-overlay span {
+    background: rgba(30, 41, 59, 0.95);
+    color: #f1f5f9;
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
 </style>
 </head>
 <body>
@@ -1131,26 +1175,35 @@
           <div class="dash-card-sub">40' konteyner başına ortalama spot fiyat</div>
           <div class="dash-card-note">Drewry · Haftalık · <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a></div>
         </div>
-        <div class="dash-card">
+        <div class="dash-card card-automated-overlay-container">
           <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
           <div class="dash-card-value" style="font-size:18px;color:var(--text-3)">API Yok</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Hava kargo spot tarifesi endeksi</div>
           <div class="dash-card-note">Baltic Exchange · <a href="https://www.balticexchange.com/en/data/routes/air.html" target="_blank" rel="noopener">balticexchange.com →</a></div>
+          <div class="card-automated-overlay">
+            <span>Otomasyon süreci devam ediyor</span>
+          </div>
         </div>
-        <div class="dash-card">
+        <div class="dash-card card-automated-overlay-container">
           <div class="dash-card-label">IATA Air Cargo Market Analysis</div>
           <div class="dash-card-value" style="font-size:18px;color:var(--text-3)">Aylık</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">CTK büyümesi, kapasite ve verim değişimi</div>
           <div class="dash-card-note">IATA · Aylık rapor · <a href="https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/" target="_blank" rel="noopener">iata.org →</a></div>
+          <div class="card-automated-overlay">
+            <span>Otomasyon süreci devam ediyor</span>
+          </div>
         </div>
-        <div class="dash-card">
+        <div class="dash-card card-automated-overlay-container">
           <div class="dash-card-label">Freightos Baltic Index (FBX)</div>
           <div class="dash-card-value" style="font-size:18px;color:var(--text-3)">API Yok</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Global konteyner spot fiyat endeksi</div>
           <div class="dash-card-note">Freightos · Günlük · <a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a></div>
+          <div class="card-automated-overlay">
+            <span>Otomasyon süreci devam ediyor</span>
+          </div>
         </div>
       </div>
     </section>
