@@ -5771,3 +5771,38 @@
   @media (max-width: 500px) {
     .stats-chart-type-group { display: none; }
   }
+
+  /* Interactive Chart Title Tabs */
+  .interactive-title-container {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .interactive-title-tab {
+    cursor: pointer;
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-weight: 400;
+    transition: color 0.15s ease;
+    user-select: none;
+  }
+  .interactive-title-tab.active {
+    color: var(--red);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 4px;
+  }
+  .interactive-title-tab:not(.active) {
+    color: #94a3b8;
+  }
+  .interactive-title-tab:not(.active):hover {
+    color: var(--text);
+  }
+  .interactive-title-sep {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-weight: 400;
+    color: #94a3b8;
+    white-space: pre;
+    cursor: default;
+    user-select: none;
+  }
+
