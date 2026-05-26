@@ -5415,3 +5415,236 @@
     text-align: center;
   }
   .reader-end-note a { color: var(--text-3); text-decoration: underline; }
+
+  /* ── Site İstatistikleri ──────────────────────────────────── */
+
+  /* Periyot butonları */
+  .stats-period-group {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .stats-period-btn {
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .stats-period-btn:hover { background: var(--bg); color: var(--text); }
+  .stats-period-btn-active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  /* Kaynak grafik tipi toggle */
+  .stats-chart-type-group {
+    display: flex;
+    gap: 3px;
+  }
+  .stats-chart-type-btn {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .stats-chart-type-btn:hover { color: var(--text); background: var(--bg); }
+  .stats-chart-type-active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* Kaynak legend pills */
+  .stats-source-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .stats-src-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+    border: 1px solid var(--pill-color, var(--border));
+    color: var(--pill-color, var(--text-2));
+    background: transparent;
+    white-space: nowrap;
+  }
+  .stats-src-pill::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--pill-color, var(--text-3));
+    flex-shrink: 0;
+  }
+  .stats-src-pill strong { font-weight: 700; color: var(--text); }
+
+  /* Havayolu aktif pill'ler */
+  .stats-airline-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+    min-height: 0;
+  }
+  .stats-airline-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--pill-color, var(--border));
+    color: var(--pill-color, var(--text-2));
+    background: transparent;
+    white-space: nowrap;
+  }
+  .stats-airline-pill::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--pill-color, var(--text-3));
+    flex-shrink: 0;
+  }
+
+  /* Havayolu boş durum */
+  .stats-no-airline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 20px;
+    color: var(--text-3);
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .stats-no-airline svg { opacity: 0.35; }
+  .stats-no-airline strong { color: var(--text-2); }
+
+  /* Badge "Yakında" */
+  .stats-badge-soon {
+    background: rgba(234,88,12,0.1) !important;
+    color: #EA580C !important;
+    border: 1px solid rgba(234,88,12,0.25) !important;
+  }
+  [data-theme="dark"] .stats-badge-soon {
+    background: rgba(234,88,12,0.15) !important;
+    color: #FB923C !important;
+  }
+
+  /* Ziyaretçi/Chatbot placeholder kartlar */
+  .stats-placeholder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .stats-placeholder-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stats-placeholder-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+  }
+  .stats-placeholder-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stats-placeholder-desc {
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+  .stats-placeholder-mockup {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-soft);
+  }
+  .stats-mock-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .stats-mock-label {
+    width: 40px;
+    color: var(--text-3);
+    text-align: right;
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+  .stats-mock-bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, rgba(29,111,232,0.35), rgba(29,111,232,0.15));
+    max-width: var(--w, 50%);
+    position: relative;
+    overflow: hidden;
+  }
+  .stats-mock-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    animation: shimmer 2s infinite;
+  }
+  .stats-mock-bar-purple {
+    background: linear-gradient(90deg, rgba(124,58,237,0.35), rgba(124,58,237,0.15));
+  }
+  .stats-mock-val {
+    width: 24px;
+    color: var(--text-3);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .stats-placeholder-cta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-3);
+    border-top: 1px solid var(--border-soft);
+    padding-top: 10px;
+    margin-top: 2px;
+  }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .stats-placeholder-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 500px) {
+    .stats-chart-type-group { display: none; }
+  }
