@@ -418,10 +418,7 @@
 
   /* ── In-title Kaynak / Kategori toggle ───────────────────── */
   .stats-dist-title-host {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 7px;
-    flex-wrap: wrap;
+    display: inline;
     line-height: 1.25;
   }
   .stats-dist-title-host .title-view-btn,
@@ -449,7 +446,7 @@
   }
   .stats-dist-title-host .title-view-btn.active {
     color: var(--red);
-    text-decoration-color: var(--red);
+    text-decoration-color: var(--text-3);
   }
   .stats-dist-title-host .title-view-btn:focus-visible,
   .stats-dist-title-host .title-selection:focus-visible {
@@ -463,8 +460,13 @@
     font-weight: inherit;
   }
   .stats-dist-title-host .title-conj {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-style: normal;
     color: var(--text-3);
-    font-weight: 500;
+    font-weight: 400;
+    font-size: 0.85em;
+    margin: 0 6px;
+    display: inline-block;
   }
   .stats-dist-title-host .title-selection-list {
     display: inline-flex;
@@ -1270,7 +1272,7 @@
           <div class="dash-card-value" id="stats-kpi-analyzed">—</div>
           <div class="kpi-spark-wrap"><canvas id="chart-analyzed-spark" aria-label="Analizli haber günlük trendi"></canvas></div>
         </div>
-        <div class="dash-card dash-card-clickable" id="stats-kpi-sources-card">
+        <div class="dash-card dash-card-clickable kpi-card-with-watermark" id="stats-kpi-sources-card">
           <div class="kpi-sources-top">
             <div class="dash-card-label">Aktif Kaynak</div>
             <div class="dash-card-value" id="stats-kpi-sources">—</div>
@@ -1307,10 +1309,7 @@
       <h2 class="dash-section-title stats-section-title-row">
         <span id="stats-dist-title" class="stats-dist-title-host" role="tablist" aria-label="Dağılım görünümü">
           <!-- Title gets re-rendered by JS; built-in markup is a fallback. -->
-          <button type="button" class="title-view-btn active" data-view="source"   role="tab" aria-selected="true">Kaynak</button>
-          <span class="title-conj">ve</span>
-          <button type="button" class="title-view-btn"        data-view="category" role="tab" aria-selected="false">Kategori</button>
-          <span class="title-tail">Bazlı Haber Dağılımı</span>
+          <button type="button" class="title-view-btn active" data-view="source"   role="tab" aria-selected="true">Kaynak</button> <span class="title-conj">ve</span> <button type="button" class="title-view-btn"        data-view="category" role="tab" aria-selected="false">Kategori</button> <span class="title-tail">Bazlı Haber Dağılımı</span>
         </span>
         <div class="stats-chart-toolbar">
           <div class="stats-chart-type-group" id="dist-chart-type">
@@ -1324,6 +1323,23 @@
           <div class="stats-source-legend" id="stats-dist-legend" role="group" aria-label="Seriler — tıklayarak gizle/göster"></div>
           <div class="dash-chart-wrap" style="position:relative;height:300px;margin-top:12px;">
             <canvas id="chart-distribution"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Havayolu Trend Grafiği -->
+    <section class="dash-section" id="stats-sec-airline">
+      <h2 class="dash-section-title">Havayolu Bazlı Haber Trendi</h2>
+      <div class="dash-charts" style="grid-template-columns:1fr;">
+        <div class="dash-chart-card">
+          <div class="stats-airline-pills" id="stats-airline-active-pills"></div>
+          <div class="dash-chart-wrap" style="position:relative;height:280px;margin-top:12px;">
+            <canvas id="chart-airline-trend"></canvas>
+          </div>
+          <div class="stats-no-airline" id="stats-no-airline" style="display:none;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
+            <p>Üstteki <strong>Havayolu</strong> filtresinden görüntülemek istediğiniz havayollarını seçin</p>
           </div>
         </div>
       </div>
@@ -1526,6 +1542,18 @@ function debounceRender() {
     render();
   }, 150);
 }
+
+function hasAnalysis(a) {
+  if (!a) return false;
+  const imp = a.impact || a.thyImpact;
+  const ana = a.analysis || a.thyAnalysis;
+  const ger = a.etkiAlaniGerekce;
+  return (imp && imp !== 'notr') || 
+         (ana && String(ana).trim() !== '') || 
+         (ger && String(ger).trim() !== '');
+}
+
+
 
 const CAT_COLORS = {
   'Filo & Network':           'var(--cat-filo)',
@@ -2383,11 +2411,7 @@ function getFilteredArticles() {
                               return tk ? tk.subs.some(s => activeRegions.has(s)) : false;
                             });
                           })();
-    const impactVal = a.impact || a.thyImpact;
-    const analysisVal = a.analysis || a.thyAnalysis;
-    const analysisMatch = !onlyAnalysis ||
-                          (impactVal && impactVal !== 'notr') ||
-                          (analysisVal && String(analysisVal).trim() !== '');
+    const analysisMatch = !onlyAnalysis || hasAnalysis(a);
     const multiSourceMatch = !onlyMultiSource || (a._sources && a._sources.length > 1);
     const sourceMatch = activeSources.size === 0 || (() => {
       const allSrcs = (a._sources && a._sources.length > 0)
@@ -2656,11 +2680,7 @@ function updateStats(filteredArticles, totalCount) {
   if (!el) return;
 
   const filtered = filteredArticles.length;
-  const analysisCount = filteredArticles.filter(a => {
-    const imp = a.impact || a.thyImpact;
-    const ana = a.analysis || a.thyAnalysis;
-    return (imp && imp !== 'notr') || (ana && String(ana).trim());
-  }).length;
+  const analysisCount = filteredArticles.filter(hasAnalysis).length;
 
   // Count articles (unique) per TK_Region and Sub_Region
   const tkCounts  = {};
@@ -3726,7 +3746,7 @@ function loadCustomEntities() {
     });
 }
 
-Promise.all([
+window.mainDataPromise = Promise.all([
   (async () => {
     let lastErr;
     for (let attempt = 0; attempt < 5; attempt++) {
@@ -8450,7 +8470,7 @@ function updateKPIs(articles, allArticles) {
     topAirlineCount = topAirlineEntry[1];
   }
 
-  const analyzed = articles.filter(a => a.thyAnalysis && a.thyAnalysis.trim()).length;
+  const analyzed = articles.filter(hasAnalysis).length;
   const analyzedPct = total > 0 ? Math.round(analyzed / total * 100) : 0;
 
   document.getElementById('stats-kpi-total').textContent            = total.toLocaleString('tr-TR');
@@ -8495,7 +8515,7 @@ function updateKPIs(articles, allArticles) {
 
   // Sparklines inside the Tekil Haber + Analizli Haber cards
   buildKpiSparkline('chart-total-spark',    dailyCountsOf(articles),                                                  '#E30613');
-  buildKpiSparkline('chart-analyzed-spark', dailyCountsOf(articles, a => a.thyAnalysis && a.thyAnalysis.trim()),      '#1D6FE8');
+  buildKpiSparkline('chart-analyzed-spark', dailyCountsOf(articles, hasAnalysis),      '#1D6FE8');
 
   // Init click → popup modal for both KPI cards (once)
   _initKpiTrendModals();
@@ -9857,33 +9877,53 @@ function _buildChatbotChart(_convs) { /* replaced by sparkline + modal */ }
 
 // ── Ana giriş noktası ────────────────────────────────────────
 window.initStatsTab = function() {
-  // window.allArticles = de-duplicate edilmiş liste (news-reader.js tarafından set edilir)
+  function proceed(articles) {
+    initControls(articles);
+    renderAll();
+    buildVisitorStats();
+    buildChatbotStats();
+  }
+
   const all = (typeof window.allArticles !== 'undefined' && Array.isArray(window.allArticles) && window.allArticles.length > 0)
     ? window.allArticles
     : null;
 
   if (all) {
-    initControls(all);           // tarih picker min/max set olur, _statsArticles set edilir
-    renderAll();
-    buildVisitorStats();
-    buildChatbotStats();
+    proceed(all);
     return;
   }
 
-  // Fallback: data.json'dan yükle (de-duplicate olmadan — son çare)
-  fetch('./data.json')
-    .then(r => r.json())
-    .then(data => {
-      const raw = Array.isArray(data) ? data : (data.items || data.news || []);
-      const items = raw.filter(a => !a.isDuplicate);
-      initControls(items);
-      renderAll();
-    })
-    .catch(() => {
-      document.getElementById('stats-kpi-total').textContent = 'Veri yok';
+  // If the main loading promise is active, wait for it!
+  if (window.mainDataPromise) {
+    window.mainDataPromise.then(() => {
+      const loaded = window.allArticles;
+      if (loaded && loaded.length > 0) {
+        proceed(loaded);
+      } else {
+        fallbackFetch();
+      }
+    }).catch(() => {
+      fallbackFetch();
     });
-  buildVisitorStats();
-  buildChatbotStats();
+  } else {
+    fallbackFetch();
+  }
+
+  function fallbackFetch() {
+    // Fallback: data.json'dan yükle (de-duplicate olmadan — son çare)
+    fetch('./data.json')
+      .then(r => r.json())
+      .then(data => {
+        const raw = Array.isArray(data) ? data : (data.items || data.news || []);
+        const items = raw.filter(a => !a.isDuplicate);
+        proceed(items);
+      })
+      .catch(() => {
+        document.getElementById('stats-kpi-total').textContent = 'Veri yok';
+        buildVisitorStats();
+        buildChatbotStats();
+      });
+  }
 };
 
 function initControls(allArticles) {
