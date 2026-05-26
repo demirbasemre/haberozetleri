@@ -650,10 +650,16 @@
       <h2 class="dash-section-title">Genel Bakış <span class="dash-section-badge" id="stats-date-range-badge">Yükleniyor…</span></h2>
       <div class="dash-cards">
         <div class="dash-card">
-          <div class="dash-card-label">Toplam Haber</div>
+          <div class="dash-card-label">Tekil Haber</div>
           <div class="dash-card-value" id="stats-kpi-total">—</div>
           <div class="dash-card-sub" id="stats-kpi-period">Seçili dönem</div>
-          <div class="dash-card-note">Tüm kaynaklar</div>
+          <div class="dash-card-note">Duplicate'ler birleştirildi</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Analizli Haber</div>
+          <div class="dash-card-value" id="stats-kpi-analyzed">—</div>
+          <div class="dash-card-sub" id="stats-kpi-analyzed-pct">—</div>
+          <div class="dash-card-note">THY etkisi değerlendirilmiş</div>
         </div>
         <div class="dash-card">
           <div class="dash-card-label">Aktif Kaynak</div>
@@ -7819,14 +7825,19 @@ function updateKPIs(articles, allArticles) {
   articles.forEach(a => { if (a.source) srcCount[a.source] = (srcCount[a.source]||0)+1; });
   const topSrc = Object.entries(srcCount).sort((a,b) => b[1]-a[1])[0];
 
-  document.getElementById('stats-kpi-total').textContent       = total.toLocaleString('tr-TR');
-  document.getElementById('stats-kpi-sources').textContent     = sources.size;
-  document.getElementById('stats-kpi-airlines').textContent    = airlineMatches.toLocaleString('tr-TR');
-  document.getElementById('stats-kpi-daily').textContent       = (total/dailyDays).toFixed(1);
-  document.getElementById('stats-kpi-top-source').textContent  = topSrc ? topSrc[0] : '—';
+  const analyzed = articles.filter(a => a.thyAnalysis && a.thyAnalysis.trim()).length;
+  const analyzedPct = total > 0 ? Math.round(analyzed / total * 100) : 0;
+
+  document.getElementById('stats-kpi-total').textContent            = total.toLocaleString('tr-TR');
+  document.getElementById('stats-kpi-analyzed').textContent         = analyzed.toLocaleString('tr-TR');
+  document.getElementById('stats-kpi-analyzed-pct').textContent     = `%${analyzedPct} · ${analyzed} / ${total}`;
+  document.getElementById('stats-kpi-sources').textContent          = sources.size;
+  document.getElementById('stats-kpi-airlines').textContent         = airlineMatches.toLocaleString('tr-TR');
+  document.getElementById('stats-kpi-daily').textContent            = (total/dailyDays).toFixed(1);
+  document.getElementById('stats-kpi-top-source').textContent       = topSrc ? topSrc[0] : '—';
   document.getElementById('stats-kpi-top-source-count').textContent = topSrc ? topSrc[1] + ' haber' : '—';
-  document.getElementById('stats-kpi-period').textContent      = total + ' haber · ' + rangeText;
-  document.getElementById('stats-date-range-badge').textContent = rangeText;
+  document.getElementById('stats-kpi-period').textContent           = total + ' haber · ' + rangeText;
+  document.getElementById('stats-date-range-badge').textContent     = rangeText;
 }
 
 // ── Kaynak trend grafiği ──────────────────────────────────────
@@ -8135,30 +8146,31 @@ function renderAll() {
 
 // ── Ana giriş noktası ────────────────────────────────────────
 window.initStatsTab = function() {
-  // Mevcut makale listesine eriş (news-reader.js'den)
-  const allArticles = (typeof window.ARTICLES !== 'undefined' && Array.isArray(window.ARTICLES))
-    ? window.ARTICLES
-    : [];
+  // window.allArticles = de-duplicate edilmiş liste (news-reader.js tarafından set edilir)
+  const all = (typeof window.allArticles !== 'undefined' && Array.isArray(window.allArticles) && window.allArticles.length > 0)
+    ? window.allArticles
+    : null;
 
-  // Fallback: data.json'dan doğrudan yükle
-  if (allArticles.length === 0) {
-    fetch('./data.json')
-      .then(r => r.json())
-      .then(data => {
-        const items = Array.isArray(data) ? data : (data.items || data.news || []);
-        _statsArticles = applyPeriod(items);
-        initControls(items);
-        renderAll();
-      })
-      .catch(() => {
-        document.getElementById('stats-kpi-total').textContent = 'Veri yok';
-      });
+  if (all) {
+    _statsArticles = applyPeriod(all);
+    initControls(all);
+    renderAll();
     return;
   }
 
-  _statsArticles = applyPeriod(allArticles);
-  initControls(allArticles);
-  renderAll();
+  // Fallback: data.json'dan yükle (de-duplicate olmadan — son çare)
+  fetch('./data.json')
+    .then(r => r.json())
+    .then(data => {
+      const raw = Array.isArray(data) ? data : (data.items || data.news || []);
+      const items = raw.filter(a => !a.isDuplicate);
+      _statsArticles = applyPeriod(items);
+      initControls(items);
+      renderAll();
+    })
+    .catch(() => {
+      document.getElementById('stats-kpi-total').textContent = 'Veri yok';
+    });
 };
 
 function initControls(allArticles) {
