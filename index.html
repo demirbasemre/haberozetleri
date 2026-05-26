@@ -444,9 +444,10 @@
     color: var(--text);
     text-decoration-color: var(--text-3);
   }
-  .stats-dist-title-host .title-view-btn.active {
-    color: var(--red);
-    text-decoration-color: var(--text-3);
+  .stats-dist-title-host .title-view-btn.active,
+  .stats-dist-title-host .title-view-btn.active:hover {
+    color: var(--red) !important;
+    text-decoration-color: var(--text-3) !important;
   }
   .stats-dist-title-host .title-view-btn:focus-visible,
   .stats-dist-title-host .title-selection:focus-visible {
@@ -458,15 +459,6 @@
   .stats-dist-title-host .title-prefix {
     color: var(--text);
     font-weight: inherit;
-  }
-  .stats-dist-title-host .title-conj {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-style: normal;
-    color: var(--text-3);
-    font-weight: 400;
-    font-size: 0.85em;
-    margin: 0 6px;
-    display: inline-block;
   }
   .stats-dist-title-host .title-selection-list {
     display: inline-flex;
