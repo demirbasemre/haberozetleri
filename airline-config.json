@@ -51,7 +51,10 @@
     "focus": true,
     "icon_url": "",
     "keywords": "klm cargo,af klm,france klm,martinair cargo,klm martinair",
-    "merge_with": []
+    "merge_with": [
+      "dyn_af_klm_cargo"
+    ],
+    "deleted": false
   },
   {
     "airline_id": "british",
