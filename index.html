@@ -750,56 +750,66 @@
 
     <!-- Ziyaretçi & Chatbot İstatistikleri -->
     <section class="dash-section" id="stats-sec-visitors">
-      <h2 class="dash-section-title">Ziyaretçi &amp; Chatbot İstatistikleri <span class="dash-section-badge stats-badge-soon">Yakında</span></h2>
-      <div class="stats-placeholder-grid">
-        <div class="dash-chart-card stats-placeholder-card">
-          <div class="stats-placeholder-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <div class="stats-placeholder-title">Site Ziyaretçi İstatistikleri</div>
-          <div class="stats-placeholder-desc">Günlük/haftalık benzersiz ziyaretçi, sayfa görüntüleme ve ortalama oturum süresi verisi Cloudflare Analytics entegrasyonu ile buraya gelecek.</div>
-          <div class="stats-placeholder-mockup">
-            <div class="stats-mock-bar-row">
-              <span class="stats-mock-label">Pzt</span><div class="stats-mock-bar" style="--w:55%"></div><span class="stats-mock-val">—</span>
-            </div>
-            <div class="stats-mock-bar-row">
-              <span class="stats-mock-label">Sal</span><div class="stats-mock-bar" style="--w:72%"></div><span class="stats-mock-val">—</span>
-            </div>
-            <div class="stats-mock-bar-row">
-              <span class="stats-mock-label">Çar</span><div class="stats-mock-bar" style="--w:88%"></div><span class="stats-mock-val">—</span>
-            </div>
-            <div class="stats-mock-bar-row">
-              <span class="stats-mock-label">Per</span><div class="stats-mock-bar" style="--w:65%"></div><span class="stats-mock-val">—</span>
-            </div>
-            <div class="stats-mock-bar-row">
-              <span class="stats-mock-label">Cum</span><div class="stats-mock-bar" style="--w:40%"></div><span class="stats-mock-val">—</span>
-            </div>
-          </div>
-          <div class="stats-placeholder-cta">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-            Cloudflare Analytics API bağlantısı gerektirir
+      <!-- Ziyaretçi İstatistikleri -->
+      <h2 class="dash-section-title">Ziyaretçi İstatistikleri</h2>
+      <div class="dash-kpi-grid" style="margin-bottom:16px;">
+        <div class="dash-card">
+          <div class="dash-card-label">Toplam Ziyaret</div>
+          <div class="dash-card-value" id="vis-kpi-total">—</div>
+          <div class="dash-card-sub">Tüm zamanlar</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Tekil Ziyaretçi</div>
+          <div class="dash-card-value" id="vis-kpi-unique">—</div>
+          <div class="dash-card-sub">Benzersiz cihaz</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Son 30 Gün</div>
+          <div class="dash-card-value" id="vis-kpi-30d">—</div>
+          <div class="dash-card-sub" id="vis-kpi-30d-unique">—</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Bugün</div>
+          <div class="dash-card-value" id="vis-kpi-today">—</div>
+          <div class="dash-card-sub">Ziyaret</div>
+        </div>
+      </div>
+      <div class="dash-charts" style="grid-template-columns:1fr;">
+        <div class="dash-chart-card">
+          <div class="dash-chart-wrap" style="position:relative;height:200px;">
+            <canvas id="chart-visitors"></canvas>
           </div>
         </div>
-        <div class="dash-chart-card stats-placeholder-card">
-          <div class="stats-placeholder-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div class="stats-placeholder-title">Chatbot Kullanım İstatistikleri</div>
-          <div class="stats-placeholder-desc">Günlük soru sayısı, en çok sorulan konu kümeleri ve yanıt kalitesi metrikleri n8n workflow logları ile buraya entegre edilecek.</div>
-          <div class="stats-placeholder-mockup">
-            <div class="stats-mock-bar-row">
-              <span class="stats-mock-label">Soru</span><div class="stats-mock-bar stats-mock-bar-purple" style="--w:80%"></div><span class="stats-mock-val">—</span>
-            </div>
-            <div class="stats-mock-bar-row">
-              <span class="stats-mock-label">Oturum</span><div class="stats-mock-bar stats-mock-bar-purple" style="--w:60%"></div><span class="stats-mock-val">—</span>
-            </div>
-            <div class="stats-mock-bar-row">
-              <span class="stats-mock-label">Token</span><div class="stats-mock-bar stats-mock-bar-purple" style="--w:45%"></div><span class="stats-mock-val">—</span>
-            </div>
-          </div>
-          <div class="stats-placeholder-cta">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-            n8n webhook log entegrasyonu gerektirir
+      </div>
+
+      <!-- Chatbot İstatistikleri -->
+      <h2 class="dash-section-title" style="margin-top:28px;">Chatbot Kullanım İstatistikleri</h2>
+      <div class="dash-kpi-grid" style="margin-bottom:16px;">
+        <div class="dash-card">
+          <div class="dash-card-label">Toplam Konuşma</div>
+          <div class="dash-card-value" id="chat-kpi-convs">—</div>
+          <div class="dash-card-sub">Bu tarayıcıda</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Toplam Soru</div>
+          <div class="dash-card-value" id="chat-kpi-questions">—</div>
+          <div class="dash-card-sub">Tüm konuşmalar</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Ort. Soru / Konuşma</div>
+          <div class="dash-card-value" id="chat-kpi-avg">—</div>
+          <div class="dash-card-sub">Soru derinliği</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Son 30 Gün</div>
+          <div class="dash-card-value" id="chat-kpi-30d">—</div>
+          <div class="dash-card-sub">Konuşma</div>
+        </div>
+      </div>
+      <div class="dash-charts" style="grid-template-columns:1fr;">
+        <div class="dash-chart-card">
+          <div class="dash-chart-wrap" style="position:relative;height:200px;">
+            <canvas id="chart-chatbot"></canvas>
           </div>
         </div>
       </div>
@@ -8509,6 +8519,149 @@ function renderAll() {
   buildAirlineChart(_statsArticles);
 }
 
+// ── Ziyaretçi istatistikleri (n8n) ───────────────────────────
+const VISITOR_STATS_URL = 'https://n8n.emredemirbas.com/webhook/visitor-stats';
+let _visitorChartInst = null;
+
+function buildVisitorStats() {
+  fetch(VISITOR_STATS_URL)
+    .then(r => r.json())
+    .then(d => {
+      const today = new Date().toISOString().slice(0,10);
+      const todayCount = (d.dailyVisits || []).find(v => v.date === today)?.count || 0;
+
+      document.getElementById('vis-kpi-total').textContent   = (d.totalVisits || 0).toLocaleString('tr-TR');
+      document.getElementById('vis-kpi-unique').textContent  = (d.uniqueVisitors || 0).toLocaleString('tr-TR');
+      document.getElementById('vis-kpi-30d').textContent     = (d.last30Days || 0).toLocaleString('tr-TR');
+      document.getElementById('vis-kpi-30d-unique').textContent = (d.uniqueLast30 || 0) + ' tekil ziyaretçi';
+      document.getElementById('vis-kpi-today').textContent   = todayCount.toLocaleString('tr-TR');
+
+      _buildVisitorChart(d.dailyVisits || []);
+    })
+    .catch(() => {
+      ['vis-kpi-total','vis-kpi-unique','vis-kpi-30d','vis-kpi-today'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = 'Hata';
+      });
+    });
+}
+
+function _buildVisitorChart(dailyVisits) {
+  const canvas = document.getElementById('chart-visitors');
+  if (!canvas) return;
+  if (_visitorChartInst) { _visitorChartInst.destroy(); _visitorChartInst = null; }
+  if (!dailyVisits.length) return;
+
+  const isDark    = document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDark ? '#9AA3B8' : '#6B7280';
+
+  const fmtDate = d => { const months = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara']; const [,m,day] = d.split('-'); return `${parseInt(day)} ${months[parseInt(m)-1]}`; };
+
+  _visitorChartInst = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: dailyVisits.map(v => fmtDate(v.date)),
+      datasets: [{
+        label: 'Ziyaret',
+        data: dailyVisits.map(v => v.count),
+        backgroundColor: 'rgba(29,111,232,0.65)',
+        borderColor: '#1D6FE8',
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 300 },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.parsed.y + ' ziyaret' } }
+      },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, maxRotation: 45 } },
+        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 }, precision: 0 } }
+      }
+    }
+  });
+}
+
+// ── Chatbot istatistikleri (localStorage) ────────────────────
+let _chatbotChartInst = null;
+
+function buildChatbotStats() {
+  let convs = [];
+  try { convs = JSON.parse(localStorage.getItem('ai_chat_conversations') || '[]'); } catch(e) {}
+
+  const totalConvs = convs.length;
+  const totalQuestions = convs.reduce((sum, c) => sum + (c.history?.length || 0), 0);
+  const avgQ = totalConvs > 0 ? (totalQuestions / totalConvs).toFixed(1) : '—';
+
+  const cutoff30 = new Date(); cutoff30.setDate(cutoff30.getDate() - 30);
+  const last30 = convs.filter(c => new Date(c.timestamp) >= cutoff30).length;
+
+  document.getElementById('chat-kpi-convs').textContent     = totalConvs.toLocaleString('tr-TR');
+  document.getElementById('chat-kpi-questions').textContent = totalQuestions.toLocaleString('tr-TR');
+  document.getElementById('chat-kpi-avg').textContent       = avgQ;
+  document.getElementById('chat-kpi-30d').textContent       = last30.toLocaleString('tr-TR');
+
+  _buildChatbotChart(convs);
+}
+
+function _buildChatbotChart(convs) {
+  const canvas = document.getElementById('chart-chatbot');
+  if (!canvas) return;
+  if (_chatbotChartInst) { _chatbotChartInst.destroy(); _chatbotChartInst = null; }
+  if (!convs.length) return;
+
+  const isDark    = document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDark ? '#9AA3B8' : '#6B7280';
+
+  // Son 60 gündeki günlük konuşma sayısı
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 60);
+  const dailyCounts = {};
+  convs.forEach(c => {
+    if (!c.timestamp) return;
+    const d = new Date(c.timestamp);
+    if (d < cutoff) return;
+    const key = d.toISOString().slice(0,10);
+    dailyCounts[key] = (dailyCounts[key] || 0) + 1;
+  });
+
+  const sorted = Object.entries(dailyCounts).sort((a,b) => a[0].localeCompare(b[0]));
+  if (!sorted.length) return;
+
+  const fmtDate = d => { const months = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara']; const [,m,day] = d.split('-'); return `${parseInt(day)} ${months[parseInt(m)-1]}`; };
+
+  _chatbotChartInst = new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: sorted.map(([d]) => fmtDate(d)),
+      datasets: [{
+        label: 'Konuşma',
+        data: sorted.map(([,c]) => c),
+        backgroundColor: 'rgba(124,58,237,0.65)',
+        borderColor: '#7C3AED',
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 300 },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.parsed.y + ' konuşma' } }
+      },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, maxRotation: 45 } },
+        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 }, precision: 0 } }
+      }
+    }
+  });
+}
+
 // ── Ana giriş noktası ────────────────────────────────────────
 window.initStatsTab = function() {
   // window.allArticles = de-duplicate edilmiş liste (news-reader.js tarafından set edilir)
@@ -8519,6 +8672,8 @@ window.initStatsTab = function() {
   if (all) {
     initControls(all);           // tarih picker min/max set olur, _statsArticles set edilir
     renderAll();
+    buildVisitorStats();
+    buildChatbotStats();
     return;
   }
 
@@ -8534,6 +8689,8 @@ window.initStatsTab = function() {
     .catch(() => {
       document.getElementById('stats-kpi-total').textContent = 'Veri yok';
     });
+  buildVisitorStats();
+  buildChatbotStats();
 };
 
 function initControls(allArticles) {
@@ -8543,6 +8700,36 @@ function initControls(allArticles) {
   initAirlineDropdown();
 }
 
+})();
+</script>
+
+<script>
+(function pingVisitor() {
+  try {
+    let visitorId = localStorage.getItem('haber-visitor-id');
+    if (!visitorId) {
+      visitorId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : 'v-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+      localStorage.setItem('haber-visitor-id', visitorId);
+    }
+    let sessionId = sessionStorage.getItem('haber-session-id');
+    if (!sessionId) {
+      sessionId = 's-' + Date.now();
+      sessionStorage.setItem('haber-session-id', sessionId);
+    }
+    fetch('https://n8n.emredemirbas.com/webhook/visitor-ping', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitorId,
+        sessionId,
+        page: location.pathname,
+        timestamp: new Date().toISOString(),
+        referrer: document.referrer
+      })
+    });
+  } catch(e) {}
 })();
 </script>
 
