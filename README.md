@@ -51,8 +51,7 @@ Uygulamanın veri akışı, n8n üzerinde çalışan şu aktif iş akışları (
 * **Haber AI Feedback:** Kullanıcının yapay zeka cevaplarına verdiği 👍/👎 geri bildirimlerini kaydeder.
 * **FRED Proxy:** FRED petrol fiyat verilerini CORS engeline takılmadan çeker (24 saat önbelleklenir).
 * **IMF Data :** IMF küresel büyüme ve enflasyon verilerini sunar (7 gün önbelleklenir).
-* **Todo Sync:** Yapılacaklar listesi görevlerini senkronize tutar.
-* **Haber Embedding Oluşturucu:** Seen Articles tablosunu düzenli aralıklarla kontrol ederek eksik haberlerin Gemini embeddinglerini oluşturur.
+* **Haber Embedding Oluşturucu:** Habzer veri tabanını düzenli aralıklarla kontrol ederek eksik haberlerin Gemini embeddinglerini oluşturur.
 
 ---
 
