@@ -52,7 +52,8 @@
     "icon_url": "",
     "keywords": "klm cargo,af klm,france klm,martinair cargo,klm martinair",
     "merge_with": [
-      "dyn_af_klm_cargo"
+      "dyn_af_klm_cargo",
+      "dyn_france_klm_martinair_cargo"
     ],
     "deleted": false
   },
