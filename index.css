@@ -577,9 +577,19 @@
       overflow: visible;
     }
   }
+  /* Stats panel: aynı genişlik/overflow kuralları */
+  @media (min-width: 769px) {
+    #stats-airline-panel.airline-grid-mode {
+      min-width: var(--airline-min-width, min(500px, 94vw));
+      max-height: none;
+      overflow: visible;
+      padding-bottom: 0;
+    }
+  }
   /* Mobil: tek sütun, normal scroll */
   @media (max-width: 768px) {
-    #airline-dropdown.airline-grid-mode {
+    #airline-dropdown.airline-grid-mode,
+    #stats-airline-panel.airline-grid-mode {
       min-width: min(240px, 94vw);
       max-height: 380px;
       overflow-y: auto;

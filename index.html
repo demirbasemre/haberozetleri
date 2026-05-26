@@ -324,15 +324,21 @@
         <input type="date" id="stats-date-start" class="stats-date-input" aria-label="Başlangıç tarihi">
         <span class="stats-date-sep">–</span>
         <input type="date" id="stats-date-end" class="stats-date-input" aria-label="Bitiş tarihi">
-        <button class="stats-date-reset" id="stats-date-reset" aria-label="Tarihi sıfırla">Tümü</button>
       </div>
       <div class="fdd-wrap" id="stats-airline-wrap">
         <button class="fdd-btn" id="stats-airline-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Havayolu filtresi">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19.5 2.5c-1.5-1.5-3.5-1.5-5 0L11 6 2.8 4.2l-1.4 1.4 4.9 4.9-.4.4-2.1-.7-.9.9 3 3-1.2 1.2 1.8 1.8 1.2-1.2 3 3 .9-.9-.7-2.1.4-.4 4.9 4.9 1.4-1.4Z"/>
+          </svg>
           <span id="stats-airline-label">Havayolu</span>
           <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="fdd-panel" id="stats-airline-panel" role="listbox" aria-multiselectable="true" aria-label="Havayolu seç"></div>
       </div>
+      <button class="clear-btn" id="stats-clear-filters" style="display:none" aria-label="Filtreleri temizle">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        <span>Temizle</span>
+      </button>
     </div>
 
     <!-- Todo tab filter area (empty — placeholder for consistent height) -->
@@ -7767,7 +7773,10 @@ const AIRLINE_LINE_COLORS = [
 let _statsDateStart = null;     // Date|null — seçili başlangıç
 let _statsDateEnd   = null;     // Date|null — seçili bitiş
 let _statsAllArticles = [];     // tüm (de-dup) makaleler
-let _statsAirlines = [];        // seçili havayolu id'leri
+let _statsAirlines = new Set(); // seçili havayolu id'leri
+let _statsAirlineFocusMode = false; // odak modu
+let _statsMinDate = '';         // veri setindeki ilk tarih
+let _statsMaxDate = '';         // veri setindeki son tarih
 let _statsArticles = [];        // tarihe göre filtrelenmiş makaleler
 let _statsCharts   = {};        // Chart nesneleri
 let _statsCatType  = 'bar';     // 'bar' | 'line'
@@ -7983,7 +7992,7 @@ function buildCatCharts(articles) { buildCatChart(articles, _statsCatType); }
 // ── Havayolu trend grafiği ────────────────────────────────────
 function buildAirlineChart(articles) {
   const noAirlineEl = document.getElementById('stats-no-airline');
-  if (_statsAirlines.length === 0) {
+  if (_statsAirlines.size === 0) {
     noAirlineEl.style.display = 'flex';
     if (_statsCharts.airline) { _statsCharts.airline.destroy(); delete _statsCharts.airline; }
     document.getElementById('stats-airline-active-pills').innerHTML = '';
@@ -7999,7 +8008,7 @@ function buildAirlineChart(articles) {
   const months = [...monthSet].sort();
 
   const defs = typeof allAirlineDefs !== 'undefined' ? allAirlineDefs() : [];
-  const datasets = _statsAirlines.map((airlineId, i) => {
+  const datasets = [..._statsAirlines].map((airlineId, i) => {
     const def = defs.find(d => d.id === airlineId);
     const label = def ? def.label : airlineId;
     const color = AIRLINE_LINE_COLORS[i % AIRLINE_LINE_COLORS.length];
@@ -8014,7 +8023,7 @@ function buildAirlineChart(articles) {
 
   // Aktif pill'ler
   const pillsEl = document.getElementById('stats-airline-active-pills');
-  pillsEl.innerHTML = _statsAirlines.map((id, i) => {
+  pillsEl.innerHTML = [..._statsAirlines].map((id, i) => {
     const def = defs.find(d => d.id === id);
     const color = AIRLINE_LINE_COLORS[i % AIRLINE_LINE_COLORS.length];
     return `<span class="stats-airline-pill" style="--pill-color:${color}">${def ? def.label : id}</span>`;
@@ -8041,84 +8050,375 @@ function buildAirlineChart(articles) {
 }
 
 // ── Havayolu filtre paneli ────────────────────────────────────
-function buildAirlinePanel() {
+function buildStatsAirlineFilter() {
   const panel = document.getElementById('stats-airline-panel');
+  if (!panel) return;
+
   const defs = typeof allAirlineDefs !== 'undefined' ? allAirlineDefs() : [];
-  if (!defs.length) { panel.innerHTML = '<div style="padding:8px;font-size:12px;color:var(--text-3)">Havayolu tanımı yok</div>'; return; }
+  if (!defs.length) { panel.innerHTML = '<div style="padding:10px 14px;font-size:12px;color:var(--text-2)">Havayolu verisi yok</div>'; return; }
 
-  // Grup başlıkları
-  const groups = [
-    { id: 'turkiye', label: 'Türkiye' },
-    { id: 'europe',  label: 'Avrupa' },
-    { id: 'mideast', label: 'Orta Doğu' },
-    { id: 'asiapac', label: 'Asya Pasifik' },
-    { id: 'americas',label: 'Amerika' },
-    { id: 'africa',  label: 'Afrika' },
-    { id: 'other',   label: 'Diğer' },
-  ];
+  const articles = _statsAllArticles.length > 0 ? _statsAllArticles : [];
+  articles.forEach(a => { if (!a._airlines) a._airlines = detectAirlines(a); });
 
-  let html = '';
-  groups.forEach(g => {
-    const airlines = defs.filter(d => d.region === g.id);
-    if (!airlines.length) return;
-    html += `<div class="fdd-group-label">${g.label}</div>`;
-    airlines.forEach(a => {
-      const sel = _statsAirlines.includes(a.id);
-      html += `<div class="fdd-option${sel?' selected':''}" data-airline-id="${a.id}" role="option" aria-selected="${sel}">${a.label}</div>`;
-    });
-  });
-  panel.innerHTML = html;
+  const found = new Set();
+  articles.forEach(a => a._airlines.forEach(id => found.add(id)));
 
-  panel.querySelectorAll('.fdd-option').forEach(opt => {
-    opt.addEventListener('click', e => {
+  const relevant = defs.filter(a => found.has(a.id));
+
+  panel.innerHTML = '';
+  panel.classList.add('airline-grid-mode');
+  panel.classList.toggle('airline-odak-active', _statsAirlineFocusMode);
+
+  if (relevant.length === 0) {
+    panel.innerHTML = '<div style="padding:10px 14px;font-size:12px;color:var(--text-2)">Haber verisi yok</div>';
+    return;
+  }
+
+  // ── Turkish Airlines pinned + Odak toggle ──
+  const topBar = document.createElement('div');
+  topBar.className = 'airline-top-bar';
+  const tkDef = defs.find(a => a.id === 'turkishairlines');
+  if (tkDef && found.has('turkishairlines')) {
+    const wrap = document.createElement('div');
+    wrap.className = 'airline-pinned-wrap';
+    const isSel = _statsAirlines.has('turkishairlines');
+    const row = document.createElement('div');
+    row.className = 'airline-pinned-row' + (isSel ? ' selected' : '');
+    row.dataset.id = 'turkishairlines';
+    row.setAttribute('role', 'option');
+    row.setAttribute('aria-selected', isSel ? 'true' : 'false');
+    const chk = `<div class="airline-check" style="${isSel ? 'background:var(--red);border-color:var(--red)' : ''}">${CHECK_SVG}</div>`;
+    row.innerHTML = `${chk}${airlineLogoHtml(tkDef, getAirlineLogo('turkishairlines'))}<span class="airline-label">Turkish Airlines</span>`;
+    row.addEventListener('click', e => {
       e.stopPropagation();
-      const id = opt.dataset.airlineId;
-      if (_statsAirlines.includes(id)) {
-        _statsAirlines = _statsAirlines.filter(x => x !== id);
-        opt.classList.remove('selected');
-        opt.setAttribute('aria-selected','false');
-      } else {
-        _statsAirlines.push(id);
-        opt.classList.add('selected');
-        opt.setAttribute('aria-selected','true');
-      }
-      updateAirlineLabel();
+      _statsAirlines.has('turkishairlines') ? _statsAirlines.delete('turkishairlines') : _statsAirlines.add('turkishairlines');
+      syncStatsAirlineGroupUI();
+      syncStatsAirlineBtn();
+      syncStatsClearBtn();
       buildAirlineChart(_statsArticles);
     });
+    wrap.appendChild(row);
+    topBar.appendChild(wrap);
+  }
+  // Odak toggle
+  const focusToggle = document.createElement('div');
+  focusToggle.className = 'airline-focus-toggle' + (_statsAirlineFocusMode ? ' active' : '');
+  focusToggle.setAttribute('role', 'button');
+  focusToggle.setAttribute('aria-pressed', _statsAirlineFocusMode ? 'true' : 'false');
+  focusToggle.title = _statsAirlineFocusMode ? 'Tüm havayollarını göster' : 'Yalnızca odak havayollarını göster';
+  focusToggle.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="${_statsAirlineFocusMode ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Odak`;
+  focusToggle.addEventListener('click', e => {
+    e.stopPropagation();
+    _statsAirlineFocusMode = !_statsAirlineFocusMode;
+    buildStatsAirlineFilter();
+    syncStatsAirlineBtn();
+  });
+  topBar.appendChild(focusToggle);
+  panel.appendChild(topBar);
+  const sep = document.createElement('div');
+  sep.className = 'airline-pinned-sep';
+  panel.appendChild(sep);
+
+  // ── Integrators bar ──
+  const staticLabels = new Set(AIRLINE_DEFS.map(a => a.label.toLowerCase()));
+  const groupRelevant = relevant.filter(a => {
+    if (a.id === 'turkishairlines') return false;
+    if (a.integrator) return false;
+    const isStatic = AIRLINE_DEFS.some(s => s.id === a.id);
+    if (!isStatic && staticLabels.has(a.label.toLowerCase())) return false;
+    if (_statsAirlineFocusMode && !a.focus) return false;
+    return true;
+  });
+
+  const integratorDefs = relevant.filter(a => a.integrator && a.id !== 'turkishairlines');
+  if (integratorDefs.length > 0) {
+    const bar = document.createElement('div');
+    bar.className = 'airline-integrators-bar';
+    const allIntSel = integratorDefs.every(a => _statsAirlines.has(a.id));
+    const anyIntSel = integratorDefs.some(a => _statsAirlines.has(a.id));
+    const intHdr = document.createElement('div');
+    intHdr.className = 'airline-integrators-hdr';
+    intHdr.setAttribute('role', 'button');
+    intHdr.setAttribute('aria-label', 'Tüm entegratörleri seç');
+    intHdr.innerHTML = `
+      <div class="airline-group-check" style="${anyIntSel ? 'background:var(--navy);border-color:var(--navy)' : ''}">
+        ${allIntSel ? CHECK_SVG : anyIntSel ? `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>` : CHECK_SVG}
+      </div>
+      <span class="airline-integrators-label">Entegratörler</span>
+    `;
+    if (!anyIntSel) { const sv = intHdr.querySelector('.airline-group-check svg'); if (sv) sv.style.display = 'none'; }
+    intHdr.addEventListener('click', e => {
+      e.stopPropagation();
+      const allSel = integratorDefs.every(a => _statsAirlines.has(a.id));
+      integratorDefs.forEach(a => allSel ? _statsAirlines.delete(a.id) : _statsAirlines.add(a.id));
+      syncStatsAirlineGroupUI();
+      syncStatsAirlineBtn();
+      syncStatsClearBtn();
+      buildAirlineChart(_statsArticles);
+    });
+    bar.appendChild(intHdr);
+    integratorDefs.forEach(airline => {
+      const chip = document.createElement('div');
+      const isSel = _statsAirlines.has(airline.id);
+      chip.className = 'airline-integrator-chip' + (isSel ? ' selected' : '');
+      chip.dataset.id = airline.id;
+      chip.setAttribute('role', 'option');
+      chip.setAttribute('aria-selected', isSel ? 'true' : 'false');
+      chip.innerHTML = `<div class="airline-check">${CHECK_SVG}</div>${airlineLogoHtml(airline, getAirlineLogo(airline.id))}<span class="airline-label">${airline.label}</span>`;
+      chip.addEventListener('click', e => {
+        e.stopPropagation();
+        _statsAirlines.has(airline.id) ? _statsAirlines.delete(airline.id) : _statsAirlines.add(airline.id);
+        syncStatsAirlineGroupUI();
+        syncStatsAirlineBtn();
+        syncStatsClearBtn();
+        buildAirlineChart(_statsArticles);
+      });
+      bar.appendChild(chip);
+    });
+    panel.appendChild(bar);
+    const sep2 = document.createElement('div');
+    sep2.className = 'airline-pinned-sep';
+    sep2.style.margin = '5px 8px 2px';
+    panel.appendChild(sep2);
+  }
+
+  // ── Region groups ──
+  const byGroup = {};
+  groupRelevant.forEach(a => {
+    const g = a.region || 'other';
+    if (!byGroup[g]) byGroup[g] = [];
+    byGroup[g].push(a);
+  });
+  Object.values(byGroup).forEach(arr => arr.sort((a, b) => {
+    if (a.isPrimary) return -1;
+    if (b.isPrimary) return 1;
+    return a.label.localeCompare(b.label, 'tr');
+  }));
+
+  const visibleGroups = AIRLINE_REGION_GROUPS.filter(grp => byGroup[grp.id]?.length > 0);
+
+  if (_statsAirlineFocusMode && visibleGroups.length === 0) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'padding:18px 16px;text-align:center;';
+    empty.innerHTML = `
+      <div style="font-size:22px;margin-bottom:8px">⭐</div>
+      <div style="font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:4px">Henüz odak havayolu yok</div>
+      <div style="font-size:11.5px;color:var(--text-3);line-height:1.5">Henüz hiç odak havayolu eklenmemiş.</div>`;
+    panel.appendChild(empty);
+    panel.addEventListener('click', e => e.stopPropagation());
+    return;
+  }
+
+  const columnDefs = visibleGroups.map(grp => ({ grp, chunk: byGroup[grp.id], allMembers: byGroup[grp.id] }));
+
+  const minColPx = 195;
+  panel.style.setProperty('--airline-min-width', Math.min(columnDefs.length * minColPx + 20, Math.floor(window.innerWidth * 0.94)) + 'px');
+
+  const grid = document.createElement('div');
+  grid.className = 'airline-col-grid';
+  grid.style.setProperty('--airline-cols', columnDefs.length);
+
+  columnDefs.forEach(({ grp, chunk, allMembers }) => {
+    const col = document.createElement('div');
+    col.className = 'airline-col-group';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'airline-group-header';
+    hdr.dataset.group = grp.id;
+    hdr.innerHTML = `
+      <div class="airline-group-check">${CHECK_SVG}</div>
+      <span class="airline-group-dot" style="background:${grp.color}"></span>
+      <span class="airline-group-label">${grp.label}</span>
+      <span class="airline-group-count">${allMembers.length}</span>
+    `;
+    hdr.addEventListener('click', e => {
+      e.stopPropagation();
+      const allSel = allMembers.every(a => _statsAirlines.has(a.id));
+      allMembers.forEach(a => allSel ? _statsAirlines.delete(a.id) : _statsAirlines.add(a.id));
+      syncStatsAirlineGroupUI();
+      syncStatsAirlineBtn();
+      syncStatsClearBtn();
+      buildAirlineChart(_statsArticles);
+    });
+    col.appendChild(hdr);
+
+    const body = document.createElement('div');
+    body.className = 'airline-col-group-body';
+    chunk.forEach(airline => {
+      const opt = document.createElement('div');
+      opt.className = 'airline-col-item' + (airline.isPrimary ? ' airline-primary' : '') + (airline.focus ? ' airline-focus' : '');
+      opt.dataset.id    = airline.id;
+      opt.dataset.group = grp.id;
+      opt.setAttribute('role', 'option');
+      opt.setAttribute('aria-selected', _statsAirlines.has(airline.id) ? 'true' : 'false');
+      opt.innerHTML = `
+        <div class="airline-check">${CHECK_SVG}</div>
+        ${airlineLogoHtml(airline, getAirlineLogo(airline.id))}
+        <span class="airline-label">${airline.label}</span>
+        ${airline.focus ? `<svg class="airline-focus-star" width="9" height="9" viewBox="0 0 24 24" fill="#ca8a04" stroke="#ca8a04" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>` : ''}
+      `;
+      opt.addEventListener('click', e => {
+        e.stopPropagation();
+        _statsAirlines.has(airline.id) ? _statsAirlines.delete(airline.id) : _statsAirlines.add(airline.id);
+        syncStatsAirlineGroupUI();
+        syncStatsAirlineBtn();
+        syncStatsClearBtn();
+        buildAirlineChart(_statsArticles);
+      });
+      body.appendChild(opt);
+    });
+    col.appendChild(body);
+    grid.appendChild(col);
+  });
+
+  panel.appendChild(grid);
+  panel.addEventListener('click', e => e.stopPropagation());
+}
+
+function syncStatsAirlineGroupUI() {
+  const panel = document.getElementById('stats-airline-panel');
+  if (!panel) return;
+
+  const pinnedRow = panel.querySelector('.airline-pinned-row');
+  if (pinnedRow) {
+    const sel = _statsAirlines.has('turkishairlines');
+    pinnedRow.classList.toggle('selected', sel);
+    pinnedRow.setAttribute('aria-selected', sel ? 'true' : 'false');
+    const ch = pinnedRow.querySelector('.airline-check');
+    if (ch) {
+      ch.style.background  = sel ? 'var(--red)' : '';
+      ch.style.borderColor = sel ? 'var(--red)' : '';
+      const s = ch.querySelector('svg'); if (s) s.style.display = sel ? 'block' : '';
+    }
+  }
+
+  const intHdr = panel.querySelector('.airline-integrators-hdr');
+  if (intHdr) {
+    const chips = [...panel.querySelectorAll('.airline-integrator-chip[data-id]')];
+    const allSel = chips.length > 0 && chips.every(c => _statsAirlines.has(c.dataset.id));
+    const anySel = chips.some(c => _statsAirlines.has(c.dataset.id));
+    const ch = intHdr.querySelector('.airline-group-check');
+    if (ch) {
+      ch.style.background  = anySel ? 'var(--navy)' : '';
+      ch.style.borderColor = anySel ? 'var(--navy)' : '';
+      ch.innerHTML = allSel ? CHECK_SVG : anySel ? `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>` : CHECK_SVG;
+      if (!anySel) { const s = ch.querySelector('svg'); if (s) s.style.display = 'none'; }
+    }
+  }
+
+  panel.querySelectorAll('.airline-integrator-chip[data-id]').forEach(chip => {
+    const sel = _statsAirlines.has(chip.dataset.id);
+    chip.classList.toggle('selected', sel);
+    chip.setAttribute('aria-selected', sel ? 'true' : 'false');
+  });
+
+  panel.querySelectorAll('.airline-col-item[data-id]').forEach(opt => {
+    const sel = _statsAirlines.has(opt.dataset.id);
+    opt.classList.toggle('selected', sel);
+    opt.setAttribute('aria-selected', sel ? 'true' : 'false');
+    const ch = opt.querySelector('.airline-check');
+    if (ch) {
+      const grpColor = AIRLINE_REGION_GROUPS.find(g => g.id === opt.dataset.group)?.color || 'var(--navy)';
+      ch.style.background  = sel ? grpColor : '';
+      ch.style.borderColor = sel ? grpColor : '';
+      const s = ch.querySelector('svg');
+      if (s) s.style.display = sel ? 'block' : '';
+    }
+  });
+
+  panel.querySelectorAll('.airline-group-header[data-group]').forEach(hdr => {
+    const grpId = hdr.dataset.group;
+    const grpColor = AIRLINE_REGION_GROUPS.find(g => g.id === grpId)?.color || 'var(--navy)';
+    const members = allAirlineDefs().filter(a => (a.region || 'other') === grpId && panel.querySelector(`.airline-col-item[data-id="${a.id}"]`));
+    const allSel = members.length > 0 && members.every(a => _statsAirlines.has(a.id));
+    const anySel = members.some(a => _statsAirlines.has(a.id));
+    const ch = hdr.querySelector('.airline-group-check');
+    if (!ch) return;
+    if (anySel) {
+      ch.style.background  = grpColor;
+      ch.style.borderColor = grpColor;
+      ch.innerHTML = allSel ? CHECK_SVG : `<span style="width:7px;height:2px;background:white;border-radius:1px;display:block"></span>`;
+      if (allSel) { const s = ch.querySelector('svg'); if (s) s.style.display = 'block'; }
+    } else {
+      ch.style.background  = '';
+      ch.style.borderColor = '';
+      ch.innerHTML = CHECK_SVG;
+    }
   });
 }
 
-function updateAirlineLabel() {
+function syncStatsAirlineBtn() {
+  const btn = document.getElementById('stats-airline-btn');
   const lbl = document.getElementById('stats-airline-label');
-  lbl.textContent = _statsAirlines.length
-    ? _statsAirlines.length + ' havayolu'
-    : 'Havayolu';
+  if (!btn || !lbl) return;
+  const count = _statsAirlines.size;
+  btn.querySelector('.airline-count')?.remove();
+  if (count > 0) {
+    btn.classList.add('active');
+    lbl.textContent = count === 1
+      ? allAirlineDefs().find(a => _statsAirlines.has(a.id))?.label || 'Havayolu'
+      : `${count} Havayolu`;
+    const badge = document.createElement('span');
+    badge.className = 'airline-count';
+    badge.textContent = count;
+    btn.insertBefore(badge, btn.querySelector('.fdd-chevron'));
+  } else {
+    btn.classList.remove('active');
+    lbl.textContent = 'Havayolu';
+  }
+}
+
+// ── Filtre temizle butonu ─────────────────────────────────────
+function syncStatsClearBtn() {
+  const startEl = document.getElementById('stats-date-start');
+  const endEl   = document.getElementById('stats-date-end');
+  const dateFiltered = (startEl?.value && startEl.value !== _statsMinDate) ||
+                       (endEl?.value   && endEl.value   !== _statsMaxDate);
+  const hasAny = dateFiltered || _statsAirlines.size > 0;
+  const btn = document.getElementById('stats-clear-filters');
+  if (btn) btn.style.display = hasAny ? 'inline-flex' : 'none';
 }
 
 // ── Tarih aralığı seçici ─────────────────────────────────────
 function initDateRangePicker(allArticles) {
   const dates = allArticles.map(a => a.date).filter(Boolean).sort();
-  const minDate = dates[0] || '';
-  const maxDate = dates[dates.length - 1] || '';
+  _statsMinDate = dates[0] || '';
+  _statsMaxDate = dates[dates.length - 1] || '';
 
   const startEl = document.getElementById('stats-date-start');
   const endEl   = document.getElementById('stats-date-end');
-  const resetEl = document.getElementById('stats-date-reset');
 
   if (!startEl || !endEl) return;
 
-  // HTML min/max sınırları — takvimde geçersiz tarih seçimi engellenir
-  startEl.min = minDate;
-  startEl.max = maxDate;
-  endEl.min   = minDate;
-  endEl.max   = maxDate;
+  startEl.min = _statsMinDate;
+  startEl.max = _statsMaxDate;
+  endEl.min   = _statsMinDate;
+  endEl.max   = _statsMaxDate;
 
-  // Başlangıç değerleri (tüm aralık)
-  startEl.value = minDate;
-  endEl.value   = maxDate;
-  _statsDateStart = minDate ? new Date(minDate) : null;
-  _statsDateEnd   = maxDate ? new Date(maxDate + 'T23:59:59') : null;
-  _statsArticles  = applyDateRange(allArticles);  // ilk set
+  startEl.value = _statsMinDate;
+  endEl.value   = _statsMaxDate;
+  _statsDateStart = _statsMinDate ? new Date(_statsMinDate) : null;
+  _statsDateEnd   = _statsMaxDate ? new Date(_statsMaxDate + 'T23:59:59') : null;
+  _statsArticles  = applyDateRange(allArticles);
+
+  // Temizle butonu click
+  const clearBtn = document.getElementById('stats-clear-filters');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      startEl.value = _statsMinDate;
+      endEl.value   = _statsMaxDate;
+      _statsDateStart = _statsMinDate ? new Date(_statsMinDate) : null;
+      _statsDateEnd   = _statsMaxDate ? new Date(_statsMaxDate + 'T23:59:59') : null;
+      _statsArticles  = applyDateRange(allArticles);
+      _statsAirlines.clear();
+      syncStatsAirlineBtn();
+      syncStatsClearBtn();
+      if (document.getElementById('stats-airline-panel')?.classList.contains('open')) {
+        buildStatsAirlineFilter();
+      }
+      renderAll();
+    });
+  }
 
   let _debounce;
   function onDateChange() {
@@ -8128,27 +8428,18 @@ function initDateRangePicker(allArticles) {
       const e = endEl.value;
       _statsDateStart = s ? new Date(s)              : null;
       _statsDateEnd   = e ? new Date(e + 'T23:59:59') : null;
-      // start > end koruması
       if (_statsDateStart && _statsDateEnd && _statsDateStart > _statsDateEnd) {
         _statsDateEnd = new Date(_statsDateStart.getTime() + 86400000);
         endEl.value = _statsDateEnd.toISOString().slice(0,10);
       }
       _statsArticles = applyDateRange(allArticles);
+      syncStatsClearBtn();
       renderAll();
     }, 180);
   }
 
   startEl.addEventListener('change', onDateChange);
   endEl.addEventListener('change', onDateChange);
-
-  resetEl.addEventListener('click', () => {
-    startEl.value = minDate;
-    endEl.value   = maxDate;
-    _statsDateStart = minDate ? new Date(minDate) : null;
-    _statsDateEnd   = maxDate ? new Date(maxDate + 'T23:59:59') : null;
-    _statsArticles  = applyDateRange(allArticles);
-    renderAll();
-  });
 }
 
 // ── Kaynak grafik tipi toggle ─────────────────────────────────
@@ -8184,7 +8475,7 @@ function initAirlineDropdown() {
     e.stopPropagation();
     const open = panel.classList.toggle('open');
     btn.setAttribute('aria-expanded', open);
-    if (open) buildAirlinePanel();
+    if (open) buildStatsAirlineFilter();
   });
   document.addEventListener('click', () => {
     panel.classList.remove('open');
