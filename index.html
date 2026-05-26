@@ -4040,27 +4040,15 @@ function buildReleaseCalendar() {
 
   // Hava kargo trafiğini etkileyen önemli tarihler 2026
   const eventItems = [
-    { title: 'Çin Yeni Yılı (At Yılı)',                          source: 'Çin',          date: abs(2026, 2, 17), cadence: 'Fabrikalar ~1–2 hafta kapalı · ön-tatil sevkiyat zirvesi', kind: 'event' },
-    { title: 'CNY Resmi Tatil Dönemi',                           source: 'Çin',          date: abs(2026, 2, 16), cadence: '16–22 Şub · doğu-batı kapasitesi sıkışır',                 kind: 'event' },
-    { title: 'Ramazan Başlangıcı',                               source: 'MEASA',        date: abs(2026, 2, 17), cadence: 'Körfez & MENA trafiğinde yavaşlama',                       kind: 'event' },
-    { title: 'IATA World Cargo Symposium',                       source: 'IATA · Hong Kong', date: abs(2026, 3, 10), cadence: 'Yıllık sektör zirvesi (10–12 Mar, tahmini)',           kind: 'event', link: 'https://www.iata.org/en/events/wcs/' },
-    { title: 'Ramazan Bayramı (Eid al-Fitr)',                    source: 'MEASA',        date: abs(2026, 3, 20), cadence: 'Körfez & Türkiye 3–4 gün resmi tatil',                     kind: 'event' },
-    { title: 'Paskalya',                                         source: 'Avrupa & ABD', date: abs(2026, 4, 5),  cadence: 'AB & ABD’de uzun hafta sonu · perakende öncesi',          kind: 'event' },
-    { title: 'Hannover Messe',                                   source: 'Almanya',      date: abs(2026, 4, 20), cadence: 'Endüstri fuarı · AB içi kargo hareketliliği',              kind: 'event' },
-    { title: 'Çin İşçi Bayramı Golden Week',                     source: 'Çin',          date: abs(2026, 5, 1),  cadence: '1–5 May · fabrika kapanışı, kapasite daralması',          kind: 'event' },
-    { title: 'ABD Memorial Day',                                 source: 'ABD',          date: abs(2026, 5, 25), cadence: 'ABD tatili · kargo işleme yavaşlar',                       kind: 'event' },
-    { title: 'Kurban Bayramı (Eid al-Adha)',                     source: 'MEASA',        date: abs(2026, 5, 27), cadence: 'Körfez & Türkiye uzun tatil',                              kind: 'event' },
-    { title: 'Farnborough International Air Show',               source: 'UK',           date: abs(2026, 7, 20), cadence: '20–24 Tem · havacılık sektör buluşması',                   kind: 'event', link: 'https://www.farnboroughairshow.com/' },
-    { title: 'ABD Bağımsızlık Günü',                             source: 'ABD',          date: abs(2026, 7, 3),  cadence: '4 Tem (Cumartesi) → 3 Tem resmi · ABD yavaşlar',          kind: 'event' },
-    { title: 'Çin Milli Bayramı Golden Week',                    source: 'Çin',          date: abs(2026,10, 1),  cadence: '1–7 Eki · Çin üretimi durur',                              kind: 'event' },
-    { title: 'Diwali',                                           source: 'Hindistan',    date: abs(2026,11, 8),  cadence: 'Güney Asya trafiğinde tatil etkisi',                       kind: 'event' },
-    { title: 'Çin Uluslararası İthalat Fuarı (CIIE)',            source: 'Şanghay',      date: abs(2026,11, 5),  cadence: '5–10 Kas · Çin gümrük & lojistik yoğunluğu',               kind: 'event', link: 'https://www.ciie.org/' },
-    { title: 'Singles’ Day (11.11)',                             source: 'Çin',          date: abs(2026,11,11),  cadence: 'Çin e-ticaret zirvesi · cross-border kapasite zirvesi',    kind: 'event' },
-    { title: 'ABD Şükran Günü',                                  source: 'ABD',          date: abs(2026,11,26),  cadence: 'ABD tatili · Black Friday öncesi',                         kind: 'event' },
-    { title: 'Black Friday',                                     source: 'Küresel',      date: abs(2026,11,27),  cadence: 'Perakende zirvesi · ekspres kargo doruğu',                 kind: 'event' },
-    { title: 'Cyber Monday',                                     source: 'Küresel',      date: abs(2026,11,30),  cadence: 'Online perakende zirvesi · ekspres kargo doruğu',          kind: 'event' },
-    { title: 'Yılbaşı Sevkiyat Cut-off',                         source: 'Küresel',      date: abs(2026,12,15),  cadence: 'Çoğu havayolu yılbaşı son sevkiyat tarihi',                 kind: 'event' },
-    { title: 'Noel',                                             source: 'Avrupa & ABD', date: abs(2026,12,25),  cadence: 'Batı pazarlarında uzun tatil',                              kind: 'event' },
+    { title: ‘Ramazan Başlangıcı’,                               source: ‘MEASA’,        date: abs(2026, 2, 17), cadence: ‘Körfez & MENA trafiğinde yavaşlama’,                       kind: ‘event’ },
+    { title: ‘IATA World Cargo Symposium’,                       source: ‘IATA · Hong Kong’, date: abs(2026, 3, 10), cadence: ‘Yıllık sektör zirvesi (10–12 Mar, tahmini)’,           kind: ‘event’, link: ‘https://www.iata.org/en/events/wcs/’ },
+    { title: ‘Hannover Messe’,                                   source: ‘Almanya’,      date: abs(2026, 4, 20), cadence: ‘Endüstri fuarı · AB içi kargo hareketliliği’,              kind: ‘event’ },
+    { title: ‘Farnborough International Air Show’,               source: ‘UK’,           date: abs(2026, 7, 20), cadence: ‘20–24 Tem · havacılık sektör buluşması’,                   kind: ‘event’, link: ‘https://www.farnboroughairshow.com/’ },
+    { title: ‘Çin Uluslararası İthalat Fuarı (CIIE)’,            source: ‘Şanghay’,      date: abs(2026,11, 5),  cadence: ‘5–10 Kas · Çin gümrük & lojistik yoğunluğu’,               kind: ‘event’, link: ‘https://www.ciie.org/’ },
+    { title: ‘Singles\’ Day (11.11)’,                             source: ‘Çin’,          date: abs(2026,11,11),  cadence: ‘Çin e-ticaret zirvesi · cross-border kapasite zirvesi’,    kind: ‘event’ },
+    { title: ‘Black Friday’,                                     source: ‘Küresel’,      date: abs(2026,11,27),  cadence: ‘Perakende zirvesi · ekspres kargo doruğu’,                 kind: ‘event’ },
+    { title: ‘Cyber Monday’,                                     source: ‘Küresel’,      date: abs(2026,11,30),  cadence: ‘Online perakende zirvesi · ekspres kargo doruğu’,          kind: ‘event’ },
+    { title: ‘Yılbaşı Sevkiyat Cut-off’,                         source: ‘Küresel’,      date: abs(2026,12,15),  cadence: ‘Çoğu havayolu yılbaşı son sevkiyat tarihi’,                 kind: ‘event’ },
   ];
 
   // ── ÜLKE RESMİ BAYRAMLARI 2026 ──────────────────────────────
