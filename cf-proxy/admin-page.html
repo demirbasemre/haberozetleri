@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Paneli</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #f1f5f9;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .container {
+    width: 100%;
+    max-width: 480px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .header .logo {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #f1f5f9;
+  }
+  .header p {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+  .section {
+    margin-bottom: 28px;
+  }
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #475569;
+    margin-bottom: 10px;
+    padding-left: 4px;
+  }
+  .link-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .admin-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: #f1f5f9;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    cursor: pointer;
+  }
+  .admin-link:hover {
+    background: #273449;
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+  }
+  .admin-link:active {
+    transform: translateY(0);
+  }
+  .link-icon {
+    font-size: 22px;
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .link-text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #f1f5f9;
+  }
+  .link-text span {
+    font-size: 12px;
+    color: #64748b;
+  }
+  .link-arrow {
+    margin-left: auto;
+    color: #475569;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .footer {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 12px;
+    color: #334155;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">🛡️</div>
+    <h1>Admin Paneli</h1>
+    <p>Haber Özetleri · Yönetim</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">İçerik Yönetimi</div>
+    <div class="link-grid">
+      <a class="admin-link" href="https://demirbasemre.github.io/haberozetleri/?edit=1" target="_blank">
+        <div class="link-icon">📰</div>
+        <div class="link-text">
+          <strong>Haber Düzenle</strong>
+          <span>Kartları düzenle, sil, birleştir</span>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+      <a class="admin-link" href="https://demirbasemre.github.io/haberozetleri/?edit=1#changelog" target="_blank">
+        <div class="link-icon">📋</div>
+        <div class="link-text">
+          <strong>Changelog</strong>
+          <span>Aylık güncelleme notları</span>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Konfigürasyon</div>
+    <div class="link-grid">
+      <a class="admin-link" href="https://demirbasemre.github.io/haberozetleri/?edit=1#airlines" target="_blank">
+        <div class="link-icon">✈️</div>
+        <div class="link-text">
+          <strong>Havayolu Config</strong>
+          <span>Etiket, bölge, odak ayarları</span>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+      <a class="admin-link" href="https://demirbasemre.github.io/haberozetleri/?edit=1#dates" target="_blank">
+        <div class="link-icon">📅</div>
+        <div class="link-text">
+          <strong>Önemli Tarihler</strong>
+          <span>Sürüm ve etkinlik tarihleri</span>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Kişisel</div>
+    <div class="link-grid">
+      <a class="admin-link" href="https://demirbasemre.github.io/haberozetleri/?todo=1" target="_blank">
+        <div class="link-icon">✅</div>
+        <div class="link-text">
+          <strong>Yapılacaklar</strong>
+          <span>Kişisel görev listesi</span>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Altyapı</div>
+    <div class="link-grid">
+      <a class="admin-link" href="https://n8n.emredemirbas.com" target="_blank">
+        <div class="link-icon">⚙️</div>
+        <div class="link-text">
+          <strong>n8n Dashboard</strong>
+          <span>Workflow yönetimi</span>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+      <a class="admin-link" href="https://dash.cloudflare.com" target="_blank">
+        <div class="link-icon">🌥️</div>
+        <div class="link-text">
+          <strong>Cloudflare</strong>
+          <span>Worker, DNS, Zero Trust</span>
+        </div>
+        <div class="link-arrow">›</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="footer">
+    Oturum açık · <a href="https://one.dash.cloudflare.com" style="color:#3b82f6;text-decoration:none">Zero Trust</a> ile korunuyor
+  </div>
+</div>
+</body>
+</html>
