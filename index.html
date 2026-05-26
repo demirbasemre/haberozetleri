@@ -942,26 +942,41 @@ function openAirlineEditPanel(airlineId, anchorEl, _containerEl) {
       <span style="font-size:11px;font-weight:700;color:#7C3AED;letter-spacing:0.02em">${currentLabel}</span>
       <button class="airline-edit-close-btn" title="Kapat" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text-3);font-size:14px;line-height:1;padding:0">✕</button>
     </div>
-    <div class="airline-edit-panel-row">
-      <label>Havayolu Adı<input type="text" name="label" value="${currentLabel.replace(/"/g,'&quot;')}" placeholder="Havayolu adı"></label>
-      <label>Bölge<select name="region">${regionOptions}</select></label>
-    </div>
-    <label>Logo URL<input type="text" name="icon_url" value="${currentIconUrl.replace(/"/g,'&quot;')}" placeholder="https://..."></label>
-    <div style="border-top:1px solid var(--border);padding-top:7px;margin-top:1px">
-      <div class="merge-section-title" style="display:flex;align-items:center;gap:5px">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-        Birleştir
+    
+    <!-- Ana Düzenleme Görünümü -->
+    <div class="airline-edit-main-view" style="display:flex;flex-direction:column;gap:7px;">
+      <div class="airline-edit-panel-row">
+        <label>Havayolu Adı<input type="text" name="label" value="${currentLabel.replace(/"/g,'&quot;')}" placeholder="Havayolu adı"></label>
+        <label>Bölge<select name="region">${regionOptions}</select></label>
       </div>
-      <div class="merge-chips-wrap"></div>
-      <div class="merge-add-row">
-        <input type="text" class="merge-input" list="merge-datalist-${airlineId}" placeholder="Havayolu adı veya ID...">
-        <datalist id="merge-datalist-${airlineId}">${datalistHtml}</datalist>
-        <button type="button" class="merge-add-btn">Ekle</button>
+      <label>Logo URL<input type="text" name="icon_url" value="${currentIconUrl.replace(/"/g,'&quot;')}" placeholder="https://..."></label>
+      <div style="border-top:1px solid var(--border);padding-top:7px;margin-top:1px">
+        <div class="merge-section-title" style="display:flex;align-items:center;gap:5px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Birleştir
+        </div>
+        <div class="merge-chips-wrap"></div>
+        <div class="merge-add-row">
+          <input type="text" class="merge-input" list="merge-datalist-${airlineId}" placeholder="Havayolu adı veya ID...">
+          <datalist id="merge-datalist-${airlineId}">${datalistHtml}</datalist>
+          <button type="button" class="merge-add-btn">Ekle</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:2px">
+        <button class="airline-edit-delete-btn" type="button">Sil</button>
+        <button class="airline-edit-save-btn" type="button">Kaydet</button>
       </div>
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:2px">
-      <button class="airline-edit-delete-btn" type="button">Sil</button>
-      <button class="airline-edit-save-btn" type="button">Kaydet</button>
+
+    <!-- Silme Onay Görünümü -->
+    <div class="airline-edit-confirm-view" style="display:none;flex-direction:column;gap:12px;padding:8px 0 4px;text-align:center;">
+      <div style="font-size:12px;font-weight:500;color:var(--text);line-height:1.5;">
+        <strong>"${currentLabel}"</strong> havayolunu listeden kaldırmak istediğinize emin misiniz?
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button class="airline-confirm-cancel-btn" type="button" style="flex:1;padding:6px 12px;border-radius:5px;border:1px solid var(--border);background:var(--bg);color:var(--text-2);font-size:11px;font-weight:600;cursor:pointer;transition:background 0.12s;">İptal</button>
+        <button class="airline-confirm-delete-btn" type="button" style="flex:1;padding:6px 12px;border-radius:5px;border:none;background:#DC2626;color:white;font-size:11px;font-weight:600;cursor:pointer;transition:background 0.12s;">Evet, Sil</button>
+      </div>
     </div>
   `;
 
@@ -1033,12 +1048,32 @@ function openAirlineEditPanel(airlineId, anchorEl, _containerEl) {
   });
 
   const deleteBtn = panel.querySelector('.airline-edit-delete-btn');
+  const mainView = panel.querySelector('.airline-edit-main-view');
+  const confirmView = panel.querySelector('.airline-edit-confirm-view');
+  const confirmCancelBtn = panel.querySelector('.airline-confirm-cancel-btn');
+  const confirmDeleteBtn = panel.querySelector('.airline-confirm-delete-btn');
+
   if (deleteBtn) {
-    deleteBtn.addEventListener('click', async () => {
-      const name = panel.querySelector('[name=label]').value.trim() || currentLabel;
-      if (!confirm(`"${name}" havayolunu listeden kaldırmak istediğinize emin misiniz?`)) return;
-      deleteBtn.classList.add('deleting');
-      deleteBtn.textContent = 'Siliniyor…';
+    deleteBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      mainView.style.display = 'none';
+      confirmView.style.display = 'flex';
+    });
+  }
+
+  if (confirmCancelBtn) {
+    confirmCancelBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      confirmView.style.display = 'none';
+      mainView.style.display = 'flex';
+    });
+  }
+
+  if (confirmDeleteBtn) {
+    confirmDeleteBtn.addEventListener('click', async e => {
+      e.stopPropagation();
+      confirmDeleteBtn.disabled = true;
+      confirmDeleteBtn.textContent = 'Siliniyor…';
       try {
         const cfg = {
           airline_id: airlineId,
@@ -1053,12 +1088,16 @@ function openAirlineEditPanel(airlineId, anchorEl, _containerEl) {
         await saveAirlineConfig(cfg);
         panel.remove();
       } catch(e) {
-        deleteBtn.classList.remove('deleting');
-        deleteBtn.textContent = 'Hata';
-        deleteBtn.style.borderColor = '#DC2626';
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.textContent = 'Hata';
+        confirmDeleteBtn.style.background = '#991B1B';
       }
     });
   }
+
+  // Prevent dropdown closing when clicking/focusing inside this floating panel
+  panel.addEventListener('click', e => e.stopPropagation());
+  panel.addEventListener('mousedown', e => e.stopPropagation());
 
   // Body'e fixed olarak ekle — dropdown layout'unu bozmaz
   panel.style.position = 'fixed';
