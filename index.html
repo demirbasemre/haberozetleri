@@ -752,7 +752,7 @@
     <section class="dash-section" id="stats-sec-visitors">
       <!-- Ziyaretçi İstatistikleri -->
       <h2 class="dash-section-title">Ziyaretçi İstatistikleri</h2>
-      <div class="dash-kpi-grid" style="margin-bottom:16px;">
+      <div class="dash-cards" style="margin-bottom:16px;">
         <div class="dash-card">
           <div class="dash-card-label">Toplam Ziyaret</div>
           <div class="dash-card-value" id="vis-kpi-total">—</div>
@@ -789,7 +789,7 @@
 
       <!-- Chatbot İstatistikleri -->
       <h2 class="dash-section-title" style="margin-top:28px;">Chatbot Kullanım İstatistikleri</h2>
-      <div class="dash-kpi-grid" style="margin-bottom:16px;">
+      <div class="dash-cards" style="margin-bottom:16px;">
         <div class="dash-card">
           <div class="dash-card-label">Toplam Konuşma</div>
           <div class="dash-card-value" id="chat-kpi-convs">—</div>
@@ -7981,13 +7981,20 @@ function buildCatChart(articles, catType) {
   } else {
     const monthSet = new Set(articles.map(a => monthKey(a.date)).filter(Boolean));
     const months = [...monthSet].sort();
-    const catDatasets = cats.map(cat => ({
-      label: cat,
-      data: months.map(m => articles.filter(a => (a.category||'Diğer')===cat && monthKey(a.date)===m).length),
-      borderColor: (CAT_COLORS[cat] || '#6B7280').replace('rgba(','').replace(/,[\d.]+\)$/,''),
-      backgroundColor: (CAT_COLORS[cat] || 'rgba(107,114,128,0.15)'),
-      borderWidth: 2, fill: false, tension: 0.35, pointRadius: 3,
-    }));
+    const catDatasets = cats.map(cat => {
+      const solidColor = (CAT_COLORS[cat] || 'rgba(107,114,128,1)').replace(/,[\d.]+\)$/, ',1)');
+      const lightColor = (CAT_COLORS[cat] || 'rgba(107,114,128,0.12)').replace(/,[\d.]+\)$/, ',0.12)');
+      return {
+        label: cat,
+        data: months.map(m => articles.filter(a => (a.category||'Diğer')===cat && monthKey(a.date)===m).length),
+        borderColor: solidColor,
+        backgroundColor: lightColor,
+        pointBackgroundColor: solidColor,
+        pointBorderColor: solidColor,
+        pointRadius: 4, pointHoverRadius: 6,
+        borderWidth: 2, fill: false, tension: 0.35,
+      };
+    });
     _statsCharts.cat = new Chart(ctx, {
       type: 'line',
       data: { labels: months.map(monthLabel), datasets: catDatasets },
