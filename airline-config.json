@@ -160,5 +160,14 @@
     "icon_url": "",
     "keywords": "güçlü yolcu ve kargo",
     "merge_with": []
+  },
+  {
+    "airline_id": "dyn_y_l_n_k_resel_kargo",
+    "label": "YıLıN KüResel Kargo",
+    "region": "other",
+    "focus": false,
+    "icon_url": "",
+    "keywords": "yılın küresel kargo",
+    "merge_with": []
   }
 ]
