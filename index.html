@@ -320,11 +320,11 @@
 
     <!-- Stats tab filter area -->
     <div id="stats-filter-content" style="display:none;">
-      <div class="stats-period-group" id="stats-period-group">
-        <button class="stats-period-btn stats-period-btn-active" data-period="all">Tümü</button>
-        <button class="stats-period-btn" data-period="6m">6 Ay</button>
-        <button class="stats-period-btn" data-period="3m">3 Ay</button>
-        <button class="stats-period-btn" data-period="1m">1 Ay</button>
+      <div class="stats-daterange-group" id="stats-daterange-group">
+        <input type="date" id="stats-date-start" class="stats-date-input" aria-label="Başlangıç tarihi">
+        <span class="stats-date-sep">–</span>
+        <input type="date" id="stats-date-end" class="stats-date-input" aria-label="Bitiş tarihi">
+        <button class="stats-date-reset" id="stats-date-reset" aria-label="Tarihi sıfırla">Tümü</button>
       </div>
       <div class="fdd-wrap" id="stats-airline-wrap">
         <button class="fdd-btn" id="stats-airline-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Havayolu filtresi">
@@ -690,18 +690,17 @@
 
     <!-- Kaynak Trend Grafiği -->
     <section class="dash-section" id="stats-sec-source">
-      <h2 class="dash-section-title">Kaynak Bazlı Haber Dağılımı <span class="dash-section-badge">data.json</span></h2>
+      <h2 class="dash-section-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <span>Kaynak Bazlı Haber Dağılımı</span>
+        <div class="stats-chart-type-group" id="source-chart-type">
+          <button class="stats-chart-type-btn stats-chart-type-active" data-type="bar">Yığılı</button>
+          <button class="stats-chart-type-btn" data-type="line">Çizgi</button>
+        </div>
+      </h2>
       <div class="dash-charts" style="grid-template-columns:1fr;">
         <div class="dash-chart-card">
-          <div class="dash-chart-title" style="display:flex;justify-content:space-between;align-items:center;">
-            Kaynağa Göre Aylık Haber Sayısı
-            <div class="stats-chart-type-group" id="source-chart-type">
-              <button class="stats-chart-type-btn stats-chart-type-active" data-type="bar">Yığılı</button>
-              <button class="stats-chart-type-btn" data-type="line">Çizgi</button>
-            </div>
-          </div>
           <div class="stats-source-legend" id="stats-source-legend"></div>
-          <div class="dash-chart-wrap" style="position:relative;height:280px;margin-top:12px;">
+          <div class="dash-chart-wrap" style="position:relative;height:280px;margin-top:10px;">
             <canvas id="chart-source-trend"></canvas>
           </div>
         </div>
@@ -710,20 +709,17 @@
 
     <!-- Kategori Dağılımı -->
     <section class="dash-section" id="stats-sec-cat">
-      <h2 class="dash-section-title">Kategori Dağılımı</h2>
-      <div class="dash-charts">
-        <div class="dash-chart-card">
-          <div class="dash-chart-title">Kategorilere Göre Haber Sayısı</div>
-          <div class="dash-chart-meta"><span>Seçili dönem toplam</span></div>
-          <div class="dash-chart-wrap" style="position:relative;height:260px;margin-top:12px;">
-            <canvas id="chart-cat-dist"></canvas>
-          </div>
+      <h2 class="dash-section-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <span>Kategori Dağılımı</span>
+        <div class="stats-chart-type-group" id="cat-chart-type">
+          <button class="stats-chart-type-btn stats-chart-type-active" data-cattype="bar">Dağılım</button>
+          <button class="stats-chart-type-btn" data-cattype="line">Trend</button>
         </div>
+      </h2>
+      <div class="dash-charts" style="grid-template-columns:1fr;">
         <div class="dash-chart-card">
-          <div class="dash-chart-title">Kategorilerin Aylık Trendi</div>
-          <div class="dash-chart-meta"><span>Aylık · kategori bazlı</span></div>
-          <div class="dash-chart-wrap" style="position:relative;height:260px;margin-top:12px;">
-            <canvas id="chart-cat-trend"></canvas>
+          <div class="dash-chart-wrap" style="position:relative;height:280px;">
+            <canvas id="chart-cat"></canvas>
           </div>
         </div>
       </div>
@@ -734,10 +730,6 @@
       <h2 class="dash-section-title">Havayolu Bazlı Haber Trendi</h2>
       <div class="dash-charts" style="grid-template-columns:1fr;">
         <div class="dash-chart-card">
-          <div class="dash-chart-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-            <span>Seçili Havayollarının Aylık Haber Sayısı</span>
-          </div>
-          <div class="dash-chart-meta"><span>Havayolu filtresi üstten seçilebilir · başlık + özet taraması</span></div>
           <div class="stats-airline-pills" id="stats-airline-active-pills"></div>
           <div class="dash-chart-wrap" style="position:relative;height:280px;margin-top:12px;">
             <canvas id="chart-airline-trend"></canvas>
@@ -7772,21 +7764,27 @@ const AIRLINE_LINE_COLORS = [
 ];
 
 // ── State ────────────────────────────────────────────────────
-let _statsPeriod  = 'all';
+let _statsDateStart = null;     // Date|null — seçili başlangıç
+let _statsDateEnd   = null;     // Date|null — seçili bitiş
+let _statsAllArticles = [];     // tüm (de-dup) makaleler
 let _statsAirlines = [];        // seçili havayolu id'leri
-let _statsArticles = [];        // filtrelenmiş makaleler
-let _statsCharts  = {};         // Chart nesneleri
+let _statsArticles = [];        // tarihe göre filtrelenmiş makaleler
+let _statsCharts   = {};        // Chart nesneleri
+let _statsCatType  = 'bar';     // 'bar' | 'line'
 
-// ── Periyot uygulama ─────────────────────────────────────────
-function applyPeriod(articles) {
-  if (_statsPeriod === 'all') return articles;
-  const now = new Date();
-  const cutoff = new Date(now);
-  if (_statsPeriod === '6m') cutoff.setMonth(now.getMonth() - 6);
-  else if (_statsPeriod === '3m') cutoff.setMonth(now.getMonth() - 3);
-  else if (_statsPeriod === '1m') cutoff.setMonth(now.getMonth() - 1);
-  return articles.filter(a => a.date && new Date(a.date) >= cutoff);
+// ── Tarih aralığı uygulama ────────────────────────────────────
+function applyDateRange(articles) {
+  return articles.filter(a => {
+    if (!a.date) return false;
+    const d = new Date(a.date);
+    if (_statsDateStart && d < _statsDateStart) return false;
+    if (_statsDateEnd   && d > _statsDateEnd)   return false;
+    return true;
+  });
 }
+
+// ── Fallback — eski applyPeriod çağrıları için ────────────────
+function applyPeriod(articles) { return applyDateRange(articles); }
 
 // ── Ay etiketi ───────────────────────────────────────────────
 function monthKey(dateStr) {
@@ -7908,75 +7906,79 @@ function buildSourceChart(articles, chartType) {
   });
 }
 
-// ── Kategori grafikleri ───────────────────────────────────────
-function buildCatCharts(articles) {
+// ── Kategori grafiği (birleşik toggle) ───────────────────────
+function buildCatChart(articles, catType) {
+  catType = catType || _statsCatType;
+  _statsCatType = catType;
+
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
   const textColor = isDark ? '#9AA3B8' : '#6B7280';
 
-  // Toplam dağılım (bar)
   const catCount = {};
-  articles.forEach(a => { const c=a.category||'Diğer'; catCount[c]=(catCount[c]||0)+1; });
-  const cats = Object.keys(catCount).sort((a,b)=>catCount[b]-catCount[a]);
+  articles.forEach(a => { const c = a.category || 'Diğer'; catCount[c] = (catCount[c]||0) + 1; });
+  const cats = Object.keys(catCount).sort((a,b) => catCount[b] - catCount[a]);
 
-  if (_statsCharts.catDist) { _statsCharts.catDist.destroy(); delete _statsCharts.catDist; }
-  const ctxDist = document.getElementById('chart-cat-dist').getContext('2d');
-  _statsCharts.catDist = new Chart(ctxDist, {
-    type: 'bar',
-    data: {
-      labels: cats.map(c => c.length > 22 ? c.slice(0,20)+'…' : c),
-      datasets: [{
-        data: cats.map(c => catCount[c]),
-        backgroundColor: cats.map(c => CAT_COLORS[c] || 'rgba(107,114,128,0.75)'),
-        borderRadius: 5,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
-      animation: { duration: 400 },
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: i => ' ' + i.parsed.x + ' haber' } } },
-      scales: {
-        x: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font:{size:11}, precision:0 } },
-        y: { grid: { display: false }, ticks: { color: textColor, font:{size:11} } }
-      }
-    }
-  });
+  if (_statsCharts.cat) { _statsCharts.cat.destroy(); delete _statsCharts.cat; }
+  const ctx = document.getElementById('chart-cat').getContext('2d');
 
-  // Aylık trend
-  const monthSet = new Set(articles.map(a => monthKey(a.date)).filter(Boolean));
-  const months = [...monthSet].sort();
-  const catDatasets = cats.map((cat, i) => ({
-    label: cat,
-    data: months.map(m => articles.filter(a => (a.category||'Diğer')===cat && monthKey(a.date)===m).length),
-    backgroundColor: (CAT_COLORS[cat] || 'rgba(107,114,128,0.75)').replace('0.75','0.65'),
-    borderColor: (CAT_COLORS[cat] || '#6B7280'),
-    borderWidth: 2,
-    fill: false,
-    tension: 0.35,
-    pointRadius: 3,
-  }));
-
-  if (_statsCharts.catTrend) { _statsCharts.catTrend.destroy(); delete _statsCharts.catTrend; }
-  const ctxTrend = document.getElementById('chart-cat-trend').getContext('2d');
-  _statsCharts.catTrend = new Chart(ctxTrend, {
-    type: 'line',
-    data: { labels: months.map(monthLabel), datasets: catDatasets },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      animation: { duration: 400 },
-      plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 }, color: textColor, padding: 8 } },
-        tooltip: { mode: 'index', intersect: false }
+  if (catType === 'bar') {
+    _statsCharts.cat = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: cats.map(c => c.length > 24 ? c.slice(0,22)+'…' : c),
+        datasets: [{
+          data: cats.map(c => catCount[c]),
+          backgroundColor: cats.map(c => CAT_COLORS[c] || 'rgba(107,114,128,0.75)'),
+          borderRadius: 5,
+          borderSkipped: false,
+        }]
       },
-      scales: {
-        x: { grid: { color: gridColor }, ticks: { color: textColor, font:{size:11} } },
-        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font:{size:11}, precision:0 } }
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 350 },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: i => ' ' + i.parsed.x + ' haber' } }
+        },
+        scales: {
+          x: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font:{size:11}, precision:0 } },
+          y: { grid: { display: false }, ticks: { color: textColor, font:{size:11} } }
+        }
       }
-    }
-  });
+    });
+  } else {
+    const monthSet = new Set(articles.map(a => monthKey(a.date)).filter(Boolean));
+    const months = [...monthSet].sort();
+    const catDatasets = cats.map(cat => ({
+      label: cat,
+      data: months.map(m => articles.filter(a => (a.category||'Diğer')===cat && monthKey(a.date)===m).length),
+      borderColor: (CAT_COLORS[cat] || '#6B7280').replace('rgba(','').replace(/,[\d.]+\)$/,''),
+      backgroundColor: (CAT_COLORS[cat] || 'rgba(107,114,128,0.15)'),
+      borderWidth: 2, fill: false, tension: 0.35, pointRadius: 3,
+    }));
+    _statsCharts.cat = new Chart(ctx, {
+      type: 'line',
+      data: { labels: months.map(monthLabel), datasets: catDatasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        animation: { duration: 350 },
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 10, font:{size:10}, color: textColor, padding: 8 } },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: textColor, font:{size:11} } },
+          y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font:{size:11}, precision:0 } }
+        }
+      }
+    });
+  }
 }
+
+// Eski çağrılar için alias
+function buildCatCharts(articles) { buildCatChart(articles, _statsCatType); }
 
 // ── Havayolu trend grafiği ────────────────────────────────────
 function buildAirlineChart(articles) {
@@ -8093,16 +8095,59 @@ function updateAirlineLabel() {
     : 'Havayolu';
 }
 
-// ── Periyot butonları ─────────────────────────────────────────
-function initPeriodBtns(allArticles) {
-  document.getElementById('stats-period-group').querySelectorAll('.stats-period-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      _statsPeriod = btn.dataset.period;
-      document.querySelectorAll('.stats-period-btn').forEach(b => b.classList.remove('stats-period-btn-active'));
-      btn.classList.add('stats-period-btn-active');
-      _statsArticles = applyPeriod(allArticles);
+// ── Tarih aralığı seçici ─────────────────────────────────────
+function initDateRangePicker(allArticles) {
+  const dates = allArticles.map(a => a.date).filter(Boolean).sort();
+  const minDate = dates[0] || '';
+  const maxDate = dates[dates.length - 1] || '';
+
+  const startEl = document.getElementById('stats-date-start');
+  const endEl   = document.getElementById('stats-date-end');
+  const resetEl = document.getElementById('stats-date-reset');
+
+  if (!startEl || !endEl) return;
+
+  // HTML min/max sınırları — takvimde geçersiz tarih seçimi engellenir
+  startEl.min = minDate;
+  startEl.max = maxDate;
+  endEl.min   = minDate;
+  endEl.max   = maxDate;
+
+  // Başlangıç değerleri (tüm aralık)
+  startEl.value = minDate;
+  endEl.value   = maxDate;
+  _statsDateStart = minDate ? new Date(minDate) : null;
+  _statsDateEnd   = maxDate ? new Date(maxDate + 'T23:59:59') : null;
+  _statsArticles  = applyDateRange(allArticles);  // ilk set
+
+  let _debounce;
+  function onDateChange() {
+    clearTimeout(_debounce);
+    _debounce = setTimeout(() => {
+      const s = startEl.value;
+      const e = endEl.value;
+      _statsDateStart = s ? new Date(s)              : null;
+      _statsDateEnd   = e ? new Date(e + 'T23:59:59') : null;
+      // start > end koruması
+      if (_statsDateStart && _statsDateEnd && _statsDateStart > _statsDateEnd) {
+        _statsDateEnd = new Date(_statsDateStart.getTime() + 86400000);
+        endEl.value = _statsDateEnd.toISOString().slice(0,10);
+      }
+      _statsArticles = applyDateRange(allArticles);
       renderAll();
-    });
+    }, 180);
+  }
+
+  startEl.addEventListener('change', onDateChange);
+  endEl.addEventListener('change', onDateChange);
+
+  resetEl.addEventListener('click', () => {
+    startEl.value = minDate;
+    endEl.value   = maxDate;
+    _statsDateStart = minDate ? new Date(minDate) : null;
+    _statsDateEnd   = maxDate ? new Date(maxDate + 'T23:59:59') : null;
+    _statsArticles  = applyDateRange(allArticles);
+    renderAll();
   });
 }
 
@@ -8112,11 +8157,23 @@ function initChartTypeToggle() {
   document.getElementById('source-chart-type').querySelectorAll('.stats-chart-type-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       _sourceChartType = btn.dataset.type;
-      document.querySelectorAll('.stats-chart-type-btn').forEach(b => b.classList.remove('stats-chart-type-active'));
+      document.getElementById('source-chart-type').querySelectorAll('.stats-chart-type-btn').forEach(b => b.classList.remove('stats-chart-type-active'));
       btn.classList.add('stats-chart-type-active');
       buildSourceChart(_statsArticles, _sourceChartType);
     });
   });
+  // Kategori grafik tipi toggle
+  const catToggle = document.getElementById('cat-chart-type');
+  if (catToggle) {
+    catToggle.querySelectorAll('.stats-chart-type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        _statsCatType = btn.dataset.cattype;
+        catToggle.querySelectorAll('.stats-chart-type-btn').forEach(b => b.classList.remove('stats-chart-type-active'));
+        btn.classList.add('stats-chart-type-active');
+        buildCatChart(_statsArticles, _statsCatType);
+      });
+    });
+  }
 }
 
 // ── Havayolu dropdown toggle ──────────────────────────────────
@@ -8140,7 +8197,7 @@ function initAirlineDropdown() {
 function renderAll() {
   updateKPIs(_statsArticles, _statsArticles);
   buildSourceChart(_statsArticles, _sourceChartType);
-  buildCatCharts(_statsArticles);
+  buildCatChart(_statsArticles, _statsCatType);
   buildAirlineChart(_statsArticles);
 }
 
@@ -8152,8 +8209,7 @@ window.initStatsTab = function() {
     : null;
 
   if (all) {
-    _statsArticles = applyPeriod(all);
-    initControls(all);
+    initControls(all);           // tarih picker min/max set olur, _statsArticles set edilir
     renderAll();
     return;
   }
@@ -8164,7 +8220,6 @@ window.initStatsTab = function() {
     .then(data => {
       const raw = Array.isArray(data) ? data : (data.items || data.news || []);
       const items = raw.filter(a => !a.isDuplicate);
-      _statsArticles = applyPeriod(items);
       initControls(items);
       renderAll();
     })
@@ -8174,7 +8229,8 @@ window.initStatsTab = function() {
 };
 
 function initControls(allArticles) {
-  initPeriodBtns(allArticles);
+  _statsAllArticles = allArticles;
+  initDateRangePicker(allArticles);
   initChartTypeToggle();
   initAirlineDropdown();
 }
