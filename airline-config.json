@@ -171,5 +171,15 @@
     "keywords": "yılın küresel kargo",
     "merge_with": [],
     "deleted": true
+  },
+  {
+    "airline_id": "dyn_hub_odakl_k_resel_kargo",
+    "label": "Hub Odaklı KüResel Kargo",
+    "region": "other",
+    "focus": false,
+    "icon_url": "",
+    "keywords": "hub odaklı küresel kargo",
+    "merge_with": [],
+    "deleted": true
   }
 ]
