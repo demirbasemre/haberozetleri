@@ -195,5 +195,15 @@
     "keywords": "af klm cargo",
     "merge_with": [],
     "deleted": true
+  },
+  {
+    "airline_id": "dyn_france_klm_martinair_cargo",
+    "label": "France Klm Martinair Cargo",
+    "region": "other",
+    "focus": false,
+    "icon_url": "",
+    "keywords": "france klm martinair cargo",
+    "merge_with": [],
+    "deleted": true
   }
 ]
