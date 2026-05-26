@@ -773,6 +773,11 @@
           <div class="dash-card-value" id="vis-kpi-today">—</div>
           <div class="dash-card-sub">Ziyaret</div>
         </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Ort. Süre</div>
+          <div class="dash-card-value" id="vis-kpi-avg-duration">—</div>
+          <div class="dash-card-sub">Oturum başına</div>
+        </div>
       </div>
       <div class="dash-charts" style="grid-template-columns:1fr;">
         <div class="dash-chart-card">
@@ -8536,10 +8541,22 @@ function buildVisitorStats() {
       document.getElementById('vis-kpi-30d-unique').textContent = (d.uniqueLast30 || 0) + ' tekil ziyaretçi';
       document.getElementById('vis-kpi-today').textContent   = todayCount.toLocaleString('tr-TR');
 
+      const avg = d.avgDuration || 0;
+      const durEl = document.getElementById('vis-kpi-avg-duration');
+      if (durEl) {
+        if (avg === 0) {
+          durEl.textContent = '—';
+        } else if (avg < 60) {
+          durEl.textContent = avg + ' sn';
+        } else {
+          durEl.textContent = Math.floor(avg / 60) + ' dk ' + (avg % 60) + ' sn';
+        }
+      }
+
       _buildVisitorChart(d.dailyVisits || []);
     })
     .catch(() => {
-      ['vis-kpi-total','vis-kpi-unique','vis-kpi-30d','vis-kpi-today'].forEach(id => {
+      ['vis-kpi-total','vis-kpi-unique','vis-kpi-30d','vis-kpi-today','vis-kpi-avg-duration'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.textContent = 'Hata';
       });
@@ -8730,6 +8747,42 @@ function initControls(allArticles) {
       })
     });
   } catch(e) {}
+})();
+</script>
+
+<script>
+(function trackDuration() {
+  let activeStart = Date.now();
+  let totalActive = 0;
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+      totalActive += Date.now() - activeStart;
+      sendDuration(totalActive);
+    } else {
+      activeStart = Date.now();
+    }
+  });
+
+  window.addEventListener('beforeunload', function() {
+    if (document.visibilityState === 'visible') {
+      totalActive += Date.now() - activeStart;
+    }
+    sendDuration(totalActive);
+  });
+
+  function sendDuration(ms) {
+    const secs = Math.round(ms / 1000);
+    if (secs < 3) return;
+    const sessionId = sessionStorage.getItem('haber-session-id');
+    if (!sessionId) return;
+    try {
+      navigator.sendBeacon(
+        'https://n8n.emredemirbas.com/webhook/visitor-duration',
+        JSON.stringify({ sessionId, duration: secs })
+      );
+    } catch(e) {}
+  }
 })();
 </script>
 
