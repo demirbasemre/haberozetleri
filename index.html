@@ -122,6 +122,10 @@
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="6" height="8" rx="1"/><rect x="10" y="3" width="12" height="4" rx="1"/><rect x="10" y="11" width="12" height="4" rx="1"/><rect x="2" y="15" width="6" height="6" rx="1"/><rect x="10" y="19" width="12" height="2" rx="1"/></svg>
       Dashboard
     </button>
+    <button class="main-tab" id="tab-stats-btn" onclick="switchTab('stats')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      İstatistikler
+    </button>
     <button class="main-tab" id="tab-todo-btn" onclick="switchTab('todo')" style="display:none">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       Yapılacaklar &amp; Kontroller
@@ -313,6 +317,23 @@
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-endeks'); return false;" href="#">Hava Kargo Endeksleri</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-takvim'); return false;" href="#">Veri Takvimi</a>
     </div><!-- /dash-filter-content -->
+
+    <!-- Stats tab filter area -->
+    <div id="stats-filter-content" style="display:none;">
+      <div class="stats-period-group" id="stats-period-group">
+        <button class="stats-period-btn stats-period-btn-active" data-period="all">Tümü</button>
+        <button class="stats-period-btn" data-period="6m">6 Ay</button>
+        <button class="stats-period-btn" data-period="3m">3 Ay</button>
+        <button class="stats-period-btn" data-period="1m">1 Ay</button>
+      </div>
+      <div class="fdd-wrap" id="stats-airline-wrap">
+        <button class="fdd-btn" id="stats-airline-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Havayolu filtresi">
+          <span id="stats-airline-label">Havayolu</span>
+          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="fdd-panel" id="stats-airline-panel" role="listbox" aria-multiselectable="true" aria-label="Havayolu seç"></div>
+      </div>
+    </div>
 
     <!-- Todo tab filter area (empty — placeholder for consistent height) -->
     <div id="todo-filter-content" style="display:none;">
@@ -620,6 +641,169 @@
     </div>
 
   </div><!-- /dashboard-panel -->
+
+  <!-- ── Site İstatistikleri Paneli ─────────────────────────── -->
+  <div id="stats-panel" style="display:none">
+
+    <!-- KPI Kartları -->
+    <section class="dash-section" id="stats-sec-kpi">
+      <h2 class="dash-section-title">Genel Bakış <span class="dash-section-badge" id="stats-date-range-badge">Yükleniyor…</span></h2>
+      <div class="dash-cards">
+        <div class="dash-card">
+          <div class="dash-card-label">Toplam Haber</div>
+          <div class="dash-card-value" id="stats-kpi-total">—</div>
+          <div class="dash-card-sub" id="stats-kpi-period">Seçili dönem</div>
+          <div class="dash-card-note">Tüm kaynaklar</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Aktif Kaynak</div>
+          <div class="dash-card-value" id="stats-kpi-sources">—</div>
+          <div class="dash-card-sub">Haber sağlayıcı</div>
+          <div class="dash-card-note">aircargoweek, aircargonews, vb.</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Havayolu Eşleşmesi</div>
+          <div class="dash-card-value" id="stats-kpi-airlines">—</div>
+          <div class="dash-card-sub">Haber içinde tespit edilen</div>
+          <div class="dash-card-note">Başlık + özet taraması</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">Ort. Günlük Haber</div>
+          <div class="dash-card-value" id="stats-kpi-daily">—</div>
+          <div class="dash-card-sub">Seçili dönemde</div>
+          <div class="dash-card-note">Tüm kaynaklar toplamı</div>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-label">En Aktif Kaynak</div>
+          <div class="dash-card-value" id="stats-kpi-top-source" style="font-size:16px;letter-spacing:-0.01em">—</div>
+          <div class="dash-card-sub" id="stats-kpi-top-source-count">Seçili dönemde</div>
+          <div class="dash-card-note">Haber adedi bakımından</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kaynak Trend Grafiği -->
+    <section class="dash-section" id="stats-sec-source">
+      <h2 class="dash-section-title">Kaynak Bazlı Haber Dağılımı <span class="dash-section-badge">data.json</span></h2>
+      <div class="dash-charts" style="grid-template-columns:1fr;">
+        <div class="dash-chart-card">
+          <div class="dash-chart-title" style="display:flex;justify-content:space-between;align-items:center;">
+            Kaynağa Göre Aylık Haber Sayısı
+            <div class="stats-chart-type-group" id="source-chart-type">
+              <button class="stats-chart-type-btn stats-chart-type-active" data-type="bar">Yığılı</button>
+              <button class="stats-chart-type-btn" data-type="line">Çizgi</button>
+            </div>
+          </div>
+          <div class="dash-chart-meta"><span>Aylık toplam · kaynak bazlı</span></div>
+          <div class="stats-source-legend" id="stats-source-legend"></div>
+          <div class="dash-chart-wrap" style="position:relative;height:280px;margin-top:12px;">
+            <canvas id="chart-source-trend"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kategori Dağılımı -->
+    <section class="dash-section" id="stats-sec-cat">
+      <h2 class="dash-section-title">Kategori Dağılımı</h2>
+      <div class="dash-charts">
+        <div class="dash-chart-card">
+          <div class="dash-chart-title">Kategorilere Göre Haber Sayısı</div>
+          <div class="dash-chart-meta"><span>Seçili dönem toplam</span></div>
+          <div class="dash-chart-wrap" style="position:relative;height:260px;margin-top:12px;">
+            <canvas id="chart-cat-dist"></canvas>
+          </div>
+        </div>
+        <div class="dash-chart-card">
+          <div class="dash-chart-title">Kategorilerin Aylık Trendi</div>
+          <div class="dash-chart-meta"><span>Aylık · kategori bazlı</span></div>
+          <div class="dash-chart-wrap" style="position:relative;height:260px;margin-top:12px;">
+            <canvas id="chart-cat-trend"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Havayolu Trend Grafiği -->
+    <section class="dash-section" id="stats-sec-airline">
+      <h2 class="dash-section-title">Havayolu Bazlı Haber Trendi</h2>
+      <div class="dash-charts" style="grid-template-columns:1fr;">
+        <div class="dash-chart-card">
+          <div class="dash-chart-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <span>Seçili Havayollarının Aylık Haber Sayısı</span>
+          </div>
+          <div class="dash-chart-meta"><span>Havayolu filtresi üstten seçilebilir · başlık + özet taraması</span></div>
+          <div class="stats-airline-pills" id="stats-airline-active-pills"></div>
+          <div class="dash-chart-wrap" style="position:relative;height:280px;margin-top:12px;">
+            <canvas id="chart-airline-trend"></canvas>
+          </div>
+          <div class="stats-no-airline" id="stats-no-airline" style="display:none;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
+            <p>Üstteki <strong>Havayolu</strong> filtresinden görüntülemek istediğiniz havayollarını seçin</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ziyaretçi & Chatbot İstatistikleri -->
+    <section class="dash-section" id="stats-sec-visitors">
+      <h2 class="dash-section-title">Ziyaretçi &amp; Chatbot İstatistikleri <span class="dash-section-badge stats-badge-soon">Yakında</span></h2>
+      <div class="stats-placeholder-grid">
+        <div class="dash-chart-card stats-placeholder-card">
+          <div class="stats-placeholder-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="stats-placeholder-title">Site Ziyaretçi İstatistikleri</div>
+          <div class="stats-placeholder-desc">Günlük/haftalık benzersiz ziyaretçi, sayfa görüntüleme ve ortalama oturum süresi verisi Cloudflare Analytics entegrasyonu ile buraya gelecek.</div>
+          <div class="stats-placeholder-mockup">
+            <div class="stats-mock-bar-row">
+              <span class="stats-mock-label">Pzt</span><div class="stats-mock-bar" style="--w:55%"></div><span class="stats-mock-val">—</span>
+            </div>
+            <div class="stats-mock-bar-row">
+              <span class="stats-mock-label">Sal</span><div class="stats-mock-bar" style="--w:72%"></div><span class="stats-mock-val">—</span>
+            </div>
+            <div class="stats-mock-bar-row">
+              <span class="stats-mock-label">Çar</span><div class="stats-mock-bar" style="--w:88%"></div><span class="stats-mock-val">—</span>
+            </div>
+            <div class="stats-mock-bar-row">
+              <span class="stats-mock-label">Per</span><div class="stats-mock-bar" style="--w:65%"></div><span class="stats-mock-val">—</span>
+            </div>
+            <div class="stats-mock-bar-row">
+              <span class="stats-mock-label">Cum</span><div class="stats-mock-bar" style="--w:40%"></div><span class="stats-mock-val">—</span>
+            </div>
+          </div>
+          <div class="stats-placeholder-cta">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            Cloudflare Analytics API bağlantısı gerektirir
+          </div>
+        </div>
+        <div class="dash-chart-card stats-placeholder-card">
+          <div class="stats-placeholder-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="stats-placeholder-title">Chatbot Kullanım İstatistikleri</div>
+          <div class="stats-placeholder-desc">Günlük soru sayısı, en çok sorulan konu kümeleri ve yanıt kalitesi metrikleri n8n workflow logları ile buraya entegre edilecek.</div>
+          <div class="stats-placeholder-mockup">
+            <div class="stats-mock-bar-row">
+              <span class="stats-mock-label">Soru</span><div class="stats-mock-bar stats-mock-bar-purple" style="--w:80%"></div><span class="stats-mock-val">—</span>
+            </div>
+            <div class="stats-mock-bar-row">
+              <span class="stats-mock-label">Oturum</span><div class="stats-mock-bar stats-mock-bar-purple" style="--w:60%"></div><span class="stats-mock-val">—</span>
+            </div>
+            <div class="stats-mock-bar-row">
+              <span class="stats-mock-label">Token</span><div class="stats-mock-bar stats-mock-bar-purple" style="--w:45%"></div><span class="stats-mock-val">—</span>
+            </div>
+          </div>
+          <div class="stats-placeholder-cta">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            n8n webhook log entegrasyonu gerektirir
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /stats-panel -->
+
 
   <!-- Yapılacaklar & Kontroller Panel -->
   <div id="todo-panel" style="display:none" class="todo-panel">
@@ -3519,8 +3703,9 @@ initTheme();
 })();
 
 // ── TAB SWITCHING ─────────────────────────────────────────────
-let _dashInit = false;
-let _todoInit = false;
+let _dashInit  = false;
+let _todoInit  = false;
+let _statsInit = false;
 
 function dashScrollTo(id) {
   const el = document.getElementById(id);
@@ -3541,15 +3726,18 @@ let _tabElementsCache = null;
 function getTabElements() {
   if (!_tabElementsCache) {
     _tabElementsCache = {
-      newsPanel: document.getElementById('news-panel'),
-      dashPanel: document.getElementById('dashboard-panel'),
-      todoPanel: document.getElementById('todo-panel'),
-      newsFilter: document.getElementById('news-filter-content'),
-      dashFilter: document.getElementById('dash-filter-content'),
-      todoFilter: document.getElementById('todo-filter-content'),
-      newsBtn: document.getElementById('tab-news-btn'),
-      dashBtn: document.getElementById('tab-dash-btn'),
-      todoBtn: document.getElementById('tab-todo-btn')
+      newsPanel:   document.getElementById('news-panel'),
+      dashPanel:   document.getElementById('dashboard-panel'),
+      todoPanel:   document.getElementById('todo-panel'),
+      statsPanel:  document.getElementById('stats-panel'),
+      newsFilter:  document.getElementById('news-filter-content'),
+      dashFilter:  document.getElementById('dash-filter-content'),
+      todoFilter:  document.getElementById('todo-filter-content'),
+      statsFilter: document.getElementById('stats-filter-content'),
+      newsBtn:     document.getElementById('tab-news-btn'),
+      dashBtn:     document.getElementById('tab-dash-btn'),
+      todoBtn:     document.getElementById('tab-todo-btn'),
+      statsBtn:    document.getElementById('tab-stats-btn')
     };
   }
   return _tabElementsCache;
@@ -3559,20 +3747,25 @@ function switchTab(tab) {
   const isNews  = tab === 'news';
   const isDash  = tab === 'dashboard';
   const isTodo  = tab === 'todo';
-  
+  const isStats = tab === 'stats';
+
   const el = getTabElements();
-  if (el.newsPanel) el.newsPanel.style.display      = isNews ? '' : 'none';
-  if (el.dashPanel) el.dashPanel.style.display = isDash ? 'block' : 'none';
-  if (el.todoPanel) el.todoPanel.style.display      = isTodo ? 'block' : 'none';
+  if (el.newsPanel)   el.newsPanel.style.display   = isNews  ? ''      : 'none';
+  if (el.dashPanel)   el.dashPanel.style.display   = isDash  ? 'block' : 'none';
+  if (el.todoPanel)   el.todoPanel.style.display   = isTodo  ? 'block' : 'none';
+  if (el.statsPanel)  el.statsPanel.style.display  = isStats ? 'block' : 'none';
   // Toggle filter bar content
-  if (el.newsFilter) el.newsFilter.style.display = isNews ? 'flex' : 'none';
-  if (el.dashFilter) el.dashFilter.style.display = isDash ? 'flex' : 'none';
-  if (el.todoFilter) el.todoFilter.style.display = isTodo ? 'flex' : 'none';
-  if (el.newsBtn) el.newsBtn.classList.toggle('main-tab-active', isNews);
-  if (el.dashBtn) el.dashBtn.classList.toggle('main-tab-active', isDash);
-  if (el.todoBtn) el.todoBtn.classList.toggle('main-tab-active', isTodo);
-  if (isDash && !_dashInit) { _dashInit = true; loadDashboard(); }
-  if (isTodo && !_todoInit) { _todoInit = true; initTodo(); }
+  if (el.newsFilter)  el.newsFilter.style.display  = isNews  ? 'flex' : 'none';
+  if (el.dashFilter)  el.dashFilter.style.display  = isDash  ? 'flex' : 'none';
+  if (el.todoFilter)  el.todoFilter.style.display  = isTodo  ? 'flex' : 'none';
+  if (el.statsFilter) el.statsFilter.style.display = isStats ? 'flex' : 'none';
+  if (el.newsBtn)  el.newsBtn.classList.toggle('main-tab-active',  isNews);
+  if (el.dashBtn)  el.dashBtn.classList.toggle('main-tab-active',  isDash);
+  if (el.todoBtn)  el.todoBtn.classList.toggle('main-tab-active',  isTodo);
+  if (el.statsBtn) el.statsBtn.classList.toggle('main-tab-active', isStats);
+  if (isDash  && !_dashInit)  { _dashInit  = true; loadDashboard(); }
+  if (isTodo  && !_todoInit)  { _todoInit  = true; initTodo(); }
+  if (isStats && !_statsInit) { _statsInit = true; initStatsTab(); }
   if (el.todoBtn) el.todoBtn.style.display = isTodo ? '' : 'none';
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
@@ -7542,5 +7735,438 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
 </script>
 
 <script src="news-reader.js?v=20260523_4"></script>
+
+<!-- ── Site İstatistikleri ─────────────────────────────────── -->
+<script>
+(function() {
+
+// ── Renk paleti ──────────────────────────────────────────────
+const SOURCE_COLORS = {
+  aircargoweek:   { bg: 'rgba(29,111,232,0.75)',  border: '#1D6FE8' },
+  aircargonews:   { bg: 'rgba(5,150,105,0.75)',   border: '#059669' },
+  stattimes:      { bg: 'rgba(234,88,12,0.75)',   border: '#EA580C' },
+  aircargoupdate: { bg: 'rgba(124,58,237,0.75)',  border: '#7C3AED' },
+  payloadasia:    { bg: 'rgba(219,39,119,0.75)',  border: '#DB2777' },
+  IATA:           { bg: 'rgba(8,145,178,0.75)',   border: '#0891B2' },
+};
+const SOURCE_FALLBACK = { bg: 'rgba(107,114,128,0.75)', border: '#6B7280' };
+
+const CAT_COLORS = {
+  'Filo & Network':            'rgba(29,111,232,0.75)',
+  'Teknoloji & Dijitalleşme':  'rgba(124,58,237,0.75)',
+  'Ortaklık & İş Birlikleri':  'rgba(5,150,105,0.75)',
+  'Özel Kargo':                'rgba(219,39,119,0.75)',
+  'Altyapı':                   'rgba(234,88,12,0.75)',
+  'Atama & Görevlendirme':     'rgba(8,145,178,0.75)',
+  'Diğer':                     'rgba(107,114,128,0.75)',
+};
+
+const AIRLINE_LINE_COLORS = [
+  '#1D6FE8','#059669','#EA580C','#7C3AED','#DB2777',
+  '#0891B2','#D97706','#BE123C','#15803D','#1D4ED8',
+];
+
+// ── State ────────────────────────────────────────────────────
+let _statsPeriod  = 'all';
+let _statsAirlines = [];        // seçili havayolu id'leri
+let _statsArticles = [];        // filtrelenmiş makaleler
+let _statsCharts  = {};         // Chart nesneleri
+
+// ── Periyot uygulama ─────────────────────────────────────────
+function applyPeriod(articles) {
+  if (_statsPeriod === 'all') return articles;
+  const now = new Date();
+  const cutoff = new Date(now);
+  if (_statsPeriod === '6m') cutoff.setMonth(now.getMonth() - 6);
+  else if (_statsPeriod === '3m') cutoff.setMonth(now.getMonth() - 3);
+  else if (_statsPeriod === '1m') cutoff.setMonth(now.getMonth() - 1);
+  return articles.filter(a => a.date && new Date(a.date) >= cutoff);
+}
+
+// ── Ay etiketi ───────────────────────────────────────────────
+function monthKey(dateStr) {
+  if (!dateStr) return null;
+  return dateStr.slice(0, 7); // "2025-11"
+}
+function monthLabel(key) {
+  const [y, m] = key.split('-');
+  const months = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  return months[parseInt(m,10)-1] + ' ' + y.slice(2);
+}
+
+// ── KPI kartları ─────────────────────────────────────────────
+function updateKPIs(articles, allArticles) {
+  const total = articles.length;
+  const sources = new Set(articles.map(a => a.source).filter(Boolean));
+  const airlineMatches = articles.filter(a => {
+    const text = (' ' + (a.title||'') + ' ' + (a.summary||'') + ' ').toLowerCase();
+    return (typeof allAirlineDefs !== 'undefined' ? allAirlineDefs() : []).some(def =>
+      def.kw.some(kw => text.includes(kw))
+    );
+  }).length;
+
+  // Date range
+  const dates = articles.map(a => a.date).filter(Boolean).sort();
+  const rangeText = dates.length >= 2
+    ? dates[0] + ' – ' + dates[dates.length-1]
+    : (dates[0] || '—');
+
+  const dailyDays = dates.length >= 2
+    ? Math.max(1, Math.round((new Date(dates[dates.length-1]) - new Date(dates[0])) / 86400000))
+    : 1;
+
+  // Top source
+  const srcCount = {};
+  articles.forEach(a => { if (a.source) srcCount[a.source] = (srcCount[a.source]||0)+1; });
+  const topSrc = Object.entries(srcCount).sort((a,b) => b[1]-a[1])[0];
+
+  document.getElementById('stats-kpi-total').textContent       = total.toLocaleString('tr-TR');
+  document.getElementById('stats-kpi-sources').textContent     = sources.size;
+  document.getElementById('stats-kpi-airlines').textContent    = airlineMatches.toLocaleString('tr-TR');
+  document.getElementById('stats-kpi-daily').textContent       = (total/dailyDays).toFixed(1);
+  document.getElementById('stats-kpi-top-source').textContent  = topSrc ? topSrc[0] : '—';
+  document.getElementById('stats-kpi-top-source-count').textContent = topSrc ? topSrc[1] + ' haber' : '—';
+  document.getElementById('stats-kpi-period').textContent      = total + ' haber · ' + rangeText;
+  document.getElementById('stats-date-range-badge').textContent = rangeText;
+}
+
+// ── Kaynak trend grafiği ──────────────────────────────────────
+function buildSourceChart(articles, chartType) {
+  const srcCount = {};
+  articles.forEach(a => { if (a.source) srcCount[a.source] = (srcCount[a.source]||0)+1; });
+  const allSources = Object.keys(srcCount).sort((a,b) => srcCount[b]-srcCount[a]);
+
+  // Ay listesi
+  const monthSet = new Set(articles.map(a => monthKey(a.date)).filter(Boolean));
+  const months = [...monthSet].sort();
+
+  // Her kaynak için aylık veri
+  const datasets = allSources.map(src => {
+    const c = SOURCE_COLORS[src] || SOURCE_FALLBACK;
+    const data = months.map(m =>
+      articles.filter(a => a.source === src && monthKey(a.date) === m).length
+    );
+    return {
+      label: src,
+      data,
+      backgroundColor: c.bg,
+      borderColor: c.border,
+      borderWidth: chartType === 'line' ? 2 : 1,
+      fill: chartType === 'bar',
+      tension: 0.35,
+      pointRadius: chartType === 'line' ? 3 : 0,
+    };
+  });
+
+  // Legend pills
+  const legend = document.getElementById('stats-source-legend');
+  legend.innerHTML = allSources.map(src => {
+    const c = SOURCE_COLORS[src] || SOURCE_FALLBACK;
+    return `<span class="stats-src-pill" style="--pill-color:${c.border}">${src} <strong>${srcCount[src]}</strong></span>`;
+  }).join('');
+
+  // Chart
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDark ? '#9AA3B8' : '#6B7280';
+
+  if (_statsCharts.source) { _statsCharts.source.destroy(); delete _statsCharts.source; }
+  const ctx = document.getElementById('chart-source-trend').getContext('2d');
+  _statsCharts.source = new Chart(ctx, {
+    type: chartType === 'line' ? 'line' : 'bar',
+    data: { labels: months.map(monthLabel), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 400 },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          mode: 'index', intersect: false,
+          callbacks: {
+            footer: items => 'Toplam: ' + items.reduce((s,i)=>s+i.parsed.y,0)
+          }
+        }
+      },
+      scales: {
+        x: { stacked: chartType !== 'line', grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 } } },
+        y: { stacked: chartType !== 'line', beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 11 }, precision: 0 } }
+      }
+    }
+  });
+}
+
+// ── Kategori grafikleri ───────────────────────────────────────
+function buildCatCharts(articles) {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDark ? '#9AA3B8' : '#6B7280';
+
+  // Toplam dağılım (bar)
+  const catCount = {};
+  articles.forEach(a => { const c=a.category||'Diğer'; catCount[c]=(catCount[c]||0)+1; });
+  const cats = Object.keys(catCount).sort((a,b)=>catCount[b]-catCount[a]);
+
+  if (_statsCharts.catDist) { _statsCharts.catDist.destroy(); delete _statsCharts.catDist; }
+  const ctxDist = document.getElementById('chart-cat-dist').getContext('2d');
+  _statsCharts.catDist = new Chart(ctxDist, {
+    type: 'bar',
+    data: {
+      labels: cats.map(c => c.length > 22 ? c.slice(0,20)+'…' : c),
+      datasets: [{
+        data: cats.map(c => catCount[c]),
+        backgroundColor: cats.map(c => CAT_COLORS[c] || 'rgba(107,114,128,0.75)'),
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 400 },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: i => ' ' + i.parsed.x + ' haber' } } },
+      scales: {
+        x: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font:{size:11}, precision:0 } },
+        y: { grid: { display: false }, ticks: { color: textColor, font:{size:11} } }
+      }
+    }
+  });
+
+  // Aylık trend
+  const monthSet = new Set(articles.map(a => monthKey(a.date)).filter(Boolean));
+  const months = [...monthSet].sort();
+  const catDatasets = cats.map((cat, i) => ({
+    label: cat,
+    data: months.map(m => articles.filter(a => (a.category||'Diğer')===cat && monthKey(a.date)===m).length),
+    backgroundColor: (CAT_COLORS[cat] || 'rgba(107,114,128,0.75)').replace('0.75','0.65'),
+    borderColor: (CAT_COLORS[cat] || '#6B7280'),
+    borderWidth: 2,
+    fill: false,
+    tension: 0.35,
+    pointRadius: 3,
+  }));
+
+  if (_statsCharts.catTrend) { _statsCharts.catTrend.destroy(); delete _statsCharts.catTrend; }
+  const ctxTrend = document.getElementById('chart-cat-trend').getContext('2d');
+  _statsCharts.catTrend = new Chart(ctxTrend, {
+    type: 'line',
+    data: { labels: months.map(monthLabel), datasets: catDatasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 400 },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 }, color: textColor, padding: 8 } },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: textColor, font:{size:11} } },
+        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font:{size:11}, precision:0 } }
+      }
+    }
+  });
+}
+
+// ── Havayolu trend grafiği ────────────────────────────────────
+function buildAirlineChart(articles) {
+  const noAirlineEl = document.getElementById('stats-no-airline');
+  if (_statsAirlines.length === 0) {
+    noAirlineEl.style.display = 'flex';
+    if (_statsCharts.airline) { _statsCharts.airline.destroy(); delete _statsCharts.airline; }
+    document.getElementById('stats-airline-active-pills').innerHTML = '';
+    return;
+  }
+  noAirlineEl.style.display = 'none';
+
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  const textColor = isDark ? '#9AA3B8' : '#6B7280';
+
+  const monthSet = new Set(articles.map(a => monthKey(a.date)).filter(Boolean));
+  const months = [...monthSet].sort();
+
+  const defs = typeof allAirlineDefs !== 'undefined' ? allAirlineDefs() : [];
+  const datasets = _statsAirlines.map((airlineId, i) => {
+    const def = defs.find(d => d.id === airlineId);
+    const label = def ? def.label : airlineId;
+    const color = AIRLINE_LINE_COLORS[i % AIRLINE_LINE_COLORS.length];
+    const data = months.map(m => {
+      return articles.filter(a => {
+        const text = (' '+(a.title||'')+' '+(a.summary||'')+' ').toLowerCase();
+        return monthKey(a.date) === m && def && def.kw.some(kw => text.includes(kw));
+      }).length;
+    });
+    return { label, data, borderColor: color, backgroundColor: color.replace('#','rgba(')+'20)', borderWidth: 2, fill: false, tension: 0.35, pointRadius: 3 };
+  });
+
+  // Aktif pill'ler
+  const pillsEl = document.getElementById('stats-airline-active-pills');
+  pillsEl.innerHTML = _statsAirlines.map((id, i) => {
+    const def = defs.find(d => d.id === id);
+    const color = AIRLINE_LINE_COLORS[i % AIRLINE_LINE_COLORS.length];
+    return `<span class="stats-airline-pill" style="--pill-color:${color}">${def ? def.label : id}</span>`;
+  }).join('');
+
+  if (_statsCharts.airline) { _statsCharts.airline.destroy(); delete _statsCharts.airline; }
+  const ctx = document.getElementById('chart-airline-trend').getContext('2d');
+  _statsCharts.airline = new Chart(ctx, {
+    type: 'line',
+    data: { labels: months.map(monthLabel), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 400 },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, font:{size:10}, color: textColor, padding: 8 } },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        x: { grid: { color: gridColor }, ticks: { color: textColor, font:{size:11} } },
+        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font:{size:11}, precision:0 } }
+      }
+    }
+  });
+}
+
+// ── Havayolu filtre paneli ────────────────────────────────────
+function buildAirlinePanel() {
+  const panel = document.getElementById('stats-airline-panel');
+  const defs = typeof allAirlineDefs !== 'undefined' ? allAirlineDefs() : [];
+  if (!defs.length) { panel.innerHTML = '<div style="padding:8px;font-size:12px;color:var(--text-3)">Havayolu tanımı yok</div>'; return; }
+
+  // Grup başlıkları
+  const groups = [
+    { id: 'turkiye', label: 'Türkiye' },
+    { id: 'europe',  label: 'Avrupa' },
+    { id: 'mideast', label: 'Orta Doğu' },
+    { id: 'asiapac', label: 'Asya Pasifik' },
+    { id: 'americas',label: 'Amerika' },
+    { id: 'africa',  label: 'Afrika' },
+    { id: 'other',   label: 'Diğer' },
+  ];
+
+  let html = '';
+  groups.forEach(g => {
+    const airlines = defs.filter(d => d.region === g.id);
+    if (!airlines.length) return;
+    html += `<div class="fdd-group-label">${g.label}</div>`;
+    airlines.forEach(a => {
+      const sel = _statsAirlines.includes(a.id);
+      html += `<div class="fdd-option${sel?' selected':''}" data-airline-id="${a.id}" role="option" aria-selected="${sel}">${a.label}</div>`;
+    });
+  });
+  panel.innerHTML = html;
+
+  panel.querySelectorAll('.fdd-option').forEach(opt => {
+    opt.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = opt.dataset.airlineId;
+      if (_statsAirlines.includes(id)) {
+        _statsAirlines = _statsAirlines.filter(x => x !== id);
+        opt.classList.remove('selected');
+        opt.setAttribute('aria-selected','false');
+      } else {
+        _statsAirlines.push(id);
+        opt.classList.add('selected');
+        opt.setAttribute('aria-selected','true');
+      }
+      updateAirlineLabel();
+      buildAirlineChart(_statsArticles);
+    });
+  });
+}
+
+function updateAirlineLabel() {
+  const lbl = document.getElementById('stats-airline-label');
+  lbl.textContent = _statsAirlines.length
+    ? _statsAirlines.length + ' havayolu'
+    : 'Havayolu';
+}
+
+// ── Periyot butonları ─────────────────────────────────────────
+function initPeriodBtns(allArticles) {
+  document.getElementById('stats-period-group').querySelectorAll('.stats-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _statsPeriod = btn.dataset.period;
+      document.querySelectorAll('.stats-period-btn').forEach(b => b.classList.remove('stats-period-btn-active'));
+      btn.classList.add('stats-period-btn-active');
+      _statsArticles = applyPeriod(allArticles);
+      renderAll();
+    });
+  });
+}
+
+// ── Kaynak grafik tipi toggle ─────────────────────────────────
+let _sourceChartType = 'bar';
+function initChartTypeToggle() {
+  document.getElementById('source-chart-type').querySelectorAll('.stats-chart-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      _sourceChartType = btn.dataset.type;
+      document.querySelectorAll('.stats-chart-type-btn').forEach(b => b.classList.remove('stats-chart-type-active'));
+      btn.classList.add('stats-chart-type-active');
+      buildSourceChart(_statsArticles, _sourceChartType);
+    });
+  });
+}
+
+// ── Havayolu dropdown toggle ──────────────────────────────────
+function initAirlineDropdown() {
+  const btn = document.getElementById('stats-airline-btn');
+  const panel = document.getElementById('stats-airline-panel');
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = panel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+    if (open) buildAirlinePanel();
+  });
+  document.addEventListener('click', () => {
+    panel.classList.remove('open');
+    btn.setAttribute('aria-expanded','false');
+  });
+  panel.addEventListener('click', e => e.stopPropagation());
+}
+
+// ── Tüm grafikleri yeniden çiz ────────────────────────────────
+function renderAll() {
+  updateKPIs(_statsArticles, _statsArticles);
+  buildSourceChart(_statsArticles, _sourceChartType);
+  buildCatCharts(_statsArticles);
+  buildAirlineChart(_statsArticles);
+}
+
+// ── Ana giriş noktası ────────────────────────────────────────
+window.initStatsTab = function() {
+  // Mevcut makale listesine eriş (news-reader.js'den)
+  const allArticles = (typeof window.ARTICLES !== 'undefined' && Array.isArray(window.ARTICLES))
+    ? window.ARTICLES
+    : [];
+
+  // Fallback: data.json'dan doğrudan yükle
+  if (allArticles.length === 0) {
+    fetch('./data.json')
+      .then(r => r.json())
+      .then(data => {
+        const items = Array.isArray(data) ? data : (data.items || data.news || []);
+        _statsArticles = applyPeriod(items);
+        initControls(items);
+        renderAll();
+      })
+      .catch(() => {
+        document.getElementById('stats-kpi-total').textContent = 'Veri yok';
+      });
+    return;
+  }
+
+  _statsArticles = applyPeriod(allArticles);
+  initControls(allArticles);
+  renderAll();
+};
+
+function initControls(allArticles) {
+  initPeriodBtns(allArticles);
+  initChartTypeToggle();
+  initAirlineDropdown();
+}
+
+})();
+</script>
+
 </body>
 </html>
