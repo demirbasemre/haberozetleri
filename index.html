@@ -9104,13 +9104,21 @@ function buildDistributionChart(articles) {
       data,
       backgroundColor: fillColor,
       borderColor: color,
-      borderWidth: chartType === 'line' ? 2 : 1,
+      borderWidth: chartType === 'line' ? 2 : 0,
       fill: chartType === 'line',
       tension: 0.35,
       pointRadius: chartType === 'line' ? 3 : 0,
       pointHoverRadius: chartType === 'line' ? 5 : 0,
       pointBackgroundColor: color,
-      borderRadius: chartType === 'bar' ? 4 : 0,
+      borderRadius: chartType === 'bar' ? {
+        topLeft: 6,
+        topRight: 6,
+        bottomLeft: 0,
+        bottomRight: 0
+      } : 0,
+      borderSkipped: chartType === 'bar' ? 'bottom' : false,
+      barPercentage: 0.6,
+      categoryPercentage: 0.8,
     }];
   } else {
     datasets = visibleKeys.map(k => {
@@ -9132,12 +9140,21 @@ function buildDistributionChart(articles) {
         data,
         backgroundColor: fillColor,
         borderColor: color,
-        borderWidth: chartType === 'line' ? 2 : 1,
+        borderWidth: chartType === 'line' ? 2 : 0,
         fill: chartType === 'bar',
         tension: 0.35,
         pointRadius: chartType === 'line' ? 3 : 0,
         pointHoverRadius: chartType === 'line' ? 5 : 0,
         pointBackgroundColor: color,
+        borderRadius: chartType === 'bar' ? {
+          topLeft: 6,
+          topRight: 6,
+          bottomLeft: 0,
+          bottomRight: 0
+        } : 0,
+        borderSkipped: chartType === 'bar' ? 'middle' : false,
+        barPercentage: 0.6,
+        categoryPercentage: 0.8,
       };
     });
   }
