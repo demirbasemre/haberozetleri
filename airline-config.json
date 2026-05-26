@@ -184,5 +184,15 @@
     "keywords": "hub odaklı küresel kargo",
     "merge_with": [],
     "deleted": true
+  },
+  {
+    "airline_id": "dyn_af_klm_cargo",
+    "label": "Af Klm Cargo",
+    "region": "other",
+    "focus": false,
+    "icon_url": "",
+    "keywords": "af klm cargo",
+    "merge_with": [],
+    "deleted": true
   }
 ]
