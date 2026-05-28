@@ -5877,31 +5877,35 @@
 
   /* Forex Card Dual-Row Layout & Modal Styling */
   .forex-row {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
   }
   .forex-row:last-of-type {
     margin-bottom: 0;
-    border-top: 1px dashed var(--border-soft);
-    padding-top: 8px;
-    margin-top: 4px;
   }
   .forex-label {
-    font-size: 10px;
+    font-size: 10.5px;
     font-weight: 700;
-    color: var(--text-3);
+    color: var(--text-2);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .forex-val-wrap {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 6px;
+    white-space: nowrap;
   }
   .forex-value {
     font-size: 18px;
@@ -5909,6 +5913,7 @@
     color: var(--text);
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
+    white-space: nowrap;
   }
   .forex-value.skeleton {
     color: transparent; 
