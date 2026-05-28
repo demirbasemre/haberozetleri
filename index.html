@@ -1125,12 +1125,28 @@
           <div class="dash-card-sub">Borsa İstanbul · hisse fiyatı</div>
           <div class="dash-card-note">Yahoo Finance · Günlük</div>
         </div>
-        <div class="dash-card" id="dc-usd">
-          <div class="dash-card-label">USD / EUR Kuru</div>
-          <div class="dash-card-value skeleton">&nbsp;</div>
-          <div class="dash-card-change"></div>
-          <div class="dash-card-sub"></div>
-          <div class="dash-card-note">ER-API · Günlük</div>
+        <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
+          <div class="forex-row">
+            <div class="forex-label">
+              <span style="width: 7px; height: 7px; background: #1D6FE8; border-radius: 50%; display: inline-block;"></span>
+              USD / TRY
+            </div>
+            <div class="forex-val-wrap">
+              <span class="forex-value skeleton" id="forex-usd-val">&nbsp;</span>
+              <span class="forex-change" id="forex-usd-change"></span>
+            </div>
+          </div>
+          <div class="forex-row">
+            <div class="forex-label">
+              <span style="width: 7px; height: 7px; background: #059669; border-radius: 50%; display: inline-block;"></span>
+              EUR / TRY
+            </div>
+            <div class="forex-val-wrap">
+              <span class="forex-value skeleton" id="forex-eur-val">&nbsp;</span>
+              <span class="forex-change" id="forex-eur-change"></span>
+            </div>
+          </div>
+          <div class="dash-card-note" style="margin-top: auto; border-top: 1px solid var(--border-soft); padding-top: 6px;">Yahoo Finance / ER-API · Günlük</div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-imf" title="Türkiye yıllık dizi için tıkla">
           <!-- Normal görünüm -->
@@ -1386,6 +1402,31 @@
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-thy"></canvas>
+        </div>
+    </div>
+
+    <!-- Forex Grafik Modali -->
+    <div id="forex-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="forex-chart-title">
+      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+        <div class="rel-add-head">
+          <div id="forex-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Döviz Kurları Grafiği</div>
+          <button class="rel-add-x" onclick="closeForexChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <!-- Currency Toggle -->
+          <div class="forex-toggle-btns" style="display: flex; gap: 4px;">
+            <button class="forex-currency-btn energy-period-btn active" id="btn-forex-usd" data-currency="USD">USD / TRY</button>
+            <button class="forex-currency-btn energy-period-btn" id="btn-forex-eur" data-currency="EUR">EUR / TRY</button>
+          </div>
+          <!-- Period Toggle -->
+          <div class="forex-period-btns" style="display: flex; gap: 4px;">
+            <button class="forex-period-btn energy-period-btn" id="btn-forex-1m" data-period="1m">1 Ay</button>
+            <button class="forex-period-btn energy-period-btn active" id="btn-forex-1y" data-period="1y">1 Yıl</button>
+            <button class="forex-period-btn energy-period-btn" id="btn-forex-max" data-period="max">Tümü</button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-forex"></canvas>
         </div>
       </div>
     </div>
@@ -4924,6 +4965,23 @@ function closeThyChartModal() {
   const m = document.getElementById('thy-chart-modal');
   if (m) m.style.display = 'none';
 }
+function openForexChartModal() {
+  const m = document.getElementById('forex-chart-modal');
+  if (m) {
+    m.style.display = 'flex';
+    setTimeout(() => {
+      if (typeof window.renderForexChart === 'function') {
+        window.renderForexChart();
+      } else {
+        console.warn("window.renderForexChart henüz hazır değil.");
+      }
+    }, 150);
+  }
+}
+function closeForexChartModal() {
+  const m = document.getElementById('forex-chart-modal');
+  if (m) m.style.display = 'none';
+}
 async function saveReleaseAddModal() {
   const title  = document.getElementById('rel-add-input-title').value.trim();
   const dateS  = document.getElementById('rel-add-input-date').value;
@@ -5865,17 +5923,279 @@ async function loadDashboard() {
     }
   });
 
-  // ── Döviz (ER-API) ────────────────────────────
-  fxFetch().then(fx => {
-    const eur = fx.rates.EUR, cny = fx.rates.CNY, jpy = fx.rates.JPY;
-    const d = new Date(fx.time_last_update_utc);
-    const dateStr = d.toISOString().slice(0, 10);
-    setCard('dc-usd',
-      eur ? eur.toFixed(4) : '—',
-      null,
-      `1 USD = ${cny?.toFixed(3)} CNY · ${jpy?.toFixed(1)} JPY`,
-      `ER-API · ${dateStr}`);
-  }).catch(() => setCard('dc-usd', '—', null, '', 'Kur verisi alınamadı'));
+  // ── Forex Verisini Çek ve Göster ──────────────────────────────
+  let _forexCache = {
+    'USD': { '1m': null, '1y': null, 'max': null },
+    'EUR': { '1m': null, '1y': null, 'max': null }
+  };
+  let _forexCurrentCurrency = 'USD';
+  let _forexCurrentPeriod = '1y';
+
+  async function fetchForexData(currency, range = '1y') {
+    const symbol = currency === 'USD' ? 'USDTRY=X' : 'EURTRY=X';
+    const cacheKey = `forex_${currency}_${range}`;
+    const ttl = range === 'max' ? 24 * 60 * 60 * 1000 : 1 * 60 * 60 * 1000; // max: 24h, 1y: 1h
+
+    return fetchCached(cacheKey, async () => {
+      const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=${range}`;
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
+      
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
+      const d = await res.json();
+      if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
+      return d;
+    }, ttl);
+  }
+
+  function drawForexChartFromRaw(rawJSON, currency, period) {
+    const titleEl = document.getElementById('forex-chart-title');
+    try {
+      const result = rawJSON.chart.result[0];
+      const timestamps = result.timestamp || [];
+      const closes = result.indicators.quote[0].close || [];
+      
+      let validPoints = [];
+      for (let i = 0; i < timestamps.length; i++) {
+        if (closes[i] != null) {
+          validPoints.push({
+            time: timestamps[i],
+            value: closes[i]
+          });
+        }
+      }
+      
+      if (period === '1m') {
+        validPoints = validPoints.slice(-22); // son ~22 işlem günü (1 ay)
+      }
+      
+      if (validPoints.length === 0) {
+        throw new Error("Çizilecek veri noktası bulunamadı.");
+      }
+      
+      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const labels = validPoints.map(p => {
+        const d = new Date(p.time * 1000);
+        const day = d.getDate();
+        const month = monthNamesTR[d.getMonth()];
+        const year = d.getFullYear();
+        if (period === 'max') {
+          return `${month} '${String(year).slice(-2)}`;
+        }
+        return `${day} ${month} '${String(year).slice(-2)}`;
+      });
+      
+      const prices = validPoints.map(p => p.value);
+      const color = currency === 'USD' ? '#1D6FE8' : '#059669';
+      const bgColor = currency === 'USD' ? 'rgba(29,111,232,0.06)' : 'rgba(5,150,105,0.06)';
+      
+      lineChart('chart-forex', labels,
+        [
+          {
+            label: `${currency} / TRY Kuru`,
+            data: prices,
+            borderColor: color,
+            backgroundColor: bgColor,
+            fill: true,
+            tension: period === 'max' ? 0.2 : 0.35,
+            pointRadius: period === 'max' ? 0 : 2,
+            borderWidth: 2
+          }
+        ],
+        v => v != null ? Number(v).toFixed(4) + ' TL' : '',
+        {
+          forceRecreate: true,
+          xTickFont: { size: 9, family: 'Inter' }
+        }
+      );
+      
+      if (titleEl) {
+        const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
+        titleEl.textContent = `${currency} / TRY Kuru · Güncel: ${latestPrice.toFixed(4)} TL`;
+      }
+    } catch (err) {
+      console.error("Forex Grafik çizim hatası:", err);
+      if (titleEl) titleEl.textContent = "Hata: " + err.message;
+    }
+  }
+
+  function renderForexChart(currency, period) {
+    if (currency) _forexCurrentCurrency = currency;
+    if (period) _forexCurrentPeriod = period;
+    
+    // Currency buton sınıf durumları
+    document.querySelectorAll('#forex-chart-modal .forex-currency-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    const activeCurrencyBtn = document.getElementById(`btn-forex-${_forexCurrentCurrency.toLowerCase()}`);
+    if (activeCurrencyBtn) activeCurrencyBtn.classList.add('active');
+
+    // Period buton sınıf durumları
+    document.querySelectorAll('#forex-chart-modal .forex-period-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    const activePeriodBtn = document.getElementById(`btn-forex-${_forexCurrentPeriod}`);
+    if (activePeriodBtn) activePeriodBtn.classList.add('active');
+
+    const titleEl = document.getElementById('forex-chart-title');
+    const canvas = document.getElementById('chart-forex');
+    const wrap = canvas?.closest('.dash-chart-wrap');
+    
+    if (wrap) wrap.classList.add('loading');
+
+    const cachedData = _forexCache[_forexCurrentCurrency][_forexCurrentPeriod];
+    
+    if (cachedData) {
+      drawForexChartFromRaw(cachedData, _forexCurrentCurrency, _forexCurrentPeriod);
+      if (wrap) wrap.classList.remove('loading');
+    } else {
+      const fetchRange = _forexCurrentPeriod === '1m' ? '1y' : _forexCurrentPeriod;
+      
+      fetchForexData(_forexCurrentCurrency, fetchRange).then(data => {
+        if (fetchRange === '1y') {
+          _forexCache[_forexCurrentCurrency]['1y'] = data;
+          _forexCache[_forexCurrentCurrency]['1m'] = data;
+        } else {
+          _forexCache[_forexCurrentCurrency]['max'] = data;
+        }
+        
+        drawForexChartFromRaw(data, _forexCurrentCurrency, _forexCurrentPeriod);
+        if (wrap) wrap.classList.remove('loading');
+      }).catch(err => {
+        console.error(`Forex fetch error for ${_forexCurrentCurrency} (${_forexCurrentPeriod}):`, err);
+        if (titleEl) titleEl.textContent = "Hata: Veri alınamadı";
+        if (wrap) {
+          wrap.classList.remove('loading');
+          wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
+          const errDiv = document.createElement('div');
+          errDiv.className = 'dash-chart-error';
+          errDiv.innerHTML = 'Döviz verisi yüklenirken hata oluştu.';
+          wrap.appendChild(errDiv);
+        }
+      });
+    }
+  }
+  window.renderForexChart = renderForexChart;
+
+  // Buton dinleyicileri
+  document.querySelectorAll('.forex-currency-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      renderForexChart(btn.dataset.currency, null);
+    });
+  });
+  document.querySelectorAll('.forex-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      renderForexChart(null, btn.dataset.period);
+    });
+  });
+
+  function useErApiFallback() {
+    fxFetch().then(fx => {
+      const usdTry = fx.rates.TRY;
+      const eurTry = fx.rates.TRY / fx.rates.EUR;
+      
+      const usdValEl = document.getElementById('forex-usd-val');
+      const eurValEl = document.getElementById('forex-eur-val');
+      
+      if (usdValEl) {
+        usdValEl.textContent = usdTry ? usdTry.toFixed(4) + ' TL' : '—';
+        usdValEl.classList.remove('skeleton');
+      }
+      if (eurValEl) {
+        eurValEl.textContent = eurTry ? eurTry.toFixed(4) + ' TL' : '—';
+        eurValEl.classList.remove('skeleton');
+      }
+    }).catch(() => {
+      const usdValEl = document.getElementById('forex-usd-val');
+      const eurValEl = document.getElementById('forex-eur-val');
+      if (usdValEl) { usdValEl.textContent = '—'; usdValEl.classList.remove('skeleton'); }
+      if (eurValEl) { eurValEl.textContent = '—'; eurValEl.classList.remove('skeleton'); }
+    });
+  }
+
+  // Sayfa açılışında döviz kartı verilerini yükle
+  function initForexCard() {
+    Promise.all([
+      fetchForexData('USD', '1y').catch(() => null),
+      fetchForexData('EUR', '1y').catch(() => null)
+    ]).then(([usdData, eurData]) => {
+      let usdPrice = null, usdChange = null;
+      let eurPrice = null, eurChange = null;
+
+      if (usdData) {
+        _forexCache['USD']['1y'] = usdData;
+        _forexCache['USD']['1m'] = usdData;
+        try {
+          const result = usdData.chart.result[0];
+          const meta = result.meta || {};
+          const timestamps = result.timestamp || [];
+          const closes = result.indicators.quote[0].close || [];
+          let validPoints = [];
+          for (let i = 0; i < timestamps.length; i++) {
+            if (closes[i] != null) validPoints.push({ time: timestamps[i], value: closes[i] });
+          }
+          if (validPoints.length) {
+            usdPrice = meta.regularMarketPrice || validPoints[validPoints.length - 1].value;
+            if (validPoints.length >= 2) {
+              const last = validPoints[validPoints.length - 1];
+              const prev = validPoints[validPoints.length - 2];
+              usdChange = ((last.value - prev.value) / prev.value) * 100;
+            }
+          }
+        } catch (e) { console.error("USD parsing error:", e); }
+      }
+
+      if (eurData) {
+        _forexCache['EUR']['1y'] = eurData;
+        _forexCache['EUR']['1m'] = eurData;
+        try {
+          const result = eurData.chart.result[0];
+          const meta = result.meta || {};
+          const timestamps = result.timestamp || [];
+          const closes = result.indicators.quote[0].close || [];
+          let validPoints = [];
+          for (let i = 0; i < timestamps.length; i++) {
+            if (closes[i] != null) validPoints.push({ time: timestamps[i], value: closes[i] });
+          }
+          if (validPoints.length) {
+            eurPrice = meta.regularMarketPrice || validPoints[validPoints.length - 1].value;
+            if (validPoints.length >= 2) {
+              const last = validPoints[validPoints.length - 1];
+              const prev = validPoints[validPoints.length - 2];
+              eurChange = ((last.value - prev.value) / prev.value) * 100;
+            }
+          }
+        } catch (e) { console.error("EUR parsing error:", e); }
+      }
+
+      const updateEl = (valId, chgId, price, change) => {
+        const valEl = document.getElementById(valId);
+        const chgEl = document.getElementById(chgId);
+        if (valEl) {
+          valEl.textContent = price != null ? price.toFixed(4) + ' TL' : '—';
+          valEl.classList.remove('skeleton');
+        }
+        if (chgEl && change != null) {
+          const dir = change > 0.01 ? 'up' : change < -0.01 ? 'down' : 'flat';
+          chgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+          chgEl.className = 'forex-change ' + dir;
+        }
+      };
+
+      if (usdPrice || eurPrice) {
+        updateEl('forex-usd-val', 'forex-usd-change', usdPrice, usdChange);
+        updateEl('forex-eur-val', 'forex-eur-change', eurPrice, eurChange);
+      } else {
+        useErApiFallback();
+      }
+    }).catch(err => {
+      console.error("Forex init error:", err);
+      useErApiFallback();
+    });
+  }
+
+  initForexCard();
+
 
   // ── IMF Büyüme Tahmini — Türkiye odaklı ─────────────────────────────
   imfFetch().then(imf => {
