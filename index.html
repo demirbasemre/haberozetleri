@@ -1115,6 +1115,16 @@
           <div class="dash-card-sub">Europe Brent Spot · varil başına</div>
           <div class="dash-card-note">EIA / FRED · Günlük</div>
         </div>
+        <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
+          <div class="dash-card-label" style="display: flex; align-items: center; gap: 5px;">
+            <span class="thy-dot" style="width: 7px; height: 7px; background: #C8102E; border-radius: 50%; display: inline-block;"></span>
+            THY Hisse (THYAO)
+          </div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Borsa İstanbul · hisse fiyatı</div>
+          <div class="dash-card-note">Yahoo Finance · Günlük</div>
+        </div>
         <div class="dash-card" id="dc-usd">
           <div class="dash-card-label">USD / EUR Kuru</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
@@ -1358,6 +1368,24 @@
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-wci"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- THY Hisse Grafik Modali -->
+    <div id="thy-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="thy-chart-title">
+      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+        <div class="rel-add-head">
+          <div id="thy-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">THY Hisse Performansı (THYAO) Grafiği</div>
+          <button class="rel-add-x" onclick="closeThyChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="thy-period-btns" style="margin-top: 12px; margin-bottom: 8px; display: flex; gap: 4px; justify-content: flex-start;">
+          <button class="thy-period-btn energy-period-btn" id="btn-thy-1m" data-period="1m">1 Ay</button>
+          <button class="thy-period-btn energy-period-btn active" id="btn-thy-1y" data-period="1y">1 Yıl</button>
+          <button class="thy-period-btn energy-period-btn" id="btn-thy-max" data-period="max">Tümü</button>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-thy"></canvas>
         </div>
       </div>
     </div>
@@ -4879,6 +4907,23 @@ function closeWciChartModal() {
   const m = document.getElementById('wci-chart-modal');
   if (m) m.style.display = 'none';
 }
+function openThyChartModal() {
+  const m = document.getElementById('thy-chart-modal');
+  if (m) {
+    m.style.display = 'flex';
+    setTimeout(() => {
+      if (typeof window.renderThyChart === 'function') {
+        window.renderThyChart();
+      } else {
+        console.warn("window.renderThyChart henüz hazır değil.");
+      }
+    }, 150);
+  }
+}
+function closeThyChartModal() {
+  const m = document.getElementById('thy-chart-modal');
+  if (m) m.style.display = 'none';
+}
 async function saveReleaseAddModal() {
   const title  = document.getElementById('rel-add-input-title').value.trim();
   const dateS  = document.getElementById('rel-add-input-date').value;
@@ -5574,10 +5619,17 @@ function buildReleaseCalendar() {
       if (e.target === wciM) closeWciChartModal();
     });
   }
+  const thyM = document.getElementById('thy-chart-modal');
+  if (thyM) {
+    thyM.addEventListener('click', e => {
+      if (e.target === thyM) closeThyChartModal();
+    });
+  }
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       closeReleaseAddModal();
       closeWciChartModal();
+      closeThyChartModal();
     }
   });
 }
@@ -6321,6 +6373,202 @@ async function loadDashboard() {
     } else {
       setCard('dc-wci', '—', null, '', 'Veri alınamadı');
     }
+  // ── THY Hisse Verisini Çek ve Göster ──────────────────────────────
+  let _thy1yRaw = null;
+  let _thyMaxRaw = null;
+  let _thyCurrentPeriod = '1y';
+
+  async function fetchThyStock(range = '1y') {
+    const cacheKey = `thy_stock_${range}`;
+    const ttl = range === 'max' ? 24 * 60 * 60 * 1000 : 1 * 60 * 60 * 1000; // max: 24h, 1y: 1h
+    
+    return fetchCached(cacheKey, async () => {
+      const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/THYAO.IS?interval=1d&range=${range}`;
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
+      
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
+      const d = await res.json();
+      if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
+      return d;
+    }, ttl);
+  }
+
+  function drawThyChartFromRaw(rawJSON, period) {
+    const titleEl = document.getElementById('thy-chart-title');
+    try {
+      const result = rawJSON.chart.result[0];
+      const timestamps = result.timestamp || [];
+      const closes = result.indicators.quote[0].close || [];
+      
+      let validPoints = [];
+      for (let i = 0; i < timestamps.length; i++) {
+        if (closes[i] != null) {
+          validPoints.push({
+            time: timestamps[i],
+            value: closes[i]
+          });
+        }
+      }
+      
+      if (period === '1m') {
+        validPoints = validPoints.slice(-22); // son ~22 işlem günü (1 ay)
+      }
+      
+      if (validPoints.length === 0) {
+        throw new Error("Çizilecek veri noktası bulunamadı.");
+      }
+      
+      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const labels = validPoints.map(p => {
+        const d = new Date(p.time * 1000);
+        const day = d.getDate();
+        const month = monthNamesTR[d.getMonth()];
+        const year = d.getFullYear();
+        if (period === 'max') {
+          return `${month} '${String(year).slice(-2)}`;
+        }
+        return `${day} ${month} '${String(year).slice(-2)}`;
+      });
+      
+      const prices = validPoints.map(p => p.value);
+      
+      lineChart('chart-thy', labels,
+        [
+          {
+            label: 'THY (THYAO.IS) Hisse Fiyatı',
+            data: prices,
+            borderColor: '#C8102E', // THY Kırmızısı
+            backgroundColor: 'rgba(200,16,46,0.06)',
+            fill: true,
+            tension: period === 'max' ? 0.2 : 0.35,
+            pointRadius: period === 'max' ? 0 : 2,
+            borderWidth: 2
+          }
+        ],
+        v => v != null ? Number(v).toFixed(2) + ' TL' : '',
+        {
+          forceRecreate: true,
+          xTickFont: { size: 9, family: 'Inter' }
+        }
+      );
+      
+      if (titleEl) {
+        const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
+        titleEl.textContent = `THY Hisse Performansı (THYAO) · Güncel: ${latestPrice.toFixed(2)} TL`;
+      }
+    } catch (err) {
+      console.error("THY Grafik çizim hatası:", err);
+      if (titleEl) titleEl.textContent = "Hata: " + err.message;
+    }
+  }
+
+  function renderThyChart(period) {
+    if (period) _thyCurrentPeriod = period;
+    
+    document.querySelectorAll('#thy-chart-modal .energy-period-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    const activeBtn = document.getElementById(`btn-thy-${_thyCurrentPeriod}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const titleEl = document.getElementById('thy-chart-title');
+    const canvas = document.getElementById('chart-thy');
+    const wrap = canvas?.closest('.dash-chart-wrap');
+    
+    if (wrap) wrap.classList.add('loading');
+
+    if (_thyCurrentPeriod === '1m' || _thyCurrentPeriod === '1y') {
+      if (!_thy1yRaw) {
+        if (titleEl) titleEl.textContent = "THY Hisse Performansı (Veri yok)";
+        if (wrap) wrap.classList.remove('loading');
+        return;
+      }
+      drawThyChartFromRaw(_thy1yRaw, _thyCurrentPeriod);
+    } else if (_thyCurrentPeriod === 'max') {
+      if (_thyMaxRaw) {
+        drawThyChartFromRaw(_thyMaxRaw, 'max');
+      } else {
+        fetchThyStock('max').then(data => {
+          _thyMaxRaw = data;
+          if (_thyCurrentPeriod === 'max') {
+            drawThyChartFromRaw(data, 'max');
+          }
+        }).catch(err => {
+          console.error("Max range THY stock fetch error:", err);
+          if (titleEl) titleEl.textContent = "Hata: Veri alınamadı";
+          if (wrap) {
+            wrap.classList.remove('loading');
+            wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
+            const errDiv = document.createElement('div');
+            errDiv.className = 'dash-chart-error';
+            errDiv.innerHTML = 'Maksimum veri yüklenirken hata oluştu.';
+            wrap.appendChild(errDiv);
+          }
+        });
+      }
+    }
+  }
+  window.renderThyChart = renderThyChart;
+
+  // Modal içindeki buton olay dinleyicileri
+  document.querySelectorAll('.thy-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      renderThyChart(btn.dataset.period);
+    });
+  });
+
+  // Sayfa açılışında 1 Yıllık veriyi çek ve kartı güncelle
+  fetchThyStock('1y').then(data => {
+    _thy1yRaw = data;
+    try {
+      const result = data.chart.result[0];
+      const meta = result.meta || {};
+      const timestamps = result.timestamp || [];
+      const closes = result.indicators.quote[0].close || [];
+      
+      let validPoints = [];
+      for (let i = 0; i < timestamps.length; i++) {
+        if (closes[i] != null) {
+          validPoints.push({
+            time: timestamps[i],
+            value: closes[i]
+          });
+        }
+      }
+      
+      let price = meta.regularMarketPrice || (validPoints.length ? validPoints[validPoints.length - 1].value : 0);
+      let change = 0;
+      
+      if (validPoints.length >= 2) {
+        const lastPoint = validPoints[validPoints.length - 1];
+        const secondLastPoint = validPoints[validPoints.length - 2];
+        
+        const lastPointDate = new Date(lastPoint.time * 1000).toDateString();
+        const todayDate = new Date().toDateString();
+        
+        if (meta.regularMarketPrice && meta.regularMarketPrice !== lastPoint.value && lastPointDate !== todayDate) {
+          change = ((meta.regularMarketPrice - lastPoint.value) / lastPoint.value) * 100;
+        } else {
+          change = ((lastPoint.value - secondLastPoint.value) / secondLastPoint.value) * 100;
+        }
+      }
+      
+      const lastObsDate = validPoints.length ? new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10) : '';
+      
+      setCard('dc-thy',
+        price.toFixed(2) + ' TL',
+        change,
+        'Borsa İstanbul · hisse fiyatı',
+        `Son veri: ${lastObsDate} · Kaynak: Yahoo Finance`
+      );
+    } catch (err) {
+      console.error("THY kart güncelleme hatası:", err);
+      setCard('dc-thy', '—', null, '', 'Veri okunamadı');
+    }
+  }).catch(err => {
+    console.error("THY stock 1y fetch error:", err);
+    setCard('dc-thy', '—', null, '', 'Veri alınamadı');
   });
 
   // ── Popover → çizgi grafik modu ────────────────────────────────────
