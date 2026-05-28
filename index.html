@@ -1135,6 +1135,7 @@
               <span class="forex-value skeleton" id="forex-usd-val">&nbsp;</span>
               <span class="forex-change" id="forex-usd-change"></span>
             </div>
+            <div class="forex-watermark">$</div>
           </div>
           <div class="forex-row">
             <div class="forex-label">
@@ -1145,6 +1146,7 @@
               <span class="forex-value skeleton" id="forex-eur-val">&nbsp;</span>
               <span class="forex-change" id="forex-eur-change"></span>
             </div>
+            <div class="forex-watermark">€</div>
           </div>
           <div class="dash-card-note" style="margin-top: auto; border-top: 1px solid var(--border-soft); padding-top: 6px;">Yahoo Finance / ER-API · Günlük</div>
         </div>
@@ -1415,14 +1417,14 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
           <!-- Currency Toggle -->
           <div class="forex-toggle-btns" style="display: flex; gap: 4px;">
-            <button class="forex-currency-btn energy-period-btn active" id="btn-forex-usd" data-currency="USD">USD / TRY</button>
-            <button class="forex-currency-btn energy-period-btn" id="btn-forex-eur" data-currency="EUR">EUR / TRY</button>
+            <button class="forex-currency-btn forex-btn active" id="btn-forex-usd" data-currency="USD">USD / TRY</button>
+            <button class="forex-currency-btn forex-btn" id="btn-forex-eur" data-currency="EUR">EUR / TRY</button>
           </div>
           <!-- Period Toggle -->
           <div class="forex-period-btns" style="display: flex; gap: 4px;">
-            <button class="forex-period-btn energy-period-btn" id="btn-forex-1m" data-period="1m">1 Ay</button>
-            <button class="forex-period-btn energy-period-btn active" id="btn-forex-1y" data-period="1y">1 Yıl</button>
-            <button class="forex-period-btn energy-period-btn" id="btn-forex-max" data-period="max">Tümü</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1 Ay</button>
+            <button class="forex-period-btn forex-btn active" id="btn-forex-1y" data-period="1y">1 Yıl</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
           </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
