@@ -1105,14 +1105,14 @@
           <div class="dash-card-label">Jet Yakıt Fiyatı</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">ABD Gulf Coast · galon başına</div>
+          <div class="dash-card-sub">ABD Gulf Coast · varil</div>
           <div class="dash-card-note">EIA / FRED · Haftalık</div>
         </div>
         <div class="dash-card" id="dc-brent">
           <div class="dash-card-label">Brent Ham Petrol</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Europe Brent Spot · varil başına</div>
+          <div class="dash-card-sub">Europe Brent Spot · varil</div>
           <div class="dash-card-note">EIA / FRED · Günlük</div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
@@ -1273,8 +1273,8 @@
           <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">40' konteyner başına ortalama spot fiyat</div>
-          <div class="dash-card-note">Drewry · Haftalık · <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a></div>
+          <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
+          <div class="dash-card-note">Drewry · Haftalık<br>Kaynak: <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a></div>
         </div>
         <div class="dash-card card-in-progress">
           <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
@@ -5904,14 +5904,14 @@ async function loadDashboard() {
     if (jet && jet.length) {
       const last = jet[jet.length - 1];
       setCard('dc-jetfuel', '$' + (last.value * 42).toFixed(2), pctChg(jet.slice(-2)),
-        'ABD Gulf Coast · varil başına', `Son veri: ${last.date} · Kaynak: EIA/FRED`);
+        'ABD Gulf Coast · varil', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
     } else {
       setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
     }
     if (brent && brent.length) {
       const last = brent[brent.length - 1];
       setCard('dc-brent', '$' + last.value.toFixed(1), pctChg(brent.slice(-2)),
-        'Europe Brent Spot · varil başına', `Son veri: ${last.date} · Kaynak: EIA/FRED`);
+        'Europe Brent Spot · varil', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
     } else {
       setCard('dc-brent', '—', null, '', 'Veri alınamadı');
     }
@@ -6687,8 +6687,8 @@ async function loadDashboard() {
       setCard('dc-wci',
         formattedPrice,
         latest.change,
-        "40' konteyner başına ortalama spot fiyat",
-        `Son veri: ${latest.date} · Kaynak: <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a>`
+        "40' konteyner ortalama spot fiyat",
+        `Son veri: ${latest.date}<br>Kaynak: <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a>`
       );
     } else {
       setCard('dc-wci', '—', null, '', 'Veri alınamadı');
@@ -6882,7 +6882,7 @@ async function loadDashboard() {
         price.toFixed(2) + ' TL',
         change,
         'Borsa İstanbul · hisse fiyatı',
-        `Son veri: ${lastObsDate} · Kaynak: Yahoo Finance`
+        `Son veri: ${lastObsDate}<br>Kaynak: Yahoo Finance`
       );
     } catch (err) {
       console.error("THY kart güncelleme hatası:", err);
