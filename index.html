@@ -1426,9 +1426,24 @@
           <button type="button" class="title-view-btn active" data-view="source"   role="tab" aria-selected="true">Kaynak</button> <span class="title-conj">ve</span> <button type="button" class="title-view-btn"        data-view="category" role="tab" aria-selected="false">Kategori</button> <span class="title-tail">Bazlı Haber Dağılımı</span>
         </span>
         <div class="stats-chart-toolbar">
+          <label class="stats-switch-wrap" title="Birikimli Göster">
+            <input type="checkbox" id="dist-chart-cumulative" class="stats-switch-input">
+            <span class="stats-switch"></span>
+            <span>Birikimli</span>
+          </label>
           <div class="stats-chart-type-group" id="dist-chart-type">
-            <button class="stats-chart-type-btn stats-chart-type-active" data-type="bar">Yığılı</button>
-            <button class="stats-chart-type-btn" data-type="line">Çizgi</button>
+            <button class="stats-chart-type-btn stats-chart-type-active" data-type="bar" title="Yığın Grafik" aria-label="Yığın Grafik">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </button>
+            <button class="stats-chart-type-btn" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 6 13.5 15.5 8.5 10.5 2 17"></polyline>
+              </svg>
+            </button>
           </div>
         </div>
       </h2>
@@ -8621,12 +8636,19 @@ function updateKPIs(articles, allArticles) {
   _initSourcesModal();
 }
 
-// Count raw articles (sum of _sources length when available, else 1 per article)
+// Count raw articles (sum of unique sources per article when available, else 1 per article)
 function _countRawArticlesInWindow(articles) {
   let raw = 0;
   articles.forEach(a => {
-    if (Array.isArray(a._sources) && a._sources.length > 0) raw += a._sources.length;
-    else raw += 1;
+    if (Array.isArray(a._sources) && a._sources.length > 0) {
+      const seen = new Set();
+      a._sources.forEach(s => {
+        if (s && s.source) seen.add(s.source);
+      });
+      raw += seen.size;
+    } else {
+      raw += 1;
+    }
   });
   return raw;
 }
@@ -8960,6 +8982,7 @@ let _statsDistType = 'bar';      // 'bar' | 'line'
 let _statsHidden   = { source: new Set(), category: new Set() };
 let _statsLastDistArticles = [];  // last rendered slice, for re-render on legend toggle
 let _statsToplamMode = false;     // when true, show only the aggregate total in a single color
+let _statsDistCumulative = false; // when true, accumulate counts over months
 
 function _escapeAttr(s) {
   return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -9075,9 +9098,13 @@ function buildDistributionChart(articles) {
   // OR per-key series (one dataset per visible source/category).
   let datasets;
   if (toplamMode) {
-    const data = months.map(m =>
+    let data = months.map(m =>
       articles.filter(a => monthKey(a.date) === m).length
     );
+    if (_statsDistCumulative) {
+      let sum = 0;
+      data = data.map(v => { sum += v; return sum; });
+    }
     const color     = '#E30613';
     const fillColor = chartType === 'line'
       ? 'rgba(227,6,19,0.14)'
@@ -9115,16 +9142,20 @@ function buildDistributionChart(articles) {
         color = _solidify(c, 1);
         fillColor = _solidify(c, chartType === 'line' ? 0.12 : 0.75);
       }
-      const data = months.map(m =>
+      let data = months.map(m =>
         articles.filter(a => keyOf(a) === k && monthKey(a.date) === m).length
       );
+      if (_statsDistCumulative) {
+        let sum = 0;
+        data = data.map(v => { sum += v; return sum; });
+      }
       return {
         label: k,
         data,
         backgroundColor: fillColor,
         borderColor: color,
         borderWidth: chartType === 'line' ? 2 : 0,
-        fill: chartType === 'bar',
+        fill: chartType === 'line',
         tension: 0.35,
         pointRadius: chartType === 'line' ? 3 : 0,
         pointHoverRadius: chartType === 'line' ? 5 : 0,
@@ -9475,6 +9506,23 @@ function buildStatsAirlineFilter() {
 
   panel.appendChild(grid);
   panel.addEventListener('click', e => e.stopPropagation());
+
+  // Viewport sağ taşmasını önle
+  if (panel.classList.contains('open') && window.innerWidth >= 769) {
+    requestAnimationFrame(() => {
+      const wrap = panel.closest('.fdd-wrap');
+      if (!wrap) return;
+      const wrapLeft = wrap.getBoundingClientRect().left;
+      const ddWidth  = panel.getBoundingClientRect().width;
+      if (ddWidth === 0) return;
+      const maxRight = window.innerWidth - 12;
+      if (wrapLeft + ddWidth > maxRight) {
+        panel.style.left = Math.max(12 - wrapLeft, -(ddWidth - wrap.offsetWidth)) + 'px';
+      } else {
+        panel.style.left = '0';
+      }
+    });
+  }
 }
 
 function syncStatsAirlineGroupUI() {
@@ -9660,6 +9708,14 @@ function initChartTypeToggle() {
       });
     });
   }
+  // Cumulative toggle
+  const cumCheck = document.getElementById('dist-chart-cumulative');
+  if (cumCheck) {
+    cumCheck.addEventListener('change', () => {
+      _statsDistCumulative = cumCheck.checked;
+      buildDistributionChart(effectiveArticles());
+    });
+  }
   // View toggle (Kaynak / Kategori)
   const viewGroup = document.getElementById('stats-view-toggle');
   if (viewGroup) {
@@ -9687,11 +9743,16 @@ function initAirlineDropdown() {
     e.stopPropagation();
     const open = panel.classList.toggle('open');
     btn.setAttribute('aria-expanded', open);
-    if (open) buildStatsAirlineFilter();
+    if (open) {
+      buildStatsAirlineFilter();
+    } else {
+      panel.style.left = '';
+    }
   });
   document.addEventListener('click', () => {
     panel.classList.remove('open');
     btn.setAttribute('aria-expanded','false');
+    panel.style.left = '';
   });
   panel.addEventListener('click', e => e.stopPropagation());
 }
