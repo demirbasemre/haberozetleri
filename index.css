@@ -5885,6 +5885,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    overflow: hidden;
   }
   .forex-row:last-of-type {
     margin-bottom: 0;
@@ -5900,12 +5902,16 @@
     gap: 6px;
     white-space: nowrap;
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;
   }
   .forex-val-wrap {
     display: flex;
     align-items: center;
     gap: 6px;
     white-space: nowrap;
+    position: relative;
+    z-index: 2;
   }
   .forex-value {
     font-size: 18px;
@@ -5944,10 +5950,61 @@
   .forex-change.down { color: var(--red); }
   .forex-change.flat { color: var(--text-3); }
 
-  .forex-currency-btn.active {
-    background: var(--primary, #1D6FE8) !important;
+  /* Forex watermark styles */
+  .forex-watermark {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 40px;
+    font-weight: 900;
+    opacity: 0.05;
+    pointer-events: none;
+    user-select: none;
+    z-index: 1;
+    font-family: 'Inter', sans-serif;
+    line-height: 1;
+  }
+  [data-theme="dark"] .forex-watermark {
+    opacity: 0.07;
+  }
+  .forex-row:first-of-type .forex-watermark {
+    color: #1D6FE8;
+  }
+  .forex-row:last-of-type .forex-watermark {
+    color: #059669;
+  }
+
+  /* Forex modal buttons styling */
+  .forex-btn {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .forex-btn:hover {
+    background: var(--hover);
+    color: var(--text);
+  }
+  .forex-btn.active {
+    background: var(--primary, #1D6FE8);
+    color: #fff;
+    border-color: var(--primary, #1D6FE8);
+  }
+  #btn-forex-usd.active {
+    background: #1D6FE8 !important;
+    border-color: #1D6FE8 !important;
     color: #fff !important;
-    border-color: var(--primary, #1D6FE8) !important;
+  }
+  #btn-forex-eur.active {
+    background: #059669 !important;
+    border-color: #059669 !important;
+    color: #fff !important;
   }
 
 
