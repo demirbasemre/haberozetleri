@@ -6002,7 +6002,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(v).toFixed(4) + ' TL' : '',
+        v => v != null ? Number(v).toFixed(1) + ' TL' : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' }
@@ -6011,7 +6011,7 @@ async function loadDashboard() {
       
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-        titleEl.textContent = `${currency} / TRY Kuru · Güncel: ${latestPrice.toFixed(4)} TL`;
+        titleEl.textContent = `${currency} / TRY Kuru · Güncel: ${latestPrice.toFixed(1)} TL`;
       }
     } catch (err) {
       console.error("Forex Grafik çizim hatası:", err);
@@ -6098,11 +6098,11 @@ async function loadDashboard() {
       const eurValEl = document.getElementById('forex-eur-val');
       
       if (usdValEl) {
-        usdValEl.textContent = usdTry ? usdTry.toFixed(4) + ' TL' : '—';
+        usdValEl.textContent = usdTry ? usdTry.toFixed(1) + ' TL' : '—';
         usdValEl.classList.remove('skeleton');
       }
       if (eurValEl) {
-        eurValEl.textContent = eurTry ? eurTry.toFixed(4) + ' TL' : '—';
+        eurValEl.textContent = eurTry ? eurTry.toFixed(1) + ' TL' : '—';
         eurValEl.classList.remove('skeleton');
       }
     }).catch(() => {
@@ -6172,7 +6172,7 @@ async function loadDashboard() {
         const valEl = document.getElementById(valId);
         const chgEl = document.getElementById(chgId);
         if (valEl) {
-          valEl.textContent = price != null ? price.toFixed(4) + ' TL' : '—';
+          valEl.textContent = price != null ? price.toFixed(1) + ' TL' : '—';
           valEl.classList.remove('skeleton');
         }
         if (chgEl && change != null) {
