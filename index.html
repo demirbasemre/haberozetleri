@@ -5766,9 +5766,10 @@ function buildReleaseCalendar() {
     const trigger = document.getElementById('rel-cf-trigger');
     if (!list) return;
 
-    const searchVal = (document.getElementById('rel-cf-search')?.value || '').toLowerCase().trim();
+    const trClean = str => (str || '').replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase().trim();
+    const searchVal = trClean(document.getElementById('rel-cf-search')?.value);
     const filtered = HOLIDAY_COUNTRIES.filter(c =>
-      !searchVal || c.name.toLowerCase().includes(searchVal) || c.code.toLowerCase().includes(searchVal)
+      !searchVal || trClean(c.name).includes(searchVal) || trClean(c.code).includes(searchVal)
     );
 
     const allRow = searchVal ? '' : `<button class="rel-cf-item${activeHolidayCountries.size === 0 ? ' selected' : ''}" data-cc="" role="option" aria-selected="${activeHolidayCountries.size === 0}">
