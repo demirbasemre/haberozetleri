@@ -5956,32 +5956,23 @@
     user-select: none;
   }
 
-  /* Forex Card Dual-Row Layout & Modal Styling */
   .forex-row {
-    background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
-    border: 1px solid var(--border-soft);
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 10px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     overflow: hidden;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-                border-color 0.2s ease, 
-                box-shadow 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .forex-row:last-of-type {
-    margin-bottom: 0;
+  .forex-row:first-of-type {
+    border-bottom: 1px solid var(--border-soft);
   }
   .forex-row:hover {
     transform: translateX(3px);
-    border-color: rgba(29,111,232,0.3);
-    box-shadow: var(--shadow-sm);
-  }
-  [data-theme="dark"] .forex-row:hover {
-    border-color: rgba(77, 142, 245, 0.4);
   }
 
   .forex-indicator-dot {
@@ -6018,6 +6009,14 @@
     font-size: 11px;
     font-weight: 500;
     color: var(--text-2);
+  }
+  .forex-arrow-icon {
+    width: 10px;
+    height: 10px;
+    color: var(--text-3);
+    flex-shrink: 0;
+    margin-left: 2px;
+    opacity: 0.65;
   }
 
   .forex-val-wrap {
