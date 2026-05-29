@@ -5958,37 +5958,71 @@
 
   /* Forex Card Dual-Row Layout & Modal Styling */
   .forex-row {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     overflow: hidden;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+                border-color 0.2s ease, 
+                box-shadow 0.2s ease;
   }
   .forex-row:last-of-type {
     margin-bottom: 0;
   }
+  .forex-row:hover {
+    transform: translateX(3px);
+    border-color: rgba(29,111,232,0.3);
+    box-shadow: var(--shadow-sm);
+  }
+  [data-theme="dark"] .forex-row:hover {
+    border-color: rgba(77, 142, 245, 0.4);
+  }
+
+  .forex-indicator-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .forex-indicator-dot.usd {
+    background: #1D6FE8;
+    box-shadow: 0 0 8px rgba(29, 111, 232, 0.6);
+  }
+  .forex-indicator-dot.eur {
+    background: #059669;
+    box-shadow: 0 0 8px rgba(5, 150, 105, 0.6);
+  }
+
   .forex-label {
-    font-size: 10.5px;
-    font-weight: 700;
-    color: var(--text-2);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
     display: flex;
     align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-    flex-shrink: 0;
+    gap: 8px;
     position: relative;
     z-index: 2;
   }
+  .forex-symbol {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .forex-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-2);
+  }
+
   .forex-val-wrap {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 6px;
     white-space: nowrap;
     position: relative;
@@ -6034,20 +6068,27 @@
   /* Forex watermark styles */
   .forex-watermark {
     position: absolute;
-    right: 20px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 40px;
+    font-size: 44px;
     font-weight: 900;
-    opacity: 0.05;
+    opacity: 0.035;
     pointer-events: none;
     user-select: none;
     z-index: 1;
     font-family: 'Inter', sans-serif;
     line-height: 1;
+    transition: opacity 0.2s ease;
+  }
+  .forex-row:hover .forex-watermark {
+    opacity: 0.06;
   }
   [data-theme="dark"] .forex-watermark {
-    opacity: 0.07;
+    opacity: 0.05;
+  }
+  [data-theme="dark"] .forex-row:hover .forex-watermark {
+    opacity: 0.08;
   }
   .forex-row:first-of-type .forex-watermark {
     color: #1D6FE8;
@@ -6056,36 +6097,53 @@
     color: #059669;
   }
 
-  /* Forex modal buttons styling */
+  /* Segmented control layout for Forex toggles */
+  .forex-toggle-btns, .forex-period-btns {
+    display: flex;
+    background: var(--bg);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--border-soft);
+    gap: 2px;
+  }
   .forex-btn {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 3px 9px;
-    border-radius: 5px;
-    border: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: none;
     background: transparent;
-    color: var(--text-3);
+    color: var(--text-2);
     cursor: pointer;
-    transition: background .15s, color .15s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
   .forex-btn:hover {
-    background: var(--hover);
     color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  [data-theme="light"] .forex-btn:hover {
+    background: rgba(0, 0, 0, 0.02);
   }
   .forex-btn.active {
-    background: var(--primary, #1D6FE8);
-    color: #fff;
-    border-color: var(--primary, #1D6FE8);
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    box-shadow: var(--shadow-sm);
   }
   #btn-forex-usd.active {
-    background: #1D6FE8 !important;
-    border-color: #1D6FE8 !important;
-    color: #fff !important;
+    color: #1D6FE8 !important;
+  }
+  [data-theme="dark"] #btn-forex-usd.active {
+    color: #4D8EF5 !important;
   }
   #btn-forex-eur.active {
-    background: #059669 !important;
-    border-color: #059669 !important;
-    color: #fff !important;
+    color: #059669 !important;
+  }
+  [data-theme="dark"] #btn-forex-eur.active {
+    color: #34D399 !important;
   }
 
 

@@ -1129,8 +1129,9 @@
         <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
           <div class="forex-row">
             <div class="forex-label">
-              <span style="width: 7px; height: 7px; background: #1D6FE8; border-radius: 50%; display: inline-block;"></span>
-              USD / TRY
+              <span class="forex-indicator-dot usd"></span>
+              <span class="forex-symbol">$</span>
+              <span class="forex-name">Dolar</span>
             </div>
             <div class="forex-val-wrap">
               <span class="forex-value skeleton" id="forex-usd-val">&nbsp;</span>
@@ -1140,8 +1141,9 @@
           </div>
           <div class="forex-row">
             <div class="forex-label">
-              <span style="width: 7px; height: 7px; background: #059669; border-radius: 50%; display: inline-block;"></span>
-              EUR / TRY
+              <span class="forex-indicator-dot eur"></span>
+              <span class="forex-symbol">€</span>
+              <span class="forex-name">Euro</span>
             </div>
             <div class="forex-val-wrap">
               <span class="forex-value skeleton" id="forex-eur-val">&nbsp;</span>
@@ -1418,12 +1420,18 @@
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
           <!-- Currency Toggle -->
-          <div class="forex-toggle-btns" style="display: flex; gap: 4px;">
-            <button class="forex-currency-btn forex-btn active" id="btn-forex-usd" data-currency="USD">USD / TRY</button>
-            <button class="forex-currency-btn forex-btn" id="btn-forex-eur" data-currency="EUR">EUR / TRY</button>
+          <div class="forex-toggle-btns">
+            <button class="forex-currency-btn forex-btn active" id="btn-forex-usd" data-currency="USD">
+              <span class="forex-indicator-dot usd"></span>
+              $ Dolar
+            </button>
+            <button class="forex-currency-btn forex-btn" id="btn-forex-eur" data-currency="EUR">
+              <span class="forex-indicator-dot eur"></span>
+              € Euro
+            </button>
           </div>
           <!-- Period Toggle -->
-          <div class="forex-period-btns" style="display: flex; gap: 4px;">
+          <div class="forex-period-btns">
             <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1 Ay</button>
             <button class="forex-period-btn forex-btn active" id="btn-forex-1y" data-period="1y">1 Yıl</button>
             <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
@@ -6324,7 +6332,7 @@ async function loadDashboard() {
       lineChart('chart-forex', labels,
         [
           {
-            label: `${currency} / TRY Kuru`,
+            label: `${currency === 'USD' ? '$' : '€'} Kuru`,
             data: prices,
             borderColor: color,
             backgroundColor: bgColor,
@@ -6343,7 +6351,8 @@ async function loadDashboard() {
       
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-        titleEl.textContent = `${currency} / TRY Kuru · Güncel: ${latestPrice.toFixed(1)} TL`;
+        const symbol = currency === 'USD' ? '$' : '€';
+        titleEl.textContent = `${symbol} Kuru · Güncel: ${latestPrice.toFixed(1)} TL`;
       }
     } catch (err) {
       console.error("Forex Grafik çizim hatası:", err);
