@@ -6043,11 +6043,11 @@ async function loadDashboard() {
   buildReleaseCalendar();
 
   // Reset skeletons and loading states (except for in-progress cards)
-  document.querySelectorAll('.dash-card:not(.card-in-progress) .dash-card-value').forEach(el => {
+  document.querySelectorAll('#dashboard-panel .dash-card:not(.card-in-progress) .dash-card-value').forEach(el => {
     el.classList.add('skeleton');
     el.textContent = '\u00A0';
   });
-  document.querySelectorAll('.dash-chart-wrap').forEach(el => {
+  document.querySelectorAll('#dashboard-panel .dash-chart-wrap').forEach(el => {
     el.classList.add('loading');
     const err = el.querySelector('.dash-chart-error');
     if (err) err.remove();
