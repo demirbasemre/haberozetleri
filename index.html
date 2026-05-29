@@ -1131,7 +1131,6 @@
             <div class="forex-label">
               <span class="forex-indicator-dot usd"></span>
               <span class="forex-symbol">$</span>
-              <span class="forex-name">Dolar</span>
             </div>
             <div class="forex-val-wrap">
               <span class="forex-value skeleton" id="forex-usd-val">&nbsp;</span>
@@ -1143,7 +1142,6 @@
             <div class="forex-label">
               <span class="forex-indicator-dot eur"></span>
               <span class="forex-symbol">€</span>
-              <span class="forex-name">Euro</span>
             </div>
             <div class="forex-val-wrap">
               <span class="forex-value skeleton" id="forex-eur-val">&nbsp;</span>
@@ -6342,7 +6340,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(v).toFixed(1) + ' TL' : '',
+        v => v != null ? '₺' + Number(v).toFixed(1) : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' }
@@ -6352,7 +6350,7 @@ async function loadDashboard() {
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         const symbol = currency === 'USD' ? '$' : '€';
-        titleEl.textContent = `${symbol} Kuru · Güncel: ${latestPrice.toFixed(1)} TL`;
+        titleEl.textContent = `${symbol} Kuru · Güncel: ₺${latestPrice.toFixed(1)}`;
       }
     } catch (err) {
       console.error("Forex Grafik çizim hatası:", err);
@@ -6439,11 +6437,11 @@ async function loadDashboard() {
       const eurValEl = document.getElementById('forex-eur-val');
       
       if (usdValEl) {
-        usdValEl.textContent = usdTry ? usdTry.toFixed(1) + ' TL' : '—';
+        usdValEl.textContent = usdTry ? '₺' + usdTry.toFixed(1) : '—';
         usdValEl.classList.remove('skeleton');
       }
       if (eurValEl) {
-        eurValEl.textContent = eurTry ? eurTry.toFixed(1) + ' TL' : '—';
+        eurValEl.textContent = eurTry ? '₺' + eurTry.toFixed(1) : '—';
         eurValEl.classList.remove('skeleton');
       }
     }).catch(() => {
@@ -6513,7 +6511,7 @@ async function loadDashboard() {
         const valEl = document.getElementById(valId);
         const chgEl = document.getElementById(chgId);
         if (valEl) {
-          valEl.textContent = price != null ? price.toFixed(1) + ' TL' : '—';
+          valEl.textContent = price != null ? '₺' + price.toFixed(1) : '—';
           valEl.classList.remove('skeleton');
         }
         if (chgEl && change != null) {
@@ -7109,7 +7107,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(v).toFixed(2) + ' TL' : '',
+        v => v != null ? '₺' + Number(v).toFixed(2) : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' }
@@ -7118,7 +7116,7 @@ async function loadDashboard() {
       
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-        titleEl.textContent = `THY Hisse Performansı (THYAO) · Güncel: ${latestPrice.toFixed(2)} TL`;
+        titleEl.textContent = `THY Hisse Performansı (THYAO) · Güncel: ₺${latestPrice.toFixed(2)}`;
       }
     } catch (err) {
       console.error("THY Grafik çizim hatası:", err);
@@ -7220,7 +7218,7 @@ async function loadDashboard() {
       const lastObsDate = validPoints.length ? new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10) : '';
       
       setCard('dc-thy',
-        price.toFixed(2) + ' TL',
+        '₺' + price.toFixed(2),
         change,
         'Borsa İstanbul · hisse fiyatı',
         `Son veri: ${lastObsDate}<br>Kaynak: Yahoo Finance`
