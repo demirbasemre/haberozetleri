@@ -120,7 +120,7 @@
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 8px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     transition: background 0.2s, border-color 0.2s;
   }
   .search-wrap:focus-within {
@@ -169,6 +169,87 @@
   .search-stats b { color: rgba(255,255,255,0.28); font-weight: 400; }
   .search-wrap:focus-within .search-stats,
   .search-wrap.has-value .search-stats { opacity: 0; }
+
+  /* ── SEARCH SUGGESTIONS ───────────────────────── */
+  .search-suggestions {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    max-height: 280px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    display: none;
+    flex-direction: column;
+    padding: 6px;
+    gap: 2px;
+  }
+  
+  .search-suggestion-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    font-size: 13px;
+    color: var(--text);
+  }
+  
+  .search-suggestion-item:hover,
+  .search-suggestion-item.active {
+    background: var(--bg);
+  }
+  
+  [data-theme="dark"] .search-suggestion-item:hover,
+  [data-theme="dark"] .search-suggestion-item.active {
+    background: var(--navy-soft);
+  }
+
+  .search-suggestion-title {
+    font-weight: 500;
+  }
+  
+  .search-suggestion-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: var(--border);
+    color: var(--text-2);
+    font-weight: 600;
+  }
+
+  /* ── METRIC HIGHLIGHT PULSE ───────────────────── */
+  @keyframes metricHighlight {
+    0% {
+      box-shadow: 0 0 0 0px var(--accent);
+      transform: scale(1.02);
+      border-color: var(--accent);
+    }
+    50% {
+      box-shadow: 0 0 0 6px rgba(29, 111, 232, 0.4);
+      transform: scale(1.02);
+      border-color: var(--accent);
+    }
+    100% {
+      box-shadow: 0 0 0 0px transparent;
+      transform: scale(1);
+      border-color: var(--border);
+    }
+  }
+  
+  .metric-highlight-active {
+    animation: metricHighlight 1.5s ease-out;
+    border-color: var(--accent) !important;
+    z-index: 5;
+  }
+
 
 
   .search-right-icon {
