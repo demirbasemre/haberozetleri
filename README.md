@@ -24,11 +24,13 @@ Uygulama; zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interakt
 * **Kategori Bazlı Filtreleme:** Haberleri, *Filo & Network*, *Teknoloji*, *Ortaklık*, *Atama* ve *Diğer* kategorilere göre anında süzme.
 * **Gelişmiş Havayolu & Bölge Eşleşmesi:** Haber metni analizine göre havayolları ve global/yerel bölgeler (Avrupa, Uzak Doğu, Orta Doğu vb.) otomatik tespit edilir ve filtrelenir.
 * **Çoklu Kaynak Desteği (Duplicate Tespiti):** Benzer içerikli haber kaynakları gruplanarak haber kartı altında butonla gösterilir.
+* **Gelişmiş Arama Kutusu & Kısayollar:** Arama motoru Türkçe noktalı ve noktasız 'i' / 'I' harfleriyle tam uyumlu çalışır. Arama kapsamı Dashboard, Haber İstatistikleri ve veri metriklerini de tarayacak şekilde genişletilmiş olup, arama sonuçlarındaki yönlendirme kısayolları üzerinden hedeflenen metriğe yumuşak bir şekilde kaydırma (scroll-to-metric) sağlanır.
 
 ### 2. Ekonomi & Enerji Dashboard'u
 * **FRED API Entegrasyonu:** Brent ve WTI petrol fiyat endeksleri anlık çekilerek çizgi grafikler ile görselleştirilir.
 * **IMF WEO Entegrasyonu:** Küresel GSYH (GDP) büyüme oranları ve tüketici fiyat endeksi (CPI) tahminleri interaktif bar grafiklerinde sunulur.
 * **Yıllık Tahmin Popover:** Ülke/Bölge barlarına tıklandığında açılan popup ile *Gerçekleşen*, *Tahmini* ve *Öngörü* verileri listelenir ve tek tıkla KPI kartı çizgi grafiğe dönüştürülebilir.
+* **Canlı Döviz & Parite Paneli (Forex):** USD/TRY ve EUR/TRY kurlarını gösteren premium tasarımlı parite kartı. Segmentli kontrol seçimi, premium ikonlar, dikey geçiş okları ve detaylı geçmiş kur analizi sunan etkileşimli grafik penceresi (modal) içerir. Değer göstergelerinde döviz sembolleri sağ tarafa taşınmış ve TL değerleri ₺ sembolü ile formatlanmıştır.
 
 ### 3. Yapay Zeka Destekli Haber Asistanı
 * **Cosine Similarity & Semantic Search:** Sorulan soru Gemini Embedding API ile vektörleştirilir ve n8n veritabanındaki haber embeddingleri ile karşılaştırılarak en alakalı 12 haber bağlam olarak Gemini modeline gönderilir.
@@ -37,13 +39,17 @@ Uygulama; zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interakt
 * **Akıllı Selamlama & Kısalık Kuralları:** İlk soruda asistan *"Merhaba,"* diyerek başlar; takip eden sorularda ise gereksiz kalıplardan kaçınarak doğrudan, net ve kısa yanıtlar verir.
 * **Tıklanabilir Başlıklar:** Haber asistanı panelinde referans verilen haber başlıklarına tıklandığında, ilgili haber kartı ana ekranda otomatik süzülür. Ayrıca, cevapta yer alan tüm haberler, ilgili butona tıklanarak tek sayfada da görüntülenebilir.
 
-
 ### 4. Gelişmiş Haber Okuyucu ve Çeviri Modülü
 * **Temiz Sayfada Tek Tıkla Erişim:** Herhangi bir haber kartına tıklandığında, kullanıcının dış sitelere gitmesine gerek kalmadan, reklam ve dikkat dağıtıcı öğelerden tamamen arındırılmış temiz bir okuma ekranı açılır.
 * **Sayfa Bütününü Çevirme:** Yabancı kaynaklı haberler tek tıkla ("Çevir" butonu aracılığıyla) Google Translate API entegrasyonu sayesinde Türkçe'ye çevrilebilir.
 * **Eş Zamanlı Kaydırma:** Orijinal metin ile Türkçe çeviriyi yan yana gösteren yapıda, bir taraf kaydırıldığında diğer tarafın da eş zamanlı sağlanır. Orijinal metin ile çevirilerin yakın hizalanması için haber görseli gösterimi kapatılır.
 * **Cümle Bazlı Vurgulama:** Okuyucu panelinde fare ile bir cümlenin üzerine gelindiğinde, cümlenin orijinal dildeki karşılığı ile Türkçe  karşılığı aynı anda vurgulanarak okuma takibi kolaylaştırılır.
 * **Kaynak Sekmeleri:** Aynı haberin birden fazla kaynağı mevcutsa, okuyucu penceresinin en üstünde sekmeler halinde listelenir ve kaynaklar arasında tek tıkla geçiş yapılabilir.
+
+### 5. Mobil Uyumlu Tasarım ve Arayüz Optimizasyonları
+* **Kompakt Mobil Sekme Modu (Tabs Condensed):** Mobil cihazlarda aşağı kaydırıldığında, ekran alanını verimli kullanmak adına ana sekme çubuğu gizlenerek arama satırının sağında sadece kompakt ikonlardan oluşan hızlı sekme (Haberler, İstatistik ve Dashboard) butonları gösterilir.
+* **Uçuş Ağına Göre Yerel Tatil Takvimi:** THY ve Turkish Cargo destinasyonlarına göre yerel JSON verileriyle beslenen interaktif tatil takvimi güncellemeleri entegre edilmiştir.
+* **Kart Hizalama Standartları:** Haber kartlarının alt kısmındaki kaynak bilgisi ve analiz butonları dikeyde hizalanarak kartın en altına sabitlenmiştir.
 
 ## 🛠️ Kullanılan Teknolojiler
 

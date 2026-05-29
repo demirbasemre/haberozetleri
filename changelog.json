@@ -2,6 +2,13 @@
   {
     "month": "Mayıs 2026",
     "items": [
+      { "text": "Mobil cihazlarda aşağı kaydırıldığında, ana sekmeleri gizleyip arama çubuğu yanına kompakt ve hızlı sekmeler yerleştiren mobil daralma modu geliştirildi.", "major": true },
+      { "text": "Canlı Döviz & Parite (USD/TRY, EUR/TRY) paneli; segmentli kontrol seçimi, premium ikonlar, dikey geçiş okları ve interaktif geçmiş grafik modülü ile baştan aşağı yenilendi.", "major": true },
+      { "text": "Arama kutusu kapsamı genişletildi; artık Dashboard ve İstatistik metrikleri taranarak arama sonuçlarındaki kısayollar üzerinden ilgili alana otomatik kaydırma yapılıyor.", "major": true },
+      { "text": "Uçuş ağına göre yerel tatil takvimi verileri THY ve Turkish Cargo destinasyonlarını kapsayacak şekilde güncellendi.", "major": true },
+      { "text": "Arama motorunda Türkçe noktalı ve noktasız 'i' / 'I' karakter eşleşmelerinde yaşanan uyumsuzluklar giderildi.", "major": false },
+      { "text": "Haber kartlarının alt bölümünde yer alan kaynak bilgisi ve analiz butonunun dikey hizalamaları kartın en altına sabitlenerek standartlaştırıldı.", "major": false },
+      { "text": "Dashboard paneli altındaki veri yükleyicilerin etki alanları sınırlandırılarak, diğer sekmelerdeki istatistik şablonlarının sıfırlanması sorunu çözüldü.", "major": false },
       { "text": "Haberlerin \"Readability\" (Okuma Modu) görünümünde lazy-load görsellerinin ve göreceli URL adreslerinin yüklenmesi sağlandı.", "major": true },
       { "text": "Sonsuz kaydırmada yeni yüklenen kartlar için pürüzsüz fade-up geçiş animasyonu ve 400ms sentinel gecikmesi eklendi.", "major": true },
       { "text": "Okuma modunda senkronize kaydırma (scroll sync) ve çift yönlü cümle bazlı vurgulama (hover highlight) özellikleri geliştirildi.", "major": true },
