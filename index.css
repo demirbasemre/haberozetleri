@@ -6145,4 +6145,162 @@
     color: #34D399 !important;
   }
 
+  /* ════════════════════════════════════════════════════════════
+     MOBİL HEADER + KONDANSE SEKME SİSTEMİ  (Tasarım 1)
+     • Arama kutusu her zaman görünür, dar ekranda kendi tam-genişlik
+       satırına iner; marka + dişli üst satırda kalır (header taşmaz).
+     • Aşağı kaydırınca sekme barı kapanır, kompakt ikon sekmeler
+       (Haberler⟨i⟩ · Dashboard) arama satırının sağında belirir.
+     ════════════════════════════════════════════════════════════ */
+
+  /* Kompakt sekmeler masaüstünde tamamen gizli */
+  .hdr-compact-tabs { display: none; }
+
+  @media (max-width: 600px) {
+    /* Header iki satıra sarılsın: row1 = marka + araçlar, row2 = arama */
+    .header-inner {
+      flex-wrap: wrap;
+      height: auto;
+      min-height: 56px;
+      padding: 9px 14px;
+      row-gap: 9px;
+      column-gap: 10px;
+      align-items: center;
+    }
+    .beta-badge { display: none; }
+
+    /* Arama: kendi tam-genişlik satırı + tam ipucu metni görünür.
+       flex-basis:auto + min-width → row1'e sığmaz, row2'ye iner ve
+       grow ile satırı doldurur; gizli kompakt sekmeler aynı satırda
+       kaldığı için boş satır oluşmaz. */
+    .search-wrap {
+      order: 4;
+      flex: 1 1 auto;
+      min-width: 220px;
+      width: auto;
+      max-width: none;
+    }
+    .search-stats {
+      display: block !important;
+      font-size: 12.5px;
+    }
+
+    /* Kompakt sekmeler — arama satırının sağında, başta gizli (daralınca açılır) */
+    .hdr-compact-tabs {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      order: 5;
+      flex: 0 0 auto;
+      box-sizing: border-box;
+      height: 34px;                 /* arama kutusuyla aynı yükseklik → header sabit kalır */
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 9px;
+      padding: 0 3px;
+      max-width: 0;
+      border-width: 0;
+      padding-left: 0;
+      padding-right: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transition: max-width 0.34s cubic-bezier(.4,0,.2,1),
+                  opacity 0.26s,
+                  padding 0.34s,
+                  border-width 0.34s,
+                  margin 0.34s;
+    }
+    .hct-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 28px;
+      padding: 0 8px;
+      border: 0;
+      border-radius: 7px;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.72);
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.18s, color 0.18s;
+    }
+    .hct-btn > svg { width: 15px; height: 15px; flex-shrink: 0; }
+    body[data-active-tab="news"]      .hct-btn[data-tab="news"],
+    body[data-active-tab="stats"]     .hct-btn[data-tab="news"],
+    body[data-active-tab="dashboard"] .hct-btn[data-tab="dashboard"] {
+      background: var(--red);
+      color: #fff;
+    }
+    /* "i" rozeti — Haberler'e yuvalı */
+    .hct-i-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      height: 17px;
+      padding: 0 5px 0 4px;
+      border-radius: 999px;
+      line-height: 1;
+      background: rgba(255,255,255,0.16);
+      color: rgba(255,255,255,0.9);
+      cursor: pointer;
+      vertical-align: middle;
+    }
+    .hct-i-pill .nsp-bars { width: 10px; height: 10px; }
+    .hct-i-pill .nsp-bars rect { fill: currentColor; }
+    .hct-i-pill .nsp-i {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 600;
+      font-size: 11px;
+      line-height: 1;
+    }
+    body[data-active-tab="news"]  .hct-btn[data-tab="news"] .hct-i-pill,
+    body[data-active-tab="stats"] .hct-btn[data-tab="news"] .hct-i-pill {
+      background: rgba(255,255,255,0.24);
+      color: #fff;
+    }
+    body[data-active-tab="stats"] .hct-btn[data-tab="news"] .hct-i-pill {
+      background: #fff;
+      color: var(--red);
+    }
+
+    /* Header ~95px (iki satır) olduğundan sticky offset'leri buna göre güncelle */
+    .main-tabs-wrap { top: 95px; }
+    .filter-bar { top: 143px; }
+
+    /* Sekme barı: yumuşak kapanma için geçiş */
+    .main-tabs-wrap {
+      transition: height 0.34s cubic-bezier(.4,0,.2,1),
+                  padding 0.34s, opacity 0.24s, border-width 0.24s;
+      overflow: hidden;
+    }
+
+    /* ── KONDANSE DURUM (body.tabs-condensed) ── */
+    body.tabs-condensed .main-tabs-wrap {
+      height: 0 !important;
+      padding-top: 0;
+      padding-bottom: 0;
+      border-bottom-width: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    /* sekme barı kapanınca filtre çubuğu header'ın hemen altına otursun */
+    body.tabs-condensed .filter-bar { top: 95px; }
+    /* kompakt sekmeler açılır + arama küçülüp aynı satırda yer açar */
+    body.tabs-condensed .hdr-compact-tabs {
+      max-width: 200px;
+      opacity: 1;
+      pointer-events: auto;
+      border-width: 1px;
+      padding-left: 3px;
+      padding-right: 3px;
+    }
+    body.tabs-condensed .search-wrap {
+      flex: 1 1 auto;
+      min-width: 170px;
+      width: auto;
+    }
+  }
+
 
