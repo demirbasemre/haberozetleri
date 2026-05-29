@@ -1,8 +1,12 @@
 <p align="center">
   <br/>
-  <a href="#"><img src="https://img.shields.io/badge/S%C3%BCr%C3%BCm-Beta-red.svg?style=for-the-badge&color=E63946&labelColor=ececec" alt="Sürüm: Beta"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Altyap%C4%B1-n8n_%2B_Gemini-orange.svg?style=for-the-badge&color=F4A261&labelColor=ececec" alt="Altyapı: n8n + Gemini"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Dil-T%C3%BCrk%C3%A7e-blue.svg?style=for-the-badge&color=457B9D&labelColor=ececec" alt="Dil: Türkçe"></a>
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white" alt="Chart.js">
+  <img src="https://img.shields.io/badge/n8n-FF6C37?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n">
+  <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare">
+  <img src="https://img.shields.io/badge/Google_Gemini-8E75C2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini">
   <br/>
   <br/>
 </p>
