@@ -1,13 +1,6 @@
 <p align="center">
   <br/>
   <img src="https://img.shields.io/badge/S%C3%BCr%C3%BCm-Beta-red?style=for-the-badge&color=E63946" alt="Sürüm: Beta">
-  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
-  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
-  <img src="https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white" alt="Chart.js">
-  <img src="https://img.shields.io/badge/n8n-FF6C37?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n">
-  <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare">
-  <img src="https://img.shields.io/badge/Google_Gemini-8E75C2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini">
   <br/>
   <br/>
 </p>
@@ -19,7 +12,7 @@
 <h3 align="center">Hava kargo sektör haberlerini, küresel makro-ekonomik verileri, petrol fiyat endekslerini ve yapay zeka destekli akıllı bir asistanı tek bir çatı altında toplayan premium, tek sayfalık modern bir platform.</h3>
 
 <p align="center">
-  <img src="design/dashboard-screenshot.png" alt="Hava Kargo Bülteni Dashboard Ekran Görüntüsü" width="100%">
+  <img src="design/readme-banner.png" alt="Hava Kargo Bülteni - Haber Akışı ve Analitik Dashboard Görünümleri" width="100%">
 </p>
 
 Uygulama; zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interaktif grafik entegrasyonları ve **n8n + Gemini API** tabanlı yapay zeka altyapısıyla sektör profesyonellerine yönelik geliştirilmiştir.
