@@ -1547,7 +1547,7 @@
 
   /* ── DATE SECTION ────────────────────────────── */
   .date-section { margin-bottom: 52px; }
-  .date-section:first-child { margin-top: 44px; }
+  .date-section:first-child { margin-top: 24px; }
 
   .date-section-header {
     display: flex;
@@ -2306,6 +2306,10 @@
 
   /* ── DASHBOARD ───────────────────────────────────── */
   .dash-section { margin-bottom: 44px; scroll-margin-top: 190px; }
+  #dashboard-panel .dash-section:first-child,
+  #stats-panel .dash-section:first-child {
+    margin-top: 24px;
+  }
 
   .dash-nav-link {
     display: inline-flex;
