@@ -15,7 +15,7 @@
   <img src="design/readme-banner-v2.png" alt="Hava Kargo Bülteni - Haber Akışı ve Analitik Dashboard Görünümleri" width="100%">
 </p>
 
-Uygulama; zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interaktif grafik entegrasyonları ve **n8n + Gemini API** tabanlı yapay zeka altyapısıyla sektör profesyonellerine yönelik geliştirilmiştir.
+Uygulama; zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interaktif grafik entegrasyonları ve **n8n + Gemini** tabanlı yapay zeka altyapısıyla geliştirilmiştir.
 
 
 ## 🚀 Temel Özellikler
