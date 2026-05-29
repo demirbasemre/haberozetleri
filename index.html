@@ -744,6 +744,7 @@
       </svg>
       <input type="search" id="search" placeholder="" autocomplete="off">
       <div class="search-stats" id="header-stats"></div>
+      <div class="search-suggestions" id="search-suggestions"></div>
     </div>
 
     <!-- Eski tasarıma dön -->
@@ -1189,7 +1190,7 @@
     <section class="dash-section" id="dash-sec-enerji">
       <h2 class="dash-section-title">Enerji Fiyatları <span class="dash-section-badge">EIA / FRED</span></h2>
       <div class="dash-charts" style="grid-template-columns:1fr;">
-        <div class="dash-chart-card">
+        <div class="dash-chart-card" id="dc-energy-chart">
           <div class="dash-chart-title">Jet Yakıt &amp; Brent Ham Petrol</div>
           <div class="dash-chart-meta">
             <span>$/varil · Haftalık</span>
@@ -1216,7 +1217,7 @@
     <section class="dash-section" id="dash-sec-ekonomi">
       <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">IMF WEO</span></h2>
       <div class="dash-charts">
-        <div class="dash-chart-card">
+        <div class="dash-chart-card" id="dc-gdp-chart">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
             GDP Büyüme Oranı (%)
             <select id="sel-gdp-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
@@ -1239,7 +1240,7 @@
             <span class="cl-item" id="gdp-legend-forecast" style="display:none"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
           </div>
         </div>
-        <div class="dash-chart-card">
+        <div class="dash-chart-card" id="dc-cpi-chart">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
             Enflasyon / TÜFE (%)
             <select id="sel-cpi-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
@@ -1278,7 +1279,7 @@
           <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
           <div class="dash-card-note">Drewry · Haftalık<br>Kaynak: <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a></div>
         </div>
-        <div class="dash-card card-in-progress">
+        <div class="dash-card card-in-progress" id="dc-bafi">
           <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
           <div class="card-in-progress-badge" style="margin-top: 10px;">
             <span class="badge-dot"></span>Otomasyon süreci devam ediyor
@@ -1286,7 +1287,7 @@
           <div class="dash-card-sub">Hava kargo spot tarifesi endeksi</div>
           <div class="dash-card-note">Baltic Exchange · <a href="https://www.balticexchange.com/en/data/routes/air.html" target="_blank" rel="noopener">balticexchange.com →</a></div>
         </div>
-        <div class="dash-card card-in-progress">
+        <div class="dash-card card-in-progress" id="dc-iata">
           <div class="dash-card-label">IATA Air Cargo Market Analysis</div>
           <div class="card-in-progress-badge" style="margin-top: 10px;">
             <span class="badge-dot"></span>Otomasyon süreci devam ediyor
@@ -1294,7 +1295,7 @@
           <div class="dash-card-sub">CTK büyümesi, kapasite ve verim değişimi</div>
           <div class="dash-card-note">IATA · Aylık rapor · <a href="https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/" target="_blank" rel="noopener">iata.org →</a></div>
         </div>
-        <div class="dash-card card-in-progress">
+        <div class="dash-card card-in-progress" id="dc-fbx">
           <div class="dash-card-label">Freightos Baltic Index (FBX)</div>
           <div class="card-in-progress-badge" style="margin-top: 10px;">
             <span class="badge-dot"></span>Otomasyon süreci devam ediyor
@@ -1520,7 +1521,7 @@
         </div>
       </h2>
       <div class="dash-charts" style="grid-template-columns:1fr;">
-        <div class="dash-chart-card">
+        <div class="dash-chart-card" id="dc-dist-chart">
           <div class="stats-source-legend" id="stats-dist-legend" role="group" aria-label="Seriler — tıklayarak gizle/göster"></div>
           <div class="dash-chart-wrap" style="position:relative;height:300px;margin-top:12px;">
             <canvas id="chart-distribution"></canvas>
@@ -2894,7 +2895,9 @@ function updateStats(filteredArticles, totalCount) {
       return `${sep}<span class="stat-reg"${subDetail ? ` title="${subDetail}"` : ''}>${TK_SHORT[tk.id]} <b>${tkCounts[tk.id]}</b></span>`;
     }).join('');
 
-  el.innerHTML = `${line1}${analysisCount ? ` · <b>${analysisCount}</b> analiz` : ''} içinde ara`;
+  const metricsCount = (typeof SEARCHABLE_METRICS !== 'undefined') ? SEARCHABLE_METRICS.length : 22;
+
+  el.innerHTML = `${line1}${analysisCount ? ` · <b>${analysisCount}</b> analiz` : ''} · <b>${metricsCount}</b> metrik içinde ara`;
 }
 
 const CAT_SHORT = {
@@ -3889,15 +3892,297 @@ document.getElementById('clear-filters').addEventListener('click', () => {
   render();
 });
 
-// Search
+// Searchable metrics configuration
+const SEARCHABLE_METRICS = [
+  {
+    name: 'Jet Yakıt Fiyatı',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-jetfuel',
+    kw: ['jet', 'yakıt', 'fiyatı', 'fuel', 'gazyağı', 'kerosen', 'eia', 'fred']
+  },
+  {
+    name: 'Brent Ham Petrol',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-brent',
+    kw: ['brent', 'petrol', 'crude', 'oil', 'varil', 'eia', 'fred']
+  },
+  {
+    name: 'THY Hisse (THYAO)',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-thy',
+    kw: ['thy', 'thyhao', 'türk hava yolları', 'hisse', 'borsa', 'hisse senedi', 'stock']
+  },
+  {
+    name: 'Döviz Kurları (USD / EUR)',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-usd',
+    kw: ['döviz', 'usd', 'eur', 'try', 'dolar', 'euro', 'kur', 'forex']
+  },
+  {
+    name: 'Türkiye GSYH Büyümesi',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-imf',
+    kw: ['türkiye', 'gsyh', 'büyüme', 'gdp', 'imf', 'weo']
+  },
+  {
+    name: 'Küresel GDP Büyümesi',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-gdp',
+    kw: ['küresel', 'gdp', 'büyüme', 'growth', 'imf', 'weo']
+  },
+  {
+    name: 'Jet Yakıt & Brent Ham Petrol Grafiği',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-energy-chart',
+    kw: ['grafik', 'enerji', 'fiyatlar', 'brent', 'jet', 'crack spread', 'rafineri']
+  },
+  {
+    name: 'GDP Büyüme Oranı Grafiği',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-gdp-chart',
+    kw: ['büyüme', 'gdp', 'grafik', 'imf', 'weo']
+  },
+  {
+    name: 'Enflasyon / TÜFE Grafiği',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-cpi-chart',
+    kw: ['enflasyon', 'tüfe', 'cpi', 'grafik', 'imf', 'weo']
+  },
+  {
+    name: 'Dünya Konteyner Endeksi (WCI)',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-wci',
+    kw: ['drewry', 'wci', 'konteyner', 'navlun', 'spot', 'fiyat', 'nakliye', 'denizyolu']
+  },
+  {
+    name: 'Baltic Air Freight Index (BAFI)',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-bafi',
+    kw: ['bafi', 'baltic', 'air freight', 'index', 'endeks', 'hava kargo', 'navlun']
+  },
+  {
+    name: 'IATA Air Cargo Market Analysis',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-iata',
+    kw: ['iata', 'air cargo', 'cargo', 'market', 'kargo', 'analiz', 'rapor']
+  },
+  {
+    name: 'Freightos Baltic Index (FBX)',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dc-fbx',
+    kw: ['freightos', 'fbx', 'baltic', 'endeks', 'konteyner', 'navlun', 'spot']
+  },
+  {
+    name: 'Veri Yayın Takvimi ve Önemli Tarihler',
+    tab: 'dashboard',
+    tabName: 'Dashboard',
+    id: 'dash-sec-takvim',
+    kw: ['takvim', 'yayın', 'tarihler', 'tatil', 'bayram', 'önemli tarihler']
+  },
+  {
+    name: 'Tekil Haber İstatistiği',
+    tab: 'stats',
+    tabName: 'İstatistikler',
+    id: 'stats-kpi-total-card',
+    kw: ['tekil', 'haber', 'kpi', 'istatistik', 'toplam haber']
+  },
+  {
+    name: 'Analizli Haber İstatistiği',
+    tab: 'stats',
+    tabName: 'İstatistikler',
+    id: 'stats-kpi-analyzed-card',
+    kw: ['analizli', 'haber', 'istatistik', 'kpi']
+  },
+  {
+    name: 'Aktif Kaynak İstatistiği',
+    tab: 'stats',
+    tabName: 'İstatistikler',
+    id: 'stats-kpi-sources-card',
+    kw: ['aktif', 'kaynak', 'istatistik', 'kpi']
+  },
+  {
+    name: 'En Aktif Kaynak',
+    tab: 'stats',
+    tabName: 'İstatistikler',
+    id: 'stats-kpi-top-source-card',
+    kw: ['aktif', 'en aktif', 'kaynak', 'kpi']
+  },
+  {
+    name: 'En Aktif Havayolu',
+    tab: 'stats',
+    tabName: 'İstatistikler',
+    id: 'stats-kpi-top-airline-card',
+    kw: ['aktif', 'havayolu', 'en aktif', 'kpi']
+  },
+  {
+    name: 'Kaynak ve Kategori Bazlı Dağılım Grafiği',
+    tab: 'stats',
+    tabName: 'İstatistikler',
+    id: 'dc-dist-chart',
+    kw: ['dağılım', 'kaynak', 'kategori', 'grafik', 'istatistik', 'haber dağılımı']
+  },
+  {
+    name: 'Ziyaretçi İstatistikleri',
+    tab: 'stats',
+    tabName: 'İstatistikler',
+    id: 'stats-sec-visitors',
+    kw: ['ziyaretçi', 'ziyaret', 'tekil ziyaretçi', 'istatistik', 'oturum']
+  },
+  {
+    name: 'Chatbot Kullanım İstatistikleri',
+    tab: 'stats',
+    tabName: 'İstatistikler',
+    id: 'chat-card-total',
+    kw: ['chatbot', 'soru', 'konuşma', 'yapay zeka', 'istatistik', 'bot', 'gemini']
+  }
+];
+
 let searchTimer;
+let activeSuggestionIndex = -1;
+
+function renderSuggestions(matches) {
+  const div = document.getElementById('search-suggestions');
+  if (!div) return;
+  div.innerHTML = '';
+  activeSuggestionIndex = -1;
+
+  if (matches.length === 0) {
+    div.style.display = 'none';
+    return;
+  }
+
+  matches.forEach((item, index) => {
+    const row = document.createElement('div');
+    row.className = 'search-suggestion-item';
+    row.dataset.index = index;
+    row.innerHTML = `
+      <span class="search-suggestion-title">${item.name}</span>
+      <span class="search-suggestion-badge">${item.tabName}</span>
+    `;
+    row.addEventListener('click', e => {
+      e.stopPropagation();
+      navigateToMetric(item);
+    });
+    div.appendChild(row);
+  });
+  div.style.display = 'flex';
+}
+
+function navigateToMetric(item) {
+  // Clear search input and hide suggestions
+  const searchInput = document.getElementById('search');
+  if (searchInput) {
+    searchInput.value = '';
+    searchInput.closest('.search-wrap')?.classList.remove('has-value');
+  }
+  const div = document.getElementById('search-suggestions');
+  if (div) div.style.display = 'none';
+
+  // Clear query to reset article filters on news tab
+  searchQuery = '';
+  render();
+
+  // Switch to the target tab
+  switchTab(item.tab);
+
+  // Smooth scroll and highlight card after a small delay
+  setTimeout(() => {
+    const el = document.getElementById(item.id);
+    if (el) {
+      document.querySelectorAll('.metric-highlight-active').forEach(oldEl => {
+        oldEl.classList.remove('metric-highlight-active');
+      });
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('metric-highlight-active');
+      setTimeout(() => {
+        el.classList.remove('metric-highlight-active');
+      }, 2000);
+    }
+  }, 120);
+}
+
+// Search input event handlers
 document.getElementById('search').addEventListener('input', e => {
+  const query = e.target.value.toLowerCase().trim();
   e.target.closest('.search-wrap').classList.toggle('has-value', e.target.value.length > 0);
+
+  // Filter metrics
+  if (query.length >= 2) {
+    const matches = SEARCHABLE_METRICS.filter(item => {
+      const matchName = item.name.toLowerCase().includes(query);
+      const matchKw = item.kw.some(kw => kw.includes(query));
+      return matchName || matchKw;
+    });
+    renderSuggestions(matches);
+  } else {
+    const div = document.getElementById('search-suggestions');
+    if (div) div.style.display = 'none';
+  }
+
+  // Handle article filtering on news feed
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
     searchQuery = e.target.value;
     render();
   }, 220);
+});
+
+document.getElementById('search').addEventListener('keydown', e => {
+  const div = document.getElementById('search-suggestions');
+  if (!div || div.style.display !== 'flex') return;
+
+  const rows = div.querySelectorAll('.search-suggestion-item');
+  if (rows.length === 0) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    activeSuggestionIndex = (activeSuggestionIndex + 1) % rows.length;
+    updateActiveSuggestion(rows);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    activeSuggestionIndex = (activeSuggestionIndex - 1 + rows.length) % rows.length;
+    updateActiveSuggestion(rows);
+  } else if (e.key === 'Enter') {
+    if (activeSuggestionIndex >= 0 && activeSuggestionIndex < rows.length) {
+      e.preventDefault();
+      rows[activeSuggestionIndex].click();
+    }
+  } else if (e.key === 'Escape') {
+    div.style.display = 'none';
+    activeSuggestionIndex = -1;
+  }
+});
+
+function updateActiveSuggestion(rows) {
+  rows.forEach((row, idx) => {
+    if (idx === activeSuggestionIndex) {
+      row.classList.add('active');
+      row.scrollIntoView({ block: 'nearest' });
+    } else {
+      row.classList.remove('active');
+    }
+  });
+}
+
+// Click outside handler for search suggestions dropdown
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap')) {
+    const div = document.getElementById('search-suggestions');
+    if (div) div.style.display = 'none';
+  }
 });
 
 // Build region dropdown immediately (static data)
