@@ -6164,13 +6164,13 @@ async function loadDashboard() {
     if (csValEl && csDeltaEl) {
       if (lastIdx >= 0) {
         const cur = spreadSeries[lastIdx];
-        csValEl.textContent = '$' + cur.toFixed(2);
+        csValEl.textContent = cur.toFixed(2) + ' $';
         if (prevIdx >= 0) {
           const diff = cur - spreadSeries[prevIdx];
           const dir  = diff > 0 ? 'up' : diff < 0 ? 'down' : '';
           const sign = diff > 0 ? '+' : '';
           csDeltaEl.className = 'cs-delta' + (dir ? ' ' + dir : '');
-          csDeltaEl.textContent = `${sign}$${diff.toFixed(2)} haftalık`;
+          csDeltaEl.textContent = `${sign}${diff.toFixed(2)} $ haftalık`;
         } else {
           csDeltaEl.className = 'cs-delta';
           csDeltaEl.textContent = '—';
@@ -6200,7 +6200,7 @@ async function loadDashboard() {
           order: 2
         }
       ],
-      v => '$' + v.toFixed(1),
+      v => v.toFixed(1) + ' $',
       {
         legendPosition: 'bottom',
         xTickCallback,
@@ -6241,14 +6241,14 @@ async function loadDashboard() {
 
     if (jet && jet.length) {
       const last = jet[jet.length - 1];
-      setCard('dc-jetfuel', '$' + (last.value * 42).toFixed(2), pctChg(jet.slice(-2)),
+      setCard('dc-jetfuel', (last.value * 42).toFixed(2) + ' $', pctChg(jet.slice(-2)),
         'ABD Gulf Coast · varil', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
     } else {
       setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
     }
     if (brent && brent.length) {
       const last = brent[brent.length - 1];
-      setCard('dc-brent', '$' + last.value.toFixed(1), pctChg(brent.slice(-2)),
+      setCard('dc-brent', last.value.toFixed(1) + ' $', pctChg(brent.slice(-2)),
         'Europe Brent Spot · varil', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
     } else {
       setCard('dc-brent', '—', null, '', 'Veri alınamadı');
@@ -6340,7 +6340,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? '₺' + Number(v).toFixed(1) : '',
+        v => v != null ? Number(v).toFixed(1) + ' ₺' : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' }
@@ -6350,7 +6350,7 @@ async function loadDashboard() {
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         const symbol = currency === 'USD' ? '$' : '€';
-        titleEl.textContent = `${symbol} Kuru · Güncel: ₺${latestPrice.toFixed(1)}`;
+        titleEl.textContent = `${symbol} Kuru · Güncel: ${latestPrice.toFixed(1)} ₺`;
       }
     } catch (err) {
       console.error("Forex Grafik çizim hatası:", err);
@@ -6437,11 +6437,11 @@ async function loadDashboard() {
       const eurValEl = document.getElementById('forex-eur-val');
       
       if (usdValEl) {
-        usdValEl.textContent = usdTry ? '₺' + usdTry.toFixed(1) : '—';
+        usdValEl.textContent = usdTry ? usdTry.toFixed(1) + ' ₺' : '—';
         usdValEl.classList.remove('skeleton');
       }
       if (eurValEl) {
-        eurValEl.textContent = eurTry ? '₺' + eurTry.toFixed(1) : '—';
+        eurValEl.textContent = eurTry ? eurTry.toFixed(1) + ' ₺' : '—';
         eurValEl.classList.remove('skeleton');
       }
     }).catch(() => {
@@ -6511,7 +6511,7 @@ async function loadDashboard() {
         const valEl = document.getElementById(valId);
         const chgEl = document.getElementById(chgId);
         if (valEl) {
-          valEl.textContent = price != null ? '₺' + price.toFixed(1) : '—';
+          valEl.textContent = price != null ? price.toFixed(1) + ' ₺' : '—';
           valEl.classList.remove('skeleton');
         }
         if (chgEl && change != null) {
@@ -6976,7 +6976,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? '$' + Number(v).toLocaleString('en-US') : '',
+        v => v != null ? Number(v).toLocaleString('en-US') + ' $' : '',
         {
           plugins: [wciAnnotationsPlugin],
           xTickFont: function(context) {
@@ -7022,7 +7022,7 @@ async function loadDashboard() {
     _wciLatest = latest;
 
     if (latest && latest.price) {
-      const formattedPrice = '$' + latest.price.toLocaleString('en-US');
+      const formattedPrice = latest.price.toLocaleString('en-US') + ' $';
       setCard('dc-wci',
         formattedPrice,
         latest.change,
@@ -7107,7 +7107,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? '₺' + Number(v).toFixed(2) : '',
+        v => v != null ? Number(v).toFixed(2) + ' ₺' : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' }
@@ -7116,7 +7116,7 @@ async function loadDashboard() {
       
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-        titleEl.textContent = `THY Hisse Performansı (THYAO) · Güncel: ₺${latestPrice.toFixed(2)}`;
+        titleEl.textContent = `THY Hisse Performansı (THYAO) · Güncel: ${latestPrice.toFixed(2)} ₺`;
       }
     } catch (err) {
       console.error("THY Grafik çizim hatası:", err);
@@ -7218,7 +7218,7 @@ async function loadDashboard() {
       const lastObsDate = validPoints.length ? new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10) : '';
       
       setCard('dc-thy',
-        '₺' + price.toFixed(2),
+        price.toFixed(2) + ' ₺',
         change,
         'Borsa İstanbul · hisse fiyatı',
         `Son veri: ${lastObsDate}<br>Kaynak: Yahoo Finance`
