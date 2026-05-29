@@ -12,7 +12,7 @@
 <h3 align="center">Hava kargo sektör haberlerini, küresel makro-ekonomik verileri, petrol fiyat endekslerini ve yapay zeka destekli akıllı bir asistanı tek bir çatı altında toplayan premium, tek sayfalık modern bir platform.</h3>
 
 <p align="center">
-  <img src="design/readme-banner.png" alt="Hava Kargo Bülteni - Haber Akışı ve Analitik Dashboard Görünümleri" width="100%">
+  <img src="design/readme-banner-v2.png" alt="Hava Kargo Bülteni - Haber Akışı ve Analitik Dashboard Görünümleri" width="100%">
 </p>
 
 Uygulama; zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interaktif grafik entegrasyonları ve **n8n + Gemini API** tabanlı yapay zeka altyapısıyla sektör profesyonellerine yönelik geliştirilmiştir.
