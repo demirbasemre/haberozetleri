@@ -1,9 +1,23 @@
-# ✈️ Hava Kargo Bülteni & Dashboard
+<p align="center">
+  <br/>
+  <a href="#"><img src="https://img.shields.io/badge/S%C3%BCr%C3%BCm-Beta-red.svg?style=for-the-badge&color=E63946&labelColor=ececec" alt="Sürüm: Beta"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Altyap%C4%B1-n8n_%2B_Gemini-orange.svg?style=for-the-badge&color=F4A261&labelColor=ececec" alt="Altyapı: n8n + Gemini"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Dil-T%C3%BCrk%C3%A7e-blue.svg?style=for-the-badge&color=457B9D&labelColor=ececec" alt="Dil: Türkçe"></a>
+  <br/>
+  <br/>
+</p>
 
-Hava Kargo Bülteni; hava kargo sektör haberlerini, küresel makro-ekonomik verileri, petrol fiyat endekslerini ve yapay zeka destekli akıllı bir asistanı tek bir çatı altında toplayan premium, tek sayfalık modern bir sitedir.
+<p align="center">
+  <h1 align="center">✈️ Hava Kargo Bülteni & Dashboard</h1>
+</p>
+
+<h3 align="center">Hava kargo sektör haberlerini, küresel makro-ekonomik verileri, petrol fiyat endekslerini ve yapay zeka destekli akıllı bir asistanı tek bir çatı altında toplayan premium, tek sayfalık modern bir platform.</h3>
+
+<p align="center">
+  <img src="design/dashboard-screenshot.png" alt="Hava Kargo Bülteni Dashboard Ekran Görüntüsü" width="100%">
+</p>
 
 Uygulama; zengin görsel tasarımı, hızlı filtreleme mekanizmaları, interaktif grafik entegrasyonları ve **n8n + Gemini API** tabanlı yapay zeka altyapısıyla sektör profesyonellerine yönelik geliştirilmiştir.
-
 
 
 ## 🚀 Temel Özellikler
