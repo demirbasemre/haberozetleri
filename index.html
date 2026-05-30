@@ -747,23 +747,10 @@
       <div class="search-suggestions" id="search-suggestions"></div>
     </div>
 
-    <!-- Kompakt sekmeler: mobilde aşağı kaydırınca arama satırının sağında belirir (ikon-only) -->
-    <div class="hdr-compact-tabs" id="hdr-compact-tabs" role="tablist" aria-label="Sekmeler">
-      <button class="hct-btn" data-tab="news" type="button" onclick="switchTab('news')" aria-label="Haberler" title="Haberler">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
-        <span class="hct-i-pill" role="button" tabindex="0" aria-label="Haber istatistiklerini aç" title="Haber istatistikleri">
-          <svg class="nsp-bars" viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
-            <rect x="0.5" y="7" width="2.5" height="4.5" rx="0.6"/>
-            <rect x="4.75" y="4" width="2.5" height="7.5" rx="0.6"/>
-            <rect x="9" y="1" width="2.5" height="10.5" rx="0.6"/>
-          </svg>
-          <span class="nsp-i" aria-hidden="true">i</span>
-        </span>
-      </button>
-      <button class="hct-btn" data-tab="dashboard" type="button" onclick="switchTab('dashboard')" aria-label="Dashboard" title="Dashboard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="6" height="8" rx="1"/><rect x="10" y="3" width="12" height="4" rx="1"/><rect x="10" y="11" width="12" height="4" rx="1"/><rect x="2" y="15" width="6" height="6" rx="1"/><rect x="10" y="19" width="12" height="2" rx="1"/></svg>
-      </button>
-    </div>
+    <!-- Mobil mercek: aramayı overlay olarak açar -->
+    <button class="hdr-lens" id="hdr-lens" type="button" aria-label="Ara" aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
 
     <!-- Eski tasarıma dön -->
     <a href="index_eski.html" class="design-switch-btn" title="Eski tasarıma dön">
@@ -834,6 +821,26 @@
     </button>
   </div>
 </header>
+
+<!-- ── MOBİL MERCEK ARAMA OVERLAY ── -->
+<div class="search-ov" id="search-ov" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Ara">
+  <div class="search-ov-scrim" id="search-ov-scrim"></div>
+  <div class="search-ov-card">
+    <button class="search-ov-close" id="search-ov-close" type="button" aria-label="Kapat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="search-ov-title">
+      <h2>Ne aramıştınız?</h2>
+      <div class="search-ov-stats" id="search-ov-stats"></div>
+    </div>
+    <div class="search-ov-mount" id="search-ov-mount"></div>
+    <div class="search-ov-scope">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
+      <span><b>Haberler</b> içinde aranıyor · istatistik &amp; metrikler altta önerilir</span>
+    </div>
+    <div class="search-ov-recent" id="search-ov-recent" hidden></div>
+  </div>
+</div>
 
 <!-- Tab navigation (between header and filter bar) -->
 <div class="main-tabs-wrap">
@@ -4133,6 +4140,9 @@ function navigateToNewsSearch(query) {
   const div = document.getElementById('search-suggestions');
   if (div) div.style.display = 'none';
 
+  if (window.__hkbSaveRecent) window.__hkbSaveRecent(query);
+  if (window.__hkbCloseOv) window.__hkbCloseOv();
+
   searchQuery = query;
   switchTab('news');
   render();
@@ -4147,6 +4157,8 @@ function navigateToMetric(item) {
   }
   const div = document.getElementById('search-suggestions');
   if (div) div.style.display = 'none';
+
+  if (window.__hkbCloseOv) window.__hkbCloseOv();
 
   // Clear query to reset article filters on news tab
   searchQuery = '';
@@ -9390,29 +9402,81 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   });
 })();
 
-// Mobilde aşağı kaydırınca: sekme barını kapat, kompakt ikon sekmeleri arama satırının sağında göster
+// ── MOBİL MERCEK ARAMA OVERLAY ──
 (function() {
-  const mq = window.matchMedia('(max-width: 600px)');
-  let condensed = false;
-  const ENTER = 56;   // bu kadar px kaydırınca daral
-  const EXIT  = 18;   // bu kadar yukarı çıkınca geri aç
-  function onScroll() {
-    if (!mq.matches) {
-      if (condensed) { document.body.classList.remove('tabs-condensed'); condensed = false; }
-      return;
-    }
-    const y = window.scrollY || document.documentElement.scrollTop || 0;
-    if (!condensed && y > ENTER) {
-      document.body.classList.add('tabs-condensed');
-      condensed = true;
-    } else if (condensed && y < EXIT) {
-      document.body.classList.remove('tabs-condensed');
-      condensed = false;
-    }
+  const lens   = document.getElementById('hdr-lens');
+  const ov     = document.getElementById('search-ov');
+  const scrim  = document.getElementById('search-ov-scrim');
+  const closeB = document.getElementById('search-ov-close');
+  const mount  = document.getElementById('search-ov-mount');
+  const statsBox = document.getElementById('search-ov-stats');
+  const recentBox = document.getElementById('search-ov-recent');
+  const searchWrap = document.querySelector('.search-wrap');
+  if (!lens || !ov || !mount || !searchWrap) return;
+
+  // arama kutusunun orijinal yerini hatırla (kapanışta geri koymak için)
+  const homeParent = searchWrap.parentNode;
+  const homeNext = searchWrap.nextSibling;
+  const searchInput = document.getElementById('search');
+
+  const RECENT_KEY = 'hkb_recent_searches';
+  function getRecent(){ try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch(e){ return []; } }
+  function saveRecent(term){
+    term = (term || '').trim();
+    if (term.length < 2) return;
+    let list = getRecent().filter(t => t.toLocaleLowerCase('tr-TR') !== term.toLocaleLowerCase('tr-TR'));
+    list.unshift(term);
+    list = list.slice(0, 5);
+    try { localStorage.setItem(RECENT_KEY, JSON.stringify(list)); } catch(e){}
   }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
-  onScroll();
+  window.__hkbSaveRecent = saveRecent;   // arama yapıldığında çağrılabilir
+
+  function renderRecent(){
+    const list = getRecent();
+    if (!list.length){ recentBox.hidden = true; recentBox.innerHTML = ''; return; }
+    recentBox.hidden = false;
+    recentBox.innerHTML =
+      '<div class="ovr-lbl">Son aramalar<button class="ovr-clear" type="button" id="ovr-clear">Temizle</button></div>' +
+      list.map(t => `<a data-term="${t.replace(/"/g,'&quot;')}"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="ovr-term">${t}</span><span class="ovr-go">↗</span></a>`).join('');
+  }
+  recentBox.addEventListener('click', e => {
+    if (e.target.closest('#ovr-clear')){ try { localStorage.removeItem(RECENT_KEY); } catch(err){} renderRecent(); return; }
+    const a = e.target.closest('a[data-term]');
+    if (a){
+      searchInput.value = a.dataset.term;
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      searchInput.focus();
+    }
+  });
+
+  function openOv(){
+    // canlı sayım metnini başlığa kopyala
+    const hs = document.getElementById('header-stats');
+    statsBox.innerHTML = hs ? hs.innerHTML : '';
+    renderRecent();
+    mount.appendChild(searchWrap);          // gerçek arama kutusunu karta taşı
+    document.body.classList.add('search-ov-active');
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden', 'false');
+    setTimeout(() => { try { searchInput.focus(); } catch(e){} }, 80);  // native klavye
+  }
+  function closeOv(){
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('search-ov-active');
+    try { searchInput.blur(); } catch(e){}
+    // arama kutusunu header'daki yerine geri koy
+    if (homeNext) homeParent.insertBefore(searchWrap, homeNext);
+    else homeParent.appendChild(searchWrap);
+  }
+
+  lens.addEventListener('click', openOv);
+  scrim.addEventListener('click', closeOv);
+  closeB.addEventListener('click', closeOv);
+  window.__hkbCloseOv = closeOv;   // arama/seçim sonrası dışarıdan kapatma
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && ov.classList.contains('open')) closeOv(); });
+  // büyük ekrana geçilirse overlay'i kapat (arama kutusu header'a dönsün)
+  window.matchMedia('(min-width: 769px)').addEventListener('change', e => { if (e.matches && ov.classList.contains('open')) closeOv(); });
 })();
 </script>
 
