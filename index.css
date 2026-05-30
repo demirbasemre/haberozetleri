@@ -1547,7 +1547,7 @@
 
   /* ── DATE SECTION ────────────────────────────── */
   .date-section { margin-bottom: 52px; }
-  .date-section:first-child { margin-top: 24px; }
+  .date-section:first-child { margin-top: 44px; }
 
   .date-section-header {
     display: flex;
@@ -1849,14 +1849,13 @@
   .card-footer-multi {
     flex-direction: column;
     align-items: stretch !important;
-    gap: 0 !important;
+    gap: 6px !important;
   }
   .card-source-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    height: 24px;
   }
 
   .card-footer {
@@ -1866,9 +1865,6 @@
     padding-top: 12px;
     border-top: 1px solid var(--border-soft);
     gap: 8px;
-  }
-  .card-footer:not(.card-footer-multi) {
-    height: 37px;
   }
 
   /* Source count badge */
@@ -1975,7 +1971,7 @@
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
-    height: 28px;
+    padding: 6px 0;
     margin-top: 10px;
     transition: background 0.15s, border-color 0.15s;
   }
@@ -2306,10 +2302,6 @@
 
   /* ── DASHBOARD ───────────────────────────────────── */
   .dash-section { margin-bottom: 44px; scroll-margin-top: 190px; }
-  #dashboard-panel .dash-section:first-child,
-  #stats-panel .dash-section:first-child {
-    margin-top: 24px;
-  }
 
   .dash-nav-link {
     display: inline-flex;
@@ -3107,19 +3099,6 @@
     border-radius: 10px;
     padding: 1px 6px;
   }
-  .rel-cf-spinner {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border: 2px solid rgba(0,0,0,0.1);
-    border-radius: 50%;
-    border-top-color: currentColor;
-    animation: rel-spin 0.6s linear infinite;
-  }
-  @keyframes rel-spin {
-    to { transform: rotate(360deg); }
-  }
-
 
   /* ── AY SEÇİMİ DROPDOWN ─────────────────────────── */
   .rel-mo-selector { position: relative; display: inline-block; }
