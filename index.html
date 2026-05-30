@@ -5476,146 +5476,31 @@ function buildReleaseCalendar() {
   const HOLIDAY_COUNTRIES = [
     { code: 'TR', name: 'Türkiye',        flag: '🇹🇷' },
     { code: 'US', name: 'ABD',            flag: '🇺🇸' },
-    { code: 'AF', name: 'Afganistan',     flag: '🇦🇫' },
     { code: 'DE', name: 'Almanya',        flag: '🇩🇪' },
-    { code: 'AO', name: 'Angola',          flag: '🇦🇴' },
-    { code: 'AR', name: 'Arjantin',       flag: '🇦🇷' },
-    { code: 'AM', name: 'Ermenistan',     flag: '🇦🇲' },
-    { code: 'AL', name: 'Arnavutluk',     flag: '🇦🇱' },
-    { code: 'AU', name: 'Avustralya',     flag: '🇦🇺' },
-    { code: 'AT', name: 'Avusturya',      flag: '🇦🇹' },
-    { code: 'AZ', name: 'Azerbaycan',     flag: '🇦🇿' },
-    { code: 'BS', name: 'Bahamalar',      flag: '🇧🇸' },
-    { code: 'BH', name: 'Bahreyn',        flag: '🇧🇭' },
-    { code: 'BD', name: 'Bangladeş',      flag: '🇧🇩' },
-    { code: 'BE', name: 'Belçika',        flag: '🇧🇪' },
-    { code: 'BJ', name: 'Benin',          flag: '🇧🇯' },
-    { code: 'BY', name: 'Beyaz Rusya',    flag: '🇧🇾' },
-    { code: 'BA', name: 'Bosna Hersek',   flag: '🇧🇦' },
-    { code: 'BR', name: 'Brezilya',       flag: '🇧🇷' },
-    { code: 'BG', name: 'Bulgaristan',     flag: '🇧🇬' },
-    { code: 'BF', name: 'Burkina Faso',   flag: '🇧🇫' },
-    { code: 'BI', name: 'Burundi',        flag: '🇧🇮' },
-    { code: 'AE', name: 'BAE',            flag: '🇦🇪' },
-    { code: 'DZ', name: 'Cezayir',        flag: '🇩🇿' },
-    { code: 'DJ', name: 'Cibuti',         flag: '🇩🇯' },
-    { code: 'TD', name: 'Çad',            flag: '🇹🇩' },
-    { code: 'CZ', name: 'Çekya',          flag: '🇨🇿' },
-    { code: 'CN', name: 'Çin',            flag: '🇨🇳' },
-    { code: 'DK', name: 'Danimarka',      flag: '🇩🇰' },
-    { code: 'CD', name: 'Dem. Kongo Cum.', flag: '🇨🇩' },
-    { code: 'EC', name: 'Ekvador',        flag: '🇪🇨' },
-    { code: 'GQ', name: 'Ekvator Ginesi', flag: '🇬🇶' },
-    { code: 'SV', name: 'El Salvador',    flag: '🇸🇻' },
-    { code: 'ID', name: 'Endonezya',      flag: '🇮🇩' },
-    { code: 'ER', name: 'Eritre',         flag: '🇪🇷' },
-    { code: 'EE', name: 'Estonya',        flag: '🇪🇪' },
-    { code: 'ET', name: 'Etiyopya',       flag: '🇪🇹' },
-    { code: 'PH', name: 'Filipinler',     flag: '🇵🇭' },
-    { code: 'FI', name: 'Finlandiya',     flag: '🇫🇮' },
     { code: 'FR', name: 'Fransa',         flag: '🇫🇷' },
-    { code: 'GA', name: 'Gabon',          flag: '🇬🇦' },
-    { code: 'GM', name: 'Gambiya',        flag: '🇬🇲' },
-    { code: 'GH', name: 'Gana',           flag: '🇬🇭' },
-    { code: 'GN', name: 'Gine',           flag: '🇬🇳' },
-    { code: 'GW', name: 'Gine-Bissau',    flag: '🇬🇼' },
-    { code: 'GT', name: 'Guatemala',      flag: '🇬🇹' },
-    { code: 'ZA', name: 'Güney Afrika',   flag: '🇿🇦' },
-    { code: 'KR', name: 'G. Kore',        flag: '🇰🇷' },
-    { code: 'SS', name: 'Güney Sudan',    flag: '🇸🇸' },
-    { code: 'GE', name: 'Gürcistan',      flag: '🇬🇪' },
-    { code: 'HT', name: 'Haiti',          flag: '🇭🇹' },
-    { code: 'HR', name: 'Hırvatistan',    flag: '🇧🇷' }, // Hırvatistan bayrağı 🇭🇷 (düzeltildi)
-    { code: 'IN', name: 'Hindistan',      flag: '🇮🇳' },
-    { code: 'NL', name: 'Hollanda',       flag: '🇳🇱' },
-    { code: 'HK', name: 'Hong Kong',      flag: '🇭🇰' },
-    { code: 'IQ', name: 'Irak',           flag: '🇮🇶' },
     { code: 'GB', name: 'İngiltere',      flag: '🇬🇧' },
-    { code: 'IR', name: 'İran',           flag: '🇮🇷' },
-    { code: 'IE', name: 'İrlanda',        flag: '🇮🇪' },
-    { code: 'ES', name: 'İspanya',        flag: '🇪🇸' },
-    { code: 'IL', name: 'İsrail',         flag: '🇮🇱' },
-    { code: 'SE', name: 'İsveç',          flag: '🇸🇪' },
-    { code: 'CH', name: 'İsviçre',        flag: '🇨🇭' },
-    { code: 'IT', name: 'İtalya',         flag: '🇮🇹' },
-    { code: 'CI', name: 'Fildişi Sahili', flag: '🇨🇮' },
-    { code: 'JP', name: 'Japonya',        flag: '🇯🇵' },
-    { code: 'JO', name: 'Ürdün',          flag: '🇯🇴' },
-    { code: 'KH', name: 'Kamboçya',       flag: '🇰🇭' },
-    { code: 'CM', name: 'Kamerun',        flag: '🇨🇲' },
-    { code: 'CA', name: 'Kanada',         flag: '🇨🇦' },
-    { code: 'ME', name: 'Karadağ',        flag: '🇲🇪' },
-    { code: 'QA', name: 'Katar',          flag: '🇶🇦' },
-    { code: 'KZ', name: 'Kazakistan',     flag: '🇰🇿' },
-    { code: 'KE', name: 'Kenya',          flag: '🇰🇪' },
-    { code: 'KG', name: 'Kırgızistan',    flag: '🇰🇬' },
-    { code: 'CO', name: 'Kolombiya',      flag: '🇨🇴' },
-    { code: 'KM', name: 'Komorlar',       flag: '🇰🇲' },
-    { code: 'CG', name: 'Kongo',          flag: '🇨🇬' },
-    { code: 'XK', name: 'Kosova',         flag: '🇽🇰' },
-    { code: 'CR', name: 'Kosta Rika',     flag: '🇨🇷' },
-    { code: 'CU', name: 'Küba',           flag: '🇨🇺' },
-    { code: 'KW', name: 'Kuveyt',         flag: '🇰🇼' },
-    { code: 'CY', name: 'K.K.T.C.',       flag: '🇨🇾' },
-    { code: 'LV', name: 'Letonya',        flag: '🇱🇻' },
-    { code: 'LR', name: 'Liberya',        flag: '🇱🇷' },
-    { code: 'LY', name: 'Libya',          flag: '🇱🇾' },
-    { code: 'LT', name: 'Litvanya',       flag: '🇱🇹' },
-    { code: 'LU', name: 'Lüksemburg',     flag: '🇱🇺' },
-    { code: 'HU', name: 'Macaristan',     flag: '🇭🇺' },
-    { code: 'MG', name: 'Madagaskar',     flag: '🇲🇬' },
-    { code: 'MK', name: 'Kuzey Makedonya', flag: '🇲🇰' },
-    { code: 'MY', name: 'Malezya',        flag: '🇲🇾' },
-    { code: 'ML', name: 'Mali',           flag: '🇲🇱' },
-    { code: 'MV', name: 'Maldivler',      flag: '🇲🇻' },
-    { code: 'MT', name: 'Malta',          flag: '🇲🇹' },
-    { code: 'MA', name: 'Fas',            flag: '🇲🇦' },
-    { code: 'MR', name: 'Moritanya',      flag: '🇲🇷' },
-    { code: 'MU', name: 'Mauritius',      flag: '🇲🇺' },
-    { code: 'MX', name: 'Meksika',        flag: '🇲🇽' },
-    { code: 'MD', name: 'Moldova',        flag: '🇲🇩' },
-    { code: 'MN', name: 'Moğolistan',      flag: '🇲🇳' },
-    { code: 'MZ', name: 'Mozambik',       flag: '🇲🇿' },
-    { code: 'NP', name: 'Nepal',          flag: '🇳🇵' },
-    { code: 'NE', name: 'Nijer',          flag: '🇳🇪' },
-    { code: 'NG', name: 'Nijerya',        flag: '🇳🇬' },
-    { code: 'NO', name: 'Norveç',         flag: '🇳🇴' },
-    { code: 'CF', name: 'Orta Afrika Cum.', flag: '🇨🇫' },
-    { code: 'OM', name: 'Umman',          flag: '🇴🇲' },
-    { code: 'UZ', name: 'Özbekistan',     flag: '🇺🇿' },
-    { code: 'PK', name: 'Pakistan',       flag: '🇵🇰' },
-    { code: 'PA', name: 'Panama',         flag: '🇵🇦' },
-    { code: 'PT', name: 'Portekiz',       flag: '🇵🇹' },
-    { code: 'RO', name: 'Romanya',        flag: '🇷🇴' },
-    { code: 'RU', name: 'Rusya',          flag: '🇷🇺' },
-    { code: 'RW', name: 'Ruanda',         flag: '🇷🇼' },
-    { code: 'SN', name: 'Senegal',        flag: '🇸🇳' },
-    { code: 'RS', name: 'Sırbistan',      flag: '🇷🇸' },
-    { code: 'SC', name: 'Seyşeller',      flag: '🇸🇨' },
-    { code: 'SL', name: 'Sierra Leone',    flag: '🇸🇱' },
-    { code: 'SG', name: 'Singapur',       flag: '🇸🇬' },
-    { code: 'SK', name: 'Slovakya',       flag: '🇸🇰' },
-    { code: 'SI', name: 'Slovenya',       flag: '🇸🇮' },
-    { code: 'SO', name: 'Somali',         flag: '🇸🇴' },
-    { code: 'LK', name: 'Sri Lanka',      flag: '🇱🇰' },
-    { code: 'SD', name: 'Sudan',          flag: '🇸🇩' },
-    { code: 'SY', name: 'Suriye',         flag: '🇸🇾' },
+    { code: 'AE', name: 'BAE',            flag: '🇦🇪' },
     { code: 'SA', name: 'S. Arabistan',   flag: '🇸🇦' },
-    { code: 'TJ', name: 'Tacikistan',     flag: '🇹🇯' },
-    { code: 'TZ', name: 'Tanzanya',       flag: '🇹🇿' },
-    { code: 'TH', name: 'Tayland',        flag: '🇹🇭' },
-    { code: 'TW', name: 'Tayvan',         flag: '🇹🇼' },
-    { code: 'TG', name: 'Togo',            flag: '🇹🇬' },
-    { code: 'TN', name: 'Tunus',          flag: '🇹🇳' },
-    { code: 'TM', name: 'Türkmenistan',   flag: '🇹🇲' },
-    { code: 'UG', name: 'Uganda',         flag: '🇺🇬' },
-    { code: 'UA', name: 'Ukrayna',        flag: '🇺🇦' },
-    { code: 'VE', name: 'Venezuela',      flag: '🇻🇪' },
-    { code: 'VN', name: 'Vietnam',        flag: '🇻🇳' },
-    { code: 'YE', name: 'Yemen',          flag: '🇾🇪' },
-    { code: 'GR', name: 'Yunanistan',     flag: '🇬🇷' },
-    { code: 'ZM', name: 'Zambiya',        flag: '🇿🇲' },
-    { code: 'ZW', name: 'Zimbabve',       flag: '🇿🇼' }
+    { code: 'QA', name: 'Katar',          flag: '🇶🇦' },
+    { code: 'CN', name: 'Çin',            flag: '🇨🇳' },
+    { code: 'HK', name: 'Hong Kong',      flag: '🇭🇰' },
+    { code: 'KR', name: 'G. Kore',        flag: '🇰🇷' },
+    { code: 'JP', name: 'Japonya',        flag: '🇯🇵' },
+    { code: 'SG', name: 'Singapur',       flag: '🇸🇬' },
+    { code: 'IN', name: 'Hindistan',      flag: '🇮🇳' },
+    { code: 'AZ', name: 'Azerbaycan',     flag: '🇦🇿' },
+    { code: 'ET', name: 'Etiyopya',       flag: '🇪🇹' },
+    { code: 'KE', name: 'Kenya',          flag: '🇰🇪' },
+    { code: 'RW', name: 'Ruanda',         flag: '🇷🇼' },
+    { code: 'CA', name: 'Kanada',         flag: '🇨🇦' },
+    { code: 'LU', name: 'Lüksemburg',     flag: '🇱🇺' },
+    { code: 'NL', name: 'Hollanda',       flag: '🇳🇱' },
+    { code: 'IT', name: 'İtalya',         flag: '🇮🇹' },
+    { code: 'PT', name: 'Portekiz',       flag: '🇵🇹' },
+    { code: 'OM', name: 'Umman',          flag: '🇴🇲' },
+    { code: 'MX', name: 'Meksika',        flag: '🇲🇽' },
+    { code: 'CO', name: 'Kolombiya',      flag: '🇨🇴' },
+    { code: 'BR', name: 'Brezilya',       flag: '🇧🇷' },
   ];
   function hc(code) { return HOLIDAY_COUNTRIES.find(c => c.code === code) || { code, name: code, flag: '' }; }
   function h(code, title, m, d, cadence) {
@@ -5639,48 +5524,137 @@ function buildReleaseCalendar() {
     return { title, source: c.name, date: startDate, endDate, cadence: cadence || 'Resmi tatil', kind: 'holiday', countryCode: code, countryName: c.name, countryFlag: c.flag };
   }
 
-  const holidayItems = [];
-
-  const _loadingHolidays = new Set();
-
-  async function fetchHolidaysForCountry(cc) {
-    if (_loadingHolidays.has(cc)) return;
-    const hasHolidays = holidayItems.some(hi => hi.countryCode === cc);
-    if (hasHolidays) return;
-
-    _loadingHolidays.add(cc);
-    renderCountryFilter();
-
-    try {
-      const res = await fetch(`./holidays/${cc}.json`);
-      if (!res.ok) throw new Error('Local JSON not OK');
-      const list = await res.json();
-      
-      const c = hc(cc);
-      const fetched = list.map(item => {
-        const dObj = new Date(item.date + 'T00:00:00');
-        return {
-          title: item.title,
-          source: c.name,
-          date: dObj,
-          endDate: null,
-          cadence: item.cadence || 'Resmi tatil',
-          kind: 'holiday',
-          countryCode: cc,
-          countryName: c.name,
-          countryFlag: c.flag
-        };
-      });
-
-      holidayItems.push(...fetched);
-    } catch (e) {
-      console.error(`Failed to fetch holidays for ${cc}:`, e);
-    } finally {
-      _loadingHolidays.delete(cc);
-      renderCountryFilter();
-      if (_relRender) _relRender();
-    }
-  }
+  const holidayItems = [
+    // 🇹🇷 Türkiye
+    h('TR','Yılbaşı',1,1), h('TR','Ramazan Bayramı',3,20,'3 gün · ofisler kapalı'), h('TR','Ulusal Egemenlik ve Çocuk Bayramı',4,23),
+    h('TR','İşçi ve Dayanışma Bayramı',5,1), h('TR','Kurban Bayramı',5,27,'4 gün · ofisler kapalı'),
+    h('TR','Atatürk\'ü Anma, Gençlik ve Spor Bayramı',5,19),
+    h('TR','Demokrasi ve Milli Birlik Günü',7,15), h('TR','Zafer Bayramı',8,30), h('TR','Cumhuriyet Bayramı',10,29),
+    // 🇺🇸 ABD
+    h('US','Yılbaşı',1,1), h('US','Martin Luther King Jr. Günü',1,19,'3. Pazartesi'), h('US','Presidents\' Day',2,16,'3. Pazartesi'),
+    h('US','Memorial Day',5,25,'Son Pazartesi'), h('US','Bağımsızlık Günü (4th of July)',7,3,'Resmi tatil — Cum'),
+    h('US','Labor Day (İşçi Bayramı)',9,7,'1. Pazartesi'), h('US','Columbus Day',10,12,'2. Pazartesi'),
+    h('US','Veterans Day',11,11), h('US','Şükran Günü',11,26,'4. Perşembe'), h('US','Noel',12,25),
+    // 🇩🇪 Almanya
+    h('DE','Yılbaşı',1,1), h('DE','Karfreitag (İyi Cuma)',4,3,'Paskalya öncesi'), h('DE','Ostermontag (Paskalya P.)',4,6),
+    h('DE','İşçi Bayramı',5,1), h('DE','Christi Himmelfahrt',5,14), h('DE','Pfingstmontag',5,25),
+    h('DE','Tag der Deutschen Einheit',10,3,'Alman Birliği Günü'), h('DE','Noel',12,25,'2 gün'),
+    // 🇫🇷 Fransa
+    h('FR','Yılbaşı',1,1), h('FR','Paskalya Pazartesi',4,6), h('FR','Fête du Travail (İşçi B.)',5,1),
+    h('FR','Victoire 1945',5,8), h('FR','Ascension (Yükseliş)',5,14), h('FR','Lundi de Pentecôte',5,25),
+    h('FR','Fête Nationale (Bastille)',7,14,'Milli bayram'), h('FR','Assomption',8,15),
+    h('FR','Toussaint (Azizler Günü)',11,1), h('FR','Armistice 1918',11,11), h('FR','Noël',12,25),
+    // 🇬🇧 İngiltere
+    h('GB','Yılbaşı',1,1), h('GB','Good Friday (İyi Cuma)',4,3), h('GB','Easter Monday (Paskalya)',4,6),
+    h('GB','Early May Bank Holiday',5,4,'1. Pazartesi'), h('GB','Spring Bank Holiday',5,25,'Son Pazartesi'),
+    h('GB','Summer Bank Holiday',8,31,'Son Pazartesi'), h('GB','Christmas Day',12,25), h('GB','Boxing Day',12,28),
+    // 🇦🇪 BAE
+    h('AE','Yılbaşı',1,1), h('AE','Ramazan Bayramı (Eid al-Fitr)',3,20,'3 gün'), h('AE','Kurban Bayramı (Eid al-Adha)',5,27,'3 gün'),
+    h('AE','İslam Yılbaşı (Muharrem)',6,17,'Tahmini'), h('AE','BAE Milli Günü',12,2,'2–3 Ara'),
+    // 🇸🇦 Suudi Arabistan
+    h('SA','Kuruluş Günü',2,22), h('SA','Ramazan Bayramı (Eid al-Fitr)',3,20,'3 gün'),
+    h('SA','Kurban Bayramı (Eid al-Adha)',5,27,'4 gün'), h('SA','Ulusal Gün',9,23),
+    // 🇶🇦 Katar
+    h('QA','Yılbaşı',1,1), h('QA','Ramazan Bayramı',3,20,'3 gün'), h('QA','Kurban Bayramı',5,27,'3 gün'), h('QA','Milli Gün',12,18),
+    // 🇨🇳 Çin
+    h('CN','Yılbaşı',1,1,'1–3 Oca'), h('CN','Çin Yeni Yılı (Bahar Festivali)',2,16,'16–22 Şub · fabrikalar kapalı'),
+    h('CN','Qingming Festivali',4,5), h('CN','İşçi Bayramı Golden Week',5,1,'1–5 May'),
+    h('CN','Dragon Boat Festivali',6,19,'Tahmini'), h('CN','Orta Sonbahar Festivali',9,25,'Tahmini'),
+    h('CN','Milli Bayram Golden Week',10,1,'1–7 Eki · fabrikalar kapalı'),
+    // 🇭🇰 Hong Kong
+    h('HK','Yılbaşı',1,1), h('HK','Ay Yılı (Çin YY)',2,17,'3 gün · ofisler kapalı'),
+    h('HK','Good Friday',4,3), h('HK','Qingming Festivali',4,5), h('HK','İşçi Bayramı',5,1),
+    h('HK','Buda\'nın Doğumu',5,23,'Tahmini'), h('HK','Dragon Boat Festivali',6,19,'Tahmini'),
+    h('HK','SAR Kuruluş Günü',7,1), h('HK','Çin Milli Günü',10,1), h('HK','Noel',12,25,'2 gün'),
+    // 🇰🇷 Güney Kore
+    h('KR','Yılbaşı',1,1), h('KR','Seollal (Kore YY)',2,17,'3 gün · tahmini'),
+    h('KR','Bağımsızlık Hareketi Günü',3,1), h('KR','Çocuk Günü',5,5),
+    h('KR','Memorial Day',6,6), h('KR','Kurtuluş Günü',8,15),
+    h('KR','Chuseok (Hasat Bayramı)',9,24,'3 gün · tahmini'),
+    h('KR','Ulusal Kuruluş Günü',10,3), h('KR','Hangul Günü',10,9), h('KR','Noel',12,25),
+    // 🇯🇵 Japonya
+    h('JP','Yılbaşı',1,1,'1–3 Oca · kapalı'), h('JP','Yetişkinler Günü',1,12,'2. Pazartesi'),
+    h('JP','Ulusal Kuruluş Günü',2,11), h('JP','İmparator\'un Doğum Günü',2,23),
+    h('JP','İlkbahar Ekinoksu',3,20,'Tahmini'), h('JP','Showa Günü',4,29,'Golden Week başlangıcı'),
+    h('JP','Golden Week',5,3,'3–6 May · Anayasa, Yeşil, Çocuk Günleri'),
+    h('JP','Deniz Günü',7,20,'3. Pazartesi'), h('JP','Dağ Günü',8,11),
+    h('JP','Yaşlılara Saygı Günü',9,21,'3. Pazartesi'), h('JP','Sonbahar Ekinoksu',9,23,'Tahmini'),
+    h('JP','Spor Günü',10,12,'2. Pazartesi'), h('JP','Kültür Günü',11,3), h('JP','İşçi Şükran Günü',11,23),
+    // 🇸🇬 Singapur
+    h('SG','Yılbaşı',1,1), h('SG','Çin Yeni Yılı',2,17,'2 gün'),
+    h('SG','Hari Raya Puasa (Ramazan B.)',3,20), h('SG','Good Friday',4,3),
+    h('SG','İşçi Bayramı',5,1), h('SG','Vesak Day',5,23,'Tahmini'),
+    h('SG','Hari Raya Haji (Kurban B.)',5,27),
+    h('SG','Milli Gün',8,9), h('SG','Deepavali',10,20,'Tahmini'), h('SG','Noel',12,25),
+    // 🇮🇳 Hindistan
+    h('IN','Cumhuriyet Günü',1,26), h('IN','Holi',3,4,'Tahmini'), h('IN','Good Friday',4,3),
+    h('IN','Dr. Ambedkar Jayanti',4,14), h('IN','İşçi Bayramı',5,1),
+    h('IN','Bağımsızlık Günü',8,15), h('IN','Gandhi Jayanti',10,2),
+    h('IN','Diwali',11,8,'Tahmini'), h('IN','Noel',12,25),
+    // 🇦🇿 Azerbaycan
+    h('AZ','Yılbaşı',1,1), h('AZ','Şehitler Günü',1,20), h('AZ','Kadınlar Günü',3,8),
+    h('AZ','Nevruz Bayramı',3,20,'5 gün'), h('AZ','Ramazan Bayramı',3,21,'2 gün · tahmini'),
+    h('AZ','Zafer Günü',5,9), h('AZ','Kurban Bayramı',5,27,'2 gün · tahmini'),
+    h('AZ','Cumhuriyet Günü',5,28), h('AZ','Ulusal Kurtuluş Günü',6,15),
+    h('AZ','Silahlı Kuvvetler Günü',6,26), h('AZ','Devlet Bağımsızlık Günü',10,18),
+    h('AZ','Anayasa Günü',11,12),
+    // 🇪🇹 Etiyopya
+    h('ET','Genna (Etiyopya Noeli)',1,7), h('ET','Timkat (Vaftiz Bayramı)',1,19),
+    h('ET','Adua Zaferi',3,2), h('ET','Ramazan Bayramı',3,20,'Tahmini'),
+    h('ET','İşçi Bayramı',5,1), h('ET','Vatanperverler Zaferi',5,5),
+    h('ET','Kurban Bayramı',5,27,'Tahmini'), h('ET','Derg\'in Devrilmesi',5,28),
+    h('ET','Enkutatash (Etiyopya YY)',9,11), h('ET','Meskel (Haç Bulunması)',9,27),
+    // 🇰🇪 Kenya
+    h('KE','Yılbaşı',1,1), h('KE','Good Friday',4,3), h('KE','Easter Monday',4,6),
+    h('KE','İşçi Bayramı',5,1), h('KE','Madaraka Günü',6,1),
+    h('KE','Mashujaa Günü',10,20), h('KE','Jamhuri Günü',12,12),
+    h('KE','Noel',12,25), h('KE','Boxing Day',12,26),
+    // 🇷🇼 Ruanda
+    h('RW','Yılbaşı',1,1), h('RW','Kahramanlar Günü',2,1), h('RW','Soykırım Anma Günü',4,7),
+    h('RW','İşçi Bayramı',5,1), h('RW','Bağımsızlık Günü',7,1), h('RW','Kurtuluş Günü',7,4),
+    h('RW','Meryem Ana Günü',8,15), h('RW','Noel',12,25), h('RW','Boxing Day',12,26),
+    // 🇨🇦 Kanada
+    h('CA','Yılbaşı',1,1), h('CA','Good Friday',4,3), h('CA','Easter Monday',4,6,'Çoğu il'),
+    h('CA','Victoria Day',5,18,'25 May önceki Paz.'), h('CA','Kanada Günü',7,1),
+    h('CA','Labor Day',9,7,'1. Pazartesi'), h('CA','Şükran Günü',10,12,'2. Pazartesi'),
+    h('CA','Anma Günü',11,11), h('CA','Noel',12,25), h('CA','Boxing Day',12,28,'Çoğu il'),
+    // 🇱🇺 Lüksemburg
+    h('LU','Yılbaşı',1,1), h('LU','Paskalya Pazartesi',4,6), h('LU','İşçi Bayramı',5,1),
+    h('LU','Avrupa Günü',5,9), h('LU','Yükseliş',5,14), h('LU','Pentecost Pazartesi',5,25),
+    h('LU','Ulusal Gün',6,23,'Grand Dük\'ün doğum günü'), h('LU','Meryem Ana Günü',8,15),
+    h('LU','Azizler Günü',11,1), h('LU','Noel',12,25,'2 gün'),
+    // 🇳🇱 Hollanda
+    h('NL','Yılbaşı',1,1), h('NL','Good Friday',4,3,'Kısmi'), h('NL','Paskalya Pazartesi',4,6),
+    h('NL','Kral Günü (Koningsdag)',4,27), h('NL','Yükseliş',5,14),
+    h('NL','Pentecost Pazartesi',5,25), h('NL','Noel',12,25,'2 gün'),
+    // 🇮🇹 İtalya
+    h('IT','Yılbaşı',1,1), h('IT','Epifania',1,6), h('IT','Pasquetta (Paskalya P.)',4,6),
+    h('IT','Kurtuluş Günü',4,25), h('IT','İşçi Bayramı',5,1),
+    h('IT','Festa della Repubblica',6,2), h('IT','Ferragosto',8,15,'Fabrikalar kapanır'),
+    h('IT','Azizler Günü',11,1), h('IT','Immacolata Concezione',12,8), h('IT','Noel',12,25,'2 gün'),
+    // 🇵🇹 Portekiz
+    h('PT','Yılbaşı',1,1), h('PT','Good Friday',4,3), h('PT','Özgürlük Günü',4,25),
+    h('PT','İşçi Bayramı',5,1), h('PT','Corpus Christi',6,4), h('PT','Portekiz Günü',6,10),
+    h('PT','Meryem Ana Günü',8,15), h('PT','Cumhuriyet Günü',10,5),
+    h('PT','Azizler Günü',11,1), h('PT','Yeniden Bütünleşme Günü',12,1),
+    h('PT','Imaculada Conceição',12,8), h('PT','Noel',12,25),
+    // 🇴🇲 Umman
+    h('OM','Yılbaşı',1,1), h('OM','Ramazan Bayramı',3,20,'4 gün'),
+    h('OM','Kurban Bayramı',5,27,'4 gün'), h('OM','Ulusal Gün',11,18,'2 gün'),
+    // 🇲🇽 Meksika
+    h('MX','Yılbaşı',1,1), h('MX','Anayasa Günü',2,2,'1. Pazartesi'),
+    h('MX','Benito Juárez Günü',3,16,'3. Pazartesi'), h('MX','İşçi Bayramı',5,1),
+    h('MX','Bağımsızlık Günü',9,16), h('MX','Devrim Günü',11,16,'3. Pazartesi'), h('MX','Noel',12,25),
+    // 🇨🇴 Kolombiya
+    h('CO','Yılbaşı',1,1), h('CO','Epifania',1,12,'Taşınan Pazartesi'),
+    h('CO','İşçi Bayramı',5,1), h('CO','Bağımsızlık Günü',7,20),
+    h('CO','Boyacá Savaşı',8,7), h('CO','Immaculata Günü',12,8), h('CO','Noel',12,25),
+    // 🇧🇷 Brezilya
+    h('BR','Yılbaşı',1,1), h('BR','Tiradentes Günü',4,21), h('BR','İşçi Bayramı',5,1),
+    h('BR','Corpus Christi',6,4), h('BR','Bağımsızlık Günü',9,7),
+    h('BR','N.S. Aparecida Günü',10,12), h('BR','Azizler Günü',11,2),
+    h('BR','Cumhuriyet İlanı',11,15), h('BR','Siyah Bilinç Günü',11,20), h('BR','Noel',12,25),
+  ];
 
   let activeHolidayCountries = new Set(['TR']);
 
@@ -5766,10 +5740,9 @@ function buildReleaseCalendar() {
     const trigger = document.getElementById('rel-cf-trigger');
     if (!list) return;
 
-    const trClean = str => (str || '').replace(/İ/g, 'i').replace(/I/g, 'ı').toLowerCase().trim();
-    const searchVal = trClean(document.getElementById('rel-cf-search')?.value);
+    const searchVal = (document.getElementById('rel-cf-search')?.value || '').toLowerCase().trim();
     const filtered = HOLIDAY_COUNTRIES.filter(c =>
-      !searchVal || trClean(c.name).includes(searchVal) || trClean(c.code).includes(searchVal)
+      !searchVal || c.name.toLowerCase().includes(searchVal) || c.code.toLowerCase().includes(searchVal)
     );
 
     const allRow = searchVal ? '' : `<button class="rel-cf-item${activeHolidayCountries.size === 0 ? ' selected' : ''}" data-cc="" role="option" aria-selected="${activeHolidayCountries.size === 0}">
@@ -5782,13 +5755,11 @@ function buildReleaseCalendar() {
     list.innerHTML = allRow + filtered.map(c => {
       const isSel = activeHolidayCountries.has(c.code);
       const cnt = holidayItems.filter(hi => hi.countryCode === c.code).length;
-      const isLoading = _loadingHolidays.has(c.code);
-      const cntDisplay = isLoading ? '<span class="rel-cf-spinner"></span>' : cnt;
-      return `<button class="rel-cf-item${isSel ? ' selected' : ''}${isLoading ? ' loading' : ''}" data-cc="${c.code}" role="option" aria-selected="${isSel}" ${isLoading ? 'disabled' : ''}>
+      return `<button class="rel-cf-item${isSel ? ' selected' : ''}" data-cc="${c.code}" role="option" aria-selected="${isSel}">
         <span class="rel-cf-item-check">${isSel ? '✓' : ''}</span>
         <span class="rel-cf-item-flag">${c.flag}</span>
         <span class="rel-cf-item-name">${c.name}</span>
-        <span class="rel-cf-item-cnt">${cntDisplay}</span>
+        <span class="rel-cf-item-cnt">${cnt}</span>
       </button>`;
     }).join('');
 
@@ -6036,33 +6007,13 @@ function buildReleaseCalendar() {
       const btn = e.target.closest('.rel-cf-item');
       if (!btn) return;
       const cc = btn.dataset.cc;
-      if (!cc) { 
-        activeHolidayCountries.clear(); 
-        renderCountryFilter();
-        if (_relRender) _relRender();
-      } else {
-        if (activeHolidayCountries.has(cc)) {
-          activeHolidayCountries.delete(cc);
-          renderCountryFilter();
-          if (_relRender) _relRender();
-        } else {
-          const hasHolidays = holidayItems.some(hi => hi.countryCode === cc);
-          if (!hasHolidays) {
-            fetchHolidaysForCountry(cc).then(() => {
-              const loaded = holidayItems.some(hi => hi.countryCode === cc);
-              if (loaded) {
-                activeHolidayCountries.add(cc);
-                renderCountryFilter();
-                if (_relRender) _relRender();
-              }
-            });
-          } else {
-            activeHolidayCountries.add(cc);
-            renderCountryFilter();
-            if (_relRender) _relRender();
-          }
-        }
+      if (!cc) { activeHolidayCountries.clear(); }
+      else {
+        if (activeHolidayCountries.has(cc)) activeHolidayCountries.delete(cc);
+        else activeHolidayCountries.add(cc);
       }
+      renderCountryFilter();
+      if (_relRender) _relRender();
     });
   }
   document.addEventListener('click', e => {
@@ -6074,9 +6025,7 @@ function buildReleaseCalendar() {
 
   renderCountryFilter();
   _relRender = () => renderMonth(activeKey);
-  fetchHolidaysForCountry('TR').then(() => {
-    renderMonth(activeKey);
-  });
+  renderMonth(activeKey);
   fetchUserReleaseItemsRemote();
 
   // Modal: arka plana tıklayınca kapat, ESC ile kapat
