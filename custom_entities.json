@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 1114,
-  "lastScanned": "2026-05-23T23:15:54.177Z",
-  "scannedCount": 8,
+  "lastScannedId": 1185,
+  "lastScanned": "2026-05-30T23:16:06.781Z",
+  "scannedCount": 71,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -317,6 +317,177 @@
         "yılın küresel kargo"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=turkishcargo.com"
+    },
+    {
+      "id": "dyn_havaliman_tarifeli_anghay_kargo",
+      "label": "Havalimanı Tarifeli şAnghay Kargo",
+      "group": "cargo",
+      "kw": [
+        "havalimanı tarifeli şanghay kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ckair.com"
+    },
+    {
+      "id": "dyn_south_african_airways",
+      "label": "South African Airways",
+      "group": "passenger",
+      "kw": [
+        "south african airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=flysaa.com"
+    },
+    {
+      "id": "dyn_kenya_merkezli_astral_aviation",
+      "label": "Kenya Merkezli Astral Aviation",
+      "group": "cargo",
+      "kw": [
+        "kenya merkezli astral aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=astral-aviation.com"
+    },
+    {
+      "id": "dyn_alaska_air_cargo",
+      "label": "Alaska Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "alaska air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alaskacargo.com"
+    },
+    {
+      "id": "dyn_eri_imini_geni_letiyor_alaska_air_cargo",
+      "label": "ErişImini GenişLetiyor Alaska Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "erişimini genişletiyor alaska air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alaskacargo.com"
+    },
+    {
+      "id": "dyn_ana_ve_nippon_cargo",
+      "label": "Ana Ve Nippon Cargo",
+      "group": "cargo",
+      "kw": [
+        "ana ve nippon cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=nca.aero"
+    },
+    {
+      "id": "dyn_group_ve_central_airlines",
+      "label": "Group Ve Central Airlines",
+      "group": "cargo",
+      "kw": [
+        "group ve central airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=centralairlines.com.cn"
+    },
+    {
+      "id": "dyn_h_zl_b_y_yen_central_airlines",
+      "label": "HıZlı BüYüYen Central Airlines",
+      "group": "cargo",
+      "kw": [
+        "hızlı büyüyen central airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=centralairlines.com.cn"
+    },
+    {
+      "id": "dyn_titan_aviation",
+      "label": "Titan Aviation",
+      "group": "passenger",
+      "kw": [
+        "titan aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=titan-aviation.com"
+    },
+    {
+      "id": "dyn_cockpit_z_m_n_american_airlines",
+      "label": "Cockpit çöZüMüNü American Airlines",
+      "group": "passenger",
+      "kw": [
+        "cockpit çözümünü american airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aa.com"
+    },
+    {
+      "id": "dyn_platformunda_birle_tiriyor_alaska_airlines",
+      "label": "Platformunda BirleşTiriyor Alaska Airlines",
+      "group": "passenger",
+      "kw": [
+        "platformunda birleştiriyor alaska airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alaskaair.com"
+    },
+    {
+      "id": "dyn_hawaiian_airlines",
+      "label": "Hawaiian Airlines",
+      "group": "passenger",
+      "kw": [
+        "hawaiian airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hawaiianairlines.com"
+    },
+    {
+      "id": "dyn_hawaiian_air_cargo",
+      "label": "Hawaiian Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "hawaiian air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hawaiiancargo.com"
+    },
+    {
+      "id": "dyn_alaska_cargo",
+      "label": "Alaska Cargo",
+      "group": "cargo",
+      "kw": [
+        "alaska cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alaskacargo.com"
+    },
+    {
+      "id": "dyn_hawaiian_airlines_kargo",
+      "label": "Hawaiian Airlines Kargo",
+      "group": "cargo",
+      "kw": [
+        "hawaiian airlines kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hawaiiancargo.com"
+    },
+    {
+      "id": "dyn_nca_ortak_kargo",
+      "label": "Nca Ortak Kargo",
+      "group": "cargo",
+      "kw": [
+        "nca ortak kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=nca.aero"
+    },
+    {
+      "id": "dyn_eva_air",
+      "label": "Eva Air",
+      "group": "passenger",
+      "kw": [
+        "eva air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=evaair.com"
+    },
+    {
+      "id": "dyn_pasifik_hava_kargo",
+      "label": "Pasifik Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "pasifik hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=pacificaircargo.com"
+    },
+    {
+      "id": "dyn_kazand_hong_kong_air_cargo",
+      "label": "Kazandı Hong Kong Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "kazandı hong kong air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hkaircargo.com"
     }
   ],
   "gsa": []
