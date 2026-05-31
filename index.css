@@ -6477,3 +6477,33 @@
     .gm-row svg { stroke: currentColor; flex-shrink: 0; }
     .gm-row:hover, .gm-row:active { background: rgba(255,255,255,0.08); color: #fff; }
   }
+
+  /* ════════════════════════════════════════════════════════════
+     CHATBOT ARKA PLAN BULANIKLIĞI  (mobile)
+     • Chatbot paneli açılınca, mercek aramasıyla bire bir aynı
+       scrim + arka plan blur efekti uygulanır.
+     ════════════════════════════════════════════════════════════ */
+  #ai-scrim {
+    position: fixed; inset: 0; z-index: 1095;
+    background: rgba(13,17,23,0.34);
+    -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+    opacity: 0; pointer-events: none; transition: opacity .3s ease;
+  }
+
+  @media (max-width: 768px) {
+    body.chat-ov-active #ai-scrim { opacity: 1; pointer-events: auto; }
+    /* arkadaki uygulama flulaşsın — search-ov-active ile aynı */
+    body.chat-ov-active .main,
+    body.chat-ov-active .main-tabs-wrap,
+    body.chat-ov-active .filter-bar,
+    body.chat-ov-active header {
+      filter: blur(2.5px); transition: filter .3s ease;
+    }
+    body.chat-ov-active { overflow: hidden; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #ai-scrim { transition: none; }
+    body.chat-ov-active .main, body.chat-ov-active .main-tabs-wrap,
+    body.chat-ov-active .filter-bar, body.chat-ov-active header { transition: none; }
+  }
