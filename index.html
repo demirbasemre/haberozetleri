@@ -7589,6 +7589,9 @@ async function loadDashboard() {
   <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
 </button>
 
+<!-- Chatbot arka plan bulanıklığı (mobil) — mercek aramasıyla aynı scrim -->
+<div id="ai-scrim" aria-hidden="true"></div>
+
 <div id="ai-panel">
   <div id="ai-panel-header">
     <div class="ai-panel-icon">
@@ -11550,6 +11553,28 @@ function initControls(allArticles) {
   });
 
   sync();
+})();
+</script>
+
+<!-- ── CHATBOT ARKA PLAN BULANIKLIĞI: panel açılınca body.chat-ov-active aç/kapa ── -->
+<script>
+(function () {
+  var panel = document.getElementById('ai-panel');
+  var scrim = document.getElementById('ai-scrim');
+  if (!panel) return;
+
+  function syncBlur() {
+    document.body.classList.toggle('chat-ov-active', panel.classList.contains('open'));
+  }
+  new MutationObserver(syncBlur).observe(panel, { attributes: true, attributeFilter: ['class'] });
+  syncBlur();
+
+  // Scrim'e dokununca paneli kapat (mercek scrim davranışıyla aynı)
+  if (scrim) scrim.addEventListener('click', function () {
+    var closeBtn = document.getElementById('ai-close');
+    if (closeBtn) closeBtn.click();
+    else panel.classList.remove('open');
+  });
 })();
 </script>
 
