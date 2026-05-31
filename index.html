@@ -724,6 +724,13 @@
 </head>
 <body>
 
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="20" fill="#0D1117"/>
+  <path d="M70 52v-5l-21-13V25c0-2-1.5-3.5-3.5-3.5S42 23 42 25v9L21 47v5l21-6v13l-5 4v4l8.5-2.5L54 67v-4l-5-4V46l21 6z" fill="#E30613"/>
+</svg>
+</template>
+
 <header>
   <div class="header-inner">
     <div class="site-name">
@@ -779,6 +786,7 @@
           <path d="M9 20h6"/>
           <path d="M12 4v16"/>
         </svg>
+        <span class="htg-lbl">Yazı Tipi</span>
       </button>
       <div class="hdr-pref-panel" id="hdr-font-panel" role="menu"></div>
     </div>
@@ -791,6 +799,7 @@
           <line x1="4" y1="12" x2="20" y2="12"/>
           <line x1="4" y1="18" x2="20" y2="18"/>
         </svg>
+        <span class="htg-lbl">Bilgi Yoğunluğu</span>
       </button>
       <div class="hdr-pref-panel" id="hdr-density-panel" role="menu"></div>
     </div>
@@ -806,6 +815,7 @@
       <svg class="icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
       </svg>
+      <span class="htg-lbl">Tema</span>
     </button>
 
     <!-- Changelog button -->
@@ -818,7 +828,49 @@
         <line x1="3" y1="12" x2="3.01" y2="12"/>
         <line x1="3" y1="18" x2="3.01" y2="18"/>
       </svg>
+      <span class="htg-lbl">Güncellemeler</span>
     </button>
+
+    <!-- Eski tasarıma dön (mobil menü satırı) -->
+    <a class="hdr-tools-link" id="hdr-eski-link" href="index_eski.html" title="Eski tasarıma dön">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+        <path d="M3 3v5h5"/>
+      </svg>
+      <span class="htg-lbl">Eski Tasarıma Dön</span>
+    </a>
+
+    <!-- ── Kompakt dişli menüsü (yalnızca mobil popover) — prototip tasarımı ── -->
+    <div class="gmenu" id="gmenu">
+      <div class="gm-sec">
+        <div class="gm-lbl">Tema</div>
+        <div class="gm-seg" data-group="theme">
+          <button type="button" data-val="light">Aydınlık</button>
+          <button type="button" data-val="dark">Karanlık</button>
+        </div>
+      </div>
+      <div class="gm-sec">
+        <div class="gm-lbl">Yazı Tipi</div>
+        <div class="gm-chips" data-group="font" id="gm-fonts"></div>
+      </div>
+      <div class="gm-sec">
+        <div class="gm-lbl">Yoğunluk</div>
+        <div class="gm-seg" data-group="density">
+          <button type="button" data-val="compact">Sıkışık</button>
+          <button type="button" data-val="off">Standart</button>
+          <button type="button" data-val="spacious">Ferah</button>
+        </div>
+      </div>
+      <div class="gm-div"></div>
+      <button class="gm-row" type="button" id="gm-changelog">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Değişiklik günlüğü
+      </button>
+      <a class="gm-row" id="gm-eski" href="index_eski.html">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Eski tasarıma dön
+      </a>
+    </div>
   </div>
 </header>
 
@@ -834,10 +886,6 @@
       <div class="search-ov-stats" id="search-ov-stats"></div>
     </div>
     <div class="search-ov-mount" id="search-ov-mount"></div>
-    <div class="search-ov-scope">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
-      <span><b>Haberler</b> içinde aranıyor · istatistik &amp; metrikler altta önerilir</span>
-    </div>
     <div class="search-ov-recent" id="search-ov-recent" hidden></div>
   </div>
 </div>
@@ -2955,8 +3003,36 @@ const ALL_DROPDOWNS = ['cat', 'date', 'region', 'airline', 'gsa', 'source'];
 function panelId(id) { return id === 'airline' ? 'airline-dropdown' : `${id}-panel`; }
 
 function closeDropdown(id) {
-  document.getElementById(panelId(id))?.classList.remove('open');
+  const panel = document.getElementById(panelId(id));
+  if (panel) {
+    panel.classList.remove('open');
+    // mobil fixed konumlama artıklarını temizle
+    panel.style.position = '';
+    panel.style.top = '';
+    panel.style.left = '';
+    panel.style.right = '';
+    panel.style.maxHeight = '';
+  }
   document.getElementById(`${id}-btn`)?.setAttribute('aria-expanded', 'false');
+}
+// Mobilde: paneli viewport'a sabitle (yatay-kaydırmalı filtre çubuğunun
+// overflow kırpmasından kaçır), butonun hemen altına konumla.
+function positionMobileDropdown(id) {
+  const panel = document.getElementById(panelId(id));
+  const btn = document.getElementById(`${id}-btn`);
+  if (!panel || !btn) return;
+  const wrap = panel.closest('.fdd-wrap') || btn;
+  const a = wrap.getBoundingClientRect();
+  panel.style.position = 'fixed';
+  panel.style.top = (a.bottom + 6) + 'px';
+  panel.style.maxHeight = Math.max(180, window.innerHeight - a.bottom - 20) + 'px';
+  const pw = panel.offsetWidth || 200;
+  let left = a.left;
+  const maxRight = window.innerWidth - 10;
+  if (left + pw > maxRight) left = maxRight - pw;
+  if (left < 10) left = 10;
+  panel.style.left = left + 'px';
+  panel.style.right = 'auto';
 }
 function openDropdown(id) {
   ALL_DROPDOWNS.forEach(d => { if (d !== id) closeDropdown(d); });
@@ -2979,6 +3055,11 @@ function openDropdown(id) {
         panel.style.left = '0';
       }
     });
+  } else {
+    // Mobil: overflow kırpmasından kaçmak için fixed konumla.
+    // rAF bazı ortamlarda kısıtlanabildiğinden hem hemen hem rAF'ta çağır.
+    positionMobileDropdown(id);
+    requestAnimationFrame(() => positionMobileDropdown(id));
   }
 }
 function closeAllDropdowns() { ALL_DROPDOWNS.forEach(closeDropdown); }
@@ -3103,8 +3184,7 @@ function buildDatePanel(articles) {
       });
       [...availDays].sort().forEach(day => {
         const p = document.createElement('div');
-        p.className = 'dp-pill' + (activeDateDay === day ? ' dp-active' : '');
-        p.style.minWidth = '34px';
+        p.className = 'dp-pill dp-day' + (activeDateDay === day ? ' dp-active' : '');
         p.textContent = parseInt(day);
         p.addEventListener('click', () => {
           activeDateDay = activeDateDay === day ? null : day;
@@ -4677,8 +4757,12 @@ initTheme();
       if (localOverride) {
         changelogData = JSON.parse(localOverride);
       } else {
-        const resp = await fetch('changelog.json?t=' + Date.now());
-        if (resp.ok) {
+        let resp = await fetch('changelog.json?t=' + Date.now()).catch(() => null);
+        // bazı ortamlar cache-buster sorgulu isteklere 403 verir → sorgusuz tekrar dene
+        if (!resp || !resp.ok) {
+          resp = await fetch('changelog.json').catch(() => null);
+        }
+        if (resp && resp.ok) {
           changelogData = await resp.json();
         } else {
           changelogData = [];
@@ -4875,10 +4959,35 @@ let _statsInit = false;
 function dashScrollTo(id) {
   const el = document.getElementById(id);
   if (!el) return;
-  // header(60) + tabs-wrap(62) + filter-bar(52) + 16px breathing room
-  const offset = 190;
-  const top = el.getBoundingClientRect().top + window.scrollY - offset;
-  window.scrollTo({ top, behavior: 'smooth' });
+  // Sticky yığının (header + sekmeler + filtre çubuğu) altını dinamik hesapla.
+  let stickyBottom = 174;
+  const fb = document.querySelector('#dash-filter-content')?.closest('.filter-bar')
+           || document.querySelector('.filter-bar');
+  if (fb) {
+    const r = fb.getBoundingClientRect();
+    if (r.height > 0) stickyBottom = r.bottom;
+  }
+  const offset = stickyBottom + 14;
+  const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+
+  // rAF tabanlı yumuşak kaydırma — tüm mobil tarayıcılarda akıcı (behavior:'smooth'
+  // bazı webview'lerde çalışmaz/sert geçer).
+  const startY = window.scrollY || window.pageYOffset || 0;
+  const dist = targetY - startY;
+  if (Math.abs(dist) < 2) { window.scrollTo(0, targetY); return; }
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) { window.scrollTo(0, targetY); return; }
+  const duration = Math.min(720, Math.max(320, Math.abs(dist) * 0.9));
+  const ease = t => 1 - Math.pow(1 - t, 3); // easeOutCubic
+  let startTs = null;
+  if (window.__dashScrollRAF) cancelAnimationFrame(window.__dashScrollRAF);
+  function step(ts) {
+    if (startTs === null) startTs = ts;
+    const p = Math.min(1, (ts - startTs) / duration);
+    window.scrollTo(0, Math.round(startY + dist * ease(p)));
+    if (p < 1) window.__dashScrollRAF = requestAnimationFrame(step);
+  }
+  window.__dashScrollRAF = requestAnimationFrame(step);
 }
 
 // Prevent href="#" jump on dash-nav-link clicks
@@ -9306,18 +9415,28 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
     return false;
   }
 
-  function buildPanel(panelEl, opts, currentVal, fallbackEmpty, onPick) {
-    panelEl.innerHTML = opts.map(([val, label, sub]) => `
+  const backSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+
+  function buildPanel(panelEl, opts, currentVal, fallbackEmpty, onPick, title) {
+    const list = opts.map(([val, label, sub]) => `
       <button class="hdr-pref-opt ${isSelected(val, currentVal, fallbackEmpty) ? 'on' : ''}" data-val="${val}" style="${val && val !== 'off' ? "font-family:'" + val + "',Georgia,serif" : ''}">
         ${checkSvg}
         <span>${label}</span>
         ${sub ? `<span class="opt-sub">${sub}</span>` : ''}
       </button>
     `).join('');
+    panelEl.innerHTML =
+      `<div class="hpp-head"><button class="hpp-back" type="button" aria-label="Geri dön">${backSvg}</button><span class="hpp-title">${title || ''}</span></div>` +
+      `<div class="hpp-list">${list}</div>`;
+    const back = panelEl.querySelector('.hpp-back');
+    if (back) back.addEventListener('click', e => { e.stopPropagation(); closeAll(); });
     panelEl.querySelectorAll('.hdr-pref-opt').forEach(btn => {
       btn.addEventListener('click', () => onPick(btn.dataset.val));
     });
   }
+
+  const group = document.getElementById('hdr-tools-group');
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
 
   const fontBtn = document.getElementById('hdr-font-btn');
   const densityBtn = document.getElementById('hdr-density-btn');
@@ -9333,29 +9452,48 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
       applyFont(val);
       rebuildPanels();
       closeAll();
-    });
+    }, 'Yazı Tipi');
     buildPanel(densityPanel, DENSITIES, prefs.density, true, val => {
       prefs.density = val;
       savePrefs(prefs);
       applyDensity(val);
       rebuildPanels();
       closeAll();
-    });
+    }, 'Bilgi Yoğunluğu');
   }
 
+  let heightResetTimer = null;
   function closeAll() {
     fontPanel.classList.remove('open');
     densityPanel.classList.remove('open');
     fontBtn.setAttribute('aria-expanded', 'false');
     densityBtn.setAttribute('aria-expanded', 'false');
+    if (group) {
+      group.classList.remove('sub-open');
+      // panel kayarak çıkarken yüksekliği koru, bitince sıfırla
+      clearTimeout(heightResetTimer);
+      heightResetTimer = setTimeout(() => { group.style.height = ''; }, 300);
+    }
   }
+  // dişli menüsü tamamen kapanırken alt panelleri de sıfırla
+  window.__hdrResetSub = function() {
+    fontPanel.classList.remove('open');
+    densityPanel.classList.remove('open');
+    if (group) { group.classList.remove('sub-open'); group.style.height = ''; }
+  };
 
   function togglePanel(btn, panel) {
     const isOpen = panel.classList.contains('open');
     closeAll();
     if (!isOpen) {
+      clearTimeout(heightResetTimer);
       panel.classList.add('open');
       btn.setAttribute('aria-expanded', 'true');
+      if (group && isMobile()) {
+        group.classList.add('sub-open');
+        // alt panel mutlak konumlu → grup yüksekliğini panele eşitle
+        group.style.height = panel.offsetHeight + 'px';
+      }
     }
   }
 
@@ -9387,17 +9525,20 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
     e.stopPropagation();
     const open = group.classList.toggle('open');
     trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (!open && window.__hdrResetSub) window.__hdrResetSub();
   });
   document.addEventListener('click', function(e) {
     if (!e.target.closest('#hdr-tools-group') && !e.target.closest('#hdr-tools-trigger')) {
       group.classList.remove('open');
       trigger.setAttribute('aria-expanded', 'false');
+      if (window.__hdrResetSub) window.__hdrResetSub();
     }
   });
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       group.classList.remove('open');
       trigger.setAttribute('aria-expanded', 'false');
+      if (window.__hdrResetSub) window.__hdrResetSub();
     }
   });
 })();
@@ -9450,15 +9591,30 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   });
 
   function openOv(){
-    // canlı sayım metnini başlığa kopyala
+    // canlı sayım metnini 3 sütuna ayrıştır (395 haber | 207 analiz | 22 metrik)
     const hs = document.getElementById('header-stats');
-    statsBox.innerHTML = hs ? hs.innerHTML : '';
+    const txt = hs ? hs.textContent : '';
+    const segs = txt.split('·').map(s => s.trim()).filter(Boolean);
+    let cols = '';
+    segs.forEach(seg => {
+      const m = seg.match(/([\d./]+)\s+(.+)/);
+      if (!m) return;
+      let label = m[2];
+      if (/metrik/i.test(label)) label = 'metrik';
+      else if (/analiz/i.test(label)) label = 'analiz';
+      else if (/haber/i.test(label)) label = 'haber';
+      cols += `<div class="sov-n"><span class="v">${m[1]}</span><span class="k">${label}</span></div>`;
+    });
+    statsBox.innerHTML = cols;
     renderRecent();
     mount.appendChild(searchWrap);          // gerçek arama kutusunu karta taşı
     document.body.classList.add('search-ov-active');
     ov.classList.add('open');
     ov.setAttribute('aria-hidden', 'false');
-    setTimeout(() => { try { searchInput.focus(); } catch(e){} }, 80);  // native klavye
+    // native klavye için odak SENKRON olmalı (mercek tıklaması jest zinciri içinde);
+    // setTimeout jesti kırıp klavyeyi engelliyordu.
+    try { searchInput.removeAttribute('readonly'); } catch(e){}
+    try { searchInput.focus({ preventScroll: true }); } catch(e){}
   }
   function closeOv(){
     ov.classList.remove('open');
@@ -11314,6 +11470,86 @@ function initControls(allArticles) {
   if (!document.body.hasAttribute('data-active-tab')) {
     document.body.setAttribute('data-active-tab', 'news');
   }
+})();
+</script>
+
+<!-- ── KOMPAKT DİŞLİ MENÜSÜ: mobil popover kontrollerini gerçek tema/font/yoğunluk fonksiyonlarına bağla ── -->
+<script>
+(function () {
+  var gmenu = document.getElementById('gmenu');
+  if (!gmenu) return;
+  var KEY = 'haber-bulteni-tweaks-v1';
+  var FONTS = [
+    ['', 'Varsayılan'], ['Fraunces', 'Fraunces'], ['Playfair Display', 'Playfair'],
+    ['Lato', 'Lato'], ['DM Sans', 'DM Sans'], ['Manrope', 'Manrope'],
+    ['Source Sans 3', 'Source Sans'], ['Inter Tight', 'Inter Tight']
+  ];
+
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+  function save(p) { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch (e) {} }
+  function applyFont(f) {
+    var r = document.documentElement;
+    if (f) { r.style.setProperty('--tweak-heading-font', "'" + f + "', Georgia, serif"); r.setAttribute('data-tweak-font', '1'); }
+    else { r.style.removeProperty('--tweak-heading-font'); r.removeAttribute('data-tweak-font'); }
+  }
+  function applyDensity(d) {
+    var r = document.documentElement;
+    if (d && d !== 'off') r.setAttribute('data-tweak-density', d); else r.removeAttribute('data-tweak-density');
+  }
+  function setTheme(t) { document.documentElement.setAttribute('data-theme', t); try { localStorage.setItem('theme', t); } catch (e) {} }
+
+  // Yazı tipi çiplerini oluştur (her çip kendi fontunda görünür)
+  var fontsBox = document.getElementById('gm-fonts');
+  fontsBox.innerHTML = FONTS.map(function (f) {
+    var style = f[0] ? "font-family:'" + f[0] + "',Georgia,serif" : '';
+    return '<button type="button" data-val="' + f[0] + '" style="' + style + '">' + f[1] + '</button>';
+  }).join('');
+
+  function sync() {
+    var p = load();
+    var theme = document.documentElement.getAttribute('data-theme') || 'light';
+    var font = p.headingFont || '';
+    gmenu.querySelectorAll('.gm-seg[data-group="theme"] button').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.val === theme);
+    });
+    gmenu.querySelectorAll('.gm-seg[data-group="density"] button').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.val === (p.density || 'off'));
+    });
+    fontsBox.querySelectorAll('button').forEach(function (b) {
+      b.classList.toggle('on', b.dataset.val === font);
+    });
+  }
+
+  gmenu.querySelector('.gm-seg[data-group="theme"]').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    setTheme(b.dataset.val); sync();
+  });
+  gmenu.querySelector('.gm-seg[data-group="density"]').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var p = load(); p.density = b.dataset.val; save(p); applyDensity(p.density); sync();
+  });
+  fontsBox.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    var p = load(); p.headingFont = b.dataset.val; save(p); applyFont(p.headingFont); sync();
+  });
+
+  var cl = document.getElementById('gm-changelog');
+  if (cl) cl.addEventListener('click', function () {
+    if (typeof window.openChangelog === 'function') window.openChangelog();
+    var grp = document.getElementById('hdr-tools-group');
+    var trg = document.getElementById('hdr-tools-trigger');
+    if (grp) grp.classList.remove('open');
+    if (trg) trg.setAttribute('aria-expanded', 'false');
+  });
+
+  // Popover her açıldığında ve tema/yoğunluk dışarıdan değişince eşitle
+  var trigger = document.getElementById('hdr-tools-trigger');
+  if (trigger) trigger.addEventListener('click', function () { setTimeout(sync, 0); });
+  new MutationObserver(sync).observe(document.documentElement, {
+    attributes: true, attributeFilter: ['data-theme', 'data-tweak-density', 'data-tweak-font']
+  });
+
+  sync();
 })();
 </script>
 
