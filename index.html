@@ -1179,8 +1179,8 @@
           <div class="dash-card-label">Jet Yakıt Fiyatı</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">ABD Gulf Coast · varil</div>
-          <div class="dash-card-note">EIA / FRED · Haftalık</div>
+          <div class="dash-card-sub">ABD Gulf Coast · ton</div>
+          <div class="dash-card-note">EIA / FRED · Günlük</div>
         </div>
         <div class="dash-card" id="dc-brent">
           <div class="dash-card-label">Brent Ham Petrol</div>
@@ -1275,7 +1275,7 @@
           <div class="dash-chart-title">Jet Yakıt &amp; Brent Ham Petrol</div>
           <div class="dash-chart-meta">
             <span>$/varil · Haftalık</span>
-            <span class="dash-chart-badge">WJFUELUSGULF &amp; DCOILBRENTEU</span>
+            <span class="dash-chart-badge">DJFUELUSGULF &amp; DCOILBRENTEU</span>
           </div>
           <div class="energy-period-btns">
             <button class="energy-period-btn active" data-period="all">Tümü</button>
@@ -6567,7 +6567,7 @@ async function loadDashboard() {
   });
 
   Promise.all([
-    fredFetch('WJFUELUSGULF', 80).catch(() => null),
+    fredFetch('DJFUELUSGULF', 400).catch(() => null),
     fredFetch('DCOILBRENTEU', 400).catch(() => null)
   ]).then(([jet, brent]) => {
     _jetRaw   = jet;
@@ -6575,8 +6575,8 @@ async function loadDashboard() {
 
     if (jet && jet.length) {
       const last = jet[jet.length - 1];
-      setCard('dc-jetfuel', (last.value * 42).toFixed(2) + ' $', pctChg(jet.slice(-2)),
-        'ABD Gulf Coast · varil', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
+      setCard('dc-jetfuel', (last.value * 42 * 7.9).toFixed(1) + ' $', pctChg(jet.slice(-2)),
+        'ABD Gulf Coast · ton', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
     } else {
       setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
     }
