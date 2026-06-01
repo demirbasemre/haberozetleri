@@ -1268,14 +1268,26 @@
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">ABD Gulf Coast · ton</div>
-          <div class="dash-card-note">EIA / FRED · Günlük</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">EIA / FRED · Günlük</div>
+            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+              <span class="timer-dot"></span>
+              <span class="timer-secs">60s</span>
+            </div>
+          </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
           <div class="dash-card-label">Brent Ham Petrol</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Europe Brent · varil</div>
-          <div class="dash-card-note">Yahoo Finance · Anlık</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">Yahoo Finance · Anlık</div>
+            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+              <span class="timer-dot"></span>
+              <span class="timer-secs">60s</span>
+            </div>
+          </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
           <div class="dash-card-label" style="display: flex; align-items: center; gap: 5px;">
@@ -1285,7 +1297,13 @@
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Borsa İstanbul · hisse fiyatı</div>
-          <div class="dash-card-note">Yahoo Finance · Günlük</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">Yahoo Finance · Günlük</div>
+            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+              <span class="timer-dot"></span>
+              <span class="timer-secs">60s</span>
+            </div>
+          </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
           <div class="forex-row">
@@ -1318,7 +1336,13 @@
             </div>
             <div class="forex-watermark">€</div>
           </div>
-          <div class="dash-card-note" style="margin-top: auto; border-top: 1px solid var(--border-soft); padding-top: 6px;">Yahoo Finance / ER-API · Günlük</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">Yahoo Finance / ER-API · Günlük</div>
+            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+              <span class="timer-dot"></span>
+              <span class="timer-secs">60s</span>
+            </div>
+          </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-imf" title="Türkiye yıllık dizi için tıkla">
           <!-- Normal görünüm -->
@@ -7181,7 +7205,7 @@ async function loadDashboard() {
 
   // Sayfa açılışında döviz kartı verilerini yükle
   function initForexCard() {
-    Promise.all([
+    return Promise.all([
       fetchForexData('USD', '1y').catch(() => null),
       fetchForexData('EUR', '1y').catch(() => null),
       fetchForexData('USD', '1d').catch(() => null),
@@ -7289,7 +7313,7 @@ async function loadDashboard() {
   }
 
   function initBrentCard() {
-    Promise.all([
+    return Promise.all([
       fetchBrentYahoo('1y').catch(() => null),
       fetchBrentYahoo('1d').catch(() => null)
     ]).then(([data1y, data1d]) => {
@@ -8412,19 +8436,46 @@ async function loadDashboard() {
   initThyCard();
 
   let _dashboardPollInterval = null;
+  let _dashboardCountdown = 60;
   function startDashboardPolling() {
     if (_dashboardPollInterval) return;
+
     _dashboardPollInterval = setInterval(() => {
-      // Tab aktif değilse istek hakkı harcamamak için pas geç
+      // Tab aktif değilse geri sayımı durdur
       if (document.visibilityState !== 'visible') return;
+
+      _dashboardCountdown--;
       
-      console.log("Dashboard otomatik güncelleniyor...");
-      
-      if (typeof initForexCard === 'function') initForexCard();
-      if (typeof initBrentCard === 'function') initBrentCard();
-      if (typeof initThyCard === 'function') initThyCard();
-      if (typeof initJetfuelCard === 'function') initJetfuelCard();
-    }, 60 * 1000); // 60 saniyede bir kontrol et (5 dakikalık cache'leri günceller)
+      if (_dashboardCountdown < 0) {
+        _dashboardCountdown = 60;
+        console.log("Dashboard otomatik güncelleniyor...");
+        
+        // Pilleri "güncelleniyor" durumuna getir
+        document.querySelectorAll('.dash-card-timer').forEach(pill => {
+          pill.classList.add('updating');
+        });
+
+        // Tüm kartları paralel güncelle
+        Promise.all([
+          typeof initForexCard === 'function' ? initForexCard() : Promise.resolve(),
+          typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve(),
+          typeof initThyCard === 'function' ? initThyCard() : Promise.resolve(),
+          typeof initJetfuelCard === 'function' ? initJetfuelCard() : Promise.resolve()
+        ]).finally(() => {
+          // Güncelleme bitince durum rengini normale döndür
+          setTimeout(() => {
+            document.querySelectorAll('.dash-card-timer').forEach(pill => {
+              pill.classList.remove('updating');
+            });
+          }, 800);
+        });
+      }
+
+      // Kalan süreyi güncelle
+      document.querySelectorAll('.dash-card-timer .timer-secs').forEach(el => {
+        el.textContent = _dashboardCountdown + 's';
+      });
+    }, 1000); // 1 saniyede bir tetiklenir
   }
   startDashboardPolling();
 
