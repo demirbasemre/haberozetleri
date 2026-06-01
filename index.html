@@ -6859,8 +6859,10 @@ async function loadDashboard() {
       ttl = 24 * 60 * 60 * 1000; // max: 24h
     } else if (period === '5y') {
       ttl = 12 * 60 * 60 * 1000; // 5y: 12h
-    } else if (period === '1d' || period === '5d') {
-      ttl = 5 * 60 * 1000; // 1d, 5d: 5m
+    } else if (period === '1d') {
+      ttl = 30 * 1000; // 1d: 30s
+    } else if (period === '5d') {
+      ttl = 5 * 60 * 1000; // 5d: 5m
     }
 
     return fetchCached(cacheKey, async () => {
@@ -7252,8 +7254,10 @@ async function loadDashboard() {
       ttl = 24 * 60 * 60 * 1000; // max: 24h
     } else if (period === '5y') {
       ttl = 12 * 60 * 60 * 1000; // 5y: 12h
-    } else if (period === '1d' || period === '5d') {
-      ttl = 5 * 60 * 1000; // 1d, 5d: 5m
+    } else if (period === '1d') {
+      ttl = 30 * 1000; // 1d: 30s
+    } else if (period === '5d') {
+      ttl = 5 * 60 * 1000; // 5d: 5m
     }
 
     return fetchCached(cacheKey, async () => {
