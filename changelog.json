@@ -1,5 +1,14 @@
 [
   {
+    "month": "Haziran 2026",
+    "items": [
+      {
+        "text": "Brent ham petrol fiyat göstergesi FRED yerine Yahoo Finance API entegrasyonuyla anlık (real-time) verilere dönüştürüldü ve birim varil yerine ton başına fiyat ($/ton) olarak güncellendi.",
+        "major": true
+      }
+    ]
+  },
+  {
     "month": "Mayıs 2026",
     "items": [
       {
