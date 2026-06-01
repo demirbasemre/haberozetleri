@@ -4793,31 +4793,49 @@ initTheme();
   function renderChangelogHTML() {
     const container = document.getElementById('changelogBody');
     if (!changelogData || changelogData.length === 0) {
+      if (isChangelogEditing) {
+        container.innerHTML = `
+          <div class="changelog-add-month-wrap" style="text-align:center;padding:20px;">
+            <p style="color:var(--text-3);margin-bottom:12px;">Güncelleme kaydı bulunamadı.</p>
+            <button class="changelog-add-month-btn" onclick="window.addChangelogMonth()">
+              + İlk Ayı Ekle
+            </button>
+          </div>
+        `;
+        return;
+      }
       container.innerHTML = '<p style="text-align:center;color:var(--text-3);padding:20px;">Güncelleme kaydı bulunamadı.</p>';
       return;
     }
     
     const sorted = getSortedChangelog();
     
-    let html = `
-      <div class="changelog-milestones">
-        <div class="milestone-item">
-          <div class="milestone-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            İlk Sürüm Yayını
+    let html = '';
+    
+    if (!isChangelogEditing) {
+      html += `
+        <div class="changelog-milestones">
+          <div class="milestone-item">
+            <div class="milestone-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              İlk Sürüm Yayını
+            </div>
+            <div class="milestone-date">22 Nisan 2026</div>
           </div>
-          <div class="milestone-date">22 Nisan 2026</div>
-        </div>
-        <div class="milestone-item">
-          <div class="milestone-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            Yeni Tasarım Geçişi
+          <div class="milestone-item">
+            <div class="milestone-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Yeni Tasarım Geçişi
+            </div>
+            <div class="milestone-date">23 Mayıs 2026</div>
           </div>
-          <div class="milestone-date">23 Mayıs 2026</div>
         </div>
-      </div>
+      `;
+    }
+    
+    html += `
       <div class="changelog-controls">
-        <span class="control-label">Aylık Gelişmeler</span>
+        <span class="control-label">${isChangelogEditing ? 'Güncelleme Günlüğünü Düzenle' : 'Aylık Gelişmeler'}</span>
         <button class="sort-toggle-btn" onclick="window.toggleChangelogSort()" title="Sıralamayı Değiştir">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4M7 20V4M21 8l-4-4-4 4M17 4v16"/></svg>
           <span class="sort-text">${changelogSortOrder === 'desc' ? 'Yeniden Eskiye' : 'Eskiden Yeniye'}</span>
@@ -4825,42 +4843,182 @@ initTheme();
       </div>
     `;
     
-    sorted.forEach(group => {
-      const isOpen = !!openMonths[group.month];
-      const count = group.items.length;
+    if (isChangelogEditing) {
       html += `
-        <div class="changelog-month-group">
-          <div class="changelog-month-header" onclick="window.toggleChangelogMonth('${escapeHtml(group.month)}')">
-            <span class="month-name">${escapeHtml(group.month)}</span>
-            <span class="month-count">${count} geliştirme</span>
-            <span class="month-chevron" style="transform: ${isOpen ? 'rotate(180deg)' : 'rotate(0)'}">▼</span>
-          </div>
-          <div class="changelog-month-content ${isOpen ? 'open' : ''}">
-            <ul class="changelog-list">
-              ${group.items.map(item => `
-                <li class="changelog-item ${item.major ? 'major' : ''}">
-                  ${escapeHtml(item.text)}
-                </li>
-              `).join('')}
-            </ul>
-          </div>
+        <div class="changelog-add-month-wrap">
+          <button class="changelog-add-month-btn" onclick="window.addChangelogMonth()">
+            + Yeni Ay Ekle
+          </button>
         </div>
       `;
+    }
+    
+    sorted.forEach(group => {
+      const originalIdx = changelogData.indexOf(group);
+      const isOpen = !!openMonths[group.month];
+      const count = group.items.length;
+      
+      if (isChangelogEditing) {
+        html += `
+          <div class="changelog-month-group">
+            <div class="changelog-month-header" onclick="window.toggleChangelogMonth('${escapeHtml(group.month)}')">
+              <input type="text" class="changelog-month-input" value="${escapeHtml(group.month)}" 
+                     onclick="event.stopPropagation()" 
+                     onchange="window.updateChangelogMonthName(${originalIdx}, this.value)"
+                     placeholder="Ay Yıl (örn: Haziran 2026)">
+              
+              <div class="month-header-actions" onclick="event.stopPropagation()">
+                <button class="delete-month-btn" onclick="window.deleteChangelogMonth(${originalIdx})" title="Ayı Sil">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </div>
+              <span class="month-chevron" style="transform: ${isOpen ? 'rotate(180deg)' : 'rotate(0)'}">▼</span>
+            </div>
+            <div class="changelog-month-content ${isOpen ? 'open' : ''}">
+              <ul class="changelog-edit-list">
+                ${group.items.map((item, itemIdx) => `
+                  <li class="changelog-edit-item ${item.major ? 'major' : ''}">
+                    <button class="changelog-star-btn ${item.major ? 'active' : ''}" 
+                            onclick="window.toggleChangelogItemMajor(${originalIdx}, ${itemIdx})" 
+                            title="${item.major ? 'Yıldızlı (Önemli)' : 'Yıldızsız (Normal)'}">
+                      ★
+                    </button>
+                    
+                    <textarea class="changelog-item-textarea" 
+                              oninput="window.updateChangelogItemText(${originalIdx}, ${itemIdx}, this.value)"
+                              placeholder="Geliştirme detayını buraya yazın...">${escapeHtml(item.text)}</textarea>
+                    
+                    <button class="changelog-item-delete-btn" 
+                            onclick="window.deleteChangelogItem(${originalIdx}, ${itemIdx})" 
+                            title="Maddeyi Sil">
+                      ✕
+                    </button>
+                  </li>
+                `).join('')}
+              </ul>
+              
+              <button class="changelog-add-item-btn" onclick="window.addChangelogItem(${originalIdx})">
+                + Yeni Madde Ekle
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="changelog-month-group">
+            <div class="changelog-month-header" onclick="window.toggleChangelogMonth('${escapeHtml(group.month)}')">
+              <span class="month-name">${escapeHtml(group.month)}</span>
+              <span class="month-count">${count} geliştirme</span>
+              <span class="month-chevron" style="transform: ${isOpen ? 'rotate(180deg)' : 'rotate(0)'}">▼</span>
+            </div>
+            <div class="changelog-month-content ${isOpen ? 'open' : ''}">
+              <ul class="changelog-list">
+                ${group.items.map(item => `
+                  <li class="changelog-item ${item.major ? 'major' : ''}">
+                    ${escapeHtml(item.text)}
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          </div>
+        `;
+      }
     });
+    
     container.innerHTML = html;
+    
+    if (isChangelogEditing) {
+      adjustTextareaHeights();
+    }
   }
+
+  function adjustTextareaHeights() {
+    const textareas = document.querySelectorAll('.changelog-item-textarea');
+    textareas.forEach(ta => {
+      ta.style.height = 'auto';
+      ta.style.height = (ta.scrollHeight) + 'px';
+      
+      ta.addEventListener('input', () => {
+        ta.style.height = 'auto';
+        ta.style.height = (ta.scrollHeight) + 'px';
+      });
+    });
+  }
+
+  window.updateChangelogMonthName = function(originalIdx, newName) {
+    const group = changelogData[originalIdx];
+    if (!group) return;
+    const oldName = group.month;
+    group.month = newName;
+    if (openMonths[oldName] !== undefined) {
+      openMonths[newName] = openMonths[oldName];
+      delete openMonths[oldName];
+    }
+  };
+
+  window.deleteChangelogMonth = function(originalIdx) {
+    const group = changelogData[originalIdx];
+    if (!group) return;
+    if (confirm(`"${group.month}" grubunu ve içindeki tüm maddeleri silmek istediğinize emin misiniz?`)) {
+      changelogData.splice(originalIdx, 1);
+      renderChangelogHTML();
+    }
+  };
+
+  window.toggleChangelogItemMajor = function(originalIdx, itemIdx) {
+    const group = changelogData[originalIdx];
+    if (!group || !group.items[itemIdx]) return;
+    group.items[itemIdx].major = !group.items[itemIdx].major;
+    renderChangelogHTML();
+  };
+
+  window.updateChangelogItemText = function(originalIdx, itemIdx, text) {
+    const group = changelogData[originalIdx];
+    if (!group || !group.items[itemIdx]) return;
+    group.items[itemIdx].text = text;
+  };
+
+  window.deleteChangelogItem = function(originalIdx, itemIdx) {
+    const group = changelogData[originalIdx];
+    if (!group || !group.items[itemIdx]) return;
+    group.items.splice(itemIdx, 1);
+    renderChangelogHTML();
+  };
+
+  window.addChangelogItem = function(originalIdx) {
+    const group = changelogData[originalIdx];
+    if (!group) return;
+    group.items.push({ text: '', major: false });
+    renderChangelogHTML();
+  };
+
+  window.addChangelogMonth = function() {
+    const date = new Date();
+    const turkishMonths = [
+      "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", 
+      "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
+    ];
+    const defaultName = `${turkishMonths[date.getMonth()]} ${date.getFullYear()}`;
+    
+    changelogData.unshift({
+      month: defaultName,
+      items: [{ text: '', major: false }]
+    });
+    
+    openMonths[defaultName] = true;
+    renderChangelogHTML();
+  };
 
   window.toggleChangelogEdit = function() {
     isChangelogEditing = true;
-    document.getElementById('changelogBody').style.display = 'none';
-    
-    const txt = document.getElementById('changelogTextarea');
-    txt.style.display = 'block';
-    txt.value = JSON.stringify(changelogData, null, 2);
+    document.getElementById('changelogBody').style.display = 'block';
+    document.getElementById('changelogTextarea').style.display = 'none';
     
     document.getElementById('changelog-edit-btn').style.display = 'none';
     document.getElementById('changelog-cancel-btn').style.display = 'inline-block';
     document.getElementById('changelog-save-btn').style.display = 'inline-block';
+    
+    renderChangelogHTML();
   };
 
   window.cancelChangelogEdit = function() {
@@ -4875,18 +5033,23 @@ initTheme();
     }
     document.getElementById('changelog-cancel-btn').style.display = 'none';
     document.getElementById('changelog-save-btn').style.display = 'none';
+    
+    // Reload state from local override or server to revert changes
+    window.openChangelog();
   };
 
   window.saveChangelogEdit = async function() {
     const CHANGELOG_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/admin/changelog-edit';
-    const txt = document.getElementById('changelogTextarea').value;
-    let parsed;
-    try {
-      parsed = JSON.parse(txt);
-    } catch (e) {
-      alert('Geçersiz JSON formatı: ' + e.message);
-      return;
-    }
+    
+    // Clean and validate data in memory
+    const cleaned = changelogData
+      .map(group => ({
+        month: (group.month || '').trim(),
+        items: (group.items || [])
+          .map(item => ({ text: (item.text || '').trim(), major: !!item.major }))
+          .filter(item => item.text.length > 0)
+      }))
+      .filter(group => group.month.length > 0 && group.items.length > 0);
 
     const saveBtn = document.getElementById('changelog-save-btn');
     const cancelBtn = document.getElementById('changelog-cancel-btn');
@@ -4903,15 +5066,15 @@ initTheme();
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ changelog: parsed })
+        body: JSON.stringify({ changelog: cleaned })
       });
 
       if (!resp.ok) {
         throw new Error('HTTP hata kodu: ' + resp.status);
       }
 
-      changelogData = parsed;
-      localStorage.setItem('changelog-override', JSON.stringify(parsed));
+      changelogData = cleaned;
+      localStorage.setItem('changelog-override', JSON.stringify(cleaned));
       
       // Update openMonths keys based on new data
       openMonths = {};
@@ -4922,7 +5085,18 @@ initTheme();
         });
       }
       
-      cancelChangelogEdit();
+      isChangelogEditing = false;
+      document.getElementById('changelogBody').style.display = 'block';
+      document.getElementById('changelogTextarea').style.display = 'none';
+      
+      const editBtn = document.getElementById('changelog-edit-btn');
+      if (editBtn) {
+        editBtn.style.display = 'inline-block';
+        editBtn.textContent = 'Düzenle';
+      }
+      document.getElementById('changelog-cancel-btn').style.display = 'none';
+      document.getElementById('changelog-save-btn').style.display = 'none';
+      
       renderChangelogHTML();
       
       const toastFunc = window.__showToast || (typeof showToast === 'function' ? showToast : null);
