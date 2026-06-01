@@ -7020,6 +7020,11 @@ async function loadDashboard() {
       }
       
       if (validPoints.length === 0) {
+        if (period === '1d') {
+          console.warn("Forex 1d has no points, falling back to 5d");
+          setTimeout(() => renderForexChart(null, '5d'), 50);
+          return;
+        }
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
       
@@ -7140,6 +7145,11 @@ async function loadDashboard() {
         if (wrap) wrap.classList.remove('loading');
       }).catch(err => {
         console.error(`Forex fetch error for ${_forexCurrentCurrency} (${_forexCurrentPeriod}):`, err);
+        if (_forexCurrentPeriod === '1d') {
+          console.warn("Forex 1d fetch failed, trying 5d");
+          setTimeout(() => renderForexChart(null, '5d'), 50);
+          return;
+        }
         if (titleEl) titleEl.textContent = "Hata: Veri alınamadı";
         if (wrap) {
           wrap.classList.remove('loading');
@@ -7428,6 +7438,11 @@ async function loadDashboard() {
       }
       
       if (validPoints.length === 0) {
+        if (period === '1d') {
+          console.warn("Brent 1d has no points, falling back to 5d");
+          setTimeout(() => renderBrentModalChart('5d'), 50);
+          return;
+        }
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
       
@@ -7522,6 +7537,11 @@ async function loadDashboard() {
         if (wrap) wrap.classList.remove('loading');
       }).catch(err => {
         console.error(`Brent fetch error for ${_brentCurrentPeriod}:`, err);
+        if (_brentCurrentPeriod === '1d') {
+          console.warn("Brent 1d fetch failed, trying 5d");
+          setTimeout(() => renderBrentModalChart('5d'), 50);
+          return;
+        }
         if (titleEl) titleEl.textContent = "Hata: Veri alınamadı";
         if (wrap) {
           wrap.classList.remove('loading');
