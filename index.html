@@ -742,6 +742,10 @@
     border-radius: 10px;
     margin-bottom: 16px;
     flex-wrap: wrap;
+    position: sticky;
+    top: 174px; /* below sticky header stack */
+    z-index: 80;
+    box-shadow: var(--shadow-sm);
   }
   .reports-nav-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
   .reports-nav-title {
@@ -804,7 +808,7 @@
   /* Table of Contents Sidebar */
   .reports-toc {
     position: sticky;
-    top: 190px; /* Below the sticky header + main tabs + filter bar stack */
+    top: 242px; /* Below the sticky navigation bar */
     width: 270px;
     flex-shrink: 0;
     background: var(--surface);
@@ -13587,7 +13591,7 @@ function initControls(allArticles) {
 
     const iframeRect = frame.getBoundingClientRect();
     const rect = sec.getBoundingClientRect();
-    const targetY = window.scrollY + iframeRect.top + rect.top - 220;
+    const targetY = window.scrollY + iframeRect.top + rect.top - 242;
 
     window.scrollTo({
       top: targetY,
@@ -13614,7 +13618,7 @@ function initControls(allArticles) {
     if (!sections.length) return;
 
     const iframeRect = frame.getBoundingClientRect();
-    const triggerPoint = 230; // Trigger line (pixels from top of viewport, aligned below gradient)
+    const triggerPoint = 252; // Trigger line (pixels from top of viewport, aligned below sticky nav bar)
 
     // Edge case: bottom of the page
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 120) {
