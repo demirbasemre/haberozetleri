@@ -5547,10 +5547,11 @@ async function fredFetch(seriesId, limit) {
   const cacheKey = `fred_${seriesId}_${limit}`;
 
   return fetchCached(cacheKey, async () => {
-    // n8n server-side proxy — CORS-free
-    const proxyUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
+    // n8n server-side proxy routed via Cloudflare Workers
+    const n8nUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
+    const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}`;
     const res = await fetch(proxyUrl);
-    if (!res.ok) throw new Error('FRED proxy ' + res.status);
+    if (!res.ok) throw new Error('FRED proxy via CF ' + res.status);
     const d = await res.json();
     if (d.error_message) throw new Error(d.error_message);
     const obs = d.observations || [];
@@ -7602,9 +7603,10 @@ async function loadDashboard() {
     const s = start.toISOString().slice(0, 10);
 
     return fetchCached(cacheKey, async () => {
-      const proxyUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
+      const n8nUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}`;
       const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error('FRED proxy ' + res.status);
+      if (!res.ok) throw new Error('FRED proxy via CF ' + res.status);
       const d = await res.json();
       if (d.error_message) throw new Error(d.error_message);
       const obs = d.observations || [];
