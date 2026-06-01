@@ -7225,11 +7225,23 @@ async function loadDashboard() {
   }
 
   function initBrentCard() {
-    fetchBrentYahoo('1y').then(data => {
-      _brentCache['1y'] = data;
-      _brentCache['1m'] = data;
-      _brentCache['6m'] = data;
-      _brentCache['ytd'] = data;
+    Promise.all([
+      fetchBrentYahoo('1y').catch(() => null),
+      fetchBrentYahoo('1d').catch(() => null)
+    ]).then(([data1y, data1d]) => {
+      if (data1y) {
+        _brentCache['1y'] = data1y;
+        _brentCache['1m'] = data1y;
+        _brentCache['6m'] = data1y;
+        _brentCache['ytd'] = data1y;
+      }
+      if (data1d) {
+        _brentCache['1d'] = data1d;
+      }
+      
+      const data = data1y || data1d;
+      if (!data) throw new Error("Brent verisi alınamadı");
+
       try {
         const result = data.chart.result[0];
         const meta = result.meta || {};
