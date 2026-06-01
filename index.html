@@ -12778,6 +12778,12 @@ function initControls(allArticles) {
       html = html.replace('</head>', dm + '</head>');
     }
 
+    // Inject layout override (max-width 100%) to expand content width to fill the space
+    const layoutOverride = `<style id="reports-layout-override">
+      .wrap { max-width: 100% !important; width: 100% !important; }
+    </style>`;
+    html = html.replace('</head>', layoutOverride + '</head>');
+
     // Use srcdoc to fully isolate the report's CSS from the main page
     frame.srcdoc = html;
     frame.onload = function() {
