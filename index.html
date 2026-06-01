@@ -1511,10 +1511,10 @@
           </div>
           <!-- Period Toggle -->
           <div class="forex-period-btns">
-            <button class="forex-period-btn forex-btn" id="btn-forex-1d" data-period="1d">1G</button>
+            <button class="forex-period-btn forex-btn active" id="btn-forex-1d" data-period="1d">1G</button>
             <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
             <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1A</button>
-            <button class="forex-period-btn forex-btn active" id="btn-forex-1y" data-period="1y">1Y</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-1y" data-period="1y">1Y</button>
             <button class="forex-period-btn forex-btn" id="btn-forex-5y" data-period="5y">5Y</button>
             <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
           </div>
@@ -6601,7 +6601,7 @@ async function loadDashboard() {
     'EUR': { '1d': null, '5d': null, '1m': null, '1y': null, '5y': null, 'max': null }
   };
   let _forexCurrentCurrency = 'USD';
-  let _forexCurrentPeriod = '1y';
+  let _forexCurrentPeriod = '1d';
 
   async function fetchForexData(currency, period = '1y') {
     const symbol = currency === 'USD' ? 'USDTRY=X' : 'EURTRY=X';
@@ -6835,8 +6835,10 @@ async function loadDashboard() {
   function initForexCard() {
     Promise.all([
       fetchForexData('USD', '1y').catch(() => null),
-      fetchForexData('EUR', '1y').catch(() => null)
-    ]).then(([usdData, eurData]) => {
+      fetchForexData('EUR', '1y').catch(() => null),
+      fetchForexData('USD', '1d').catch(() => null),
+      fetchForexData('EUR', '1d').catch(() => null)
+    ]).then(([usdData, eurData, usd1d, eur1d]) => {
       let usdPrice = null, usdChange = null;
       let eurPrice = null, eurChange = null;
 
@@ -6884,6 +6886,13 @@ async function loadDashboard() {
             }
           }
         } catch (e) { console.error("EUR parsing error:", e); }
+      }
+
+      if (usd1d) {
+        _forexCache['USD']['1d'] = usd1d;
+      }
+      if (eur1d) {
+        _forexCache['EUR']['1d'] = eur1d;
       }
 
       const updateEl = (valId, chgId, price, change) => {
