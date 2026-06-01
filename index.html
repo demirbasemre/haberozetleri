@@ -6966,6 +6966,22 @@ async function loadDashboard() {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         const symbol = currency === 'USD' ? '$' : '€';
         titleEl.textContent = `${symbol} Kuru · Güncel: ${latestPrice.toLocaleString('tr-TR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} ₺`;
+        
+        // Dynamic dashboard sync
+        const cardValEl = document.getElementById(`forex-${currency.toLowerCase()}-val`);
+        if (cardValEl) {
+          cardValEl.textContent = latestPrice.toFixed(1) + ' ₺';
+          const prevClose = result.meta.previousClose || result.meta.chartPreviousClose;
+          if (prevClose != null) {
+            const change = ((latestPrice - prevClose) / prevClose) * 100;
+            const cEl = document.getElementById(`forex-${currency.toLowerCase()}-change`);
+            if (cEl) {
+              const dir = change > 0.01 ? 'up' : change < -0.01 ? 'down' : 'flat';
+              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+              cEl.className = 'forex-change ' + dir;
+            }
+          }
+        }
       }
     } catch (err) {
       console.error("Forex Grafik çizim hatası:", err);
@@ -7080,6 +7096,66 @@ async function loadDashboard() {
     });
   }
 
+  function parseYahooFinancePriceAndChange(data1d, data1y) {
+    let price = null;
+    let change = null;
+    
+    if (data1d && data1d.chart && data1d.chart.result && data1d.chart.result[0]) {
+      try {
+        const result = data1d.chart.result[0];
+        const meta = result.meta || {};
+        const closes = result.indicators.quote[0].close || [];
+        let lastVal = null;
+        for (let i = closes.length - 1; i >= 0; i--) {
+          if (closes[i] != null) {
+            lastVal = closes[i];
+            break;
+          }
+        }
+        price = meta.regularMarketPrice || lastVal;
+        const prevClose = meta.previousClose || meta.chartPreviousClose;
+        if (price != null && prevClose != null) {
+          change = ((price - prevClose) / prevClose) * 100;
+        }
+      } catch (e) {
+        console.error("Error parsing 1d data:", e);
+      }
+    }
+    
+    if ((price == null || change == null) && data1y && data1y.chart && data1y.chart.result && data1y.chart.result[0]) {
+      try {
+        const result = data1y.chart.result[0];
+        const meta = result.meta || {};
+        const timestamps = result.timestamp || [];
+        const closes = result.indicators.quote[0].close || [];
+        let validPoints = [];
+        for (let i = 0; i < timestamps.length; i++) {
+          if (closes[i] != null) validPoints.push({ time: timestamps[i], value: closes[i] });
+        }
+        if (validPoints.length) {
+          const lastPoint = validPoints[validPoints.length - 1];
+          if (price == null) {
+            price = meta.regularMarketPrice || lastPoint.value;
+          }
+          if (change == null && validPoints.length >= 2) {
+            const last = validPoints[validPoints.length - 1];
+            const prev = validPoints[validPoints.length - 2];
+            const lastPointDate = new Date(last.time * 1000).toDateString();
+            const todayDate = new Date().toDateString();
+            if (meta.regularMarketPrice && meta.regularMarketPrice !== last.value && lastPointDate !== todayDate) {
+              change = ((meta.regularMarketPrice - last.value) / last.value) * 100;
+            } else {
+              change = ((last.value - prev.value) / prev.value) * 100;
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Error parsing 1y data:", e);
+      }
+    }
+    return { price, change };
+  }
+
   // Sayfa açılışında döviz kartı verilerini yükle
   function initForexCard() {
     Promise.all([
@@ -7088,61 +7164,28 @@ async function loadDashboard() {
       fetchForexData('USD', '1d').catch(() => null),
       fetchForexData('EUR', '1d').catch(() => null)
     ]).then(([usdData, eurData, usd1d, eur1d]) => {
-      let usdPrice = null, usdChange = null;
-      let eurPrice = null, eurChange = null;
-
       if (usdData) {
         _forexCache['USD']['1y'] = usdData;
         _forexCache['USD']['1m'] = usdData;
-        try {
-          const result = usdData.chart.result[0];
-          const meta = result.meta || {};
-          const timestamps = result.timestamp || [];
-          const closes = result.indicators.quote[0].close || [];
-          let validPoints = [];
-          for (let i = 0; i < timestamps.length; i++) {
-            if (closes[i] != null) validPoints.push({ time: timestamps[i], value: closes[i] });
-          }
-          if (validPoints.length) {
-            usdPrice = meta.regularMarketPrice || validPoints[validPoints.length - 1].value;
-            if (validPoints.length >= 2) {
-              const last = validPoints[validPoints.length - 1];
-              const prev = validPoints[validPoints.length - 2];
-              usdChange = ((last.value - prev.value) / prev.value) * 100;
-            }
-          }
-        } catch (e) { console.error("USD parsing error:", e); }
       }
-
       if (eurData) {
         _forexCache['EUR']['1y'] = eurData;
         _forexCache['EUR']['1m'] = eurData;
-        try {
-          const result = eurData.chart.result[0];
-          const meta = result.meta || {};
-          const timestamps = result.timestamp || [];
-          const closes = result.indicators.quote[0].close || [];
-          let validPoints = [];
-          for (let i = 0; i < timestamps.length; i++) {
-            if (closes[i] != null) validPoints.push({ time: timestamps[i], value: closes[i] });
-          }
-          if (validPoints.length) {
-            eurPrice = meta.regularMarketPrice || validPoints[validPoints.length - 1].value;
-            if (validPoints.length >= 2) {
-              const last = validPoints[validPoints.length - 1];
-              const prev = validPoints[validPoints.length - 2];
-              eurChange = ((last.value - prev.value) / prev.value) * 100;
-            }
-          }
-        } catch (e) { console.error("EUR parsing error:", e); }
       }
-
       if (usd1d) {
         _forexCache['USD']['1d'] = usd1d;
       }
       if (eur1d) {
         _forexCache['EUR']['1d'] = eur1d;
       }
+
+      const usdResult = parseYahooFinancePriceAndChange(usd1d, usdData);
+      const eurResult = parseYahooFinancePriceAndChange(eur1d, eurData);
+
+      const usdPrice = usdResult.price;
+      const usdChange = usdResult.change;
+      const eurPrice = eurResult.price;
+      const eurChange = eurResult.change;
 
       const updateEl = (valId, chgId, price, change) => {
         const valEl = document.getElementById(valId);
@@ -7235,44 +7278,24 @@ async function loadDashboard() {
         _brentCache['1d'] = data1d;
       }
       
-      const data = data1y || data1d;
-      if (!data) throw new Error("Brent verisi alınamadı");
+      const brentResult = parseYahooFinancePriceAndChange(data1d, data1y);
+      const price = brentResult.price;
+      const change = brentResult.change;
+      
+      if (price == null) throw new Error("Brent verisi alınamadı");
 
       try {
-        const result = data.chart.result[0];
-        const meta = result.meta || {};
+        const activeData = data1d || data1y;
+        const result = activeData.chart.result[0];
         const timestamps = result.timestamp || [];
         const closes = result.indicators.quote[0].close || [];
-        
         let validPoints = [];
         for (let i = 0; i < timestamps.length; i++) {
           if (closes[i] != null) {
-            validPoints.push({
-              time: timestamps[i],
-              value: closes[i]
-            });
+            validPoints.push({ time: timestamps[i], value: closes[i] });
           }
         }
-        
-        if (!validPoints.length) throw new Error("Veri bulunamadı");
-        
-        const lastPoint = validPoints[validPoints.length - 1];
-        const price = meta.regularMarketPrice || lastPoint.value;
-        
-        let change = 0;
-        if (validPoints.length >= 2) {
-          const last = validPoints[validPoints.length - 1];
-          const prev = validPoints[validPoints.length - 2];
-          const lastPointDate = new Date(last.time * 1000).toDateString();
-          const todayDate = new Date().toDateString();
-          
-          if (meta.regularMarketPrice && meta.regularMarketPrice !== last.value && lastPointDate !== todayDate) {
-            change = ((meta.regularMarketPrice - last.value) / last.value) * 100;
-          } else {
-            change = ((last.value - prev.value) / prev.value) * 100;
-          }
-        }
-        
+        const lastPoint = validPoints.length ? validPoints[validPoints.length - 1] : { time: Date.now()/1000 };
         const lastObsDate = new Date(lastPoint.time * 1000).toISOString().slice(0, 10);
         
         setCard('dc-brent',
@@ -7373,6 +7396,22 @@ async function loadDashboard() {
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         titleEl.textContent = `Brent Ham Petrol Grafiği · Güncel: ${latestPrice.toFixed(2)} $`;
+        
+        // Dynamic dashboard sync
+        const cardValEl = document.querySelector('#dc-brent .dash-card-value');
+        if (cardValEl) {
+          cardValEl.textContent = latestPrice.toFixed(1) + ' $';
+          const prevClose = result.meta.previousClose || result.meta.chartPreviousClose;
+          if (prevClose != null) {
+            const change = ((latestPrice - prevClose) / prevClose) * 100;
+            const cEl = document.querySelector('#dc-brent .dash-card-change');
+            if (cEl) {
+              const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
+              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+              cEl.className = 'dash-card-change ' + dir;
+            }
+          }
+        }
       }
     } catch (err) {
       console.error("Brent Grafik çizim hatası:", err);
@@ -7563,6 +7602,23 @@ async function loadDashboard() {
       if (titleEl) {
         const latestPrice = prices[prices.length - 1];
         titleEl.textContent = `Jet Yakıtı Fiyat Grafiği · Güncel: ${latestPrice.toFixed(1)} $ / ton`;
+        
+        // Dynamic dashboard sync
+        const cardValEl = document.querySelector('#dc-jetfuel .dash-card-value');
+        if (cardValEl) {
+          cardValEl.textContent = latestPrice.toFixed(1) + ' $';
+          if (prices.length >= 2) {
+            const lastVal = prices[prices.length - 1];
+            const prevVal = prices[prices.length - 2];
+            const change = ((lastVal - prevVal) / prevVal) * 100;
+            const cEl = document.querySelector('#dc-jetfuel .dash-card-change');
+            if (cEl) {
+              const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
+              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+              cEl.className = 'dash-card-change ' + dir;
+            }
+          }
+        }
       }
     } catch (err) {
       console.error("Jet Yakıtı Grafik çizim hatası:", err);
