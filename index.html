@@ -720,6 +720,89 @@
       height: 8px;
     }
   }
+
+  /* ── RAPORLAR SEKMESİ ──────────────────────────────────────── */
+  .reports-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 60px 0;
+    color: var(--text-3);
+    font-size: 14px;
+  }
+  .reports-nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .reports-nav-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .reports-nav-title {
+    font-size: 14px; font-weight: 600; color: var(--text-1);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .reports-nav-date { font-size: 12px; color: var(--text-3); }
+  .reports-nav-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .reports-nav-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 5px 11px; font-size: 12px; font-weight: 500;
+    color: var(--text-2); background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s; white-space: nowrap;
+  }
+  .reports-nav-btn:hover:not(:disabled) {
+    background: var(--card-bg); color: var(--text-1); border-color: var(--text-3);
+  }
+  .reports-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .reports-nav-indicator {
+    font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums;
+    min-width: 36px; text-align: center;
+  }
+  .reports-pdf-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 12px; font-size: 12px; font-weight: 600;
+    color: #fff; background: #2563eb; border: none; border-radius: 6px;
+    cursor: pointer; transition: background 0.15s, transform 0.12s; white-space: nowrap;
+  }
+  .reports-pdf-btn:hover { background: #1d4ed8; }
+  .reports-pdf-btn:active { transform: translateY(1px); }
+  .reports-bulletin-frame {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; overflow: auto; line-height: 1.65;
+  }
+  .reports-bulletin-frame h1,
+  .reports-bulletin-frame h2,
+  .reports-bulletin-frame h3 {
+    font-family: var(--tweak-heading-font, Georgia, serif);
+    color: var(--text-1); margin-top: 1.4em; margin-bottom: 0.5em;
+  }
+  .reports-bulletin-frame h1 { font-size: 1.5rem; margin-top: 0; }
+  .reports-bulletin-frame h2 { font-size: 1.15rem; }
+  .reports-bulletin-frame h3 { font-size: 1rem; }
+  .reports-bulletin-frame p { margin: 0 0 0.75em; color: var(--text-2); font-size: 14px; }
+  .reports-bulletin-frame table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1em 0; }
+  .reports-bulletin-frame th,
+  .reports-bulletin-frame td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+  .reports-bulletin-frame th { background: var(--bg); font-weight: 600; font-size: 12px; color: var(--text-2); }
+  .reports-bulletin-frame ul,
+  .reports-bulletin-frame ol { padding-left: 1.4em; margin: 0 0 0.75em; color: var(--text-2); font-size: 14px; }
+  .reports-bulletin-frame li { margin-bottom: 4px; }
+  .reports-bulletin-frame hr { border: none; border-top: 1px solid var(--border); margin: 1.5em 0; }
+  .reports-bulletin-frame strong { color: var(--text-1); }
+  .reports-bulletin-frame a { color: var(--red); text-decoration: none; }
+  .reports-bulletin-frame a:hover { text-decoration: underline; }
+  @media (max-width: 640px) {
+    .reports-nav-bar { flex-direction: column; align-items: flex-start; }
+    .reports-bulletin-frame { padding: 16px; }
+    .reports-nav-controls { flex-wrap: wrap; }
+  }
 </style>
 </head>
 <body>
@@ -904,6 +987,10 @@
         </svg>
         <span class="nsp-i" aria-hidden="true">i</span>
       </span>
+    </button>
+    <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Raporlar
     </button>
     <button class="main-tab" id="tab-dash-btn" onclick="switchTab('dashboard')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="6" height="8" rx="1"/><rect x="10" y="3" width="12" height="4" rx="1"/><rect x="10" y="11" width="12" height="4" rx="1"/><rect x="2" y="15" width="6" height="6" rx="1"/><rect x="10" y="19" width="12" height="2" rx="1"/></svg>
@@ -1126,6 +1213,26 @@
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
         <span>Temizle</span>
       </button>
+    </div>
+
+    <!-- Reports tab filter area -->
+    <div id="reports-filter-content" style="display:none;">
+      <div class="fdd-wrap">
+        <button class="fdd-btn fdd-btn--active" id="reports-type-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Rapor türü seç">
+          <span class="fdd-dot" style="background:#2563eb"></span>
+          <span id="reports-type-label">Arz &amp; Talep &amp; Navlun Analizi</span>
+          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="fdd-panel" id="reports-type-panel" role="listbox" aria-label="Rapor türü seç">
+          <div class="fdd-option selected" data-report-type="arz_talep_navlun" role="option" aria-selected="true">
+            <div class="fdd-radio"></div>
+            <span class="fdd-dot" style="background:#2563eb"></span>
+            Arz &amp; Talep &amp; Navlun Analizi
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Todo tab filter area (empty — placeholder for consistent height) -->
@@ -1781,6 +1888,45 @@
 
     </div>
   </div><!-- /todo-panel -->
+
+  <!-- Reports panel -->
+  <div id="reports-panel" style="display:none">
+    <div class="reports-loading" id="reports-loading">
+      <div class="spinner"></div>
+      <div>Raporlar yükleniyor…</div>
+    </div>
+    <div class="empty-state" id="reports-empty" style="display:none">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+      </svg>
+      <h3>Henüz rapor yok</h3>
+      <p>Lojistik Bülten Arz Talep workflow çalıştığında burada görünecek.</p>
+    </div>
+    <div id="reports-view" style="display:none">
+      <div class="reports-nav-bar">
+        <div class="reports-nav-info">
+          <span class="reports-nav-title" id="reports-current-title"></span>
+          <span class="reports-nav-date" id="reports-current-date"></span>
+        </div>
+        <div class="reports-nav-controls">
+          <button class="reports-nav-btn" id="reports-prev-btn" onclick="navigateReport(-1)" aria-label="Önceki rapor">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Önceki
+          </button>
+          <span class="reports-nav-indicator" id="reports-nav-indicator">1 / 1</span>
+          <button class="reports-nav-btn" id="reports-next-btn" onclick="navigateReport(1)" aria-label="Sonraki rapor">
+            Sonraki
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <button class="reports-pdf-btn" id="reports-pdf-btn" onclick="downloadReportPDF()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PDF İndir
+          </button>
+        </div>
+      </div>
+      <div class="reports-bulletin-frame" id="reports-bulletin-frame"></div>
+    </div>
+  </div><!-- /reports-panel -->
 
 </main>
 
@@ -5129,9 +5275,10 @@ initTheme();
 })();
 
 // ── TAB SWITCHING ─────────────────────────────────────────────
-let _dashInit  = false;
-let _todoInit  = false;
-let _statsInit = false;
+let _dashInit    = false;
+let _todoInit    = false;
+let _statsInit   = false;
+let _reportsInit = false;
 
 function dashScrollTo(id) {
   const el = document.getElementById(id);
@@ -5177,46 +5324,54 @@ let _tabElementsCache = null;
 function getTabElements() {
   if (!_tabElementsCache) {
     _tabElementsCache = {
-      newsPanel:   document.getElementById('news-panel'),
-      dashPanel:   document.getElementById('dashboard-panel'),
-      todoPanel:   document.getElementById('todo-panel'),
-      statsPanel:  document.getElementById('stats-panel'),
-      newsFilter:  document.getElementById('news-filter-content'),
-      dashFilter:  document.getElementById('dash-filter-content'),
-      todoFilter:  document.getElementById('todo-filter-content'),
-      statsFilter: document.getElementById('stats-filter-content'),
+      newsPanel:    document.getElementById('news-panel'),
+      dashPanel:    document.getElementById('dashboard-panel'),
+      todoPanel:    document.getElementById('todo-panel'),
+      statsPanel:   document.getElementById('stats-panel'),
+      reportsPanel: document.getElementById('reports-panel'),
+      newsFilter:    document.getElementById('news-filter-content'),
+      dashFilter:    document.getElementById('dash-filter-content'),
+      todoFilter:    document.getElementById('todo-filter-content'),
+      statsFilter:   document.getElementById('stats-filter-content'),
+      reportsFilter: document.getElementById('reports-filter-content'),
       newsBtn:     document.getElementById('tab-news-btn'),
       dashBtn:     document.getElementById('tab-dash-btn'),
       todoBtn:     document.getElementById('tab-todo-btn'),
-      statsBtn:    document.getElementById('tab-stats-btn')
+      statsBtn:    document.getElementById('tab-stats-btn'),
+      reportsBtn:  document.getElementById('tab-reports-btn')
     };
   }
   return _tabElementsCache;
 }
 
 function switchTab(tab) {
-  const isNews  = tab === 'news';
-  const isDash  = tab === 'dashboard';
-  const isTodo  = tab === 'todo';
-  const isStats = tab === 'stats';
+  const isNews    = tab === 'news';
+  const isDash    = tab === 'dashboard';
+  const isTodo    = tab === 'todo';
+  const isStats   = tab === 'stats';
+  const isReports = tab === 'reports';
 
   const el = getTabElements();
-  if (el.newsPanel)   el.newsPanel.style.display   = isNews  ? ''      : 'none';
-  if (el.dashPanel)   el.dashPanel.style.display   = isDash  ? 'block' : 'none';
-  if (el.todoPanel)   el.todoPanel.style.display   = isTodo  ? 'block' : 'none';
-  if (el.statsPanel)  el.statsPanel.style.display  = isStats ? 'block' : 'none';
+  if (el.newsPanel)    el.newsPanel.style.display    = isNews    ? ''      : 'none';
+  if (el.dashPanel)    el.dashPanel.style.display    = isDash    ? 'block' : 'none';
+  if (el.todoPanel)    el.todoPanel.style.display    = isTodo    ? 'block' : 'none';
+  if (el.statsPanel)   el.statsPanel.style.display   = isStats   ? 'block' : 'none';
+  if (el.reportsPanel) el.reportsPanel.style.display = isReports ? 'block' : 'none';
   // Toggle filter bar content
-  if (el.newsFilter)  el.newsFilter.style.display  = isNews  ? 'flex' : 'none';
-  if (el.dashFilter)  el.dashFilter.style.display  = isDash  ? 'flex' : 'none';
-  if (el.todoFilter)  el.todoFilter.style.display  = isTodo  ? 'flex' : 'none';
-  if (el.statsFilter) el.statsFilter.style.display = isStats ? 'flex' : 'none';
-  if (el.newsBtn)  el.newsBtn.classList.toggle('main-tab-active',  isNews || isStats);
-  if (el.dashBtn)  el.dashBtn.classList.toggle('main-tab-active',  isDash);
-  if (el.todoBtn)  el.todoBtn.classList.toggle('main-tab-active',  isTodo);
-  if (el.statsBtn) el.statsBtn.classList.toggle('main-tab-active', isStats);
-  if (isDash  && !_dashInit)  { _dashInit  = true; loadDashboard(); }
-  if (isTodo  && !_todoInit)  { _todoInit  = true; initTodo(); }
-  if (isStats && !_statsInit) { _statsInit = true; initStatsTab(); }
+  if (el.newsFilter)    el.newsFilter.style.display    = isNews    ? 'flex' : 'none';
+  if (el.dashFilter)    el.dashFilter.style.display    = isDash    ? 'flex' : 'none';
+  if (el.todoFilter)    el.todoFilter.style.display    = isTodo    ? 'flex' : 'none';
+  if (el.statsFilter)   el.statsFilter.style.display   = isStats   ? 'flex' : 'none';
+  if (el.reportsFilter) el.reportsFilter.style.display = isReports ? 'flex' : 'none';
+  if (el.newsBtn)    el.newsBtn.classList.toggle('main-tab-active',    isNews || isStats);
+  if (el.dashBtn)    el.dashBtn.classList.toggle('main-tab-active',    isDash);
+  if (el.todoBtn)    el.todoBtn.classList.toggle('main-tab-active',    isTodo);
+  if (el.statsBtn)   el.statsBtn.classList.toggle('main-tab-active',   isStats);
+  if (el.reportsBtn) el.reportsBtn.classList.toggle('main-tab-active', isReports);
+  if (isDash    && !_dashInit)    { _dashInit    = true; loadDashboard(); }
+  if (isTodo    && !_todoInit)    { _todoInit    = true; initTodo(); }
+  if (isStats   && !_statsInit)   { _statsInit   = true; initStatsTab(); }
+  if (isReports && !_reportsInit) { _reportsInit = true; initReportsTab(); }
   if (el.todoBtn) el.todoBtn.style.display = isTodo ? '' : 'none';
   // Reflect active tab on <body> for cross-cutting CSS (e.g. stats pill highlight)
   document.body.setAttribute('data-active-tab', tab);
@@ -11882,6 +12037,128 @@ function initControls(allArticles) {
     if (closeBtn) closeBtn.click();
     else panel.classList.remove('open');
   });
+})();
+</script>
+
+<!-- ── RAPORLAR SEKMESİ ──────────────────────────────────────── -->
+<script>
+(function() {
+  'use strict';
+
+  const RAPORLAR_URL = 'https://n8n.emredemirbas.com/webhook/raporlar';
+
+  let _reports = [];
+  let _currentIdx = 0;
+
+  async function initReportsTab() {
+    const loadingEl = document.getElementById('reports-loading');
+    const emptyEl   = document.getElementById('reports-empty');
+    const viewEl    = document.getElementById('reports-view');
+
+    loadingEl.style.display = '';
+    emptyEl.style.display   = 'none';
+    viewEl.style.display    = 'none';
+
+    try {
+      const res = await fetch(RAPORLAR_URL + '?type=arz_talep_navlun');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      _reports = (data.reports || []);
+
+      loadingEl.style.display = 'none';
+
+      if (_reports.length === 0) {
+        emptyEl.style.display = 'block';
+        return;
+      }
+
+      _currentIdx = 0;
+      renderReport();
+      viewEl.style.display = 'block';
+    } catch (err) {
+      loadingEl.style.display = 'none';
+      emptyEl.style.display   = 'block';
+      console.error('Raporlar yüklenemedi:', err);
+    }
+  }
+
+  function renderReport() {
+    const r = _reports[_currentIdx];
+    if (!r) return;
+
+    document.getElementById('reports-current-title').textContent = r.title || 'Arz & Talep + Navlun Analizi';
+    document.getElementById('reports-current-date').textContent  = r.date
+      ? new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
+      : '';
+    document.getElementById('reports-nav-indicator').textContent = (_currentIdx + 1) + ' / ' + _reports.length;
+
+    const prevBtn = document.getElementById('reports-prev-btn');
+    const nextBtn = document.getElementById('reports-next-btn');
+    prevBtn.disabled = _currentIdx === 0;
+    nextBtn.disabled = _currentIdx === _reports.length - 1;
+
+    const frame = document.getElementById('reports-bulletin-frame');
+    frame.innerHTML = r.html_content || '<p style="padding:2rem;color:var(--text-3)">İçerik bulunamadı.</p>';
+  }
+
+  function navigateReport(dir) {
+    const newIdx = _currentIdx + dir;
+    if (newIdx >= 0 && newIdx < _reports.length) {
+      _currentIdx = newIdx;
+      renderReport();
+      document.getElementById('reports-bulletin-frame').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function downloadReportPDF() {
+    const r = _reports[_currentIdx];
+    if (!r) return;
+    const title = r.title || 'Rapor';
+    const html  = r.html_content || '';
+    const win   = window.open('', '_blank', 'width=900,height=700');
+    if (!win) { alert('Lütfen açılır pencere engelleyiciyi devre dışı bırakın.'); return; }
+    win.document.write(
+      '<!DOCTYPE html><html lang="tr"><head>' +
+      '<meta charset="UTF-8">' +
+      '<title>' + title.replace(/</g, '&lt;') + '</title>' +
+      '<style>' +
+        'body{font-family:Inter,system-ui,sans-serif;margin:0;padding:32px 40px;color:#111;background:#fff;font-size:14px;line-height:1.6}' +
+        'h1,h2,h3{font-family:Georgia,serif;color:#1a1a1a}' +
+        'table{width:100%;border-collapse:collapse}td,th{border:1px solid #e2e8f0;padding:6px 10px;font-size:13px}' +
+        'th{background:#f8fafc;font-weight:600}' +
+        '@media print{body{padding:0 32px}@page{margin:20mm 15mm}}' +
+      '</style>' +
+      '</head><body>' +
+      html +
+      '<script>window.addEventListener("load",function(){window.print();});<\/script>' +
+      '</body></html>'
+    );
+    win.document.close();
+  }
+
+  // Filtre dropdown (tek seçenek ama gelecekte genişletilebilir)
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('#reports-type-btn');
+    if (btn) {
+      e.stopPropagation();
+      const panel = document.getElementById('reports-type-panel');
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      panel.classList.toggle('fdd-panel-open', !expanded);
+    }
+    // Dışarı tıklanırsa kapat
+    if (!e.target.closest('#reports-filter-content')) {
+      const btn2 = document.getElementById('reports-type-btn');
+      const panel2 = document.getElementById('reports-type-panel');
+      if (btn2) btn2.setAttribute('aria-expanded', 'false');
+      if (panel2) panel2.classList.remove('fdd-panel-open');
+    }
+  });
+
+  // Global'e aç (onclick="..." attribute'ları için)
+  window.initReportsTab  = initReportsTab;
+  window.navigateReport  = navigateReport;
+  window.downloadReportPDF = downloadReportPDF;
 })();
 </script>
 
