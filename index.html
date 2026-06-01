@@ -783,6 +783,173 @@
     background: transparent;
     transition: height 0.2s ease;
   }
+
+  /* Reports Main Flex Layout */
+  .reports-main-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .reports-frame-container {
+    flex: 1;
+    max-width: 820px;
+    min-width: 0;
+  }
+
+  /* Table of Contents Sidebar */
+  .reports-toc {
+    position: sticky;
+    top: 190px; /* Below the sticky header + main tabs + filter bar stack */
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 12px;
+    box-shadow: var(--shadow-sm);
+    transition: width 0.25s ease, padding 0.25s ease;
+  }
+
+  .reports-toc-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    padding-left: 10px;
+  }
+
+  .reports-toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+  }
+
+  /* Vertical timeline line passing through dots */
+  .reports-toc-list::before {
+    content: '';
+    position: absolute;
+    left: 13px; /* Align with center of dot */
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    background: var(--border-soft);
+    z-index: 1;
+  }
+
+  .reports-toc-item {
+    position: relative;
+    z-index: 2;
+  }
+
+  .reports-toc-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .reports-toc-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-3);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    border: 1px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--border-soft);
+    z-index: 3;
+  }
+
+  .reports-toc-emoji {
+    font-size: 14px;
+    flex-shrink: 0;
+    text-align: center;
+    width: 20px;
+  }
+
+  .reports-toc-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-grow: 1;
+    transition: opacity 0.2s ease;
+  }
+
+  /* Interactive States */
+  .reports-toc-link:hover {
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.03);
+  }
+  [data-theme="dark"] .reports-toc-link:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .reports-toc-link.active {
+    color: var(--accent);
+    font-weight: 600;
+    background: rgba(29, 111, 232, 0.05);
+  }
+  [data-theme="dark"] .reports-toc-link.active {
+    background: rgba(77, 142, 245, 0.06);
+  }
+
+  .reports-toc-link.active .reports-toc-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(29, 111, 232, 0.2);
+    transform: scale(1.2);
+  }
+  [data-theme="dark"] .reports-toc-link.active .reports-toc-dot {
+    box-shadow: 0 0 0 3px rgba(77, 142, 245, 0.2);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) and (min-width: 769px) {
+    /* Compact mode: Hide text labels, show only vertical icon stream */
+    .reports-toc {
+      width: 54px;
+      padding: 16px 6px;
+    }
+    .reports-toc-title {
+      display: none;
+    }
+    .reports-toc-text {
+      display: none;
+    }
+    .reports-toc-link {
+      padding: 8px 6px;
+    }
+    .reports-toc-list::before {
+      left: 9px; /* Adjust for smaller padding (6px + 3px dot center) */
+    }
+  }
+
+  @media (max-width: 768px) {
+    /* Mobile: Hide TOC sidebar entirely to give full screen width to reports */
+    .reports-toc {
+      display: none !important;
+    }
+    .reports-main-layout {
+      gap: 0;
+    }
+  }
   @media (max-width: 640px) {
     .reports-nav-bar { flex-direction: column; align-items: flex-start; }
     .reports-nav-controls { flex-wrap: wrap; }
@@ -1978,7 +2145,15 @@
           </button>
         </div>
       </div>
-      <iframe id="reports-bulletin-frame" class="reports-bulletin-frame" frameborder="0" title="Bülten içeriği" scrolling="no"></iframe>
+      <div class="reports-main-layout">
+        <aside class="reports-toc" id="reports-toc" style="display:none;">
+          <div class="reports-toc-title">İçindekiler</div>
+          <ul class="reports-toc-list" id="reports-toc-list"></ul>
+        </aside>
+        <div class="reports-frame-container">
+          <iframe id="reports-bulletin-frame" class="reports-bulletin-frame" frameborder="0" title="Bülten içeriği" scrolling="no"></iframe>
+        </div>
+      </div>
     </div>
     <!-- Filo Analizi -->
     <div id="fleet-report-container" class="fleet-report-container" style="display:none">
@@ -13302,12 +13477,165 @@ function initControls(allArticles) {
         const doc = frame.contentDocument || (frame.contentWindow && frame.contentWindow.document);
         if (doc && doc.body) {
           frame.style.height = (doc.body.scrollHeight + 48) + 'px';
+          buildReportsTOC(doc);
         }
       } catch(e) {
         frame.style.height = '3200px';
       }
     };
   }
+
+  let _isScrollingToSection = false;
+
+  function buildReportsTOC(doc) {
+    const tocList = document.getElementById('reports-toc-list');
+    const tocContainer = document.getElementById('reports-toc');
+    if (!tocList || !tocContainer) return;
+
+    tocList.innerHTML = '';
+    const sections = doc.querySelectorAll('.section');
+    
+    if (sections.length === 0) {
+      tocContainer.style.display = 'none';
+      return;
+    }
+
+    tocContainer.style.display = 'block';
+
+    sections.forEach((sec, idx) => {
+      const numEl = sec.querySelector('.section-num');
+      const catEl = sec.querySelector('.section-cat');
+      
+      let num = numEl ? numEl.textContent.trim() : (idx + 1).toString();
+      let rawCat = catEl ? catEl.textContent.trim() : (sec.querySelector('.section-title')?.textContent || 'Bölüm ' + num).trim();
+      
+      // Extract emoji and text
+      let emoji = '📄';
+      let text = rawCat;
+      const tokens = rawCat.split(/\s+/);
+      if (tokens.length > 1 && isNaN(tokens[0]) && tokens[0].length <= 3) {
+        emoji = tokens[0];
+        text = tokens.slice(1).join(' ');
+      }
+
+      // Title casing and cleanup (Turkish compatible)
+      let cleanText = text.split(' ').map(word => {
+        if (!word) return '';
+        return word.charAt(0).toLocaleUpperCase('tr-TR') + word.slice(1).toLocaleLowerCase('tr-TR');
+      }).join(' ');
+
+      cleanText = cleanText
+        .replace(/Endeksleri|Maliyetleri|Dinamikleri|Karşılaştırması/gi, '')
+        .replace(/Arz\/talep/gi, 'Arz / Talep')
+        .replace(/Ve/g, '&')
+        .trim();
+
+      const li = document.createElement('li');
+      li.className = 'reports-toc-item';
+
+      const a = document.createElement('a');
+      a.className = 'reports-toc-link';
+      a.title = `${num}. ${cleanText}`;
+      a.setAttribute('data-index', idx);
+
+      const dot = document.createElement('span');
+      dot.className = 'reports-toc-dot';
+
+      const emojiSpan = document.createElement('span');
+      emojiSpan.className = 'reports-toc-emoji';
+      emojiSpan.textContent = emoji;
+
+      const textSpan = document.createElement('span');
+      textSpan.className = 'reports-toc-text';
+      textSpan.textContent = cleanText;
+
+      a.appendChild(dot);
+      a.appendChild(emojiSpan);
+      a.appendChild(textSpan);
+
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        scrollToSection(idx);
+      });
+
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    highlightTocItem(0);
+  }
+
+  function highlightTocItem(index) {
+    const links = document.querySelectorAll('.reports-toc-link');
+    links.forEach((link, idx) => {
+      link.classList.toggle('active', idx === index);
+    });
+  }
+
+  function scrollToSection(index) {
+    const frame = document.getElementById('reports-bulletin-frame');
+    if (!frame) return;
+    const doc = frame.contentDocument || (frame.contentWindow && frame.contentWindow.document);
+    if (!doc) return;
+
+    const sections = doc.querySelectorAll('.section');
+    const sec = sections[index];
+    if (!sec) return;
+
+    _isScrollingToSection = true;
+    highlightTocItem(index);
+
+    const iframeRect = frame.getBoundingClientRect();
+    const rect = sec.getBoundingClientRect();
+    const targetY = window.scrollY + iframeRect.top + rect.top - 180;
+
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth'
+    });
+
+    setTimeout(() => {
+      _isScrollingToSection = false;
+    }, 850);
+  }
+
+  // Scroll Spy
+  window.addEventListener('scroll', () => {
+    if (_isScrollingToSection) return;
+    // Check if the current tab is reports
+    if (document.body.getAttribute('data-active-tab') !== 'reports') return;
+
+    const frame = document.getElementById('reports-bulletin-frame');
+    if (!frame) return;
+    const doc = frame.contentDocument || (frame.contentWindow && frame.contentWindow.document);
+    if (!doc) return;
+
+    const sections = doc.querySelectorAll('.section');
+    if (!sections.length) return;
+
+    const iframeRect = frame.getBoundingClientRect();
+    const triggerPoint = 200; // Trigger line (pixels from top of viewport)
+
+    // Edge case: bottom of the page
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 120) {
+      highlightTocItem(sections.length - 1);
+      return;
+    }
+
+    let activeIndex = 0;
+    for (let i = 0; i < sections.length; i++) {
+      const sec = sections[i];
+      const rect = sec.getBoundingClientRect();
+      const secTop = iframeRect.top + rect.top;
+      const secBottom = iframeRect.top + rect.bottom;
+
+      if (secTop <= triggerPoint + 30) {
+        activeIndex = i;
+      }
+    }
+
+    highlightTocItem(activeIndex);
+  });
 
   function navigateReport(dir) {
     const newIdx = _currentIdx + dir;
