@@ -1186,8 +1186,8 @@
           <div class="dash-card-label">Brent Ham Petrol</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Europe Brent Spot · varil</div>
-          <div class="dash-card-note">EIA / FRED · Günlük</div>
+          <div class="dash-card-sub">Europe Brent · ton</div>
+          <div class="dash-card-note">Yahoo Finance · Anlık</div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
           <div class="dash-card-label" style="display: flex; align-items: center; gap: 5px;">
@@ -4028,7 +4028,7 @@ const SEARCHABLE_METRICS = [
     tab: 'dashboard',
     tabName: 'Dashboard',
     id: 'dc-brent',
-    kw: ['brent', 'petrol', 'crude', 'oil', 'varil', 'eia', 'fred']
+    kw: ['brent', 'petrol', 'crude', 'oil', 'ton', 'yahoo', 'finance']
   },
   {
     name: 'THY Hisse (THYAO)',
@@ -6580,13 +6580,6 @@ async function loadDashboard() {
     } else {
       setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
     }
-    if (brent && brent.length) {
-      const last = brent[brent.length - 1];
-      setCard('dc-brent', last.value.toFixed(1) + ' $', pctChg(brent.slice(-2)),
-        'Europe Brent Spot · varil', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
-    } else {
-      setCard('dc-brent', '—', null, '', 'Veri alınamadı');
-    }
 
     if (jet || brent) {
       renderEnergyChart('all');
@@ -6922,6 +6915,82 @@ async function loadDashboard() {
   }
 
   initForexCard();
+
+
+  // ── Brent Ham Petrol (Yahoo Finance) Verisini Çek ve Göster ──
+  async function fetchBrentYahoo() {
+    const cacheKey = 'brent_yahoo_data';
+    const ttl = 15 * 60 * 1000; // 15 dakika cache TTL
+    return fetchCached(cacheKey, async () => {
+      const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=5d`;
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
+      const d = await res.json();
+      if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
+      return d;
+    }, ttl);
+  }
+
+  function initBrentCard() {
+    fetchBrentYahoo().then(data => {
+      try {
+        const result = data.chart.result[0];
+        const meta = result.meta || {};
+        const timestamps = result.timestamp || [];
+        const closes = result.indicators.quote[0].close || [];
+        
+        let validPoints = [];
+        for (let i = 0; i < timestamps.length; i++) {
+          if (closes[i] != null) {
+            validPoints.push({
+              time: timestamps[i],
+              value: closes[i]
+            });
+          }
+        }
+        
+        if (!validPoints.length) throw new Error("Veri bulunamadı");
+        
+        const lastPoint = validPoints[validPoints.length - 1];
+        const price = meta.regularMarketPrice || lastPoint.value;
+        
+        // Yoğunluk dönüştürme: 1 ton = 7.33 varil
+        const tonPrice = price * 7.33;
+        
+        let change = 0;
+        if (validPoints.length >= 2) {
+          const last = validPoints[validPoints.length - 1];
+          const prev = validPoints[validPoints.length - 2];
+          const lastPointDate = new Date(last.time * 1000).toDateString();
+          const todayDate = new Date().toDateString();
+          
+          if (meta.regularMarketPrice && meta.regularMarketPrice !== last.value && lastPointDate !== todayDate) {
+            change = ((meta.regularMarketPrice - last.value) / last.value) * 100;
+          } else {
+            change = ((last.value - prev.value) / prev.value) * 100;
+          }
+        }
+        
+        const lastObsDate = new Date(lastPoint.time * 1000).toISOString().slice(0, 10);
+        
+        setCard('dc-brent',
+          tonPrice.toFixed(1) + ' $',
+          change,
+          'Europe Brent · ton',
+          `Son veri: ${lastObsDate}<br>Kaynak: Yahoo Finance`
+        );
+      } catch (err) {
+        console.error("Brent kart güncelleme hatası:", err);
+        setCard('dc-brent', '—', null, 'Europe Brent · ton', 'Veri okunamadı');
+      }
+    }).catch(err => {
+      console.error("Brent Yahoo fetch error:", err);
+      setCard('dc-brent', '—', null, 'Europe Brent · ton', 'Veri alınamadı');
+    });
+  }
+
+  initBrentCard();
 
 
   // ── IMF Büyüme Tahmini — Türkiye odaklı ─────────────────────────────
