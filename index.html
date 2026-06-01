@@ -6833,11 +6833,13 @@ async function loadDashboard() {
     const symbol = currency === 'USD' ? 'USDTRY=X' : 'EURTRY=X';
     const cacheKey = `forex_${currency}_${period}`;
     
-    let ttl = 1 * 60 * 60 * 1000; // default: 1h
+    let ttl = 10 * 60 * 1000; // default (1y, 1m, 6m, ytd): 10m
     if (period === 'max') {
       ttl = 24 * 60 * 60 * 1000; // max: 24h
+    } else if (period === '5y') {
+      ttl = 12 * 60 * 60 * 1000; // 5y: 12h
     } else if (period === '1d' || period === '5d') {
-      ttl = 15 * 60 * 1000; // 1d, 5d: 15m
+      ttl = 5 * 60 * 1000; // 1d, 5d: 5m
     }
 
     return fetchCached(cacheKey, async () => {
@@ -7181,11 +7183,13 @@ async function loadDashboard() {
     const symbol = 'BZ=F';
     const cacheKey = `brent_yahoo_${period}`;
     
-    let ttl = 1 * 60 * 60 * 1000; // default: 1h
+    let ttl = 10 * 60 * 1000; // default (1y, 1m, 6m, ytd): 10m
     if (period === 'max') {
       ttl = 24 * 60 * 60 * 1000; // max: 24h
+    } else if (period === '5y') {
+      ttl = 12 * 60 * 60 * 1000; // 5y: 12h
     } else if (period === '1d' || period === '5d') {
-      ttl = 15 * 60 * 1000; // 1d, 5d: 15m
+      ttl = 5 * 60 * 1000; // 1d, 5d: 5m
     }
 
     return fetchCached(cacheKey, async () => {
