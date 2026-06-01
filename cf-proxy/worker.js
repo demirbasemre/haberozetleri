@@ -82,7 +82,7 @@ export default {
     const FUNNEL_URL = env.FUNNEL_URL || '';
 
     // Çekme ve yedekleme (Funnel -> Doğrudan) mantığını gerçekleştiren yardımcı fonksiyon
-    async function doFetch(url, forceDirect = false) {
+    async function doFetch(url, forceDirect = false, customTtl = 300) {
       // forceDirect değilse önce Tailscale Funnel üzerindeki ev proxy'sini dene
       if (!forceDirect && FUNNEL_URL) {
         try {
@@ -117,7 +117,7 @@ export default {
           'Accept-Language': 'en-US,en;q=0.9',
         },
         redirect: 'follow',
-        cf: { cacheTtl: 300, cacheEverything: true },
+        cf: { cacheTtl: customTtl, cacheEverything: true },
       });
 
       const body = await response.text();
@@ -201,7 +201,13 @@ export default {
     }
 
     try {
-      const res = await doFetch(targetUrl);
+      let customTtl = 300; // default 5 minutes
+      if (parsed.hostname === 'query1.finance.yahoo.com') {
+        if (parsed.searchParams.get('range') === '1d') {
+          customTtl = 30; // 30 seconds for intraday real-time charts/prices
+        }
+      }
+      const res = await doFetch(targetUrl, false, customTtl);
       return new Response(res.body, {
         status: res.status,
         headers: {
@@ -209,7 +215,7 @@ export default {
           'Content-Type': res.contentType,
           'X-Proxy': res.proxy,
           'X-Proxy-Status': String(res.status),
-          'Cache-Control': 'public, max-age=300',
+          'Cache-Control': `public, max-age=${customTtl}`,
         },
       });
     } catch (err) {
