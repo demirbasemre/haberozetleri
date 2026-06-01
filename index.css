@@ -6780,3 +6780,258 @@
     body.chat-ov-active .main, body.chat-ov-active .main-tabs-wrap,
     body.chat-ov-active .filter-bar, body.chat-ov-active header { transition: none; }
   }
+
+  /* ── FİLO ANALİZİ ───────────────────────────────────────────── */
+  .fleet-report-container { padding: 0 0 24px; }
+
+  .fleet-source-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 14px;
+    background: rgba(29,111,232,0.06);
+    border: 1px solid rgba(29,111,232,0.15);
+    border-radius: var(--radius-sm);
+    font-size: 12px; color: var(--text-3);
+    margin-bottom: 20px;
+  }
+  [data-theme="dark"] .fleet-source-bar {
+    background: rgba(77,142,245,0.07);
+    border-color: rgba(77,142,245,0.18);
+  }
+
+  /* ── Ana bölüm kartı ── */
+  .fleet-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .fleet-airline-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 12px;
+    margin-bottom: 18px; flex-wrap: wrap;
+  }
+  .fleet-airline-name { display: flex; align-items: center; gap: 12px; }
+  .fleet-airline-logo {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800; color: #fff;
+    flex-shrink: 0; letter-spacing: -0.5px;
+  }
+  .fleet-airline-title { font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .fleet-airline-sub { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+
+  .fleet-badge {
+    display: inline-flex; align-items: center;
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+    white-space: nowrap; flex-shrink: 0; align-self: flex-start;
+  }
+  .fleet-badge--blue   { background: rgba(29,111,232,0.09); color: var(--accent); border: 1px solid rgba(29,111,232,0.2); }
+  .fleet-badge--green  { background: rgba(5,150,105,0.09); color: #059669; border: 1px solid rgba(5,150,105,0.2); }
+  [data-theme="dark"] .fleet-badge--green { color: #34d399; border-color: rgba(52,211,153,0.25); }
+  .fleet-badge--orange { background: rgba(234,88,12,0.09); color: #ea580c; border: 1px solid rgba(234,88,12,0.2); }
+  [data-theme="dark"] .fleet-badge--orange { color: #fb923c; }
+  .fleet-badge--purple { background: rgba(124,58,237,0.09); color: #7c3aed; border: 1px solid rgba(124,58,237,0.2); }
+  [data-theme="dark"] .fleet-badge--purple { color: #a78bfa; }
+
+  /* ── İstatistik grid ── */
+  .fleet-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+    gap: 8px; margin-bottom: 20px;
+  }
+  .fleet-stat-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 11px 13px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .fleet-stat-label { font-size: 10.5px; color: var(--text-3); font-weight: 500; }
+  .fleet-stat-value { font-size: 21px; font-weight: 700; color: var(--text); line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .fleet-stat-sub { font-size: 10px; color: var(--text-3); }
+  .fleet-stat-card--accent .fleet-stat-value { color: var(--accent); }
+  .fleet-stat-card--green  .fleet-stat-value { color: #059669; }
+  [data-theme="dark"] .fleet-stat-card--green .fleet-stat-value { color: #34d399; }
+
+  /* ── Üretici & kategori bar ── */
+  .fleet-comp-title {
+    font-size: 11px; font-weight: 600; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.07em;
+    margin-bottom: 10px;
+  }
+  .fleet-comp-row { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+  .fleet-comp-item { display: flex; align-items: center; gap: 10px; }
+  .fleet-comp-label { font-size: 12px; color: var(--text-2); width: 110px; flex-shrink: 0; }
+  .fleet-comp-bar-wrap {
+    flex: 1; height: 7px; background: var(--border);
+    border-radius: 4px; overflow: hidden;
+  }
+  .fleet-comp-bar {
+    height: 100%; border-radius: 4px;
+    transition: width 0.6s cubic-bezier(.25,.46,.45,.94);
+  }
+  .fleet-comp-pct { font-size: 11px; color: var(--text-3); width: 32px; text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+
+  /* ── Detay tablosu ── */
+  .fleet-section-divider { height: 1px; background: var(--border); margin: 16px 0; }
+  .fleet-table-wrap { overflow-x: auto; margin: 0 -2px; }
+  .fleet-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .fleet-table th {
+    text-align: left; padding: 7px 10px;
+    font-size: 10.5px; font-weight: 600; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  .fleet-table td { padding: 8px 10px; border-bottom: 1px solid var(--border-soft); color: var(--text); }
+  .fleet-table tr:last-child td { border-bottom: none; }
+  .fleet-table tr:hover td { background: var(--bg); }
+  .fleet-table td:nth-child(2),
+  .fleet-table td:nth-child(3) { font-variant-numeric: tabular-nums; }
+  .fleet-type-badge {
+    display: inline-flex; align-items: center;
+    padding: 2px 7px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.03em;
+  }
+  .ftb--narrow { background: rgba(5,150,105,0.1); color: #059669; }
+  .ftb--wide   { background: rgba(124,58,237,0.1); color: #7c3aed; }
+  .ftb--cargo  { background: rgba(234,88,12,0.1); color: #ea580c; }
+  [data-theme="dark"] .ftb--narrow { color: #34d399; }
+  [data-theme="dark"] .ftb--wide   { color: #a78bfa; }
+  [data-theme="dark"] .ftb--cargo  { color: #fb923c; }
+
+  .fmfr--airbus { color: #2563eb; font-weight: 600; }
+  .fmfr--boeing { color: #0891b2; font-weight: 600; }
+  [data-theme="dark"] .fmfr--airbus { color: #60a5fa; }
+  [data-theme="dark"] .fmfr--boeing { color: #22d3ee; }
+
+  /* ── Sipariş defteri ── */
+  .fleet-orders-label {
+    font-size: 11px; font-weight: 600; color: var(--text-3);
+    text-transform: uppercase; letter-spacing: 0.07em;
+    margin-bottom: 10px;
+  }
+  .fleet-orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+    gap: 8px;
+  }
+  .fleet-order-item {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .fleet-order-count {
+    font-size: 19px; font-weight: 700; color: var(--text);
+    min-width: 34px; font-variant-numeric: tabular-nums;
+  }
+  .fleet-order-type { font-size: 12px; font-weight: 600; color: var(--text); }
+  .fleet-order-status { font-size: 10.5px; color: var(--text-3); margin-top: 1px; }
+  .fleet-order-item--pending { border-style: dashed; }
+  .fleet-order-item--pending .fleet-order-count { color: var(--text-3); }
+
+  /* ── Karşılaştırma bölümü ── */
+  .fleet-compare-section { margin-bottom: 16px; }
+  .fleet-compare-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 12px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .fleet-compare-title {
+    font-size: 12px; font-weight: 700; color: var(--text-2);
+    text-transform: uppercase; letter-spacing: 0.07em;
+  }
+  .fleet-compare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px;
+  }
+
+  .fleet-airline-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.18s, border-color 0.18s;
+  }
+  .fleet-airline-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: rgba(29,111,232,0.25);
+  }
+  .fleet-card-header { display: flex; align-items: center; gap: 10px; }
+  .fleet-card-logo {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; color: #fff; flex-shrink: 0;
+  }
+  .fleet-card-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .fleet-card-iata { font-size: 11px; color: var(--text-3); }
+
+  .fleet-card-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .fleet-card-stat {
+    background: var(--bg); border-radius: var(--radius-sm);
+    padding: 7px 9px;
+  }
+  .fleet-card-stat-label { font-size: 10px; color: var(--text-3); }
+  .fleet-card-stat-value { font-size: 15px; font-weight: 700; color: var(--text); margin-top: 1px; font-variant-numeric: tabular-nums; }
+
+  .fleet-card-types { display: flex; flex-wrap: wrap; gap: 4px; }
+  .fleet-type-chip {
+    font-size: 10px; padding: 2px 7px;
+    border-radius: 4px; border: 1px solid var(--border);
+    color: var(--text-2); background: var(--bg);
+  }
+
+  .fleet-update-note {
+    text-align: center; font-size: 11.5px; color: var(--text-3);
+    padding: 14px 0 4px;
+  }
+
+  /* ── Büyüme grafiği ── */
+  .fleet-chart-note {
+    font-size: 10.5px; color: var(--text-3); margin-left: auto;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .fleet-chart-legend {
+    display: flex; flex-wrap: wrap; gap: 10px 16px; margin-bottom: 12px;
+  }
+  .fleet-chart-legend-item {
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer; user-select: none;
+    font-size: 12px; color: var(--text-2);
+    padding: 3px 8px 3px 4px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: background 0.15s, border-color 0.15s, opacity 0.2s;
+  }
+  .fleet-chart-legend-item:hover { background: var(--bg); border-color: var(--border); }
+  .fleet-chart-legend-item.fci-hidden { opacity: 0.35; }
+  .fleet-chart-legend-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .fleet-chart-container {
+    position: relative; border-radius: var(--radius-sm);
+    overflow: hidden; border: 1px solid var(--border);
+  }
+  .fleet-chart-tooltip {
+    position: absolute; z-index: 20;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 12px;
+    box-shadow: var(--shadow-md); pointer-events: none;
+    min-width: 160px; font-size: 12px;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 600px) {
+    .fleet-stats-grid { grid-template-columns: repeat(3, 1fr); }
+    .fleet-compare-grid { grid-template-columns: 1fr 1fr; }
+    .fleet-orders-grid { grid-template-columns: 1fr 1fr; }
+    .fleet-comp-label { width: 80px; }
+    .fleet-chart-note { display: none; }
+  }
+  @media (max-width: 400px) {
+    .fleet-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .fleet-compare-grid { grid-template-columns: 1fr; }
+  }
+  }
