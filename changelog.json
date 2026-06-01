@@ -2,39 +2,123 @@
   {
     "month": "Mayıs 2026",
     "items": [
-      { "text": "Mobil cihazlarda aşağı kaydırıldığında, ana sekmeleri gizleyip arama çubuğu yanına kompakt ve hızlı sekmeler yerleştiren mobil daralma modu geliştirildi.", "major": true },
-      { "text": "Canlı Döviz & Parite (USD/TRY, EUR/TRY) paneli; segmentli kontrol seçimi, premium ikonlar, dikey geçiş okları ve interaktif geçmiş grafik modülü ile baştan aşağı yenilendi.", "major": true },
-      { "text": "Arama kutusu kapsamı genişletildi; artık Dashboard ve İstatistik metrikleri taranarak arama sonuçlarındaki kısayollar üzerinden ilgili alana otomatik kaydırma yapılıyor.", "major": true },
-      { "text": "Uçuş ağına göre yerel tatil takvimi verileri THY ve Turkish Cargo destinasyonlarını kapsayacak şekilde güncellendi.", "major": true },
-      { "text": "Arama motorunda Türkçe noktalı ve noktasız 'i' / 'I' karakter eşleşmelerinde yaşanan uyumsuzluklar giderildi.", "major": false },
-      { "text": "Haber kartlarının alt bölümünde yer alan kaynak bilgisi ve analiz butonunun dikey hizalamaları kartın en altına sabitlenerek standartlaştırıldı.", "major": false },
-      { "text": "Dashboard paneli altındaki veri yükleyicilerin etki alanları sınırlandırılarak, diğer sekmelerdeki istatistik şablonlarının sıfırlanması sorunu çözüldü.", "major": false },
-      { "text": "Haberlerin \"Readability\" (Okuma Modu) görünümünde lazy-load görsellerinin ve göreceli URL adreslerinin yüklenmesi sağlandı.", "major": true },
-      { "text": "Sonsuz kaydırmada yeni yüklenen kartlar için pürüzsüz fade-up geçiş animasyonu ve 400ms sentinel gecikmesi eklendi.", "major": true },
-      { "text": "Okuma modunda senkronize kaydırma (scroll sync) ve çift yönlü cümle bazlı vurgulama (hover highlight) özellikleri geliştirildi.", "major": true },
-      { "text": "Gelişmiş havayolu ve GSA filtre sistemi (bölge/tür ayrımı, odak modu, initials badge) eklendi.", "major": true },
-      { "text": "Bulut entegrasyonu (n8n, Cloudflare Worker ve Tailscale Funnel proxy fallback) kuruldu.", "major": true },
-      { "text": "Alt kısımdaki koyu renkli footer şeffaf hale getirilerek uyumlu metin rengine kavuşturuldu.", "major": false },
-      { "text": "Haber okuma modunda mükerrer kapak görseli gösterimi engellendi.", "major": false },
-      { "text": "Mobil görünümde üst sekmelerin ve filtre çubuğunun yapışkan (sticky) hizalamaları düzeltildi.", "major": false },
-      { "text": "Arama istatistikleri ve filtre çubuğu arayüz tasarımı güncellendi.", "major": false },
-      { "text": "Yapılacaklar & Kontroller sekmesi ile todo verilerinin n8n proxy üzerinden GitHub'a kaydı sağlandı.", "major": true },
-      { "text": "Veri takvimi zaman slider'ı ve ay pill navigasyonu eklendi.", "major": true },
-      { "text": "Kaynak filtresi ve logolu seçilebilir dropdown yapısı kuruldu.", "major": false },
-      { "text": "AI asistan token kullanımı göstergesi ve kart eşleşme doğrulaması geliştirildi.", "major": false }
+      {
+        "text": "Mobil cihazlar için uygun tasarım yapılarak kompakt menü tasarımına geçildi.",
+        "major": true
+      },
+      {
+        "text": "Canlı Döviz & Parite (USD/TRY, EUR/TRY) paneli; segmentli kontrol seçimi, premium ikonlar, dikey geçiş okları ve interaktif geçmiş grafik modülü ile baştan aşağı yenilendi.",
+        "major": true
+      },
+      {
+        "text": "Arama kutusu kapsamı genişletildi; artık Dashboard ve İstatistik metrikleri taranarak arama sonuçlarındaki kısayollar üzerinden ilgili alana otomatik kaydırma yapılıyor.",
+        "major": true
+      },
+      {
+        "text": "Uçuş ağına göre yerel tatil takvimi verileri THY ve Turkish Cargo destinasyonlarını kapsayacak şekilde güncellendi.",
+        "major": true
+      },
+      {
+        "text": "Arama motorunda Türkçe noktalı ve noktasız 'i' / 'I' karakter eşleşmelerinde yaşanan uyumsuzluklar giderildi.",
+        "major": false
+      },
+      {
+        "text": "Haber kartlarının alt bölümünde yer alan kaynak bilgisi ve analiz butonunun dikey hizalamaları kartın en altına sabitlenerek standartlaştırıldı.",
+        "major": false
+      },
+      {
+        "text": "Dashboard paneli altındaki veri yükleyicilerin etki alanları sınırlandırılarak, diğer sekmelerdeki istatistik şablonlarının sıfırlanması sorunu çözüldü.",
+        "major": false
+      },
+      {
+        "text": "Haberlerin \"Readability\" (Okuma Modu) görünümünde lazy-load görsellerinin ve göreceli URL adreslerinin yüklenmesi sağlandı.",
+        "major": true
+      },
+      {
+        "text": "Sonsuz kaydırmada yeni yüklenen kartlar için pürüzsüz fade-up geçiş animasyonu ve 400ms sentinel gecikmesi eklendi.",
+        "major": true
+      },
+      {
+        "text": "Okuma modunda senkronize kaydırma (scroll sync) ve çift yönlü cümle bazlı vurgulama (hover highlight) özellikleri geliştirildi.",
+        "major": true
+      },
+      {
+        "text": "Gelişmiş havayolu ve GSA filtre sistemi (bölge/tür ayrımı, odak modu, initials badge) eklendi.",
+        "major": true
+      },
+      {
+        "text": "Bulut entegrasyonu (n8n, Cloudflare Worker ve Tailscale Funnel proxy fallback) kuruldu.",
+        "major": true
+      },
+      {
+        "text": "Alt kısımdaki koyu renkli footer şeffaf hale getirilerek uyumlu metin rengine kavuşturuldu.",
+        "major": false
+      },
+      {
+        "text": "Haber okuma modunda mükerrer kapak görseli gösterimi engellendi.",
+        "major": false
+      },
+      {
+        "text": "Mobil görünümde üst sekmelerin ve filtre çubuğunun yapışkan (sticky) hizalamaları düzeltildi.",
+        "major": false
+      },
+      {
+        "text": "Arama istatistikleri ve filtre çubuğu arayüz tasarımı güncellendi.",
+        "major": false
+      },
+      {
+        "text": "Yapılacaklar & Kontroller sekmesi ile todo verilerinin n8n proxy üzerinden GitHub'a kaydı sağlandı.",
+        "major": true
+      },
+      {
+        "text": "Veri takvimi zaman slider'ı ve ay pill navigasyonu eklendi.",
+        "major": true
+      },
+      {
+        "text": "Kaynak filtresi ve logolu seçilebilir dropdown yapısı kuruldu.",
+        "major": false
+      },
+      {
+        "text": "AI asistan token kullanımı göstergesi ve kart eşleşme doğrulaması geliştirildi.",
+        "major": false
+      }
     ]
   },
   {
     "month": "Nisan 2026",
     "items": [
-      { "text": "Projenin yayına başlaması, Seen Articles tablosu bağlantısı ve temel hava kargo haber bülteni tasarımı yapıldı.", "major": true },
-      { "text": "Tam tasarım yenilemesi gerçekleştirilerek özet kartları, arama ve filtre altyapısı kuruldu.", "major": true },
-      { "text": "Hiyerarşik bölge ve alt bölge seçimi sunan gelişmiş \"Etki Alanı\" filtresi ve etki alanı rozetleri eklendi.", "major": true },
-      { "text": "Analiz detaylarını inline açmak yerine ekran altından kayarak açılan \"Bottom Drawer\" (analiz çekmecesi) paneli geliştirildi.", "major": true },
-      { "text": "Statik veri modeli (data.json) yapısına geçilerek veri erişim hızı optimize edildi.", "major": true },
-      { "text": "Filtrelerin tek satırlı logolu dropdown yapılara dönüştürülmesi sağlandı.", "major": false },
-      { "text": "Dropdown panellerinin ekran dışına taşma (viewport clip) sorunları düzeltildi.", "major": false },
-      { "text": "Havayolu ve analiz filtrelerinin ilk sürümleri devreye alındı.", "major": false }
+      {
+        "text": "Projenin yayına başlaması, veri tabanı bağlantısı ve temel hava kargo haber bülteni tasarımı yapıldı.",
+        "major": true
+      },
+      {
+        "text": "Haber özet kartları, arama ve filtre altyapısı kuruldu.",
+        "major": true
+      },
+      {
+        "text": "Hiyerarşik bölge ve alt bölge seçimi sunan gelişmiş \"Etki Alanı\" filtresi ve etki alanı rozetleri eklendi.",
+        "major": true
+      },
+      {
+        "text": "Analiz detaylarını inline açmak yerine ekran altından kayarak açılan analiz çekmecesi paneli geliştirildi.",
+        "major": true
+      },
+      {
+        "text": "Statik veri modeli yapısına geçilerek veri erişim hızı artırıldı.",
+        "major": true
+      },
+      {
+        "text": "Filtrelerin tek satırlı logolu dropdown yapılara geçişi sağlandı.",
+        "major": false
+      },
+      {
+        "text": "Dropdown panellerinin ekran dışına taşma sorunları düzeltildi.",
+        "major": false
+      },
+      {
+        "text": "Havayolu ve analiz filtreleri devreye alındı.",
+        "major": false
+      }
     ]
   }
 ]
