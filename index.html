@@ -1282,7 +1282,7 @@
     <section class="dash-section" id="dash-sec-anlık">
       <h2 class="dash-section-title">Anlık Göstergeler</h2>
       <div class="dash-cards">
-        <div class="dash-card" id="dc-jetfuel">
+        <div class="dash-card dash-card-clickable" id="dc-jetfuel" title="Jet yakıtı fiyat detayları için tıkla" onclick="openJetfuelChartModal()">
           <div class="dash-card-label">Jet Yakıt Fiyatı</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
@@ -1656,6 +1656,30 @@
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-brent-modal"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jet Yakıtı Grafik Modali -->
+    <div id="jetfuel-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="jetfuel-chart-title">
+      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+        <div class="rel-add-head">
+          <div id="jetfuel-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Jet Yakıtı Fiyat Grafiği</div>
+          <button class="rel-add-x" onclick="closeJetfuelChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <!-- Period Toggle -->
+          <div class="jetfuel-period-btns">
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1m" data-period="1m">1A</button>
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-6m" data-period="6m">6A</button>
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-ytd" data-period="ytd">YTD</button>
+            <button class="jetfuel-period-btn forex-btn active" id="btn-jetfuel-1y" data-period="1y">1Y</button>
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-5y" data-period="5y">5Y</button>
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-max" data-period="max">Tümü</button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-jetfuel-modal"></canvas>
         </div>
       </div>
     </div>
@@ -5854,6 +5878,23 @@ function closeBrentChartModal() {
   const m = document.getElementById('brent-chart-modal');
   if (m) m.style.display = 'none';
 }
+function openJetfuelChartModal() {
+  const m = document.getElementById('jetfuel-chart-modal');
+  if (m) {
+    m.style.display = 'flex';
+    setTimeout(() => {
+      if (typeof window.renderJetfuelModalChart === 'function') {
+        window.renderJetfuelModalChart();
+      } else {
+        console.warn("window.renderJetfuelModalChart henüz hazır değil.");
+      }
+    }, 150);
+  }
+}
+function closeJetfuelChartModal() {
+  const m = document.getElementById('jetfuel-chart-modal');
+  if (m) m.style.display = 'none';
+}
 async function saveReleaseAddModal() {
   const title  = document.getElementById('rel-add-input-title').value.trim();
   const dateS  = document.getElementById('rel-add-input-date').value;
@@ -6584,6 +6625,9 @@ async function loadDashboard() {
 
   // ── Enerji (FRED) ──────────────────────────────────
   let _jetRaw = null, _brentRaw = null;
+  let _jetfuelCache = {
+    '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null
+  };
 
   function isoWeekKey(dateStr) {
     const d = new Date(dateStr + 'T12:00:00Z');
@@ -6772,6 +6816,13 @@ async function loadDashboard() {
   ]).then(([jet, brent]) => {
     _jetRaw   = jet;
     _brentRaw = brent;
+
+    if (jet) {
+      _jetfuelCache['1y'] = jet;
+      _jetfuelCache['1m'] = jet;
+      _jetfuelCache['6m'] = jet;
+      _jetfuelCache['ytd'] = jet;
+    }
 
     if (jet && jet.length) {
       const last = jet[jet.length - 1];
@@ -7373,6 +7424,190 @@ async function loadDashboard() {
   document.querySelectorAll('.brent-period-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       renderBrentModalChart(btn.dataset.period);
+    });
+  });
+
+
+  // ── Jet Yakıtı (FRED) Modal Verisini Çek ve Göster ──
+  let _jetfuelCurrentPeriod = '1y';
+
+  async function fetchJetFred(period = '1y') {
+    const seriesId = 'DJFUELUSGULF';
+    const cacheKey = `jet_fred_${period}`;
+    
+    let limit = 400;
+    let monthsAgo = 15;
+    let ttl = 1 * 60 * 60 * 1000; // 1h
+
+    if (period === '1m') {
+      limit = 40;
+      monthsAgo = 2;
+    } else if (period === '6m') {
+      limit = 180;
+      monthsAgo = 8;
+    } else if (period === 'ytd') {
+      limit = 260;
+      monthsAgo = 12;
+    } else if (period === '1y') {
+      limit = 300;
+      monthsAgo = 15;
+    } else if (period === '5y') {
+      limit = 1500;
+      monthsAgo = 65;
+      ttl = 12 * 60 * 60 * 1000; // 12h
+    } else if (period === 'max') {
+      limit = 3000;
+      monthsAgo = 150;
+      ttl = 24 * 60 * 60 * 1000; // 24h
+    }
+
+    const start = new Date();
+    start.setMonth(start.getMonth() - monthsAgo);
+    const s = start.toISOString().slice(0, 10);
+
+    return fetchCached(cacheKey, async () => {
+      const proxyUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error('FRED proxy ' + res.status);
+      const d = await res.json();
+      if (d.error_message) throw new Error(d.error_message);
+      const obs = d.observations || [];
+      return obs
+        .filter(o => o.value !== '.')
+        .map(o => ({ date: o.date, value: parseFloat(o.value) }))
+        .reverse();
+    }, ttl);
+  }
+
+  function drawJetfuelModalChartFromRaw(rawJSON, period) {
+    const titleEl = document.getElementById('jetfuel-chart-title');
+    try {
+      let validPoints = rawJSON || [];
+      
+      // Slicing for smaller ranges from cached 1y
+      if (period === '1m') {
+        validPoints = validPoints.slice(-22);
+      } else if (period === '6m') {
+        const cutoff = new Date();
+        cutoff.setMonth(cutoff.getMonth() - 6);
+        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        validPoints = validPoints.filter(p => p.date >= cutoffStr);
+      } else if (period === 'ytd') {
+        const currentYear = new Date().getFullYear();
+        const cutoffStr = `${currentYear}-01-01`;
+        validPoints = validPoints.filter(p => p.date >= cutoffStr);
+      }
+      
+      if (validPoints.length === 0) {
+        throw new Error("Çizilecek veri noktası bulunamadı.");
+      }
+      
+      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const labels = validPoints.map(p => {
+        const d = new Date(p.date + 'T12:00:00Z');
+        const day = d.getUTCDate();
+        const month = monthNamesTR[d.getUTCMonth()];
+        const year = d.getUTCFullYear();
+        
+        if (period === '1m' || period === '6m' || period === 'ytd') {
+          return `${day} ${month}`;
+        }
+        if (period === '1y' || period === '5y') {
+          return `${month} ${year}`;
+        }
+        return `${month} '${String(year).slice(-2)}`;
+      });
+      
+      // Galon -> Ton dönüşümü: price * 42 * 7.9 = price * 331.8
+      const prices = validPoints.map(p => p.value * 42 * 7.9);
+      
+      lineChart('chart-jetfuel-modal', labels,
+        [
+          {
+            label: 'Jet Yakıtı Fiyatı ($/ton)',
+            data: prices,
+            borderColor: '#EA580C',
+            backgroundColor: 'rgba(234,88,12,0.06)',
+            fill: true,
+            tension: period === 'max' ? 0.2 : 0.35,
+            pointRadius: (period === 'max' || period === '5y') ? 0 : 2,
+            borderWidth: 2
+          }
+        ],
+        v => v != null ? Number(v).toFixed(1) + ' $' : '',
+        {
+          forceRecreate: true,
+          xTickFont: { size: 9, family: 'Inter' }
+        }
+      );
+      
+      if (titleEl) {
+        const latestPrice = prices[prices.length - 1];
+        titleEl.textContent = `Jet Yakıtı Fiyat Grafiği · Güncel: ${latestPrice.toFixed(1)} $ / ton`;
+      }
+    } catch (err) {
+      console.error("Jet Yakıtı Grafik çizim hatası:", err);
+      if (titleEl) titleEl.textContent = "Hata: " + err.message;
+    }
+  }
+
+  function renderJetfuelModalChart(period) {
+    if (period) _jetfuelCurrentPeriod = period;
+    
+    document.querySelectorAll('#jetfuel-chart-modal .jetfuel-period-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    const activeBtn = document.getElementById(`btn-jetfuel-${_jetfuelCurrentPeriod}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const titleEl = document.getElementById('jetfuel-chart-title');
+    const canvas = document.getElementById('chart-jetfuel-modal');
+    const wrap = canvas?.closest('.dash-chart-wrap');
+    if (wrap) wrap.classList.add('loading');
+    
+    // Cache reuse check
+    if (!_jetfuelCache[_jetfuelCurrentPeriod] && (_jetfuelCurrentPeriod === '1m' || _jetfuelCurrentPeriod === '6m' || _jetfuelCurrentPeriod === 'ytd') && _jetfuelCache['1y']) {
+      _jetfuelCache[_jetfuelCurrentPeriod] = _jetfuelCache['1y'];
+    }
+
+    const cachedData = _jetfuelCache[_jetfuelCurrentPeriod];
+    if (cachedData) {
+      drawJetfuelModalChartFromRaw(cachedData, _jetfuelCurrentPeriod);
+      if (wrap) wrap.classList.remove('loading');
+    } else {
+      const fetchPeriod = (_jetfuelCurrentPeriod === '1m' || _jetfuelCurrentPeriod === '6m' || _jetfuelCurrentPeriod === 'ytd') ? '1y' : _jetfuelCurrentPeriod;
+      
+      fetchJetFred(fetchPeriod).then(data => {
+        if (fetchPeriod === '1y') {
+          _jetfuelCache['1y'] = data;
+          _jetfuelCache['1m'] = data;
+          _jetfuelCache['6m'] = data;
+          _jetfuelCache['ytd'] = data;
+        } else {
+          _jetfuelCache[_jetfuelCurrentPeriod] = data;
+        }
+        
+        drawJetfuelModalChartFromRaw(data, _jetfuelCurrentPeriod);
+        if (wrap) wrap.classList.remove('loading');
+      }).catch(err => {
+        console.error(`Jet Fuel FRED fetch error for ${_jetfuelCurrentPeriod}:`, err);
+        if (titleEl) titleEl.textContent = "Hata: Veri alınamadı";
+        if (wrap) {
+          wrap.classList.remove('loading');
+          wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
+          const errDiv = document.createElement('div');
+          errDiv.className = 'dash-chart-error';
+          errDiv.innerHTML = 'Jet yakıtı verisi yüklenirken hata oluştu.';
+          wrap.appendChild(errDiv);
+        }
+      });
+    }
+  }
+  window.renderJetfuelModalChart = renderJetfuelModalChart;
+
+  document.querySelectorAll('.jetfuel-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      renderJetfuelModalChart(btn.dataset.period);
     });
   });
 
