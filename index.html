@@ -805,7 +805,7 @@
   .reports-toc {
     position: sticky;
     top: 190px; /* Below the sticky header + main tabs + filter bar stack */
-    width: 220px;
+    width: 270px;
     flex-shrink: 0;
     background: var(--surface);
     border: 1px solid var(--border);
@@ -13587,7 +13587,7 @@ function initControls(allArticles) {
 
     const iframeRect = frame.getBoundingClientRect();
     const rect = sec.getBoundingClientRect();
-    const targetY = window.scrollY + iframeRect.top + rect.top - 180;
+    const targetY = window.scrollY + iframeRect.top + rect.top - 220;
 
     window.scrollTo({
       top: targetY,
@@ -13614,7 +13614,7 @@ function initControls(allArticles) {
     if (!sections.length) return;
 
     const iframeRect = frame.getBoundingClientRect();
-    const triggerPoint = 200; // Trigger line (pixels from top of viewport)
+    const triggerPoint = 230; // Trigger line (pixels from top of viewport, aligned below gradient)
 
     // Edge case: bottom of the page
     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 120) {
