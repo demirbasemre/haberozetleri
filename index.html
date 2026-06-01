@@ -5511,9 +5511,27 @@ function setCard(id, value, change, sub, note) {
   const el = document.getElementById(id);
   if (!el) return;
   const vEl = el.querySelector('.dash-card-value');
+  
+  // Google Finance style rolling/flashing animation
+  const oldText = vEl.textContent;
+  const parseVal = str => parseFloat(String(str || '').replace(/[^\d.,-]/g, '').replace(',', '.'));
+  const oldNum = parseVal(oldText);
+  const newNum = parseVal(value);
+  
   vEl.textContent = value;
   vEl.classList.remove('skeleton');
   vEl.style.fontSize = '';
+  
+  if (!isNaN(oldNum) && !isNaN(newNum) && oldNum !== newNum) {
+    vEl.classList.remove('price-flash-up', 'price-flash-down');
+    void vEl.offsetWidth; // force reflow to restart animation
+    if (newNum > oldNum) {
+      vEl.classList.add('price-flash-up');
+    } else if (newNum < oldNum) {
+      vEl.classList.add('price-flash-down');
+    }
+  }
+  
   const cEl = el.querySelector('.dash-card-change');
   if (change != null) {
     const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
@@ -6792,34 +6810,37 @@ async function loadDashboard() {
     });
   });
 
-  Promise.all([
-    fredFetch('DJFUELUSGULF', 400).catch(() => null),
-    fredFetch('DCOILBRENTEU', 400).catch(() => null)
-  ]).then(([jet, brent]) => {
-    _jetRaw   = jet;
-    _brentRaw = brent;
+  function initJetfuelCard() {
+    return Promise.all([
+      fredFetch('DJFUELUSGULF', 400).catch(() => null),
+      fredFetch('DCOILBRENTEU', 400).catch(() => null)
+    ]).then(([jet, brent]) => {
+      _jetRaw   = jet;
+      _brentRaw = brent;
 
-    if (jet) {
-      _jetfuelCache['1y'] = jet;
-      _jetfuelCache['1m'] = jet;
-      _jetfuelCache['6m'] = jet;
-      _jetfuelCache['ytd'] = jet;
-    }
+      if (jet) {
+        _jetfuelCache['1y'] = jet;
+        _jetfuelCache['1m'] = jet;
+        _jetfuelCache['6m'] = jet;
+        _jetfuelCache['ytd'] = jet;
+      }
 
-    if (jet && jet.length) {
-      const last = jet[jet.length - 1];
-      setCard('dc-jetfuel', (last.value * 42 * 7.9).toFixed(1) + ' $', pctChg(jet.slice(-2)),
-        'ABD Gulf Coast · ton', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
-    } else {
-      setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
-    }
+      if (jet && jet.length) {
+        const last = jet[jet.length - 1];
+        setCard('dc-jetfuel', (last.value * 42 * 7.9).toFixed(1) + ' $', pctChg(jet.slice(-2)),
+          'ABD Gulf Coast · ton', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
+      } else {
+        setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
+      }
 
-    if (jet || brent) {
-      renderEnergyChart('all');
-    } else {
-      chartErr('chart-energy', 'Veri alınamadı');
-    }
-  });
+      if (jet || brent) {
+        renderEnergyChart('all');
+      } else {
+        chartErr('chart-energy', 'Veri alınamadı');
+      }
+    });
+  }
+  initJetfuelCard();
 
   // ── Forex Verisini Çek ve Göster ──────────────────────────────
   let _forexCache = {
@@ -8331,57 +8352,77 @@ async function loadDashboard() {
   });
 
   // Sayfa açılışında 1 Yıllık veriyi çek ve kartı güncelle
-  fetchThyStock('1y').then(data => {
-    _thy1yRaw = data;
-    try {
-      const result = data.chart.result[0];
-      const meta = result.meta || {};
-      const timestamps = result.timestamp || [];
-      const closes = result.indicators.quote[0].close || [];
-      
-      let validPoints = [];
-      for (let i = 0; i < timestamps.length; i++) {
-        if (closes[i] != null) {
-          validPoints.push({
-            time: timestamps[i],
-            value: closes[i]
-          });
-        }
-      }
-      
-      let price = meta.regularMarketPrice || (validPoints.length ? validPoints[validPoints.length - 1].value : 0);
-      let change = 0;
-      
-      if (validPoints.length >= 2) {
-        const lastPoint = validPoints[validPoints.length - 1];
-        const secondLastPoint = validPoints[validPoints.length - 2];
+  function initThyCard() {
+    return fetchThyStock('1y').then(data => {
+      _thy1yRaw = data;
+      try {
+        const result = data.chart.result[0];
+        const meta = result.meta || {};
+        const timestamps = result.timestamp || [];
+        const closes = result.indicators.quote[0].close || [];
         
-        const lastPointDate = new Date(lastPoint.time * 1000).toDateString();
-        const todayDate = new Date().toDateString();
-        
-        if (meta.regularMarketPrice && meta.regularMarketPrice !== lastPoint.value && lastPointDate !== todayDate) {
-          change = ((meta.regularMarketPrice - lastPoint.value) / lastPoint.value) * 100;
-        } else {
-          change = ((lastPoint.value - secondLastPoint.value) / secondLastPoint.value) * 100;
+        let validPoints = [];
+        for (let i = 0; i < timestamps.length; i++) {
+          if (closes[i] != null) {
+            validPoints.push({
+              time: timestamps[i],
+              value: closes[i]
+            });
+          }
         }
+        
+        let price = meta.regularMarketPrice || (validPoints.length ? validPoints[validPoints.length - 1].value : 0);
+        let change = 0;
+        
+        if (validPoints.length >= 2) {
+          const lastPoint = validPoints[validPoints.length - 1];
+          const secondLastPoint = validPoints[validPoints.length - 2];
+          
+          const lastPointDate = new Date(lastPoint.time * 1000).toDateString();
+          const todayDate = new Date().toDateString();
+          
+          if (meta.regularMarketPrice && meta.regularMarketPrice !== lastPoint.value && lastPointDate !== todayDate) {
+            change = ((meta.regularMarketPrice - lastPoint.value) / lastPoint.value) * 100;
+          } else {
+            change = ((lastPoint.value - secondLastPoint.value) / secondLastPoint.value) * 100;
+          }
+        }
+        
+        const lastObsDate = validPoints.length ? new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10) : '';
+        
+        setCard('dc-thy',
+          price.toFixed(2) + ' ₺',
+          change,
+          'Borsa İstanbul · hisse fiyatı',
+          `Son veri: ${lastObsDate}<br>Kaynak: Yahoo Finance`
+        );
+      } catch (err) {
+        console.error("THY kart güncelleme hatası:", err);
+        setCard('dc-thy', '—', null, '', 'Veri okunamadı');
       }
+    }).catch(err => {
+      console.error("THY stock 1y fetch error:", err);
+      setCard('dc-thy', '—', null, '', 'Veri alınamadı');
+    });
+  }
+  initThyCard();
+
+  let _dashboardPollInterval = null;
+  function startDashboardPolling() {
+    if (_dashboardPollInterval) return;
+    _dashboardPollInterval = setInterval(() => {
+      // Tab aktif değilse istek hakkı harcamamak için pas geç
+      if (document.visibilityState !== 'visible') return;
       
-      const lastObsDate = validPoints.length ? new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10) : '';
+      console.log("Dashboard otomatik güncelleniyor...");
       
-      setCard('dc-thy',
-        price.toFixed(2) + ' ₺',
-        change,
-        'Borsa İstanbul · hisse fiyatı',
-        `Son veri: ${lastObsDate}<br>Kaynak: Yahoo Finance`
-      );
-    } catch (err) {
-      console.error("THY kart güncelleme hatası:", err);
-      setCard('dc-thy', '—', null, '', 'Veri okunamadı');
-    }
-  }).catch(err => {
-    console.error("THY stock 1y fetch error:", err);
-    setCard('dc-thy', '—', null, '', 'Veri alınamadı');
-  });
+      if (typeof initForexCard === 'function') initForexCard();
+      if (typeof initBrentCard === 'function') initBrentCard();
+      if (typeof initThyCard === 'function') initThyCard();
+      if (typeof initJetfuelCard === 'function') initJetfuelCard();
+    }, 60 * 1000); // 60 saniyede bir kontrol et (5 dakikalık cache'leri günceller)
+  }
+  startDashboardPolling();
 
   // ── Popover → çizgi grafik modu ────────────────────────────────────
   let _fpopLineChart = null;
