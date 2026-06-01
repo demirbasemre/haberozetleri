@@ -773,142 +773,19 @@
   }
   .reports-pdf-btn:hover { background: #1d4ed8; }
   .reports-pdf-btn:active { transform: translateY(1px); }
+  /* Bulletin frame: iframe — no padding/overflow needed, border handles styling */
   .reports-bulletin-frame {
-    background: var(--card-bg); border: 1px solid var(--border);
-    border-radius: 10px; padding: 28px 32px; overflow: auto; line-height: 1.65;
+    display: block;
+    width: 100%;
+    min-height: 300px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: transparent;
+    transition: height 0.2s ease;
   }
-  .reports-bulletin-frame h1,
-  .reports-bulletin-frame h2,
-  .reports-bulletin-frame h3 {
-    font-family: var(--tweak-heading-font, Georgia, serif);
-    color: var(--text-1); margin-top: 1.4em; margin-bottom: 0.5em;
-  }
-  .reports-bulletin-frame h1 { font-size: 1.5rem; margin-top: 0; }
-  .reports-bulletin-frame h2 { font-size: 1.15rem; }
-  .reports-bulletin-frame h3 { font-size: 1rem; }
-  .reports-bulletin-frame p { margin: 0 0 0.75em; color: var(--text-2); font-size: 14px; }
-  .reports-bulletin-frame table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 1em 0; }
-  .reports-bulletin-frame th,
-  .reports-bulletin-frame td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
-  .reports-bulletin-frame th { background: var(--bg); font-weight: 600; font-size: 12px; color: var(--text-2); }
-  .reports-bulletin-frame ul,
-  .reports-bulletin-frame ol { padding-left: 1.4em; margin: 0 0 0.75em; color: var(--text-2); font-size: 14px; }
-  .reports-bulletin-frame li { margin-bottom: 4px; }
-  .reports-bulletin-frame hr { border: none; border-top: 1px solid var(--border); margin: 1.5em 0; }
-  .reports-bulletin-frame strong { color: var(--text-1); }
-  .reports-bulletin-frame a { color: var(--red); text-decoration: none; }
-  .reports-bulletin-frame a:hover { text-decoration: underline; }
   @media (max-width: 640px) {
     .reports-nav-bar { flex-direction: column; align-items: flex-start; }
-    .reports-bulletin-frame { padding: 16px; }
     .reports-nav-controls { flex-wrap: wrap; }
-  }
-
-  /* ── RAPORLAR KARANLIK MOD ──────────────────────────────── */
-  [data-theme="dark"] .reports-bulletin-frame {
-    background: #0f1c2d !important;
-    border-color: #1e3048 !important;
-  }
-  /* Beyaz ve açık zemin alanları */
-  [data-theme="dark"] .reports-bulletin-frame .wrap,
-  [data-theme="dark"] .reports-bulletin-frame body {
-    background: #0f1c2d !important;
-    color: #cdd8e2 !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .exec {
-    background: #152537 !important;
-    border-color: #1e3a5f !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .section-body {
-    background: #0f1c2d !important;
-  }
-  /* Metin renkleri */
-  [data-theme="dark"] .reports-bulletin-frame .exec p,
-  [data-theme="dark"] .reports-bulletin-frame p,
-  [data-theme="dark"] .reports-bulletin-frame .analysis-text,
-  [data-theme="dark"] .reports-bulletin-frame .analysis-text p {
-    color: #b2c5d4 !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame strong,
-  [data-theme="dark"] .reports-bulletin-frame .exec strong,
-  [data-theme="dark"] .reports-bulletin-frame .exec h2,
-  [data-theme="dark"] .reports-bulletin-frame .section-title {
-    color: #dce8f0 !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .analysis-text h3 {
-    color: #6aaecb !important;
-  }
-  /* Özet kutusu */
-  [data-theme="dark"] .reports-bulletin-frame .summary-box {
-    background: #152537 !important;
-    color: #b2c5d4 !important;
-  }
-  /* Metrik kartları */
-  [data-theme="dark"] .reports-bulletin-frame .metric-card {
-    background: #152537 !important;
-    border-color: #22384f !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .metric-label { color: #5a8aa4 !important; }
-  [data-theme="dark"] .reports-bulletin-frame .metric-value { color: #dce8f0 !important; }
-  [data-theme="dark"] .reports-bulletin-frame .metric-ctx  { color: #3d6480 !important; }
-  /* Bulgular kutusu */
-  [data-theme="dark"] .reports-bulletin-frame .findings {
-    background: #152537 !important;
-    border-color: #254560 !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .findings h3 { color: #6aaecb !important; }
-  [data-theme="dark"] .reports-bulletin-frame .findings li { color: #b2c5d4 !important; }
-  /* Tablolar */
-  [data-theme="dark"] .reports-bulletin-frame .table-wrap {
-    border-color: #1e3048 !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .data-table th {
-    background: #0a1522 !important;
-    color: #6aaecb !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .data-table td {
-    color: #b2c5d4 !important;
-    border-color: #1e3048 !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .data-table tr:nth-child(even) td {
-    background: #152537 !important;
-  }
-  /* Beklenti / Strateji kutuları */
-  [data-theme="dark"] .reports-bulletin-frame .outlook-box {
-    background: #152537 !important;
-    border-color: #1e3a5f !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .strategic-box {
-    background: #12281e !important;
-    border-color: #1e4030 !important;
-  }
-  [data-theme="dark"] .reports-bulletin-frame .outlook-box h4   { color: #60a5d0 !important; }
-  [data-theme="dark"] .reports-bulletin-frame .strategic-box h4 { color: #4ade80 !important; }
-  [data-theme="dark"] .reports-bulletin-frame .outlook-box p,
-  [data-theme="dark"] .reports-bulletin-frame .strategic-box p  { color: #9ab8c8 !important; }
-  /* Kaynak badge'leri */
-  [data-theme="dark"] .reports-bulletin-frame .src-badge {
-    background: #152537 !important;
-    border-color: #22384f !important;
-    color: #6aaecb !important;
-  }
-  /* Footer ve ayraç */
-  [data-theme="dark"] .reports-bulletin-frame .footer    { background: #07101a !important; }
-  [data-theme="dark"] .reports-bulletin-frame .footer p  { color: #3d6480 !important; }
-  [data-theme="dark"] .reports-bulletin-frame .divider   { background: #1e3048 !important; }
-  /* Inline stil ile renklendirilen metric-change (kırmızı/yeşil ok) — koru */
-  [data-theme="dark"] .reports-bulletin-frame .metric-change[style*="b91c1c"] { color: #f87171 !important; }
-  [data-theme="dark"] .reports-bulletin-frame .metric-change[style*="15803d"] { color: #4ade80 !important; }
-  /* Grafik sarmalayıcı */
-  [data-theme="dark"] .reports-bulletin-frame .chart-wrap {
-    background: #152537 !important;
-    border-color: #22384f !important;
-  }
-  /* İç içe inline-style'lı kutu (Brent petrol özet alanı) */
-  [data-theme="dark"] .reports-bulletin-frame div[style*="fbf6eb"],
-  [data-theme="dark"] .reports-bulletin-frame div[style*="faf6ec"] {
-    background: #1a2d1a !important;
-    border-color: #254532 !important;
   }
 </style>
 </head>
@@ -2080,7 +1957,7 @@
           </button>
         </div>
       </div>
-      <div class="reports-bulletin-frame" id="reports-bulletin-frame"></div>
+      <iframe id="reports-bulletin-frame" class="reports-bulletin-frame" frameborder="0" title="Bülten içeriği" scrolling="no"></iframe>
     </div>
   </div><!-- /reports-panel -->
 
@@ -12703,10 +12580,60 @@ function initControls(allArticles) {
     nextBtn.disabled = _currentIdx === _reports.length - 1;
 
     const frame = document.getElementById('reports-bulletin-frame');
-    let html = r.html_content || '<p style="padding:2rem;color:var(--text-3)">İçerik bulunamadı.</p>';
-    // Strip the floating PDF button embedded by the workflow (overlaps with AI chatbot FAB)
+    let html = r.html_content || '<!DOCTYPE html><html><body style="font-family:system-ui;padding:2rem;color:#666">İçerik bulunamadı.</body></html>';
+
+    // Strip floating PDF btn embedded by workflow (overlaps AI chatbot FAB)
     html = html.replace(/<div id="pdf-btn"[\s\S]*$/, '');
-    frame.innerHTML = html;
+
+    // Inject dark mode CSS directly into the isolated srcdoc document
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      const dm = `<style id="dm-override">
+        body,.wrap{background:#0f1c2d!important;color:#cdd8e2!important}
+        .exec{background:#152537!important;border-color:#1e3a5f!important}
+        .exec p,.exec h2,.section-title,h1,h2,h3{color:#dce8f0!important}
+        p,li{color:#b2c5d4!important}
+        strong{color:#dce8f0!important}
+        .section-body{background:#0f1c2d!important}
+        .summary-box{background:#152537!important;color:#b2c5d4!important}
+        .metric-card{background:#152537!important;border-color:#22384f!important}
+        .metric-label{color:#5a8aa4!important}
+        .metric-value{color:#dce8f0!important}
+        .metric-ctx{color:#3d6480!important}
+        .analysis-text h3{color:#6aaecb!important}
+        .findings{background:#152537!important;border-color:#254560!important}
+        .findings h3{color:#6aaecb!important}
+        .findings li{color:#b2c5d4!important}
+        .table-wrap{border-color:#1e3048!important}
+        .data-table th{background:#0a1522!important;color:#6aaecb!important}
+        .data-table td{color:#b2c5d4!important;border-color:#1e3048!important}
+        .data-table tr:nth-child(even) td{background:#152537!important}
+        .outlook-box{background:#152537!important;border-color:#1e3a5f!important}
+        .strategic-box{background:#12281e!important;border-color:#1e4030!important}
+        .outlook-box h4{color:#60a5d0!important}
+        .strategic-box h4{color:#4ade80!important}
+        .outlook-box p,.strategic-box p{color:#9ab8c8!important}
+        .src-badge{background:#152537!important;border-color:#22384f!important;color:#6aaecb!important}
+        .footer{background:#07101a!important}
+        .footer p{color:#3d6480!important}
+        .divider{background:#1e3048!important}
+        .chart-wrap{background:#152537!important;border-color:#22384f!important}
+      </style>`;
+      html = html.replace('</head>', dm + '</head>');
+    }
+
+    // Use srcdoc to fully isolate the report's CSS from the main page
+    frame.srcdoc = html;
+    frame.onload = function() {
+      try {
+        const doc = frame.contentDocument || (frame.contentWindow && frame.contentWindow.document);
+        if (doc && doc.body) {
+          frame.style.height = (doc.body.scrollHeight + 48) + 'px';
+        }
+      } catch(e) {
+        frame.style.height = '3200px';
+      }
+    };
   }
 
   function navigateReport(dir) {
@@ -12767,6 +12694,11 @@ function initControls(allArticles) {
   window.initReportsTab  = initReportsTab;
   window.navigateReport  = navigateReport;
   window.downloadReportPDF = downloadReportPDF;
+
+  // Re-render bulletin when dark/light theme toggles (srcdoc needs full rebuild)
+  new MutationObserver(function() {
+    if (_reports.length > 0) renderReport();
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 })();
 </script>
 
