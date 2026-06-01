@@ -1822,7 +1822,7 @@
           </div>
           <div class="dash-card-value" id="chat-kpi-convs">—</div>
           <div class="kpi-spark-wrap"><canvas id="chart-chatbot-spark" aria-label="Chatbot günlük kullanım trendi"></canvas></div>
-          <div class="dash-card-sub">Bu tarayıcıda · detay için tıkla</div>
+          <div class="dash-card-sub">Tüm kullanıcılar · detay için tıkla</div>
         </div>
         <div class="dash-card">
           <div class="dash-card-label">Toplam Soru</div>
@@ -9266,8 +9266,9 @@ async function loadDashboard() {
   const btnNewChat = document.getElementById('ai-btn-new-chat');
   const feedbackContainer = document.getElementById('ai-feedback-container');
 
-  const AI_WEBHOOK      = 'https://n8n.emredemirbas.com/webhook/haber-ai-v2';
+  const AI_WEBHOOK       = 'https://n8n.emredemirbas.com/webhook/haber-ai-v2';
   const FEEDBACK_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/haber-ai-feedback';
+  const CHATBOT_LOG_URL  = 'https://n8n.emredemirbas.com/webhook/chatbot-log';
   const TOP_N = 15;
 
   let currentConvId = null;
@@ -9788,7 +9789,18 @@ async function loadDashboard() {
         }
       }
       saveConversations(conversations);
-      
+
+      // Fire-and-forget: n8n'e chatbot log at
+      fetch(CHATBOT_LOG_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          convId:    currentConvId,
+          isNew:     activeHistory.length === 1,
+          timestamp: new Date().toISOString()
+        })
+      }).catch(() => {});
+
       if (data.articles && data.articles.length > 0) {
         addShowCardsPrompt(data.articles, false);
       }
@@ -12694,7 +12706,9 @@ function _initVisitorModal() {
   overlay?.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
 }
 
-// ── Chatbot istatistikleri (localStorage) ────────────────────
+// ── Chatbot istatistikleri (n8n) ─────────────────────────────
+const CHATBOT_STATS_URL = 'https://n8n.emredemirbas.com/webhook/chatbot-stats';
+
 let _chatbotChartInst   = null;     // legacy (no longer used)
 let _chatbotSparkInst   = null;
 let _chatbotFullInst    = null;
@@ -12702,35 +12716,28 @@ let _chatbotModalInited = false;
 let _chatbotDailyData   = [];       // [['2026-05-26', 3], ...]
 
 function buildChatbotStats() {
-  let convs = [];
-  try { convs = JSON.parse(localStorage.getItem('ai_chat_conversations') || '[]'); } catch(e) {}
+  fetch(CHATBOT_STATS_URL)
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById('chat-kpi-convs').textContent     = (d.totalConvs     || 0).toLocaleString('tr-TR');
+      document.getElementById('chat-kpi-questions').textContent = (d.totalQuestions || 0).toLocaleString('tr-TR');
+      document.getElementById('chat-kpi-avg').textContent       = d.avgQ || '—';
+      document.getElementById('chat-kpi-30d').textContent       = (d.last30Days     || 0).toLocaleString('tr-TR');
 
-  const totalConvs = convs.length;
-  const totalQuestions = convs.reduce((sum, c) => sum + (c.history?.length || 0), 0);
-  const avgQ = totalConvs > 0 ? (totalQuestions / totalConvs).toFixed(1) : '—';
+      // dailyCounts: [{date:'2026-05-26', count:3}, ...] veya [['2026-05-26', 3], ...]
+      const raw = d.dailyCounts || [];
+      _chatbotDailyData = raw.map(e => Array.isArray(e) ? e : [e.date, e.count]);
+      _chatbotDailyData.sort((a, b) => a[0].localeCompare(b[0]));
 
-  const cutoff30 = new Date(); cutoff30.setDate(cutoff30.getDate() - 30);
-  const last30 = convs.filter(c => new Date(c.timestamp) >= cutoff30).length;
-
-  document.getElementById('chat-kpi-convs').textContent     = totalConvs.toLocaleString('tr-TR');
-  document.getElementById('chat-kpi-questions').textContent = totalQuestions.toLocaleString('tr-TR');
-  document.getElementById('chat-kpi-avg').textContent       = avgQ;
-  document.getElementById('chat-kpi-30d').textContent       = last30.toLocaleString('tr-TR');
-
-  // Daily counts (last 60 days)
-  const cutoff60 = new Date(); cutoff60.setDate(cutoff60.getDate() - 60);
-  const dailyCounts = {};
-  convs.forEach(c => {
-    if (!c.timestamp) return;
-    const d = new Date(c.timestamp);
-    if (d < cutoff60) return;
-    const key = d.toISOString().slice(0,10);
-    dailyCounts[key] = (dailyCounts[key] || 0) + 1;
-  });
-  _chatbotDailyData = Object.entries(dailyCounts).sort((a,b) => a[0].localeCompare(b[0]));
-
-  _buildChatbotSparkline(_chatbotDailyData);
-  _initChatbotModal();
+      _buildChatbotSparkline(_chatbotDailyData);
+      _initChatbotModal();
+    })
+    .catch(() => {
+      ['chat-kpi-convs','chat-kpi-questions','chat-kpi-avg','chat-kpi-30d'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = 'Hata';
+      });
+    });
 }
 
 // Mini sparkline rendered INSIDE the Toplam Konuşma KPI card
