@@ -18,6 +18,8 @@ const PROXY_ALLOWED_HOSTS = new Set([
   'www.payloadasia.com',
   'iata.org',
   'www.iata.org',
+  'query1.finance.yahoo.com',
+  'n8n.emredemirbas.com',
 ]);
 
 function parseWCI(html) {
