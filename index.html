@@ -1201,23 +1201,15 @@
 
     <!-- Reports tab filter area -->
     <div id="reports-filter-content" style="display:none;">
-      <div class="fdd-wrap">
-        <button class="fdd-btn fdd-btn--active" id="reports-type-btn" aria-label="Rapor türü seç">
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="fdd-btn fdd-btn--active report-type-pill" data-report-type="arz_talep_navlun" id="report-pill-arz">
           <span class="fdd-dot" style="background:#2563eb"></span>
-          <span id="reports-type-label">Arz &amp; Talep &amp; Navlun Analizi</span>
+          Arz &amp; Talep &amp; Navlun Analizi
         </button>
-        <div class="fdd-panel" id="reports-type-panel" role="listbox" aria-label="Rapor türü seç">
-          <div class="fdd-option selected" data-report-type="arz_talep_navlun" role="option" aria-selected="true">
-            <div class="fdd-radio"></div>
-            <span class="fdd-dot" style="background:#2563eb"></span>
-            Arz &amp; Talep &amp; Navlun Analizi
-          </div>
-          <div class="fdd-option" data-report-type="filo" role="option" aria-selected="false">
-            <div class="fdd-radio"></div>
-            <span class="fdd-dot" style="background:#059669"></span>
-            Filo Analizi
-          </div>
-        </div>
+        <button class="fdd-btn report-type-pill" data-report-type="filo" id="report-pill-filo">
+          <span class="fdd-dot" style="background:#059669"></span>
+          Filo
+        </button>
       </div>
     </div>
 
@@ -13551,51 +13543,19 @@ function initControls(allArticles) {
       initReportsTab();
     }
 
-    // Dot rengini güncelle
-    const dotColors = { arz_talep_navlun: '#2563eb', filo: '#059669' };
-    const dot = document.querySelector('#reports-type-btn .fdd-dot');
-    if (dot) dot.style.background = dotColors[type] || '#2563eb';
-
-    // Label güncelle
-    const labels = { arz_talep_navlun: 'Arz & Talep & Navlun Analizi', filo: 'Filo Analizi' };
-    const lbl = document.getElementById('reports-type-label');
-    if (lbl) lbl.textContent = labels[type] || type;
+    // Aktif pill güncelle
+    document.querySelectorAll('.report-type-pill').forEach(p => {
+      const active = p.dataset.reportType === type;
+      p.classList.toggle('fdd-btn--active', active);
+    });
   }
 
-  // Filtre dropdown
+  // Pill tıklaması
   document.addEventListener('click', function(e) {
-    const btn = e.target.closest('#reports-type-btn');
-    if (btn) {
-      e.stopPropagation();
-      const panel = document.getElementById('reports-type-panel');
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!expanded));
-      panel.classList.toggle('fdd-panel-open', !expanded);
-    }
-
-    // Seçenek tıklaması
-    const opt = e.target.closest('#reports-type-panel .fdd-option');
-    if (opt) {
-      const type = opt.dataset.reportType;
-      if (type && type !== _activeReportType) {
-        document.querySelectorAll('#reports-type-panel .fdd-option').forEach(o => {
-          o.classList.toggle('selected', o === opt);
-          o.setAttribute('aria-selected', String(o === opt));
-        });
-        switchReportType(type);
-      }
-      const btn2 = document.getElementById('reports-type-btn');
-      const panel2 = document.getElementById('reports-type-panel');
-      if (btn2) btn2.setAttribute('aria-expanded', 'false');
-      if (panel2) panel2.classList.remove('fdd-panel-open');
-    }
-
-    // Dışarı tıklanırsa kapat
-    if (!e.target.closest('#reports-filter-content')) {
-      const btn2 = document.getElementById('reports-type-btn');
-      const panel2 = document.getElementById('reports-type-panel');
-      if (btn2) btn2.setAttribute('aria-expanded', 'false');
-      if (panel2) panel2.classList.remove('fdd-panel-open');
+    const pill = e.target.closest('.report-type-pill');
+    if (pill) {
+      const type = pill.dataset.reportType;
+      if (type && type !== _activeReportType) switchReportType(type);
     }
   });
 
