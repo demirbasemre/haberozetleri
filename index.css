@@ -2405,6 +2405,45 @@
     100% { transform: translateX(100%); }
   }
 
+  @keyframes price-flash-green {
+    0% {
+      color: #10b981;
+      text-shadow: 0 0 10px rgba(16,185,129,0.5);
+      transform: scale(1.03);
+    }
+    100% {
+      color: var(--text);
+      text-shadow: none;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes price-flash-red {
+    0% {
+      color: #ef4444;
+      text-shadow: 0 0 10px rgba(239,68,68,0.5);
+      transform: scale(0.97);
+    }
+    100% {
+      color: var(--text);
+      text-shadow: none;
+      transform: scale(1);
+    }
+  }
+
+  .price-flash-up {
+    animation: price-flash-green 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+
+  .price-flash-down {
+    animation: price-flash-red 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+
+
   .dash-chart-wrap.loading {
     background: var(--border-soft);
     border-radius: 8px;
