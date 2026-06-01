@@ -1511,8 +1511,11 @@
           </div>
           <!-- Period Toggle -->
           <div class="forex-period-btns">
-            <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1 Ay</button>
-            <button class="forex-period-btn forex-btn active" id="btn-forex-1y" data-period="1y">1 Yıl</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-1d" data-period="1d">1G</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1A</button>
+            <button class="forex-period-btn forex-btn active" id="btn-forex-1y" data-period="1y">1Y</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-5y" data-period="5y">5Y</button>
             <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
           </div>
         </div>
@@ -5391,9 +5394,19 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
         },
         tooltip: {
           ...CHART_DEFAULTS.plugins.tooltip,
-          callbacks: extraOpts.afterTooltipBody
-            ? { afterBody: extraOpts.afterTooltipBody }
-            : {}
+          callbacks: {
+            label: context => {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              if (context.parsed.y !== null) {
+                label += yFmt ? yFmt(context.parsed.y) : context.parsed.y;
+              }
+              return label;
+            },
+            ...(extraOpts.afterTooltipBody ? { afterBody: extraOpts.afterTooltipBody } : {})
+          }
         }
       },
       scales: {
@@ -6584,19 +6597,42 @@ async function loadDashboard() {
 
   // ── Forex Verisini Çek ve Göster ──────────────────────────────
   let _forexCache = {
-    'USD': { '1m': null, '1y': null, 'max': null },
-    'EUR': { '1m': null, '1y': null, 'max': null }
+    'USD': { '1d': null, '5d': null, '1m': null, '1y': null, '5y': null, 'max': null },
+    'EUR': { '1d': null, '5d': null, '1m': null, '1y': null, '5y': null, 'max': null }
   };
   let _forexCurrentCurrency = 'USD';
   let _forexCurrentPeriod = '1y';
 
-  async function fetchForexData(currency, range = '1y') {
+  async function fetchForexData(currency, period = '1y') {
     const symbol = currency === 'USD' ? 'USDTRY=X' : 'EURTRY=X';
-    const cacheKey = `forex_${currency}_${range}`;
-    const ttl = range === 'max' ? 24 * 60 * 60 * 1000 : 1 * 60 * 60 * 1000; // max: 24h, 1y: 1h
+    const cacheKey = `forex_${currency}_${period}`;
+    
+    let ttl = 1 * 60 * 60 * 1000; // default: 1h
+    if (period === 'max') {
+      ttl = 24 * 60 * 60 * 1000; // max: 24h
+    } else if (period === '1d' || period === '5d') {
+      ttl = 15 * 60 * 1000; // 1d, 5d: 15m
+    }
 
     return fetchCached(cacheKey, async () => {
-      const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=${range}`;
+      let range = '1y';
+      let interval = '1d';
+      
+      if (period === '1d') {
+        range = '1d';
+        interval = '15m';
+      } else if (period === '5d') {
+        range = '5d';
+        interval = '1h';
+      } else if (period === '5y') {
+        range = '5y';
+        interval = '1wk';
+      } else if (period === 'max') {
+        range = 'max';
+        interval = '1mo';
+      }
+
+      const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
       const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
       
       const res = await fetch(proxyUrl);
@@ -6638,15 +6674,33 @@ async function loadDashboard() {
         const day = d.getDate();
         const month = monthNamesTR[d.getMonth()];
         const year = d.getFullYear();
-        if (period === 'max') {
+        
+        if (period === '1d') {
+          const pad = num => String(num).padStart(2, '0');
+          return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        } else if (period === '5d' || period === '1m') {
+          return `${day} ${month}`;
+        } else if (period === '1y' || period === '5y') {
+          return `${month} ${year}`;
+        } else {
           return `${month} '${String(year).slice(-2)}`;
         }
-        return `${day} ${month} '${String(year).slice(-2)}`;
       });
       
       const prices = validPoints.map(p => p.value);
       const color = currency === 'USD' ? '#1D6FE8' : '#059669';
       const bgColor = currency === 'USD' ? 'rgba(29,111,232,0.06)' : 'rgba(5,150,105,0.06)';
+      
+      // Calculate dynamic decimals based on spread
+      const minPrice = Math.min(...prices);
+      const maxPrice = Math.max(...prices);
+      const spread = maxPrice - minPrice;
+      let decimals = 1;
+      if (spread < 0.05) {
+        decimals = 3;
+      } else if (spread < 0.5) {
+        decimals = 2;
+      }
       
       lineChart('chart-forex', labels,
         [
@@ -6661,7 +6715,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(v).toFixed(1) + ' ₺' : '',
+        v => v != null ? Number(v).toLocaleString('tr-TR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + ' ₺' : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' }
@@ -6671,7 +6725,7 @@ async function loadDashboard() {
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         const symbol = currency === 'USD' ? '$' : '€';
-        titleEl.textContent = `${symbol} Kuru · Güncel: ${latestPrice.toFixed(1)} ₺`;
+        titleEl.textContent = `${symbol} Kuru · Güncel: ${latestPrice.toLocaleString('tr-TR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} ₺`;
       }
     } catch (err) {
       console.error("Forex Grafik çizim hatası:", err);
@@ -6700,8 +6754,12 @@ async function loadDashboard() {
     const titleEl = document.getElementById('forex-chart-title');
     const canvas = document.getElementById('chart-forex');
     const wrap = canvas?.closest('.dash-chart-wrap');
-    
     if (wrap) wrap.classList.add('loading');
+    
+    // Optimize: 1m uses 1y data sliced. So if 1y is in cache and 1m is not, reuse 1y
+    if (!_forexCache[_forexCurrentCurrency][_forexCurrentPeriod] && _forexCurrentPeriod === '1m' && _forexCache[_forexCurrentCurrency]['1y']) {
+      _forexCache[_forexCurrentCurrency]['1m'] = _forexCache[_forexCurrentCurrency]['1y'];
+    }
 
     const cachedData = _forexCache[_forexCurrentCurrency][_forexCurrentPeriod];
     
@@ -6709,14 +6767,14 @@ async function loadDashboard() {
       drawForexChartFromRaw(cachedData, _forexCurrentCurrency, _forexCurrentPeriod);
       if (wrap) wrap.classList.remove('loading');
     } else {
-      const fetchRange = _forexCurrentPeriod === '1m' ? '1y' : _forexCurrentPeriod;
+      const fetchPeriod = _forexCurrentPeriod === '1m' ? '1y' : _forexCurrentPeriod;
       
-      fetchForexData(_forexCurrentCurrency, fetchRange).then(data => {
-        if (fetchRange === '1y') {
+      fetchForexData(_forexCurrentCurrency, fetchPeriod).then(data => {
+        if (fetchPeriod === '1y') {
           _forexCache[_forexCurrentCurrency]['1y'] = data;
           _forexCache[_forexCurrentCurrency]['1m'] = data;
         } else {
-          _forexCache[_forexCurrentCurrency]['max'] = data;
+          _forexCache[_forexCurrentCurrency][_forexCurrentPeriod] = data;
         }
         
         drawForexChartFromRaw(data, _forexCurrentCurrency, _forexCurrentPeriod);
