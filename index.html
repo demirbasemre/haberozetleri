@@ -1186,7 +1186,7 @@
           <div class="dash-card-label">Brent Ham Petrol</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Europe Brent · ton</div>
+          <div class="dash-card-sub">Europe Brent · varil</div>
           <div class="dash-card-note">Yahoo Finance · Anlık</div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
@@ -4028,7 +4028,7 @@ const SEARCHABLE_METRICS = [
     tab: 'dashboard',
     tabName: 'Dashboard',
     id: 'dc-brent',
-    kw: ['brent', 'petrol', 'crude', 'oil', 'ton', 'yahoo', 'finance']
+    kw: ['brent', 'petrol', 'crude', 'oil', 'varil', 'yahoo', 'finance']
   },
   {
     name: 'THY Hisse (THYAO)',
@@ -6955,9 +6955,6 @@ async function loadDashboard() {
         const lastPoint = validPoints[validPoints.length - 1];
         const price = meta.regularMarketPrice || lastPoint.value;
         
-        // Yoğunluk dönüştürme: 1 ton = 7.33 varil
-        const tonPrice = price * 7.33;
-        
         let change = 0;
         if (validPoints.length >= 2) {
           const last = validPoints[validPoints.length - 1];
@@ -6975,18 +6972,18 @@ async function loadDashboard() {
         const lastObsDate = new Date(lastPoint.time * 1000).toISOString().slice(0, 10);
         
         setCard('dc-brent',
-          tonPrice.toFixed(1) + ' $',
+          price.toFixed(1) + ' $',
           change,
-          'Europe Brent · ton',
+          'Europe Brent · varil',
           `Son veri: ${lastObsDate}<br>Kaynak: Yahoo Finance`
         );
       } catch (err) {
         console.error("Brent kart güncelleme hatası:", err);
-        setCard('dc-brent', '—', null, 'Europe Brent · ton', 'Veri okunamadı');
+        setCard('dc-brent', '—', null, 'Europe Brent · varil', 'Veri okunamadı');
       }
     }).catch(err => {
       console.error("Brent Yahoo fetch error:", err);
-      setCard('dc-brent', '—', null, 'Europe Brent · ton', 'Veri alınamadı');
+      setCard('dc-brent', '—', null, 'Europe Brent · varil', 'Veri alınamadı');
     });
   }
 
