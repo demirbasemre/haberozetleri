@@ -120,20 +120,33 @@
   .fin-ctrl-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
   .fin-metric-pills { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
   .fin-mpill-sep {
-    font-size: 9.5px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.07em; color: var(--text-3);
-    padding: 0 4px; margin: 0 2px; flex-basis: 100%; margin-top: 4px;
+    font-size: 9.5px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.07em; padding: 0 2px; flex-basis: 100%; margin-top: 8px;
   }
   .fin-mpill-sep:first-child { margin-top: 0; }
+  .fin-mpill-sep--primary  { color: #2563eb; }
+  .fin-mpill-sep--calc     { color: #d97706; }
+  .fin-mpill-sep--pax      { color: #059669; }
+  .fin-mpill-sep--pax-calc { color: #7c3aed; }
   .fin-mpill {
     padding: 4px 11px; border-radius: 16px; cursor: pointer;
     font-size: 11.5px; font-weight: 600; border: 1.5px solid var(--border);
     background: var(--bg); color: var(--text-3);
     transition: all 0.15s;
   }
-  .fin-mpill:hover { border-color: var(--accent); color: var(--accent); }
-  .fin-mpill--active { background: var(--navy); color: #fff; border-color: var(--navy); }
-  [data-theme="dark"] .fin-mpill--active { background: var(--accent); border-color: var(--accent); }
+  /* Renk grupları */
+  .fin-mpill--fin-primary { color:#2563eb; border-color:rgba(37,99,235,.3); }
+  .fin-mpill--fin-calc    { color:#d97706; border-color:rgba(217,119,6,.3); }
+  .fin-mpill--pax-primary { color:#059669; border-color:rgba(5,150,105,.3); }
+  .fin-mpill--pax-calc    { color:#7c3aed; border-color:rgba(124,58,237,.3); }
+  .fin-mpill--fin-primary:hover  { background:rgba(37,99,235,.08);  border-color:#2563eb; }
+  .fin-mpill--fin-calc:hover     { background:rgba(217,119,6,.08);  border-color:#d97706; }
+  .fin-mpill--pax-primary:hover  { background:rgba(5,150,105,.08);  border-color:#059669; }
+  .fin-mpill--pax-calc:hover     { background:rgba(124,58,237,.08); border-color:#7c3aed; }
+  .fin-mpill--fin-primary.fin-mpill--active  { background:#2563eb; color:#fff; border-color:#2563eb; }
+  .fin-mpill--fin-calc.fin-mpill--active     { background:#d97706; color:#fff; border-color:#d97706; }
+  .fin-mpill--pax-primary.fin-mpill--active  { background:#059669; color:#fff; border-color:#059669; }
+  .fin-mpill--pax-calc.fin-mpill--active     { background:#7c3aed; color:#fff; border-color:#7c3aed; }
   .fin-type-btn, .fin-range-btn {
     padding: 5px 10px; border-radius: 6px; cursor: pointer;
     font-size: 11.5px; font-weight: 600; border: 1.5px solid var(--border);
@@ -2808,32 +2821,36 @@
       <div class="fin-ctrl-group">
         <span class="fin-ctrl-label">Metrik</span>
         <div class="fin-metric-pills" id="fin-metric-pills">
-          <!-- Finansal Sonuçlar -->
-          <span class="fin-mpill-sep">Finansal</span>
-          <button class="fin-mpill fin-mpill--active" data-metric="total_revenue_musd">Toplam Gelir</button>
-          <button class="fin-mpill" data-metric="total_revenue_growth_pct">Gelir Büyümesi</button>
-          <button class="fin-mpill" data-metric="passenger_revenue_musd">Yolcu Geliri</button>
-          <button class="fin-mpill" data-metric="passenger_revenue_growth_pct">Yolcu Gelir %</button>
-          <button class="fin-mpill" data-metric="cargo_revenue_musd">Kargo Geliri</button>
-          <button class="fin-mpill" data-metric="cargo_revenue_growth_pct">Kargo Gelir %</button>
-          <button class="fin-mpill" data-metric="other_revenue_musd">Diğer Gelir</button>
-          <button class="fin-mpill" data-metric="other_revenue_growth_pct">Diğer Gelir %</button>
-          <button class="fin-mpill" data-metric="operating_profit_musd">İşletme Kârı</button>
-          <button class="fin-mpill" data-metric="operating_margin_pct">İşletme Marjı</button>
-          <button class="fin-mpill" data-metric="net_profit_musd">Net Kâr</button>
-          <button class="fin-mpill" data-metric="net_margin_pct">Net Marj</button>
-          <button class="fin-mpill" data-metric="employees">Çalışanlar</button>
-          <!-- Yolcu -->
-          <span class="fin-mpill-sep">Yolcu</span>
-          <button class="fin-mpill" data-metric="passengers">Yolcu Sayısı</button>
-          <button class="fin-mpill" data-metric="passenger_growth_pct">Yolcu Büyümesi</button>
-          <button class="fin-mpill" data-metric="ask_m">ASK</button>
-          <button class="fin-mpill" data-metric="asm_m">ASM</button>
-          <button class="fin-mpill" data-metric="ask_growth_pct">ASK Büyümesi</button>
-          <button class="fin-mpill" data-metric="rpk_m">RPK</button>
-          <button class="fin-mpill" data-metric="rpm_m">RPM</button>
-          <button class="fin-mpill" data-metric="rpk_growth_pct">RPK Büyümesi</button>
-          <button class="fin-mpill" data-metric="load_factor_pct">Doluluk</button>
+          <!-- Ana Finansal (mavi) -->
+          <span class="fin-mpill-sep fin-mpill-sep--primary">Ana Finansal</span>
+          <button class="fin-mpill fin-mpill--fin-primary fin-mpill--active" data-metric="total_revenue_musd">Toplam Gelir</button>
+          <button class="fin-mpill fin-mpill--fin-primary" data-metric="passenger_revenue_musd">Yolcu Geliri</button>
+          <button class="fin-mpill fin-mpill--fin-primary" data-metric="cargo_revenue_musd">Kargo Geliri</button>
+          <button class="fin-mpill fin-mpill--fin-primary" data-metric="other_revenue_musd">Diğer Gelir</button>
+          <button class="fin-mpill fin-mpill--fin-primary" data-metric="operating_profit_musd">İşletme Kârı</button>
+          <button class="fin-mpill fin-mpill--fin-primary" data-metric="net_profit_musd">Net Kâr</button>
+          <button class="fin-mpill fin-mpill--fin-primary" data-metric="employees">Çalışanlar</button>
+          <!-- Hesaplanan Oran (turuncu) -->
+          <span class="fin-mpill-sep fin-mpill-sep--calc">Hesaplanan Oran</span>
+          <button class="fin-mpill fin-mpill--fin-calc" data-metric="total_revenue_growth_pct">Gelir Büyümesi</button>
+          <button class="fin-mpill fin-mpill--fin-calc" data-metric="passenger_revenue_growth_pct">Yolcu Gelir %</button>
+          <button class="fin-mpill fin-mpill--fin-calc" data-metric="cargo_revenue_growth_pct">Kargo Gelir %</button>
+          <button class="fin-mpill fin-mpill--fin-calc" data-metric="other_revenue_growth_pct">Diğer Gelir %</button>
+          <button class="fin-mpill fin-mpill--fin-calc" data-metric="operating_margin_pct">İşletme Marjı</button>
+          <button class="fin-mpill fin-mpill--fin-calc" data-metric="net_margin_pct">Net Marj</button>
+          <!-- Ana Yolcu (yeşil) -->
+          <span class="fin-mpill-sep fin-mpill-sep--pax">Ana Yolcu</span>
+          <button class="fin-mpill fin-mpill--pax-primary" data-metric="passengers">Yolcu Sayısı</button>
+          <button class="fin-mpill fin-mpill--pax-primary" data-metric="ask_m">ASK</button>
+          <button class="fin-mpill fin-mpill--pax-primary" data-metric="asm_m">ASM</button>
+          <button class="fin-mpill fin-mpill--pax-primary" data-metric="rpk_m">RPK</button>
+          <button class="fin-mpill fin-mpill--pax-primary" data-metric="rpm_m">RPM</button>
+          <button class="fin-mpill fin-mpill--pax-primary" data-metric="load_factor_pct">Doluluk</button>
+          <!-- Hesaplanan Yolcu (mor) -->
+          <span class="fin-mpill-sep fin-mpill-sep--pax-calc">Hesaplanan Yolcu</span>
+          <button class="fin-mpill fin-mpill--pax-calc" data-metric="passenger_growth_pct">Yolcu Büyümesi</button>
+          <button class="fin-mpill fin-mpill--pax-calc" data-metric="ask_growth_pct">ASK Büyümesi</button>
+          <button class="fin-mpill fin-mpill--pax-calc" data-metric="rpk_growth_pct">RPK Büyümesi</button>
         </div>
       </div>
       <!-- Grafik tipi -->
@@ -14229,8 +14246,6 @@ function initControls(allArticles) {
   // Global'e aç (onclick="..." attribute'ları için)
   window.initReportsTab  = initReportsTab;
   window.navigateReport  = navigateReport;
-
-// ── Finansal Tab Sekmesi ─────────────────────────────────────
 let _finChart = null;
 let _finMetric = 'total_revenue_musd';
 let _finChartType = 'line';
@@ -14238,55 +14253,57 @@ let _finRange = 5;
 let _finHidden = new Set();
 let _finBuilt = false;
 
-// Finansal Metrik Tanımları
+// Metrik tanımları — 4 renk grubu
 const FIN_METRIC_DEFS = [
-  // Grup: Ana Finansal (mavi)
-  {key:'total_revenue_musd',     label:'Toplam Gelir',      unit:'M$', section:'financial', fmt:'musd',   group:'fin-primary'},
-  {key:'passenger_revenue_musd', label:'Yolcu Geliri',      unit:'M$', section:'financial', fmt:'musd',   group:'fin-primary'},
-  {key:'cargo_revenue_musd',     label:'Kargo Geliri',      unit:'M$', section:'financial', fmt:'musd',   group:'fin-primary'},
-  {key:'other_revenue_musd',     label:'Diğer Gelir',       unit:'M$', section:'financial', fmt:'musd',   group:'fin-primary'},
-  {key:'operating_profit_musd',  label:'İşletme Kârı',      unit:'M$', section:'financial', fmt:'musd_s', group:'fin-primary'},
-  {key:'net_profit_musd',        label:'Net Kâr',           unit:'M$', section:'financial', fmt:'musd_s', group:'fin-primary'},
-  {key:'employees',              label:'Çalışanlar',        unit:'kişi',section:'financial', fmt:'count',  group:'fin-primary'},
-  // Grup: Hesaplanan Oran (turuncu)
-  {key:'operating_margin_pct',   label:'İşletme Marjı',     unit:'%',  section:'financial', fmt:'pct',    group:'fin-calc'},
-  {key:'net_margin_pct',         label:'Net Marj',          unit:'%',  section:'financial', fmt:'pct',    group:'fin-calc'},
-  // Grup: Ana Yolcu (yeşil)
-  {key:'passengers',             label:'Yolcu Sayısı',      unit:'',   section:'passengers', fmt:'pax',    group:'pax-primary'},
-  {key:'ask_m',                  label:'ASK',               unit:'M km',section:'passengers', fmt:'munit', group:'pax-primary'},
-  {key:'rpk_m',                  label:'RPK',               unit:'M km',section:'passengers', fmt:'munit', group:'pax-primary'},
-  {key:'load_factor_pct',        label:'Doluluk',           unit:'%',   section:'passengers', fmt:'pct',   group:'pax-primary'},
+  {key:'total_revenue_musd',           label:'Toplam Gelir',      unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
+  {key:'passenger_revenue_musd',       label:'Yolcu Geliri',      unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
+  {key:'cargo_revenue_musd',           label:'Kargo Geliri',      unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
+  {key:'other_revenue_musd',           label:'Diğer Gelir',       unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
+  {key:'operating_profit_musd',        label:'İşletme Kârı',      unit:'M$',   section:'financial',  fmt:'musd_s', group:'fin-primary'},
+  {key:'net_profit_musd',              label:'Net Kâr',           unit:'M$',   section:'financial',  fmt:'musd_s', group:'fin-primary'},
+  {key:'employees',                    label:'Çalışanlar',        unit:'kişi', section:'financial',  fmt:'count',  group:'fin-primary'},
+  {key:'total_revenue_growth_pct',     label:'Gelir Büyümesi',    unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
+  {key:'passenger_revenue_growth_pct', label:'Yolcu Gelir %',     unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
+  {key:'cargo_revenue_growth_pct',     label:'Kargo Gelir %',     unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
+  {key:'other_revenue_growth_pct',     label:'Diğer Gelir %',     unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
+  {key:'operating_margin_pct',         label:'İşletme Marjı',     unit:'%',    section:'financial',  fmt:'pct',    group:'fin-calc'},
+  {key:'net_margin_pct',               label:'Net Marj',          unit:'%',    section:'financial',  fmt:'pct',    group:'fin-calc'},
+  {key:'passengers',                   label:'Yolcu Sayısı',      unit:'M',    section:'passengers', fmt:'pax',    group:'pax-primary'},
+  {key:'ask_m',                        label:'ASK',               unit:'M km', section:'passengers', fmt:'munit',  group:'pax-primary'},
+  {key:'asm_m',                        label:'ASM',               unit:'M mil',section:'passengers', fmt:'munit',  group:'pax-primary'},
+  {key:'rpk_m',                        label:'RPK',               unit:'M km', section:'passengers', fmt:'munit',  group:'pax-primary'},
+  {key:'rpm_m',                        label:'RPM',               unit:'M mil',section:'passengers', fmt:'munit',  group:'pax-primary'},
+  {key:'load_factor_pct',              label:'Doluluk',           unit:'%',    section:'passengers', fmt:'pct',    group:'pax-primary'},
+  {key:'passenger_growth_pct',         label:'Yolcu Büyümesi',    unit:'%',    section:'passengers', fmt:'pct_s',  group:'pax-calc'},
+  {key:'ask_growth_pct',               label:'ASK Büyümesi',      unit:'%',    section:'passengers', fmt:'pct_s',  group:'pax-calc'},
+  {key:'rpk_growth_pct',               label:'RPK Büyümesi',      unit:'%',    section:'passengers', fmt:'pct_s',  group:'pax-calc'},
 ];
-
 const FIN_METRIC_MAP = Object.fromEntries(FIN_METRIC_DEFS.map(d => [d.key, d]));
 
-// Veri erişim: metrik alt bölümünden değer al
-function getMetricValues(airline, metricKey) {
-  const def = FIN_METRIC_MAP[metricKey];
-  if (!def) return {};
-  return airline[def.section]?.[metricKey] || {};
+function getMetricValues(airline, key) {
+  const def = FIN_METRIC_MAP[key];
+  if (!def || !airline) return {};
+  return airline[def.section]?.[key] || {};
 }
 
-// Değer formatlama
 function fmtFinVal(v, fmt) {
-  if (v == null || v === undefined) return null;
+  if (v == null) return null;
   switch(fmt) {
     case 'musd': {
-      const abs = Math.abs(v);
-      if (abs >= 1000) return (v/1000).toFixed(2) + 'B$';
-      return Math.round(v).toLocaleString('tr-TR') + 'M$';
+      const a = Math.abs(v);
+      return a >= 1000 ? (v/1000).toFixed(2) + 'B$' : Math.round(v).toLocaleString('tr-TR') + 'M$';
     }
     case 'musd_s': {
       const sign = v >= 0 ? '+' : '';
-      const abs = Math.abs(v);
-      if (abs >= 1000) return sign + (v/1000).toFixed(2) + 'B$';
-      return sign + Math.round(v).toLocaleString('tr-TR') + 'M$';
+      const a = Math.abs(v);
+      return sign + (a >= 1000 ? (v/1000).toFixed(2) + 'B$' : Math.round(v).toLocaleString('tr-TR') + 'M$');
     }
     case 'pct':   return v.toFixed(1) + '%';
+    case 'pct_s': return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
     case 'pax':   return (v/1e6).toFixed(2) + 'M';
     case 'munit': return Math.round(v).toLocaleString('tr-TR');
     case 'count': return Math.round(v).toLocaleString('tr-TR');
-    default:      return String(Math.round(v));
+    default:      return String(v);
   }
 }
 
@@ -14327,13 +14344,15 @@ window.toggleFinAirline = function(slug) {
 };
 
 function bindFinControls() {
-  // Metrik seçici
   document.querySelectorAll('.fin-mpill').forEach(btn => {
     btn.addEventListener('click', () => {
-      _finMetric = btn.dataset.metric;
-      document.querySelectorAll('.fin-mpill').forEach(b => b.classList.toggle('fin-mpill--active', b === btn));
-      const def = FIN_METRIC_MAP[_finMetric];
-      const title = def ? `${def.label} (${def.unit || ''})` : _finMetric;
+      const key = btn.dataset.metric;
+      if (!key) return;
+      _finMetric = key;
+      document.querySelectorAll('.fin-mpill').forEach(b => b.classList.remove('fin-mpill--active'));
+      btn.classList.add('fin-mpill--active');
+      const def = FIN_METRIC_MAP[key];
+      const title = def ? `${def.label} (${def.unit || 'USD'})` : key;
       const el = document.getElementById('fin-chart-title');
       const et = document.getElementById('fin-table-title');
       if (el) el.textContent = title;
@@ -14362,49 +14381,48 @@ function bindFinControls() {
 }
 
 function getFinYears() {
-  // Tüm havayollarındaki yılları topla, sırala, range filtrele
-  if (!FIN_DATA || !Object.keys(FIN_DATA).length) return [];
   const allYears = new Set();
-  const def = FIN_METRIC_MAP[_finMetric];
-  if (!def) return [];
-
-  Object.values(FIN_DATA).forEach(d => {
-    const metricData = getMetricValues(d, _finMetric);
-    Object.keys(metricData).forEach(y => allYears.add(parseInt(y)));
+  Object.values(FIN_DATA || {}).forEach(airline => {
+    const vals = getMetricValues(airline, _finMetric);
+    Object.keys(vals).forEach(y => allYears.add(y));
   });
-  const sorted = Array.from(allYears).sort((a, b) => a - b);
+  const sorted = Array.from(allYears).sort();
   if (_finRange >= 90) return sorted;
   return sorted.slice(-_finRange);
 }
 
+function fmtVal(v, metric) {
+  if (v == null || v === undefined) return null;
+  if (metric === 'passengers') return (v / 1e6).toFixed(1) + 'M';
+  if (metric === 'load_factor' || metric === 'operating_margin') return v.toFixed(1) + '%';
+  if (metric === 'ask' || metric === 'rpk') return (v / 1000).toFixed(0) + 'B';
+  return (v >= 0 ? '+' : '') + v.toLocaleString('tr-TR', {maximumFractionDigits: 0}) + 'M';
+}
+
 function renderFinChart() {
   const canvas = document.getElementById('fin-main-chart');
-  if (!canvas || !FIN_DATA || !Object.keys(FIN_DATA).length) return;
-
-  const def = FIN_METRIC_MAP[_finMetric];
-  if (!def) return;
-
+  if (!canvas) return;
   const years = getFinYears();
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
-  const datasets = Object.entries(FIN_DATA)
+  const def = FIN_METRIC_MAP[_finMetric];
+  const datasets = Object.entries(FIN_DATA || {})
     .filter(([slug]) => !_finHidden.has(slug))
-    .map(([slug, d]) => {
-      const metricData = getMetricValues(d, _finMetric);
+    .map(([slug, airline]) => {
+      const metricData = getMetricValues(airline, _finMetric);
       const data = years.map(y => {
         const v = metricData[y];
         if (v == null) return null;
-        // Normalize for display
-        if (def.fmt === 'pax') return v / 1e6;
-        if (def.fmt === 'munit') return v / 1000;
+        if (def?.fmt === 'pax') return v / 1e6;
+        if (def?.fmt === 'munit') return v / 1000;
         return v;
       });
       return {
-        label: d.name,
+        label: airline.name,
         data,
-        borderColor: d.color,
-        backgroundColor: _finChartType === 'bar' ? d.color + 'BB' : d.color + '22',
-        pointBackgroundColor: d.color,
+        borderColor: airline.color,
+        backgroundColor: _finChartType === 'bar' ? airline.color + 'BB' : airline.color + '22',
+        pointBackgroundColor: airline.color,
         tension: 0.35,
         borderWidth: 2,
         pointRadius: 3,
@@ -14434,7 +14452,12 @@ function renderFinChart() {
           bodyColor: isDark ? '#9AA3B8' : '#4B5563',
           padding: 10,
           callbacks: {
-            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y != null ? fmtFinVal(ctx.raw, def.fmt) : '—'}`,
+            label: ctx => {
+              if (ctx.parsed.y == null) return null;
+              const raw = ctx.raw;
+              const def2 = FIN_METRIC_MAP[_finMetric];
+              return ` ${ctx.dataset.label}: ${fmtFinVal(raw, def2?.fmt || 'musd')}`;
+            }
           }
         }
       },
@@ -14447,10 +14470,13 @@ function renderFinChart() {
           grid: { color: gridColor },
           ticks: { color: textColor, font: { size: 11 },
             callback: v => {
-              if (def.fmt === 'pct') return v.toFixed(1) + '%';
-              if (def.fmt === 'pax') return v.toFixed(2) + 'M';
-              if (def.fmt === 'munit') return v + 'B';
-              if (Math.abs(v) >= 1000) return (v/1000).toFixed(1) + 'B$';
+              const d2 = FIN_METRIC_MAP[_finMetric];
+              if (!d2) return v;
+              if (d2.fmt === 'pct' || d2.fmt === 'pct_s') return v + '%';
+              if (d2.fmt === 'pax') return v + 'M';
+              if (d2.fmt === 'munit') return v + 'B';
+              const abs = Math.abs(v);
+              if (abs >= 1000) return (v/1000).toFixed(1) + 'B$';
               return v + 'M$';
             }
           }
@@ -14463,39 +14489,36 @@ function renderFinChart() {
 function renderFinTable() {
   const thead = document.getElementById('fin-cmp-thead');
   const tbody = document.getElementById('fin-cmp-tbody');
-  if (!thead || !tbody || !FIN_DATA || !Object.keys(FIN_DATA).length) return;
-
-  const def = FIN_METRIC_MAP[_finMetric];
-  if (!def) return;
-
+  if (!thead || !tbody) return;
   const years = getFinYears();
 
+  // Yıl başlıklarına kaynak linkleri — birden fazla havayolunda aynı yıl için farklı link
+  // En yaygın kaynağı (QR, TK gibi büyük havayolları) göster
   thead.innerHTML = `<tr>
     <th>Havayolu</th>
     ${years.map(y => `<th>${y}</th>`).join('')}
   </tr>`;
 
-  const isSignedMetric = def.fmt === 'musd_s';
+  const def2 = FIN_METRIC_MAP[_finMetric];
+  const isSigned = def2?.fmt === 'musd_s' || def2?.fmt === 'pct_s';
 
-  tbody.innerHTML = Object.entries(FIN_DATA)
+  tbody.innerHTML = Object.entries(FIN_DATA || {})
     .filter(([slug]) => !_finHidden.has(slug))
-    .map(([slug, d]) => {
-      const metricData = getMetricValues(d, _finMetric);
+    .map(([slug, airline]) => {
+      const metricData = getMetricValues(airline, _finMetric);
       const cells = years.map(y => {
         const v = metricData[y];
         if (v == null) return `<td class="fin-cell-na">—</td>`;
-        const label = fmtFinVal(v, def.fmt);
-        const cls = isSignedMetric
-          ? (v >= 0 ? 'fin-cell-pos' : 'fin-cell-neg') : '';
+        const label = fmtFinVal(v, def2?.fmt || 'musd');
+        const cls = isSigned ? (v >= 0 ? 'fin-cell-pos' : 'fin-cell-neg') : '';
         return `<td class="${cls}">${label}</td>`;
       }).join('');
+      const note = airline.psnote ? ` <span style="font-size:9px;color:var(--text-3)">(${airline.psnote})</span>` : '';
       return `<tr>
-        <td>
-          <span style="display:inline-flex;align-items:center;gap:6px">
-            <span style="width:10px;height:10px;border-radius:50%;background:${d.color};flex-shrink:0"></span>
-            ${d.name}
-          </span>
-        </td>
+        <td><span style="display:inline-flex;align-items:center;gap:6px">
+          <span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0"></span>
+          ${airline.name}${note}
+        </span></td>
         ${cells}
       </tr>`;
     }).join('');
