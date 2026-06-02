@@ -2968,38 +2968,39 @@
       <!-- ══════ KARŞILAŞTIRMA GÖRÜNÜMÜ ══════ -->
       <div id="fleet-cmp-content" style="display:none">
         <div class="fleet-cmp-legend">
-          <span class="flt-cmp-src flt-cmp-src--ps">PS = Planespotters.net</span>
-          <span class="flt-cmp-src flt-cmp-src--cha">CHA = CH Aviation</span>
+          <span class="flt-cmp-src flt-cmp-src--ps">PS = Planespotters.net (toplam filo)</span>
+          <span class="flt-cmp-src flt-cmp-src--cha">CHA = CH Aviation (aktif + toplam)</span>
           <span class="flt-cmp-diff flt-cmp-diff--match">= eşleşiyor</span>
-          <span class="flt-cmp-diff flt-cmp-diff--minor">▲▼ küçük fark</span>
-          <span class="flt-cmp-diff flt-cmp-diff--major">▲▼ büyük fark</span>
+          <span class="flt-cmp-diff flt-cmp-diff--minor">▲▼ küçük fark (&lt;%15)</span>
+          <span class="flt-cmp-diff flt-cmp-diff--major">▲▼ büyük fark (&gt;%15)</span>
         </div>
         <div class="fleet-cmp-table-wrap">
           <table class="fleet-cmp-table" id="fleet-cmp-table">
             <thead>
               <tr>
                 <th>Havayolu</th>
-                <th colspan="3">Aktif Filo</th>
-                <th colspan="3">Toplam Filo</th>
+                <th colspan="2">Filo Toplam</th>
+                <th>Δ</th>
+                <th>CHA Aktif</th>
                 <th colspan="2">Sipariş</th>
+                <th>Ort. Yaş</th>
               </tr>
               <tr class="fleet-cmp-subhead">
                 <th></th>
                 <th class="flt-th-ps">PS</th>
                 <th class="flt-th-cha">CHA</th>
-                <th>Δ</th>
+                <th></th>
+                <th class="flt-th-cha">CHA</th>
                 <th class="flt-th-ps">PS</th>
                 <th class="flt-th-cha">CHA</th>
-                <th>Δ</th>
                 <th class="flt-th-ps">PS</th>
-                <th class="flt-th-cha">CHA</th>
               </tr>
             </thead>
             <tbody id="fleet-cmp-tbody"></tbody>
           </table>
         </div>
         <div class="fleet-update-note" style="margin-top:16px">
-          PS = Planespotters.net · CHA = CH Aviation · Her iki kaynak da 2 Haziran 2026 tarihi itibarıyla · Satıra tıkla: CHA uçak tipi detayı
+          PS = Planespotters.net toplam filo · CHA = CH Aviation toplam/aktif · 2 Haziran 2026 · Satıra tıkla: CHA uçak tipi detayı · LA = LATAM Brasil (PS)
         </div>
       </div>
 
@@ -14432,27 +14433,29 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":244,"c
     if (!tbody) return;
     let html = '';
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const psA = d.pa, chaA = d.ca;
-      const psT = d.pt, chaT = d.ct;
-      const psO = d.po != null ? '+'+d.po : null;
-      const chaO = d.co ? '+'+d.co : '—';
+      const psT  = d.pt;   // PS toplam (fleet size)
+      const chaT = d.ct;   // CHA toplam
+      const chaA = d.ca;   // CHA aktif
+      const psO  = d.po != null ? '+'+d.po : '—';
+      const chaO = d.co    ? '+'+d.co    : '—';
+      const psAge = d.psage ? d.psage+'y' : '—';
+      const psnote = d.psnote ? `<span style="font-size:9px;color:var(--text-3);display:block">${d.psnote}</span>` : '';
       html += `
       <tr onclick="toggleCmpRow('${iata}')" data-iata="${iata}">
         <td><div class="flt-airline-cell">
           <span class="flt-iata-badge" style="background:${d.color}">${iata}</span>
           <span class="flt-airline-name">${d.name}</span>
         </div></td>
-        <td class="flt-val-ps">${psA != null ? psA : '<span class="flt-val-na">—</span>'}</td>
-        <td class="flt-val-cha">${chaA}</td>
-        <td>${psA != null ? diffChip(psA, chaA) : '<span class="flt-diff-na">—</span>'}</td>
-        <td class="flt-val-ps">${psT != null ? psT : '<span class="flt-val-na">—</span>'}</td>
+        <td class="flt-val-ps">${psT != null ? psT : '<span class="flt-val-na">—</span>'}${psnote}</td>
         <td class="flt-val-cha">${chaT}</td>
         <td>${psT != null ? diffChip(psT, chaT) : '<span class="flt-diff-na">—</span>'}</td>
-        <td class="flt-val-ps">${psO != null ? psO : '<span class="flt-val-na">—</span>'}</td>
+        <td class="flt-val-cha">${chaA}</td>
+        <td class="flt-val-ps">${psO}</td>
         <td class="flt-val-cha">${chaO}</td>
+        <td style="font-size:11.5px;color:var(--text-2)">${psAge}</td>
       </tr>
       <tr class="flt-detail-row" id="flt-detail-${iata}" style="display:none">
-        <td colspan="9">
+        <td colspan="8">
           <div class="flt-detail-inner">
             ${d.types && d.types.length ? `
             <table class="flt-detail-table">
