@@ -1551,7 +1551,6 @@
           <div class="dash-chart-title">Jet Yakıt &amp; Brent Ham Petrol</div>
           <div class="dash-chart-meta">
             <span>$/varil · Haftalık</span>
-            <span class="dash-chart-badge">DJFUELUSGULF &amp; DCOILBRENTEU</span>
           </div>
           <div class="energy-period-btns">
             <button class="energy-period-btn active" data-period="all">Tümü</button>
@@ -1588,7 +1587,6 @@
           </div>
           <div class="dash-chart-meta">
             <span id="gdp-meta-note">Yükleniyor…</span>
-            <span class="dash-chart-badge">IMF NGDP_RPCH</span>
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-gdp"></canvas></div>
           <div class="chart-legend">
@@ -1611,7 +1609,6 @@
           </div>
           <div class="dash-chart-meta">
             <span id="cpi-meta-note">Yükleniyor…</span>
-            <span class="dash-chart-badge">IMF PCPIPCH</span>
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-cpi"></canvas></div>
           <div class="chart-legend">
@@ -1665,10 +1662,16 @@
 
     <!-- Veri takvimi -->
     <section class="dash-section" id="dash-sec-takvim">
-      <h2 class="dash-section-title">Veri Yayın Takvimi ve Önemli Tarihler</h2>
+      <h2 class="dash-section-title">Veri Takvimi ve Tatiller</h2>
       <div class="rel-filter-bar">
+        <!-- Kategori Seçimi -->
+        <div class="rel-cat-selector">
+          <button class="rel-cat-btn active" id="btn-cat-data" type="button">Veri Yayın Takvimi</button>
+          <button class="rel-cat-btn" id="btn-cat-holiday" type="button">Resmi Tatiller</button>
+        </div>
+
         <!-- Ülke bayramı filtresi -->
-        <div class="rel-cf-selector" id="rel-cf-selector">
+        <div class="rel-cf-selector" id="rel-cf-selector" style="display: none;">
           <button class="rel-cf-btn" id="rel-cf-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Ülke bayrağı filtresi">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             <span id="rel-cf-label">Ülke Bayramları</span>
@@ -4997,11 +5000,11 @@ const SEARCHABLE_METRICS = [
     kw: ['freightos', 'fbx', 'baltic', 'endeks', 'konteyner', 'navlun', 'spot']
   },
   {
-    name: 'Veri Yayın Takvimi ve Önemli Tarihler',
+    name: 'Veri Takvimi ve Tatiller',
     tab: 'dashboard',
     tabName: 'Dashboard',
     id: 'dash-sec-takvim',
-    kw: ['takvim', 'yayın', 'tarihler', 'tatil', 'bayram', 'önemli tarihler']
+    kw: ['takvim', 'yayın', 'tarihler', 'tatil', 'bayram', 'resmi tatiller']
   },
   {
     name: 'Tekil Haber İstatistiği',
@@ -6649,6 +6652,7 @@ async function deleteUserReleaseItem(id) {
 
 function buildReleaseCalendar() {
   const now = new Date();
+  let activeCategory = 'data'; // 'data' or 'holiday'
   const TR_M      = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
   const TR_M_FULL = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
@@ -7067,12 +7071,20 @@ function buildReleaseCalendar() {
     }
 
     const all = combinedItems();
-    const items = all.filter(r => `${r.date.getFullYear()}-${r.date.getMonth()}` === key);
-    const addCardHtml = `
+    const items = all.filter(r => {
+      const matchMonth = `${r.date.getFullYear()}-${r.date.getMonth()}` === key;
+      if (!matchMonth) return false;
+      if (activeCategory === 'holiday') {
+        return r.kind === 'holiday';
+      } else {
+        return r.kind !== 'holiday' && r.kind !== 'event';
+      }
+    });
+    const addCardHtml = activeCategory === 'data' ? `
       <button class="dash-release-add" type="button" onclick="openReleaseAddModal()" aria-label="Yeni tarih ekle">
         ${plusSvg}
         <span>Yeni tarih ekle</span>
-      </button>`;
+      </button>` : '';
 
     if (!items.length) {
       document.getElementById('dash-releases').innerHTML =
@@ -7289,6 +7301,31 @@ function buildReleaseCalendar() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && cfDropdown?.classList.contains('open')) closeCfDropdown();
   });
+
+  const btnCatData = document.getElementById('btn-cat-data');
+  const btnCatHoliday = document.getElementById('btn-cat-holiday');
+  const cfSelector = document.getElementById('rel-cf-selector');
+
+  function setCalendarCategory(cat) {
+    activeCategory = cat;
+    if (activeCategory === 'holiday') {
+      if (btnCatHoliday) btnCatHoliday.classList.add('active');
+      if (btnCatData) btnCatData.classList.remove('active');
+      if (cfSelector) cfSelector.style.display = 'inline-block';
+    } else {
+      if (btnCatData) btnCatData.classList.add('active');
+      if (btnCatHoliday) btnCatHoliday.classList.remove('active');
+      if (cfSelector) cfSelector.style.display = 'none';
+    }
+    renderMonth(activeKey);
+  }
+
+  if (btnCatData) {
+    btnCatData.addEventListener('click', () => setCalendarCategory('data'));
+  }
+  if (btnCatHoliday) {
+    btnCatHoliday.addEventListener('click', () => setCalendarCategory('holiday'));
+  }
 
   renderCountryFilter();
   _relRender = () => renderMonth(activeKey);
