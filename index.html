@@ -2968,38 +2968,39 @@
       <!-- ══════ KARŞILAŞTIRMA GÖRÜNÜMÜ ══════ -->
       <div id="fleet-cmp-content" style="display:none">
         <div class="fleet-cmp-legend">
-          <span class="flt-cmp-src flt-cmp-src--k1">Kaynak 1 = Kaynak 1</span>
-          <span class="flt-cmp-src flt-cmp-src--k2">Kaynak 2 = Kaynak 2</span>
+          <span class="flt-cmp-src flt-cmp-src--k1">Kaynak 1 = Kaynak 1 (toplam filo)</span>
+          <span class="flt-cmp-src flt-cmp-src--k2">Kaynak 2 = Kaynak 2 (aktif + toplam)</span>
           <span class="flt-cmp-diff flt-cmp-diff--match">= eşleşiyor</span>
-          <span class="flt-cmp-diff flt-cmp-diff--minor">▲▼ küçük fark</span>
-          <span class="flt-cmp-diff flt-cmp-diff--major">▲▼ büyük fark</span>
+          <span class="flt-cmp-diff flt-cmp-diff--minor">▲▼ küçük fark (&lt;%15)</span>
+          <span class="flt-cmp-diff flt-cmp-diff--major">▲▼ büyük fark (&gt;%15)</span>
         </div>
         <div class="fleet-cmp-table-wrap">
           <table class="fleet-cmp-table" id="fleet-cmp-table">
             <thead>
               <tr>
                 <th>Havayolu</th>
-                <th colspan="3">Aktif Filo</th>
-                <th colspan="3">Toplam Filo</th>
+                <th colspan="2">Filo Toplam</th>
+                <th>Δ</th>
+                <th>Kaynak 2 Aktif</th>
                 <th colspan="2">Sipariş</th>
+                <th>Ort. Yaş</th>
               </tr>
               <tr class="fleet-cmp-subhead">
                 <th></th>
                 <th class="flt-th-k1">Kaynak 1</th>
                 <th class="flt-th-k2">Kaynak 2</th>
-                <th>Δ</th>
+                <th></th>
+                <th class="flt-th-k2">Kaynak 2</th>
                 <th class="flt-th-k1">Kaynak 1</th>
                 <th class="flt-th-k2">Kaynak 2</th>
-                <th>Δ</th>
                 <th class="flt-th-k1">Kaynak 1</th>
-                <th class="flt-th-k2">Kaynak 2</th>
               </tr>
             </thead>
             <tbody id="fleet-cmp-tbody"></tbody>
           </table>
         </div>
         <div class="fleet-update-note" style="margin-top:16px">
-          Kaynak 1 = Kaynak 1 · Kaynak 2 = Kaynak 2 · Her iki kaynak da 2 Haziran 2026 tarihi itibarıyla · Satıra tıkla: Kaynak 2 uçak tipi detayı
+          Kaynak 1 = Kaynak 1 toplam filo · Kaynak 2 = Kaynak 2 toplam/aktif · 2 Haziran 2026 · Satıra tıkla: Kaynak 2 uçak tipi detayı · LA = LATAM Brasil (Kaynak 1)
         </div>
       </div>
 
@@ -14432,27 +14433,29 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":244,"c
     if (!tbody) return;
     let html = '';
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const psA = d.pa, chaA = d.ca;
-      const psT = d.pt, chaT = d.ct;
-      const k1O = d.po != null ? '+'+d.po : null;
-      const k2O = d.co ? '+'+d.co : '—';
+      const psT  = d.pt;   // Kaynak 1 toplam (fleet size)
+      const chaT = d.ct;   // Kaynak 2 toplam
+      const chaA = d.ca;   // Kaynak 2 aktif
+      const k1O  = d.po != null ? '+'+d.po : '—';
+      const k2O = d.co    ? '+'+d.co    : '—';
+      const k1Age = d.k1age ? d.k1age+'y' : '—';
+      const k1note = d.k1note ? `<span style="font-size:9px;color:var(--text-3);display:block">${d.k1note}</span>` : '';
       html += `
       <tr onclick="toggleCmpRow('${iata}')" data-iata="${iata}">
         <td><div class="flt-airline-cell">
           <span class="flt-iata-badge" style="background:${d.color}">${iata}</span>
           <span class="flt-airline-name">${d.name}</span>
         </div></td>
-        <td class="flt-val-k1">${psA != null ? psA : '<span class="flt-val-na">—</span>'}</td>
-        <td class="flt-val-k2">${chaA}</td>
-        <td>${psA != null ? diffChip(psA, chaA) : '<span class="flt-diff-na">—</span>'}</td>
-        <td class="flt-val-k1">${psT != null ? psT : '<span class="flt-val-na">—</span>'}</td>
+        <td class="flt-val-k1">${psT != null ? psT : '<span class="flt-val-na">—</span>'}${k1note}</td>
         <td class="flt-val-k2">${chaT}</td>
         <td>${psT != null ? diffChip(psT, chaT) : '<span class="flt-diff-na">—</span>'}</td>
-        <td class="flt-val-k1">${k1O != null ? k1O : '<span class="flt-val-na">—</span>'}</td>
+        <td class="flt-val-k2">${chaA}</td>
+        <td class="flt-val-k1">${k1O}</td>
         <td class="flt-val-k2">${k2O}</td>
+        <td style="font-size:11.5px;color:var(--text-2)">${k1Age}</td>
       </tr>
       <tr class="flt-detail-row" id="flt-detail-${iata}" style="display:none">
-        <td colspan="9">
+        <td colspan="8">
           <div class="flt-detail-inner">
             ${d.types && d.types.length ? `
             <table class="flt-detail-table">
