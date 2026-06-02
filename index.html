@@ -196,6 +196,49 @@
     .fin-chart-wrap { height: 220px; }
   }
 
+  /* Kaynak accordion */
+  .fin-sources-section { margin-top: 12px; }
+  .fin-sources-toggle {
+    display: flex; align-items: center; gap: 6px;
+    background: none; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 7px 12px; cursor: pointer; width: 100%;
+    font-size: 12px; font-weight: 600; color: var(--text-2);
+    transition: background 0.15s;
+  }
+  .fin-sources-toggle:hover { background: var(--bg); color: var(--text); }
+  .fin-src-chevron { margin-left: auto; transition: transform 0.2s; }
+  .fin-sources-toggle[aria-expanded="true"] .fin-src-chevron { transform: rotate(180deg); }
+  .fin-sources-panel {
+    border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    padding: 14px 16px; background: var(--surface);
+  }
+  .fin-src-intro {
+    font-size: 12px; color: var(--text-2); line-height: 1.6;
+    margin-bottom: 12px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .fin-src-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 8px;
+  }
+  .fin-src-card {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 7px;
+    border: 1px solid var(--border-soft); background: var(--bg);
+    text-decoration: none; transition: all 0.15s;
+  }
+  .fin-src-card:hover { border-color: var(--accent); background: var(--surface); box-shadow: var(--shadow-sm); }
+  .fin-src-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .fin-src-info { flex: 1; min-width: 0; }
+  .fin-src-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .fin-src-label { font-size: 10.5px; color: var(--text-3); margin-top: 1px; }
+  .fin-src-arrow {
+    color: var(--accent); flex-shrink: 0; opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .fin-src-card:hover .fin-src-arrow { opacity: 1; }
+
   /* ══════ Formula Builder ══════════════════════════ */
   .flt-formula-wrap {
     display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;
@@ -2819,8 +2862,23 @@
       </div>
     </div>
 
-    <div class="fleet-update-note">
-      Finansal veriler CH Aviation kaynağından alınmıştır. Tüm değerler USD'ye dönüştürülmüştür. * Tahmini / önceden raporlanmış değerler.
+    <!-- Kaynak Açıklaması -->
+    <div class="fin-sources-section">
+      <button class="fin-sources-toggle" onclick="toggleFinSources()" aria-expanded="false" id="fin-src-toggle">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+        Veri Kaynakları
+        <svg class="fin-src-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="fin-sources-panel" id="fin-sources-panel" style="display:none">
+        <p class="fin-src-intro">
+          Tüm finansal veriler ilgili havayollarının <strong>resmi yıllık raporları</strong>ndan CH Aviation aracılığıyla derlenmiştir.
+          Değerler döviz kuru esas alınarak <strong>USD</strong>'ye dönüştürülmüştür.
+          <strong>*</strong> işareti tahmini veya önceden raporlanmış değerleri, <strong>**</strong> EBITDA bazlı değerleri gösterir.
+        </p>
+        <div class="fin-src-grid" id="fin-src-grid">
+          <!-- JS tarafından doldurulur -->
+        </div>
+      </div>
     </div>
 
   </div><!-- /finansal-report-container -->
@@ -14758,6 +14816,65 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
     if (mainRow) mainRow.classList.toggle('flt-row-open', open);
   };
 })();
+</script>
+
+<script>
+// ── Finansal Kaynak Accordion ──────────────────────────
+const FIN_INVESTOR_URLS = {
+  "QR": {name:"Qatar Airways",     url:"https://www.qatarairways.com/en/about-qatar-airways/annual-report.html"},
+  "EK": {name:"Emirates",          url:"https://www.emirates.com/english/about/annual-report/"},
+  "TK": {name:"Turkish Airlines",  url:"https://investor.turkishairlines.com/tr/mali-ve-operasyonel-veriler/finansal-raporlar"},
+  "AF": {name:"Air France-KLM",    url:"https://www.airfranceklm.com/en/finance"},
+  "CI": {name:"China Airlines",    url:"https://www.china-airlines.com/en-us/about-us/investor-relations"},
+  "CX": {name:"Cathay Pacific",    url:"https://www.cathaypacific.com/cx/en_HK/about-us/investor-relations.html"},
+  "ET": {name:"Ethiopian Airlines",url:"https://www.ethiopianairlines.com/en/about/investor-relations"},
+  "LH": {name:"Lufthansa Group",   url:"https://investor-relations.lufthansagroup.com/en/financial-reports"},
+  "LA": {name:"LATAM Airlines",    url:"https://ir.latam.com/"},
+  "KE": {name:"Korean Air",        url:"https://www.koreanair.com/content/koreanair/en/about-us/investor-relations.html"},
+  "CA": {name:"Air China",         url:"https://www.airchina.com.cn/en/investor_relations/"},
+  "SQ": {name:"Singapore Airlines",url:"https://www.singaporeair.com/en_UK/us/media-centre/annual-report/"},
+  "OZ": {name:"Asiana Airlines",   url:"https://flyasiana.com/C/KR/EN/contents/investor-relations"},
+  "SV": {name:"Saudia",            url:"https://www.saudia.com/en/about/investor-relations"},
+  "NH": {name:"ANA",               url:"https://ir.ana.co.jp/en/"},
+  "ETI":{name:"Etihad Airways",    url:"https://www.etihad.com/en-us/about/economic-profile"},
+  "CZ": {name:"China Southern",    url:"https://www.csair.com/cn/about/investor_relation/"},
+  "AV": {name:"Avianca",           url:"https://aviancaholdings.com/investors"},
+  "CV": {name:"Cargolux",          url:"https://www.cargolux.com/corporate/investor-relations"},
+  "A4B":{name:"AJet",              url:"https://investor.turkishairlines.com/tr/hakkimizda/ortaklik-sirketleri"},
+};
+
+let _finSrcBuilt = false;
+
+window.toggleFinSources = function() {
+  const panel  = document.getElementById('fin-sources-panel');
+  const toggle = document.getElementById('fin-src-toggle');
+  if (!panel) return;
+  const open = panel.style.display === 'none' || panel.style.display === '';
+  panel.style.display = open ? '' : 'none';
+  if (toggle) toggle.setAttribute('aria-expanded', String(open));
+  if (open && !_finSrcBuilt) {
+    _finSrcBuilt = true;
+    const grid = document.getElementById('fin-src-grid');
+    if (!grid) return;
+    grid.innerHTML = Object.entries(FIN_INVESTOR_URLS).map(([slug, d]) => {
+      const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
+      return `<a href="${d.url}" target="_blank" rel="noopener" class="fin-src-card"
+        title="${d.name} · Yatırımcı İlişkileri / Yıllık Rapor">
+        <span class="fin-src-dot" style="background:${color}"></span>
+        <span class="fin-src-info">
+          <span class="fin-src-name">${d.name}</span>
+          <span class="fin-src-label">Yıllık Rapor · Yatırımcı İlişkileri</span>
+        </span>
+        <svg class="fin-src-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+      </a>`;
+    }).join('');
+  }
+};
 </script>
 
 </body>
