@@ -7049,7 +7049,9 @@
   .fleet-chart-container {
     position: relative; border-radius: var(--radius-sm);
     overflow: hidden; border: 1px solid var(--border);
+    width: 100%;
   }
+  #fleet-chart-wrap { width: 100%; }
   .fleet-chart-tooltip {
     position: absolute; z-index: 20;
     background: var(--surface); border: 1px solid var(--border);
