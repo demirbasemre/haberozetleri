@@ -11485,6 +11485,7 @@ let _statsAirlines = new Set(); // seçili havayolu id'leri
 let _statsAirlineFocusMode = false; // odak modu
 let _statsMinDate = '';         // veri setindeki ilk tarih
 let _statsMaxDate = '';         // veri setindeki son tarih
+let _statsInitialStartDate = ''; // varsayılan başlangıç tarihi
 let _statsArticles = [];        // tarihe göre filtrelenmiş makaleler
 let _statsCharts   = {};        // Chart nesneleri
 let _statsCatType  = 'bar';     // 'bar' | 'line'
@@ -11495,8 +11496,8 @@ function applyDateRange(articles) {
   // range is at the dataset's default bounds (i.e. user hasn't narrowed it).
   // Only when the user explicitly tightens the range do we filter undated out.
   const isDefaultRange = _statsDateStart && _statsDateEnd
-    && _statsMinDate && _statsMaxDate
-    && _statsDateStart.toISOString().slice(0,10) === _statsMinDate
+    && _statsInitialStartDate && _statsMaxDate
+    && _statsDateStart.toISOString().slice(0,10) === _statsInitialStartDate
     && _statsDateEnd.toISOString().slice(0,10)   === _statsMaxDate;
   return articles.filter(a => {
     if (!a.date) return isDefaultRange;  // keep undated only at full range
@@ -12611,7 +12612,7 @@ function syncStatsAirlineBtn() {
 function syncStatsClearBtn() {
   const startEl = document.getElementById('stats-date-start');
   const endEl   = document.getElementById('stats-date-end');
-  const dateFiltered = (startEl?.value && startEl.value !== _statsMinDate) ||
+  const dateFiltered = (startEl?.value && startEl.value !== _statsInitialStartDate) ||
                        (endEl?.value   && endEl.value   !== _statsMaxDate);
   const hasAny = dateFiltered || _statsAirlines.size > 0;
   const btn = document.getElementById('stats-clear-filters');
@@ -12624,6 +12625,9 @@ function initDateRangePicker(allArticles) {
   _statsMinDate = dates[0] || '';
   _statsMaxDate = dates[dates.length - 1] || '';
 
+  const defaultStartStr = '2026-04-01';
+  _statsInitialStartDate = (_statsMinDate && _statsMinDate > defaultStartStr) ? _statsMinDate : defaultStartStr;
+
   const startEl = document.getElementById('stats-date-start');
   const endEl   = document.getElementById('stats-date-end');
 
@@ -12634,9 +12638,9 @@ function initDateRangePicker(allArticles) {
   endEl.min   = _statsMinDate;
   endEl.max   = _statsMaxDate;
 
-  startEl.value = _statsMinDate;
+  startEl.value = _statsInitialStartDate;
   endEl.value   = _statsMaxDate;
-  _statsDateStart = _statsMinDate ? new Date(_statsMinDate) : null;
+  _statsDateStart = _statsInitialStartDate ? new Date(_statsInitialStartDate) : null;
   _statsDateEnd   = _statsMaxDate ? new Date(_statsMaxDate + 'T23:59:59') : null;
   _statsArticles  = applyDateRange(allArticles);
 
@@ -12644,9 +12648,9 @@ function initDateRangePicker(allArticles) {
   const clearBtn = document.getElementById('stats-clear-filters');
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
-      startEl.value = _statsMinDate;
+      startEl.value = _statsInitialStartDate;
       endEl.value   = _statsMaxDate;
-      _statsDateStart = _statsMinDate ? new Date(_statsMinDate) : null;
+      _statsDateStart = _statsInitialStartDate ? new Date(_statsInitialStartDate) : null;
       _statsDateEnd   = _statsMaxDate ? new Date(_statsMaxDate + 'T23:59:59') : null;
       _statsArticles  = applyDateRange(allArticles);
       _statsAirlines.clear();
