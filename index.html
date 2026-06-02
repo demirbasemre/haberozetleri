@@ -94,17 +94,38 @@
   }
 
   /* ── Formula Builder ── */
+  .flt-formula-wrap {
+    display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;
+  }
   .flt-formula-bar {
     display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
-    padding: 10px 14px; margin-bottom: 12px;
+    padding: 8px 14px;
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); box-shadow: var(--shadow-sm);
   }
+  .flt-formula-bar--ps { border-left: 3px solid #059669; }
+  .flt-formula-bar--cha { border-left: 3px solid #2563eb; }
+  .flt-src-dot { width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0; }
+  .flt-src-dot--ps  { background:#059669; }
+  .flt-src-dot--cha { background:#2563eb; }
   .flt-formula-label {
     display: flex; align-items: center; gap: 5px;
-    font-size: 12px; font-weight: 700; color: var(--text-2);
-    white-space: nowrap; flex-shrink: 0;
+    font-size: 11.5px; font-weight: 800; color: var(--text-2);
+    white-space: nowrap; flex-shrink: 0; min-width: 36px;
   }
+  .flt-formula-label--ps  { color: #059669; }
+  .flt-formula-label--cha { color: #2563eb; }
+  .flt-formula-expr--ps {
+    background: rgba(5,150,105,0.08); border-color: rgba(5,150,105,0.25);
+    color: #059669;
+  }
+  .flt-fpill--ps.flt-fpill--add {
+    border-color: #059669; background: rgba(5,150,105,0.08); color: #059669;
+  }
+  .flt-fpill--ps.flt-fpill--add .flt-fpill-sign { color: #059669; }
+  [data-theme="dark"] .flt-fpill--ps.flt-fpill--add { background: rgba(5,150,105,0.15); }
+  .flt-val-na-star { color: var(--text-3); font-size: 10px; }
+
   .flt-formula-pills { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
   .flt-fpill {
     display: inline-flex; align-items: center; gap: 4px;
@@ -2538,37 +2559,59 @@
       <div id="fleet-cmp-content" style="display:none">
 
         <!-- ── Formül Builder ── -->
-        <div class="flt-formula-bar">
-          <div class="flt-formula-label">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
-            CHA Formülü
+        <div class="flt-formula-wrap">
+
+          <!-- PS Tarafı -->
+          <div class="flt-formula-bar flt-formula-bar--ps">
+            <div class="flt-formula-label flt-formula-label--ps">
+              <span class="flt-src-dot flt-src-dot--ps"></span>
+              PS
+            </div>
+            <div class="flt-formula-pills">
+              <button class="flt-fpill flt-fpill--ps flt-fpill--add" data-pscol="pa" onclick="togglePsPill(this)">
+                <span class="flt-fpill-sign">+</span> In Service
+              </button>
+              <button class="flt-fpill flt-fpill--ps" data-pscol="pt" onclick="togglePsPill(this)">
+                <span class="flt-fpill-sign">+</span> Toplam Filo
+              </button>
+            </div>
+            <div class="flt-formula-expr flt-formula-expr--ps" id="flt-ps-expr">= In Service</div>
           </div>
-          <div class="flt-formula-pills">
-            <button class="flt-fpill flt-fpill--add flt-fpill--active" data-col="ca" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> Active
-            </button>
-            <button class="flt-fpill" data-col="ci" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> Inactive
-            </button>
-            <button class="flt-fpill" data-col="cw" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> Wet Leased In
-            </button>
-            <button class="flt-fpill" data-col="ct" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> Total
-            </button>
-            <button class="flt-fpill" data-col="co" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> To be delivered
-            </button>
+
+          <!-- CHA Tarafı -->
+          <div class="flt-formula-bar flt-formula-bar--cha">
+            <div class="flt-formula-label flt-formula-label--cha">
+              <span class="flt-src-dot flt-src-dot--cha"></span>
+              CHA
+            </div>
+            <div class="flt-formula-pills">
+              <button class="flt-fpill flt-fpill--add" data-col="ca" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> Active
+              </button>
+              <button class="flt-fpill" data-col="ci" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> Inactive
+              </button>
+              <button class="flt-fpill" data-col="cw" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> Wet Leased In
+              </button>
+              <button class="flt-fpill" data-col="ct" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> Total
+              </button>
+              <button class="flt-fpill" data-col="co" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> To be delivered
+              </button>
+            </div>
+            <div class="flt-formula-expr" id="flt-formula-expr">= Active</div>
           </div>
-          <div class="flt-formula-expr" id="flt-formula-expr">= Active</div>
-        </div>
+
+        </div><!-- /flt-formula-wrap -->
 
         <div class="fleet-cmp-table-wrap">
           <table class="fleet-cmp-table" id="fleet-cmp-table">
             <thead>
               <tr>
                 <th>Havayolu</th>
-                <th class="flt-th-ps">PS Toplam</th>
+                <th class="flt-th-ps" id="flt-ps-col-hdr">PS: In Service</th>
                 <th class="flt-th-cha" id="flt-cha-col-hdr">CHA: Active</th>
                 <th>Δ</th>
                 <th>PS Sipariş</th>
@@ -2579,8 +2622,8 @@
             <tbody id="fleet-cmp-tbody"></tbody>
           </table>
         </div>
-        <div class="fleet-update-note" style="margin-top:16px">
-          PS = Planespotters.net toplam filo · CHA = CH Aviation toplam/aktif · 2 Haziran 2026 · Satıra tıkla: CHA uçak tipi detayı · LA = LATAM Brasil (PS)
+        <div class="fleet-update-note" style="margin-top:12px">
+          <strong>*</strong> PS In Service verisi mevcut değil — Toplam Filo gösteriliyor · LA = LATAM Brasil (PS) · 2 Haz 2026 · Satıra tıkla: uçak tipi detayı
         </div>
       </div>
 
@@ -14060,7 +14103,32 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
   };
 
   // ── Karşılaştırma tablosu ────────────────────────
-  // ── Formül durumu: {col: '+' | '-' | null} ──────
+  // ── PS formülü: 'pa' (In Service) veya 'pt' (Toplam) ──
+  let _psCol = 'pa'; // varsayılan: In Service
+
+  function calcPs(d) {
+    if (_psCol === 'pa') return d.pa != null ? { val: d.pa, hasData: true } : { val: d.pt, hasData: false };
+    return { val: d.pt, hasData: true };
+  }
+
+  window.togglePsPill = function(btn) {
+    const col = btn.dataset.pscol;
+    _psCol = col;
+    // Aktif pill güncelle
+    document.querySelectorAll('.flt-fpill--ps').forEach(p => {
+      const on = p.dataset.pscol === col;
+      p.classList.toggle('flt-fpill--add', on);
+    });
+    // Başlık güncelle
+    const h = document.getElementById('flt-ps-col-hdr');
+    const e = document.getElementById('flt-ps-expr');
+    const lbl = col === 'pa' ? 'In Service' : 'Toplam Filo';
+    if (h) h.textContent = 'PS: ' + lbl;
+    if (e) e.textContent = '= ' + lbl;
+    rerenderCmpRows();
+  };
+
+  // ── CHA Formül durumu: {col: '+' | '-' | null} ──
   const FML_COLS = ['ca','ci','cw','ct','co'];
   const FML_LABELS = { ca:'Active', ci:'Inactive', cw:'Wet Leased In', ct:'Total', co:'To be delivered' };
   let _formula = { ca: '+', ci: null, cw: null, ct: null, co: null };
@@ -14099,13 +14167,19 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
 
   function rerenderCmpRows() {
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const cell = document.getElementById('flt-cha-val-' + iata);
-      const diff = document.getElementById('flt-diff-' + iata);
-      if (!cell) return;
-      const val = calcFormula(d);
-      const psT = d.pt;
-      cell.textContent = val;
-      if (diff) diff.innerHTML = psT != null ? diffChip(psT, val) : '<span class="flt-diff-na">—</span>';
+      const psCell  = document.getElementById('flt-ps-val-' + iata);
+      const chaCell = document.getElementById('flt-cha-val-' + iata);
+      const diff    = document.getElementById('flt-diff-' + iata);
+      if (!chaCell) return;
+      const cha = calcFormula(d);
+      const { val: psVal, hasData: psHasData } = calcPs(d);
+      chaCell.textContent = cha;
+      if (psCell) {
+        psCell.innerHTML = psVal != null
+          ? psVal + (psHasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo gösteriliyor"> *</span>')
+          : '<span class="flt-val-na">—</span>';
+      }
+      if (diff) diff.innerHTML = psVal != null ? diffChip(psVal, cha) : '<span class="flt-diff-na">—</span>';
     });
   }
 
@@ -14117,21 +14191,24 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
     if (!tbody) return;
     let html = '';
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const psT   = d.pt;
       const psO   = d.po != null ? '+'+d.po : '—';
       const chaO  = d.co ? '+'+d.co : '—';
       const psAge = d.psage ? d.psage+'y' : '—';
       const note  = d.psnote ? `<span style="font-size:9px;color:var(--text-3);display:block">${d.psnote}</span>` : '';
       const chaVal = calcFormula(d);
+      const { val: psVal, hasData: psHasData } = calcPs(d);
+      const psDisplay = psVal != null
+        ? psVal + (psHasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo"> *</span>')
+        : '<span class="flt-val-na">—</span>';
       html += `
       <tr onclick="toggleCmpRow('${iata}')" data-iata="${iata}">
         <td><div class="flt-airline-cell">
           <span class="flt-iata-badge" style="background:${d.color}">${iata}</span>
           <span class="flt-airline-name">${d.name}</span>
         </div></td>
-        <td class="flt-val-ps">${psT != null ? psT : '<span class="flt-val-na">—</span>'}${note}</td>
+        <td class="flt-val-ps" id="flt-ps-val-${iata}">${psDisplay}${note}</td>
         <td class="flt-val-cha" id="flt-cha-val-${iata}">${chaVal}</td>
-        <td id="flt-diff-${iata}">${psT != null ? diffChip(psT, chaVal) : '<span class="flt-diff-na">—</span>'}</td>
+        <td id="flt-diff-${iata}">${psVal != null ? diffChip(psVal, chaVal) : '<span class="flt-diff-na">—</span>'}</td>
         <td class="flt-val-ps">${psO}</td>
         <td class="flt-val-cha">${chaO}</td>
         <td style="font-size:11.5px;color:var(--text-2)">${psAge}</td>
