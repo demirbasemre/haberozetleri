@@ -118,7 +118,13 @@
   }
   .fin-ctrl-group { display: flex; flex-direction: column; gap: 5px; }
   .fin-ctrl-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
-  .fin-metric-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+  .fin-metric-pills { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+  .fin-mpill-sep {
+    font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--text-3);
+    padding: 0 4px; margin: 0 2px; flex-basis: 100%; margin-top: 4px;
+  }
+  .fin-mpill-sep:first-child { margin-top: 0; }
   .fin-mpill {
     padding: 4px 11px; border-radius: 16px; cursor: pointer;
     font-size: 11.5px; font-weight: 600; border: 1.5px solid var(--border);
@@ -2802,19 +2808,32 @@
       <div class="fin-ctrl-group">
         <span class="fin-ctrl-label">Metrik</span>
         <div class="fin-metric-pills" id="fin-metric-pills">
+          <!-- Finansal Sonuçlar -->
+          <span class="fin-mpill-sep">Finansal</span>
           <button class="fin-mpill fin-mpill--active" data-metric="total_revenue_musd">Toplam Gelir</button>
-          <button class="fin-mpill" data-metric="cargo_revenue_musd">Kargo Geliri</button>
+          <button class="fin-mpill" data-metric="total_revenue_growth_pct">Gelir Büyümesi</button>
           <button class="fin-mpill" data-metric="passenger_revenue_musd">Yolcu Geliri</button>
+          <button class="fin-mpill" data-metric="passenger_revenue_growth_pct">Yolcu Gelir %</button>
+          <button class="fin-mpill" data-metric="cargo_revenue_musd">Kargo Geliri</button>
+          <button class="fin-mpill" data-metric="cargo_revenue_growth_pct">Kargo Gelir %</button>
+          <button class="fin-mpill" data-metric="other_revenue_musd">Diğer Gelir</button>
+          <button class="fin-mpill" data-metric="other_revenue_growth_pct">Diğer Gelir %</button>
           <button class="fin-mpill" data-metric="operating_profit_musd">İşletme Kârı</button>
-          <button class="fin-mpill" data-metric="net_profit_musd">Net Kâr</button>
           <button class="fin-mpill" data-metric="operating_margin_pct">İşletme Marjı</button>
+          <button class="fin-mpill" data-metric="net_profit_musd">Net Kâr</button>
           <button class="fin-mpill" data-metric="net_margin_pct">Net Marj</button>
           <button class="fin-mpill" data-metric="employees">Çalışanlar</button>
+          <!-- Yolcu -->
+          <span class="fin-mpill-sep">Yolcu</span>
           <button class="fin-mpill" data-metric="passengers">Yolcu Sayısı</button>
-          <button class="fin-mpill" data-metric="load_factor_pct">Doluluk</button>
-          <button class="fin-mpill" data-metric="ask_m">ASK</button>
-          <button class="fin-mpill" data-metric="rpk_m">RPK</button>
           <button class="fin-mpill" data-metric="passenger_growth_pct">Yolcu Büyümesi</button>
+          <button class="fin-mpill" data-metric="ask_m">ASK</button>
+          <button class="fin-mpill" data-metric="asm_m">ASM</button>
+          <button class="fin-mpill" data-metric="ask_growth_pct">ASK Büyümesi</button>
+          <button class="fin-mpill" data-metric="rpk_m">RPK</button>
+          <button class="fin-mpill" data-metric="rpm_m">RPM</button>
+          <button class="fin-mpill" data-metric="rpk_growth_pct">RPK Büyümesi</button>
+          <button class="fin-mpill" data-metric="load_factor_pct">Doluluk</button>
         </div>
       </div>
       <!-- Grafik tipi -->
