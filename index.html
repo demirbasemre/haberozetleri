@@ -2161,10 +2161,22 @@
     <!-- Filo Analizi -->
     <div id="fleet-report-container" class="fleet-report-container" style="display:none">
 
-      <!-- Kaynak bilgisi -->
-      <div class="fleet-source-bar">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-        Veriler: <strong>Planespotters.net</strong> (1 Haz 2026) · THY Yatırımcı İlişkileri · Etihad/AF-KLM/SQ resmi raporları
+      <!-- Kaynak seçici -->
+      <div class="fleet-source-bar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="fdd-btn fdd-btn--active fleet-src-pill" data-src="planespotters" style="font-size:11.5px;padding:4px 12px">
+            <span class="fdd-dot" style="background:#059669"></span>
+            Planespotters.net
+          </button>
+          <button class="fdd-btn fleet-src-pill" data-src="chaviation" style="font-size:11.5px;padding:4px 12px;opacity:0.5;cursor:not-allowed" disabled title="Yakında">
+            <span class="fdd-dot" style="background:#6b7280"></span>
+            CH Aviation <span style="font-size:10px;color:var(--text-3)">(yakında)</span>
+          </button>
+        </div>
+        <span style="font-size:11px;color:var(--text-3)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          Planespotters.net verisi · 2 Haz 2026
+        </span>
       </div>
 
       <!-- ══════ THY ANA BÖLÜM ══════ -->
@@ -2376,29 +2388,27 @@
             <div class="fleet-card-header">
               <div class="fleet-card-logo" style="background:#1D6FE8">AJ</div>
               <div>
-                <div class="fleet-card-name">AJet (AnadoluJet)</div>
-                <div class="fleet-card-iata">IATA: VV · THY iştiraki</div>
+                <div class="fleet-card-name">AJet</div>
+                <div class="fleet-card-iata">IATA: VF · THY iştiraki</div>
               </div>
             </div>
             <div class="fleet-card-stats">
               <div class="fleet-card-stat">
                 <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">87</div>
+                <div class="fleet-card-stat-value">83</div>
               </div>
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Siparişler</div>
-                <div class="fleet-card-stat-value">+14</div>
+                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
+                <div class="fleet-card-stat-value">120</div>
               </div>
             </div>
             <div class="fleet-card-types">
-              <span class="fleet-type-chip">B737-800 × 45</span>
-              <span class="fleet-type-chip">A321neo × 14</span>
-              <span class="fleet-type-chip">A321ceo × 8</span>
-              <span class="fleet-type-chip">B737 MAX 8 × 7</span>
-              <span class="fleet-type-chip">A320neo × 13*</span>
+              <span class="fleet-type-chip">37 uçak parkta</span>
+              <span class="fleet-type-chip">+24 sipariş</span>
+              <span class="fleet-type-chip">Ort. 8.6y</span>
             </div>
             <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              +14 A321neo (Avolon &amp; Carlyle, 2026–27) · *13 adet park halinde
+              Planespotters · 2 Haz 2026
             </div>
           </div>
 
@@ -2414,18 +2424,19 @@
             <div class="fleet-card-stats">
               <div class="fleet-card-stat">
                 <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">85</div>
+                <div class="fleet-card-stat-value">84</div>
               </div>
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Siparişler</div>
-                <div class="fleet-card-stat-value">104+</div>
+                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
+                <div class="fleet-card-stat-value">85</div>
               </div>
             </div>
             <div class="fleet-card-types">
-              <span class="fleet-type-chip">B737 ailesi</span>
+              <span class="fleet-type-chip">1 uçak parkta</span>
+              <span class="fleet-type-chip">Ort. 10.9y</span>
             </div>
             <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              87 kesin B737-8 + 17 B737-10 + opsiyonlar · Turizm odaklı
+              Planespotters · 2 Haz 2026
             </div>
           </div>
 
@@ -2441,19 +2452,19 @@
             <div class="fleet-card-stats">
               <div class="fleet-card-stat">
                 <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">~35</div>
+                <div class="fleet-card-stat-value">14</div>
               </div>
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">5 Yıl Hedefi</div>
-                <div class="fleet-card-stat-value">60</div>
+                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
+                <div class="fleet-card-stat-value">15</div>
               </div>
             </div>
             <div class="fleet-card-types">
-              <span class="fleet-type-chip">B737 MAX 8/9</span>
-              <span class="fleet-type-chip">A350 (ıslak kira)</span>
+              <span class="fleet-type-chip">1 uçak parkta</span>
+              <span class="fleet-type-chip">Ort. 11.2y</span>
             </div>
             <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              A321XLR değerlendiriliyor · Islak kira operasyonları aktif
+              Planespotters · 2 Haz 2026
             </div>
           </div>
 
@@ -2507,7 +2518,7 @@
               <span class="fleet-type-chip">A350 × 21 (yeni, ort.0.8y)</span>
             </div>
             <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              32 sipariş · 270 B777-9 + 12 A350 · 777X 2027'den · Ort. yaş 11.1y · Planespotters Haz 2026
+              28 uçak parkta · +32 sipariş · Ort. yaş 11.1y · Planespotters 2 Haz 2026
             </div>
           </div>
 
@@ -2538,7 +2549,7 @@
               <span class="fleet-type-chip">A380 × 8 (tümü park!)</span>
             </div>
             <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              16 sipariş · 48 uçak parkta · Ort. yaş 10.2y · Planespotters Haz 2026
+              48 uçak parkta · +16 sipariş · Ort. yaş 10.2y · Planespotters 2 Haz 2026
             </div>
           </div>
 
@@ -2554,82 +2565,80 @@
             <div class="fleet-card-stats">
               <div class="fleet-card-stat">
                 <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">127</div>
+                <div class="fleet-card-stat-value">120</div>
               </div>
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">2030 Hedefi</div>
-                <div class="fleet-card-stat-value">200</div>
+                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
+                <div class="fleet-card-stat-value">127</div>
               </div>
             </div>
             <div class="fleet-card-types">
-              <span class="fleet-type-chip">A350 + B787</span>
-              <span class="fleet-type-chip">A380 (reaktive)</span>
-              <span class="fleet-type-chip">A321LR (yeni)</span>
+              <span class="fleet-type-chip">7 uçak parkta</span>
+              <span class="fleet-type-chip">+8 sipariş</span>
+              <span class="fleet-type-chip">Ort. 8.4y</span>
             </div>
             <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              2025'te 29 uçak eklendi (tarihi rekor) · 60 geniş gövde sipariş 2025'te imzalandı
+              Planespotters · 2 Haz 2026
             </div>
           </div>
 
-          <!-- Lufthansa Group -->
+          <!-- Lufthansa -->
           <div class="fleet-airline-card">
             <div class="fleet-card-header">
               <div class="fleet-card-logo" style="background:#1a1a2e;border:1px solid var(--border)">
                 <span style="color:#fbbf24;font-weight:800;font-size:11px">LH</span>
               </div>
               <div>
-                <div class="fleet-card-name">Lufthansa Group</div>
-                <div class="fleet-card-iata">LH · LX · OS · SN · EW · Almanya</div>
+                <div class="fleet-card-name">Lufthansa</div>
+                <div class="fleet-card-iata">IATA: LH · Almanya</div>
               </div>
             </div>
             <div class="fleet-card-stats">
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Grup Filosu</div>
-                <div class="fleet-card-stat-value">737</div>
+                <div class="fleet-card-stat-label">Aktif Filo</div>
+                <div class="fleet-card-stat-value">258</div>
               </div>
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Siparişler</div>
-                <div class="fleet-card-stat-value">219</div>
+                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
+                <div class="fleet-card-stat-value">268</div>
               </div>
             </div>
             <div class="fleet-card-types">
-              <span class="fleet-type-chip">LH × 387</span>
-              <span class="fleet-type-chip">SWISS × 116</span>
-              <span class="fleet-type-chip">Eurowings × 98</span>
-              <span class="fleet-type-chip">Austrian × 67</span>
+              <span class="fleet-type-chip">10 uçak parkta</span>
+              <span class="fleet-type-chip">+25 sipariş</span>
+              <span class="fleet-type-chip">Ort. 14.1y</span>
             </div>
             <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              219 kesin + 182 opsiyon (Ara 2025) · Ort. yaş 14,4 yıl
+              Planespotters · 2 Haz 2026
             </div>
           </div>
 
-          <!-- Air France-KLM -->
+          <!-- Air France -->
           <div class="fleet-airline-card">
             <div class="fleet-card-header">
               <div class="fleet-card-logo" style="background:#1a3a8f">AF</div>
               <div>
-                <div class="fleet-card-name">Air France-KLM</div>
-                <div class="fleet-card-iata">AF · KL · HV · Fransa/Hollanda</div>
+                <div class="fleet-card-name">Air France</div>
+                <div class="fleet-card-iata">IATA: AF · Fransa</div>
               </div>
             </div>
             <div class="fleet-card-stats">
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Grup Filosu</div>
-                <div class="fleet-card-stat-value">596</div>
+                <div class="fleet-card-stat-label">Aktif Filo</div>
+                <div class="fleet-card-stat-value">207</div>
               </div>
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Siparişler</div>
-                <div class="fleet-card-stat-value">215</div>
+                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
+                <div class="fleet-card-stat-value">224</div>
               </div>
             </div>
             <div class="fleet-card-types">
-              <span class="fleet-type-chip">AF × 229</span>
-              <span class="fleet-type-chip">KLM × 122</span>
-              <span class="fleet-type-chip">Transavia × 140</span>
-              <span class="fleet-type-chip">Bölgesel × 101</span>
+              <span class="fleet-type-chip">17 uçak parkta</span>
+              <span class="fleet-type-chip">+4 sipariş</span>
+              <span class="fleet-type-chip">Ort. 11.7y</span>
             </div>
             <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              215 kesin + 113 opsiyon (Ara 2025) · Uzun hat: 189 uçak
+              Planespotters · 2 Haz 2026
             </div>
           </div>
 
@@ -2639,27 +2648,26 @@
               <div class="fleet-card-logo" style="background:#0f4c8a">SQ</div>
               <div>
                 <div class="fleet-card-name">Singapore Airlines</div>
-                <div class="fleet-card-iata">SQ + Scoot · Singapur</div>
+                <div class="fleet-card-iata">IATA: SQ · Singapur</div>
               </div>
             </div>
             <div class="fleet-card-stats">
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Grup Filosu</div>
-                <div class="fleet-card-stat-value">208</div>
+                <div class="fleet-card-stat-label">Aktif Filo</div>
+                <div class="fleet-card-stat-value">156</div>
               </div>
               <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Siparişler</div>
-                <div class="fleet-card-stat-value">67</div>
+                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
+                <div class="fleet-card-stat-value">162</div>
               </div>
             </div>
             <div class="fleet-card-types">
-              <span class="fleet-type-chip">A350-900/ULR × 64</span>
-              <span class="fleet-type-chip">B787-10 × 28</span>
-              <span class="fleet-type-chip">B777-300ER × 21</span>
-              <span class="fleet-type-chip">B737 MAX 8 × 21</span>
+              <span class="fleet-type-chip">6 uçak parkta</span>
+              <span class="fleet-type-chip">+12 sipariş</span>
+              <span class="fleet-type-chip">Ort. 8.7y</span>
             </div>
             <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              31 B777-9 + 3 B787-10 sipariş · 777X teslim 2027'den · Eyl 2025
+              Planespotters · 2 Haz 2026
             </div>
           </div>
 
@@ -2667,7 +2675,7 @@
       </div>
 
       <div class="fleet-update-note">
-        Veriler resmi yatırımcı raporları, yıllık raporlar ve kamuya açık duyurulardan alınmıştır. Projeksiyon değerleri onaylı sipariş defterlerine dayanmaktadır; iptal, erteleme veya ilave satın alımlar gerçek sonuçları etkileyebilir.
+        Tüm filo verileri <strong>Planespotters.net</strong> kaynağından alınmıştır (2 Haziran 2026). Pegasus ve KLM sayfaları giriş gerektirdiğinden mevcut verilerle gösterilmektedir.
       </div>
 
     </div><!-- /fleet-report-container -->
