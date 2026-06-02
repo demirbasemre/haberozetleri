@@ -2404,8 +2404,19 @@
       </button>
 
       <div class="reports-main-layout">
-        <!-- Sol Sütun: Önceki Yayınlar kutusu -->
+        <!-- Sol Sütun: İçindekiler kutusu -->
         <aside class="reports-sidebar" id="reports-sidebar">
+          <!-- Table of Contents -->
+          <div class="reports-toc" id="reports-toc" style="display:none;">
+            <div class="reports-toc-title">İçindekiler</div>
+            <ul class="reports-toc-list" id="reports-toc-list"></ul>
+          </div>
+        </aside>
+        <div class="reports-frame-container">
+          <iframe id="reports-bulletin-frame" class="reports-bulletin-frame" frameborder="0" title="Bülten içeriği" scrolling="no"></iframe>
+        </div>
+        <!-- Sağ Sütun: Önceki Yayınlar kutusu -->
+        <aside class="reports-right-sidebar" id="reports-right-sidebar">
           <div class="reports-archive-box" id="reports-archive-box">
             <div class="reports-archive-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
@@ -2427,17 +2438,6 @@
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             </div>
-          </div>
-        </aside>
-        <div class="reports-frame-container">
-          <iframe id="reports-bulletin-frame" class="reports-bulletin-frame" frameborder="0" title="Bülten içeriği" scrolling="no"></iframe>
-        </div>
-        <!-- Sağ Sütun: İçindekiler kutusu -->
-        <aside class="reports-right-sidebar" id="reports-right-sidebar">
-          <!-- Table of Contents -->
-          <div class="reports-toc" id="reports-toc" style="display:none;">
-            <div class="reports-toc-title">İçindekiler</div>
-            <ul class="reports-toc-list" id="reports-toc-list"></ul>
           </div>
         </aside>
       </div>
@@ -13438,7 +13438,7 @@ function initControls(allArticles) {
     if (!tocList || !tocContainer) return;
 
     tocList.innerHTML = '';
-    const sections = doc.querySelectorAll('.section');
+    const sections = doc.querySelectorAll('.exec, .section');
     
     if (sections.length === 0) {
       tocContainer.style.display = 'none';
@@ -13451,8 +13451,15 @@ function initControls(allArticles) {
       const numEl = sec.querySelector('.section-num');
       const catEl = sec.querySelector('.section-cat');
       
-      let num = numEl ? numEl.textContent.trim() : (idx + 1).toString();
-      let rawCat = catEl ? catEl.textContent.trim() : (sec.querySelector('.section-title')?.textContent || 'Bölüm ' + num).trim();
+      let num = '';
+      let rawCat = '';
+      if (sec.classList.contains('exec')) {
+        num = '';
+        rawCat = sec.querySelector('h2')?.textContent || 'Yönetici Özeti';
+      } else {
+        num = numEl ? numEl.textContent.trim() : (idx + 1).toString();
+        rawCat = catEl ? catEl.textContent.trim() : (sec.querySelector('.section-title')?.textContent || 'Bölüm ' + num).trim();
+      }
       
       // Extract emoji and text
       let emoji = '📄';
@@ -13483,7 +13490,7 @@ function initControls(allArticles) {
 
       const a = document.createElement('a');
       a.className = 'reports-toc-link';
-      a.title = `${num}. ${cleanText}`;
+      a.title = num ? `${num}. ${cleanText}` : cleanText;
       a.setAttribute('data-index', idx);
 
       const dot = document.createElement('span');
@@ -13526,7 +13533,7 @@ function initControls(allArticles) {
     const doc = frame.contentDocument || (frame.contentWindow && frame.contentWindow.document);
     if (!doc) return;
 
-    const sections = doc.querySelectorAll('.section');
+    const sections = doc.querySelectorAll('.exec, .section');
     const sec = sections[index];
     if (!sec) return;
 
@@ -13558,7 +13565,7 @@ function initControls(allArticles) {
     const doc = frame.contentDocument || (frame.contentWindow && frame.contentWindow.document);
     if (!doc) return;
 
-    const sections = doc.querySelectorAll('.section');
+    const sections = doc.querySelectorAll('.exec, .section');
     if (!sections.length) return;
 
     const iframeRect = frame.getBoundingClientRect();
