@@ -6118,6 +6118,14 @@ function switchTab(tab) {
   if (el.todoBtn) el.todoBtn.style.display = isTodo ? '' : 'none';
   // Reflect active tab on <body> for cross-cutting CSS (e.g. stats pill highlight)
   document.body.setAttribute('data-active-tab', tab);
+  if (!isNews) {
+    const aiPanel = document.getElementById('ai-panel');
+    if (aiPanel && aiPanel.classList.contains('open')) {
+      const closeB = document.getElementById('ai-close');
+      if (closeB) closeB.click();
+      else aiPanel.classList.remove('open');
+    }
+  }
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
