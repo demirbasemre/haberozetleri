@@ -94,17 +94,38 @@
   }
 
   /* ── Formula Builder ── */
+  .flt-formula-wrap {
+    display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;
+  }
   .flt-formula-bar {
     display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
-    padding: 10px 14px; margin-bottom: 12px;
+    padding: 8px 14px;
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); box-shadow: var(--shadow-sm);
   }
+  .flt-formula-bar--k1 { border-left: 3px solid #059669; }
+  .flt-formula-bar--k2 { border-left: 3px solid #2563eb; }
+  .flt-src-dot { width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0; }
+  .flt-src-dot--k1  { background:#059669; }
+  .flt-src-dot--k2 { background:#2563eb; }
   .flt-formula-label {
     display: flex; align-items: center; gap: 5px;
-    font-size: 12px; font-weight: 700; color: var(--text-2);
-    white-space: nowrap; flex-shrink: 0;
+    font-size: 11.5px; font-weight: 800; color: var(--text-2);
+    white-space: nowrap; flex-shrink: 0; min-width: 36px;
   }
+  .flt-formula-label--k1  { color: #059669; }
+  .flt-formula-label--k2 { color: #2563eb; }
+  .flt-formula-expr--k1 {
+    background: rgba(5,150,105,0.08); border-color: rgba(5,150,105,0.25);
+    color: #059669;
+  }
+  .flt-fpill--k1.flt-fpill--add {
+    border-color: #059669; background: rgba(5,150,105,0.08); color: #059669;
+  }
+  .flt-fpill--k1.flt-fpill--add .flt-fpill-sign { color: #059669; }
+  [data-theme="dark"] .flt-fpill--k1.flt-fpill--add { background: rgba(5,150,105,0.15); }
+  .flt-val-na-star { color: var(--text-3); font-size: 10px; }
+
   .flt-formula-pills { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
   .flt-fpill {
     display: inline-flex; align-items: center; gap: 4px;
@@ -2538,37 +2559,59 @@
       <div id="fleet-cmp-content" style="display:none">
 
         <!-- ── Formül Builder ── -->
-        <div class="flt-formula-bar">
-          <div class="flt-formula-label">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
-            Kaynak 2 Formülü
+        <div class="flt-formula-wrap">
+
+          <!-- Kaynak 1 Tarafı -->
+          <div class="flt-formula-bar flt-formula-bar--k1">
+            <div class="flt-formula-label flt-formula-label--k1">
+              <span class="flt-src-dot flt-src-dot--k1"></span>
+              Kaynak 1
+            </div>
+            <div class="flt-formula-pills">
+              <button class="flt-fpill flt-fpill--k1 flt-fpill--add" data-k1col="pa" onclick="toggleK1Pill(this)">
+                <span class="flt-fpill-sign">+</span> In Service
+              </button>
+              <button class="flt-fpill flt-fpill--k1" data-k1col="pt" onclick="toggleK1Pill(this)">
+                <span class="flt-fpill-sign">+</span> Toplam Filo
+              </button>
+            </div>
+            <div class="flt-formula-expr flt-formula-expr--k1" id="flt-k1-expr">= In Service</div>
           </div>
-          <div class="flt-formula-pills">
-            <button class="flt-fpill flt-fpill--add flt-fpill--active" data-col="ca" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> Active
-            </button>
-            <button class="flt-fpill" data-col="ci" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> Inactive
-            </button>
-            <button class="flt-fpill" data-col="cw" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> Wet Leased In
-            </button>
-            <button class="flt-fpill" data-col="ct" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> Total
-            </button>
-            <button class="flt-fpill" data-col="co" onclick="toggleFormulaPill(this)">
-              <span class="flt-fpill-sign">+</span> To be delivered
-            </button>
+
+          <!-- Kaynak 2 Tarafı -->
+          <div class="flt-formula-bar flt-formula-bar--k2">
+            <div class="flt-formula-label flt-formula-label--k2">
+              <span class="flt-src-dot flt-src-dot--k2"></span>
+              Kaynak 2
+            </div>
+            <div class="flt-formula-pills">
+              <button class="flt-fpill flt-fpill--add" data-col="ca" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> Active
+              </button>
+              <button class="flt-fpill" data-col="ci" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> Inactive
+              </button>
+              <button class="flt-fpill" data-col="cw" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> Wet Leased In
+              </button>
+              <button class="flt-fpill" data-col="ct" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> Total
+              </button>
+              <button class="flt-fpill" data-col="co" onclick="toggleFormulaPill(this)">
+                <span class="flt-fpill-sign">+</span> To be delivered
+              </button>
+            </div>
+            <div class="flt-formula-expr" id="flt-formula-expr">= Active</div>
           </div>
-          <div class="flt-formula-expr" id="flt-formula-expr">= Active</div>
-        </div>
+
+        </div><!-- /flt-formula-wrap -->
 
         <div class="fleet-cmp-table-wrap">
           <table class="fleet-cmp-table" id="fleet-cmp-table">
             <thead>
               <tr>
                 <th>Havayolu</th>
-                <th class="flt-th-k1">Kaynak 1 Toplam</th>
+                <th class="flt-th-k1" id="flt-k1-col-hdr">Kaynak 1: In Service</th>
                 <th class="flt-th-k2" id="flt-k2-col-hdr">Kaynak 2: Active</th>
                 <th>Δ</th>
                 <th>Kaynak 1 Sipariş</th>
@@ -2579,8 +2622,8 @@
             <tbody id="fleet-cmp-tbody"></tbody>
           </table>
         </div>
-        <div class="fleet-update-note" style="margin-top:16px">
-          Kaynak 1 = Kaynak 1 toplam filo · Kaynak 2 = Kaynak 2 toplam/aktif · 2 Haziran 2026 · Satıra tıkla: Kaynak 2 uçak tipi detayı · LA = LATAM Brasil (Kaynak 1)
+        <div class="fleet-update-note" style="margin-top:12px">
+          <strong>*</strong> Kaynak 1 Aktif verisi mevcut değil — Toplam Filo gösteriliyor · LA = LATAM Brasil (Kaynak 1) · 2 Haz 2026 · Satıra tıkla: uçak tipi detayı
         </div>
       </div>
 
@@ -14060,7 +14103,32 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
   };
 
   // ── Karşılaştırma tablosu ────────────────────────
-  // ── Formül durumu: {col: '+' | '-' | null} ──────
+  // ── Kaynak 1 formülü: 'pa' (In Service) veya 'pt' (Toplam) ──
+  let _k1Col = 'pa'; // varsayılan: In Service
+
+  function calcPs(d) {
+    if (_k1Col === 'pa') return d.pa != null ? { val: d.pa, hasData: true } : { val: d.pt, hasData: false };
+    return { val: d.pt, hasData: true };
+  }
+
+  window.toggleK1Pill = function(btn) {
+    const col = btn.dataset.pscol;
+    _k1Col = col;
+    // Aktif pill güncelle
+    document.querySelectorAll('.flt-fpill--k1').forEach(p => {
+      const on = p.dataset.pscol === col;
+      p.classList.toggle('flt-fpill--add', on);
+    });
+    // Başlık güncelle
+    const h = document.getElementById('flt-k1-col-hdr');
+    const e = document.getElementById('flt-k1-expr');
+    const lbl = col === 'pa' ? 'In Service' : 'Toplam Filo';
+    if (h) h.textContent = 'Kaynak 1: ' + lbl;
+    if (e) e.textContent = '= ' + lbl;
+    rerenderCmpRows();
+  };
+
+  // ── Kaynak 2 Formül durumu: {col: '+' | '-' | null} ──
   const FML_COLS = ['ca','ci','cw','ct','co'];
   const FML_LABELS = { ca:'Active', ci:'Inactive', cw:'Wet Leased In', ct:'Total', co:'To be delivered' };
   let _formula = { ca: '+', ci: null, cw: null, ct: null, co: null };
@@ -14099,13 +14167,19 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
 
   function rerenderCmpRows() {
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const cell = document.getElementById('flt-k2-val-' + iata);
-      const diff = document.getElementById('flt-diff-' + iata);
-      if (!cell) return;
-      const val = calcFormula(d);
-      const psT = d.pt;
-      cell.textContent = val;
-      if (diff) diff.innerHTML = psT != null ? diffChip(psT, val) : '<span class="flt-diff-na">—</span>';
+      const psCell  = document.getElementById('flt-k1-val-' + iata);
+      const k2Cell = document.getElementById('flt-k2-val-' + iata);
+      const diff    = document.getElementById('flt-diff-' + iata);
+      if (!k2Cell) return;
+      const k2Val = calcFormula(d);
+      const { val: k1Val, hasData: k1HasData } = calcPs(d);
+      k2Cell.textContent = k2Val;
+      if (psCell) {
+        psCell.innerHTML = k1Val != null
+          ? k1Val + (k1HasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo gösteriliyor"> *</span>')
+          : '<span class="flt-val-na">—</span>';
+      }
+      if (diff) diff.innerHTML = k1Val != null ? diffChip(k1Val, k2Val) : '<span class="flt-diff-na">—</span>';
     });
   }
 
@@ -14117,21 +14191,24 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
     if (!tbody) return;
     let html = '';
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const psT   = d.pt;
       const k1O   = d.po != null ? '+'+d.po : '—';
       const k2O  = d.co ? '+'+d.co : '—';
       const k1Age = d.k1age ? d.k1age+'y' : '—';
       const note  = d.k1note ? `<span style="font-size:9px;color:var(--text-3);display:block">${d.k1note}</span>` : '';
       const k2Val = calcFormula(d);
+      const { val: k1Val, hasData: k1HasData } = calcPs(d);
+      const k1Display = k1Val != null
+        ? k1Val + (k1HasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo"> *</span>')
+        : '<span class="flt-val-na">—</span>';
       html += `
       <tr onclick="toggleCmpRow('${iata}')" data-iata="${iata}">
         <td><div class="flt-airline-cell">
           <span class="flt-iata-badge" style="background:${d.color}">${iata}</span>
           <span class="flt-airline-name">${d.name}</span>
         </div></td>
-        <td class="flt-val-k1">${psT != null ? psT : '<span class="flt-val-na">—</span>'}${note}</td>
+        <td class="flt-val-k1" id="flt-k1-val-${iata}">${k1Display}${note}</td>
         <td class="flt-val-k2" id="flt-k2-val-${iata}">${k2Val}</td>
-        <td id="flt-diff-${iata}">${psT != null ? diffChip(psT, k2Val) : '<span class="flt-diff-na">—</span>'}</td>
+        <td id="flt-diff-${iata}">${k1Val != null ? diffChip(k1Val, k2Val) : '<span class="flt-diff-na">—</span>'}</td>
         <td class="flt-val-k1">${k1O}</td>
         <td class="flt-val-k2">${k2O}</td>
         <td style="font-size:11.5px;color:var(--text-2)">${k1Age}</td>
