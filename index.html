@@ -93,6 +93,23 @@
     font-size: 10px; font-weight: 600; margin-left: 3px;
   }
 
+  /* ── WB/NB/Kargo global filter bar ── */
+  .fleet-cat-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding: 8px 0 12px;
+  }
+  .flt-cat-btn {
+    padding: 5px 14px; border-radius: 20px; cursor: pointer;
+    font-size: 12px; font-weight: 600; border: 1.5px solid var(--border);
+    background: var(--bg); color: var(--text-2);
+    transition: all 0.15s;
+  }
+  .flt-cat-btn--active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .flt-cat-btn:hover:not(.flt-cat-btn--active) { border-color: var(--accent); color: var(--accent); }
+  .fleet-type-mini { display:flex; gap:12px; flex-wrap:wrap; padding:6px 14px 8px; font-size:11px; border-top:1px solid var(--border-soft); }
+  .fleet-type-mini-item { display:flex; align-items:center; gap:4px; color:var(--text-2); }
+  .fleet-type-mini-dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
+
   /* ── Formula Builder ── */
   .flt-formula-wrap {
     display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;
@@ -2519,6 +2536,20 @@
           </button>
         </div>
         <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Kaynak 1 · 2 Haz 2026</span>
+      </div>
+
+      <!-- Global filtre chips: WB / NB / Kargo -->
+      <div id="fleet-cat-bar" class="fleet-cat-bar" style="display:none">
+        <button class="flt-cat-btn flt-cat-btn--active" data-cat="all">Tümü</button>
+        <button class="flt-cat-btn" data-cat="wb">
+          <span style="color:#7c3aed">■</span> Geniş Gövde
+        </button>
+        <button class="flt-cat-btn" data-cat="nb">
+          <span style="color:#2563eb">■</span> Dar Gövde
+        </button>
+        <button class="flt-cat-btn" data-cat="cargo">
+          <span style="color:#b45309">■</span> Kargo
+        </button>
       </div>
 
       <!-- Kaynak 1 içerik wrapper -->
@@ -13871,6 +13902,8 @@ function initControls(allArticles) {
   function initFleetChart() {
     if (_fleetChartInit) return;
     _fleetChartInit = true;
+    const catBar = document.getElementById('fleet-cat-bar');
+    if (catBar) catBar.style.display = '';
     buildFleetLegend();
     renderFleetChart();
     window.addEventListener('resize', () => {
@@ -13956,6 +13989,29 @@ function initControls(allArticles) {
 // ══════════════════════════════════════════════════════
 //  FLEET COMPARISON DATA + UI
 // ══════════════════════════════════════════════════════
+
+// Uçak tipi sınıflandırma fonksiyonu
+function classifyVariant(v) {
+  const u = v.toUpperCase();
+  if (u.includes('-F') || u.includes('(F)') || u.includes('BCF') ||
+      u.includes('FSCD') || u.includes('ERF') || u.includes('SF)') ||
+      /A330F|A350F|B747F|B777F|B787F|ATR.?F|B76.*F/.test(u)) return 'cargo';
+  if (/A3[3-9]\d|A38\d|B74[0-9]|B76[0-9]|B77[0-9]|B78[0-9]|IL.?96|MD.?11|DC.?10|L.?101/.test(u)) return 'wb';
+  return 'nb';
+}
+
+let _catFilter = 'all';
+
+function k2Breakdown(types, cat) {
+  const filtered = cat === 'all' ? types : types.filter(t => classifyVariant(t.v) === cat);
+  return {
+    active: filtered.reduce((s,t) => s+(parseInt(t.a)||0), 0),
+    total:  filtered.reduce((s,t) => s+(parseInt(t.t)||0), 0),
+    order:  filtered.reduce((s,t) => s+(parseInt(t.o)||0), 0),
+    types:  filtered
+  };
+}
+
 const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"ci":62,"cw":0,"ct":276,"co":321,"types":[{"v":"A320-200","a":"12","i":"15","w":"","t":"27","o":"","age":"13.9"},{"v":"A321-200N","a":"","i":"","w":"","t":"","o":"48","age":""},{"v":"A321-200NX","a":"4","i":"2","w":"","t":"6","o":"2","age":"0.6"},{"v":"A330-200","a":"","i":"6","w":"","t":"6","o":"","age":"17.5"},{"v":"A330-300","a":"","i":"11","w":"","t":"11","o":"","age":"17.4"},{"v":"A350-1000","a":"28","i":"","w":"","t":"28","o":"14","age":"5.5"},{"v":"A350-900","a":"33","i":"1","w":"","t":"34","o":"","age":"9.1"},{"v":"A380-800","a":"","i":"10","w":"","t":"10","o":"","age":"10.9"},{"v":"B737-8","a":"","i":"2","w":"","t":"2","o":"","age":"5.0"},{"v":"B777-200F","a":"30","i":"","w":"","t":"30","o":"","age":"8.2"},{"v":"B777-200LR","a":"6","i":"","w":"","t":"6","o":"","age":"16.3"},{"v":"B777-300ER","a":"46","i":"11","w":"","t":"57","o":"","age":"13.2"},{"v":"B777-8F","a":"","i":"","w":"","t":"","o":"34","age":""},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"90","age":""},{"v":"B787-10","a":"","i":"","w":"","t":"","o":"75","age":""},{"v":"B787-8","a":"28","i":"4","w":"","t":"32","o":"","age":"11.8"},{"v":"B787-9","a":"27","i":"","w":"","t":"27","o":"58","age":"3.9"}],"pt":271,"po":16,"k1age":10.2},"EK":{"name":"Emirates","color":"#DC2626","ca":242,"ci":41,"cw":5,"ct":288,"co":358,"types":[{"v":"A350-900","a":"20","i":"1","w":"","t":"21","o":"52","age":"0.8"},{"v":"A380-800","a":"84","i":"33","w":"","t":"117","o":"","age":"11.4"},{"v":"ACJ319-100","a":"1","i":"","w":"","t":"1","o":"","age":"14.8"},{"v":"B747-400(BDSF)","a":"","i":"","w":"2","t":"2","o":"","age":"32.1"},{"v":"B747-400ERF","a":"","i":"","w":"2","t":"2","o":"","age":"23.6"},{"v":"B747-400FSCD","a":"","i":"","w":"1","t":"1","o":"","age":"24.8"},{"v":"B777-200F","a":"15","i":"","w":"","t":"15","o":"6","age":"4.2"},{"v":"B777-200LR","a":"10","i":"","w":"","t":"10","o":"","age":"18.0"},{"v":"B777-300ER","a":"112","i":"7","w":"","t":"119","o":"","age":"13.0"},{"v":"B777-8","a":"","i":"","w":"","t":"","o":"35","age":""},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"235","age":""},{"v":"B787-10","a":"","i":"","w":"","t":"","o":"15","age":""},{"v":"B787-8","a":"","i":"","w":"","t":"","o":"15","age":""}],"pt":282,"po":32,"k1age":11.1},"TK":{"name":"Turkish Airlines","color":"#E30613","ca":417,"ci":61,"cw":4,"ct":482,"co":355,"types":[{"v":"A310-300(F)","a":"","i":"","w":"1","t":"1","o":"","age":"34.5"},{"v":"A319-100","a":"5","i":"1","w":"","t":"6","o":"","age":"15.1"},{"v":"A320-200","a":"17","i":"1","w":"","t":"18","o":"","age":"16.6"},{"v":"A320-200N","a":"3","i":"20","w":"","t":"23","o":"","age":"5.2"},{"v":"A321-200","a":"65","i":"3","w":"","t":"68","o":"","age":"13.8"},{"v":"A321-200(P2F)","a":"","i":"","w":"1","t":"1","o":"","age":"26.7"},{"v":"A321-200NX","a":"66","i":"7","w":"","t":"73","o":"199","age":"3.8"},{"v":"A330-200","a":"8","i":"4","w":"","t":"12","o":"","age":"18.3"},{"v":"A330-200F","a":"8","i":"2","w":"","t":"10","o":"","age":"12.7"},{"v":"A330-300","a":"33","i":"4","w":"","t":"37","o":"","age":"12.4"},{"v":"A330-300(P2F)","a":"","i":"","w":"2","t":"2","o":"","age":"25.9"},{"v":"A350-1000","a":"","i":"","w":"","t":"","o":"15","age":""},{"v":"A350-900","a":"34","i":"","w":"","t":"34","o":"56","age":"2.7"},{"v":"A350F","a":"","i":"","w":"","t":"","o":"5","age":""},{"v":"B737-8","a":"37","i":"1","w":"","t":"38","o":"23","age":"4.7"},{"v":"B737-800","a":"55","i":"11","w":"","t":"66","o":"","age":"14.4"},{"v":"B737-9","a":"5","i":"","w":"","t":"5","o":"","age":"7.2"},{"v":"B737-900ER","a":"13","i":"2","w":"","t":"15","o":"","age":"13.1"},{"v":"B777-200F","a":"12","i":"","w":"","t":"12","o":"","age":"5.1"},{"v":"B777-300ER","a":"31","i":"4","w":"","t":"35","o":"","age":"13.1"},{"v":"B787-10","a":"","i":"","w":"","t":"","o":"15","age":""},{"v":"B787-9","a":"25","i":"1","w":"","t":"26","o":"42","age":"4.7"}],"pt":410,"po":10,"k1age":9.7},"AF":{"name":"Air France","color":"#1a3a8f","ca":203,"ci":24,"cw":35,"ct":262,"co":9,"types":[{"v":"A220-300","a":"46","i":"10","w":"","t":"56","o":"4","age":"2.5"},{"v":"A318-100","a":"4","i":"","w":"","t":"4","o":"","age":"19.7"},{"v":"A319-100","a":"1","i":"","w":"","t":"1","o":"","age":"23.3"},{"v":"A320-200","a":"35","i":"1","w":"","t":"36","o":"","age":"16.7"},{"v":"A321-100","a":"1","i":"","w":"","t":"1","o":"","age":"31.1"},{"v":"A321-200","a":"6","i":"2","w":"","t":"8","o":"","age":"19.7"},{"v":"A330-200","a":"6","i":"1","w":"","t":"7","o":"","age":"23.3"},{"v":"A350-900","a":"38","i":"3","w":"","t":"41","o":"2","age":"3.4"},{"v":"A350F","a":"","i":"","w":"","t":"","o":"3","age":""},{"v":"B777-200ER","a":"18","i":"","w":"","t":"18","o":"","age":"26.0"},{"v":"B777-200F","a":"2","i":"","w":"","t":"2","o":"","age":"17.6"},{"v":"B777-300ER","a":"36","i":"7","w":"","t":"43","o":"","age":"17.8"},{"v":"B787-9","a":"10","i":"","w":"","t":"10","o":"","age":"8.1"},{"v":"ERJ 170-100STD","a":"","i":"","w":"10","t":"10","o":"","age":"16.8"},{"v":"ERJ 190-100LR","a":"","i":"","w":"4","t":"4","o":"","age":"18.9"},{"v":"ERJ 190-100STD","a":"","i":"","w":"21","t":"21","o":"","age":"11.8"}],"pt":224,"po":4,"k1age":11.7},"CI":{"name":"China Airlines","color":"#0891B2","ca":79,"ci":5,"cw":1,"ct":85,"co":71,"types":[{"v":"A321-200NX","a":"18","i":"3","w":"","t":"21","o":"9","age":"2.6"},{"v":"A330-300","a":"12","i":"","w":"","t":"12","o":"","age":"17.7"},{"v":"A350-1000","a":"","i":"","w":"","t":"","o":"15","age":""},{"v":"A350-900","a":"15","i":"1","w":"","t":"16","o":"","age":"8.8"},{"v":"B737-800","a":"6","i":"1","w":"1","t":"8","o":"","age":"11.0"},{"v":"B747-400FSCD","a":"8","i":"","w":"","t":"8","o":"","age":"20.8"},{"v":"B777-200F","a":"10","i":"","w":"","t":"10","o":"","age":"3.5"},{"v":"B777-300ER","a":"10","i":"","w":"","t":"10","o":"","age":"11.1"},{"v":"B777-8F","a":"","i":"","w":"","t":"","o":"8","age":""},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"15","age":""},{"v":"B787-10","a":"","i":"","w":"","t":"","o":"6","age":""},{"v":"B787-9","a":"","i":"","w":"","t":"","o":"18","age":"0.4"}],"pt":84,"po":9,"k1age":9.5},"CX":{"name":"Cathay Pacific","color":"#1D6FE8","ca":168,"ci":11,"cw":0,"ct":179,"co":86,"types":[{"v":"A321-200NX","a":"16","i":"","w":"","t":"16","o":"15","age":"3.6"},{"v":"A330-300","a":"40","i":"3","w":"","t":"43","o":"","age":"17.8"},{"v":"A330-900N","a":"","i":"","w":"","t":"","o":"30","age":""},{"v":"A350-1000","a":"17","i":"1","w":"","t":"18","o":"","age":"6.6"},{"v":"A350-900","a":"29","i":"1","w":"","t":"30","o":"","age":"8.3"},{"v":"A350F","a":"","i":"","w":"","t":"","o":"6","age":""},{"v":"B747-400ERF","a":"5","i":"1","w":"","t":"6","o":"","age":"17.5"},{"v":"B747-8F","a":"13","i":"1","w":"","t":"14","o":"","age":"13.4"},{"v":"B777-300","a":"15","i":"2","w":"","t":"17","o":"","age":"24.8"},{"v":"B777-300ER","a":"33","i":"2","w":"","t":"35","o":"","age":"13.7"},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"35","age":""}],"pt":179,"po":5,"k1age":13.3},"ET":{"name":"Ethiopian","color":"#059669","ca":134,"ci":18,"cw":0,"ct":152,"co":95,"types":[{"v":"A350-1000","a":"4","i":"","w":"","t":"4","o":"","age":"1.4"},{"v":"A350-900","a":"21","i":"1","w":"","t":"22","o":"17","age":"6.7"},{"v":"ATR72-600","a":"1","i":"","w":"","t":"1","o":"","age":"1.0"},{"v":"B737-700","a":"3","i":"","w":"","t":"3","o":"","age":"20.6"},{"v":"B737-8","a":"23","i":"","w":"","t":"23","o":"42","age":"4.2"},{"v":"B737-800","a":"7","i":"1","w":"","t":"8","o":"","age":"11.8"},{"v":"B737-800(BBJ)","a":"1","i":"","w":"","t":"1","o":"","age":"16.8"},{"v":"B737-800(BCF)","a":"1","i":"","w":"","t":"1","o":"","age":"19.1"},{"v":"B737-800(SF)","a":"2","i":"1","w":"","t":"3","o":"","age":"25.1"},{"v":"B767-300ER(BDSF)","a":"","i":"1","w":"","t":"1","o":"","age":"21.0"},{"v":"B767-300F","a":"2","i":"","w":"","t":"2","o":"","age":"4.4"},{"v":"B777-200F","a":"12","i":"","w":"","t":"12","o":"","age":"8.0"},{"v":"B777-200LR","a":"4","i":"2","w":"","t":"6","o":"","age":"14.9"},{"v":"B777-300ER","a":"5","i":"","w":"","t":"5","o":"","age":"10.7"},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"8","age":""},{"v":"B787-8","a":"19","i":"1","w":"","t":"20","o":"","age":"11.6"},{"v":"B787-9","a":"10","i":"","w":"","t":"10","o":"26","age":"6.6"},{"v":"DHC-6-300-G","a":"","i":"","w":"","t":"","o":"2","age":""},{"v":"DHC-8-Q400","a":"19","i":"11","w":"","t":"30","o":"","age":"10.1"}],"pt":157,"po":1,"k1age":9.3},"LH":{"name":"Lufthansa","color":"#374151","ca":252,"ci":15,"cw":3,"ct":270,"co":84,"types":[{"v":"A220-300","a":"","i":"","w":"2","t":"2","o":"","age":"2.3"},{"v":"A319-100","a":"21","i":"1","w":"","t":"22","o":"","age":"22.9"},{"v":"A320-200","a":"42","i":"2","w":"","t":"44","o":"","age":"13.8"},{"v":"A320-200N","a":"26","i":"2","w":"","t":"28","o":"9","age":"7.7"},{"v":"A321-100","a":"13","i":"2","w":"","t":"15","o":"","age":"30.4"},{"v":"A321-200","a":"34","i":"3","w":"","t":"37","o":"","age":"17.4"},{"v":"A321-200NX","a":"19","i":"","w":"","t":"19","o":"15","age":"4.8"},{"v":"A330-300","a":"5","i":"","w":"","t":"5","o":"","age":"15.4"},{"v":"A340-300","a":"12","i":"","w":"","t":"12","o":"","age":"26.4"},{"v":"A340-600","a":"4","i":"","w":"","t":"4","o":"","age":"17.3"},{"v":"A350-1000","a":"","i":"","w":"","t":"","o":"15","age":""},{"v":"A350-900","a":"31","i":"","w":"","t":"31","o":"4","age":"6.1"},{"v":"A380-800","a":"6","i":"2","w":"","t":"8","o":"","age":"14.1"},{"v":"B747-400","a":"8","i":"","w":"","t":"8","o":"","age":"26.2"},{"v":"B747-8","a":"15","i":"3","w":"","t":"18","o":"","age":"12.6"},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"20","age":"3.0"},{"v":"B787-9","a":"16","i":"","w":"","t":"16","o":"21","age":"3.4"},{"v":"ERJ 190-200AR","a":"","i":"","w":"1","t":"1","o":"","age":"15.6"}],"pt":268,"po":25,"k1age":14.1},"LA":{"name":"LATAM","color":"#7C3AED","ca":45,"ci":12,"cw":299,"ct":356,"co":116,"types":[{"v":"A319-100","a":"","i":"","w":"39","t":"39","o":"","age":"17.9"},{"v":"A320-200","a":"9","i":"3","w":"123","t":"135","o":"","age":"15.3"},{"v":"A320-200N","a":"6","i":"6","w":"42","t":"54","o":"13","age":"4.1"},{"v":"A321-200","a":"16","i":"1","w":"32","t":"49","o":"","age":"12.0"},{"v":"A321-200N","a":"","i":"","w":"","t":"","o":"5","age":""},{"v":"A321-200NX","a":"","i":"","w":"20","t":"20","o":"54","age":"2.1"},{"v":"A321-200NY(XLR)","a":"","i":"","w":"","t":"","o":"10","age":""},{"v":"A330-200","a":"","i":"","w":"2","t":"2","o":"","age":"17.5"},{"v":"B767-300ER","a":"","i":"","w":"9","t":"9","o":"","age":"18.1"},{"v":"B777-300ER","a":"","i":"","w":"10","t":"10","o":"","age":"15.2"},{"v":"B787-8","a":"7","i":"2","w":"1","t":"10","o":"","age":"12.6"},{"v":"B787-9","a":"7","i":"","w":"21","t":"28","o":"15","age":"8.1"},{"v":"ERJ 190-400","a":"","i":"","w":"","t":"","o":"19","age":""}],"pt":172,"po":30,"k1age":11.1,"k1note":"LATAM Brasil"},"KE":{"name":"Korean Air","color":"#1a3a8f","ca":157,"ci":13,"cw":0,"ct":170,"co":132,"types":[{"v":"A220-300","a":"9","i":"1","w":"","t":"10","o":"","age":"8.1"},{"v":"A321-200NX","a":"20","i":"","w":"","t":"20","o":"36","age":"2.7"},{"v":"A330-300","a":"14","i":"3","w":"","t":"17","o":"","age":"18.6"},{"v":"A350-1000","a":"","i":"","w":"","t":"","o":"20","age":""},{"v":"A350-900","a":"3","i":"","w":"","t":"3","o":"3","age":"6.0"},{"v":"A350F","a":"","i":"","w":"","t":"","o":"7","age":""},{"v":"A380-800","a":"4","i":"1","w":"","t":"5","o":"","age":"12.0"},{"v":"B737-10","a":"","i":"","w":"","t":"","o":"12","age":""},{"v":"B737-8","a":"6","i":"","w":"","t":"6","o":"4","age":"5.9"},{"v":"B737-800","a":"2","i":"","w":"","t":"2","o":"","age":"14.6"},{"v":"B737-900","a":"8","i":"1","w":"","t":"9","o":"","age":"22.7"},{"v":"B737-900ER","a":"5","i":"1","w":"","t":"6","o":"","age":"14.0"},{"v":"B747-400ERF","a":"4","i":"","w":"","t":"4","o":"","age":"20.7"},{"v":"B747-8","a":"4","i":"","w":"","t":"4","o":"","age":"9.6"},{"v":"B747-8F","a":"7","i":"","w":"","t":"7","o":"","age":"12.7"},{"v":"B777-200ER","a":"","i":"2","w":"","t":"2","o":"","age":"18.4"},{"v":"B777-200F","a":"11","i":"1","w":"","t":"12","o":"","age":"11.1"},{"v":"B777-300","a":"3","i":"1","w":"","t":"4","o":"","age":"27.0"},{"v":"B777-300ER","a":"24","i":"1","w":"","t":"25","o":"","age":"12.0"},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"20","age":""},{"v":"B787-10","a":"16","i":"","w":"","t":"16","o":"24","age":"1.2"},{"v":"B787-8(BBJ)","a":"1","i":"","w":"","t":"1","o":"","age":"11.3"},{"v":"B787-9","a":"13","i":"1","w":"","t":"14","o":"6","age":"7.4"},{"v":"G650(ER)","a":"1","i":"","w":"","t":"1","o":"","age":"10.7"},{"v":"G800","a":"1","i":"","w":"","t":"1","o":"","age":"0.7"},{"v":"Global Express XRS","a":"1","i":"","w":"","t":"1","o":"","age":"16.4"}],"pt":168,"po":2,"k1age":10.7},"7L":{"name":"Silkway West","color":"#92400E","ca":0,"ci":0,"cw":4,"ct":4,"co":0,"types":[{"v":"B737-800","a":"","i":"","w":"4","t":"4","o":"","age":"19.3"}],"pt":14,"po":1,"k1age":12.1},"CA":{"name":"Air China","color":"#DC2626","ca":473,"ci":54,"cw":24,"ct":551,"co":197,"types":[{"v":"A319-100","a":"16","i":"1","w":"","t":"17","o":"","age":"18.3"},{"v":"A319-100N","a":"7","i":"1","w":"","t":"8","o":"2","age":"0.7"},{"v":"A320-200","a":"36","i":"2","w":"","t":"38","o":"","age":"12.5"},{"v":"A320-200N","a":"36","i":"17","w":"","t":"53","o":"6","age":"5.9"},{"v":"A321-200","a":"59","i":"2","w":"","t":"61","o":"","age":"14.3"},{"v":"A321-200N","a":"10","i":"","w":"","t":"10","o":"","age":"7.0"},{"v":"A321-200NX","a":"34","i":"1","w":"","t":"35","o":"95","age":"2.5"},{"v":"A330-200","a":"14","i":"1","w":"","t":"15","o":"","age":"15.9"},{"v":"A330-300","a":"25","i":"3","w":"","t":"28","o":"","age":"12.3"},{"v":"A350-900","a":"24","i":"6","w":"","t":"30","o":"","age":"5.4"},{"v":"B737-700","a":"13","i":"4","w":"","t":"17","o":"","age":"19.8"},{"v":"B737-8","a":"29","i":"2","w":"","t":"31","o":"","age":"6.5"},{"v":"B737-800","a":"84","i":"3","w":"24","t":"111","o":"","age":"13.0"},{"v":"B747-400","a":"2","i":"","w":"","t":"2","o":"","age":"28.8"},{"v":"B747-8","a":"6","i":"1","w":"","t":"7","o":"","age":"11.4"},{"v":"B777-300ER","a":"24","i":"4","w":"","t":"28","o":"","age":"12.2"},{"v":"B787-9","a":"13","i":"1","w":"","t":"14","o":"","age":"9.3"},{"v":"C909","a":"31","i":"4","w":"","t":"35","o":"","age":"3.2"},{"v":"C919-100ER","a":"10","i":"1","w":"","t":"11","o":"94","age":"0.9"}],"pt":533,"po":6,"k1age":10.0},"SQ":{"name":"Singapore Airlines","color":"#0f4c8a","ca":151,"ci":11,"cw":0,"ct":162,"co":43,"types":[{"v":"A350-900","a":"54","i":"4","w":"","t":"58","o":"","age":"7.1"},{"v":"A350-900(ULR)","a":"7","i":"","w":"","t":"7","o":"","age":"7.8"},{"v":"A350F","a":"","i":"","w":"","t":"","o":"7","age":""},{"v":"A380-800","a":"11","i":"1","w":"","t":"12","o":"","age":"12.3"},{"v":"B737-8","a":"21","i":"2","w":"","t":"23","o":"3","age":"5.0"},{"v":"B747-400FSCD","a":"6","i":"1","w":"","t":"7","o":"","age":"22.6"},{"v":"B777-200F","a":"5","i":"","w":"","t":"5","o":"","age":"3.1"},{"v":"B777-300ER","a":"20","i":"2","w":"","t":"22","o":"","age":"16.1"},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"30","age":"0.8"},{"v":"B787-10","a":"27","i":"1","w":"","t":"28","o":"3","age":"5.5"}],"pt":162,"po":12,"k1age":8.7},"OZ":{"name":"Asiana Airlines","color":"#1D6FE8","ca":61,"ci":6,"cw":0,"ct":67,"co":27,"types":[{"v":"A321-200","a":"10","i":"1","w":"","t":"11","o":"","age":"11.3"},{"v":"A321-200NX","a":"13","i":"","w":"","t":"13","o":"12","age":"3.6"},{"v":"A330-300","a":"12","i":"2","w":"","t":"14","o":"","age":"16.5"},{"v":"A350-900","a":"15","i":"","w":"","t":"15","o":"15","age":"7.0"},{"v":"A380-800","a":"4","i":"2","w":"","t":"6","o":"","age":"11.2"},{"v":"B777-200ER","a":"7","i":"1","w":"","t":"8","o":"","age":"18.1"}],"pt":67,"po":0,"k1age":10.7},"CK":{"name":"China Cargo","color":"#374151","ca":18,"ci":1,"cw":0,"ct":19,"co":1,"types":[{"v":"B777-200F","a":"18","i":"1","w":"","t":"19","o":"1","age":"4.3"}],"pt":19,"po":4,"k1age":4.5},"SV":{"name":"Saudia","color":"#059669","ca":147,"ci":12,"cw":15,"ct":174,"co":115,"types":[{"v":"A320-200","a":"35","i":"2","w":"","t":"37","o":"","age":"9.9"},{"v":"A321-200","a":"12","i":"3","w":"","t":"15","o":"","age":"14.4"},{"v":"A321-200NX","a":"12","i":"","w":"","t":"12","o":"62","age":"1.9"},{"v":"A321-200NY(XLR)","a":"","i":"1","w":"","t":"1","o":"14","age":"0.1"},{"v":"A330-300","a":"9","i":"3","w":"6","t":"18","o":"","age":"15.6"},{"v":"A330-300(P2F)","a":"","i":"","w":"2","t":"2","o":"","age":"14.5"},{"v":"A330-300Regional","a":"19","i":"","w":"","t":"19","o":"","age":"9.5"},{"v":"B747-400(BDSF)","a":"","i":"","w":"2","t":"2","o":"","age":"31.4"},{"v":"B747-400FSCD","a":"","i":"","w":"1","t":"1","o":"","age":"29.6"},{"v":"B777-200ER","a":"","i":"","w":"2","t":"2","o":"","age":"20.3"},{"v":"B777-200F","a":"4","i":"","w":"","t":"4","o":"","age":"10.9"},{"v":"B777-300ER","a":"34","i":"1","w":"2","t":"37","o":"","age":"11.7"},{"v":"B787-10","a":"7","i":"1","w":"","t":"8","o":"21","age":"5.6"},{"v":"B787-9","a":"12","i":"1","w":"","t":"13","o":"18","age":"9.3"},{"v":"GIV-G300","a":"3","i":"","w":"","t":"3","o":"","age":"21.4"}],"pt":173,"po":7,"k1age":11.0},"NH":{"name":"ANA","color":"#1a3a8f","ca":195,"ci":22,"cw":25,"ct":242,"co":82,"types":[{"v":"A320-200N","a":"11","i":"","w":"","t":"11","o":"6","age":"7.9"},{"v":"A321-200","a":"4","i":"","w":"","t":"4","o":"","age":"9.5"},{"v":"A321-200N","a":"18","i":"4","w":"","t":"22","o":"17","age":"6.5"},{"v":"A380-800","a":"2","i":"1","w":"","t":"3","o":"","age":"7.3"},{"v":"B737-8","a":"","i":"","w":"","t":"","o":"20","age":""},{"v":"B737-800","a":"34","i":"4","w":"1","t":"39","o":"","age":"13.4"},{"v":"B767-300ER","a":"15","i":"","w":"","t":"15","o":"","age":"18.5"},{"v":"B767-300ER(BCF)","a":"2","i":"","w":"","t":"2","o":"","age":"26.7"},{"v":"B767-300F","a":"3","i":"1","w":"","t":"4","o":"","age":"22.2"},{"v":"B777-200","a":"2","i":"","w":"","t":"2","o":"","age":"21.1"},{"v":"B777-200ER","a":"6","i":"2","w":"","t":"8","o":"","age":"15.9"},{"v":"B777-200F","a":"2","i":"","w":"","t":"2","o":"","age":"7.3"},{"v":"B777-300","a":"3","i":"","w":"","t":"3","o":"","age":"28.1"},{"v":"B777-300ER","a":"13","i":"","w":"","t":"13","o":"","age":"10.8"},{"v":"B777-8F","a":"","i":"","w":"","t":"","o":"2","age":""},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"16","age":""},{"v":"B787-10","a":"10","i":"","w":"","t":"10","o":"1","age":"3.2"},{"v":"B787-8","a":"31","i":"5","w":"","t":"36","o":"","age":"13.1"},{"v":"B787-9","a":"39","i":"5","w":"","t":"44","o":"5","age":"8.4"},{"v":"DHC-8-Q400","a":"","i":"","w":"24","t":"24","o":"","age":"17.7"},{"v":"ERJ 190-300","a":"","i":"","w":"","t":"","o":"15","age":""}],"pt":243,"po":32,"k1age":12.2},"EY":{"name":"Etihad Airways","color":"#B45309","ca":119,"ci":7,"cw":2,"ct":128,"co":106,"types":[{"v":"A320-200","a":"15","i":"1","w":"","t":"16","o":"","age":"14.7"},{"v":"A320-200N","a":"1","i":"","w":"","t":"1","o":"","age":"5.2"},{"v":"A321-200","a":"8","i":"1","w":"","t":"9","o":"","age":"11.2"},{"v":"A321-200N","a":"4","i":"","w":"","t":"4","o":"","age":"7.8"},{"v":"A321-200NX","a":"2","i":"","w":"","t":"2","o":"10","age":"5.3"},{"v":"A321-200NX(LR)","a":"12","i":"","w":"","t":"12","o":"18","age":"0.6"},{"v":"A330-200","a":"","i":"","w":"1","t":"1","o":"","age":"17.2"},{"v":"A330-900N","a":"","i":"","w":"","t":"","o":"15","age":""},{"v":"A350-1000","a":"12","i":"","w":"","t":"12","o":"15","age":"3.2"},{"v":"A350F","a":"","i":"","w":"","t":"","o":"10","age":""},{"v":"A380-800","a":"5","i":"4","w":"","t":"9","o":"","age":"10.7"},{"v":"B777-200F","a":"5","i":"","w":"1","t":"6","o":"","age":"9.3"},{"v":"B777-300ER","a":"9","i":"","w":"","t":"9","o":"","age":"15.2"},{"v":"B777-9","a":"","i":"","w":"","t":"","o":"15","age":""},{"v":"B787-10","a":"10","i":"","w":"","t":"10","o":"19","age":"6.9"},{"v":"B787-9","a":"36","i":"1","w":"","t":"37","o":"4","age":"7.5"}],"pt":127,"po":8,"k1age":8.4},"CZ":{"name":"China Southern","color":"#2563EB","ca":571,"ci":47,"cw":76,"ct":694,"co":211,"types":[{"v":"A319-100N","a":"9","i":"","w":"","t":"9","o":"","age":"2.7"},{"v":"A320-200","a":"86","i":"7","w":"","t":"93","o":"","age":"14.6"},{"v":"A320-200N","a":"72","i":"3","w":"","t":"75","o":"4","age":"4.4"},{"v":"A321-200","a":"78","i":"7","w":"","t":"85","o":"","age":"14.3"},{"v":"A321-200N","a":"27","i":"1","w":"","t":"28","o":"","age":"7.6"},{"v":"A321-200NX","a":"65","i":"2","w":"","t":"67","o":"40","age":"2.9"},{"v":"A330-300","a":"19","i":"6","w":"","t":"25","o":"","age":"10.3"},{"v":"A350-900","a":"19","i":"1","w":"","t":"20","o":"7","age":"5.1"},{"v":"B737-700","a":"","i":"9","w":"","t":"9","o":"","age":"15.5"},{"v":"B737-8","a":"44","i":"2","w":"","t":"46","o":"60","age":"6.4"},{"v":"B737-800","a":"76","i":"6","w":"71","t":"153","o":"","age":"12.9"},{"v":"B777-200F","a":"8","i":"","w":"","t":"8","o":"","age":"11.1"},{"v":"B777-300ER","a":"14","i":"1","w":"","t":"15","o":"","age":"9.7"},{"v":"B787-9","a":"21","i":"","w":"","t":"21","o":"1","age":"6.4"},{"v":"C909","a":"24","i":"1","w":"5","t":"30","o":"9","age":"3.4"},{"v":"C919-100STD","a":"9","i":"1","w":"","t":"10","o":"90","age":"1.0"}],"pt":682,"po":12,"k1age":9.3},"AV":{"name":"Avianca","color":"#DC2626","ca":98,"ci":9,"cw":47,"ct":154,"co":76,"types":[{"v":"A319-100","a":"7","i":"1","w":"","t":"8","o":"","age":"14.4"},{"v":"A320-200","a":"50","i":"2","w":"27","t":"79","o":"","age":"13.9"},{"v":"A320-200N","a":"28","i":"3","w":"19","t":"50","o":"76","age":"4.5"},{"v":"A330-300","a":"","i":"","w":"1","t":"1","o":"","age":"11.4"},{"v":"B787-8","a":"13","i":"3","w":"","t":"16","o":"","age":"10.6"}],"pt":127,"po":2,"k1age":10.8},"CV":{"name":"Cargolux","color":"#374151","ca":26,"ci":0,"cw":0,"ct":26,"co":10,"types":[{"v":"B747-400ERF","a":"6","i":"","w":"","t":"6","o":"","age":"18.9"},{"v":"B747-400FSCD","a":"6","i":"","w":"","t":"6","o":"","age":"24.7"},{"v":"B747-8F","a":"14","i":"","w":"","t":"14","o":"","age":"13.3"},{"v":"B777-8F","a":"","i":"","w":"","t":"","o":"10","age":""}],"pt":26,"po":3,"k1age":17.2}};
 
 (function() {
@@ -13969,23 +14025,31 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
     const k2  = document.getElementById('fleet-k2-content');
     const cmp = document.getElementById('fleet-cmp-content');
     const dt  = document.getElementById('fleet-src-date');
+    const catBar = document.getElementById('fleet-cat-bar');
+    // Cache sıfırla filtre değişince yeniden build etmek için
+    _k2Built = false;
+    _k1Built = false;
+    _cmpBuilt = false;
     if (src === 'kaynak1') {
       if (k1)  k1.style.display  = '';
       if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = 'none';
       if (dt)  dt.textContent    = 'Kaynak 1 · 2 Haz 2026';
+      if (catBar) catBar.style.display = '';
       buildK1Cards();
     } else if (src === 'kaynak2') {
       if (k1)  k1.style.display  = 'none';
       if (k2)  k2.style.display = '';
       if (cmp) cmp.style.display = 'none';
       if (dt)  dt.textContent    = 'Kaynak 2 · 2 Haz 2026';
+      if (catBar) catBar.style.display = '';
       buildK2Cards();
     } else {
       if (k1)  k1.style.display  = 'none';
       if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = '';
       if (dt)  dt.textContent    = 'Kaynak 1 + Kaynak 2 · 2 Haz 2026';
+      if (catBar) catBar.style.display = 'none';
       buildCmpTable();
     }
   }
@@ -13993,6 +14057,20 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
   document.addEventListener('click', function(e) {
     const pill = e.target.closest('.fleet-src-pill');
     if (pill) switchFleetSrc(pill.dataset.src);
+
+    const catBtn = e.target.closest('.flt-cat-btn');
+    if (catBtn) {
+      _catFilter = catBtn.dataset.cat;
+      document.querySelectorAll('.flt-cat-btn').forEach(b =>
+        b.classList.toggle('flt-cat-btn--active', b === catBtn)
+      );
+      // Tüm kartları yeniden build et
+      _k2Built = false;
+      _k1Built = false;
+      _cmpBuilt = false;
+      const src = document.querySelector('.fleet-src-pill.fdd-btn--active')?.dataset.src;
+      if (src) switchFleetSrc(src);
+    }
   });
 
   // ── Yardımcı: diff chip ──────────────────────────
@@ -14009,7 +14087,6 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
   // ── Kaynak 1 kartları (Kaynak 2 ile aynı stil) ─────────────
   let _k1Built = false;
   function buildK1Cards() {
-    if (_k1Built) return;
     _k1Built = true;
     const grid = document.getElementById('fleet-k1-cards');
     if (!grid) return;
@@ -14018,6 +14095,15 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
       const order = d.po != null ? '+'+d.po : '—';
       const age   = d.k1age ? d.k1age+'y' : '—';
       const note  = d.k1note ? ` <span style="font-size:10px;color:var(--text-3)">(${d.k1note})</span>` : '';
+      const miniItems = [];
+      if (d.types && d.types.length) {
+        const wbCount = k2Breakdown(d.types, 'wb').active;
+        const nbCount = k2Breakdown(d.types, 'nb').active;
+        const cargoCount = k2Breakdown(d.types, 'cargo').active;
+        if (wbCount > 0) miniItems.push({ cat: 'wb', val: Math.round(wbCount/10)*10, color: '#7c3aed', label: 'WB' });
+        if (nbCount > 0) miniItems.push({ cat: 'nb', val: Math.round(nbCount/10)*10, color: '#2563eb', label: 'NB' });
+        if (cargoCount > 0) miniItems.push({ cat: 'cargo', val: Math.round(cargoCount/10)*10, color: '#b45309', label: 'Kargo' });
+      }
       return `
       <div class="fleet-k2-card">
         <div class="fleet-k2-card-hdr">
@@ -14030,19 +14116,24 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
         <div class="fleet-k2-stats">
           <div class="fleet-k2-stat">
             <div class="fleet-k2-stat-val">${total}</div>
-            <div class="fleet-k2-stat-lbl">Toplam Filo</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 1 Filo</div>
           </div>
           <div class="fleet-k2-stat">
             <div class="fleet-k2-stat-val">${order}</div>
-            <div class="fleet-k2-stat-lbl">Sipariş</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 1 Sipariş</div>
           </div>
           <div class="fleet-k2-stat">
             <div class="fleet-k2-stat-val">${age}</div>
             <div class="fleet-k2-stat-lbl">Ort. Yaş</div>
           </div>
         </div>
+        ${miniItems.length ? `
+        <div class="fleet-type-mini">
+          ${miniItems.map(m => `<div class="fleet-type-mini-item"><div class="fleet-type-mini-dot" style="background:${m.color}"></div>${m.label}: ~${m.val}</div>`).join('')}
+          <div style="font-size:10px;color:var(--text-3);margin-left:auto;white-space:nowrap">(Kaynak 2 verisi)</div>
+        </div>` : ''}
         <div style="padding:4px 14px 10px;font-size:11px;color:var(--text-3)">
-          Kaynak 2 toplam: ${d.ct} · Kaynak 2 aktif: ${d.ca}
+          Kaynak 2 aktif: ${d.ca} vs Kaynak 1 toplam: ${total}
         </div>
       </div>`}).join('');
     // Grafik Kaynak 1'e geçince yeniden çiz (genişlik için)
@@ -14053,47 +14144,63 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
   // ── Kaynak 2 kartları ────────────────────────────────
   let _k2Built = false;
   function buildK2Cards() {
-    if (_k2Built) return;
     _k2Built = true;
     const grid = document.getElementById('fleet-k2-cards');
     if (!grid) return;
-    grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => `
+    grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
+      const bd = k2Breakdown(d.types || [], _catFilter);
+      const catNote = _catFilter !== 'all' ? ` (${_catFilter === 'cargo' ? 'Kargo' : _catFilter === 'wb' ? 'Geniş Gövde' : 'Dar Gövde'})` : '';
+      const miniItems = [];
+      if (d.types && d.types.length) {
+        const wbCount = k2Breakdown(d.types, 'wb').active;
+        const nbCount = k2Breakdown(d.types, 'nb').active;
+        const cargoCount = k2Breakdown(d.types, 'cargo').active;
+        if (wbCount > 0) miniItems.push({ cat: 'wb', val: wbCount, color: '#7c3aed', label: 'WB' });
+        if (nbCount > 0) miniItems.push({ cat: 'nb', val: nbCount, color: '#2563eb', label: 'NB' });
+        if (cargoCount > 0) miniItems.push({ cat: 'cargo', val: cargoCount, color: '#b45309', label: 'Kargo' });
+      }
+      return `
       <div class="fleet-k2-card">
         <div class="fleet-k2-card-hdr">
           <div class="fleet-k2-logo" style="background:${d.color}">${iata}</div>
           <div>
             <div class="fleet-k2-name">${d.name}</div>
-            <div class="fleet-k2-iata">IATA: ${iata} · Kaynak 2</div>
+            <div class="fleet-k2-iata">IATA: ${iata} · Kaynak 2${catNote}</div>
           </div>
         </div>
         <div class="fleet-k2-stats">
           <div class="fleet-k2-stat">
-            <div class="fleet-k2-stat-val">${d.ca||'—'}</div>
-            <div class="fleet-k2-stat-lbl">Aktif</div>
+            <div class="fleet-k2-stat-val">${bd.active||'—'}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 2 Aktif</div>
           </div>
           <div class="fleet-k2-stat">
-            <div class="fleet-k2-stat-val">${d.ct||'—'}</div>
-            <div class="fleet-k2-stat-lbl">Toplam</div>
+            <div class="fleet-k2-stat-val">${bd.total||'—'}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 2 Toplam</div>
           </div>
           <div class="fleet-k2-stat">
-            <div class="fleet-k2-stat-val">${d.co||'—'}</div>
+            <div class="fleet-k2-stat-val">${bd.order||'—'}</div>
             <div class="fleet-k2-stat-lbl">Sipariş</div>
           </div>
         </div>
+        ${miniItems.length ? `
+        <div class="fleet-type-mini">
+          ${miniItems.map(m => `<div class="fleet-type-mini-item"><div class="fleet-type-mini-dot" style="background:${m.color}"></div>${m.label}: ${m.val} aktif</div>`).join('')}
+        </div>` : ''}
         ${d.types && d.types.length ? `
         <button class="fleet-k2-expand-btn" onclick="toggleK2Detail(this)">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          ${d.types.length} uçak tipi
+          ${bd.types.length} uçak tipi
         </button>
         <table class="fleet-k2-type-table">
-          <tr><th>Tip</th><th>Aktif</th><th>Park</th><th>Toplam</th><th>Sipariş</th><th>Ort. Yaş</th></tr>
-          ${d.types.map(t => `<tr>
+          <tr><th>Tip</th><th>Aktif</th><th>Park</th><th>Islak Kir.</th><th>Toplam</th><th>Sipariş</th><th>Ort. Yaş</th></tr>
+          ${bd.types.map(t => `<tr>
             <td>${t.v}${t.o?`<span class="k2-order-chip">+${t.o}</span>`:''}</td>
-            <td>${t.a||'—'}</td><td>${t.i||'—'}</td><td>${t.t||'—'}</td>
+            <td>${t.a||'—'}</td><td>${t.i||'—'}</td><td>${t.w||'—'}</td><td>${t.t||'—'}</td>
             <td>${t.o||'—'}</td><td>${t.age?t.age+'y':'—'}</td>
           </tr>`).join('')}
         </table>` : '<div style="padding:10px 14px;font-size:11px;color:var(--text-3)">Detay verisi yok</div>'}
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
   window.toggleK2Detail = function(btn) {
     const tbl = btn.nextElementSibling;
@@ -14185,7 +14292,6 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
 
   let _cmpBuilt = false;
   function buildCmpTable() {
-    if (_cmpBuilt) return;
     _cmpBuilt = true;
     const tbody = document.getElementById('fleet-cmp-tbody');
     if (!tbody) return;
@@ -14195,10 +14301,28 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":214,"c
       const k2O  = d.co ? '+'+d.co : '—';
       const k1Age = d.k1age ? d.k1age+'y' : '—';
       const note  = d.k1note ? `<span style="font-size:9px;color:var(--text-3);display:block">${d.k1note}</span>` : '';
-      const k2Val = calcFormula(d);
+      // Eğer filtre aktifse, Kaynak 2 değerini kategoriye göre hesapla
+      let k2Val;
+      if (_catFilter !== 'all') {
+        const bd = k2Breakdown(d.types || [], _catFilter);
+        // Formülü filtreli veriye uygula
+        let v = 0;
+        FML_COLS.forEach(c => {
+          const fieldMap = { ca: 'active', ci: 'inactive', cw: 'wli', ct: 'total', co: 'order' };
+          let colVal = 0;
+          if (c === 'ca') colVal = bd.active;
+          else if (c === 'ct') colVal = bd.total;
+          else if (c === 'co') colVal = bd.order;
+          if (_formula[c] === '+') v += colVal;
+          else if (_formula[c] === '-') v -= colVal;
+        });
+        k2Val = v;
+      } else {
+        k2Val = calcFormula(d);
+      }
       const { val: k1Val, hasData: k1HasData } = calcPs(d);
       const k1Display = k1Val != null
-        ? k1Val + (k1HasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo"> *</span>')
+        ? k1Val + (k1HasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo"> *</span>' + (_catFilter !== 'all' ? '<br/><span style="font-size:9px;color:var(--text-3)">Filtre Kaynak 1 toplam verisine uygulanamıyor</span>' : ''))
         : '<span class="flt-val-na">—</span>';
       html += `
       <tr onclick="toggleCmpRow('${iata}')" data-iata="${iata}">
