@@ -2475,8 +2475,8 @@
       <div class="fleet-compare-section">
         <div class="fleet-compare-header">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          <span class="fleet-compare-title">Filo Büyüme Projeksiyonu · 2022 – 2033</span>
-          <span class="fleet-chart-note">— Gerçek &nbsp;···&nbsp; Onaylı sipariş bazlı projeksiyon</span>
+          <span class="fleet-compare-title">Filo Büyüme · 2022 – 2026</span>
+          <span class="fleet-chart-note">Kaynak 1 · Gerçekleşen veriler</span>
         </div>
         <div id="fleet-chart-legend" class="fleet-chart-legend"></div>
         <div class="fleet-chart-container">
@@ -13736,21 +13736,21 @@ function initControls(allArticles) {
   }
 
   // ── FILO BÜYÜME GRAFİĞİ ──────────────────────────────────────────
-  // Gerçek veriler: Kaynak 1 (1 Haz 2026) · Resmi raporlar
-  // 2022-2026 = gerçek · 2027+ = onaylı sipariş bazlı projeksiyon
+  // Kaynak: Kaynak 1 (2 Haz 2026) — sadece gerçekleşen veriler
+  // Gelecek projeksiyonları Kaynak 2 bölümünde gösterilecek
   const FLEET_PROJ = [
     { id:'thy', name:'Turkish Airlines',  color:'#E30613',
-      d:{2022:373,2023:423,2024:457,2025:484,2026:410,2027:450,2028:490,2029:535,2030:580,2033:800} },
+      d:{2022:373,2023:423,2024:457,2025:484,2026:410} },
     { id:'ek',  name:'Emirates',          color:'#DC2626',
-      d:{2022:244,2023:252,2024:257,2025:260,2026:282,2027:305,2028:340,2029:380,2030:420,2033:530} },
+      d:{2022:244,2023:252,2024:257,2025:260,2026:282} },
     { id:'qr',  name:'Qatar Airways',     color:'#7C3AED',
-      d:{2022:210,2023:230,2024:260,2025:279,2026:271,2027:285,2028:305,2029:325,2030:345,2033:400} },
+      d:{2022:210,2023:230,2024:260,2025:279,2026:271} },
     { id:'ey',  name:'Etihad',            color:'#D97706',
-      d:{2022:78, 2023:84, 2024:98, 2025:127,2026:148,2027:163,2028:176,2029:188,2030:200,2033:240} },
-    { id:'lh',  name:'Lufthansa Grubu',   color:'#2563EB',
-      d:{2022:689,2023:710,2024:735,2025:737,2026:737,2027:755,2028:775,2029:795,2030:815,2033:860} },
-    { id:'af',  name:'Air France-KLM',    color:'#059669',
-      d:{2022:521,2023:557,2024:590,2025:596,2026:596,2027:615,2028:632,2029:648,2030:662,2033:705} }
+      d:{2022:78, 2023:84, 2024:98, 2025:127,2026:127} },
+    { id:'lh',  name:'Lufthansa',         color:'#2563EB',
+      d:{2022:689,2023:710,2024:735,2025:737,2026:268} },
+    { id:'af',  name:'Air France',        color:'#059669',
+      d:{2022:521,2023:557,2024:590,2025:596,2026:224} }
   ];
   const FLEET_HIDDEN = new Set();
 
@@ -13786,15 +13786,15 @@ function initControls(allArticles) {
       txt:  isDark ? '#555E78' : '#9CA3AF',
       txt2: isDark ? '#9AA3B8' : '#374151'
     };
-    const YEARS = [2022,2023,2024,2025,2026,2027,2028,2029,2030,2033];
-    const CURR_YEAR = 2026; // Kaynak 1 verisi Jun 2026
-    const MAX_V = 950;
+    const YEARS = [2022,2023,2024,2025,2026];
+    const CURR_YEAR = 2026;
+    const MAX_V = 800;
     const GRID_V = [200,400,600,800];
     const xp = y => P.l + (YEARS.indexOf(y)/(YEARS.length-1))*cW;
     const yp = v => P.t + cH - (v/MAX_V)*cH;
     const fmt = n => n.toString();
 
-    let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;max-width:100%;touch-action:none" aria-label="Filo büyüme projeksiyonu 2022-2033">`;
+    let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;max-width:100%;touch-action:none" aria-label="Filo büyüme 2022-2026 gerçekleşen">`;
     s += `<rect width="${W}" height="${H}" fill="${C.bg}"/>`;
 
     // Grid
@@ -13804,15 +13804,10 @@ function initControls(allArticles) {
       s += `<text x="${(P.l-6).toFixed(1)}" y="${(+y+4).toFixed(1)}" text-anchor="end" fill="${C.txt}" font-size="10" font-family="Inter,system-ui,sans-serif">${v}</text>`;
     }
 
-    // Projeksiyon bölgesi vurgulama (2027'den itibaren)
-    const projX = xp(2027).toFixed(1);
-    s += `<rect x="${projX}" y="${P.t}" width="${(W-P.r-projX).toFixed(1)}" height="${cH}" fill="${isDark?'rgba(255,255,255,0.018)':'rgba(29,111,232,0.025)'}"/>`;
-    s += `<line x1="${projX}" y1="${P.t}" x2="${projX}" y2="${P.t+cH}" stroke="${isDark?'rgba(255,255,255,0.07)':'rgba(29,111,232,0.15)'}" stroke-width="1" stroke-dasharray="3,3"/>`;
-    s += `<text x="${(+projX+4).toFixed(1)}" y="${(P.t+11).toFixed(1)}" fill="${isDark?'rgba(255,255,255,0.2)':'rgba(29,111,232,0.35)'}" font-size="9" font-family="Inter,system-ui,sans-serif">Projeksiyon →</text>`;
-
-    // Bugün (2026) çizgisi
+    // 2026 "güncel" etiketi
     const todX = xp(2026).toFixed(1);
     s += `<line x1="${todX}" y1="${P.t}" x2="${todX}" y2="${P.t+cH}" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.55"/>`;
+    s += `<text x="${(+todX-4).toFixed(1)}" y="${(P.t+11).toFixed(1)}" text-anchor="end" fill="#F59E0B" font-size="9" font-family="Inter,system-ui,sans-serif" opacity="0.7">Haz 2026</text>`;
 
     // X ekseni tik & etiket
     for (const yr of YEARS) {
@@ -13822,30 +13817,23 @@ function initControls(allArticles) {
       s += `<text x="${x}" y="${(H-5).toFixed(1)}" text-anchor="middle" fill="${isCur?'#F59E0B':C.txt}" font-size="${isCur?11:10}" font-weight="${isCur?700:400}" font-family="Inter,system-ui,sans-serif">${yr}</text>`;
     }
 
-    // Seriler
+    // Seriler — sadece gerçek veri (2022-2026)
     for (const a of FLEET_PROJ) {
       if (FLEET_HIDDEN.has(a.id)) continue;
       const pts = YEARS.filter(y => a.d[y]!=null);
-      const hist = pts.filter(y=>y<=CURR_YEAR);
-      const proj = pts.filter(y=>y>=CURR_YEAR);
-      if (hist.length>1) {
-        const coords = hist.map(y=>`${xp(y).toFixed(1)},${yp(a.d[y]).toFixed(1)}`).join(' ');
+      if (pts.length > 1) {
+        const coords = pts.map(y=>`${xp(y).toFixed(1)},${yp(a.d[y]).toFixed(1)}`).join(' ');
         s += `<polyline points="${coords}" fill="none" stroke="${a.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-      }
-      if (proj.length>1) {
-        const coords = proj.map(y=>`${xp(y).toFixed(1)},${yp(a.d[y]).toFixed(1)}`).join(' ');
-        s += `<polyline points="${coords}" fill="none" stroke="${a.color}" stroke-width="2" stroke-dasharray="5,4" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>`;
       }
       for (const yr of pts) {
         const cx = xp(yr).toFixed(1), cy = yp(a.d[yr]).toFixed(1);
-        const isP = yr>CURR_YEAR;
-        s += `<circle cx="${cx}" cy="${cy}" r="${isP?2.5:4}" fill="${isP?C.bg:a.color}" stroke="${a.color}" stroke-width="${isP?1.5:2.5}" opacity="${isP?0.7:1}"/>`;
+        s += `<circle cx="${cx}" cy="${cy}" r="4" fill="${a.color}" stroke="${a.color}" stroke-width="2.5"/>`;
       }
-      // 2033 son değer etiketi
-      if (a.d[2033]!=null && !FLEET_HIDDEN.has(a.id)) {
+      // 2026 son değer etiketi
+      if (a.d[2026]!=null) {
         const lx = (W-P.r+5).toFixed(1);
-        const ly = (yp(a.d[2033])+4).toFixed(1);
-        s += `<text x="${lx}" y="${ly}" fill="${a.color}" font-size="10" font-weight="700" font-family="Inter,system-ui,sans-serif" opacity="0.85">${fmt(a.d[2033])}</text>`;
+        const ly = (yp(a.d[2026])+4).toFixed(1);
+        s += `<text x="${lx}" y="${ly}" fill="${a.color}" font-size="10" font-weight="700" font-family="Inter,system-ui,sans-serif" opacity="0.85">${fmt(a.d[2026])}</text>`;
       }
     }
     s += '</svg>';
