@@ -63,6 +63,7 @@
     position: sticky;
     top: 0;
     z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
   }
 
   .header-inner {
@@ -392,35 +393,27 @@
 
   /* ── FILTER BAR ──────────────────────────────── */
   .filter-bar {
-    background-image: linear-gradient(
-      to bottom,
-      var(--navy)   0px,
-      var(--navy)   60px,
-      #2a2a2a       88px,
-      #888888       122px,
-      #e2e2e2       158px,
-      var(--bg)     174px
-    );
-    background-attachment: fixed;
-    background-size: 100% 174px;
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    background-color: var(--bg);
+    background: var(--surface);
     border-bottom: 1px solid var(--border);
     position: sticky;
-    top: 122px;
+    top: 130px;
     z-index: 90;
     overflow: visible;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  [data-theme="dark"] .filter-bar {
+    background: var(--navy-soft);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
   }
 
-  /* Scroll-fade — nested inside .filter-bar, absolutely positioned below it.
-     Variable filter-bar height (wrap to 2 lines) doesn't break it. */
+  /* Scroll-fade — subtle 20px fade, softer than before */
   .scroll-fade {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    height: 32px;
+    height: 20px;
     z-index: 85;
     pointer-events: none;
     background: linear-gradient(to bottom, var(--bg) 0%, rgba(244,244,245,0) 100%);
@@ -2137,25 +2130,13 @@
     display: flex;
     justify-content: center;
     margin: 0;
-    padding: 14px 24px 14px;
+    padding: 12px 24px;
     position: sticky;
     top: 60px;
     z-index: 95;
-    background-image: linear-gradient(
-      to bottom,
-      var(--navy)   0px,
-      var(--navy)   60px,
-      #2a2a2a       88px,
-      #888888       122px,
-      #e2e2e2       158px,
-      var(--bg)     174px
-    );
-    background-attachment: fixed;
-    background-size: 100% 174px;
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    background-color: var(--bg);
-    border-bottom: none;
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
   }
   .main-tab {
     background: rgba(255,255,255,0.08);
@@ -2194,22 +2175,10 @@
   [data-theme="dark"] .main-tab.main-tab-active {
     box-shadow: 0 2px 8px rgba(227,6,19,0.4), 0 1px 2px rgba(0,0,0,0.4);
   }
-  [data-theme="dark"] .main-tabs-wrap,
-  [data-theme="dark"] .filter-bar {
-    background-image: linear-gradient(
-      to bottom,
-      var(--navy)   0px,
-      var(--navy)   60px,
-      #0d0d10       88px,
-      #252530       122px,
-      #1e2030       158px,
-      var(--bg)     174px
-    );
-    background-attachment: fixed;
-    background-size: 100% 174px;
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    background-color: var(--bg);
+  [data-theme="dark"] .main-tabs-wrap {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
   }
   [data-theme="dark"] .fdd-btn,
   [data-theme="dark"] .fdd-toggle,
@@ -2248,28 +2217,23 @@
     .main-tabs-wrap { padding: 0 16px; top: 60px; }
   }
 
-  /* ── Mobil gradient override: background-attachment:fixed iOS'ta çalışmaz ── */
+  /* ── Mobil sticky ── */
   @media (max-width: 768px) {
     .main-tabs-wrap {
       position: sticky;
       top: 60px;
       z-index: 95;
-      height: 48px;
+      height: 52px;
       padding: 0 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--navy) !important;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .filter-bar {
-      background: var(--bg) !important;
-    }
-    [data-theme="dark"] .main-tabs-wrap {
-      background: var(--navy) !important;
+      top: 112px !important;
     }
     [data-theme="dark"] .filter-bar {
-      background: var(--bg) !important;
+      background: var(--navy-soft) !important;
     }
     /* Mobil kaydırma oku gölgeleri — var(--bg) ile eşleştir */
     .filter-bar::before {
@@ -2281,7 +2245,7 @@
   }
 
   /* ── DASHBOARD ───────────────────────────────────── */
-  .dash-section { margin-bottom: 44px; scroll-margin-top: 190px; }
+  .dash-section { margin-bottom: 44px; scroll-margin-top: 200px; }
   .dash-section:first-child { margin-top: 14px; }
 
   .dash-nav-link {
