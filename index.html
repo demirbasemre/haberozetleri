@@ -14252,6 +14252,7 @@ function initControls(allArticles) {
 
   function switchReportType(type) {
     _activeReportType = type;
+    window.scrollTo({ top: 0, behavior: 'instant' });
     const loadingEl = document.getElementById('reports-loading');
     const emptyEl   = document.getElementById('reports-empty');
     const viewEl    = document.getElementById('reports-view');
