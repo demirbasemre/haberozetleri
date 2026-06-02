@@ -905,8 +905,8 @@
     color: var(--text-3);
     font-size: 14px;
   }
-  /* Sidebar Container holding archive box and TOC */
-  .reports-sidebar {
+  .reports-sidebar,
+  .reports-right-sidebar {
     position: sticky;
     top: 195px; /* Aligned below the filter bar stack when scrolling */
     width: 270px;
@@ -1202,6 +1202,19 @@
       width: 100%;
       max-width: 820px;
       margin-bottom: 0;
+      order: 0;
+    }
+    .reports-right-sidebar {
+      position: static;
+      width: 100%;
+      max-width: 820px;
+      margin-bottom: 0;
+      order: 1;
+    }
+    .reports-frame-container {
+      width: 100%;
+      max-width: 820px;
+      order: 2;
     }
     .reports-toc {
       display: none !important;
@@ -1614,43 +1627,11 @@
     <!-- Reports tab filter area -->
     <div id="reports-filter-content" style="display:none; justify-content: space-between; align-items: center; width: 100%;">
       <div style="display:flex;gap:8px;align-items:center;">
-        <div class="fdd-wrap" id="reports-type-wrap">
-          <button class="fdd-btn" id="reports-type-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Rapor türü filtresi">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
-            </svg>
-            <span id="reports-type-btn-label">Arz &amp; Talep &amp; Navlun Analizi</span>
-            <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="fdd-panel" id="reports-type-panel" role="listbox" aria-label="Rapor türü seç">
-            <div class="fdd-option selected" data-report-type="arz_talep_navlun" role="option" aria-selected="true">
-              <div class="fdd-radio"></div>
-              <span>Arz &amp; Talep &amp; Navlun Analizi</span>
-            </div>
-            <div class="fdd-option" data-report-type="filo" role="option" aria-selected="false">
-              <div class="fdd-radio"></div>
-              <span>Filo</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="reports-archive-nav-wrap" style="display:flex;gap:8px;align-items:center;">
-        <div class="fdd-wrap" id="reports-archive-wrap">
-          <button class="fdd-btn" id="reports-archive-btn" aria-haspopup="listbox" aria-expanded="false">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-            <span id="reports-archive-btn-label">Önceki Yayınlar</span>
-            <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="fdd-panel" id="reports-archive-panel" role="listbox" aria-label="Bülten seç">
-            <!-- populated dynamically by JS -->
-          </div>
-        </div>
-        <button class="fdd-btn" id="reports-prev-btn" onclick="navigateReport(-1)" aria-label="Önceki bülten" title="Önceki bülten" style="padding: 5px 8px; min-height: 32px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        <button class="fdd-btn fdd-btn--active report-type-pill" data-report-type="arz_talep_navlun" id="report-pill-arz">
+          Arz &amp; Talep &amp; Navlun Analizi
         </button>
-        <span id="reports-nav-indicator" style="font-size:12px; color:var(--text-3); min-width:36px; text-align:center; font-variant-numeric:tabular-nums;">1 / 1</span>
-        <button class="fdd-btn" id="reports-next-btn" onclick="navigateReport(1)" aria-label="Sonraki bülten" title="Sonraki bülten" style="padding: 5px 8px; min-height: 32px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <button class="fdd-btn report-type-pill" data-report-type="filo" id="report-pill-filo">
+          Filo
         </button>
       </div>
     </div>
@@ -2424,6 +2405,31 @@
         <div class="reports-frame-container">
           <iframe id="reports-bulletin-frame" class="reports-bulletin-frame" frameborder="0" title="Bülten içeriği" scrolling="no"></iframe>
         </div>
+        <!-- Sağ Sütun: Önceki Yayınlar kutusu -->
+        <aside class="reports-right-sidebar" id="reports-right-sidebar">
+          <div class="reports-archive-box" id="reports-archive-box">
+            <div class="reports-archive-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              Önceki Yayınlar
+            </div>
+            <div class="reports-archive-select-wrapper">
+              <select id="reports-archive-select" class="reports-archive-select" onchange="selectReport(this.value)">
+                <!-- populated dynamically by JS -->
+              </select>
+            </div>
+            <div class="reports-archive-nav">
+              <button class="reports-archive-btn" id="reports-prev-btn" onclick="navigateReport(-1)" aria-label="Önceki bülten" title="Önceki bülten">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                Önceki
+              </button>
+              <span class="reports-archive-indicator" id="reports-nav-indicator" title="Görüntülenen bülten / toplam">1 / 1</span>
+              <button class="reports-archive-btn" id="reports-next-btn" onclick="navigateReport(1)" aria-label="Sonraki bülten" title="Sonraki bülten">
+                Sonraki
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
     <!-- Filo Analizi -->
@@ -4221,7 +4227,7 @@ const CAT_SHORT = {
 };
 
 // ── Dropdown management ──────────────────────────────────────
-const ALL_DROPDOWNS = ['cat', 'date', 'region', 'airline', 'gsa', 'source', 'reports-archive', 'reports-type'];
+const ALL_DROPDOWNS = ['cat', 'date', 'region', 'airline', 'gsa', 'source'];
 function panelId(id) { return id === 'airline' ? 'airline-dropdown' : `${id}-panel`; }
 
 function closeDropdown(id) {
@@ -13786,42 +13792,14 @@ function initControls(allArticles) {
       }
 
       // Populate select dropdown in bülten arşivi
-      const archivePanel = document.getElementById('reports-archive-panel');
-      if (archivePanel) {
-        archivePanel.innerHTML = _reports.map((r, idx) => {
+      const archiveSelect = document.getElementById('reports-archive-select');
+      if (archiveSelect) {
+        archiveSelect.innerHTML = _reports.map((r, idx) => {
           const dateStr = r.date
             ? new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
             : ('Yayın ' + (idx + 1));
-          const isSelected = idx === _currentIdx;
-          return `
-            <div class="fdd-option${isSelected ? ' selected' : ''}" data-val="${idx}" role="option" aria-selected="${isSelected ? 'true' : 'false'}">
-              <span class="fdd-radio"></span>
-              <span>${dateStr}</span>
-            </div>
-          `;
+          return `<option value="${idx}">${dateStr}</option>`;
         }).join('');
-
-        if (!archivePanel._clickInit) {
-          archivePanel._clickInit = true;
-          archivePanel.addEventListener('click', e => {
-            const opt = e.target.closest('.fdd-option');
-            if (!opt) return;
-            const val = opt.dataset.val;
-            selectReport(val);
-            closeDropdown('reports-archive');
-          });
-        }
-      }
-
-      // Dropdown button click handler
-      const archiveBtn = document.getElementById('reports-archive-btn');
-      if (archiveBtn && !archiveBtn._clickInit) {
-        archiveBtn._clickInit = true;
-        archiveBtn.addEventListener('click', e => {
-          e.stopPropagation();
-          const isOpen = document.getElementById('reports-archive-panel').classList.contains('open');
-          if (isOpen) closeDropdown('reports-archive'); else openDropdown('reports-archive');
-        });
       }
 
       _currentIdx = 0;
@@ -13838,14 +13816,9 @@ function initControls(allArticles) {
     const r = _reports[_currentIdx];
     if (!r) return;
 
-    document.querySelectorAll('#reports-archive-panel .fdd-option').forEach((opt, idx) => {
-      const isSelected = idx === _currentIdx;
-      opt.classList.toggle('selected', isSelected);
-      opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
-    });
-    const archiveBtnLabel = document.getElementById('reports-archive-btn-label');
-    if (archiveBtnLabel && r.date) {
-      archiveBtnLabel.textContent = new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+    const archiveSelect = document.getElementById('reports-archive-select');
+    if (archiveSelect) {
+      archiveSelect.value = _currentIdx;
     }
 
     document.getElementById('reports-current-title').textContent = r.title || 'Arz & Talep + Navlun Analizi';
@@ -14300,50 +14273,27 @@ function initControls(allArticles) {
       initReportsTab();
     }
 
-    // Dropdown UI güncellemesi
-    document.querySelectorAll('#reports-type-panel .fdd-option').forEach(opt => {
-      const active = opt.dataset.reportType === type;
-      opt.classList.toggle('selected', active);
-      opt.setAttribute('aria-selected', active ? 'true' : 'false');
+    // Aktif pill güncelle
+    document.querySelectorAll('.report-type-pill').forEach(p => {
+      const active = p.dataset.reportType === type;
+      p.classList.toggle('fdd-btn--active', active);
     });
 
-    const typeBtnLabel = document.getElementById('reports-type-btn-label');
-    if (typeBtnLabel) {
-      typeBtnLabel.textContent = type === 'filo' ? 'Filo' : 'Arz & Talep & Navlun Analizi';
-    }
-
-    // "Önceki Yayınlar" dropdown ve navigasyon kontrol grubu görünürlüğünü güncelle
-    const archiveNavWrap = document.getElementById('reports-archive-nav-wrap');
-    if (archiveNavWrap) {
-      archiveNavWrap.style.display = isFilo ? 'none' : 'flex';
+    // Sağ Sütun (Önceki Yayınlar kutusu) görünürlüğünü güncelle
+    const rightSidebar = document.getElementById('reports-right-sidebar');
+    if (rightSidebar) {
+      rightSidebar.style.display = isFilo ? 'none' : '';
     }
   }
 
-  // Rapor tipi dropdown buton tıklaması
-  const typeBtn = document.getElementById('reports-type-btn');
-  if (typeBtn && !typeBtn._clickInit) {
-    typeBtn._clickInit = true;
-    typeBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      const isOpen = document.getElementById('reports-type-panel').classList.contains('open');
-      if (isOpen) closeDropdown('reports-type'); else openDropdown('reports-type');
-    });
-  }
-
-  // Rapor tipi seçimi tıklaması
-  const typePanel = document.getElementById('reports-type-panel');
-  if (typePanel && !typePanel._clickInit) {
-    typePanel._clickInit = true;
-    typePanel.addEventListener('click', e => {
-      const opt = e.target.closest('.fdd-option');
-      if (!opt) return;
-      const type = opt.dataset.reportType;
-      if (type && type !== _activeReportType) {
-        switchReportType(type);
-      }
-      closeDropdown('reports-type');
-    });
-  }
+  // Pill tıklaması
+  document.addEventListener('click', function(e) {
+    const pill = e.target.closest('.report-type-pill');
+    if (pill) {
+      const type = pill.dataset.reportType;
+      if (type && type !== _activeReportType) switchReportType(type);
+    }
+  });
 
   function selectReport(val) {
     const idx = parseInt(val, 10);
