@@ -2847,7 +2847,7 @@
     <div class="fin-chart-section">
       <div class="fin-chart-header">
         <span class="fin-chart-title" id="fin-chart-title">Toplam Gelir (USD)</span>
-        <span class="fin-chart-source">Kaynak: CH Aviation · USD</span>
+        <span class="fin-chart-source">USD · Resmi yıllık raporlar</span>
       </div>
       <div class="fin-chart-wrap">
         <canvas id="fin-main-chart" aria-label="Finansal karşılaştırma grafiği"></canvas>
@@ -2877,7 +2877,7 @@
       </button>
       <div class="fin-sources-panel" id="fin-sources-panel" style="display:none">
         <p class="fin-src-intro">
-          Tüm finansal veriler ilgili havayollarının <strong>resmi yıllık raporları</strong>ndan CH Aviation aracılığıyla derlenmiştir.
+          Tüm finansal veriler ilgili havayollarının <strong>resmi yıllık raporları</strong>ndan derlenmiştir.
           Değerler döviz kuru esas alınarak <strong>USD</strong>'ye dönüştürülmüştür.
           <strong>*</strong> işareti tahmini veya önceden raporlanmış değerleri, <strong>**</strong> EBITDA bazlı değerleri gösterir.
         </p>
@@ -14403,30 +14403,9 @@ function renderFinTable() {
 
   // Yıl başlıklarına kaynak linkleri — birden fazla havayolunda aynı yıl için farklı link
   // En yaygın kaynağı (QR, TK gibi büyük havayolları) göster
-  function getYearSourceHint(yr) {
-    const sources = FIN_YEAR_SOURCES || {};
-    const slugs = Object.keys(FIN_DATA).filter(s => !_finHidden.has(s));
-    for (const slug of slugs) {
-      const s = sources[slug]?.[yr];
-      if (s?.href) return s;
-    }
-    return null;
-  }
-
   thead.innerHTML = `<tr>
     <th>Havayolu</th>
-    ${years.map(y => {
-      const src = getYearSourceHint(y);
-      if (src) {
-        return `<th><span style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
-          <span>${y}</span>
-          <a href="${src.href}" target="_blank" rel="noopener"
-            style="font-size:9px;font-weight:400;color:rgba(255,255,255,0.45);text-decoration:underline;cursor:pointer"
-            title="Kaynak: ${src.text} · Yıllık Rapor" onclick="event.stopPropagation()">↗ kaynak</a>
-        </span></th>`;
-      }
-      return `<th>${y}</th>`;
-    }).join('')}
+    ${years.map(y => `<th>${y}</th>`).join('')}
   </tr>`;
 
   tbody.innerHTML = Object.entries(FIN_DATA)
