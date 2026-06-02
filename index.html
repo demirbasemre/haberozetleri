@@ -1156,9 +1156,8 @@
   }
 
   .reports-toc-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    word-break: break-word;
     flex-grow: 1;
     transition: opacity 0.2s ease;
   }
@@ -1218,6 +1217,16 @@
     }
     .reports-toc {
       display: none !important;
+    }
+  }
+
+  /* Expand reports layout on wide screens */
+  @media (min-width: 1440px) {
+    body[data-active-tab="reports"] .main {
+      max-width: 1600px;
+    }
+    body[data-active-tab="reports"] .reports-frame-container {
+      max-width: 1000px;
     }
   }
 </style>
@@ -2395,18 +2404,8 @@
       </button>
 
       <div class="reports-main-layout">
+        <!-- Sol Sütun: Önceki Yayınlar kutusu -->
         <aside class="reports-sidebar" id="reports-sidebar">
-          <!-- Table of Contents -->
-          <div class="reports-toc" id="reports-toc" style="display:none;">
-            <div class="reports-toc-title">İçindekiler</div>
-            <ul class="reports-toc-list" id="reports-toc-list"></ul>
-          </div>
-        </aside>
-        <div class="reports-frame-container">
-          <iframe id="reports-bulletin-frame" class="reports-bulletin-frame" frameborder="0" title="Bülten içeriği" scrolling="no"></iframe>
-        </div>
-        <!-- Sağ Sütun: Önceki Yayınlar kutusu -->
-        <aside class="reports-right-sidebar" id="reports-right-sidebar">
           <div class="reports-archive-box" id="reports-archive-box">
             <div class="reports-archive-title">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
@@ -2428,6 +2427,17 @@
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
             </div>
+          </div>
+        </aside>
+        <div class="reports-frame-container">
+          <iframe id="reports-bulletin-frame" class="reports-bulletin-frame" frameborder="0" title="Bülten içeriği" scrolling="no"></iframe>
+        </div>
+        <!-- Sağ Sütun: İçindekiler kutusu -->
+        <aside class="reports-right-sidebar" id="reports-right-sidebar">
+          <!-- Table of Contents -->
+          <div class="reports-toc" id="reports-toc" style="display:none;">
+            <div class="reports-toc-title">İçindekiler</div>
+            <ul class="reports-toc-list" id="reports-toc-list"></ul>
           </div>
         </aside>
       </div>
@@ -13453,16 +13463,19 @@ function initControls(allArticles) {
         text = tokens.slice(1).join(' ');
       }
 
-      // Title casing and cleanup (Turkish compatible)
-      let cleanText = text.split(' ').map(word => {
+      // Normalize Unicode characters to NFC (composed form)
+      let normalizedText = text.normalize('NFC');
+
+      // Title casing (Turkish compatible)
+      let cleanText = normalizedText.split(' ').map(word => {
         if (!word) return '';
         return word.charAt(0).toLocaleUpperCase('tr-TR') + word.slice(1).toLocaleLowerCase('tr-TR');
       }).join(' ');
 
       cleanText = cleanText
-        .replace(/Endeksleri|Maliyetleri|Dinamikleri|Karşılaştırması/gi, '')
+        .replace(/Endeksler[ıi]|Maliyetler[ıi]|Dinamikler[ıi]|Karşılaştırmas[ıi]/gi, '')
         .replace(/Arz\/talep/gi, 'Arz / Talep')
-        .replace(/Ve/g, '&')
+        .replace(/\bVe\b/g, '&')
         .trim();
 
       const li = document.createElement('li');
@@ -13804,11 +13817,11 @@ function initControls(allArticles) {
       p.classList.toggle('fdd-btn--active', active);
     });
 
-    // Sağ Sütun (Önceki Yayınlar kutusu) görünürlüğünü güncelle
+    // Yan sütunların görünürlüğünü güncelle
     const rightSidebar = document.getElementById('reports-right-sidebar');
-    if (rightSidebar) {
-      rightSidebar.style.display = isFilo ? 'none' : '';
-    }
+    const leftSidebar = document.getElementById('reports-sidebar');
+    if (rightSidebar) rightSidebar.style.display = isFilo ? 'none' : '';
+    if (leftSidebar) leftSidebar.style.display = isFilo ? 'none' : '';
   }
 
   // Pill tıklaması
