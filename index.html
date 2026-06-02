@@ -723,7 +723,7 @@
 
   /* ── RAPORLAR SEKMESİ ──────────────────────────────────────── */
   .reports-loading {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     gap: 12px;
@@ -731,48 +731,158 @@
     color: var(--text-3);
     font-size: 14px;
   }
-  .reports-nav-bar {
+  /* Sidebar Container holding archive box and TOC */
+  .reports-sidebar {
+    position: sticky;
+    top: 195px; /* Aligned below the filter bar stack when scrolling */
+    width: 270px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 80;
+    transition: all 0.25s ease;
+  }
+
+  /* Table of Contents Sidebar (now inside sidebar container) */
+  .reports-toc {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 12px;
+    box-shadow: var(--shadow-sm);
+    transition: padding 0.25s ease;
+  }
+
+  /* Archive Selection Box */
+  .reports-archive-box {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 12px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .reports-archive-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-3);
+    text-transform: uppercase;
+    padding-left: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .reports-archive-select-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  .reports-archive-select {
+    width: 100%;
+    padding: 7px 10px;
+    padding-right: 28px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .reports-archive-select:hover {
+    border-color: var(--border-hover);
+  }
+  .reports-archive-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(29, 111, 232, 0.15);
+  }
+  .reports-archive-select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid var(--text-3);
+    pointer-events: none;
+  }
+  .reports-archive-nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 12px 16px;
-    background: var(--card-bg);
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .reports-archive-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
+    border-radius: 6px;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.18s;
   }
-  .reports-nav-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .reports-nav-title {
-    font-size: 14px; font-weight: 600; color: var(--text-1);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  .reports-archive-btn:hover:not(:disabled) {
+    background: var(--bg);
+    border-color: var(--border-hover);
+    color: var(--text);
   }
-  .reports-nav-date { font-size: 12px; color: var(--text-3); }
-  .reports-nav-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .reports-nav-btn {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 5px 11px; font-size: 12px; font-weight: 500;
-    color: var(--text-2); background: var(--bg); border: 1px solid var(--border);
-    border-radius: 6px; cursor: pointer;
-    transition: background 0.15s, color 0.15s, border-color 0.15s; white-space: nowrap;
+  .reports-archive-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
-  .reports-nav-btn:hover:not(:disabled) {
-    background: var(--card-bg); color: var(--text-1); border-color: var(--text-3);
+  .reports-archive-indicator {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
   }
-  .reports-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-  .reports-nav-indicator {
-    font-size: 12px; color: var(--text-3); font-variant-numeric: tabular-nums;
-    min-width: 36px; text-align: center;
+
+  /* Floating PDF Button */
+  .reports-pdf-float-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1000;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--red);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(227, 6, 19, 0.35);
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
-  .reports-pdf-btn {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 5px 12px; font-size: 12px; font-weight: 600;
-    color: #fff; background: #2563eb; border: none; border-radius: 6px;
-    cursor: pointer; transition: background 0.15s, transform 0.12s; white-space: nowrap;
+  .reports-pdf-float-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(227, 6, 19, 0.5);
+    background: #c30510;
   }
-  .reports-pdf-btn:hover { background: #1d4ed8; }
-  .reports-pdf-btn:active { transform: translateY(1px); }
+  .reports-pdf-float-btn:active {
+    transform: translateY(0);
+  }
+
   /* Bulletin frame: iframe — no padding/overflow needed, border handles styling */
   .reports-bulletin-frame {
     display: block;
@@ -799,20 +909,6 @@
     flex: 1;
     max-width: 820px;
     min-width: 0;
-  }
-
-  /* Table of Contents Sidebar */
-  .reports-toc {
-    position: sticky;
-    top: 195px; /* Aligned below the filter bar stack when scrolling */
-    width: 270px;
-    flex-shrink: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 12px;
-    box-shadow: var(--shadow-sm);
-    transition: width 0.25s ease, padding 0.25s ease;
   }
 
   .reports-toc-title {
@@ -921,38 +1017,21 @@
   }
 
   /* Responsive Design */
-  @media (max-width: 1024px) and (min-width: 769px) {
-    /* Compact mode: Hide text labels, show only vertical icon stream */
-    .reports-toc {
-      width: 54px;
-      padding: 16px 6px;
+  @media (max-width: 1024px) {
+    .reports-main-layout {
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
     }
-    .reports-toc-title {
-      display: none;
+    .reports-sidebar {
+      position: static;
+      width: 100%;
+      max-width: 820px;
+      margin-bottom: 0;
     }
-    .reports-toc-text {
-      display: none;
-    }
-    .reports-toc-link {
-      padding: 8px 6px;
-    }
-    .reports-toc-list::before {
-      left: 9px; /* Adjust for smaller padding (6px + 3px dot center) */
-    }
-  }
-
-  @media (max-width: 768px) {
-    /* Mobile: Hide TOC sidebar entirely to give full screen width to reports */
     .reports-toc {
       display: none !important;
     }
-    .reports-main-layout {
-      gap: 0;
-    }
-  }
-  @media (max-width: 640px) {
-    .reports-nav-bar { flex-direction: column; align-items: flex-start; }
-    .reports-nav-controls { flex-wrap: wrap; }
   }
 </style>
 </head>
@@ -1314,14 +1393,14 @@
       Analizli Haberler
     </button>
 
-    <!-- Çoklayan haberler toggle -->
+    <!-- 1+ kaynakta bulunan haberler toggle -->
     <button class="fdd-toggle" id="multi-source-toggle" aria-pressed="false">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 6h16M4 10h16M4 14h8"/>
         <circle cx="17" cy="17" r="4"/>
         <path d="M17 15v2l1 1"/>
       </svg>
-      Çoklayan Haberler
+      1+ Kaynakta Bulunan Haberler
     </button>
 
     <!-- Clear all -->
@@ -2127,31 +2206,48 @@
       <p>Lojistik Bülten Arz Talep workflow çalıştığında burada görünecek.</p>
     </div>
     <div id="reports-view" style="display:none">
-      <div class="reports-nav-bar">
-        <div class="reports-nav-info">
-          <span class="reports-nav-title" id="reports-current-title"></span>
-          <span class="reports-nav-date" id="reports-current-date"></span>
-        </div>
-        <div class="reports-nav-controls">
-          <button class="reports-nav-btn" id="reports-prev-btn" onclick="navigateReport(-1)" aria-label="Önceki bülten" title="Önceki hafta bülteni">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-            Önceki
-          </button>
-          <span class="reports-nav-indicator" id="reports-nav-indicator" title="Görüntülenen bülten / toplam">1 / 1</span>
-          <button class="reports-nav-btn" id="reports-next-btn" onclick="navigateReport(1)" aria-label="Sonraki bülten" title="Sonraki hafta bülteni">
-            Sonraki
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
-          <button class="reports-pdf-btn" id="reports-pdf-btn" onclick="downloadReportPDF()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            PDF İndir
-          </button>
-        </div>
+      <div style="display:none">
+        <span id="reports-current-title"></span>
+        <span id="reports-current-date"></span>
       </div>
+
+      <!-- Floating PDF Button -->
+      <button class="reports-pdf-float-btn" id="reports-pdf-btn" onclick="downloadReportPDF()" title="Bülteni PDF olarak indir" aria-label="PDF İndir">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>PDF İndir</span>
+      </button>
+
       <div class="reports-main-layout">
-        <aside class="reports-toc" id="reports-toc" style="display:none;">
-          <div class="reports-toc-title">İçindekiler</div>
-          <ul class="reports-toc-list" id="reports-toc-list"></ul>
+        <aside class="reports-sidebar" id="reports-sidebar">
+          <!-- Small Box for Bülten Arşivi / Önceki Yayınlar -->
+          <div class="reports-archive-box" id="reports-archive-box">
+            <div class="reports-archive-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              Önceki Yayınlar
+            </div>
+            <div class="reports-archive-select-wrapper">
+              <select id="reports-archive-select" class="reports-archive-select" onchange="selectReport(this.value)">
+                <!-- populated dynamically by JS -->
+              </select>
+            </div>
+            <div class="reports-archive-nav">
+              <button class="reports-archive-btn" id="reports-prev-btn" onclick="navigateReport(-1)" aria-label="Önceki bülten" title="Önceki bülten">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                Önceki
+              </button>
+              <span class="reports-archive-indicator" id="reports-nav-indicator" title="Görüntülenen bülten / toplam">1 / 1</span>
+              <button class="reports-archive-btn" id="reports-next-btn" onclick="navigateReport(1)" aria-label="Sonraki bülten" title="Sonraki bülten">
+                Sonraki
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Table of Contents -->
+          <div class="reports-toc" id="reports-toc" style="display:none;">
+            <div class="reports-toc-title">İçindekiler</div>
+            <ul class="reports-toc-list" id="reports-toc-list"></ul>
+          </div>
         </aside>
         <div class="reports-frame-container">
           <iframe id="reports-bulletin-frame" class="reports-bulletin-frame" frameborder="0" title="Bülten içeriği" scrolling="no"></iframe>
@@ -13442,7 +13538,7 @@ function initControls(allArticles) {
     const emptyEl   = document.getElementById('reports-empty');
     const viewEl    = document.getElementById('reports-view');
 
-    loadingEl.style.display = '';
+    loadingEl.style.display = 'flex';
     emptyEl.style.display   = 'none';
     viewEl.style.display    = 'none';
 
@@ -13459,6 +13555,17 @@ function initControls(allArticles) {
         return;
       }
 
+      // Populate select dropdown in bülten arşivi
+      const archiveSelect = document.getElementById('reports-archive-select');
+      if (archiveSelect) {
+        archiveSelect.innerHTML = _reports.map((r, idx) => {
+          const dateStr = r.date
+            ? new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
+            : ('Yayın ' + (idx + 1));
+          return `<option value="${idx}">${dateStr}</option>`;
+        }).join('');
+      }
+
       _currentIdx = 0;
       renderReport();
       viewEl.style.display = 'block';
@@ -13472,6 +13579,11 @@ function initControls(allArticles) {
   function renderReport() {
     const r = _reports[_currentIdx];
     if (!r) return;
+
+    const archiveSelect = document.getElementById('reports-archive-select');
+    if (archiveSelect) {
+      archiveSelect.value = _currentIdx;
+    }
 
     document.getElementById('reports-current-title').textContent = r.title || 'Arz & Talep + Navlun Analizi';
     document.getElementById('reports-current-date').textContent  = r.date
@@ -13911,11 +14023,14 @@ function initControls(allArticles) {
 
     const isFilo = type === 'filo';
     if (fleetEl) { fleetEl.style.display = isFilo ? 'block' : 'none'; if (isFilo) setTimeout(initFleetChart, 30); }
-    if (loadingEl) loadingEl.style.display = isFilo ? 'none' : (viewEl && viewEl.style.display === 'block' ? 'none' : '');
+    
+    const hasReports = _reports.length > 0;
+    if (viewEl) viewEl.style.display = isFilo ? 'none' : (hasReports ? 'block' : 'none');
+    if (loadingEl) loadingEl.style.display = isFilo ? 'none' : (hasReports ? 'none' : 'flex');
+    
     if (emptyEl) {
       if (isFilo) emptyEl.style.display = 'none';
     }
-    if (viewEl) viewEl.style.display = isFilo ? 'none' : (_reports.length > 0 ? 'block' : 'none');
 
     // Yüklenmemişse ve navlun tipine dönüldüyse, var olan raporu göster
     if (!isFilo && _reports.length === 0 && !loadingEl.style.display) {
@@ -13938,10 +14053,20 @@ function initControls(allArticles) {
     }
   });
 
+  function selectReport(val) {
+    const idx = parseInt(val, 10);
+    if (!isNaN(idx) && idx >= 0 && idx < _reports.length) {
+      _currentIdx = idx;
+      renderReport();
+      document.getElementById('reports-bulletin-frame').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   // Global'e aç (onclick="..." attribute'ları için)
   window.initReportsTab  = initReportsTab;
   window.navigateReport  = navigateReport;
   window.downloadReportPDF = downloadReportPDF;
+  window.selectReport = selectReport;
 
   // Re-render bulletin when dark/light theme toggles (srcdoc needs full rebuild)
   new MutationObserver(function() {
