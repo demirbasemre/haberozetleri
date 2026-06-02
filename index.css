@@ -3048,6 +3048,36 @@
     stroke: currentColor;
   }
 
+  /* ── TAKVİM KATEGORİ SEÇİCİ ─────────────────────────── */
+  .rel-cat-selector {
+    display: inline-flex;
+    background: var(--border-soft);
+    padding: 3px;
+    border-radius: 20px;
+    align-items: center;
+    border: 1px solid var(--border);
+  }
+  .rel-cat-btn {
+    border: none;
+    background: transparent;
+    padding: 5px 14px;
+    border-radius: 17px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .rel-cat-btn:hover {
+    color: var(--text);
+  }
+  .rel-cat-btn.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+  }
+
   /* ── FİLTRE SATIRI (ülke + ay yan yana) ─────────────────────── */
   .rel-filter-bar {
     display: flex;
