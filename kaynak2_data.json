@@ -1,0 +1,4583 @@
+{
+  "QR": {
+    "iata": "QR",
+    "name": "Qatar Airways",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A320-200",
+        "active": "12",
+        "inactive": "15",
+        "total": "27",
+        "on_order": "",
+        "avg_age": "13.9",
+        "capacity": "3,756"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "48",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "4",
+        "inactive": "2",
+        "total": "6",
+        "on_order": "2",
+        "avg_age": "0.6",
+        "capacity": "1,888"
+      },
+      {
+        "variant": "A330-200",
+        "active": "",
+        "inactive": "6",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "17.5",
+        "capacity": "1,684"
+      },
+      {
+        "variant": "A330-300",
+        "active": "",
+        "inactive": "11",
+        "total": "11",
+        "on_order": "",
+        "avg_age": "17.4",
+        "capacity": "3,307"
+      },
+      {
+        "variant": "A350-1000",
+        "active": "28",
+        "inactive": "",
+        "total": "28",
+        "on_order": "14",
+        "avg_age": "5.5",
+        "capacity": "9,700"
+      },
+      {
+        "variant": "A350-900",
+        "active": "33",
+        "inactive": "1",
+        "total": "34",
+        "on_order": "",
+        "avg_age": "9.1",
+        "capacity": "9,622"
+      },
+      {
+        "variant": "A380-800",
+        "active": "",
+        "inactive": "10",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "10.9",
+        "capacity": "5,170"
+      },
+      {
+        "variant": "B737-8",
+        "active": "",
+        "inactive": "2",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "5.0",
+        "capacity": "352"
+      },
+      {
+        "variant": "B777-200F",
+        "active": "30",
+        "inactive": "",
+        "total": "30",
+        "on_order": "",
+        "avg_age": "8.2",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200LR",
+        "active": "6",
+        "inactive": "",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "16.3",
+        "capacity": "1,636"
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "46",
+        "inactive": "11",
+        "total": "57",
+        "on_order": "",
+        "avg_age": "13.2",
+        "capacity": "20,795"
+      },
+      {
+        "variant": "B777-8F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "34",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "90",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-10",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "75",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-8",
+        "active": "28",
+        "inactive": "4",
+        "total": "32",
+        "on_order": "",
+        "avg_age": "11.8",
+        "capacity": "8,154"
+      },
+      {
+        "variant": "B787-9",
+        "active": "27",
+        "inactive": "",
+        "total": "27",
+        "on_order": "58",
+        "avg_age": "3.9",
+        "capacity": "26,435"
+      },
+      {
+        "variant": "B777-200F",
+        "active": "30",
+        "inactive": "",
+        "total": "30",
+        "on_order": "",
+        "avg_age": "8.2",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-8F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "34",
+        "avg_age": "",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A321-200N",
+        "quantity": "1",
+        "option": ""
+      },
+      {
+        "variant": "A321-200N",
+        "quantity": "47",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "2",
+        "option": ""
+      },
+      {
+        "variant": "A350-1000",
+        "quantity": "14",
+        "option": ""
+      },
+      {
+        "variant": "B777-8",
+        "quantity": "",
+        "option": "16"
+      },
+      {
+        "variant": "B777-8F",
+        "quantity": "34",
+        "option": ""
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "90",
+        "option": ""
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "75",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "55",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "3",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "16",
+        "option": ""
+      }
+    ],
+    "active_total": 244
+  },
+  "EK": {
+    "iata": "EK",
+    "name": "Emirates",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A350-900",
+        "active": "20",
+        "inactive": "1",
+        "total": "21",
+        "on_order": "52",
+        "avg_age": "0.8",
+        "capacity": "5,816"
+      },
+      {
+        "variant": "A380-800",
+        "active": "84",
+        "inactive": "33",
+        "total": "117",
+        "on_order": "",
+        "avg_age": "11.4",
+        "capacity": "59,899"
+      },
+      {
+        "variant": "ACJ319-100",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "14.8",
+        "capacity": "19"
+      },
+      {
+        "variant": "B747-400(BDSF)",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "32.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400ERF",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "23.6",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400FSCD",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "24.8",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "15",
+        "inactive": "",
+        "total": "15",
+        "on_order": "6",
+        "avg_age": "4.2",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200LR",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "18.0",
+        "capacity": "2,942"
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "112",
+        "inactive": "7",
+        "total": "119",
+        "on_order": "",
+        "avg_age": "13.0",
+        "capacity": "42,409"
+      },
+      {
+        "variant": "B777-8",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "35",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "235",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-10",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-8",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "ACJ319-100",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "14.8",
+        "capacity": "19"
+      },
+      {
+        "variant": "B747-400(BDSF)",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "32.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400ERF",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "23.6",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400FSCD",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "24.8",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "15",
+        "inactive": "",
+        "total": "15",
+        "on_order": "6",
+        "avg_age": "4.2",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A350-900",
+        "quantity": "52",
+        "option": ""
+      },
+      {
+        "variant": "B777-200F",
+        "quantity": "6",
+        "option": ""
+      },
+      {
+        "variant": "B777-8",
+        "quantity": "35",
+        "option": ""
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "235",
+        "option": ""
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "B787-8",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "",
+        "option": ""
+      }
+    ],
+    "active_total": 258
+  },
+  "TK": {
+    "iata": "TK",
+    "name": "Turkish Airlines",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A310-300(F)",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "34.5",
+        "capacity": ""
+      },
+      {
+        "variant": "A319-100",
+        "active": "5",
+        "inactive": "1",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "15.1",
+        "capacity": "792"
+      },
+      {
+        "variant": "A320-200",
+        "active": "17",
+        "inactive": "1",
+        "total": "18",
+        "on_order": "",
+        "avg_age": "16.6",
+        "capacity": "2,988"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "3",
+        "inactive": "20",
+        "total": "23",
+        "on_order": "",
+        "avg_age": "5.2",
+        "capacity": "4,464"
+      },
+      {
+        "variant": "A321-200",
+        "active": "65",
+        "inactive": "3",
+        "total": "68",
+        "on_order": "",
+        "avg_age": "13.8",
+        "capacity": "12,664"
+      },
+      {
+        "variant": "A321-200(P2F)",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "26.7",
+        "capacity": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "66",
+        "inactive": "7",
+        "total": "73",
+        "on_order": "199",
+        "avg_age": "3.8",
+        "capacity": "12,581"
+      },
+      {
+        "variant": "A330-200",
+        "active": "8",
+        "inactive": "4",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "18.3",
+        "capacity": "3,176"
+      },
+      {
+        "variant": "A330-200F",
+        "active": "8",
+        "inactive": "2",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "12.7",
+        "capacity": ""
+      },
+      {
+        "variant": "A330-300",
+        "active": "33",
+        "inactive": "4",
+        "total": "37",
+        "on_order": "",
+        "avg_age": "12.4",
+        "capacity": "10,883"
+      },
+      {
+        "variant": "A330-300(P2F)",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "25.9",
+        "capacity": ""
+      },
+      {
+        "variant": "A350-1000",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A350-900",
+        "active": "34",
+        "inactive": "",
+        "total": "34",
+        "on_order": "56",
+        "avg_age": "2.7",
+        "capacity": "11,186"
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "5",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B737-8",
+        "active": "37",
+        "inactive": "1",
+        "total": "38",
+        "on_order": "23",
+        "avg_age": "4.7",
+        "capacity": "6,357"
+      },
+      {
+        "variant": "B737-800",
+        "active": "55",
+        "inactive": "11",
+        "total": "66",
+        "on_order": "",
+        "avg_age": "14.4",
+        "capacity": "10,939"
+      },
+      {
+        "variant": "B737-9",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "7.2",
+        "capacity": "845"
+      },
+      {
+        "variant": "B737-900ER",
+        "active": "13",
+        "inactive": "2",
+        "total": "15",
+        "on_order": "",
+        "avg_age": "13.1",
+        "capacity": "2,355"
+      },
+      {
+        "variant": "B777-200F",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "5.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "31",
+        "inactive": "4",
+        "total": "35",
+        "on_order": "",
+        "avg_age": "13.1",
+        "capacity": "12,824"
+      },
+      {
+        "variant": "B787-10",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-9",
+        "active": "25",
+        "inactive": "1",
+        "total": "26",
+        "on_order": "42",
+        "avg_age": "4.7",
+        "capacity": "20,400"
+      },
+      {
+        "variant": "A310-300(F)",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "34.5",
+        "capacity": ""
+      },
+      {
+        "variant": "A321-200(P2F)",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "26.7",
+        "capacity": ""
+      },
+      {
+        "variant": "A330-200F",
+        "active": "8",
+        "inactive": "2",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "12.7",
+        "capacity": ""
+      },
+      {
+        "variant": "A330-300(P2F)",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "25.9",
+        "capacity": ""
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "10",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "5.1",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A321-200N",
+        "quantity": "1",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "185",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "",
+        "option": "100"
+      },
+      {
+        "variant": "A350-1000",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "A350-900",
+        "quantity": "",
+        "option": "20"
+      },
+      {
+        "variant": "A350-900",
+        "quantity": "56",
+        "option": ""
+      },
+      {
+        "variant": "A350F",
+        "quantity": "5",
+        "option": ""
+      },
+      {
+        "variant": "A350F",
+        "quantity": "",
+        "option": "5"
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "39",
+        "option": ""
+      },
+      {
+        "variant": "B787(Variant Unknown)",
+        "quantity": "",
+        "option": "25"
+      },
+      {
+        "variant": "Total",
+        "quantity": "150",
+        "option": ""
+      }
+    ],
+    "active_total": 437
+  },
+  "AF": {
+    "iata": "AF",
+    "name": "Air France",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A220-300",
+        "active": "46",
+        "inactive": "10",
+        "total": "56",
+        "on_order": "4",
+        "avg_age": "2.5",
+        "capacity": "8,880"
+      },
+      {
+        "variant": "A318-100",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "19.7",
+        "capacity": "524"
+      },
+      {
+        "variant": "A319-100",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "23.3",
+        "capacity": "143"
+      },
+      {
+        "variant": "A320-200",
+        "active": "35",
+        "inactive": "1",
+        "total": "36",
+        "on_order": "",
+        "avg_age": "16.7",
+        "capacity": "6,292"
+      },
+      {
+        "variant": "A321-100",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "31.1",
+        "capacity": "212"
+      },
+      {
+        "variant": "A321-200",
+        "active": "6",
+        "inactive": "2",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "19.7",
+        "capacity": "1,696"
+      },
+      {
+        "variant": "A330-200",
+        "active": "6",
+        "inactive": "1",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "23.3",
+        "capacity": "1,568"
+      },
+      {
+        "variant": "A350-900",
+        "active": "38",
+        "inactive": "3",
+        "total": "41",
+        "on_order": "2",
+        "avg_age": "3.4",
+        "capacity": "12,612"
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "3",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200ER",
+        "active": "18",
+        "inactive": "",
+        "total": "18",
+        "on_order": "",
+        "avg_age": "26.0",
+        "capacity": "5,904"
+      },
+      {
+        "variant": "B777-200F",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "17.6",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "36",
+        "inactive": "7",
+        "total": "43",
+        "on_order": "",
+        "avg_age": "17.8",
+        "capacity": "15,486"
+      },
+      {
+        "variant": "B787-9",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "8.1",
+        "capacity": "2,790"
+      },
+      {
+        "variant": "ERJ 170-100STD",
+        "active": "",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "16.8",
+        "capacity": "760"
+      },
+      {
+        "variant": "ERJ 190-100LR",
+        "active": "",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "18.9",
+        "capacity": "420"
+      },
+      {
+        "variant": "ERJ 190-100STD",
+        "active": "",
+        "inactive": "",
+        "total": "21",
+        "on_order": "",
+        "avg_age": "11.8",
+        "capacity": "2,200"
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "3",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "17.6",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A220-300",
+        "quantity": "",
+        "option": "30"
+      },
+      {
+        "variant": "A220-300",
+        "quantity": "4",
+        "option": ""
+      },
+      {
+        "variant": "A350-900",
+        "quantity": "1",
+        "option": ""
+      },
+      {
+        "variant": "A350F",
+        "quantity": "3",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "30",
+        "option": ""
+      }
+    ],
+    "active_total": 205
+  },
+  "CI": {
+    "iata": "CI",
+    "name": "China Airlines",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A321-200NX",
+        "active": "18",
+        "inactive": "3",
+        "total": "21",
+        "on_order": "9",
+        "avg_age": "2.6",
+        "capacity": "5,400"
+      },
+      {
+        "variant": "A330-300",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "17.7",
+        "capacity": "3,708"
+      },
+      {
+        "variant": "A350-1000",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A350-900",
+        "active": "15",
+        "inactive": "1",
+        "total": "16",
+        "on_order": "",
+        "avg_age": "8.8",
+        "capacity": "4,915"
+      },
+      {
+        "variant": "B737-800",
+        "active": "6",
+        "inactive": "1",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "11.0",
+        "capacity": "1,264"
+      },
+      {
+        "variant": "B747-400FSCD",
+        "active": "8",
+        "inactive": "",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "20.8",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "3.5",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "11.1",
+        "capacity": "3,580"
+      },
+      {
+        "variant": "B777-8F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "8",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-10",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "6",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "18",
+        "avg_age": "0.4",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400FSCD",
+        "active": "8",
+        "inactive": "",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "20.8",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "3.5",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A321-200NX",
+        "quantity": "6",
+        "option": ""
+      },
+      {
+        "variant": "A350-1000",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "B777-8F",
+        "quantity": "8",
+        "option": "9"
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "6",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "18",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "9",
+        "option": ""
+      }
+    ],
+    "active_total": 97
+  },
+  "CX": {
+    "iata": "CX",
+    "name": "Cathay Pacific",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A321-200NX",
+        "active": "16",
+        "inactive": "",
+        "total": "16",
+        "on_order": "15",
+        "avg_age": "3.6",
+        "capacity": "3,232"
+      },
+      {
+        "variant": "A330-300",
+        "active": "40",
+        "inactive": "3",
+        "total": "43",
+        "on_order": "",
+        "avg_age": "17.8",
+        "capacity": "12,362"
+      },
+      {
+        "variant": "A330-900N",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "30",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A350-1000",
+        "active": "17",
+        "inactive": "1",
+        "total": "18",
+        "on_order": "",
+        "avg_age": "6.6",
+        "capacity": "6,012"
+      },
+      {
+        "variant": "A350-900",
+        "active": "29",
+        "inactive": "1",
+        "total": "30",
+        "on_order": "",
+        "avg_age": "8.3",
+        "capacity": "8,400"
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "6",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400ERF",
+        "active": "5",
+        "inactive": "1",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "17.5",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-8F",
+        "active": "13",
+        "inactive": "1",
+        "total": "14",
+        "on_order": "",
+        "avg_age": "13.4",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300",
+        "active": "15",
+        "inactive": "2",
+        "total": "17",
+        "on_order": "",
+        "avg_age": "24.8",
+        "capacity": "7,446"
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "33",
+        "inactive": "2",
+        "total": "35",
+        "on_order": "",
+        "avg_age": "13.7",
+        "capacity": "12,042"
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "35",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "26",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400ERF",
+        "active": "5",
+        "inactive": "1",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "17.5",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-8F",
+        "active": "13",
+        "inactive": "1",
+        "total": "14",
+        "on_order": "",
+        "avg_age": "13.4",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "B777-9",
+        "quantity": "35",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "",
+        "option": ""
+      }
+    ],
+    "active_total": 186
+  },
+  "ET": {
+    "iata": "ET",
+    "name": "Ethiopian",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A350-1000",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "1.4",
+        "capacity": "1,580"
+      },
+      {
+        "variant": "A350-900",
+        "active": "21",
+        "inactive": "1",
+        "total": "22",
+        "on_order": "17",
+        "avg_age": "6.7",
+        "capacity": "7,606"
+      },
+      {
+        "variant": "ATR72-600",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "1.0",
+        "capacity": "72"
+      },
+      {
+        "variant": "B737-700",
+        "active": "3",
+        "inactive": "",
+        "total": "3",
+        "on_order": "",
+        "avg_age": "20.6",
+        "capacity": "354"
+      },
+      {
+        "variant": "B737-8",
+        "active": "23",
+        "inactive": "",
+        "total": "23",
+        "on_order": "42",
+        "avg_age": "4.2",
+        "capacity": "3,730"
+      },
+      {
+        "variant": "B737-800",
+        "active": "7",
+        "inactive": "1",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "11.8",
+        "capacity": "1,216"
+      },
+      {
+        "variant": "B737-800(BBJ)",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "16.8",
+        "capacity": "32"
+      },
+      {
+        "variant": "B737-800(BCF)",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "19.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B737-800(SF)",
+        "active": "2",
+        "inactive": "1",
+        "total": "3",
+        "on_order": "",
+        "avg_age": "25.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B767-300ER(BDSF)",
+        "active": "",
+        "inactive": "1",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "21.0",
+        "capacity": ""
+      },
+      {
+        "variant": "B767-300F",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "4.4",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "8.0",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200LR",
+        "active": "4",
+        "inactive": "2",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "14.9",
+        "capacity": "1,890"
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "10.7",
+        "capacity": "1,933"
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "8",
+        "avg_age": "",
+        "capacity": "3,064"
+      },
+      {
+        "variant": "B787-8",
+        "active": "19",
+        "inactive": "1",
+        "total": "20",
+        "on_order": "",
+        "avg_age": "11.6",
+        "capacity": "5,343"
+      },
+      {
+        "variant": "B787-9",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "26",
+        "avg_age": "6.6",
+        "capacity": "3,150"
+      },
+      {
+        "variant": "DHC-6-300-G",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "2",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "DHC-8-Q400",
+        "active": "19",
+        "inactive": "11",
+        "total": "30",
+        "on_order": "",
+        "avg_age": "10.1",
+        "capacity": "2,314"
+      },
+      {
+        "variant": "B737-800(BCF)",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "19.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B737-800(SF)",
+        "active": "2",
+        "inactive": "1",
+        "total": "3",
+        "on_order": "",
+        "avg_age": "25.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B767-300ER(BDSF)",
+        "active": "",
+        "inactive": "1",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "21.0",
+        "capacity": ""
+      },
+      {
+        "variant": "B767-300F",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "4.4",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "8.0",
+        "capacity": ""
+      },
+      {
+        "variant": "B737-800(BBJ)",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "16.8",
+        "capacity": "32"
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A350-900",
+        "quantity": "17",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "9",
+        "option": ""
+      },
+      {
+        "variant": "DHC-6-300-G",
+        "quantity": "2",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "",
+        "option": ""
+      }
+    ],
+    "active_total": 152
+  },
+  "LH": {
+    "iata": "LH",
+    "name": "Lufthansa",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A220-300",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "2.3",
+        "capacity": "296"
+      },
+      {
+        "variant": "A319-100",
+        "active": "21",
+        "inactive": "1",
+        "total": "22",
+        "on_order": "",
+        "avg_age": "22.9",
+        "capacity": "3,036"
+      },
+      {
+        "variant": "A320-200",
+        "active": "42",
+        "inactive": "2",
+        "total": "44",
+        "on_order": "",
+        "avg_age": "13.8",
+        "capacity": "7,452"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "26",
+        "inactive": "2",
+        "total": "28",
+        "on_order": "9",
+        "avg_age": "7.7",
+        "capacity": "6,660"
+      },
+      {
+        "variant": "A321-100",
+        "active": "13",
+        "inactive": "2",
+        "total": "15",
+        "on_order": "",
+        "avg_age": "30.4",
+        "capacity": "3,075"
+      },
+      {
+        "variant": "A321-200",
+        "active": "34",
+        "inactive": "3",
+        "total": "37",
+        "on_order": "",
+        "avg_age": "17.4",
+        "capacity": "7,585"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "19",
+        "inactive": "",
+        "total": "19",
+        "on_order": "15",
+        "avg_age": "4.8",
+        "capacity": "7,310"
+      },
+      {
+        "variant": "A330-300",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "15.4",
+        "capacity": "1,275"
+      },
+      {
+        "variant": "A340-300",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "26.4",
+        "capacity": "3,348"
+      },
+      {
+        "variant": "A340-600",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "17.3",
+        "capacity": "1,124"
+      },
+      {
+        "variant": "A350-1000",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A350-900",
+        "active": "31",
+        "inactive": "",
+        "total": "31",
+        "on_order": "4",
+        "avg_age": "6.1",
+        "capacity": "9,991"
+      },
+      {
+        "variant": "A380-800",
+        "active": "6",
+        "inactive": "2",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "14.1",
+        "capacity": "4,062"
+      },
+      {
+        "variant": "B747-400",
+        "active": "8",
+        "inactive": "",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "26.2",
+        "capacity": "2,968"
+      },
+      {
+        "variant": "B747-8",
+        "active": "15",
+        "inactive": "3",
+        "total": "18",
+        "on_order": "",
+        "avg_age": "12.6",
+        "capacity": "6,552"
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "20",
+        "avg_age": "3.0",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-9",
+        "active": "16",
+        "inactive": "",
+        "total": "16",
+        "on_order": "21",
+        "avg_age": "3.4",
+        "capacity": "10,360"
+      },
+      {
+        "variant": "ERJ 190-200AR",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "15.6",
+        "capacity": "122"
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A220-300",
+        "quantity": "40",
+        "option": "20"
+      },
+      {
+        "variant": "A320-200N",
+        "quantity": "",
+        "option": "40"
+      },
+      {
+        "variant": "A320-200N",
+        "quantity": "23",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "A350-1000",
+        "quantity": "",
+        "option": "20"
+      },
+      {
+        "variant": "A350-1000",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "A350-900",
+        "quantity": "21",
+        "option": ""
+      },
+      {
+        "variant": "B737-8",
+        "quantity": "40",
+        "option": "60"
+      },
+      {
+        "variant": "B777-8F",
+        "quantity": "7",
+        "option": ""
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "",
+        "option": "25"
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "20",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "6",
+        "option": "12"
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "13",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "1",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "4",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "177",
+        "option": ""
+      }
+    ],
+    "active_total": 252
+  },
+  "LA": {
+    "iata": "LA",
+    "name": "LATAM",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A319-100",
+        "active": "",
+        "inactive": "",
+        "total": "39",
+        "on_order": "",
+        "avg_age": "17.9",
+        "capacity": "5,616"
+      },
+      {
+        "variant": "A320-200",
+        "active": "9",
+        "inactive": "3",
+        "total": "135",
+        "on_order": "",
+        "avg_age": "15.3",
+        "capacity": "24,300"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "6",
+        "inactive": "6",
+        "total": "54",
+        "on_order": "13",
+        "avg_age": "4.1",
+        "capacity": "9,780"
+      },
+      {
+        "variant": "A321-200",
+        "active": "16",
+        "inactive": "1",
+        "total": "49",
+        "on_order": "",
+        "avg_age": "12.0",
+        "capacity": "10,976"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "5",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "",
+        "inactive": "",
+        "total": "20",
+        "on_order": "54",
+        "avg_age": "2.1",
+        "capacity": "4,478"
+      },
+      {
+        "variant": "A321-200NY(XLR)",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "10",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A330-200",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "17.5",
+        "capacity": "576"
+      },
+      {
+        "variant": "B767-300ER",
+        "active": "",
+        "inactive": "",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "18.1",
+        "capacity": "2,097"
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "15.2",
+        "capacity": "4,100"
+      },
+      {
+        "variant": "B787-8",
+        "active": "7",
+        "inactive": "2",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "12.6",
+        "capacity": "2,710"
+      },
+      {
+        "variant": "B787-9",
+        "active": "7",
+        "inactive": "",
+        "total": "28",
+        "on_order": "15",
+        "avg_age": "8.1",
+        "capacity": "8,458"
+      },
+      {
+        "variant": "ERJ 190-400",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "19",
+        "avg_age": "",
+        "capacity": "2,584"
+      }
+    ],
+    "orders": [],
+    "active_total": 45
+  },
+  "KE": {
+    "iata": "KE",
+    "name": "Korean Air",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A220-300",
+        "active": "9",
+        "inactive": "1",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "8.1",
+        "capacity": "1,400"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "20",
+        "inactive": "",
+        "total": "20",
+        "on_order": "36",
+        "avg_age": "2.7",
+        "capacity": "12,424"
+      },
+      {
+        "variant": "A330-300",
+        "active": "14",
+        "inactive": "3",
+        "total": "17",
+        "on_order": "",
+        "avg_age": "18.6",
+        "capacity": "8,864"
+      },
+      {
+        "variant": "A350-1000",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "20",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A350-900",
+        "active": "3",
+        "inactive": "",
+        "total": "3",
+        "on_order": "3",
+        "avg_age": "6.0",
+        "capacity": "6,531"
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "7",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A380-800",
+        "active": "4",
+        "inactive": "1",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "12.0",
+        "capacity": "5,005"
+      },
+      {
+        "variant": "B737-10",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "12",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B737-8",
+        "active": "6",
+        "inactive": "",
+        "total": "6",
+        "on_order": "4",
+        "avg_age": "5.9",
+        "capacity": "900"
+      },
+      {
+        "variant": "B737-800",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "14.6",
+        "capacity": "276"
+      },
+      {
+        "variant": "B737-900",
+        "active": "8",
+        "inactive": "1",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "22.7",
+        "capacity": "1,692"
+      },
+      {
+        "variant": "B737-900ER",
+        "active": "5",
+        "inactive": "1",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "14.0",
+        "capacity": "1,038"
+      },
+      {
+        "variant": "B747-400ERF",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "20.7",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-8",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "9.6",
+        "capacity": "1,472"
+      },
+      {
+        "variant": "B747-8F",
+        "active": "7",
+        "inactive": "",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "12.7",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200ER",
+        "active": "",
+        "inactive": "2",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "18.4",
+        "capacity": "3,234"
+      },
+      {
+        "variant": "B777-200F",
+        "active": "11",
+        "inactive": "1",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "11.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300",
+        "active": "3",
+        "inactive": "1",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "27.0",
+        "capacity": "1,352"
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "24",
+        "inactive": "1",
+        "total": "25",
+        "on_order": "",
+        "avg_age": "12.0",
+        "capacity": "7,116"
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "20",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-10",
+        "active": "16",
+        "inactive": "",
+        "total": "16",
+        "on_order": "24",
+        "avg_age": "1.2",
+        "capacity": "13,000"
+      },
+      {
+        "variant": "B787-8(BBJ)",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "11.3",
+        "capacity": "39"
+      },
+      {
+        "variant": "B787-9",
+        "active": "13",
+        "inactive": "1",
+        "total": "14",
+        "on_order": "6",
+        "avg_age": "7.4",
+        "capacity": "3,874"
+      },
+      {
+        "variant": "G650(ER)",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "10.7",
+        "capacity": "13"
+      },
+      {
+        "variant": "G800",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "0.7",
+        "capacity": "13"
+      },
+      {
+        "variant": "Global Express XRS",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "16.4",
+        "capacity": "13"
+      },
+      {
+        "variant": "B747-400ERF",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "20.7",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-8F",
+        "active": "7",
+        "inactive": "",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "12.7",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "11",
+        "inactive": "1",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "11.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-8(BBJ)",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "11.3",
+        "capacity": "39"
+      },
+      {
+        "variant": "G650(ER)",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "10.7",
+        "capacity": "13"
+      },
+      {
+        "variant": "G800",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "0.7",
+        "capacity": "13"
+      },
+      {
+        "variant": "Global Express XRS",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "16.4",
+        "capacity": "13"
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A321-200N",
+        "quantity": "",
+        "option": "14"
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "36",
+        "option": ""
+      },
+      {
+        "variant": "A350-1000",
+        "quantity": "20",
+        "option": ""
+      },
+      {
+        "variant": "A350-900",
+        "quantity": "3",
+        "option": ""
+      },
+      {
+        "variant": "A350F",
+        "quantity": "7",
+        "option": ""
+      },
+      {
+        "variant": "B737-10",
+        "quantity": "12",
+        "option": ""
+      },
+      {
+        "variant": "B737-10",
+        "quantity": "",
+        "option": "10"
+      },
+      {
+        "variant": "B737-8",
+        "quantity": "",
+        "option": "20"
+      },
+      {
+        "variant": "B737-8",
+        "quantity": "4",
+        "option": ""
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "20",
+        "option": ""
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "24",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "6",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "44",
+        "option": ""
+      }
+    ],
+    "active_total": 183
+  },
+  "7L": {
+    "iata": "7L",
+    "name": "Silkway West",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "B737-800",
+        "active": "",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "19.3",
+        "capacity": "728"
+      }
+    ],
+    "orders": [],
+    "active_total": 0
+  },
+  "CA": {
+    "iata": "CA",
+    "name": "Air China",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A319-100",
+        "active": "16",
+        "inactive": "1",
+        "total": "17",
+        "on_order": "",
+        "avg_age": "18.3",
+        "capacity": "2,176"
+      },
+      {
+        "variant": "A319-100N",
+        "active": "7",
+        "inactive": "1",
+        "total": "8",
+        "on_order": "2",
+        "avg_age": "0.7",
+        "capacity": "1,280"
+      },
+      {
+        "variant": "A320-200",
+        "active": "36",
+        "inactive": "2",
+        "total": "38",
+        "on_order": "",
+        "avg_age": "12.5",
+        "capacity": "6,004"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "36",
+        "inactive": "17",
+        "total": "53",
+        "on_order": "6",
+        "avg_age": "5.8",
+        "capacity": "9,322"
+      },
+      {
+        "variant": "A321-200",
+        "active": "59",
+        "inactive": "2",
+        "total": "61",
+        "on_order": "",
+        "avg_age": "14.3",
+        "capacity": "11,053"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "7.0",
+        "capacity": "1,940"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "34",
+        "inactive": "1",
+        "total": "35",
+        "on_order": "95",
+        "avg_age": "2.5",
+        "capacity": "25,740"
+      },
+      {
+        "variant": "A330-200",
+        "active": "14",
+        "inactive": "1",
+        "total": "15",
+        "on_order": "",
+        "avg_age": "15.9",
+        "capacity": "3,917"
+      },
+      {
+        "variant": "A330-300",
+        "active": "25",
+        "inactive": "3",
+        "total": "28",
+        "on_order": "",
+        "avg_age": "12.3",
+        "capacity": "8,488"
+      },
+      {
+        "variant": "A350-900",
+        "active": "24",
+        "inactive": "6",
+        "total": "30",
+        "on_order": "",
+        "avg_age": "5.4",
+        "capacity": "9,360"
+      },
+      {
+        "variant": "B737-700",
+        "active": "13",
+        "inactive": "4",
+        "total": "17",
+        "on_order": "",
+        "avg_age": "19.8",
+        "capacity": "2,176"
+      },
+      {
+        "variant": "B737-8",
+        "active": "29",
+        "inactive": "2",
+        "total": "31",
+        "on_order": "",
+        "avg_age": "6.5",
+        "capacity": "5,456"
+      },
+      {
+        "variant": "B737-800",
+        "active": "84",
+        "inactive": "3",
+        "total": "111",
+        "on_order": "",
+        "avg_age": "13.0",
+        "capacity": "18,346"
+      },
+      {
+        "variant": "B747-400",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "28.8",
+        "capacity": "688"
+      },
+      {
+        "variant": "B747-8",
+        "active": "6",
+        "inactive": "1",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "11.4",
+        "capacity": "1,825"
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "24",
+        "inactive": "4",
+        "total": "28",
+        "on_order": "",
+        "avg_age": "12.2",
+        "capacity": "9,356"
+      },
+      {
+        "variant": "B787-9",
+        "active": "13",
+        "inactive": "1",
+        "total": "14",
+        "on_order": "",
+        "avg_age": "9.3",
+        "capacity": "4,102"
+      },
+      {
+        "variant": "C909",
+        "active": "31",
+        "inactive": "4",
+        "total": "35",
+        "on_order": "",
+        "avg_age": "3.2",
+        "capacity": "3,150"
+      },
+      {
+        "variant": "C919-100ER",
+        "active": "10",
+        "inactive": "1",
+        "total": "11",
+        "on_order": "94",
+        "avg_age": "0.9",
+        "capacity": "16,590"
+      },
+      {
+        "variant": "B737-700",
+        "active": "8",
+        "inactive": "1",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "18.5",
+        "capacity": "1,152"
+      },
+      {
+        "variant": "B737-8",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "7.7",
+        "capacity": "880"
+      },
+      {
+        "variant": "B737-800",
+        "active": "33",
+        "inactive": "1",
+        "total": "34",
+        "on_order": "",
+        "avg_age": "12.9",
+        "capacity": "5,695"
+      },
+      {
+        "variant": "A320-200",
+        "active": "14",
+        "inactive": "",
+        "total": "14",
+        "on_order": "",
+        "avg_age": "12.1",
+        "capacity": "2,212"
+      },
+      {
+        "variant": "A321-200",
+        "active": "1",
+        "inactive": "1",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "16.0",
+        "capacity": "370"
+      },
+      {
+        "variant": "A320-200",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "11.7",
+        "capacity": "790"
+      },
+      {
+        "variant": "A321-200",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "11.9",
+        "capacity": "2,180"
+      },
+      {
+        "variant": "A330-200",
+        "active": "3",
+        "inactive": "",
+        "total": "3",
+        "on_order": "",
+        "avg_age": "13.9",
+        "capacity": "795"
+      },
+      {
+        "variant": "A319-100",
+        "active": "11",
+        "inactive": "1",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "17.6",
+        "capacity": "1,536"
+      },
+      {
+        "variant": "A319-100N",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "0.7",
+        "capacity": "640"
+      },
+      {
+        "variant": "A320-200",
+        "active": "8",
+        "inactive": "1",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "13.5",
+        "capacity": "1,422"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "29",
+        "inactive": "12",
+        "total": "41",
+        "on_order": "",
+        "avg_age": "5.7",
+        "capacity": "6,478"
+      },
+      {
+        "variant": "A321-200",
+        "active": "14",
+        "inactive": "",
+        "total": "14",
+        "on_order": "",
+        "avg_age": "16.8",
+        "capacity": "2,590"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "6.9",
+        "capacity": "776"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "13",
+        "inactive": "",
+        "total": "13",
+        "on_order": "",
+        "avg_age": "4.4",
+        "capacity": "2,574"
+      },
+      {
+        "variant": "A330-200",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "18.2",
+        "capacity": "1,351"
+      },
+      {
+        "variant": "A330-300",
+        "active": "4",
+        "inactive": "2",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "12.1",
+        "capacity": "1,826"
+      },
+      {
+        "variant": "C909",
+        "active": "11",
+        "inactive": "1",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "1.8",
+        "capacity": "1,080"
+      },
+      {
+        "variant": "B737-700",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "20.3",
+        "capacity": "640"
+      },
+      {
+        "variant": "B737-800",
+        "active": "22",
+        "inactive": "",
+        "total": "22",
+        "on_order": "",
+        "avg_age": "13.0",
+        "capacity": "3,616"
+      },
+      {
+        "variant": "B747-8",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "11.5",
+        "capacity": ""
+      },
+      {
+        "variant": "A319-100",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "19.9",
+        "capacity": "640"
+      },
+      {
+        "variant": "A320-200",
+        "active": "9",
+        "inactive": "1",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "12.5",
+        "capacity": "1,580"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "7",
+        "inactive": "5",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "6.5",
+        "capacity": "1,896"
+      },
+      {
+        "variant": "A321-200",
+        "active": "17",
+        "inactive": "",
+        "total": "17",
+        "on_order": "",
+        "avg_age": "12.2",
+        "capacity": "3,073"
+      },
+      {
+        "variant": "A330-300",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "10.8",
+        "capacity": "1,204"
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A319-100N",
+        "quantity": "2",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "2",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "93",
+        "option": ""
+      },
+      {
+        "variant": "C919-100ER",
+        "quantity": "94",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "",
+        "option": ""
+      }
+    ],
+    "active_total": 728
+  },
+  "SQ": {
+    "iata": "SQ",
+    "name": "Singapore Airlines",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A350-900",
+        "active": "54",
+        "inactive": "4",
+        "total": "58",
+        "on_order": "",
+        "avg_age": "7.1",
+        "capacity": "15,874"
+      },
+      {
+        "variant": "A350-900(ULR)",
+        "active": "7",
+        "inactive": "",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "7.8",
+        "capacity": "1,127"
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "7",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A380-800",
+        "active": "11",
+        "inactive": "1",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "12.3",
+        "capacity": "5,652"
+      },
+      {
+        "variant": "B737-8",
+        "active": "21",
+        "inactive": "2",
+        "total": "23",
+        "on_order": "3",
+        "avg_age": "5.0",
+        "capacity": "4,004"
+      },
+      {
+        "variant": "B747-400FSCD",
+        "active": "6",
+        "inactive": "1",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "22.6",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "3.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "20",
+        "inactive": "2",
+        "total": "22",
+        "on_order": "",
+        "avg_age": "16.1",
+        "capacity": "5,808"
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "30",
+        "avg_age": "0.8",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-10",
+        "active": "27",
+        "inactive": "1",
+        "total": "28",
+        "on_order": "3",
+        "avg_age": "5.5",
+        "capacity": "10,447"
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "12",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400FSCD",
+        "active": "6",
+        "inactive": "1",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "22.6",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "3.1",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A350F",
+        "quantity": "7",
+        "option": ""
+      },
+      {
+        "variant": "A350F",
+        "quantity": "",
+        "option": "5"
+      },
+      {
+        "variant": "B737-8",
+        "quantity": "3",
+        "option": ""
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "",
+        "option": "6"
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "30",
+        "option": ""
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "3",
+        "option": "6"
+      },
+      {
+        "variant": "Total",
+        "quantity": "17",
+        "option": ""
+      }
+    ],
+    "active_total": 162
+  },
+  "OZ": {
+    "iata": "OZ",
+    "name": "Asiana Airlines",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A321-200",
+        "active": "10",
+        "inactive": "1",
+        "total": "11",
+        "on_order": "",
+        "avg_age": "11.3",
+        "capacity": "1,914"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "13",
+        "inactive": "",
+        "total": "13",
+        "on_order": "12",
+        "avg_age": "3.6",
+        "capacity": "2,420"
+      },
+      {
+        "variant": "A330-300",
+        "active": "12",
+        "inactive": "2",
+        "total": "14",
+        "on_order": "",
+        "avg_age": "16.5",
+        "capacity": "4,132"
+      },
+      {
+        "variant": "A350-900",
+        "active": "15",
+        "inactive": "",
+        "total": "15",
+        "on_order": "15",
+        "avg_age": "6.9",
+        "capacity": "9,330"
+      },
+      {
+        "variant": "A380-800",
+        "active": "4",
+        "inactive": "2",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "11.2",
+        "capacity": "2,970"
+      },
+      {
+        "variant": "B777-200ER",
+        "active": "7",
+        "inactive": "1",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "18.1",
+        "capacity": "2,410"
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A321-200NX",
+        "quantity": "12",
+        "option": ""
+      },
+      {
+        "variant": "A350-900",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "",
+        "option": ""
+      }
+    ],
+    "active_total": 61
+  },
+  "CK": {
+    "iata": "CK",
+    "name": "China Cargo Airlines",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "B777-200F",
+        "active": "18",
+        "inactive": "1",
+        "total": "19",
+        "on_order": "1",
+        "avg_age": "4.3",
+        "capacity": ""
+      }
+    ],
+    "orders": [],
+    "active_total": 18
+  },
+  "SV": {
+    "iata": "SV",
+    "name": "Saudia",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A320-200",
+        "active": "35",
+        "inactive": "2",
+        "total": "37",
+        "on_order": "",
+        "avg_age": "9.9",
+        "capacity": "5,090"
+      },
+      {
+        "variant": "A321-200",
+        "active": "12",
+        "inactive": "3",
+        "total": "15",
+        "on_order": "",
+        "avg_age": "14.4",
+        "capacity": "2,475"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "62",
+        "avg_age": "1.9",
+        "capacity": "13,912"
+      },
+      {
+        "variant": "A321-200NY(XLR)",
+        "active": "",
+        "inactive": "1",
+        "total": "1",
+        "on_order": "14",
+        "avg_age": "0.1",
+        "capacity": "2,160"
+      },
+      {
+        "variant": "A330-300",
+        "active": "9",
+        "inactive": "3",
+        "total": "18",
+        "on_order": "",
+        "avg_age": "15.6",
+        "capacity": "5,873"
+      },
+      {
+        "variant": "A330-300(P2F)",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "14.5",
+        "capacity": ""
+      },
+      {
+        "variant": "A330-300Regional",
+        "active": "19",
+        "inactive": "",
+        "total": "19",
+        "on_order": "",
+        "avg_age": "9.5",
+        "capacity": "6,270"
+      },
+      {
+        "variant": "B747-400(BDSF)",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "31.4",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400FSCD",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "29.6",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200ER",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "20.3",
+        "capacity": "800"
+      },
+      {
+        "variant": "B777-200F",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "10.9",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "34",
+        "inactive": "1",
+        "total": "37",
+        "on_order": "",
+        "avg_age": "11.7",
+        "capacity": "13,581"
+      },
+      {
+        "variant": "B787-10",
+        "active": "7",
+        "inactive": "1",
+        "total": "8",
+        "on_order": "21",
+        "avg_age": "5.6",
+        "capacity": "10,353"
+      },
+      {
+        "variant": "B787-9",
+        "active": "12",
+        "inactive": "1",
+        "total": "13",
+        "on_order": "18",
+        "avg_age": "9.3",
+        "capacity": "9,238"
+      },
+      {
+        "variant": "GIV-G300",
+        "active": "3",
+        "inactive": "",
+        "total": "3",
+        "on_order": "",
+        "avg_age": "21.4",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400(BDSF)",
+        "active": "",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "31.4",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400FSCD",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "29.6",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "10.9",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "8.9",
+        "capacity": ""
+      },
+      {
+        "variant": "GIV-G300",
+        "active": "3",
+        "inactive": "",
+        "total": "3",
+        "on_order": "",
+        "avg_age": "21.4",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A320-200N",
+        "quantity": "1",
+        "option": ""
+      },
+      {
+        "variant": "A320-200N",
+        "quantity": "11",
+        "option": ""
+      },
+      {
+        "variant": "A321-200N",
+        "quantity": "39",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "62",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NY(XLR)",
+        "quantity": "14",
+        "option": ""
+      },
+      {
+        "variant": "A330-900N",
+        "quantity": "",
+        "option": "10"
+      },
+      {
+        "variant": "A330-900N",
+        "quantity": "10",
+        "option": ""
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "21",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "18",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "10",
+        "option": ""
+      }
+    ],
+    "active_total": 156
+  },
+  "NH": {
+    "iata": "NH",
+    "name": "ANA",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A320-200N",
+        "active": "11",
+        "inactive": "",
+        "total": "11",
+        "on_order": "6",
+        "avg_age": "7.9",
+        "capacity": "2,482"
+      },
+      {
+        "variant": "A321-200",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "9.5",
+        "capacity": "776"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "18",
+        "inactive": "4",
+        "total": "22",
+        "on_order": "17",
+        "avg_age": "6.5",
+        "capacity": "7,566"
+      },
+      {
+        "variant": "A380-800",
+        "active": "2",
+        "inactive": "1",
+        "total": "3",
+        "on_order": "",
+        "avg_age": "7.3",
+        "capacity": "1,560"
+      },
+      {
+        "variant": "B737-8",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "20",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B737-800",
+        "active": "34",
+        "inactive": "4",
+        "total": "39",
+        "on_order": "",
+        "avg_age": "13.4",
+        "capacity": "6,474"
+      },
+      {
+        "variant": "B767-300ER",
+        "active": "15",
+        "inactive": "",
+        "total": "15",
+        "on_order": "",
+        "avg_age": "18.5",
+        "capacity": "3,642"
+      },
+      {
+        "variant": "B767-300ER(BCF)",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "26.7",
+        "capacity": ""
+      },
+      {
+        "variant": "B767-300F",
+        "active": "3",
+        "inactive": "1",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "22.2",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "21.1",
+        "capacity": "810"
+      },
+      {
+        "variant": "B777-200ER",
+        "active": "6",
+        "inactive": "2",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "15.9",
+        "capacity": "3,136"
+      },
+      {
+        "variant": "B777-200F",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "7.3",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300",
+        "active": "3",
+        "inactive": "",
+        "total": "3",
+        "on_order": "",
+        "avg_age": "28.1",
+        "capacity": "1,542"
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "13",
+        "inactive": "",
+        "total": "13",
+        "on_order": "",
+        "avg_age": "10.8",
+        "capacity": "2,756"
+      },
+      {
+        "variant": "B777-8F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "2",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "16",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-10",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "1",
+        "avg_age": "3.2",
+        "capacity": "4,314"
+      },
+      {
+        "variant": "B787-8",
+        "active": "31",
+        "inactive": "5",
+        "total": "36",
+        "on_order": "",
+        "avg_age": "13.1",
+        "capacity": "9,349"
+      },
+      {
+        "variant": "B787-9",
+        "active": "39",
+        "inactive": "5",
+        "total": "44",
+        "on_order": "5",
+        "avg_age": "8.4",
+        "capacity": "11,013"
+      },
+      {
+        "variant": "DHC-8-Q400",
+        "active": "",
+        "inactive": "",
+        "total": "24",
+        "on_order": "",
+        "avg_age": "17.7",
+        "capacity": "1,858"
+      },
+      {
+        "variant": "ERJ 190-300",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B767-300ER(BCF)",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "26.7",
+        "capacity": ""
+      },
+      {
+        "variant": "B767-300F",
+        "active": "3",
+        "inactive": "1",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "22.2",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "7.3",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-8F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "2",
+        "avg_age": "",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A321-200N",
+        "quantity": "24",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NY(XLR)",
+        "quantity": "2",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NY(XLR)",
+        "quantity": "1",
+        "option": ""
+      },
+      {
+        "variant": "B777-8F",
+        "quantity": "2",
+        "option": ""
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "1",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "2",
+        "option": "5"
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "3",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "5",
+        "option": ""
+      }
+    ],
+    "active_total": 202
+  },
+  "EY": {
+    "iata": "EY",
+    "name": "Etihad Airways",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A319-100",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A320-200",
+        "active": "15",
+        "inactive": "1",
+        "total": "16",
+        "on_order": "",
+        "avg_age": "14.7",
+        "capacity": ""
+      },
+      {
+        "variant": "A320-200N",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "5.2",
+        "capacity": ""
+      },
+      {
+        "variant": "A321-200",
+        "active": "8",
+        "inactive": "1",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "11.2",
+        "capacity": ""
+      },
+      {
+        "variant": "A321-200N",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "7.8",
+        "capacity": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "10",
+        "avg_age": "5.3",
+        "capacity": ""
+      },
+      {
+        "variant": "A321-200NX(LR)",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "18",
+        "avg_age": "0.6",
+        "capacity": ""
+      },
+      {
+        "variant": "A330-200",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "17.2",
+        "capacity": ""
+      },
+      {
+        "variant": "A330-200F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A330-300",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A330-900N",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A340-300",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A340-500",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A340-600",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A350-1000",
+        "active": "12",
+        "inactive": "",
+        "total": "12",
+        "on_order": "15",
+        "avg_age": "3.2",
+        "capacity": ""
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "10",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "A380-800",
+        "active": "5",
+        "inactive": "4",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "10.7",
+        "capacity": ""
+      },
+      {
+        "variant": "B767-300ER",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "5",
+        "inactive": "",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "9.3",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200LR",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "9",
+        "inactive": "",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "15.2",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-9",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "15",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-10",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "19",
+        "avg_age": "6.9",
+        "capacity": ""
+      },
+      {
+        "variant": "B787-9",
+        "active": "36",
+        "inactive": "1",
+        "total": "37",
+        "on_order": "4",
+        "avg_age": "7.5",
+        "capacity": ""
+      },
+      {
+        "variant": "A350F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "10",
+        "avg_age": "",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-200F",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "11.0",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A321-200NX",
+        "quantity": "10",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX(LR)",
+        "quantity": "10",
+        "option": ""
+      },
+      {
+        "variant": "A330-900N",
+        "quantity": "6",
+        "option": ""
+      },
+      {
+        "variant": "A350-1000",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "A350F",
+        "quantity": "10",
+        "option": ""
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "15",
+        "option": ""
+      },
+      {
+        "variant": "B777-9",
+        "quantity": "",
+        "option": "10"
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "",
+        "option": "12"
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "13",
+        "option": ""
+      },
+      {
+        "variant": "B787-10",
+        "quantity": "6",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "4",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "22",
+        "option": ""
+      }
+    ],
+    "active_total": 124
+  },
+  "CZ": {
+    "iata": "CZ",
+    "name": "China Southern",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A319-100N",
+        "active": "9",
+        "inactive": "",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "2.7",
+        "capacity": "1,224"
+      },
+      {
+        "variant": "A320-200",
+        "active": "86",
+        "inactive": "7",
+        "total": "93",
+        "on_order": "",
+        "avg_age": "14.6",
+        "capacity": "15,132"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "72",
+        "inactive": "3",
+        "total": "75",
+        "on_order": "4",
+        "avg_age": "4.4",
+        "capacity": "12,340"
+      },
+      {
+        "variant": "A321-200",
+        "active": "78",
+        "inactive": "7",
+        "total": "85",
+        "on_order": "",
+        "avg_age": "14.3",
+        "capacity": "16,263"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "27",
+        "inactive": "1",
+        "total": "28",
+        "on_order": "",
+        "avg_age": "7.6",
+        "capacity": "5,460"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "65",
+        "inactive": "2",
+        "total": "67",
+        "on_order": "40",
+        "avg_age": "2.9",
+        "capacity": "21,400"
+      },
+      {
+        "variant": "A330-300",
+        "active": "19",
+        "inactive": "6",
+        "total": "25",
+        "on_order": "",
+        "avg_age": "10.3",
+        "capacity": "7,102"
+      },
+      {
+        "variant": "A350-900",
+        "active": "19",
+        "inactive": "1",
+        "total": "20",
+        "on_order": "7",
+        "avg_age": "5.1",
+        "capacity": "6,490"
+      },
+      {
+        "variant": "B737-700",
+        "active": "",
+        "inactive": "9",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "15.5",
+        "capacity": "1,152"
+      },
+      {
+        "variant": "B737-8",
+        "active": "44",
+        "inactive": "2",
+        "total": "46",
+        "on_order": "60",
+        "avg_age": "6.4",
+        "capacity": "7,906"
+      },
+      {
+        "variant": "B737-800",
+        "active": "76",
+        "inactive": "6",
+        "total": "153",
+        "on_order": "",
+        "avg_age": "12.9",
+        "capacity": "26,645"
+      },
+      {
+        "variant": "B777-200F",
+        "active": "8",
+        "inactive": "",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "11.1",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "14",
+        "inactive": "1",
+        "total": "15",
+        "on_order": "",
+        "avg_age": "9.7",
+        "capacity": "5,415"
+      },
+      {
+        "variant": "B787-9",
+        "active": "21",
+        "inactive": "",
+        "total": "21",
+        "on_order": "1",
+        "avg_age": "6.4",
+        "capacity": "6,069"
+      },
+      {
+        "variant": "C909",
+        "active": "24",
+        "inactive": "1",
+        "total": "30",
+        "on_order": "9",
+        "avg_age": "3.4",
+        "capacity": "3,510"
+      },
+      {
+        "variant": "C919-100STD",
+        "active": "9",
+        "inactive": "1",
+        "total": "10",
+        "on_order": "90",
+        "avg_age": "1.0",
+        "capacity": "16,400"
+      },
+      {
+        "variant": "A320-200",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "12.6",
+        "capacity": "608"
+      },
+      {
+        "variant": "A321-200",
+        "active": "11",
+        "inactive": "1",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "16.2",
+        "capacity": "2,248"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "15",
+        "inactive": "",
+        "total": "15",
+        "on_order": "",
+        "avg_age": "4.2",
+        "capacity": "3,000"
+      },
+      {
+        "variant": "A330-300",
+        "active": "10",
+        "inactive": "4",
+        "total": "14",
+        "on_order": "",
+        "avg_age": "10.6",
+        "capacity": "3,974"
+      },
+      {
+        "variant": "A350-900",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "3.2",
+        "capacity": "1,675"
+      },
+      {
+        "variant": "B777-200F",
+        "active": "8",
+        "inactive": "",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "11.1",
+        "capacity": ""
+      },
+      {
+        "variant": "A320-200",
+        "active": "11",
+        "inactive": "1",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "13.2",
+        "capacity": "1,936"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "6.6",
+        "capacity": "332"
+      },
+      {
+        "variant": "A321-200",
+        "active": "8",
+        "inactive": "1",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "18.2",
+        "capacity": "1,725"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "7.4",
+        "capacity": "390"
+      },
+      {
+        "variant": "B737-700",
+        "active": "",
+        "inactive": "2",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "16.8",
+        "capacity": "256"
+      },
+      {
+        "variant": "B737-800",
+        "active": "16",
+        "inactive": "",
+        "total": "16",
+        "on_order": "",
+        "avg_age": "13.8",
+        "capacity": "2,842"
+      },
+      {
+        "variant": "A320-200",
+        "active": "13",
+        "inactive": "1",
+        "total": "14",
+        "on_order": "",
+        "avg_age": "14.0",
+        "capacity": "2,268"
+      },
+      {
+        "variant": "A321-200",
+        "active": "18",
+        "inactive": "",
+        "total": "18",
+        "on_order": "",
+        "avg_age": "12.4",
+        "capacity": "3,492"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "4.3",
+        "capacity": "1,000"
+      },
+      {
+        "variant": "A320-200",
+        "active": "9",
+        "inactive": "2",
+        "total": "11",
+        "on_order": "",
+        "avg_age": "13.7",
+        "capacity": "1,816"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "3.5",
+        "capacity": "830"
+      },
+      {
+        "variant": "A321-200",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "8.7",
+        "capacity": "780"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "4",
+        "inactive": "1",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "7.1",
+        "capacity": "975"
+      },
+      {
+        "variant": "B737-800",
+        "active": "22",
+        "inactive": "4",
+        "total": "26",
+        "on_order": "",
+        "avg_age": "16.0",
+        "capacity": "4,514"
+      },
+      {
+        "variant": "C909",
+        "active": "1",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "1.1",
+        "capacity": "90"
+      },
+      {
+        "variant": "A320-200",
+        "active": "11",
+        "inactive": "1",
+        "total": "12",
+        "on_order": "",
+        "avg_age": "16.7",
+        "capacity": "1,976"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "7",
+        "inactive": "",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "3.1",
+        "capacity": "1,176"
+      },
+      {
+        "variant": "A321-200",
+        "active": "5",
+        "inactive": "",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "15.9",
+        "capacity": "975"
+      },
+      {
+        "variant": "A320-200",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "14.5",
+        "capacity": "1,640"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "7",
+        "inactive": "",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "4.5",
+        "capacity": "1,162"
+      },
+      {
+        "variant": "A321-200",
+        "active": "3",
+        "inactive": "1",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "14.3",
+        "capacity": "756"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "7.1",
+        "capacity": "390"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "2.0",
+        "capacity": "400"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "19",
+        "inactive": "1",
+        "total": "20",
+        "on_order": "",
+        "avg_age": "6.9",
+        "capacity": "3,348"
+      },
+      {
+        "variant": "A321-200",
+        "active": "",
+        "inactive": "2",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "20.8",
+        "capacity": "368"
+      },
+      {
+        "variant": "A321-200N",
+        "active": "6",
+        "inactive": "",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "7.8",
+        "capacity": "1,170"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "4",
+        "inactive": "",
+        "total": "4",
+        "on_order": "",
+        "avg_age": "1.8",
+        "capacity": "800"
+      },
+      {
+        "variant": "A321-200",
+        "active": "10",
+        "inactive": "",
+        "total": "10",
+        "on_order": "",
+        "avg_age": "10.7",
+        "capacity": "1,950"
+      },
+      {
+        "variant": "B777-300ER",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "6.7",
+        "capacity": "722"
+      },
+      {
+        "variant": "A320-200",
+        "active": "4",
+        "inactive": "1",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "11.8",
+        "capacity": "760"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "9",
+        "inactive": "",
+        "total": "9",
+        "on_order": "",
+        "avg_age": "4.4",
+        "capacity": "1,494"
+      },
+      {
+        "variant": "A321-200",
+        "active": "19",
+        "inactive": "2",
+        "total": "21",
+        "on_order": "",
+        "avg_age": "15.0",
+        "capacity": "3,969"
+      },
+      {
+        "variant": "A321-200NX",
+        "active": "12",
+        "inactive": "1",
+        "total": "13",
+        "on_order": "",
+        "avg_age": "3.8",
+        "capacity": "2,600"
+      },
+      {
+        "variant": "A330-300",
+        "active": "9",
+        "inactive": "2",
+        "total": "11",
+        "on_order": "",
+        "avg_age": "9.9",
+        "capacity": "3,128"
+      },
+      {
+        "variant": "A350-900",
+        "active": "2",
+        "inactive": "",
+        "total": "2",
+        "on_order": "",
+        "avg_age": "5.0",
+        "capacity": "670"
+      },
+      {
+        "variant": "B737-800",
+        "active": "6",
+        "inactive": "1",
+        "total": "7",
+        "on_order": "",
+        "avg_age": "14.6",
+        "capacity": "1,256"
+      },
+      {
+        "variant": "B737-700",
+        "active": "",
+        "inactive": "5",
+        "total": "5",
+        "on_order": "",
+        "avg_age": "15.3",
+        "capacity": "640"
+      },
+      {
+        "variant": "B737-8",
+        "active": "20",
+        "inactive": "1",
+        "total": "21",
+        "on_order": "",
+        "avg_age": "7.4",
+        "capacity": "3,722"
+      },
+      {
+        "variant": "B737-800",
+        "active": "29",
+        "inactive": "1",
+        "total": "30",
+        "on_order": "",
+        "avg_age": "9.8",
+        "capacity": "5,104"
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A320-200N",
+        "quantity": "3",
+        "option": ""
+      },
+      {
+        "variant": "A320-200N",
+        "quantity": "1",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "2",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "34",
+        "option": ""
+      },
+      {
+        "variant": "A321-200NX",
+        "quantity": "4",
+        "option": ""
+      },
+      {
+        "variant": "B737-8",
+        "quantity": "17",
+        "option": ""
+      },
+      {
+        "variant": "B737-8",
+        "quantity": "8",
+        "option": ""
+      },
+      {
+        "variant": "B787-9",
+        "quantity": "1",
+        "option": ""
+      },
+      {
+        "variant": "C909",
+        "quantity": "9",
+        "option": ""
+      },
+      {
+        "variant": "C919-100STD",
+        "quantity": "90",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "",
+        "option": ""
+      }
+    ],
+    "active_total": 942
+  },
+  "AV": {
+    "iata": "AV",
+    "name": "Avianca",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "A319-100",
+        "active": "7",
+        "inactive": "1",
+        "total": "8",
+        "on_order": "",
+        "avg_age": "14.4",
+        "capacity": "1,128"
+      },
+      {
+        "variant": "A320-200",
+        "active": "50",
+        "inactive": "2",
+        "total": "79",
+        "on_order": "",
+        "avg_age": "13.9",
+        "capacity": "14,220"
+      },
+      {
+        "variant": "A320-200N",
+        "active": "28",
+        "inactive": "3",
+        "total": "50",
+        "on_order": "76",
+        "avg_age": "4.5",
+        "capacity": "22,680"
+      },
+      {
+        "variant": "A330-300",
+        "active": "",
+        "inactive": "",
+        "total": "1",
+        "on_order": "",
+        "avg_age": "11.4",
+        "capacity": "285"
+      },
+      {
+        "variant": "B787-8",
+        "active": "13",
+        "inactive": "3",
+        "total": "16",
+        "on_order": "",
+        "avg_age": "10.6",
+        "capacity": "4,656"
+      }
+    ],
+    "orders": [
+      {
+        "variant": "A320-200N",
+        "quantity": "67",
+        "option": ""
+      },
+      {
+        "variant": "Total",
+        "quantity": "",
+        "option": ""
+      }
+    ],
+    "active_total": 98
+  },
+  "CV": {
+    "iata": "CV",
+    "name": "Cargolux",
+    "source": "kaynak2",
+    "date": "2026-06-02",
+    "fleet": [
+      {
+        "variant": "B747-400ERF",
+        "active": "6",
+        "inactive": "",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "18.9",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-400FSCD",
+        "active": "6",
+        "inactive": "",
+        "total": "6",
+        "on_order": "",
+        "avg_age": "24.7",
+        "capacity": ""
+      },
+      {
+        "variant": "B747-8F",
+        "active": "14",
+        "inactive": "",
+        "total": "14",
+        "on_order": "",
+        "avg_age": "13.3",
+        "capacity": ""
+      },
+      {
+        "variant": "B777-8F",
+        "active": "",
+        "inactive": "",
+        "total": "",
+        "on_order": "10",
+        "avg_age": "",
+        "capacity": ""
+      }
+    ],
+    "orders": [
+      {
+        "variant": "B777-8F",
+        "quantity": "10",
+        "option": "6"
+      },
+      {
+        "variant": "Total",
+        "quantity": "6",
+        "option": ""
+      }
+    ],
+    "active_total": 26
+  }
+}
