@@ -2457,300 +2457,12 @@
       <!-- Kaynak 1 içerik wrapper -->
       <div id="fleet-k1-content">
 
-      <!-- ══════ THY ANA BÖLÜM ══════ -->
-      <div class="fleet-section">
-        <div class="fleet-airline-header">
-          <div class="fleet-airline-name">
-            <div class="fleet-airline-logo" style="background:#E30613">THY</div>
-            <div>
-              <div class="fleet-airline-title">Türk Hava Yolları</div>
-              <div class="fleet-airline-sub">Turkish Airlines · Star Alliance · IATA: TK</div>
-            </div>
-          </div>
-          <span class="fleet-badge fleet-badge--blue">Türkiye Bayrağı Taşıyıcısı</span>
-        </div>
 
-        <!-- İstatistik kartları -->
-        <div class="fleet-stats-grid">
-          <div class="fleet-stat-card fleet-stat-card--accent">
-            <span class="fleet-stat-label">Aktif Filo</span>
-            <span class="fleet-stat-value">386</span>
-            <span class="fleet-stat-sub">Uçuşta · Haz 2026</span>
-          </div>
-          <div class="fleet-stat-card">
-            <span class="fleet-stat-label">Toplam (Park dahil)</span>
-            <span class="fleet-stat-value">410</span>
-            <span class="fleet-stat-sub">24 uçak parkta</span>
-          </div>
-          <div class="fleet-stat-card">
-            <span class="fleet-stat-label">Ort. Filo Yaşı</span>
-            <span class="fleet-stat-value">9.7</span>
-            <span class="fleet-stat-sub">Yıl</span>
-          </div>
-          <div class="fleet-stat-card">
-            <span class="fleet-stat-label">Geniş Gövde</span>
-            <span class="fleet-stat-value">156</span>
-            <span class="fleet-stat-sub">A330+A350+B777+B787</span>
-          </div>
-          <div class="fleet-stat-card">
-            <span class="fleet-stat-label">Dar Gövde</span>
-            <span class="fleet-stat-value">230</span>
-            <span class="fleet-stat-sub">A319+A320+A321+B737</span>
-          </div>
-          <div class="fleet-stat-card">
-            <span class="fleet-stat-label">2033 Hedefi</span>
-            <span class="fleet-stat-value">800</span>
-            <span class="fleet-stat-sub">100. Yıl Stratejisi</span>
-          </div>
-        </div>
+      <!-- Kaynak 1 kart grid — buildK1Cards() ile dinamik doldurulur -->
+      <div class="fleet-k2-grid" id="fleet-k1-cards"></div>
 
-        <!-- Üretici dağılımı -->
-        <div class="fleet-comp-title">Üretici Dağılımı</div>
-        <div class="fleet-comp-row">
-          <div class="fleet-comp-item">
-            <span class="fleet-comp-label fmfr--airbus">Airbus</span>
-            <div class="fleet-comp-bar-wrap"><div class="fleet-comp-bar" style="width:62%;background:#2563eb"></div></div>
-            <span class="fleet-comp-pct">239 · %62</span>
-          </div>
-          <div class="fleet-comp-item">
-            <span class="fleet-comp-label fmfr--boeing">Boeing</span>
-            <div class="fleet-comp-bar-wrap"><div class="fleet-comp-bar" style="width:38%;background:#0891b2"></div></div>
-            <span class="fleet-comp-pct">147 · %38</span>
-          </div>
-        </div>
-
-        <!-- Kategori dağılımı -->
-        <div class="fleet-comp-title">Kategori Dağılımı</div>
-        <div class="fleet-comp-row" style="margin-bottom:0">
-          <div class="fleet-comp-item">
-            <span class="fleet-comp-label">Dar Gövde</span>
-            <div class="fleet-comp-bar-wrap"><div class="fleet-comp-bar" style="width:60%;background:#059669"></div></div>
-            <span class="fleet-comp-pct">230 · %60</span>
-          </div>
-          <div class="fleet-comp-item">
-            <span class="fleet-comp-label">Geniş Gövde</span>
-            <div class="fleet-comp-bar-wrap"><div class="fleet-comp-bar" style="width:40%;background:#7c3aed"></div></div>
-            <span class="fleet-comp-pct">156 · %40</span>
-          </div>
-        </div>
-
-        <div class="fleet-section-divider"></div>
-
-        <!-- Detaylı filo tablosu -->
-        <div class="fleet-comp-title">Uçak Tipi Dağılımı</div>
-        <div class="fleet-table-wrap">
-          <table class="fleet-table">
-            <thead>
-              <tr>
-                <th>Uçak Tipi</th>
-                <th>Adet</th>
-                <th>Üretici</th>
-                <th>Kategori</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>A321 (ceo+neo)</td><td>127 <span style="color:var(--text-3);font-size:11px">+10 park</span></td><td class="fmfr--airbus">Airbus</td><td><span class="fleet-type-badge ftb--narrow">Dar Gövde</span> <span style="font-size:10px;color:var(--text-3)">Ort. 8.7y</span></td></tr>
-              <tr><td>A330 (200+300)</td><td>52 <span style="color:var(--text-3);font-size:11px">+6 park</span></td><td class="fmfr--airbus">Airbus</td><td><span class="fleet-type-badge ftb--wide">Geniş Gövde</span> <span style="font-size:10px;color:var(--text-3)">Ort. 13.6y</span></td></tr>
-              <tr><td>Boeing 737 (tüm)</td><td>77 <span style="color:var(--text-3);font-size:11px">+3 park</span></td><td class="fmfr--boeing">Boeing</td><td><span class="fleet-type-badge ftb--narrow">Dar Gövde</span> <span style="font-size:10px;color:var(--text-3)">Ort. 10.5y</span></td></tr>
-              <tr><td>Boeing 777 (tüm)</td><td>44 <span style="color:var(--text-3);font-size:11px">+3 park</span></td><td class="fmfr--boeing">Boeing</td><td><span class="fleet-type-badge ftb--wide">Geniş Gövde</span> <span style="font-size:10px;color:var(--text-3)">Ort. 11.0y</span></td></tr>
-              <tr><td>A350 XWB</td><td>34 <span style="color:var(--text-3);font-size:11px">+1 sipariş</span></td><td class="fmfr--airbus">Airbus</td><td><span class="fleet-type-badge ftb--wide">Geniş Gövde</span> <span style="font-size:10px;color:var(--text-3)">Ort. 2.8y</span></td></tr>
-              <tr><td>Boeing 787</td><td>26 <span style="color:var(--text-3);font-size:11px">+1 sipariş</span></td><td class="fmfr--boeing">Boeing</td><td><span class="fleet-type-badge ftb--wide">Geniş Gövde</span> <span style="font-size:10px;color:var(--text-3)">Ort. 4.9y</span></td></tr>
-              <tr><td>A320 (ceo)</td><td>21 <span style="color:var(--text-3);font-size:11px">+1 park</span></td><td class="fmfr--airbus">Airbus</td><td><span class="fleet-type-badge ftb--narrow">Dar Gövde</span> <span style="font-size:10px;color:var(--text-3)">Ort. 15.5y</span></td></tr>
-              <tr><td>A319</td><td>5 <span style="color:var(--text-3);font-size:11px">+1 park</span></td><td class="fmfr--airbus">Airbus</td><td><span class="fleet-type-badge ftb--narrow">Dar Gövde</span> <span style="font-size:10px;color:var(--text-3)">Ort. 15.0y</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="fleet-section-divider"></div>
-
-        <!-- Sipariş defteri -->
-        <div class="fleet-orders-label">Sipariş Defteri</div>
-        <div class="fleet-orders-grid">
-          <div class="fleet-order-item">
-            <div>
-              <div class="fleet-order-count">150</div>
-            </div>
-            <div>
-              <div class="fleet-order-type">A321neo</div>
-              <div class="fleet-order-status fleet-badge fleet-badge--green" style="padding:2px 7px;font-size:10px">Kesin Sipariş</div>
-            </div>
-          </div>
-          <div class="fleet-order-item">
-            <div>
-              <div class="fleet-order-count">50</div>
-            </div>
-            <div>
-              <div class="fleet-order-type">A350-900</div>
-              <div class="fleet-order-status fleet-badge fleet-badge--green" style="padding:2px 7px;font-size:10px">Kesin Sipariş</div>
-            </div>
-          </div>
-          <div class="fleet-order-item">
-            <div>
-              <div class="fleet-order-count">15</div>
-            </div>
-            <div>
-              <div class="fleet-order-type">A350-1000</div>
-              <div class="fleet-order-status fleet-badge fleet-badge--green" style="padding:2px 7px;font-size:10px">Kesin Sipariş</div>
-            </div>
-          </div>
-          <div class="fleet-order-item">
-            <div>
-              <div class="fleet-order-count">5</div>
-            </div>
-            <div>
-              <div class="fleet-order-type">A350F Kargo</div>
-              <div class="fleet-order-status fleet-badge fleet-badge--green" style="padding:2px 7px;font-size:10px">Kesin Sipariş</div>
-            </div>
-          </div>
-          <div class="fleet-order-item fleet-order-item--pending">
-            <div>
-              <div class="fleet-order-count">~225</div>
-            </div>
-            <div>
-              <div class="fleet-order-type">B737 MAX + B787</div>
-              <div class="fleet-order-status fleet-badge fleet-badge--orange" style="padding:2px 7px;font-size:10px">Müzakereler Sürüyor</div>
-            </div>
-          </div>
-          <div class="fleet-order-item fleet-order-item--pending">
-            <div>
-              <div class="fleet-order-count">125</div>
-            </div>
-            <div>
-              <div class="fleet-order-type">Airbus Opsiyonları</div>
-              <div class="fleet-order-status fleet-badge fleet-badge--purple" style="padding:2px 7px;font-size:10px">Satın Alma Hakkı</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════ TÜRKİYE HAVACILIĞI ══════ -->
-      <div class="fleet-compare-section">
-        <div class="fleet-compare-header">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4c-2 0-2 0-3.5 1.5L9 9 .8 7.2C.3 7 0 7.4 0 7.9v.9c0 .4.2.8.5.9l3.5 1.6L2 14H0l-1 2h3l2-1 1.6 3.5c.2.4.6.5.9.5h.9c.5 0 .9-.3.7-.8L7.2 11.5l4.2 4.2-1.7 2.6 1.1 1.1 2.7-1.7 2.7 2.7 1.1-1 .5-.2-1.2-1.2a14 14 0 0 0 1.1-1.8l-1-1"/><path d="m2 2 20 20"/></svg>
-          <span class="fleet-compare-title">Türkiye Havacılık Piyasası</span>
-        </div>
-        <div class="fleet-compare-grid">
-
-          <!-- Pegasus -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#FF5500">PC</div>
-              <div>
-                <div class="fleet-card-name">Pegasus Airlines</div>
-                <div class="fleet-card-iata">IATA: PC · Türkiye</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">130</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Siparişler</div>
-                <div class="fleet-card-stat-value">100+</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">A320neo × 46</span>
-              <span class="fleet-type-chip">A321neo × 66</span>
-              <span class="fleet-type-chip">A320ceo × 9</span>
-              <span class="fleet-type-chip">B737-800 × 9</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              100 kesin + 100 opsiyon B737-10 (2028'den) · Ort. yaş 4,5 yıl
-            </div>
-          </div>
-
-          <!-- AJet -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#1D6FE8">AJ</div>
-              <div>
-                <div class="fleet-card-name">AJet</div>
-                <div class="fleet-card-iata">IATA: VF · THY iştiraki</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">83</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
-                <div class="fleet-card-stat-value">120</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">37 uçak parkta</span>
-              <span class="fleet-type-chip">+24 sipariş</span>
-              <span class="fleet-type-chip">Ort. 8.6y</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              Kaynak 1 · 2 Haz 2026
-            </div>
-          </div>
-
-          <!-- SunExpress -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#F59E0B;color:#1a1a1a">SX</div>
-              <div>
-                <div class="fleet-card-name">SunExpress</div>
-                <div class="fleet-card-iata">IATA: XQ · THY &amp; Lufthansa JV</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">84</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
-                <div class="fleet-card-stat-value">85</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">1 uçak parkta</span>
-              <span class="fleet-type-chip">Ort. 10.9y</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              Kaynak 1 · 2 Haz 2026
-            </div>
-          </div>
-
-          <!-- Corendon -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#DC2626">CN</div>
-              <div>
-                <div class="fleet-card-name">Corendon Airlines</div>
-                <div class="fleet-card-iata">IATA: XC · Türkiye</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">14</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
-                <div class="fleet-card-stat-value">15</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">1 uçak parkta</span>
-              <span class="fleet-type-chip">Ort. 11.2y</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              Kaynak 1 · 2 Haz 2026
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ══════ FİLO BÜYÜME PROJEKSİYONU ══════ -->
-      <div class="fleet-compare-section">
+      <!-- Filo Büyüme Grafiği -->
+      <div class="fleet-compare-section" style="margin-top:8px">
         <div class="fleet-compare-header">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           <span class="fleet-compare-title">Filo Büyüme · 2022 – 2026</span>
@@ -2758,202 +2470,13 @@
         </div>
         <div id="fleet-chart-legend" class="fleet-chart-legend"></div>
         <div class="fleet-chart-container">
-          <div id="fleet-chart-wrap" style="position:relative;line-height:0"></div>
+          <div id="fleet-chart-wrap" style="position:relative;line-height:0;width:100%"></div>
           <div id="fleet-chart-tooltip" class="fleet-chart-tooltip" style="display:none"></div>
         </div>
       </div>
 
-      <!-- ══════ ULUSLARARASI RAKİPLER ══════ -->
-      <div class="fleet-compare-section">
-        <div class="fleet-compare-header">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          <span class="fleet-compare-title">Uluslararası Rakipler</span>
-        </div>
-        <div class="fleet-compare-grid">
-
-          <!-- Emirates -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#B91C1C">EK</div>
-              <div>
-                <div class="fleet-card-name">Emirates</div>
-                <div class="fleet-card-iata">IATA: EK · Dubai, BAE</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">254</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
-                <div class="fleet-card-stat-value">282</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">A380 × 116 (93 aktif)</span>
-              <span class="fleet-type-chip">B777 × 144 (139 aktif)</span>
-              <span class="fleet-type-chip">A350 × 21 (yeni, ort.0.8y)</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              28 uçak parkta · +32 sipariş · Ort. yaş 11.1y · Kaynak 1 2 Haz 2026
-            </div>
-          </div>
-
-          <!-- Qatar Airways -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#6B21A8">QR</div>
-              <div>
-                <div class="fleet-card-name">Qatar Airways</div>
-                <div class="fleet-card-iata">IATA: QR · Doha, Katar</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">223</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
-                <div class="fleet-card-stat-value">271</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">B777 × 93 (88 aktif)</span>
-              <span class="fleet-type-chip">B787 × 60 (55 aktif)</span>
-              <span class="fleet-type-chip">A350 × 62 (aktif)</span>
-              <span class="fleet-type-chip">A330 × 15 (tümü park!)</span>
-              <span class="fleet-type-chip">A380 × 8 (tümü park!)</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              48 uçak parkta · +16 sipariş · Ort. yaş 10.2y · Kaynak 1 2 Haz 2026
-            </div>
-          </div>
-
-          <!-- Etihad -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#B45309">EY</div>
-              <div>
-                <div class="fleet-card-name">Etihad Airways</div>
-                <div class="fleet-card-iata">IATA: EY · Abu Dabi, BAE</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">120</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
-                <div class="fleet-card-stat-value">127</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">7 uçak parkta</span>
-              <span class="fleet-type-chip">+8 sipariş</span>
-              <span class="fleet-type-chip">Ort. 8.4y</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              Kaynak 1 · 2 Haz 2026
-            </div>
-          </div>
-
-          <!-- Lufthansa -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#1a1a2e;border:1px solid var(--border)">
-                <span style="color:#fbbf24;font-weight:800;font-size:11px">LH</span>
-              </div>
-              <div>
-                <div class="fleet-card-name">Lufthansa</div>
-                <div class="fleet-card-iata">IATA: LH · Almanya</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">258</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
-                <div class="fleet-card-stat-value">268</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">10 uçak parkta</span>
-              <span class="fleet-type-chip">+25 sipariş</span>
-              <span class="fleet-type-chip">Ort. 14.1y</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              Kaynak 1 · 2 Haz 2026
-            </div>
-          </div>
-
-          <!-- Air France -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#1a3a8f">AF</div>
-              <div>
-                <div class="fleet-card-name">Air France</div>
-                <div class="fleet-card-iata">IATA: AF · Fransa</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">207</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
-                <div class="fleet-card-stat-value">224</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">17 uçak parkta</span>
-              <span class="fleet-type-chip">+4 sipariş</span>
-              <span class="fleet-type-chip">Ort. 11.7y</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              Kaynak 1 · 2 Haz 2026
-            </div>
-          </div>
-
-          <!-- Singapore Airlines -->
-          <div class="fleet-airline-card">
-            <div class="fleet-card-header">
-              <div class="fleet-card-logo" style="background:#0f4c8a">SQ</div>
-              <div>
-                <div class="fleet-card-name">Singapore Airlines</div>
-                <div class="fleet-card-iata">IATA: SQ · Singapur</div>
-              </div>
-            </div>
-            <div class="fleet-card-stats">
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Aktif Filo</div>
-                <div class="fleet-card-stat-value">156</div>
-              </div>
-              <div class="fleet-card-stat">
-                <div class="fleet-card-stat-label">Toplam (park dahil)</div>
-                <div class="fleet-card-stat-value">162</div>
-              </div>
-            </div>
-            <div class="fleet-card-types">
-              <span class="fleet-type-chip">6 uçak parkta</span>
-              <span class="fleet-type-chip">+12 sipariş</span>
-              <span class="fleet-type-chip">Ort. 8.7y</span>
-            </div>
-            <div style="font-size:10.5px;color:var(--text-3);margin-top:2px">
-              Kaynak 1 · 2 Haz 2026
-            </div>
-          </div>
-
-        </div>
-      </div>
-
       <div class="fleet-update-note">
-        Tüm filo verileri <strong>Kaynak 1</strong> kaynağından alınmıştır (2 Haziran 2026). Pegasus ve KLM sayfaları giriş gerektirdiğinden mevcut verilerle gösterilmektedir.
+        Veriler <strong>Kaynak 1</strong> kaynağından alınmıştır (2 Haziran 2026).
       </div>
       </div><!-- /fleet-k1-content -->
 
@@ -14341,6 +13864,7 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":244,"c
       if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = 'none';
       if (dt)  dt.textContent    = 'Kaynak 1 · 2 Haz 2026';
+      buildK1Cards();
     } else if (src === 'kaynak2') {
       if (k1)  k1.style.display  = 'none';
       if (k2)  k2.style.display = '';
@@ -14370,6 +13894,50 @@ const FLEET_CMP_DATA={"QR":{"name":"Qatar Airways","color":"#7C3AED","ca":244,"c
     const arrow = d === 0 ? '=' : (d > 0 ? '▲' : '▼');
     const label = d === 0 ? 'eşit' : (d > 0 ? '+' : '') + d;
     return `<span class="flt-diff-chip ${cls}">${arrow}${label}</span>`;
+  }
+
+  // ── Kaynak 1 kartları (Kaynak 2 ile aynı stil) ─────────────
+  let _k1Built = false;
+  function buildK1Cards() {
+    if (_k1Built) return;
+    _k1Built = true;
+    const grid = document.getElementById('fleet-k1-cards');
+    if (!grid) return;
+    grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
+      const total = d.pt != null ? d.pt : '—';
+      const order = d.po != null ? '+'+d.po : '—';
+      const age   = d.k1age ? d.k1age+'y' : '—';
+      const note  = d.k1note ? ` <span style="font-size:10px;color:var(--text-3)">(${d.k1note})</span>` : '';
+      return `
+      <div class="fleet-k2-card">
+        <div class="fleet-k2-card-hdr">
+          <div class="fleet-k2-logo" style="background:${d.color}">${iata}</div>
+          <div>
+            <div class="fleet-k2-name">${d.name}${note}</div>
+            <div class="fleet-k2-iata">IATA: ${iata} · Kaynak 1</div>
+          </div>
+        </div>
+        <div class="fleet-k2-stats">
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${total}</div>
+            <div class="fleet-k2-stat-lbl">Toplam Filo</div>
+          </div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${order}</div>
+            <div class="fleet-k2-stat-lbl">Sipariş</div>
+          </div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${age}</div>
+            <div class="fleet-k2-stat-lbl">Ort. Yaş</div>
+          </div>
+        </div>
+        <div style="padding:4px 14px 10px;font-size:11px;color:var(--text-3)">
+          Kaynak 2 toplam: ${d.ct} · Kaynak 2 aktif: ${d.ca}
+        </div>
+      </div>`}).join('');
+    // Grafik Kaynak 1'e geçince yeniden çiz (genişlik için)
+    _fleetChartInit = false;
+    setTimeout(renderFleetChart, 80);
   }
 
   // ── Kaynak 2 kartları ────────────────────────────────
