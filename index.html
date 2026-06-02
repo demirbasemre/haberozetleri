@@ -169,6 +169,16 @@
   .fin-atoggle:hover { transform: translateY(-1px); }
   .fin-atoggle.hidden { opacity: 0.28; }
   .fin-atoggle-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .fin-atoggle-logo { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; object-fit: contain; }
+  .fin-airline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .fin-airline-header-label { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
+  .fin-deselect-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 10px; font-size: 10.5px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border); background: var(--bg);
+    color: var(--text-3); transition: all 0.15s;
+  }
+  .fin-deselect-btn:hover { border-color: #DC2626; color: #DC2626; background: #DC262611; }
 
   .fin-chart-section {
     background: var(--surface); border: 1px solid var(--border);
@@ -2877,6 +2887,13 @@
     </div>
 
     <!-- Havayolu seçici -->
+    <div class="fin-airline-header">
+      <span class="fin-airline-header-label">Havayolları</span>
+      <div style="display:flex;gap:5px">
+        <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Sıfırla</button>
+        <button class="fin-deselect-btn" onclick="deselAllFinAirlines()" title="Tümünü tablodan kaldır">— Tümünü Gizle</button>
+      </div>
+    </div>
     <div class="fin-airline-toggles" id="fin-airline-toggles"></div>
 
     <!-- Ana grafik -->
@@ -2906,12 +2923,12 @@
 
     <!-- Kaynak Açıklaması -->
     <div class="fin-sources-section">
-      <button class="fin-sources-toggle" onclick="toggleFinSources()" aria-expanded="false" id="fin-src-toggle">
+      <button class="fin-sources-toggle" onclick="toggleFinSources()" aria-expanded="true" id="fin-src-toggle">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
         Veri Kaynakları
         <svg class="fin-src-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="fin-sources-panel" id="fin-sources-panel" style="display:none">
+      <div class="fin-sources-panel" id="fin-sources-panel">
         <p class="fin-src-intro">
           Tüm finansal veriler ilgili havayollarının <strong>resmi yıllık raporları</strong>ndan derlenmiştir.
           Değerler döviz kuru esas alınarak <strong>USD</strong>'ye dönüştürülmüştür.
@@ -14307,6 +14324,21 @@ function fmtFinVal(v, fmt) {
   }
 }
 
+// Havayolu favicon domain haritası
+const FIN_LOGO_DOMAINS = {
+  'QR':'qatarairways.com','EK':'emirates.com','TK':'turkishairlines.com',
+  'AF':'airfranceklm.com','CI':'china-airlines.com','CX':'cathaypacific.com',
+  'ET':'ethiopianairlines.com','LH':'lufthansagroup.com','LA':'latam.com',
+  'KE':'koreanair.com','CA':'airchina.com.cn','SQ':'singaporeair.com',
+  'OZ':'flyasiana.com','SV':'saudia.com','NH':'ana.co.jp',
+  'ETI':'etihad.com','CZ':'csair.com','AV':'avianca.com',
+  'CV':'cargolux.com','A4B':'ajet.com',
+};
+window.finLogoUrl = function finLogoUrl(slug) {
+  const d = FIN_LOGO_DOMAINS[slug];
+  return d ? `https://www.google.com/s2/favicons?sz=32&domain=${d}` : '';
+};
+
 window.initFinansalTab = function() {
   if (!FIN_DATA) {
     setTimeout(initFinansalTab, 200);
@@ -14318,21 +14350,42 @@ window.initFinansalTab = function() {
   bindFinControls();
   renderFinChart();
   renderFinTable();
+  // Veri kaynakları varsayılan açık — içeriği hemen oluştur
+  if (!_finSrcBuilt) {
+    _finSrcBuilt = true;
+    buildFinSourcesGrid();
+  }
 };
 
 function buildFinToggles() {
   const cont = document.getElementById('fin-airline-toggles');
   if (!cont) return;
   cont.innerHTML = Object.entries(FIN_DATA).map(([slug, d]) => {
-    const bg = d.color + '22'; // 13% opacity
+    const bg = d.color + '22';
+    const logo = finLogoUrl(slug);
+    const logoEl = logo
+      ? `<img class="fin-atoggle-logo" src="${logo}" alt="" onerror="this.style.display='none'">`
+      : `<span class="fin-atoggle-dot" style="background:${d.color}"></span>`;
     return `<button class="fin-atoggle" data-slug="${slug}"
       style="background:${bg};border-color:${d.color};color:${d.color}"
       onclick="toggleFinAirline('${slug}')">
-      <span class="fin-atoggle-dot" style="background:${d.color}"></span>
-      ${d.name}
+      ${logoEl}${d.name}
     </button>`;
   }).join('');
 }
+
+window.deselAllFinAirlines = function() {
+  Object.keys(FIN_DATA || {}).forEach(slug => _finHidden.add(slug));
+  document.querySelectorAll('.fin-atoggle').forEach(b => b.classList.add('hidden'));
+  renderFinChart();
+  renderFinTable();
+};
+window.resetFinAirlines = function() {
+  _finHidden.clear();
+  document.querySelectorAll('.fin-atoggle').forEach(b => b.classList.remove('hidden'));
+  renderFinChart();
+  renderFinTable();
+};
 
 window.toggleFinAirline = function(slug) {
   if (_finHidden.has(slug)) _finHidden.delete(slug);
@@ -14514,10 +14567,14 @@ function renderFinTable() {
         return `<td class="${cls}">${label}</td>`;
       }).join('');
       const note = airline.psnote ? ` <span style="font-size:9px;color:var(--text-3)">(${airline.psnote})</span>` : '';
+      const logo = finLogoUrl(slug);
+      const logoEl = logo
+        ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0;display:block" alt="" onerror="this.style.display='none'">`
+        : `<span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0;display:inline-block"></span>`;
       return `<tr>
-        <td><span style="display:inline-flex;align-items:center;gap:6px">
-          <span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0"></span>
-          ${airline.name}${note}
+        <td><span style="display:inline-flex;align-items:center;gap:7px">
+          ${logoEl}
+          <span style="font-weight:700;color:${airline.color}">${airline.name}${note}</span>
         </span></td>
         ${cells}
       </tr>`;
@@ -14969,42 +15026,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let _finSrcBuilt = false;
 
+function buildFinSourcesGrid() {
+  const grid = document.getElementById('fin-src-grid');
+  if (!grid) return;
+  const yearSrcs = FIN_YEAR_SOURCES || {};
+  grid.innerHTML = Object.entries(FIN_INVESTOR_URLS_STATIC || {}).map(([slug, d]) => {
+    const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
+    const logo = finLogoUrl(slug);
+    const perYear = yearSrcs[slug] || {};
+    const yearLinks = Object.entries(perYear)
+      .sort(([a],[b]) => b.localeCompare(a))
+      .map(([yr, s]) => s.href
+        ? `<a href="${s.href}" target="_blank" rel="noopener"
+            style="display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:10px;
+                   background:var(--bg);border:1px solid var(--border);font-size:10px;color:var(--accent);
+                   text-decoration:none;margin:2px 2px 0 0"
+            title="${s.text} ${yr}">${yr} ↗</a>`
+        : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
+              border:1px solid var(--border-soft);font-size:10px;color:var(--text-3);margin:2px 2px 0 0">${yr}</span>`
+      ).join('');
+    const logoEl = logo
+      ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0" alt="" onerror="this.src='';this.style.display='none'">`
+      : `<span class="fin-src-dot" style="background:${color}"></span>`;
+    return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:5px;cursor:default">
+      <div style="display:flex;align-items:center;gap:8px;width:100%">
+        ${logoEl}
+        <span class="fin-src-name" style="flex:1;color:${color}">${d.name}</span>
+        <a href="${d.url}" target="_blank" rel="noopener"
+          style="font-size:10px;color:var(--accent);text-decoration:none;opacity:.7" title="Yatırımcı İlişkileri">IR →</a>
+      </div>
+      ${yearLinks ? `<div style="padding-left:24px;line-height:1.4">${yearLinks}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
 window.toggleFinSources = function() {
   const panel  = document.getElementById('fin-sources-panel');
   const toggle = document.getElementById('fin-src-toggle');
   if (!panel) return;
-  const open = panel.style.display === 'none' || panel.style.display === '';
-  panel.style.display = open ? '' : 'none';
-  if (toggle) toggle.setAttribute('aria-expanded', String(open));
-  if (open && !_finSrcBuilt) {
+  const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+  const willOpen = !isOpen;
+  panel.style.display = willOpen ? '' : 'none';
+  toggle.setAttribute('aria-expanded', String(willOpen));
+  if (willOpen && !_finSrcBuilt) {
     _finSrcBuilt = true;
-    const grid = document.getElementById('fin-src-grid');
-    if (!grid) return;
-    const yearSrcs = FIN_YEAR_SOURCES || {};
-    grid.innerHTML = Object.entries(FIN_INVESTOR_URLS_STATIC || {}).map(([slug, d]) => {
-      const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
-      const perYear = yearSrcs[slug] || {};
-      const yearLinks = Object.entries(perYear)
-        .sort(([a],[b]) => b.localeCompare(a))
-        .map(([yr, s]) => s.href
-          ? `<a href="${s.href}" target="_blank" rel="noopener"
-              style="display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:10px;
-                     background:var(--bg);border:1px solid var(--border);font-size:10px;color:var(--accent);
-                     text-decoration:none;margin:2px 2px 0 0"
-              title="${s.text} ${yr}">${yr} ↗</a>`
-          : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
-                border:1px solid var(--border-soft);font-size:10px;color:var(--text-3);margin:2px 2px 0 0">${yr}</span>`
-        ).join('');
-      return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:5px;cursor:default">
-        <div style="display:flex;align-items:center;gap:8px;width:100%">
-          <span class="fin-src-dot" style="background:${color}"></span>
-          <span class="fin-src-name" style="flex:1">${d.name}</span>
-          <a href="${d.url}" target="_blank" rel="noopener"
-            style="font-size:10px;color:var(--accent);text-decoration:none;opacity:.7" title="Yatırımcı İlişkileri">IR →</a>
-        </div>
-        ${yearLinks ? `<div style="padding-left:18px;line-height:1.4">${yearLinks}</div>` : ''}
-      </div>`;
-    }).join('');
+    buildFinSourcesGrid();
   }
 };
 </script>
