@@ -64,13 +64,14 @@ def parse_fleet_tables(tables):
 
         # Ana filo tablosu: "Aircraft Variant", "Active" sütunları var
         if "Aircraft Variant" in headers and "Active" in headers:
-            ai = headers.index("Aircraft Variant")
-            act_i  = headers.index("Active") if "Active" in headers else -1
-            inact_i= headers.index("Inactive") if "Inactive" in headers else -1
-            tot_i  = headers.index("Total") if "Total" in headers else -1
-            age_i  = headers.index("Ø Age") if "Ø Age" in headers else -1
-            del_i  = headers.index("To be delivered") if "To be delivered" in headers else -1
-            cap_i  = headers.index("Capacity") if "Capacity" in headers else -1
+            ai      = headers.index("Aircraft Variant")
+            act_i   = headers.index("Active")           if "Active"          in headers else -1
+            inact_i = headers.index("Inactive")         if "Inactive"        in headers else -1
+            wli_i   = headers.index("Wet Leased In")    if "Wet Leased In"   in headers else -1
+            tot_i   = headers.index("Total")            if "Total"           in headers else -1
+            del_i   = headers.index("To be delivered")  if "To be delivered" in headers else -1
+            age_i   = headers.index("Ø Age")            if "Ø Age"           in headers else -1
+            cap_i   = headers.index("Capacity")         if "Capacity"        in headers else -1
 
             for row in rows:
                 if len(row) <= ai: continue
@@ -78,23 +79,24 @@ def parse_fleet_tables(tables):
                 if not variant or variant in ("Total",): continue
 
                 def get(i): return row[i].strip() if i >= 0 and i < len(row) else ""
-                active   = get(act_i)
-                inactive = get(inact_i)
-                total    = get(tot_i)
-                age      = get(age_i)
-                tbd      = get(del_i)
-                capacity = get(cap_i)
+                active        = get(act_i)
+                inactive      = get(inact_i)
+                wet_leased_in = get(wli_i)
+                total         = get(tot_i)
+                tbd           = get(del_i)
+                age           = get(age_i)
+                capacity      = get(cap_i)
 
-                # Sadece aktif veya bekleyen varsa ekle
                 if active or total or tbd:
                     fleet.append({
-                        "variant":  variant,
-                        "active":   active,
-                        "inactive": inactive,
-                        "total":    total,
-                        "on_order": tbd,
-                        "avg_age":  age,
-                        "capacity": capacity,
+                        "variant":       variant,
+                        "active":        active,
+                        "inactive":      inactive,
+                        "wet_leased_in": wet_leased_in,
+                        "total":         total,
+                        "on_order":      tbd,
+                        "avg_age":       age,
+                        "capacity":      capacity,
                     })
 
         # Sipariş tablosu: "Aircraft On Order" sütunu var
