@@ -323,18 +323,11 @@
       "label": "Hawaiian Airlines",
       "group": "passenger",
       "kw": [
-        "hawaiian airlines"
+        "hawaiian airlines",
+        "hawaiian air cargo",
+        "hawaiian airlines kargo"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hawaiianairlines.com"
-    },
-    {
-      "id": "dyn_hawaiian_air_cargo",
-      "label": "Hawaiian Air Cargo",
-      "group": "cargo",
-      "kw": [
-        "hawaiian air cargo"
-      ],
-      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hawaiiancargo.com"
     },
     {
       "id": "dyn_alaska_cargo",
@@ -344,15 +337,6 @@
         "alaska cargo"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alaskacargo.com"
-    },
-    {
-      "id": "dyn_hawaiian_airlines_kargo",
-      "label": "Hawaiian Airlines Kargo",
-      "group": "cargo",
-      "kw": [
-        "hawaiian airlines kargo"
-      ],
-      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hawaiiancargo.com"
     },
     {
       "id": "dyn_eva_air",
