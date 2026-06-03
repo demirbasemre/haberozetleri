@@ -209,17 +209,47 @@
     background: var(--navy); color: rgba(255,255,255,0.85);
     padding: 8px 12px; text-align: right; font-size: 11px; font-weight: 600;
     white-space: nowrap; border-bottom: 2px solid rgba(255,255,255,0.1);
+    cursor: pointer; user-select: none; transition: background 0.15s;
+    position: relative;
+  }
+  .fin-cmp-table th:hover { background: color-mix(in srgb, var(--navy) 80%, white 20%); }
+  .fin-cmp-table th[aria-sort="ascending"],
+  .fin-cmp-table th[aria-sort="descending"] {
+    background: color-mix(in srgb, var(--navy) 70%, var(--accent) 30%);
   }
   .fin-cmp-table th:first-child { text-align: left; min-width: 160px; }
+  .fin-sort-icon {
+    display: inline-block; margin-left: 4px; font-size: 9px; opacity: 0.35;
+    transition: opacity 0.15s, transform 0.2s;
+    vertical-align: middle; line-height: 1;
+  }
+  th[aria-sort="ascending"] .fin-sort-icon,
+  th[aria-sort="descending"] .fin-sort-icon { opacity: 1; }
   .fin-cmp-table td {
     padding: 7px 12px; text-align: right; border-bottom: 1px solid var(--border-soft);
-    color: var(--text); white-space: nowrap;
+    color: var(--text); white-space: nowrap; transition: background 0.12s;
+    position: relative;
   }
   .fin-cmp-table td:first-child { text-align: left; font-weight: 600; }
   .fin-cmp-table tr:hover td { background: var(--bg); }
   .fin-cell-pos { color: #059669; font-weight: 600; }
   .fin-cell-neg { color: #DC2626; font-weight: 600; }
   .fin-cell-na  { color: var(--text-3); }
+  /* Sıralanmış sütun */
+  .fin-col-sorted { background: rgba(99,102,241,0.055); }
+  [data-theme="dark"] .fin-col-sorted { background: rgba(99,102,241,0.10); }
+  .fin-cmp-table tr:hover .fin-col-sorted { background: color-mix(in srgb, var(--bg) 70%, rgba(99,102,241,0.12) 30%); }
+  /* Sıra rozeti */
+  .fin-rank {
+    display: inline-block; font-size: 9px; font-weight: 800;
+    color: var(--text-3); min-width: 18px; margin-right: 3px;
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .fin-rank--top { color: var(--accent); }
+  /* Tablo header sort hint */
+  .fin-table-sort-hint {
+    font-size: 10px; color: var(--text-3); display: flex; align-items: center; gap: 4px;
+  }
   @media (max-width: 768px) {
     .fin-control-bar { gap: 8px; }
     .fin-chart-wrap { height: 220px; }
@@ -2911,7 +2941,10 @@
     <div class="fin-table-section">
       <div class="fin-table-header">
         <span class="fin-chart-title" id="fin-table-title">Toplam Gelir · Havayolu Karşılaştırması</span>
-        <span class="fin-table-note">Tüm değerler USD · Eksik veri: —</span>
+        <span class="fin-table-sort-hint">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+          Sütun başlığına tıklayarak sırala
+        </span>
       </div>
       <div class="fin-table-wrap">
         <table class="fin-cmp-table" id="fin-cmp-table">
@@ -14268,6 +14301,7 @@ let _finMetric = 'total_revenue_musd';
 let _finChartType = 'line';
 let _finRange = 5;
 let _finHidden = new Set();
+let _finSort   = { col: null, dir: 'none' }; // col: 'airline' | yıl string, dir: 'none'|'asc'|'desc'
 let _finBuilt = false;
 
 // Metrik tanımları — 4 renk grubu
@@ -14325,19 +14359,33 @@ function fmtFinVal(v, fmt) {
 }
 
 // Havayolu favicon domain haritası
-const FIN_LOGO_DOMAINS = {
-  'QR':'qatarairways.com','EK':'emirates.com','TK':'turkishairlines.com',
-  'AF':'airfranceklm.com','CI':'china-airlines.com','CX':'cathaypacific.com',
-  'ET':'ethiopianairlines.com','LH':'lufthansagroup.com','LA':'latam.com',
-  'KE':'koreanair.com','CA':'airchina.com.cn','SQ':'singaporeair.com',
-  'OZ':'flyasiana.com','SV':'saudia.com','NH':'ana.co.jp',
-  'ETI':'etihad.com','CZ':'csair.com','AV':'avianca.com',
-  'CV':'cargolux.com','A4B':'ajet.com',
-};
-window.finLogoUrl = function finLogoUrl(slug) {
-  const d = FIN_LOGO_DOMAINS[slug];
-  return d ? `https://www.google.com/s2/favicons?sz=32&domain=${d}` : '';
-};
+// Haberler'deki logos haritasıyla birebir uyumlu — doğrudan URL saklanır
+(function() {
+  const F = d => `https://www.google.com/s2/favicons?sz=32&domain=${d}`;
+  const _FIN_LOGO_MAP = {
+    'QR':  F('qatarairways.com'),
+    'EK':  F('emirates.com'),
+    'TK':  F('turkishairlines.com'),
+    'AF':  F('airfrance.com'),           // airfranceklm.com değil
+    'CI':  F('china-airlines.com'),
+    'CX':  F('cathaypacific.com'),
+    'ET':  F('ethiopianairlines.com'),
+    'LH':  F('lufthansa.com'),           // lufthansagroup.com değil
+    'LA':  F('latamairlines.com'),       // latam.com değil
+    'KE':  F('koreanair.com'),
+    'CA':  F('airchina.com'),            // .com.cn → uluslararası domain
+    'SQ':  F('singaporeair.com'),
+    'OZ':  F('flyasiana.com'),
+    'SV':  F('saudia.com'),
+    'NH':  F('ana.co.jp'),               // ANA Airlines
+    'ETI': F('etihad.com'),
+    'CZ':  'https://companieslogo.com/img/orig/600029.SS-e7ea2d1d.png?t=1720244490',
+    'AV':  F('avianca.com'),
+    'CV':  F('cargolux.com'),
+    'A4B': F('ajet.com'),
+  };
+  window.finLogoUrl = function(slug) { return _FIN_LOGO_MAP[slug] || ''; };
+})();
 
 window.initFinansalTab = function() {
   if (!FIN_DATA) {
@@ -14348,6 +14396,11 @@ window.initFinansalTab = function() {
   _finBuilt = true;
   buildFinToggles();
   bindFinControls();
+  // Akıllı varsayılan: en son yıla göre büyükten küçüğe
+  const _initYears = getFinYears();
+  if (_initYears.length && _finSort.col === null) {
+    _finSort = { col: _initYears[_initYears.length - 1], dir: 'desc' };
+  }
   renderFinChart();
   renderFinTable();
   // Veri kaynakları varsayılan açık — içeriği hemen oluştur
@@ -14539,47 +14592,140 @@ function renderFinChart() {
   });
 }
 
+// Sıralama ikonları
+function _sortIcon(col) {
+  if (_finSort.col !== col) return '<span class="fin-sort-icon">⇅</span>';
+  return _finSort.dir === 'asc'
+    ? '<span class="fin-sort-icon">↑</span>'
+    : '<span class="fin-sort-icon">↓</span>';
+}
+function _ariaSort(col) {
+  if (_finSort.col !== col) return 'none';
+  return _finSort.dir === 'asc' ? 'ascending' : 'descending';
+}
+
 function renderFinTable() {
   const thead = document.getElementById('fin-cmp-thead');
   const tbody = document.getElementById('fin-cmp-tbody');
   if (!thead || !tbody) return;
   const years = getFinYears();
-
-  // Yıl başlıklarına kaynak linkleri — birden fazla havayolunda aynı yıl için farklı link
-  // En yaygın kaynağı (QR, TK gibi büyük havayolları) göster
-  thead.innerHTML = `<tr>
-    <th>Havayolu</th>
-    ${years.map(y => `<th>${y}</th>`).join('')}
-  </tr>`;
-
-  const def2 = FIN_METRIC_MAP[_finMetric];
+  const def2  = FIN_METRIC_MAP[_finMetric];
   const isSigned = def2?.fmt === 'musd_s' || def2?.fmt === 'pct_s';
 
-  tbody.innerHTML = Object.entries(FIN_DATA || {})
-    .filter(([slug]) => !_finHidden.has(slug))
-    .map(([slug, airline]) => {
-      const metricData = getMetricValues(airline, _finMetric);
-      const cells = years.map(y => {
-        const v = metricData[y];
-        if (v == null) return `<td class="fin-cell-na">—</td>`;
-        const label = fmtFinVal(v, def2?.fmt || 'musd');
-        const cls = isSigned ? (v >= 0 ? 'fin-cell-pos' : 'fin-cell-neg') : '';
-        return `<td class="${cls}">${label}</td>`;
-      }).join('');
-      const note = airline.psnote ? ` <span style="font-size:9px;color:var(--text-3)">(${airline.psnote})</span>` : '';
-      const logo = finLogoUrl(slug);
-      const logoEl = logo
-        ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0;display:block" alt="" onerror="this.style.display='none'">`
-        : `<span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0;display:inline-block"></span>`;
-      return `<tr>
-        <td><span style="display:inline-flex;align-items:center;gap:7px">
+  // ── Başlık satırı (tıklanabilir, sıralanabilir) ──────────
+  thead.innerHTML = `<tr>
+    <th aria-sort="${_ariaSort('airline')}"
+        onclick="sortFinTable('airline')"
+        title="Havayoluna göre sırala (A→Z / Z→A)">
+      Havayolu ${_sortIcon('airline')}
+    </th>
+    ${years.map(y => `<th
+        aria-sort="${_ariaSort(y)}"
+        onclick="sortFinTable('${y}')"
+        title="${y} yılına göre sırala">
+      ${y} ${_sortIcon(y)}
+    </th>`).join('')}
+  </tr>`;
+
+  // ── Veri sıralama ─────────────────────────────────────────
+  let entries = Object.entries(FIN_DATA || {}).filter(([slug]) => !_finHidden.has(slug));
+  const sc = _finSort.col, sd = _finSort.dir;
+
+  if (sc === 'airline') {
+    entries.sort(([,a],[,b]) => a.name.localeCompare(b.name, 'tr'));
+    if (sd === 'desc') entries.reverse();
+  } else if (sc && years.includes(sc)) {
+    entries.sort(([,a],[,b]) => {
+      const va = getMetricValues(a, _finMetric)[sc] ?? null;
+      const vb = getMetricValues(b, _finMetric)[sc] ?? null;
+      if (va === null && vb === null) return 0;
+      if (va === null) return 1;  // null → en alta
+      if (vb === null) return -1;
+      return sd === 'asc' ? va - vb : vb - va;
+    });
+  }
+
+  // ── Sıralı sütun için max değer (data bar) ───────────────
+  let maxSortedAbs = 0;
+  if (sc && years.includes(sc)) {
+    entries.forEach(([,a]) => {
+      const v = getMetricValues(a, _finMetric)[sc];
+      if (v != null) maxSortedAbs = Math.max(maxSortedAbs, Math.abs(v));
+    });
+  }
+
+  // ── Sıra haritası (sadece sıralı sayısal sütun için) ─────
+  const rankMap = {};
+  if (sc && years.includes(sc)) {
+    let rank = 1;
+    entries.forEach(([slug,a]) => {
+      const v = getMetricValues(a, _finMetric)[sc];
+      if (v != null) rankMap[slug] = rank++;
+    });
+  }
+
+  // ── Satır oluşturma ──────────────────────────────────────
+  tbody.innerHTML = entries.map(([slug, airline]) => {
+    const metricData = getMetricValues(airline, _finMetric);
+
+    const cells = years.map(y => {
+      const v = metricData[y];
+      const isSortedCol = sc === y;
+      const colCls = isSortedCol ? ' fin-col-sorted' : '';
+
+      if (v == null) return `<td class="fin-cell-na${colCls}">—</td>`;
+
+      const label  = fmtFinVal(v, def2?.fmt || 'musd');
+      const signCls = isSigned ? (v >= 0 ? ' fin-cell-pos' : ' fin-cell-neg') : '';
+
+      // Data bar: sıralı sütunda orantılı arka plan
+      let barStyle = '';
+      if (isSortedCol && maxSortedAbs > 0) {
+        const pct  = Math.round((Math.abs(v) / maxSortedAbs) * 72);
+        const clr  = v < 0 ? '#DC262618' : '#6366F118';
+        barStyle = ` style="background:linear-gradient(90deg,${clr} ${pct}%,transparent ${pct}%)"`;
+      }
+
+      // Sıra rozeti
+      const rank = rankMap[slug];
+      const rankHtml = (isSortedCol && rank)
+        ? `<span class="fin-rank${rank <= 3 ? ' fin-rank--top' : ''}">#${rank}</span>`
+        : '';
+
+      return `<td class="${signCls}${colCls}"${barStyle}>${rankHtml}${label}</td>`;
+    }).join('');
+
+    const note   = airline.psnote ? ` <span style="font-size:9px;color:var(--text-3)">(${airline.psnote})</span>` : '';
+    const logo   = finLogoUrl(slug);
+    const logoEl = logo
+      ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0;display:block" alt="" onerror="this.style.display='none'">`
+      : `<span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0;display:inline-block"></span>`;
+    const nameCls = sc === 'airline' ? ' fin-col-sorted' : '';
+
+    return `<tr>
+      <td class="${nameCls}">
+        <span style="display:inline-flex;align-items:center;gap:7px">
           ${logoEl}
           <span style="font-weight:700;color:${airline.color}">${airline.name}${note}</span>
-        </span></td>
-        ${cells}
-      </tr>`;
-    }).join('');
+        </span>
+      </td>
+      ${cells}
+    </tr>`;
+  }).join('');
 }
+
+window.sortFinTable = function(col) {
+  if (_finSort.col === col) {
+    // none → desc → asc → none döngüsü
+    if      (_finSort.dir === 'none') _finSort.dir = 'desc';
+    else if (_finSort.dir === 'desc') _finSort.dir = 'asc';
+    else { _finSort.col = null; _finSort.dir = 'none'; }
+  } else {
+    _finSort.col = col;
+    _finSort.dir = 'desc'; // ilk tıkta büyükten küçüğe
+  }
+  renderFinTable();
+};
 
 // Dark mode değişince grafiği yeniden çiz
 new MutationObserver(() => { if (_finBuilt) renderFinChart(); })
