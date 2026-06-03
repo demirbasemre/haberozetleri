@@ -6419,9 +6419,10 @@
     position: relative;
     overflow: hidden;
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .forex-row:first-of-type {
     border-bottom: 1px solid var(--border-soft);
+  }
+  .forex-row.no-border {
+    border-bottom: none;
   }
   .forex-row:hover {
     transform: translateX(3px);
@@ -6442,6 +6443,10 @@
   .forex-indicator-dot.eur {
     background: #059669;
     box-shadow: 0 0 8px rgba(5, 150, 105, 0.6);
+  }
+  .forex-indicator-dot.parity {
+    background: #8B5CF6;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
   }
 
   .forex-label {
@@ -6541,11 +6546,14 @@
   [data-theme="dark"] .forex-row:hover .forex-watermark {
     opacity: 0.08;
   }
-  .forex-row:first-of-type .forex-watermark {
+  .forex-watermark.usd {
     color: #1D6FE8;
   }
-  .forex-row:last-of-type .forex-watermark {
+  .forex-watermark.eur {
     color: #059669;
+  }
+  .forex-watermark.parity {
+    color: #8b5cf6;
   }
 
   /* Segmented control layout for Forex toggles */
