@@ -203,6 +203,67 @@
     background: var(--bg);
   }
   .fin-table-note { font-size: 11px; color: var(--text-3); }
+  /* Mali dönem bilgisi */
+  .fin-fy-bar {
+    border-top: 1px solid var(--border-soft);
+    background: color-mix(in srgb, var(--surface) 50%, #F59E0B08 50%);
+  }
+  .fin-fy-toggle {
+    display: flex; align-items: center; gap: 6px; width: 100%;
+    padding: 7px 16px; cursor: pointer; font-size: 11.5px; font-weight: 600;
+    color: var(--text-2); background: none; border: none;
+    transition: color 0.15s;
+  }
+  .fin-fy-toggle:hover { color: var(--text); }
+  .fin-fy-icon { font-size: 13px; flex-shrink: 0; }
+  .fin-fy-chevron { margin-left: auto; transition: transform 0.2s; font-size: 10px; }
+  .fin-fy-toggle[aria-expanded="true"] .fin-fy-chevron { transform: rotate(180deg); }
+  .fin-fy-panel {
+    padding: 0 16px 12px; display: none;
+  }
+  .fin-fy-panel.open { display: block; }
+  .fin-fy-desc {
+    font-size: 11.5px; color: var(--text-2); line-height: 1.6;
+    padding: 8px 12px; background: var(--bg); border-radius: 7px;
+    border-left: 3px solid #F59E0B; margin-bottom: 10px;
+  }
+  .fin-fy-airlines {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
+  }
+  .fin-fy-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 600;
+    background: #F59E0B18; border: 1px solid #F59E0B44; color: #92400E;
+  }
+  [data-theme="dark"] .fin-fy-chip { color: #FCD34D; background: #F59E0B14; border-color: #F59E0B33; }
+  .fin-fy-chip img { width: 13px; height: 13px; border-radius: 2px; }
+  /* Dönem satırı (tabloda) */
+  .fin-period-row td {
+    font-size: 9.5px; color: var(--text-3); font-weight: 500;
+    padding: 3px 12px 5px; text-align: right; background: var(--bg);
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .fin-period-row td:first-child { text-align: left; }
+  .fin-period-cell--alt {
+    color: #B45309; font-weight: 700;
+  }
+  [data-theme="dark"] .fin-period-cell--alt { color: #FCD34D; }
+  /* Havayolu adının yanındaki dönem rozeti */
+  .fin-fy-badge {
+    display: inline-flex; align-items: center;
+    padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 700;
+    background: #F59E0B18; color: #92400E; border: 1px solid #F59E0B33;
+    margin-left: 4px; vertical-align: middle; white-space: nowrap;
+  }
+  [data-theme="dark"] .fin-fy-badge { color: #FCD34D; background: #F59E0B14; }
+  /* Dönem göster toggle */
+  .fin-period-toggle-wrap {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-3); cursor: pointer;
+    padding: 4px 0;
+  }
+  .fin-period-toggle-wrap input { accent-color: var(--accent); cursor: pointer; }
+  .fin-period-toggle-wrap:hover { color: var(--text); }
   .fin-table-wrap { overflow-x: auto; }
   .fin-cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
   .fin-cmp-table th {
@@ -2951,6 +3012,26 @@
           <thead id="fin-cmp-thead"></thead>
           <tbody id="fin-cmp-tbody"></tbody>
         </table>
+      </div>
+      <!-- Mali dönem uyarısı -->
+      <div class="fin-fy-bar">
+        <button class="fin-fy-toggle" onclick="toggleFinFY()" aria-expanded="false" id="fin-fy-btn">
+          <svg class="fin-fy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Mali Dönem Uyarısı — 4 havayolu Nisan–Mart mali yılı kullanır
+          <svg class="fin-fy-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="fin-fy-panel" id="fin-fy-panel">
+          <div class="fin-fy-desc">
+            <strong>Emirates, Qatar Airways, Singapore Airlines ve ANA</strong> havayolları <strong>Nisan–Mart mali yılı</strong> kullanır.
+            Bu nedenle tablodaki <em>"2025"</em> etiketi bu havayolları için <strong>Nisan 2024 – Mart 2025</strong> dönemini,
+            diğerleri için ise <strong>Ocak – Aralık 2025</strong> dönemini ifade eder.
+          </div>
+          <div class="fin-fy-airlines" id="fin-fy-airline-list"><!-- JS ile doldurulur --></div>
+          <label class="fin-period-toggle-wrap">
+            <input type="checkbox" id="fin-show-periods" onchange="toggleFinPeriodRow(this.checked)">
+            Tabloda dönem aralığını göster
+          </label>
+        </div>
       </div>
     </div>
 
@@ -14302,7 +14383,28 @@ let _finChartType = 'line';
 let _finRange = 5;
 let _finHidden = new Set();
 let _finSort   = { col: null, dir: 'none' }; // col: 'airline' | yıl string, dir: 'none'|'asc'|'desc'
+let _finShowPeriods = false;
 let _finBuilt = false;
+
+// ── Mali yıl sonu ayları (Aralık=12 varsayılan; belirtilenler farklı)
+const FIN_FISCAL_YEAR_END = {
+  'EK': 3,   // Emirates:           Nisan–Mart
+  'QR': 3,   // Qatar Airways:      Nisan–Mart
+  'SQ': 3,   // Singapore Airlines: Nisan–Mart
+  'NH': 3,   // ANA Holdings:       Nisan–Mart (Japon mali yılı)
+};
+function getFYEnd(slug)   { return FIN_FISCAL_YEAR_END[slug] || 12; }
+function isNonDecFY(slug) { return getFYEnd(slug) !== 12; }
+
+// Yıl etiketi için takvim dönem aralığı açıklaması
+const TR_MONTHS = ['','Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+function getFYPeriodLabel(yearStr, fyEnd) {
+  const y = parseInt(yearStr);
+  if (fyEnd === 12) return `Oca – Ara ${y}`;
+  // fyEnd=3 → Nisan(y-1) – Mart(y)
+  const startM = (fyEnd % 12) + 1;  // ay sonrası = başlangıç
+  return `${TR_MONTHS[startM]} ${y-1} – ${TR_MONTHS[fyEnd]} ${y}`;
+}
 
 // Metrik tanımları — 4 renk grubu
 const FIN_METRIC_DEFS = [
@@ -14581,6 +14683,12 @@ function renderFinChart() {
               if (d2.fmt === 'pct' || d2.fmt === 'pct_s') return v + '%';
               if (d2.fmt === 'pax') return v + 'M';
               if (d2.fmt === 'munit') return v + 'B';
+              if (d2.fmt === 'count') {
+                // Çalışan sayısı — para birimi gösterme
+                const abs = Math.abs(v);
+                if (abs >= 1000) return (v/1000).toFixed(0) + 'k';
+                return Math.round(v).toLocaleString('tr-TR');
+              }
               const abs = Math.abs(v);
               if (abs >= 1000) return (v/1000).toFixed(1) + 'B$';
               return v + 'M$';
@@ -14612,22 +14720,7 @@ function renderFinTable() {
   const def2  = FIN_METRIC_MAP[_finMetric];
   const isSigned = def2?.fmt === 'musd_s' || def2?.fmt === 'pct_s';
 
-  // ── Başlık satırı (tıklanabilir, sıralanabilir) ──────────
-  thead.innerHTML = `<tr>
-    <th aria-sort="${_ariaSort('airline')}"
-        onclick="sortFinTable('airline')"
-        title="Havayoluna göre sırala (A→Z / Z→A)">
-      Havayolu ${_sortIcon('airline')}
-    </th>
-    ${years.map(y => `<th
-        aria-sort="${_ariaSort(y)}"
-        onclick="sortFinTable('${y}')"
-        title="${y} yılına göre sırala">
-      ${y} ${_sortIcon(y)}
-    </th>`).join('')}
-  </tr>`;
-
-  // ── Veri sıralama ─────────────────────────────────────────
+  // ── Veri sıralama (önce entries hazırla, thead buna bakar) ──
   let entries = Object.entries(FIN_DATA || {}).filter(([slug]) => !_finHidden.has(slug));
   const sc = _finSort.col, sd = _finSort.dir;
 
@@ -14663,6 +14756,37 @@ function renderFinTable() {
       if (v != null) rankMap[slug] = rank++;
     });
   }
+
+  // ── Başlık satırı (entries hazır olduktan sonra oluştur) ──
+  const hasNonDec = entries.some(([s]) => isNonDecFY(s));
+
+  thead.innerHTML = `<tr>
+    <th aria-sort="${_ariaSort('airline')}"
+        onclick="sortFinTable('airline')"
+        title="Havayoluna göre sırala (A→Z / Z→A)">
+      Havayolu ${_sortIcon('airline')}
+    </th>
+    ${years.map(y => {
+      const decLabel = getFYPeriodLabel(y, 12);
+      const marLabel = getFYPeriodLabel(y, 3);
+      const ttip = hasNonDec
+        ? `Ara-FY: ${decLabel} | Nis-Mar FY: ${marLabel}`
+        : decLabel;
+      return `<th aria-sort="${_ariaSort(y)}" onclick="sortFinTable('${y}')" title="${ttip}">
+        ${y} ${_sortIcon(y)}
+      </th>`;
+    }).join('')}
+  </tr>
+  ${_finShowPeriods ? `<tr class="fin-period-row">
+    <td>Dönem aralığı</td>
+    ${years.map(y => {
+      const decLabel = getFYPeriodLabel(y, 12);
+      const marLabel = getFYPeriodLabel(y, 3);
+      return hasNonDec
+        ? `<td><span style="display:block">${decLabel}</span><span class="fin-period-cell--alt">${marLabel}</span></td>`
+        : `<td>${decLabel}</td>`;
+    }).join('')}
+  </tr>` : ''}`;
 
   // ── Satır oluşturma ──────────────────────────────────────
   tbody.innerHTML = entries.map(([slug, airline]) => {
@@ -14701,18 +14825,49 @@ function renderFinTable() {
       ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0;display:block" alt="" onerror="this.style.display='none'">`
       : `<span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0;display:inline-block"></span>`;
     const nameCls = sc === 'airline' ? ' fin-col-sorted' : '';
+    const fyEnd = getFYEnd(slug);
+    const fyBadge = fyEnd !== 12
+      ? `<span class="fin-fy-badge" title="Mali yıl: Nis–${TR_MONTHS[fyEnd]} (Oca–Ara değil)">Nis–Mar</span>`
+      : '';
 
     return `<tr>
       <td class="${nameCls}">
         <span style="display:inline-flex;align-items:center;gap:7px">
           ${logoEl}
-          <span style="font-weight:700;color:${airline.color}">${airline.name}${note}</span>
+          <span style="font-weight:700;color:${airline.color}">${airline.name}${note}</span>${fyBadge}
         </span>
       </td>
       ${cells}
     </tr>`;
   }).join('');
 }
+
+window.toggleFinFY = function() {
+  const panel = document.getElementById('fin-fy-panel');
+  const btn   = document.getElementById('fin-fy-btn');
+  if (!panel || !btn) return;
+  const isOpen = btn.getAttribute('aria-expanded') === 'true';
+  panel.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', String(!isOpen));
+  // Airline chip listesini doldur (ilk açılışta)
+  const list = document.getElementById('fin-fy-airline-list');
+  if (list && list.childElementCount === 0) {
+    list.innerHTML = Object.entries(FIN_FISCAL_YEAR_END).map(([slug, fyEnd]) => {
+      const d = (FIN_DATA || {})[slug];
+      if (!d) return '';
+      const logo = finLogoUrl(slug);
+      const logoEl = logo
+        ? `<img src="${logo}" alt="" onerror="this.style.display='none'">`
+        : '';
+      return `<span class="fin-fy-chip">${logoEl}${d.name} — Nis–${TR_MONTHS[fyEnd]}</span>`;
+    }).join('');
+  }
+};
+
+window.toggleFinPeriodRow = function(show) {
+  _finShowPeriods = show;
+  renderFinTable();
+};
 
 window.sortFinTable = function(col) {
   if (_finSort.col === col) {
