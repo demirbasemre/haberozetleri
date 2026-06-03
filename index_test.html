@@ -9279,10 +9279,10 @@ async function loadDashboard() {
       const result = rawJSON.chart.result[0];
       const timestamps = result.timestamp || [];
       const closes = result.indicators.quote[0].close || [];
-      
+
       let validPoints = [];
       for (let i = 0; i < timestamps.length; i++) {
-        if (closes[i] != null) {
+        if (closes[i] != null && closes[i] > 0) {
           validPoints.push({
             time: timestamps[i],
             value: closes[i]
