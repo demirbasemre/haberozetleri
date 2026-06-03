@@ -2806,7 +2806,7 @@
           </table>
         </div>
         <div class="fleet-update-note" style="margin-top:12px">
-          <strong>*</strong> Kaynak 1 Aktif verisi mevcut değil — Toplam Filo gösteriliyor · AFKLM = Air France + KLM birleşik · 2 Haz 2026 · Satıra tıkla: uçak tipi detayı
+          <strong>*</strong> Kaynak 1 Aktif verisi mevcut değil — Toplam Filo gösteriliyor · AFKLM = Air France + KLM birleşik · LA = LATAM Brasil (Kaynak 1) · 2 Haz 2026 · Satıra tıkla: uçak tipi detayı
         </div>
       </div>
 
@@ -14017,28 +14017,34 @@ function initControls(allArticles) {
   // Kaynak: Kaynak 1 (2 Haz 2026) — sadece gerçekleşen veriler
   // Gelecek projeksiyonları Kaynak 2 bölümünde gösterilecek
   const FLEET_PROJ = [
-    { id:'thy',   name:'Turkish Airlines',  color:'#E30613',
+    { id:'thy',   name:'Turkish Airlines',    color:'#E30613',
       d:{2022:373,2023:423,2024:457,2025:484,2026:410} },
-    { id:'cx',    name:'Cathay Pacific',    color:'#1D6FE8',
-      d:{2022:167,2023:173,2024:176,2025:178,2026:179} },
-    { id:'ke',    name:'Korean Air',        color:'#1a3a8f',
-      d:{2022:138,2023:145,2024:152,2025:160,2026:168} },
-    { id:'cv',    name:'Cargolux',          color:'#6B7280',
-      d:{2022:30, 2023:29, 2024:28, 2025:27, 2026:26} },
-    { id:'ca',    name:'Air China',         color:'#DC2626',
-      d:{2022:431,2023:457,2024:488,2025:516,2026:533} },
-    { id:'ek',    name:'Emirates',          color:'#F59E0B',
+    { id:'ek',    name:'Emirates',            color:'#D97706',
       d:{2022:244,2023:252,2024:257,2025:260,2026:282} },
-    { id:'sq',    name:'Singapore Airlines',color:'#0f4c8a',
-      d:{2022:128,2023:138,2024:148,2025:156,2026:162} },
-    { id:'cz',    name:'China Southern',    color:'#2563EB',
-      d:{2022:556,2023:594,2024:633,2025:659,2026:682} },
-    { id:'lh',    name:'Lufthansa',         color:'#374151',
+    { id:'cx',    name:'Cathay Pacific',      color:'#1D6FE8',
+      d:{2022:167,2023:173,2024:176,2025:178,2026:179} },
+    { id:'ck',    name:'China Cargo Airlines',color:'#92400E',
+      d:{2022:20, 2023:20, 2024:19, 2025:19, 2026:19} },
+    { id:'qr',    name:'Qatar Airways',       color:'#7C3AED',
+      d:{2022:210,2023:230,2024:260,2025:279,2026:271} },
+    { id:'lh',    name:'Lufthansa',           color:'#374151',
       d:{2022:280,2023:284,2024:273,2025:270,2026:268} },
-    { id:'ci',    name:'China Airlines',    color:'#0891B2',
-      d:{2022:72, 2023:75, 2024:78, 2025:81, 2026:84} },
-    { id:'afklm', name:'Air France-KLM',    color:'#059669',
+    { id:'afklm', name:'Air France-KLM',      color:'#059669',
       d:{2022:325,2023:335,2024:340,2025:341,2026:339} },
+    { id:'ke',    name:'Korean Air',          color:'#1a3a8f',
+      d:{2022:138,2023:145,2024:152,2025:160,2026:168} },
+    { id:'cv',    name:'Cargolux',            color:'#6B7280',
+      d:{2022:30, 2023:29, 2024:28, 2025:27, 2026:26} },
+    { id:'la',    name:'LATAM Airlines',      color:'#BE185D',
+      d:{2022:145,2023:155,2024:163,2025:168,2026:172} },
+    { id:'ci',    name:'China Airlines',      color:'#0891B2',
+      d:{2022:72, 2023:75, 2024:78, 2025:81, 2026:84} },
+    { id:'cz',    name:'China Southern',      color:'#2563EB',
+      d:{2022:556,2023:594,2024:633,2025:659,2026:682} },
+    { id:'ca',    name:'Air China',           color:'#DC2626',
+      d:{2022:431,2023:457,2024:488,2025:516,2026:533} },
+    { id:'sq',    name:'Singapore Airlines',  color:'#0f4c8a',
+      d:{2022:128,2023:138,2024:148,2025:156,2026:162} },
   ];
   const FLEET_HIDDEN = new Set();
 
