@@ -3663,8 +3663,8 @@ function getAirlineLogo(airlineId) {
   const defOverride = allAirlineDefs().find(a => a.id === airlineId);
   if (defOverride?._iconOverride) return defOverride._iconOverride;
 
-  const F = d => ;
-  const G = iata => ;
+  const F = d => `https://www.google.com/s2/favicons?sz=32&domain=${d}`;
+  const G = iata => `https://www.gstatic.com/flights/airline_logos/70px/${iata}.png`;
   const logos = {
     // Türkiye
     'turkishairlines': G('TK'),
