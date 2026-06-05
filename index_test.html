@@ -25,69 +25,69 @@
 <link rel="stylesheet" href="index.css">
 <style>
   /* ══════════════════════════════════════
-     FLEET COMPARISON & CHA STYLES
+     FLEET COMPARISON & Kaynak 2 STYLES
   ══════════════════════════════════════ */
 
-  /* ── CHA cards grid ── */
-  .fleet-cha-grid {
+  /* ── Kaynak 2 cards grid ── */
+  .fleet-k2-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 12px;
     padding: 4px 0 16px;
   }
-  .fleet-cha-card {
+  .fleet-k2-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
     transition: box-shadow 0.15s;
   }
-  .fleet-cha-card:hover { box-shadow: var(--shadow-md); }
-  .fleet-cha-card-hdr {
+  .fleet-k2-card:hover { box-shadow: var(--shadow-md); }
+  .fleet-k2-card-hdr {
     display: flex; align-items: center; gap: 10px;
     padding: 12px 14px 10px;
     border-bottom: 1px solid var(--border-soft);
   }
-  .fleet-cha-logo {
+  .fleet-k2-logo {
     width: 36px; height: 36px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: 11px; color: #fff; flex-shrink: 0;
   }
-  .fleet-cha-name { font-weight: 600; font-size: 13.5px; color: var(--text); }
-  .fleet-cha-iata { font-size: 11px; color: var(--text-3); margin-top: 1px; }
-  .fleet-cha-stats {
+  .fleet-k2-name { font-weight: 600; font-size: 13.5px; color: var(--text); }
+  .fleet-k2-iata { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+  .fleet-k2-stats {
     display: grid; grid-template-columns: repeat(3,1fr);
     padding: 10px 14px; gap: 4px; border-bottom: 1px solid var(--border-soft);
   }
-  .fleet-cha-stat { text-align: center; }
-  .fleet-cha-stat-val { font-size: 20px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
-  .fleet-cha-stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 1px; }
-  .fleet-cha-expand-btn {
+  .fleet-k2-stat { text-align: center; }
+  .fleet-k2-stat-val { font-size: 20px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+  .fleet-k2-stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 1px; }
+  .fleet-k2-expand-btn {
     width: 100%; background: none; border: none; cursor: pointer;
     padding: 8px 14px; font-size: 11.5px; color: var(--accent);
     display: flex; align-items: center; gap: 4px; font-weight: 500;
     transition: background 0.12s;
   }
-  .fleet-cha-expand-btn:hover { background: var(--red-muted); }
-  .fleet-cha-type-table {
+  .fleet-k2-expand-btn:hover { background: var(--red-muted); }
+  .fleet-k2-type-table {
     display: none; width: 100%;
     border-collapse: collapse; font-size: 11px;
     border-top: 1px solid var(--border-soft);
   }
-  .fleet-cha-type-table.open { display: table; }
-  .fleet-cha-type-table th {
+  .fleet-k2-type-table.open { display: table; }
+  .fleet-k2-type-table th {
     background: var(--bg); padding: 5px 10px;
     text-align: right; font-weight: 600; color: var(--text-3);
     font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;
   }
-  .fleet-cha-type-table th:first-child { text-align: left; }
-  .fleet-cha-type-table td {
+  .fleet-k2-type-table th:first-child { text-align: left; }
+  .fleet-k2-type-table td {
     padding: 4px 10px; text-align: right; color: var(--text);
     font-variant-numeric: tabular-nums; border-top: 1px solid var(--border-soft);
   }
-  .fleet-cha-type-table td:first-child { text-align: left; color: var(--text-2); }
-  .fleet-cha-type-table tr:hover td { background: var(--bg); }
-  .cha-order-chip {
+  .fleet-k2-type-table td:first-child { text-align: left; color: var(--text-2); }
+  .fleet-k2-type-table tr:hover td { background: var(--bg); }
+  .k2-order-chip {
     display: inline-block; padding: 0 5px; border-radius: 4px;
     background: rgba(37,99,235,0.1); color: var(--accent);
     font-size: 10px; font-weight: 600; margin-left: 3px;
@@ -154,27 +154,6 @@
     display: flex; align-items: center; gap: 4px;
   }
   .fin-type-btn--active, .fin-range-btn--active { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .fin-cy-btn {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 4px 10px; border-radius: 7px; font-size: 11px; font-weight: 700;
-    cursor: pointer; border: 1.5px solid var(--border); background: var(--bg);
-    color: var(--text-3); transition: all 0.15s;
-  }
-  .fin-cy-btn:hover { border-color: #F59E0B; color: #92400E; background: #F59E0B10; }
-  .fin-cy-btn--active {
-    background: #FEF3C7; border-color: #F59E0B; color: #92400E;
-  }
-  [data-theme="dark"] .fin-cy-btn--active {
-    background: #F59E0B18; border-color: #F59E0B55; color: #FCD34D;
-  }
-  .fin-cy-note {
-    font-size: 10.5px; color: #92400E; background: #FEF3C740;
-    border: 1px solid #F59E0B44; border-radius: 6px;
-    padding: 5px 10px; margin-top: 6px; display: none;
-    line-height: 1.5;
-  }
-  [data-theme="dark"] .fin-cy-note { color: #FCD34D; background: #F59E0B0D; border-color: #F59E0B33; }
-  .fin-cy-note.visible { display: block; }
 
   .fin-airline-toggles {
     display: flex; flex-wrap: wrap; gap: 6px; padding-bottom: 12px;
@@ -190,16 +169,6 @@
   .fin-atoggle:hover { transform: translateY(-1px); }
   .fin-atoggle.hidden { opacity: 0.28; }
   .fin-atoggle-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .fin-atoggle-logo { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; object-fit: contain; }
-  .fin-airline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .fin-airline-header-label { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
-  .fin-deselect-btn {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 3px 9px; border-radius: 10px; font-size: 10.5px; font-weight: 600;
-    cursor: pointer; border: 1px solid var(--border); background: var(--bg);
-    color: var(--text-3); transition: all 0.15s;
-  }
-  .fin-deselect-btn:hover { border-color: #DC2626; color: #DC2626; background: #DC262611; }
 
   .fin-chart-section {
     background: var(--surface); border: 1px solid var(--border);
@@ -224,114 +193,23 @@
     background: var(--bg);
   }
   .fin-table-note { font-size: 11px; color: var(--text-3); }
-  /* Mali dönem bilgisi */
-  .fin-fy-bar {
-    border-top: 1px solid var(--border-soft);
-    background: color-mix(in srgb, var(--surface) 50%, #F59E0B08 50%);
-  }
-  .fin-fy-toggle {
-    display: flex; align-items: center; gap: 6px; width: 100%;
-    padding: 7px 16px; cursor: pointer; font-size: 11.5px; font-weight: 600;
-    color: var(--text-2); background: none; border: none;
-    transition: color 0.15s;
-  }
-  .fin-fy-toggle:hover { color: var(--text); }
-  .fin-fy-icon { font-size: 13px; flex-shrink: 0; }
-  .fin-fy-chevron { margin-left: auto; transition: transform 0.2s; font-size: 10px; }
-  .fin-fy-toggle[aria-expanded="true"] .fin-fy-chevron { transform: rotate(180deg); }
-  .fin-fy-panel {
-    padding: 0 16px 12px; display: none;
-  }
-  .fin-fy-panel.open { display: block; }
-  .fin-fy-desc {
-    font-size: 11.5px; color: var(--text-2); line-height: 1.6;
-    padding: 8px 12px; background: var(--bg); border-radius: 7px;
-    border-left: 3px solid #F59E0B; margin-bottom: 10px;
-  }
-  .fin-fy-airlines {
-    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
-  }
-  .fin-fy-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 600;
-    background: #F59E0B18; border: 1px solid #F59E0B44; color: #92400E;
-  }
-  [data-theme="dark"] .fin-fy-chip { color: #FCD34D; background: #F59E0B14; border-color: #F59E0B33; }
-  .fin-fy-chip img { width: 13px; height: 13px; border-radius: 2px; }
-  /* Dönem satırı (tabloda) */
-  .fin-period-row td {
-    font-size: 9.5px; color: var(--text-3); font-weight: 500;
-    padding: 3px 12px 5px; text-align: right; background: var(--bg);
-    border-bottom: 1px solid var(--border); white-space: nowrap;
-  }
-  .fin-period-row td:first-child { text-align: left; }
-  .fin-period-cell--alt {
-    color: #B45309; font-weight: 700;
-  }
-  [data-theme="dark"] .fin-period-cell--alt { color: #FCD34D; }
-  /* Havayolu adının yanındaki dönem rozeti */
-  .fin-fy-badge {
-    display: inline-flex; align-items: center;
-    padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 700;
-    background: #F59E0B18; color: #92400E; border: 1px solid #F59E0B33;
-    margin-left: 4px; vertical-align: middle; white-space: nowrap;
-  }
-  [data-theme="dark"] .fin-fy-badge { color: #FCD34D; background: #F59E0B14; }
-  /* Dönem göster toggle */
-  .fin-period-toggle-wrap {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--text-3); cursor: pointer;
-    padding: 4px 0;
-  }
-  .fin-period-toggle-wrap input { accent-color: var(--accent); cursor: pointer; }
-  .fin-period-toggle-wrap:hover { color: var(--text); }
   .fin-table-wrap { overflow-x: auto; }
   .fin-cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
   .fin-cmp-table th {
     background: var(--navy); color: rgba(255,255,255,0.85);
     padding: 8px 12px; text-align: right; font-size: 11px; font-weight: 600;
     white-space: nowrap; border-bottom: 2px solid rgba(255,255,255,0.1);
-    cursor: pointer; user-select: none; transition: background 0.15s;
-    position: relative;
-  }
-  .fin-cmp-table th:hover { background: color-mix(in srgb, var(--navy) 80%, white 20%); }
-  .fin-cmp-table th[aria-sort="ascending"],
-  .fin-cmp-table th[aria-sort="descending"] {
-    background: color-mix(in srgb, var(--navy) 70%, var(--accent) 30%);
   }
   .fin-cmp-table th:first-child { text-align: left; min-width: 160px; }
-  .fin-sort-icon {
-    display: inline-block; margin-left: 4px; font-size: 9px; opacity: 0.35;
-    transition: opacity 0.15s, transform 0.2s;
-    vertical-align: middle; line-height: 1;
-  }
-  th[aria-sort="ascending"] .fin-sort-icon,
-  th[aria-sort="descending"] .fin-sort-icon { opacity: 1; }
   .fin-cmp-table td {
     padding: 7px 12px; text-align: right; border-bottom: 1px solid var(--border-soft);
-    color: var(--text); white-space: nowrap; transition: background 0.12s;
-    position: relative;
+    color: var(--text); white-space: nowrap;
   }
   .fin-cmp-table td:first-child { text-align: left; font-weight: 600; }
   .fin-cmp-table tr:hover td { background: var(--bg); }
   .fin-cell-pos { color: #059669; font-weight: 600; }
   .fin-cell-neg { color: #DC2626; font-weight: 600; }
   .fin-cell-na  { color: var(--text-3); }
-  /* Sıralanmış sütun */
-  .fin-col-sorted { background: rgba(99,102,241,0.055); }
-  [data-theme="dark"] .fin-col-sorted { background: rgba(99,102,241,0.10); }
-  .fin-cmp-table tr:hover .fin-col-sorted { background: color-mix(in srgb, var(--bg) 70%, rgba(99,102,241,0.12) 30%); }
-  /* Sıra rozeti */
-  .fin-rank {
-    display: inline-block; font-size: 9px; font-weight: 800;
-    color: var(--text-3); min-width: 18px; margin-right: 3px;
-    text-align: right; font-variant-numeric: tabular-nums;
-  }
-  .fin-rank--top { color: var(--accent); }
-  /* Tablo header sort hint */
-  .fin-table-sort-hint {
-    font-size: 10px; color: var(--text-3); display: flex; align-items: center; gap: 4px;
-  }
   @media (max-width: 768px) {
     .fin-control-bar { gap: 8px; }
     .fin-chart-wrap { height: 220px; }
@@ -390,27 +268,27 @@
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); box-shadow: var(--shadow-sm);
   }
-  .flt-formula-bar--ps { border-left: 3px solid #059669; }
-  .flt-formula-bar--cha { border-left: 3px solid #2563eb; }
+  .flt-formula-bar--k1 { border-left: 3px solid #059669; }
+  .flt-formula-bar--k2 { border-left: 3px solid #2563eb; }
   .flt-src-dot { width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0; }
-  .flt-src-dot--ps  { background:#059669; }
-  .flt-src-dot--cha { background:#2563eb; }
+  .flt-src-dot--k1  { background:#059669; }
+  .flt-src-dot--k2 { background:#2563eb; }
   .flt-formula-label {
     display: flex; align-items: center; gap: 5px;
     font-size: 11.5px; font-weight: 800; color: var(--text-2);
     white-space: nowrap; flex-shrink: 0; min-width: 36px;
   }
-  .flt-formula-label--ps  { color: #059669; }
-  .flt-formula-label--cha { color: #2563eb; }
-  .flt-formula-expr--ps {
+  .flt-formula-label--k1  { color: #059669; }
+  .flt-formula-label--k2 { color: #2563eb; }
+  .flt-formula-expr--k1 {
     background: rgba(5,150,105,0.08); border-color: rgba(5,150,105,0.25);
     color: #059669;
   }
-  .flt-fpill--ps.flt-fpill--add {
+  .flt-fpill--k1.flt-fpill--add {
     border-color: #059669; background: rgba(5,150,105,0.08); color: #059669;
   }
-  .flt-fpill--ps.flt-fpill--add .flt-fpill-sign { color: #059669; }
-  [data-theme="dark"] .flt-fpill--ps.flt-fpill--add { background: rgba(5,150,105,0.15); }
+  .flt-fpill--k1.flt-fpill--add .flt-fpill-sign { color: #059669; }
+  [data-theme="dark"] .flt-fpill--k1.flt-fpill--add { background: rgba(5,150,105,0.15); }
   .flt-val-na-star { color: var(--text-3); font-size: 10px; }
 
   .flt-formula-pills { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
@@ -443,8 +321,8 @@
     padding: 8px 0 12px; font-size: 11px;
   }
   .flt-cmp-src { padding: 2px 8px; border-radius: 4px; font-weight: 600; }
-  .flt-cmp-src--ps  { background: rgba(5,150,105,0.12); color: #059669; }
-  .flt-cmp-src--cha { background: rgba(37,99,235,0.12); color: #2563eb; }
+  .flt-cmp-src--k1  { background: rgba(5,150,105,0.12); color: #059669; }
+  .flt-cmp-src--k2 { background: rgba(37,99,235,0.12); color: #2563eb; }
   .flt-cmp-diff { padding: 2px 8px; border-radius: 4px; font-weight: 500; color: var(--text-3); background: var(--bg); }
   .flt-cmp-diff--match { background: rgba(5,150,105,0.08); color: #059669; }
   .flt-cmp-diff--minor { background: rgba(245,158,11,0.1); color: #D97706; }
@@ -469,8 +347,8 @@
     font-weight: 500; border-bottom: 2px solid var(--border);
   }
   .fleet-cmp-subhead th:first-child { text-align: left; }
-  .flt-th-ps  { color: #6ee7b7 !important; }
-  .flt-th-cha { color: #93c5fd !important; }
+  .flt-th-k1  { color: #6ee7b7 !important; }
+  .flt-th-k2 { color: #93c5fd !important; }
 
   .fleet-cmp-table tbody tr {
     cursor: pointer; transition: background 0.1s;
@@ -490,8 +368,8 @@
     font-size: 10px; font-weight: 800; color: #fff; flex-shrink: 0;
   }
   .flt-airline-name { font-weight: 500; font-size: 12px; color: var(--text); }
-  .flt-val-ps  { color: #059669; font-weight: 600; }
-  .flt-val-cha { color: #2563eb; font-weight: 600; }
+  .flt-val-k1  { color: #059669; font-weight: 600; }
+  .flt-val-k2 { color: #2563eb; font-weight: 600; }
   .flt-val-na  { color: var(--text-3); }
   .flt-diff-chip {
     display: inline-flex; align-items: center; gap: 2px;
@@ -538,7 +416,7 @@
     .fleet-cmp-table { font-size: 11px; }
     .fleet-cmp-table td, .fleet-cmp-table th { padding: 7px 7px; }
     .flt-airline-name { display: none; }
-    .fleet-cha-grid { grid-template-columns: 1fr; }
+    .fleet-k2-grid { grid-template-columns: 1fr; }
   }
 
   /* ── NEWS STATS PILL (inside Haberler tab) ────────────────── */
@@ -1574,13 +1452,6 @@
     }
   }
 </style>
-<style>
-  /* index.html gizleme kuralları */
-  .etki-info-btn { display: none !important; }
-  .etki-section { display: none !important; }
-  button.analysis-toggle { display: none !important; }
-  .date-section:first-child { margin-top: 0 !important; }
-</style>
 </head>
 <body>
 
@@ -1620,7 +1491,7 @@
     </button>
 
     <!-- Eski tasarıma dön -->
-    <a href="index_eski.html" class="design-switch-btn" title="Eski tasarıma dön" style="display:none">
+    <a href="index_eski.html" class="design-switch-btn" title="Eski tasarıma dön">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
         <path d="M3 3v5h5"/>
@@ -1639,7 +1510,7 @@
     <div class="hdr-tools-group" id="hdr-tools-group">
 
     <!-- Yazı tipi seçici -->
-    <div class="hdr-pref-wrap" style="display:none">
+    <div class="hdr-pref-wrap">
       <button class="hdr-pref-btn" id="hdr-font-btn" aria-label="Yazı tipi" title="Yazı tipi" aria-haspopup="true" aria-expanded="false">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/>
@@ -1679,7 +1550,7 @@
     </button>
 
     <!-- Changelog button -->
-    <button class="theme-toggle" id="changelog-btn" aria-label="Güncelleme geçmişi" title="Güncelleme Günlüğü" style="margin-left: 6px; display:none">
+    <button class="theme-toggle" id="changelog-btn" aria-label="Güncelleme geçmişi" title="Güncelleme Günlüğü" style="margin-left: 6px;">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="8" y1="6" x2="21" y2="6"/>
         <line x1="8" y1="12" x2="21" y2="12"/>
@@ -1692,7 +1563,7 @@
     </button>
 
     <!-- Eski tasarıma dön (mobil menü satırı) -->
-    <a class="hdr-tools-link" id="hdr-eski-link" href="index_eski.html" title="Eski tasarıma dön" style="display:none">
+    <a class="hdr-tools-link" id="hdr-eski-link" href="index_eski.html" title="Eski tasarıma dön">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
         <path d="M3 3v5h5"/>
@@ -1756,7 +1627,7 @@
     <button class="main-tab main-tab-active" id="tab-news-btn" onclick="switchTab('news')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
       Haberler
-      <span class="news-stats-pill" id="news-stats-pill" role="button" tabindex="0" aria-label="Haber istatistiklerini aç" title="Haber istatistikleri" style="display:none">
+      <span class="news-stats-pill" id="news-stats-pill" role="button" tabindex="0" aria-label="Haber istatistiklerini aç" title="Haber istatistikleri">
         <svg class="nsp-bars" viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
           <rect x="0.5"  y="7"   width="2.5" height="4.5"  rx="0.6"/>
           <rect x="4.75" y="4"   width="2.5" height="7.5"  rx="0.6"/>
@@ -1765,7 +1636,7 @@
         <span class="nsp-i" aria-hidden="true">i</span>
       </span>
     </button>
-    <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')" style="display:none">
+    <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       Raporlar
     </button>
@@ -1858,7 +1729,7 @@
     </div>
 
     <!-- Bölge -->
-    <div class="fdd-wrap" style="display:none">
+    <div class="fdd-wrap">
       <button class="fdd-btn" id="region-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Etki alanı filtresi">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -1925,7 +1796,7 @@
     <div class="filter-sep"></div>
 
     <!-- Analiz toggle -->
-    <button class="fdd-toggle" id="analysis-toggle" aria-pressed="false" style="display:none">
+    <button class="fdd-toggle" id="analysis-toggle" aria-pressed="false">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>
@@ -2090,7 +1961,6 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
-          <div class="dash-card-label">Döviz &amp; Parite</div>
           <div class="forex-row">
             <div class="forex-label">
               <span class="forex-indicator-dot usd"></span>
@@ -2104,7 +1974,7 @@
               <span class="forex-value skeleton" id="forex-usd-val">&nbsp;</span>
               <span class="forex-change" id="forex-usd-change"></span>
             </div>
-            <div class="forex-watermark usd">$</div>
+            <div class="forex-watermark">$</div>
           </div>
           <div class="forex-row">
             <div class="forex-label">
@@ -2119,22 +1989,7 @@
               <span class="forex-value skeleton" id="forex-eur-val">&nbsp;</span>
               <span class="forex-change" id="forex-eur-change"></span>
             </div>
-            <div class="forex-watermark eur">€</div>
-          </div>
-          <div class="forex-row no-border">
-            <div class="forex-label">
-              <span class="forex-indicator-dot parity"></span>
-              <span class="forex-symbol">EUR/USD</span>
-              <svg class="forex-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </div>
-            <div class="forex-val-wrap">
-              <span class="forex-value skeleton" id="forex-parity-val">&nbsp;</span>
-              <span class="forex-change" id="forex-parity-change"></span>
-            </div>
-            <div class="forex-watermark parity">€/$</div>
+            <div class="forex-watermark">€</div>
           </div>
           <div class="dash-card-footer">
             <div class="dash-card-note">Yahoo Finance / ER-API · Günlük</div>
@@ -2818,20 +2673,20 @@
       <!-- Kaynak seçici -->
       <div class="fleet-source-bar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
         <div style="display:flex;gap:6px;align-items:center;">
-          <button class="fdd-btn fdd-btn--active fleet-src-pill" data-src="planespotters" id="fleet-src-ps" style="font-size:11.5px;padding:4px 12px">
+          <button class="fdd-btn fdd-btn--active fleet-src-pill" data-src="kaynak1" id="fleet-src-k1" style="font-size:11.5px;padding:4px 12px">
             <span class="fdd-dot" style="background:#059669"></span>
-            Planespotters.net
+            Kaynak 1
           </button>
-          <button class="fdd-btn fleet-src-pill" data-src="chaviation" id="fleet-src-cha" style="font-size:11.5px;padding:4px 12px">
+          <button class="fdd-btn fleet-src-pill" data-src="kaynak2" id="fleet-src-k2" style="font-size:11.5px;padding:4px 12px">
             <span class="fdd-dot" style="background:#2563eb"></span>
-            CH Aviation
+            Kaynak 2
           </button>
           <button class="fdd-btn fleet-src-pill" data-src="compare" id="fleet-src-cmp" style="font-size:11.5px;padding:4px 12px">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h3a2 2 0 0 0 2-2v-3"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
             Karşılaştır
           </button>
         </div>
-        <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Planespotters.net · 2 Haz 2026</span>
+        <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Kaynak 1 · 2 Haz 2026</span>
       </div>
 
       <!-- Global filtre chips: WB / NB / Kargo -->
@@ -2848,19 +2703,19 @@
         </button>
       </div>
 
-      <!-- PS içerik wrapper -->
-      <div id="fleet-ps-content">
+      <!-- Kaynak 1 içerik wrapper -->
+      <div id="fleet-k1-content">
 
 
-      <!-- PS kart grid — buildPsCards() ile dinamik doldurulur -->
-      <div class="fleet-cha-grid" id="fleet-ps-cards"></div>
+      <!-- Kaynak 1 kart grid — buildK1Cards() ile dinamik doldurulur -->
+      <div class="fleet-k2-grid" id="fleet-k1-cards"></div>
 
       <!-- Filo Büyüme Grafiği -->
       <div class="fleet-compare-section" style="margin-top:8px">
         <div class="fleet-compare-header">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           <span class="fleet-compare-title">Filo Büyüme · 2022 – 2026</span>
-          <span class="fleet-chart-note">Planespotters.net · Gerçekleşen veriler</span>
+          <span class="fleet-chart-note">Kaynak 1 · Gerçekleşen veriler</span>
         </div>
         <div id="fleet-chart-legend" class="fleet-chart-legend"></div>
         <div class="fleet-chart-container">
@@ -2870,15 +2725,15 @@
       </div>
 
       <div class="fleet-update-note">
-        Veriler <strong>Planespotters.net</strong> kaynağından alınmıştır (2 Haziran 2026).
+        Veriler <strong>Kaynak 1</strong> kaynağından alınmıştır (2 Haziran 2026).
       </div>
-      </div><!-- /fleet-ps-content -->
+      </div><!-- /fleet-k1-content -->
 
       <!-- ══════ CH AVIATION GÖRÜNÜMÜ ══════ -->
-      <div id="fleet-cha-content" style="display:none">
-        <div class="fleet-cha-grid" id="fleet-cha-cards"></div>
+      <div id="fleet-k2-content" style="display:none">
+        <div class="fleet-k2-grid" id="fleet-k2-cards"></div>
         <div class="fleet-update-note" style="margin-top:16px">
-          Veriler <strong>CH Aviation</strong> kaynağından alınmıştır (2 Haziran 2026). Etihad için ETI kodu kullanılmıştır.
+          Veriler <strong>Kaynak 2</strong> kaynağından alınmıştır (2 Haziran 2026). Etihad için ETI kodu kullanılmıştır.
         </div>
       </div>
 
@@ -2888,28 +2743,28 @@
         <!-- ── Formül Builder ── -->
         <div class="flt-formula-wrap">
 
-          <!-- PS Tarafı -->
-          <div class="flt-formula-bar flt-formula-bar--ps">
-            <div class="flt-formula-label flt-formula-label--ps">
-              <span class="flt-src-dot flt-src-dot--ps"></span>
-              PS
+          <!-- Kaynak 1 Tarafı -->
+          <div class="flt-formula-bar flt-formula-bar--k1">
+            <div class="flt-formula-label flt-formula-label--k1">
+              <span class="flt-src-dot flt-src-dot--k1"></span>
+              Kaynak 1
             </div>
             <div class="flt-formula-pills">
-              <button class="flt-fpill flt-fpill--ps flt-fpill--add" data-pscol="pa" onclick="togglePsPill(this)">
+              <button class="flt-fpill flt-fpill--k1 flt-fpill--add" data-k1col="pa" onclick="toggleK1Pill(this)">
                 <span class="flt-fpill-sign">+</span> In Service
               </button>
-              <button class="flt-fpill flt-fpill--ps" data-pscol="pt" onclick="togglePsPill(this)">
+              <button class="flt-fpill flt-fpill--k1" data-k1col="pt" onclick="toggleK1Pill(this)">
                 <span class="flt-fpill-sign">+</span> Toplam Filo
               </button>
             </div>
-            <div class="flt-formula-expr flt-formula-expr--ps" id="flt-ps-expr">= In Service</div>
+            <div class="flt-formula-expr flt-formula-expr--k1" id="flt-k1-expr">= In Service</div>
           </div>
 
-          <!-- CHA Tarafı -->
-          <div class="flt-formula-bar flt-formula-bar--cha">
-            <div class="flt-formula-label flt-formula-label--cha">
-              <span class="flt-src-dot flt-src-dot--cha"></span>
-              CHA
+          <!-- Kaynak 2 Tarafı -->
+          <div class="flt-formula-bar flt-formula-bar--k2">
+            <div class="flt-formula-label flt-formula-label--k2">
+              <span class="flt-src-dot flt-src-dot--k2"></span>
+              Kaynak 2
             </div>
             <div class="flt-formula-pills">
               <button class="flt-fpill flt-fpill--add" data-col="ca" onclick="toggleFormulaPill(this)">
@@ -2938,11 +2793,11 @@
             <thead>
               <tr>
                 <th>Havayolu</th>
-                <th class="flt-th-ps" id="flt-ps-col-hdr">PS: In Service</th>
-                <th class="flt-th-cha" id="flt-cha-col-hdr">CHA: Active</th>
+                <th class="flt-th-k1" id="flt-k1-col-hdr">Kaynak 1: In Service</th>
+                <th class="flt-th-k2" id="flt-k2-col-hdr">Kaynak 2: Active</th>
                 <th>Δ</th>
-                <th>PS Sipariş</th>
-                <th>CHA Sipariş</th>
+                <th>Kaynak 1 Sipariş</th>
+                <th>Kaynak 2 Sipariş</th>
                 <th>Ort. Yaş</th>
               </tr>
             </thead>
@@ -3018,31 +2873,9 @@
           <button class="fin-range-btn" data-range="99">Max</button>
         </div>
       </div>
-      <!-- Takvim Yılı modu -->
-      <div class="fin-ctrl-group">
-        <span class="fin-ctrl-label">Mali Yıl</span>
-        <button class="fin-cy-btn" id="fin-cy-toggle" onclick="toggleFinCYMode()"
-            title="Nisan-Mart FY havayollarını Ocak-Aralık takvim yılına hizala">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          CY Normalize
-        </button>
-      </div>
-    </div>
-    <div class="fin-cy-note" id="fin-cy-note">
-      📐 <strong>Takvim yılı normalize modu:</strong> EK, QR, SQ, NH için
-      <em>CY(N) ≈ ¼ × FY(N) + ¾ × FY(N+1)</em> formülü uygulanır.
-      Mutlak değerlere (gelir, kâr) uygulanır; yüzde metriklerde uygulanmaz.
-      Son yıl hesaplanamaz — <strong>—</strong> olarak gösterilir.
     </div>
 
     <!-- Havayolu seçici -->
-    <div class="fin-airline-header">
-      <span class="fin-airline-header-label">Havayolları</span>
-      <div style="display:flex;gap:5px">
-        <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Sıfırla</button>
-        <button class="fin-deselect-btn" onclick="deselAllFinAirlines()" title="Tümünü tablodan kaldır">— Tümünü Gizle</button>
-      </div>
-    </div>
     <div class="fin-airline-toggles" id="fin-airline-toggles"></div>
 
     <!-- Ana grafik -->
@@ -3060,10 +2893,7 @@
     <div class="fin-table-section">
       <div class="fin-table-header">
         <span class="fin-chart-title" id="fin-table-title">Toplam Gelir · Havayolu Karşılaştırması</span>
-        <span class="fin-table-sort-hint">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
-          Sütun başlığına tıklayarak sırala
-        </span>
+        <span class="fin-table-note">Tüm değerler USD · Eksik veri: —</span>
       </div>
       <div class="fin-table-wrap">
         <table class="fin-cmp-table" id="fin-cmp-table">
@@ -3071,36 +2901,16 @@
           <tbody id="fin-cmp-tbody"></tbody>
         </table>
       </div>
-      <!-- Mali dönem uyarısı -->
-      <div class="fin-fy-bar">
-        <button class="fin-fy-toggle" onclick="toggleFinFY()" aria-expanded="false" id="fin-fy-btn">
-          <svg class="fin-fy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Mali Dönem Uyarısı — 4 havayolu Nisan–Mart mali yılı kullanır
-          <svg class="fin-fy-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="fin-fy-panel" id="fin-fy-panel">
-          <div class="fin-fy-desc">
-            <strong>Emirates, Qatar Airways, Singapore Airlines ve ANA</strong> havayolları <strong>Nisan–Mart mali yılı</strong> kullanır.
-            Bu nedenle tablodaki <em>"2025"</em> etiketi bu havayolları için <strong>Nisan 2024 – Mart 2025</strong> dönemini,
-            diğerleri için ise <strong>Ocak – Aralık 2025</strong> dönemini ifade eder.
-          </div>
-          <div class="fin-fy-airlines" id="fin-fy-airline-list"><!-- JS ile doldurulur --></div>
-          <label class="fin-period-toggle-wrap">
-            <input type="checkbox" id="fin-show-periods" onchange="toggleFinPeriodRow(this.checked)">
-            Tabloda dönem aralığını göster
-          </label>
-        </div>
-      </div>
     </div>
 
     <!-- Kaynak Açıklaması -->
     <div class="fin-sources-section">
-      <button class="fin-sources-toggle" onclick="toggleFinSources()" aria-expanded="true" id="fin-src-toggle">
+      <button class="fin-sources-toggle" onclick="toggleFinSources()" aria-expanded="false" id="fin-src-toggle">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
         Veri Kaynakları
         <svg class="fin-src-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="fin-sources-panel" id="fin-sources-panel">
+      <div class="fin-sources-panel" id="fin-sources-panel" style="display:none">
         <p class="fin-src-intro">
           Tüm finansal veriler ilgili havayollarının <strong>resmi yıllık raporları</strong>ndan derlenmiştir.
           Değerler döviz kuru esas alınarak <strong>USD</strong>'ye dönüştürülmüştür.
@@ -4354,9 +4164,9 @@ function updateStats(filteredArticles, totalCount) {
       return `${sep}<span class="stat-reg"${subDetail ? ` title="${subDetail}"` : ''}>${TK_SHORT[tk.id]} <b>${tkCounts[tk.id]}</b></span>`;
     }).join('');
 
-  const metricsCount = (typeof SEARCHABLE_METRICS !== 'undefined') ? SEARCHABLE_METRICS.filter(m => m.tab === 'dashboard').length : 14;
+  const metricsCount = (typeof SEARCHABLE_METRICS !== 'undefined') ? SEARCHABLE_METRICS.length : 22;
 
-  el.innerHTML = `${line1} · <b>${metricsCount}</b> metrik içinde ara`;
+  el.innerHTML = `${line1}${analysisCount ? ` · <b>${analysisCount}</b> analiz` : ''} · <b>${metricsCount}</b> metrik içinde ara`;
 }
 
 const CAT_SHORT = {
@@ -8080,10 +7890,6 @@ async function loadDashboard() {
   };
   let _forexCurrentCurrency = 'USD';
   let _forexCurrentPeriod = '1d';
-  let _latestUsdPrice = null;
-  let _latestEurPrice = null;
-  let _latestUsdChange = null;
-  let _latestEurChange = null;
 
   async function fetchForexData(currency, period = '1y') {
     const symbol = currency === 'USD' ? 'USDTRY=X' : 'EURTRY=X';
@@ -8229,13 +8035,9 @@ async function loadDashboard() {
         const cardValEl = document.getElementById(`forex-${currency.toLowerCase()}-val`);
         if (cardValEl) {
           cardValEl.textContent = latestPrice.toFixed(1) + ' ₺';
-          if (currency === 'USD') _latestUsdPrice = latestPrice;
-          if (currency === 'EUR') _latestEurPrice = latestPrice;
           const prevClose = result.meta.previousClose || result.meta.chartPreviousClose;
           if (prevClose != null) {
             const change = ((latestPrice - prevClose) / prevClose) * 100;
-            if (currency === 'USD') _latestUsdChange = change;
-            if (currency === 'EUR') _latestEurChange = change;
             const cEl = document.getElementById(`forex-${currency.toLowerCase()}-change`);
             if (cEl) {
               const dir = change > 0.01 ? 'up' : change < -0.01 ? 'down' : 'flat';
@@ -8243,7 +8045,6 @@ async function loadDashboard() {
               cEl.className = 'forex-change ' + dir;
             }
           }
-          updateParityUI();
         }
       }
     } catch (err) {
@@ -8340,11 +8141,6 @@ async function loadDashboard() {
       const usdTry = fx.rates.TRY;
       const eurTry = fx.rates.TRY / fx.rates.EUR;
       
-      _latestUsdPrice = usdTry;
-      _latestEurPrice = eurTry;
-      _latestUsdChange = 0;
-      _latestEurChange = 0;
-      
       const usdValEl = document.getElementById('forex-usd-val');
       const eurValEl = document.getElementById('forex-eur-val');
       
@@ -8356,14 +8152,11 @@ async function loadDashboard() {
         eurValEl.textContent = eurTry ? eurTry.toFixed(1) + ' ₺' : '—';
         eurValEl.classList.remove('skeleton');
       }
-      updateParityUI();
     }).catch(() => {
       const usdValEl = document.getElementById('forex-usd-val');
       const eurValEl = document.getElementById('forex-eur-val');
-      const parityValEl = document.getElementById('forex-parity-val');
       if (usdValEl) { usdValEl.textContent = '—'; usdValEl.classList.remove('skeleton'); }
       if (eurValEl) { eurValEl.textContent = '—'; eurValEl.classList.remove('skeleton'); }
-      if (parityValEl) { parityValEl.textContent = '—'; parityValEl.classList.remove('skeleton'); }
     });
   }
 
@@ -8428,40 +8221,6 @@ async function loadDashboard() {
   }
 
   // Sayfa açılışında döviz kartı verilerini yükle
-  function updateParityUI() {
-    const parityValEl = document.getElementById('forex-parity-val');
-    const parityChgEl = document.getElementById('forex-parity-change');
-    if (_latestUsdPrice && _latestEurPrice) {
-      const parityPrice = _latestEurPrice / _latestUsdPrice;
-      const usdPrevClose = _latestUsdPrice / (1 + (_latestUsdChange || 0) / 100);
-      const eurPrevClose = _latestEurPrice / (1 + (_latestEurChange || 0) / 100);
-      const parityPrevClose = eurPrevClose / usdPrevClose;
-      const parityChange = ((parityPrice - parityPrevClose) / parityPrevClose) * 100;
-      
-      if (parityValEl) {
-        parityValEl.textContent = parityPrice.toFixed(4);
-        parityValEl.classList.remove('skeleton');
-      }
-      if (parityChgEl) {
-        if (_latestUsdChange === 0 && _latestEurChange === 0) {
-          parityChgEl.textContent = '';
-        } else {
-          const dir = parityChange > 0.0001 ? 'up' : parityChange < -0.0001 ? 'down' : 'flat';
-          parityChgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(parityChange).toFixed(2) + '%';
-          parityChgEl.className = 'forex-change ' + dir;
-        }
-      }
-    } else {
-      if (parityValEl) {
-        parityValEl.textContent = '—';
-        parityValEl.classList.remove('skeleton');
-      }
-      if (parityChgEl) {
-        parityChgEl.textContent = '';
-      }
-    }
-  }
-
   function initForexCard() {
     return Promise.all([
       fetchForexData('USD', '1y').catch(() => null),
@@ -8492,11 +8251,6 @@ async function loadDashboard() {
       const eurPrice = eurResult.price;
       const eurChange = eurResult.change;
 
-      _latestUsdPrice = usdPrice;
-      _latestUsdChange = usdChange;
-      _latestEurPrice = eurPrice;
-      _latestEurChange = eurChange;
-
       const updateEl = (valId, chgId, price, change) => {
         const valEl = document.getElementById(valId);
         const chgEl = document.getElementById(chgId);
@@ -8514,7 +8268,6 @@ async function loadDashboard() {
       if (usdPrice || eurPrice) {
         updateEl('forex-usd-val', 'forex-usd-change', usdPrice, usdChange);
         updateEl('forex-eur-val', 'forex-eur-change', eurPrice, eurChange);
-        updateParityUI();
       } else {
         useErApiFallback();
       }
@@ -9949,7 +9702,7 @@ async function loadDashboard() {
 </script>
 
 <!-- ── AI Chat Panel ─────────────────────────────────── -->
-<button id="ai-fab" aria-label="AI Asistan" style="display:none">
+<button id="ai-fab" aria-label="AI Asistan">
   <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
 </button>
 
@@ -14295,8 +14048,8 @@ function initControls(allArticles) {
   }
 
   // ── FILO BÜYÜME GRAFİĞİ ──────────────────────────────────────────
-  // Kaynak: Planespotters.net (2 Haz 2026) — sadece gerçekleşen veriler
-  // Gelecek projeksiyonları CH Aviation bölümünde gösterilecek
+  // Kaynak: Kaynak 1 (2 Haz 2026) — sadece gerçekleşen veriler
+  // Gelecek projeksiyonları Kaynak 2 bölümünde gösterilecek
   const FLEET_PROJ = [
     { id:'thy',   name:'Turkish Airlines',    color:'#E30613',
       d:{2022:373,2023:423,2024:457,2025:484,2026:410} },
@@ -14325,7 +14078,7 @@ function initControls(allArticles) {
     { id:'ca',    name:'Air China',           color:'#DC2626',
       d:{2022:431,2023:457,2024:488,2025:516,2026:533} },
     { id:'sq',    name:'Singapore Airlines',  color:'#0f4c8a',
-      d:{2022:128,2023:138,2024:148,2025:156,2026:162} }
+      d:{2022:128,2023:138,2024:148,2025:156,2026:162} },
   ];
   const FLEET_HIDDEN = new Set();
 
@@ -14548,59 +14301,7 @@ let _finMetric = 'total_revenue_musd';
 let _finChartType = 'line';
 let _finRange = 5;
 let _finHidden = new Set();
-let _finSort   = { col: null, dir: 'none' }; // col: 'airline' | yıl string, dir: 'none'|'asc'|'desc'
-let _finShowPeriods = false;
-let _finCYMode = false;    // Takvim Yılı normalize modu
 let _finBuilt = false;
-
-// ── Mali yıl sonu ayları (Aralık=12 varsayılan; belirtilenler farklı)
-const FIN_FISCAL_YEAR_END = {
-  'EK': 3,   // Emirates:           Nisan–Mart
-  'QR': 3,   // Qatar Airways:      Nisan–Mart
-  'SQ': 3,   // Singapore Airlines: Nisan–Mart
-  'NH': 3,   // ANA Holdings:       Nisan–Mart (Japon mali yılı)
-};
-function getFYEnd(slug)   { return FIN_FISCAL_YEAR_END[slug] || 12; }
-function isNonDecFY(slug) { return getFYEnd(slug) !== 12; }
-
-// Yıl etiketi için takvim dönem aralığı açıklaması
-const TR_MONTHS = ['','Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-function getFYPeriodLabel(yearStr, fyEnd) {
-  const y = parseInt(yearStr);
-  if (fyEnd === 12) return `Oca – Ara ${y}`;
-  // fyEnd=3 → Nisan(y-1) – Mart(y)
-  const startM = (fyEnd % 12) + 1;  // ay sonrası = başlangıç
-  return `${TR_MONTHS[startM]} ${y-1} – ${TR_MONTHS[fyEnd]} ${y}`;
-}
-
-// ── Takvim Yılı normalize edilmiş veri ───────────────────────
-// CY(N) ≈ alpha × FY(N) + (1-alpha) × FY(N+1)
-// alpha = fyEnd / 12  (Mart FY → 3/12 = 0.25)
-// Sadece mutlak değer metriklerine uygulanır; yüzdeler ham kalır.
-function getEffectiveData(airline, slug, metric) {
-  const raw = getMetricValues(airline, metric);
-  if (!_finCYMode || !isNonDecFY(slug)) return raw;
-
-  const def = FIN_METRIC_MAP[metric];
-  // Yüzde metrikleri dönüştürme
-  if (!def || def.fmt === 'pct' || def.fmt === 'pct_s') return raw;
-
-  const alpha = getFYEnd(slug) / 12;   // 0.25 for March FY
-  const result = {};
-  const sortedYears = Object.keys(raw).sort();
-
-  for (let i = 0; i < sortedYears.length; i++) {
-    const y = sortedYears[i];
-    const yNext = String(parseInt(y) + 1);
-    const vy  = raw[y];
-    const vyn = raw[yNext];
-    if (vy != null && vyn != null) {
-      result[y] = alpha * vy + (1 - alpha) * vyn;
-    }
-    // Bir sonraki yıl yoksa → undefined (— gösterilir)
-  }
-  return result;
-}
 
 // Metrik tanımları — 4 renk grubu
 const FIN_METRIC_DEFS = [
@@ -14656,35 +14357,6 @@ function fmtFinVal(v, fmt) {
   }
 }
 
-// Havayolu favicon domain haritası
-// Haberler'deki logos haritasıyla birebir uyumlu — doğrudan URL saklanır
-(function() {
-  const F = d => `https://www.google.com/s2/favicons?sz=32&domain=${d}`;
-  const _FIN_LOGO_MAP = {
-    'QR':  F('qatarairways.com'),
-    'EK':  F('emirates.com'),
-    'TK':  F('turkishairlines.com'),
-    'AF':  F('airfrance.com'),           // airfranceklm.com değil
-    'CI':  F('china-airlines.com'),
-    'CX':  F('cathaypacific.com'),
-    'ET':  F('ethiopianairlines.com'),
-    'LH':  F('lufthansa.com'),           // lufthansagroup.com değil
-    'LA':  F('latamairlines.com'),       // latam.com değil
-    'KE':  F('koreanair.com'),
-    'CA':  F('airchina.com'),            // .com.cn → uluslararası domain
-    'SQ':  F('singaporeair.com'),
-    'OZ':  F('flyasiana.com'),
-    'SV':  F('saudia.com'),
-    'NH':  F('ana.co.jp'),               // ANA Airlines
-    'ETI': F('etihad.com'),
-    'CZ':  'https://companieslogo.com/img/orig/600029.SS-e7ea2d1d.png?t=1720244490',
-    'AV':  F('avianca.com'),
-    'CV':  F('cargolux.com'),
-    'A4B': F('ajet.com'),
-  };
-  window.finLogoUrl = function(slug) { return _FIN_LOGO_MAP[slug] || ''; };
-})();
-
 window.initFinansalTab = function() {
   if (!FIN_DATA) {
     setTimeout(initFinansalTab, 200);
@@ -14694,49 +14366,23 @@ window.initFinansalTab = function() {
   _finBuilt = true;
   buildFinToggles();
   bindFinControls();
-  // Akıllı varsayılan: en son yıla göre büyükten küçüğe
-  const _initYears = getFinYears();
-  if (_initYears.length && _finSort.col === null) {
-    _finSort = { col: _initYears[_initYears.length - 1], dir: 'desc' };
-  }
   renderFinChart();
   renderFinTable();
-  // Veri kaynakları varsayılan açık — içeriği hemen oluştur
-  if (!_finSrcBuilt) {
-    _finSrcBuilt = true;
-    buildFinSourcesGrid();
-  }
 };
 
 function buildFinToggles() {
   const cont = document.getElementById('fin-airline-toggles');
   if (!cont) return;
   cont.innerHTML = Object.entries(FIN_DATA).map(([slug, d]) => {
-    const bg = d.color + '22';
-    const logo = finLogoUrl(slug);
-    const logoEl = logo
-      ? `<img class="fin-atoggle-logo" src="${logo}" alt="" onerror="this.style.display='none'">`
-      : `<span class="fin-atoggle-dot" style="background:${d.color}"></span>`;
+    const bg = d.color + '22'; // 13% opacity
     return `<button class="fin-atoggle" data-slug="${slug}"
       style="background:${bg};border-color:${d.color};color:${d.color}"
       onclick="toggleFinAirline('${slug}')">
-      ${logoEl}${d.name}
+      <span class="fin-atoggle-dot" style="background:${d.color}"></span>
+      ${d.name}
     </button>`;
   }).join('');
 }
-
-window.deselAllFinAirlines = function() {
-  Object.keys(FIN_DATA || {}).forEach(slug => _finHidden.add(slug));
-  document.querySelectorAll('.fin-atoggle').forEach(b => b.classList.add('hidden'));
-  renderFinChart();
-  renderFinTable();
-};
-window.resetFinAirlines = function() {
-  _finHidden.clear();
-  document.querySelectorAll('.fin-atoggle').forEach(b => b.classList.remove('hidden'));
-  renderFinChart();
-  renderFinTable();
-};
 
 window.toggleFinAirline = function(slug) {
   if (_finHidden.has(slug)) _finHidden.delete(slug);
@@ -14813,7 +14459,7 @@ function renderFinChart() {
   const datasets = Object.entries(FIN_DATA || {})
     .filter(([slug]) => !_finHidden.has(slug))
     .map(([slug, airline]) => {
-      const metricData = getEffectiveData(airline, slug, _finMetric);
+      const metricData = getMetricValues(airline, _finMetric);
       const data = years.map(y => {
         const v = metricData[y];
         if (v == null) return null;
@@ -14879,12 +14525,6 @@ function renderFinChart() {
               if (d2.fmt === 'pct' || d2.fmt === 'pct_s') return v + '%';
               if (d2.fmt === 'pax') return v + 'M';
               if (d2.fmt === 'munit') return v + 'B';
-              if (d2.fmt === 'count') {
-                // Çalışan sayısı — para birimi gösterme
-                const abs = Math.abs(v);
-                if (abs >= 1000) return (v/1000).toFixed(0) + 'k';
-                return Math.round(v).toLocaleString('tr-TR');
-              }
               const abs = Math.abs(v);
               if (abs >= 1000) return (v/1000).toFixed(1) + 'B$';
               return v + 'M$';
@@ -14896,197 +14536,43 @@ function renderFinChart() {
   });
 }
 
-// Sıralama ikonları
-function _sortIcon(col) {
-  if (_finSort.col !== col) return '<span class="fin-sort-icon">⇅</span>';
-  return _finSort.dir === 'asc'
-    ? '<span class="fin-sort-icon">↑</span>'
-    : '<span class="fin-sort-icon">↓</span>';
-}
-function _ariaSort(col) {
-  if (_finSort.col !== col) return 'none';
-  return _finSort.dir === 'asc' ? 'ascending' : 'descending';
-}
-
 function renderFinTable() {
   const thead = document.getElementById('fin-cmp-thead');
   const tbody = document.getElementById('fin-cmp-tbody');
   if (!thead || !tbody) return;
   const years = getFinYears();
-  const def2  = FIN_METRIC_MAP[_finMetric];
+
+  // Yıl başlıklarına kaynak linkleri — birden fazla havayolunda aynı yıl için farklı link
+  // En yaygın kaynağı (QR, TK gibi büyük havayolları) göster
+  thead.innerHTML = `<tr>
+    <th>Havayolu</th>
+    ${years.map(y => `<th>${y}</th>`).join('')}
+  </tr>`;
+
+  const def2 = FIN_METRIC_MAP[_finMetric];
   const isSigned = def2?.fmt === 'musd_s' || def2?.fmt === 'pct_s';
 
-  // ── Veri sıralama (önce entries hazırla, thead buna bakar) ──
-  let entries = Object.entries(FIN_DATA || {}).filter(([slug]) => !_finHidden.has(slug));
-  const sc = _finSort.col, sd = _finSort.dir;
-
-  if (sc === 'airline') {
-    entries.sort(([,a],[,b]) => a.name.localeCompare(b.name, 'tr'));
-    if (sd === 'desc') entries.reverse();
-  } else if (sc && years.includes(sc)) {
-    entries.sort(([slugA,a],[slugB,b]) => {
-      const va = getEffectiveData(a, slugA, _finMetric)[sc] ?? null;
-      const vb = getEffectiveData(b, slugB, _finMetric)[sc] ?? null;
-      if (va === null && vb === null) return 0;
-      if (va === null) return 1;  // null → en alta
-      if (vb === null) return -1;
-      return sd === 'asc' ? va - vb : vb - va;
-    });
-  }
-
-  // ── Sıralı sütun için max değer (data bar) ───────────────
-  let maxSortedAbs = 0;
-  if (sc && years.includes(sc)) {
-    entries.forEach(([slug,a]) => {
-      const v = getEffectiveData(a, slug, _finMetric)[sc];
-      if (v != null) maxSortedAbs = Math.max(maxSortedAbs, Math.abs(v));
-    });
-  }
-
-  // ── Sıra haritası (sadece sıralı sayısal sütun için) ─────
-  const rankMap = {};
-  if (sc && years.includes(sc)) {
-    let rank = 1;
-    entries.forEach(([slug,a]) => {
-      const v = getEffectiveData(a, slug, _finMetric)[sc];
-      if (v != null) rankMap[slug] = rank++;
-    });
-  }
-
-  // ── Başlık satırı (entries hazır olduktan sonra oluştur) ──
-  const hasNonDec = entries.some(([s]) => isNonDecFY(s));
-
-  thead.innerHTML = `<tr>
-    <th aria-sort="${_ariaSort('airline')}"
-        onclick="sortFinTable('airline')"
-        title="Havayoluna göre sırala (A→Z / Z→A)">
-      Havayolu ${_sortIcon('airline')}
-    </th>
-    ${years.map(y => {
-      const decLabel = getFYPeriodLabel(y, 12);
-      const marLabel = getFYPeriodLabel(y, 3);
-      const ttip = hasNonDec
-        ? `Ara-FY: ${decLabel} | Nis-Mar FY: ${marLabel}`
-        : decLabel;
-      return `<th aria-sort="${_ariaSort(y)}" onclick="sortFinTable('${y}')" title="${ttip}">
-        ${y} ${_sortIcon(y)}
-      </th>`;
-    }).join('')}
-  </tr>
-  ${_finShowPeriods ? `<tr class="fin-period-row">
-    <td>Dönem aralığı</td>
-    ${years.map(y => {
-      const decLabel = getFYPeriodLabel(y, 12);
-      const marLabel = getFYPeriodLabel(y, 3);
-      return hasNonDec
-        ? `<td><span style="display:block">${decLabel}</span><span class="fin-period-cell--alt">${marLabel}</span></td>`
-        : `<td>${decLabel}</td>`;
-    }).join('')}
-  </tr>` : ''}`;
-
-  // ── Satır oluşturma ──────────────────────────────────────
-  tbody.innerHTML = entries.map(([slug, airline]) => {
-    const metricData = getEffectiveData(airline, slug, _finMetric);
-
-    const cells = years.map(y => {
-      const v = metricData[y];
-      const isSortedCol = sc === y;
-      const colCls = isSortedCol ? ' fin-col-sorted' : '';
-
-      if (v == null) return `<td class="fin-cell-na${colCls}">—</td>`;
-
-      const label  = fmtFinVal(v, def2?.fmt || 'musd');
-      const signCls = isSigned ? (v >= 0 ? ' fin-cell-pos' : ' fin-cell-neg') : '';
-
-      // Data bar: sıralı sütunda orantılı arka plan
-      let barStyle = '';
-      if (isSortedCol && maxSortedAbs > 0) {
-        const pct  = Math.round((Math.abs(v) / maxSortedAbs) * 72);
-        const clr  = v < 0 ? '#DC262618' : '#6366F118';
-        barStyle = ` style="background:linear-gradient(90deg,${clr} ${pct}%,transparent ${pct}%)"`;
-      }
-
-      // Sıra rozeti
-      const rank = rankMap[slug];
-      const rankHtml = (isSortedCol && rank)
-        ? `<span class="fin-rank${rank <= 3 ? ' fin-rank--top' : ''}">#${rank}</span>`
-        : '';
-
-      return `<td class="${signCls}${colCls}"${barStyle}>${rankHtml}${label}</td>`;
+  tbody.innerHTML = Object.entries(FIN_DATA || {})
+    .filter(([slug]) => !_finHidden.has(slug))
+    .map(([slug, airline]) => {
+      const metricData = getMetricValues(airline, _finMetric);
+      const cells = years.map(y => {
+        const v = metricData[y];
+        if (v == null) return `<td class="fin-cell-na">—</td>`;
+        const label = fmtFinVal(v, def2?.fmt || 'musd');
+        const cls = isSigned ? (v >= 0 ? 'fin-cell-pos' : 'fin-cell-neg') : '';
+        return `<td class="${cls}">${label}</td>`;
+      }).join('');
+      const note = airline.k1note ? ` <span style="font-size:9px;color:var(--text-3)">(${airline.k1note})</span>` : '';
+      return `<tr>
+        <td><span style="display:inline-flex;align-items:center;gap:6px">
+          <span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0"></span>
+          ${airline.name}${note}
+        </span></td>
+        ${cells}
+      </tr>`;
     }).join('');
-
-    const note   = airline.psnote ? ` <span style="font-size:9px;color:var(--text-3)">(${airline.psnote})</span>` : '';
-    const logo   = finLogoUrl(slug);
-    const logoEl = logo
-      ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0;display:block" alt="" onerror="this.style.display='none'">`
-      : `<span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0;display:inline-block"></span>`;
-    const nameCls = sc === 'airline' ? ' fin-col-sorted' : '';
-    const fyEnd = getFYEnd(slug);
-    const fyBadge = fyEnd !== 12
-      ? `<span class="fin-fy-badge" title="Mali yıl: Nis–${TR_MONTHS[fyEnd]} (Oca–Ara değil)">Nis–Mar</span>`
-      : '';
-
-    return `<tr>
-      <td class="${nameCls}">
-        <span style="display:inline-flex;align-items:center;gap:7px">
-          ${logoEl}
-          <span style="font-weight:700;color:${airline.color}">${airline.name}${note}</span>${fyBadge}
-        </span>
-      </td>
-      ${cells}
-    </tr>`;
-  }).join('');
 }
-
-window.toggleFinCYMode = function() {
-  _finCYMode = !_finCYMode;
-  const btn  = document.getElementById('fin-cy-toggle');
-  const note = document.getElementById('fin-cy-note');
-  if (btn)  btn.classList.toggle('fin-cy-btn--active', _finCYMode);
-  if (note) note.classList.toggle('visible', _finCYMode);
-  renderFinChart();
-  renderFinTable();
-};
-
-window.toggleFinFY = function() {
-  const panel = document.getElementById('fin-fy-panel');
-  const btn   = document.getElementById('fin-fy-btn');
-  if (!panel || !btn) return;
-  const isOpen = btn.getAttribute('aria-expanded') === 'true';
-  panel.classList.toggle('open', !isOpen);
-  btn.setAttribute('aria-expanded', String(!isOpen));
-  // Airline chip listesini doldur (ilk açılışta)
-  const list = document.getElementById('fin-fy-airline-list');
-  if (list && list.childElementCount === 0) {
-    list.innerHTML = Object.entries(FIN_FISCAL_YEAR_END).map(([slug, fyEnd]) => {
-      const d = (FIN_DATA || {})[slug];
-      if (!d) return '';
-      const logo = finLogoUrl(slug);
-      const logoEl = logo
-        ? `<img src="${logo}" alt="" onerror="this.style.display='none'">`
-        : '';
-      return `<span class="fin-fy-chip">${logoEl}${d.name} — Nis–${TR_MONTHS[fyEnd]}</span>`;
-    }).join('');
-  }
-};
-
-window.toggleFinPeriodRow = function(show) {
-  _finShowPeriods = show;
-  renderFinTable();
-};
-
-window.sortFinTable = function(col) {
-  if (_finSort.col === col) {
-    // none → desc → asc → none döngüsü
-    if      (_finSort.dir === 'none') _finSort.dir = 'desc';
-    else if (_finSort.dir === 'desc') _finSort.dir = 'asc';
-    else { _finSort.col = null; _finSort.dir = 'none'; }
-  } else {
-    _finSort.col = col;
-    _finSort.dir = 'desc'; // ilk tıkta büyükten küçüğe
-  }
-  renderFinTable();
-};
 
 // Dark mode değişince grafiği yeniden çiz
 new MutationObserver(() => { if (_finBuilt) renderFinChart(); })
@@ -15118,7 +14604,7 @@ function classifyVariant(v) {
 
 let _catFilter = 'all';
 
-function chaBreakdown(types, cat) {
+function k2Breakdown(types, cat) {
   const filtered = cat === 'all' ? types : types.filter(t => classifyVariant(t.v) === cat);
   return {
     active: filtered.reduce((s,t) => s+(parseInt(t.a)||0), 0),
@@ -15175,38 +14661,38 @@ document.addEventListener('DOMContentLoaded', () => {
 (function() {
   // ── Kaynak geçiş ──────────────────────────────────
   function switchFleetSrc(src) {
-    ['ps','cha','cmp'].forEach(s => {
+    ['k1','k2','cmp'].forEach(s => {
       const btn = document.getElementById('fleet-src-' + s);
-      if (btn) btn.classList.toggle('fdd-btn--active', s === src.replace('planespotters','ps').replace('chaviation','cha').replace('compare','cmp'));
+      if (btn) btn.classList.toggle('fdd-btn--active', s === src.replace('kaynak1','k1').replace('kaynak2','k2').replace('compare','cmp'));
     });
-    const ps  = document.getElementById('fleet-ps-content');
-    const cha = document.getElementById('fleet-cha-content');
+    const k1  = document.getElementById('fleet-k1-content');
+    const k2  = document.getElementById('fleet-k2-content');
     const cmp = document.getElementById('fleet-cmp-content');
     const dt  = document.getElementById('fleet-src-date');
     const catBar = document.getElementById('fleet-cat-bar');
     // Cache sıfırla filtre değişince yeniden build etmek için
-    _chaBuilt = false;
-    _psBuilt = false;
+    _k2Built = false;
+    _k1Built = false;
     _cmpBuilt = false;
-    if (src === 'planespotters') {
-      if (ps)  ps.style.display  = '';
-      if (cha) cha.style.display = 'none';
+    if (src === 'kaynak1') {
+      if (k1)  k1.style.display  = '';
+      if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = 'none';
-      if (dt)  dt.textContent    = 'Planespotters.net · 2 Haz 2026';
+      if (dt)  dt.textContent    = 'Kaynak 1 · 2 Haz 2026';
       if (catBar) catBar.style.display = '';
-      buildPsCards();
-    } else if (src === 'chaviation') {
-      if (ps)  ps.style.display  = 'none';
-      if (cha) cha.style.display = '';
+      buildK1Cards();
+    } else if (src === 'kaynak2') {
+      if (k1)  k1.style.display  = 'none';
+      if (k2)  k2.style.display = '';
       if (cmp) cmp.style.display = 'none';
-      if (dt)  dt.textContent    = 'CH Aviation · 2 Haz 2026';
+      if (dt)  dt.textContent    = 'Kaynak 2 · 2 Haz 2026';
       if (catBar) catBar.style.display = '';
-      buildChaCards();
+      buildK2Cards();
     } else {
-      if (ps)  ps.style.display  = 'none';
-      if (cha) cha.style.display = 'none';
+      if (k1)  k1.style.display  = 'none';
+      if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = '';
-      if (dt)  dt.textContent    = 'Planespotters.net + CH Aviation · 2 Haz 2026';
+      if (dt)  dt.textContent    = 'Kaynak 1 + Kaynak 2 · 2 Haz 2026';
       if (catBar) catBar.style.display = 'none';
       buildCmpTable();
     }
@@ -15223,8 +14709,8 @@ document.addEventListener('DOMContentLoaded', () => {
         b.classList.toggle('flt-cat-btn--active', b === catBtn)
       );
       // Tüm kartları yeniden build et
-      _chaBuilt = false;
-      _psBuilt = false;
+      _k2Built = false;
+      _k1Built = false;
       _cmpBuilt = false;
       const src = document.querySelector('.fleet-src-pill.fdd-btn--active')?.dataset.src;
       if (src) switchFleetSrc(src);
@@ -15232,112 +14718,112 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── Yardımcı: diff chip ──────────────────────────
-  function diffChip(ps, cha) {
-    if (ps == null) return '<span class="flt-diff-na">—</span>';
-    const d = cha - ps;
-    const pct = ps > 0 ? Math.abs(d/ps) : 1;
+  function diffChip(k1, k2) {
+    if (k1 == null) return '<span class="flt-diff-na">—</span>';
+    const d = k2 - k1;
+    const pct = k1 > 0 ? Math.abs(d/k1) : 1;
     const cls = pct < 0.02 ? 'flt-diff-match' : pct < 0.15 ? 'flt-diff-minor' : 'flt-diff-major';
     const arrow = d === 0 ? '=' : (d > 0 ? '▲' : '▼');
     const label = d === 0 ? 'eşit' : (d > 0 ? '+' : '') + d;
     return `<span class="flt-diff-chip ${cls}">${arrow}${label}</span>`;
   }
 
-  // ── PS kartları (CHA ile aynı stil) ─────────────
-  let _psBuilt = false;
-  function buildPsCards() {
-    _psBuilt = true;
-    const grid = document.getElementById('fleet-ps-cards');
+  // ── Kaynak 1 kartları (Kaynak 2 ile aynı stil) ─────────────
+  let _k1Built = false;
+  function buildK1Cards() {
+    _k1Built = true;
+    const grid = document.getElementById('fleet-k1-cards');
     if (!grid) return;
     grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
       const total = d.pt != null ? d.pt : '—';
       const order = d.po != null ? '+'+d.po : '—';
-      const age   = d.psage ? d.psage+'y' : '—';
-      const note  = d.psnote ? ` <span style="font-size:10px;color:var(--text-3)">(${d.psnote})</span>` : '';
+      const age   = d.k1age ? d.k1age+'y' : '—';
+      const note  = d.k1note ? ` <span style="font-size:10px;color:var(--text-3)">(${d.k1note})</span>` : '';
       const miniItems = [];
       if (d.types && d.types.length) {
-        const wbCount = chaBreakdown(d.types, 'wb').active;
-        const nbCount = chaBreakdown(d.types, 'nb').active;
-        const cargoCount = chaBreakdown(d.types, 'cargo').active;
+        const wbCount = k2Breakdown(d.types, 'wb').active;
+        const nbCount = k2Breakdown(d.types, 'nb').active;
+        const cargoCount = k2Breakdown(d.types, 'cargo').active;
         if (wbCount > 0) miniItems.push({ cat: 'wb', val: Math.round(wbCount/10)*10, color: '#7c3aed', label: 'WB' });
         if (nbCount > 0) miniItems.push({ cat: 'nb', val: Math.round(nbCount/10)*10, color: '#2563eb', label: 'NB' });
         if (cargoCount > 0) miniItems.push({ cat: 'cargo', val: Math.round(cargoCount/10)*10, color: '#b45309', label: 'Kargo' });
       }
       return `
-      <div class="fleet-cha-card">
-        <div class="fleet-cha-card-hdr">
-          <div class="fleet-cha-logo" style="background:${d.color}">${iata}</div>
+      <div class="fleet-k2-card">
+        <div class="fleet-k2-card-hdr">
+          <div class="fleet-k2-logo" style="background:${d.color}">${iata}</div>
           <div>
-            <div class="fleet-cha-name">${d.name}${note}</div>
-            <div class="fleet-cha-iata">IATA: ${iata} · Planespotters.net</div>
+            <div class="fleet-k2-name">${d.name}${note}</div>
+            <div class="fleet-k2-iata">IATA: ${iata} · Kaynak 1</div>
           </div>
         </div>
-        <div class="fleet-cha-stats">
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${total}</div>
-            <div class="fleet-cha-stat-lbl">PS Filo</div>
+        <div class="fleet-k2-stats">
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${total}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 1 Filo</div>
           </div>
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${order}</div>
-            <div class="fleet-cha-stat-lbl">PS Sipariş</div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${order}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 1 Sipariş</div>
           </div>
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${age}</div>
-            <div class="fleet-cha-stat-lbl">Ort. Yaş</div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${age}</div>
+            <div class="fleet-k2-stat-lbl">Ort. Yaş</div>
           </div>
         </div>
         ${miniItems.length ? `
         <div class="fleet-type-mini">
           ${miniItems.map(m => `<div class="fleet-type-mini-item"><div class="fleet-type-mini-dot" style="background:${m.color}"></div>${m.label}: ~${m.val}</div>`).join('')}
-          <div style="font-size:10px;color:var(--text-3);margin-left:auto;white-space:nowrap">(CHA verisi)</div>
+          <div style="font-size:10px;color:var(--text-3);margin-left:auto;white-space:nowrap">(Kaynak 2 verisi)</div>
         </div>` : ''}
         <div style="padding:4px 14px 10px;font-size:11px;color:var(--text-3)">
-          CHA aktif: ${d.ca} vs PS toplam: ${total}
+          Kaynak 2 aktif: ${d.ca} vs Kaynak 1 toplam: ${total}
         </div>
       </div>`}).join('');
-    // Grafik PS'e geçince yeniden çiz (genişlik için)
+    // Grafik Kaynak 1'e geçince yeniden çiz (genişlik için)
     _fleetChartInit = false;
     setTimeout(renderFleetChart, 80);
   }
 
-  // ── CHA kartları ────────────────────────────────
-  let _chaBuilt = false;
-  function buildChaCards() {
-    _chaBuilt = true;
-    const grid = document.getElementById('fleet-cha-cards');
+  // ── Kaynak 2 kartları ────────────────────────────────
+  let _k2Built = false;
+  function buildK2Cards() {
+    _k2Built = true;
+    const grid = document.getElementById('fleet-k2-cards');
     if (!grid) return;
     grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
-      const bd = chaBreakdown(d.types || [], _catFilter);
+      const bd = k2Breakdown(d.types || [], _catFilter);
       const catNote = _catFilter !== 'all' ? ` (${_catFilter === 'cargo' ? 'Kargo' : _catFilter === 'wb' ? 'Geniş Gövde' : 'Dar Gövde'})` : '';
       const miniItems = [];
       if (d.types && d.types.length) {
-        const wbCount = chaBreakdown(d.types, 'wb').active;
-        const nbCount = chaBreakdown(d.types, 'nb').active;
-        const cargoCount = chaBreakdown(d.types, 'cargo').active;
+        const wbCount = k2Breakdown(d.types, 'wb').active;
+        const nbCount = k2Breakdown(d.types, 'nb').active;
+        const cargoCount = k2Breakdown(d.types, 'cargo').active;
         if (wbCount > 0) miniItems.push({ cat: 'wb', val: wbCount, color: '#7c3aed', label: 'WB' });
         if (nbCount > 0) miniItems.push({ cat: 'nb', val: nbCount, color: '#2563eb', label: 'NB' });
         if (cargoCount > 0) miniItems.push({ cat: 'cargo', val: cargoCount, color: '#b45309', label: 'Kargo' });
       }
       return `
-      <div class="fleet-cha-card">
-        <div class="fleet-cha-card-hdr">
-          <div class="fleet-cha-logo" style="background:${d.color}">${iata}</div>
+      <div class="fleet-k2-card">
+        <div class="fleet-k2-card-hdr">
+          <div class="fleet-k2-logo" style="background:${d.color}">${iata}</div>
           <div>
-            <div class="fleet-cha-name">${d.name}</div>
-            <div class="fleet-cha-iata">IATA: ${iata} · CH Aviation${catNote}</div>
+            <div class="fleet-k2-name">${d.name}</div>
+            <div class="fleet-k2-iata">IATA: ${iata} · Kaynak 2${catNote}</div>
           </div>
         </div>
-        <div class="fleet-cha-stats">
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${bd.active||'—'}</div>
-            <div class="fleet-cha-stat-lbl">CHA Aktif</div>
+        <div class="fleet-k2-stats">
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${bd.active||'—'}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 2 Aktif</div>
           </div>
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${bd.total||'—'}</div>
-            <div class="fleet-cha-stat-lbl">CHA Toplam</div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${bd.total||'—'}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 2 Toplam</div>
           </div>
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${bd.order||'—'}</div>
-            <div class="fleet-cha-stat-lbl">Sipariş</div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${bd.order||'—'}</div>
+            <div class="fleet-k2-stat-lbl">Sipariş</div>
           </div>
         </div>
         ${miniItems.length ? `
@@ -15345,14 +14831,14 @@ document.addEventListener('DOMContentLoaded', () => {
           ${miniItems.map(m => `<div class="fleet-type-mini-item"><div class="fleet-type-mini-dot" style="background:${m.color}"></div>${m.label}: ${m.val} aktif</div>`).join('')}
         </div>` : ''}
         ${d.types && d.types.length ? `
-        <button class="fleet-cha-expand-btn" onclick="toggleChaDetail(this)">
+        <button class="fleet-k2-expand-btn" onclick="toggleK2Detail(this)">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           ${bd.types.length} uçak tipi
         </button>
-        <table class="fleet-cha-type-table">
+        <table class="fleet-k2-type-table">
           <tr><th>Tip</th><th>Aktif</th><th>Park</th><th>Islak Kir.</th><th>Toplam</th><th>Sipariş</th><th>Ort. Yaş</th></tr>
           ${bd.types.map(t => `<tr>
-            <td>${t.v}${t.o?`<span class="cha-order-chip">+${t.o}</span>`:''}</td>
+            <td>${t.v}${t.o?`<span class="k2-order-chip">+${t.o}</span>`:''}</td>
             <td>${t.a||'—'}</td><td>${t.i||'—'}</td><td>${t.w||'—'}</td><td>${t.t||'—'}</td>
             <td>${t.o||'—'}</td><td>${t.age?t.age+'y':'—'}</td>
           </tr>`).join('')}
@@ -15360,7 +14846,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
     }).join('');
   }
-  window.toggleChaDetail = function(btn) {
+  window.toggleK2Detail = function(btn) {
     const tbl = btn.nextElementSibling;
     if (!tbl) return;
     const open = tbl.classList.toggle('open');
@@ -15368,32 +14854,32 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ── Karşılaştırma tablosu ────────────────────────
-  // ── PS formülü: 'pa' (In Service) veya 'pt' (Toplam) ──
-  let _psCol = 'pa'; // varsayılan: In Service
+  // ── Kaynak 1 formülü: 'pa' (In Service) veya 'pt' (Toplam) ──
+  let _k1Col = 'pa'; // varsayılan: In Service
 
   function calcPs(d) {
-    if (_psCol === 'pa') return d.pa != null ? { val: d.pa, hasData: true } : { val: d.pt, hasData: false };
+    if (_k1Col === 'pa') return d.pa != null ? { val: d.pa, hasData: true } : { val: d.pt, hasData: false };
     return { val: d.pt, hasData: true };
   }
 
-  window.togglePsPill = function(btn) {
+  window.toggleK1Pill = function(btn) {
     const col = btn.dataset.pscol;
-    _psCol = col;
+    _k1Col = col;
     // Aktif pill güncelle
-    document.querySelectorAll('.flt-fpill--ps').forEach(p => {
+    document.querySelectorAll('.flt-fpill--k1').forEach(p => {
       const on = p.dataset.pscol === col;
       p.classList.toggle('flt-fpill--add', on);
     });
     // Başlık güncelle
-    const h = document.getElementById('flt-ps-col-hdr');
-    const e = document.getElementById('flt-ps-expr');
+    const h = document.getElementById('flt-k1-col-hdr');
+    const e = document.getElementById('flt-k1-expr');
     const lbl = col === 'pa' ? 'In Service' : 'Toplam Filo';
-    if (h) h.textContent = 'PS: ' + lbl;
+    if (h) h.textContent = 'Kaynak 1: ' + lbl;
     if (e) e.textContent = '= ' + lbl;
     rerenderCmpRows();
   };
 
-  // ── CHA Formül durumu: {col: '+' | '-' | null} ──
+  // ── Kaynak 2 Formül durumu: {col: '+' | '-' | null} ──
   const FML_COLS = ['ca','ci','cw','ct','co'];
   const FML_LABELS = { ca:'Active', ci:'Inactive', cw:'Wet Leased In', ct:'Total', co:'To be delivered' };
   let _formula = { ca: '+', ci: null, cw: null, ct: null, co: null };
@@ -15424,27 +14910,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const expr = document.getElementById('flt-formula-expr');
     if (expr) expr.textContent = formulaExpr();
     // Başlığı güncelle
-    const hdr = document.getElementById('flt-cha-col-hdr');
-    if (hdr) hdr.textContent = 'CHA: ' + formulaExpr().replace('= ','');
+    const hdr = document.getElementById('flt-k2-col-hdr');
+    if (hdr) hdr.textContent = 'Kaynak 2: ' + formulaExpr().replace('= ','');
     // Tüm satırları yeniden çiz
     rerenderCmpRows();
   };
 
   function rerenderCmpRows() {
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const psCell  = document.getElementById('flt-ps-val-' + iata);
-      const chaCell = document.getElementById('flt-cha-val-' + iata);
+      const psCell  = document.getElementById('flt-k1-val-' + iata);
+      const k2Cell = document.getElementById('flt-k2-val-' + iata);
       const diff    = document.getElementById('flt-diff-' + iata);
-      if (!chaCell) return;
-      const cha = calcFormula(d);
-      const { val: psVal, hasData: psHasData } = calcPs(d);
-      chaCell.textContent = cha;
+      if (!k2Cell) return;
+      const k2Val = calcFormula(d);
+      const { val: k1Val, hasData: k1HasData } = calcPs(d);
+      k2Cell.textContent = k2Val;
       if (psCell) {
-        psCell.innerHTML = psVal != null
-          ? psVal + (psHasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo gösteriliyor"> *</span>')
+        psCell.innerHTML = k1Val != null
+          ? k1Val + (k1HasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo gösteriliyor"> *</span>')
           : '<span class="flt-val-na">—</span>';
       }
-      if (diff) diff.innerHTML = psVal != null ? diffChip(psVal, cha) : '<span class="flt-diff-na">—</span>';
+      if (diff) diff.innerHTML = k1Val != null ? diffChip(k1Val, k2Val) : '<span class="flt-diff-na">—</span>';
     });
   }
 
@@ -15455,14 +14941,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!tbody) return;
     let html = '';
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const psO   = d.po != null ? '+'+d.po : '—';
-      const chaO  = d.co ? '+'+d.co : '—';
-      const psAge = d.psage ? d.psage+'y' : '—';
-      const note  = d.psnote ? `<span style="font-size:9px;color:var(--text-3);display:block">${d.psnote}</span>` : '';
-      // Eğer filtre aktifse, CHA değerini kategoriye göre hesapla
-      let chaVal;
+      const k1O   = d.po != null ? '+'+d.po : '—';
+      const k2O  = d.co ? '+'+d.co : '—';
+      const k1Age = d.k1age ? d.k1age+'y' : '—';
+      const note  = d.k1note ? `<span style="font-size:9px;color:var(--text-3);display:block">${d.k1note}</span>` : '';
+      // Eğer filtre aktifse, Kaynak 2 değerini kategoriye göre hesapla
+      let k2Val;
       if (_catFilter !== 'all') {
-        const bd = chaBreakdown(d.types || [], _catFilter);
+        const bd = k2Breakdown(d.types || [], _catFilter);
         // Formülü filtreli veriye uygula
         let v = 0;
         FML_COLS.forEach(c => {
@@ -15474,13 +14960,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (_formula[c] === '+') v += colVal;
           else if (_formula[c] === '-') v -= colVal;
         });
-        chaVal = v;
+        k2Val = v;
       } else {
-        chaVal = calcFormula(d);
+        k2Val = calcFormula(d);
       }
-      const { val: psVal, hasData: psHasData } = calcPs(d);
-      const psDisplay = psVal != null
-        ? psVal + (psHasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo"> *</span>' + (_catFilter !== 'all' ? '<br/><span style="font-size:9px;color:var(--text-3)">Filtre PS toplam verisine uygulanamıyor</span>' : ''))
+      const { val: k1Val, hasData: k1HasData } = calcPs(d);
+      const k1Display = k1Val != null
+        ? k1Val + (k1HasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo"> *</span>' + (_catFilter !== 'all' ? '<br/><span style="font-size:9px;color:var(--text-3)">Filtre Kaynak 1 toplam verisine uygulanamıyor</span>' : ''))
         : '<span class="flt-val-na">—</span>';
       html += `
       <tr onclick="toggleCmpRow('${iata}')" data-iata="${iata}">
@@ -15488,12 +14974,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="flt-iata-badge" style="background:${d.color}">${iata}</span>
           <span class="flt-airline-name">${d.name}</span>
         </div></td>
-        <td class="flt-val-ps" id="flt-ps-val-${iata}">${psDisplay}${note}</td>
-        <td class="flt-val-cha" id="flt-cha-val-${iata}">${chaVal}</td>
-        <td id="flt-diff-${iata}">${psVal != null ? diffChip(psVal, chaVal) : '<span class="flt-diff-na">—</span>'}</td>
-        <td class="flt-val-ps">${psO}</td>
-        <td class="flt-val-cha">${chaO}</td>
-        <td style="font-size:11.5px;color:var(--text-2)">${psAge}</td>
+        <td class="flt-val-k1" id="flt-k1-val-${iata}">${k1Display}${note}</td>
+        <td class="flt-val-k2" id="flt-k2-val-${iata}">${k2Val}</td>
+        <td id="flt-diff-${iata}">${k1Val != null ? diffChip(k1Val, k2Val) : '<span class="flt-diff-na">—</span>'}</td>
+        <td class="flt-val-k1">${k1O}</td>
+        <td class="flt-val-k2">${k2O}</td>
+        <td style="font-size:11.5px;color:var(--text-2)">${k1Age}</td>
       </tr>
       <tr class="flt-detail-row" id="flt-detail-${iata}" style="display:none">
         <td colspan="7">
@@ -15533,51 +15019,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let _finSrcBuilt = false;
 
-function buildFinSourcesGrid() {
-  const grid = document.getElementById('fin-src-grid');
-  if (!grid) return;
-  const yearSrcs = FIN_YEAR_SOURCES || {};
-  grid.innerHTML = Object.entries(FIN_INVESTOR_URLS_STATIC || {}).map(([slug, d]) => {
-    const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
-    const logo = finLogoUrl(slug);
-    const perYear = yearSrcs[slug] || {};
-    const yearLinks = Object.entries(perYear)
-      .sort(([a],[b]) => b.localeCompare(a))
-      .map(([yr, s]) => s.href
-        ? `<a href="${s.href}" target="_blank" rel="noopener"
-            style="display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:10px;
-                   background:var(--bg);border:1px solid var(--border);font-size:10px;color:var(--accent);
-                   text-decoration:none;margin:2px 2px 0 0"
-            title="${s.text} ${yr}">${yr} ↗</a>`
-        : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
-              border:1px solid var(--border-soft);font-size:10px;color:var(--text-3);margin:2px 2px 0 0">${yr}</span>`
-      ).join('');
-    const logoEl = logo
-      ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0" alt="" onerror="this.src='';this.style.display='none'">`
-      : `<span class="fin-src-dot" style="background:${color}"></span>`;
-    return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:5px;cursor:default">
-      <div style="display:flex;align-items:center;gap:8px;width:100%">
-        ${logoEl}
-        <span class="fin-src-name" style="flex:1;color:${color}">${d.name}</span>
-        <a href="${d.url}" target="_blank" rel="noopener"
-          style="font-size:10px;color:var(--accent);text-decoration:none;opacity:.7" title="Yatırımcı İlişkileri">IR →</a>
-      </div>
-      ${yearLinks ? `<div style="padding-left:24px;line-height:1.4">${yearLinks}</div>` : ''}
-    </div>`;
-  }).join('');
-}
-
 window.toggleFinSources = function() {
   const panel  = document.getElementById('fin-sources-panel');
   const toggle = document.getElementById('fin-src-toggle');
   if (!panel) return;
-  const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-  const willOpen = !isOpen;
-  panel.style.display = willOpen ? '' : 'none';
-  toggle.setAttribute('aria-expanded', String(willOpen));
-  if (willOpen && !_finSrcBuilt) {
+  const open = panel.style.display === 'none' || panel.style.display === '';
+  panel.style.display = open ? '' : 'none';
+  if (toggle) toggle.setAttribute('aria-expanded', String(open));
+  if (open && !_finSrcBuilt) {
     _finSrcBuilt = true;
-    buildFinSourcesGrid();
+    const grid = document.getElementById('fin-src-grid');
+    if (!grid) return;
+    const yearSrcs = FIN_YEAR_SOURCES || {};
+    grid.innerHTML = Object.entries(FIN_INVESTOR_URLS_STATIC || {}).map(([slug, d]) => {
+      const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
+      const perYear = yearSrcs[slug] || {};
+      const yearLinks = Object.entries(perYear)
+        .sort(([a],[b]) => b.localeCompare(a))
+        .map(([yr, s]) => s.href
+          ? `<a href="${s.href}" target="_blank" rel="noopener"
+              style="display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:10px;
+                     background:var(--bg);border:1px solid var(--border);font-size:10px;color:var(--accent);
+                     text-decoration:none;margin:2px 2px 0 0"
+              title="${s.text} ${yr}">${yr} ↗</a>`
+          : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
+                border:1px solid var(--border-soft);font-size:10px;color:var(--text-3);margin:2px 2px 0 0">${yr}</span>`
+        ).join('');
+      return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:5px;cursor:default">
+        <div style="display:flex;align-items:center;gap:8px;width:100%">
+          <span class="fin-src-dot" style="background:${color}"></span>
+          <span class="fin-src-name" style="flex:1">${d.name}</span>
+          <a href="${d.url}" target="_blank" rel="noopener"
+            style="font-size:10px;color:var(--accent);text-decoration:none;opacity:.7" title="Yatırımcı İlişkileri">IR →</a>
+        </div>
+        ${yearLinks ? `<div style="padding-left:18px;line-height:1.4">${yearLinks}</div>` : ''}
+      </div>`;
+    }).join('');
   }
 };
 </script>
