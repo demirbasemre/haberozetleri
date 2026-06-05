@@ -117,16 +117,16 @@
     max-width: 520px;
     display: flex;
     align-items: center;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.18);
     border-radius: 8px;
     position: relative;
     overflow: visible;
     transition: background 0.2s, border-color 0.2s;
   }
   .search-wrap:focus-within {
-    background: rgba(255,255,255,0.11);
-    border-color: rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.32);
   }
 
   .search-icon {
@@ -134,7 +134,7 @@
     left: 11px;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.48);
     pointer-events: none;
     width: 15px;
     height: 15px;
@@ -153,7 +153,7 @@
     outline: none;
     touch-action: manipulation;
   }
-  #search::placeholder { color: rgba(255,255,255,0.28); }
+  #search::placeholder { color: rgba(255,255,255,0.50); }
 
   .search-stats {
     position: absolute;
@@ -161,13 +161,13 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 13px;
-    color: rgba(255,255,255,0.28);
+    color: rgba(255,255,255,0.55);
     white-space: nowrap;
     pointer-events: none;
     font-variant-numeric: tabular-nums;
     transition: opacity 0.15s;
   }
-  .search-stats b { color: rgba(255,255,255,0.28); font-weight: 400; }
+  .search-stats b { color: rgba(255,255,255,0.80); font-weight: 600; }
   .search-wrap:focus-within .search-stats,
   .search-wrap.has-value .search-stats { opacity: 0; }
 
@@ -6419,9 +6419,10 @@
     position: relative;
     overflow: hidden;
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .forex-row:first-of-type {
     border-bottom: 1px solid var(--border-soft);
+  }
+  .forex-row.no-border {
+    border-bottom: none;
   }
   .forex-row:hover {
     transform: translateX(3px);
@@ -6442,6 +6443,10 @@
   .forex-indicator-dot.eur {
     background: #059669;
     box-shadow: 0 0 8px rgba(5, 150, 105, 0.6);
+  }
+  .forex-indicator-dot.parity {
+    background: #8B5CF6;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
   }
 
   .forex-label {
@@ -6541,11 +6546,14 @@
   [data-theme="dark"] .forex-row:hover .forex-watermark {
     opacity: 0.08;
   }
-  .forex-row:first-of-type .forex-watermark {
+  .forex-watermark.usd {
     color: #1D6FE8;
   }
-  .forex-row:last-of-type .forex-watermark {
+  .forex-watermark.eur {
     color: #059669;
+  }
+  .forex-watermark.parity {
+    color: #8b5cf6;
   }
 
   /* Segmented control layout for Forex toggles */
