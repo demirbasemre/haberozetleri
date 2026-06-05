@@ -3030,8 +3030,10 @@
     </div>
     <div class="fin-cy-note" id="fin-cy-note">
       📐 <strong>Takvim yılı normalize modu:</strong> EK, QR, SQ, NH için
-      <em>CY(N) ≈ ¼ × FY(N) + ¾ × FY(N+1)</em> formülü uygulanır.
-      Mutlak değerlere (gelir, kâr) uygulanır; yüzde metriklerde uygulanmaz.
+      <em>CY(N) = α × FY(N) + (1−α) × FY(N+1)</em> formülü uygulanır
+      (α: gerçek çeyreklik raporlardan hesaplanan Q4 payı —
+      SQ %24.5, NH %23.2, EK %24.4, QR %25.0).
+      Mutlak değerlere uygulanır; büyüme ve marj metriklerine uygulanmaz.
       Son yıl hesaplanamaz — <strong>—</strong> olarak gösterilir.
     </div>
 
@@ -14573,9 +14575,21 @@ function getFYPeriodLabel(yearStr, fyEnd) {
   return `${TR_MONTHS[startM]} ${y-1} – ${TR_MONTHS[fyEnd]} ${y}`;
 }
 
-// ── Takvim Yılı normalize edilmiş veri ───────────────────────
+// ── Takvim Yılı normalize katsayıları (alpha = Q4'ün yıllık pay'ı) ──────
 // CY(N) ≈ alpha × FY(N) + (1-alpha) × FY(N+1)
-// alpha = fyEnd / 12  (Mart FY → 3/12 = 0.25)
+// Kaynak: Havayollarının kamuya açık çeyreklik/yarı-yıllık sonuçları
+// SQ: FY23/24 ve FY24/25 çeyreklik gelir ortalaması (Kaynak: SIA press releases)
+// NH: FY23/24 ve FY24/25 çeyreklik gelir ortalaması (Kaynak: ANA Holdings IR)
+// EK: H1 FY24/25 yarı-yıllık sonuç → Q4 ≈ H2/2 (Kaynak: Emirates Group)
+// QR: Çeyreklik veri kamuya açık değil → eşit çeyrek varsayımı (0.25)
+const FIN_CY_ALPHA = {
+  'EK': 0.244,  // %24.4 — H1 FY24/25: $19.3B / Yıllık ≈ %51.2 → Q4 ≈ %24.4
+  'QR': 0.250,  // %25.0 — Çeyreklik veri yok; eşit çeyrek varsayımı
+  'SQ': 0.245,  // %24.5 — Q4 ortalama: FY23/24=%22.8, FY24/25=%26.1 → ort.%24.5
+  'NH': 0.232,  // %23.2 — Q4 ortalama: FY23/24=%22.2, FY24/25=%24.3 → ort.%23.2
+};
+function getCYAlpha(slug) { return FIN_CY_ALPHA[slug] ?? 0.25; }
+
 // Sadece mutlak değer metriklerine uygulanır; yüzdeler ham kalır.
 function getEffectiveData(airline, slug, metric) {
   const raw = getMetricValues(airline, metric);
@@ -14585,7 +14599,7 @@ function getEffectiveData(airline, slug, metric) {
   // Yüzde metrikleri dönüştürme
   if (!def || def.fmt === 'pct' || def.fmt === 'pct_s') return raw;
 
-  const alpha = getFYEnd(slug) / 12;   // 0.25 for March FY
+  const alpha = getCYAlpha(slug);   // Gerçek çeyreklik veri tabanlı katsayı
   const result = {};
   const sortedYears = Object.keys(raw).sort();
 
