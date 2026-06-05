@@ -1924,7 +1924,7 @@
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">ABD Gulf Coast · ton</div>
           <div class="dash-card-footer">
-            <div class="dash-card-note">EIA / FRED · Günlük</div>
+            <div class="dash-card-note"><a href="https://fred.stlouisfed.org" target="_blank" rel="noopener">fred.stlouisfed.org →</a> · Günlük</div>
             <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
               <span class="timer-dot"></span>
               <span class="timer-secs">60s</span>
@@ -1937,7 +1937,7 @@
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Europe Brent · varil</div>
           <div class="dash-card-footer">
-            <div class="dash-card-note">Yahoo Finance · Anlık</div>
+            <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Anlık</div>
             <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
               <span class="timer-dot"></span>
               <span class="timer-secs">60s</span>
@@ -1953,7 +1953,7 @@
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Borsa İstanbul · hisse fiyatı</div>
           <div class="dash-card-footer">
-            <div class="dash-card-note">Yahoo Finance · Günlük</div>
+            <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
             <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
               <span class="timer-dot"></span>
               <span class="timer-secs">60s</span>
@@ -1991,8 +1991,24 @@
             </div>
             <div class="forex-watermark">€</div>
           </div>
+          <div class="forex-row no-border">
+            <div class="forex-label">
+              <span class="forex-indicator-dot parity"></span>
+              <span class="forex-symbol">€</span>
+              <svg class="forex-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+              <span class="forex-symbol">$</span>
+            </div>
+            <div class="forex-val-wrap">
+              <span class="forex-value skeleton" id="forex-parity-val">&nbsp;</span>
+              <span class="forex-change" id="forex-parity-change"></span>
+            </div>
+            <div class="forex-watermark parity">€/$</div>
+          </div>
           <div class="dash-card-footer">
-            <div class="dash-card-note">Yahoo Finance / ER-API · Günlük</div>
+            <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
             <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
               <span class="timer-dot"></span>
               <span class="timer-secs">60s</span>
@@ -2122,7 +2138,7 @@
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
-          <div class="dash-card-note">Drewry · Haftalık<br>Kaynak: <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a></div>
+          <div class="dash-card-note">Drewry · Haftalık<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
         </div>
         <div class="dash-card card-in-progress" id="dc-bafi">
           <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
@@ -7869,7 +7885,7 @@ async function loadDashboard() {
       if (jet && jet.length) {
         const last = jet[jet.length - 1];
         setCard('dc-jetfuel', (last.value * 42 * 7.9).toFixed(1) + ' $', pctChg(jet.slice(-2)),
-          'ABD Gulf Coast · ton', `Son veri: ${last.date}<br>Kaynak: EIA/FRED`);
+          'ABD Gulf Coast · ton', `Son veri: ${last.date}<br><a href="https://fred.stlouisfed.org" target="_blank" rel="noopener">fred.stlouisfed.org →</a>`);
       } else {
         setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
       }
@@ -7884,6 +7900,11 @@ async function loadDashboard() {
   initJetfuelCard();
 
   // ── Forex Verisini Çek ve Göster ──────────────────────────────
+  let _latestUsdPrice = null;
+  let _latestEurPrice = null;
+  let _latestUsdChange = null;
+  let _latestEurChange = null;
+
   let _forexCache = {
     'USD': { '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null },
     'EUR': { '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null }
@@ -8035,9 +8056,13 @@ async function loadDashboard() {
         const cardValEl = document.getElementById(`forex-${currency.toLowerCase()}-val`);
         if (cardValEl) {
           cardValEl.textContent = latestPrice.toFixed(1) + ' ₺';
+          if (currency === 'USD') _latestUsdPrice = latestPrice;
+          if (currency === 'EUR') _latestEurPrice = latestPrice;
           const prevClose = result.meta.previousClose || result.meta.chartPreviousClose;
           if (prevClose != null) {
             const change = ((latestPrice - prevClose) / prevClose) * 100;
+            if (currency === 'USD') _latestUsdChange = change;
+            if (currency === 'EUR') _latestEurChange = change;
             const cEl = document.getElementById(`forex-${currency.toLowerCase()}-change`);
             if (cEl) {
               const dir = change > 0.01 ? 'up' : change < -0.01 ? 'down' : 'flat';
@@ -8045,6 +8070,7 @@ async function loadDashboard() {
               cEl.className = 'forex-change ' + dir;
             }
           }
+          updateParityUI();
         }
       }
     } catch (err) {
@@ -8141,6 +8167,11 @@ async function loadDashboard() {
       const usdTry = fx.rates.TRY;
       const eurTry = fx.rates.TRY / fx.rates.EUR;
       
+      _latestUsdPrice = usdTry;
+      _latestEurPrice = eurTry;
+      _latestUsdChange = 0;
+      _latestEurChange = 0;
+      
       const usdValEl = document.getElementById('forex-usd-val');
       const eurValEl = document.getElementById('forex-eur-val');
       
@@ -8152,11 +8183,14 @@ async function loadDashboard() {
         eurValEl.textContent = eurTry ? eurTry.toFixed(1) + ' ₺' : '—';
         eurValEl.classList.remove('skeleton');
       }
+      updateParityUI();
     }).catch(() => {
       const usdValEl = document.getElementById('forex-usd-val');
       const eurValEl = document.getElementById('forex-eur-val');
+      const parityValEl = document.getElementById('forex-parity-val');
       if (usdValEl) { usdValEl.textContent = '—'; usdValEl.classList.remove('skeleton'); }
       if (eurValEl) { eurValEl.textContent = '—'; eurValEl.classList.remove('skeleton'); }
+      if (parityValEl) { parityValEl.textContent = '—'; parityValEl.classList.remove('skeleton'); }
     });
   }
 
@@ -8220,6 +8254,40 @@ async function loadDashboard() {
     return { price, change };
   }
 
+  function updateParityUI() {
+    const parityValEl = document.getElementById('forex-parity-val');
+    const parityChgEl = document.getElementById('forex-parity-change');
+    if (_latestUsdPrice && _latestEurPrice) {
+      const parityPrice = _latestEurPrice / _latestUsdPrice;
+      const usdPrevClose = _latestUsdPrice / (1 + (_latestUsdChange || 0) / 100);
+      const eurPrevClose = _latestEurPrice / (1 + (_latestEurChange || 0) / 100);
+      const parityPrevClose = eurPrevClose / usdPrevClose;
+      const parityChange = ((parityPrice - parityPrevClose) / parityPrevClose) * 100;
+      
+      if (parityValEl) {
+        parityValEl.textContent = parityPrice.toFixed(4);
+        parityValEl.classList.remove('skeleton');
+      }
+      if (parityChgEl) {
+        if (_latestUsdChange === 0 && _latestEurChange === 0) {
+          parityChgEl.textContent = '';
+        } else {
+          const dir = parityChange > 0.0001 ? 'up' : parityChange < -0.0001 ? 'down' : 'flat';
+          parityChgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(parityChange).toFixed(2) + '%';
+          parityChgEl.className = 'forex-change ' + dir;
+        }
+      }
+    } else {
+      if (parityValEl) {
+        parityValEl.textContent = '—';
+        parityValEl.classList.remove('skeleton');
+      }
+      if (parityChgEl) {
+        parityChgEl.textContent = '';
+      }
+    }
+  }
+
   // Sayfa açılışında döviz kartı verilerini yükle
   function initForexCard() {
     return Promise.all([
@@ -8251,6 +8319,11 @@ async function loadDashboard() {
       const eurPrice = eurResult.price;
       const eurChange = eurResult.change;
 
+      _latestUsdPrice = usdPrice;
+      _latestUsdChange = usdChange;
+      _latestEurPrice = eurPrice;
+      _latestEurChange = eurChange;
+
       const updateEl = (valId, chgId, price, change) => {
         const valEl = document.getElementById(valId);
         const chgEl = document.getElementById(chgId);
@@ -8268,6 +8341,7 @@ async function loadDashboard() {
       if (usdPrice || eurPrice) {
         updateEl('forex-usd-val', 'forex-usd-change', usdPrice, usdChange);
         updateEl('forex-eur-val', 'forex-eur-change', eurPrice, eurChange);
+        updateParityUI();
       } else {
         useErApiFallback();
       }
@@ -8368,7 +8442,7 @@ async function loadDashboard() {
           price.toFixed(1) + ' $',
           change,
           'Europe Brent · varil',
-          `Son veri: ${lastObsDate}<br>Kaynak: Yahoo Finance`
+          `Son veri: ${lastObsDate}<br><a href="https://finance.yahoo.com/quote/BZ%3DF" target="_blank" rel="noopener">finance.yahoo.com →</a>`
         );
       } catch (err) {
         console.error("Brent kart güncelleme hatası:", err);
@@ -9244,7 +9318,7 @@ async function loadDashboard() {
         formattedPrice,
         latest.change,
         "40' konteyner ortalama spot fiyat",
-        `Son veri: ${latest.date}<br>Kaynak: <a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">Drewry →</a>`
+        `Son veri: ${latest.date}<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`
       );
     } else {
       setCard('dc-wci', '—', null, '', 'Veri alınamadı');
@@ -9439,7 +9513,7 @@ async function loadDashboard() {
           price.toFixed(2) + ' ₺',
           change,
           'Borsa İstanbul · hisse fiyatı',
-          `Son veri: ${lastObsDate}<br>Kaynak: Yahoo Finance`
+          `Son veri: ${lastObsDate}<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>`
         );
       } catch (err) {
         console.error("THY kart güncelleme hatası:", err);
