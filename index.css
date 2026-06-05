@@ -2457,10 +2457,13 @@
     margin-top: 0 !important;
   }
   .dash-card-timer {
+    position: absolute;
+    top: 12px;
+    right: 12px;
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 9.5px;
+    font-size: 9px;
     font-weight: 600;
     color: var(--text-3);
     font-variant-numeric: tabular-nums;
@@ -2473,6 +2476,7 @@
     transition: background 0.3s, color 0.3s;
     line-height: 1;
     flex-shrink: 0;
+    z-index: 5;
   }
   [data-theme="light"] .dash-card-timer {
     background: rgba(0,0,0,0.03);
@@ -6551,9 +6555,6 @@
   }
   .forex-watermark.eur {
     color: #059669;
-  }
-  .forex-watermark.parity {
-    color: #8b5cf6;
   }
 
   /* Segmented control layout for Forex toggles */
