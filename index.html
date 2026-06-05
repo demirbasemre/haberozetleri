@@ -6828,7 +6828,11 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
           ),
           grid: { display: false }, border: { display: false }
         },
-        y: { ticks: { font: { size: 10, family: 'Inter' }, color: '#9CA3AF', callback: yFmt || (v => v) }, grid: { color: '#F4F3EF' }, border: { display: false } }
+        y: { 
+          ticks: { font: { size: 10, family: 'Inter' }, color: '#9CA3AF', callback: yFmt || (v => v) }, 
+          grid: { color: () => document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(255, 255, 255, 0.08)' : '#F4F3EF' }, 
+          border: { display: false } 
+        }
       }
     }
   });
@@ -6904,11 +6908,16 @@ function barChart(id, labels, data, colors, opts = {}) {
       scales: {
         x: { 
           ticks: { callback: v => v + '%', font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, 
-          grid: { color: 'rgba(0,0,0,0.04)' }, 
+          grid: { color: () => document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.04)' }, 
           border: { display: false } 
         },
         y: {
-          ticks: { font: { size: 11, family: 'Inter' }, color: '#374151', padding: 10, autoSkip: false },
+          ticks: { 
+            font: { size: 11, family: 'Inter' }, 
+            color: () => document.documentElement.getAttribute('data-theme') === 'dark' ? '#E5E7EB' : '#374151', 
+            padding: 10, 
+            autoSkip: false 
+          },
           grid: { display: false },
           border: { display: false }
         }
@@ -7884,16 +7893,19 @@ async function loadDashboard() {
     return Object.values(map).sort((a, b) => a.key.localeCompare(b.key));
   }
 
+  let _energyCurrentPeriod = 'all';
   function renderEnergyChart(period) {
+    if (period) _energyCurrentPeriod = period;
+    const activePeriod = _energyCurrentPeriod;
     if (!_jetRaw && !_brentRaw) return;
     const jetW   = toWeekly(_jetRaw,   v => v * 42);
     const brentW = toWeekly(_brentRaw, v => v);
 
     // Period filter: cutoff date
     const cutoff = new Date();
-    if      (period === '1y') cutoff.setFullYear(cutoff.getFullYear() - 1);
-    else if (period === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
-    else if (period === '3m') cutoff.setMonth(cutoff.getMonth() - 3);
+    if      (activePeriod === '1y') cutoff.setFullYear(cutoff.getFullYear() - 1);
+    else if (activePeriod === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
+    else if (activePeriod === '3m') cutoff.setMonth(cutoff.getMonth() - 3);
     else cutoff.setFullYear(2000); // all
 
     const filterDate = cutoff.toISOString().slice(0, 10);
@@ -9412,17 +9424,34 @@ async function loadDashboard() {
               ctx.stroke();
             }
             
-            // Etiket metni
+            // Etiket metni (Pill/Badge style for maximum readability in both themes)
             ctx.setLineDash([]);
-            ctx.fillStyle = event.color;
-            ctx.font = 'bold 10px Inter, sans-serif';
-            ctx.textAlign = 'center';
+            const font = 'bold 9.5px Inter, sans-serif';
+            ctx.font = font;
+            const textWidth = ctx.measureText(event.label).width;
+            const textHeight = 9.5;
+            const paddingX = 6;
+            const paddingY = 4;
+            const pillWidth = textWidth + paddingX * 2;
+            const pillHeight = textHeight + paddingY * 2;
+            const pillX = xPos - pillWidth / 2;
+            const pillY = top + 10;
             
-            // Metin okunabilirliği için beyaz dış çeper çizelim
-            ctx.strokeStyle = '#FFFFFF';
-            ctx.lineWidth = 3.5;
-            ctx.strokeText(event.label, xPos, top + 15);
-            ctx.fillText(event.label, xPos, top + 15);
+            // Draw background pill
+            ctx.fillStyle = event.color;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+              ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 4);
+            } else {
+              ctx.rect(pillX, pillY, pillWidth, pillHeight);
+            }
+            ctx.fill();
+            
+            // Draw text inside pill
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(event.label, xPos, pillY + pillHeight / 2 + 0.5);
           });
           
           ctx.restore();
@@ -9446,6 +9475,7 @@ async function loadDashboard() {
         ],
         v => v != null ? Number(v).toLocaleString('en-US') + ' $' : '',
         {
+          forceRecreate: true,
           plugins: [wciAnnotationsPlugin],
           xTickFont: function(context) {
             const label = context.tick ? context.tick.label : '';
@@ -9840,7 +9870,7 @@ async function loadDashboard() {
             ticks: { font: { size: 9.5, family: 'Inter' }, color: '#9CA3AF', maxRotation: 0 }
             },
             y: {
-              grid: { color: 'rgba(0,0,0,0.05)' }, border: { display: false },
+              grid: { color: () => document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.05)' }, border: { display: false },
               ticks: { font: { size: 9.5, family: 'Inter' }, color: '#9CA3AF',
                 callback: v => (isCpi ? '' : (v > 0 ? '+' : '')) + v + '%' }
             }
@@ -9929,7 +9959,7 @@ async function loadDashboard() {
             ticks: { font: { size: 9, family: 'Inter' }, color: '#9CA3AF', maxRotation: 0 }
           },
           y: {
-            grid: { color: 'rgba(0,0,0,0.05)' },
+            grid: { color: () => document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.05)' },
             border: { display: false, dash: [3, 3] },
             ticks: {
               font: { size: 9, family: 'Inter' }, color: '#9CA3AF',
@@ -9949,6 +9979,61 @@ async function loadDashboard() {
     };
     }); }); // requestAnimationFrame kapanışı
   }
+
+  // Export functions to global scope
+  window.renderEnergyChart = renderEnergyChart;
+  window.renderBrentModalChart = renderBrentModalChart;
+
+  // MutationObserver for theme changes to automatically update/redraw the charts
+  new MutationObserver(() => {
+    // 1. Energy Chart (always rendered on the main page, so update/re-render it)
+    if (typeof window.renderEnergyChart === 'function') {
+      window.renderEnergyChart();
+    }
+    // 2. Forex Chart (if modal is open)
+    const forexModal = document.getElementById('forex-chart-modal');
+    if (forexModal && forexModal.style.display === 'flex') {
+      if (typeof window.renderForexChart === 'function') {
+        window.renderForexChart();
+      }
+    }
+    // 3. Brent Chart (if modal is open)
+    const brentModal = document.getElementById('brent-chart-modal');
+    if (brentModal && brentModal.style.display === 'flex') {
+      if (typeof window.renderBrentModalChart === 'function') {
+        window.renderBrentModalChart();
+      }
+    }
+    // 4. Jetfuel Chart (if modal is open)
+    const jetfuelModal = document.getElementById('jetfuel-chart-modal');
+    if (jetfuelModal && jetfuelModal.style.display === 'flex') {
+      if (typeof window.renderJetfuelModalChart === 'function') {
+        window.renderJetfuelModalChart();
+      }
+    }
+    // 5. WCI Chart (if modal is open)
+    const wciModal = document.getElementById('wci-chart-modal');
+    if (wciModal && wciModal.style.display === 'flex') {
+      if (typeof window.renderWciChart === 'function') {
+        window.renderWciChart();
+      }
+    }
+    // 6. THY Chart (if modal is open)
+    const thyModal = document.getElementById('thy-chart-modal');
+    if (thyModal && thyModal.style.display === 'flex') {
+      if (typeof window.renderThyChart === 'function') {
+        window.renderThyChart();
+      }
+    }
+    // 7. Popover Chart (if active)
+    if (_fpopLineChart) {
+      _fpopLineChart.update();
+    }
+    // 8. IMF Card Chart (if active)
+    if (_dcImfLineChart) {
+      _dcImfLineChart.update();
+    }
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 }
 </script>
 
