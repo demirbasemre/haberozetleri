@@ -3033,7 +3033,7 @@
       📐 <strong>Takvim yılı normalize modu:</strong> EK, QR, SQ, NH için
       <em>CY(N) = α × FY(N) + (1−α) × FY(N+1)</em> formülü uygulanır
       (α: gerçek çeyreklik raporlardan hesaplanan Q4 payı —
-      SQ %24.5, NH %23.2, EK %24.4, QR %25.0).
+      SQ %24.9, NH %24.8, EK %24.4, QR %25.0).
       Mutlak değerlere uygulanır; büyüme ve marj metriklerine uygulanmaz.
       Son yıl hesaplanamaz — <strong>—</strong> olarak gösterilir.
     </div>
@@ -14584,10 +14584,14 @@ function getFYPeriodLabel(yearStr, fyEnd) {
 // EK: H1 FY24/25 yarı-yıllık sonuç → Q4 ≈ H2/2 (Kaynak: Emirates Group)
 // QR: Çeyreklik veri kamuya açık değil → eşit çeyrek varsayımı (0.25)
 const FIN_CY_ALPHA = {
-  'EK': 0.244,  // %24.4 — H1 FY24/25: $19.3B / Yıllık ≈ %51.2 → Q4 ≈ %24.4
-  'QR': 0.250,  // %25.0 — Çeyreklik veri yok; eşit çeyrek varsayımı
-  'SQ': 0.245,  // %24.5 — Q4 ortalama: FY23/24=%22.8, FY24/25=%26.1 → ort.%24.5
-  'NH': 0.232,  // %23.2 — Q4 ortalama: FY23/24=%22.2, FY24/25=%24.3 → ort.%23.2
+  // Kaynak: Havayollarının kamuya açık çeyreklik/yarı-yıllık basın açıklamaları
+  // Yöntem: CY(N) = α × FY(N) + (1-α) × FY(N+1)  |  α = Q4(Oca-Mar) / yıllık gelir
+  'SQ': 0.249,  // %24.9 — SG Airlines: Q4/FY23-24=%25.1, Q4/FY24-25=%24.7 ort.
+                //   9M FY23/24=14,244M; FY=19,013M → Q4=4,769M | 9M FY24/25=14,716M; FY=19,540M → Q4=4,824M
+  'NH': 0.248,  // %24.8 — ANA Holdings: Q4/FY23-24=%24.9, Q4/FY24-25=%24.7 ort.
+                //   Q4 FY24(Apr24-Mar25)=¥559.0B/¥2261.8B; Q4 FY23=¥512.3B/¥2055.9B (IR PDF)
+  'EK': 0.244,  // %24.4 — Emirates: H1 FY24/25=%51.2 → Q4≈H2/2=%24.4 (yarı-yıllık veri)
+  'QR': 0.250,  // %25.0 — Qatar Airways: çeyreklik veri kamuya açık değil; eşit çeyrek
 };
 function getCYAlpha(slug) { return FIN_CY_ALPHA[slug] ?? 0.25; }
 
