@@ -1947,7 +1947,7 @@
         <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
           <div class="dash-card-label" style="display: flex; align-items: center; gap: 5px;">
             <span class="thy-dot" style="width: 7px; height: 7px; background: #C8102E; border-radius: 50%; display: inline-block;"></span>
-            THY Hisse (THYAO)
+            THYAO
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
@@ -8273,7 +8273,7 @@ async function loadDashboard() {
       const parityChange = ((parityPrice - parityPrevClose) / parityPrevClose) * 100;
       
       if (parityValEl) {
-        parityValEl.textContent = parityPrice.toFixed(4);
+        parityValEl.textContent = parityPrice.toFixed(2);
         parityValEl.classList.remove('skeleton');
       }
       if (parityChgEl) {

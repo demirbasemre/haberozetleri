@@ -2458,20 +2458,24 @@
   }
   .dash-card-timer {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 0;
+    right: 0;
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 9px;
-    font-weight: 600;
+    gap: 5.5px;
+    font-size: 8.5px;
+    font-weight: 700;
     color: var(--text-3);
     font-variant-numeric: tabular-nums;
     background: var(--border-soft);
-    padding: 2.5px 7px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.03);
-    opacity: 0.85;
+    padding: 3.5px 7.5px;
+    border-top-right-radius: var(--radius);
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    opacity: 0.9;
     pointer-events: none;
     transition: background 0.3s, color 0.3s;
     line-height: 1;
