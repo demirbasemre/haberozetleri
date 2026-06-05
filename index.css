@@ -2519,7 +2519,7 @@
   .dash-card-change.flat { color: var(--text-3); }
   .dash-card-sub  { font-size: 11px; color: var(--text-2); margin-top: 4px; line-height: 1.4; min-height: 1.4em; }
   .dash-card-note { font-size: 10px; color: var(--text-3); margin-top: 2px; line-height: 1.4; }
-  .dash-card-note a { color: var(--text-3); }
+  .dash-card-note a { color: var(--text-3); text-decoration: underline; }
 
   /* Visitor sparkline */
   .vis-sparkline-wrap {
