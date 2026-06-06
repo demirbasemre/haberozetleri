@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 1185,
-  "lastScanned": "2026-05-30T23:16:06.781Z",
-  "scannedCount": 71,
+  "lastScannedId": 1311,
+  "lastScanned": "2026-06-06T23:16:01.329Z",
+  "scannedCount": 126,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -355,6 +355,132 @@
         "pasifik hava kargo"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=pacificaircargo.com"
+    },
+    {
+      "id": "dyn_china_eastern_air",
+      "label": "China Eastern Air",
+      "group": "passenger",
+      "kw": [
+        "china eastern air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ceair.com"
+    },
+    {
+      "id": "dyn_satt_titan_aviation",
+      "label": "Sattı Titan Aviation",
+      "group": "charter",
+      "kw": [
+        "sattı titan aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=titan-aviation.com"
+    },
+    {
+      "id": "dyn_canada_cargo",
+      "label": "Canada Cargo",
+      "group": "cargo",
+      "kw": [
+        "canada cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aircanadacargo.com"
+    },
+    {
+      "id": "dyn_finnair_cargo",
+      "label": "Finnair Cargo",
+      "group": "cargo",
+      "kw": [
+        "finnair cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=finnaircargo.com"
+    },
+    {
+      "id": "dyn_kanada_merkezli_pascan_aviation",
+      "label": "Kanada Merkezli Pascan Aviation",
+      "group": "passenger",
+      "kw": [
+        "kanada merkezli pascan aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=pascan.com"
+    },
+    {
+      "id": "dyn_european_cargo",
+      "label": "European Cargo",
+      "group": "cargo",
+      "kw": [
+        "european cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=european-cargo.com"
+    },
+    {
+      "id": "dyn_yard_m_ta_d_astral_aviation",
+      "label": "YardıM TaşıDı Astral Aviation",
+      "group": "cargo",
+      "kw": [
+        "yardım taşıdı astral aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=astral-aviation.com"
+    },
+    {
+      "id": "dyn_kat_ld_polar_air_cargo",
+      "label": "KatıLdı Polar Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "katıldı polar air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=polaraircargo.com"
+    },
+    {
+      "id": "dyn_polar_air_cargo",
+      "label": "Polar Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "polar air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=polaraircargo.com"
+    },
+    {
+      "id": "dyn_sistemlerini_birle_tiriyor_alaska_airlines",
+      "label": "Sistemlerini BirleşTiriyor Alaska Airlines",
+      "group": "passenger",
+      "kw": [
+        "sistemlerini birleştiriyor alaska airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alaskaair.com"
+    },
+    {
+      "id": "dyn_sat_n_tamamlad_titan_aviation",
+      "label": "SatışıNı Tamamladı Titan Aviation",
+      "group": "charter",
+      "kw": [
+        "satışını tamamladı titan aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=titan-aviation.com"
+    },
+    {
+      "id": "dyn_malzemelerini_ta_d_astral_aviation",
+      "label": "Malzemelerini TaşıDı Astral Aviation",
+      "group": "cargo",
+      "kw": [
+        "malzemelerini taşıdı astral aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=astral-aviation.com"
+    },
+    {
+      "id": "dyn_platformunda_birle_tirdi_alaska_airlines",
+      "label": "Platformunda BirleşTirdi Alaska Airlines",
+      "group": "passenger",
+      "kw": [
+        "platformunda birleştirdi alaska airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=alaskaair.com"
+    },
+    {
+      "id": "dyn_seferlerini_ba_lat_yor_iag_cargo",
+      "label": "Seferlerini BaşLatıYor Iag Cargo",
+      "group": "cargo",
+      "kw": [
+        "seferlerini başlatıyor iag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=iagcargo.com"
     }
   ],
   "gsa": []
