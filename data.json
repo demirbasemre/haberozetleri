@@ -1,5 +1,771 @@
 [
   {
+    "title": "LATAM Cargo Almanya-Şili Bağlantısıyla Madencilik Sektörünü Hedefliyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>LATAM Cargo</span>, Almanya ile Şili arasında madencilik sektörünü hedefleyen yeni bir kargo rotası başlattı. <strong>23 Mayıs 2026</strong> tarihinde başlayan haftalık seferler, Frankfurt ile Antofagasta arasında Boeing 767 kargo uçağıyla gerçekleştirilecek. Antofagasta'ya ayrılan kapasite <strong>25 ton</strong> ile sınırlı olacak. Hat, madencilik yedek parçalarının yanı sıra otomotiv, ilaç ve genel kargo taşımayı hedefliyor.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/airlines/2026/06/latam-cargo-targets-mining-sector-with-germany-chile-link/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "LATAM Cargo Avrupa ve Kuzey Şili Arasında Yeni Bir Doğrudan Hat Başlatıyor",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Yeni hat, Frankfurt ve Şili arasında doğrudan kapasite sunmaktadır.",
+    "date": "2026-06-02"
+  },
+  {
+    "title": "ACN Ödülleri'ne Katılmak İçin Son Şans!",
+    "summary": "2026 Air Cargo News Ödülleri için başvuru süresi <strong>12 Haziran Cuma</strong> günü saat <strong>17:00 BST</strong>'ye kadar uzatıldı. Şirket büyüklüğü veya ciro kısıtlaması olmaksızın tüm sektör temsilcilerinin katılımına açık olan ödüllerde <strong>10</strong> farklı kategori bulunuyor. Kazananlar <strong>21 Ekim Çarşamba</strong> günü Londra'daki Royal Lancaster otelinde düzenlenecek törenle duyurulacak.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/people/2026/06/last-chance-to-enter-the-acn-awards/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-02"
+  },
+  {
+    "title": "Titan, ATSG’nin Cargo Aircraft Management Şirketine 767F Sattı",
+    "summary": "Titan Aviation Leasing ve Bain Capital, <strong>33768</strong> seri numaralı bir Boeing 767-300ERF kargo uçağının ATSG iştiraki Cargo Aircraft Management (CAM) şirketine satışını gerçekleştirdi. Anlaşma, Titan'ın uçak portföyünü optimize etme stratejisinin bir parçası olarak yapıldı. Sektör analizlerine göre Boeing 767-300ER dönüşüm pazarı güçlü kalmaya devam etse de hammadde bulma zorluğu artıyor.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/editorial/2026/06/titan-sells-767f-to-atsgs-cargo-aircraft-management/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Titan Aircraft Investments, Boeing 767-300ERF Uçağının Cargo Aircraft Management'a Satışını Tamamladı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Kargo uçağı leasing ve satışı Kuzey Amerika merkezli şirketler arasında gerçekleşmiştir.",
+    "date": "2026-06-02"
+  },
+  {
+    "title": "Rotate Veri Mühendisliği Danışmanlık Şirketini Satın Aldı",
+    "summary": "Hava kargo yazılım ve strateji danışmanlık şirketi Rotate, veri mühendisliği danışmanlık firması Data Build Company'yi (DBC) satın aldı. Satın alma, Rotate'in hava kargo şirketlerinin veri stratejisi oluşturma ve veri altyapısı zorluklarını çözmeye odaklanan Rotate Data Services biriminin gelişimini hızlandıracak. Bu sayede, sektör genelinde düşük veri kalitesi nedeniyle sekteye uğrayan yapay zeka entegrasyonlarının kolaylaştırılması hedefleniyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/business/2026/06/rotate-acquires-data-engineering-consultancy/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Rotate, Yeni Veri Hizmetlerini Hızlandırmak İçin Data Build Company'yi Satın Aldı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Hollanda merkezli bir danışmanlık şirketinin satın alınması Avrupa pazarını etkilemektedir.",
+    "date": "2026-06-02"
+  },
+  {
+    "title": "ABD'li Nakliyecilerden Gümrük Operasyonlarını Azaltma Planlarına Tepki",
+    "summary": "ABD'li hava kargo nakliyecileri, havayolları ve tedarik zinciri kuruluşları, Gümrük ve Sınır Muhafaza (CBP) operasyonlarının belirli sığınak şehir limanlarında azaltılması planlarının tedarik zincirlerinde büyük aksamalara yol açabileceğini bildirdi. Airforwarders Association (AfA), planlanan kesintilerin özellikle ilaç, e-ticaret ve tıbbi cihaz gibi hızlı gümrükleme gerektiren gönderileri etkileyeceğini savundu. Kesintilerden New York, Newark, Los Angeles, Chicago ve San Francisco gibi büyük havalimanlarının etkilenmesi bekleniyor.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/supply-chains/2026/06/us-forwarders-hit-out-at-plans-to-cut-customs-operations/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Hava Kargo Derneği ABD Havalimanlarında Planlanan Gümrük Kesintilerinin Durdurulmasını İstedi",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "ABD gümrük operasyonlarındaki potansiyel kısıtlamalar Kuzey Amerika uçuşlarını etkilemektedir.",
+    "date": "2026-06-02"
+  },
+  {
+    "title": "KLM, Schiphol'deki Kargo Faaliyetlerini Taşıyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>KLM</span>, Amsterdam Airport Schiphol'deki kargo operasyonlarını havalimanının güneydoğu bölgesinde geliştirilecek olan modern \"Vracht 15\" tesisine taşımak üzere havalimanı yönetimiyle anlaşma imzaladı. <strong>2027</strong> yılında tamamlanması planlanan bu taşıma projesi, Schiphol'ün önümüzdeki <strong>25</strong> yıllık sürdürülebilir gelişim planının bir parçasını oluşturuyor. Boşaltılacak kargo alanları, daha büyük uçaklar için yeni park pozisyonları ve yeni Güney Terminali'nin inşası için kullanılacak.",
+    "category": "Altyapı",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/cargo-airport/2026/06/klm-to-relocate-cargo-activities-at-schiphol/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Amsterdam Schiphol Havalimanı kargo altyapısının modernizasyonu ve yer değişimi.",
+    "date": "2026-06-01"
+  },
+  {
+    "title": "Yükleyiciler İçin Rahatlama Yakın Olabilir",
+    "summary": "Küresel hava kargo spot fiyatları, güçlü talep nedeniyle Mayıs ayında yıllık bazda %<strong>41</strong> artarak kilogram başına <strong>3,40 ABD Doları</strong> seviyesine ulaştı. Ancak Xeneta, Haziran ayında Orta Doğu kapasitesinin geri dönmesiyle bu fiyat baskısının azalabileceğini öngörüyor. Öte yandan, Çin'in düşük değerli e-ticaret ihracatı Nisan ayında yıllık bazda %<strong>11</strong> düşüş kaydetti. Ayrıca AB'nin <strong>1 Temmuz</strong> itibarıyla uygulayacağı gümrük düzenlemeleri e-ticaret hacimlerini etkileyebilir.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/relief-may-be-on-the-way-for-shippers/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Küresel kargo tarifeleri ve e-ticaret düzenlemeleri birden fazla bölgeyi doğrudan etkilemektedir.",
+    "date": "2026-06-05"
+  },
+  {
+    "title": "Cold Chain Technologies, EcoFlex Yeniden Kullanılabilir Paket Hizmetlerini Avrupa'ya Genişletiyor",
+    "summary": "Cold Chain Technologies (CCT), ilaç sektörüne yönelik yeniden kullanılabilir sıcaklık kontrollü EcoFlex paket taşıyıcı hizmetlerini Avrupa genelinde genişlettiğini duyurdu. Kiralama modeliyle sunulan EcoFlex, standart paketleyicilere kıyasla fosil yakıt kullanımını %<strong>60,3</strong>'e kadar azaltabiliyor. Şirket, <strong>2024</strong> yılında Tower Cold Chain'i satın almasının ardından Birleşik Krallık, Hollanda ve İrlanda'daki operasyonlarının yanı sıra <strong>11</strong> Avrupa ülkesinde yer alan <strong>21</strong> merkezlik bir ağ üzerinden hizmet veriyor.",
+    "category": "Özel Kargo",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/cold-chain-technologies-expands-ecoflex-reusable-parcel-services-into-europe/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Avrupa genelinde ilaç ve soğuk zincir lojistiği ağının genişletilmesi.",
+    "date": "2026-06-05"
+  },
+  {
+    "title": "Birleşik Krallık Şirketlerinin Yüzde 52'si Tedarik Zinciri Aksaklıklarına Karşı Hazırlıksız",
+    "summary": "SCALA tarafından yapılan yeni araştırmaya göre, Birleşik Krallık'taki şirketlerin %<strong>52</strong>'si tedarik zinciri aksaklıklarından kaynaklanacak finansal kayıpları önlemek için yalnızca kısmi önlemler alırken, %<strong>14</strong>'ünün hiçbir stratejisi bulunmuyor. Şirketlerin %<strong>47</strong>'si cirolarının yarıdan fazlasını en büyük <strong>üç</strong> müşterisinden elde ederek yüksek gelir riski taşıyor. Ayrıca, şirketlerin %<strong>57</strong>'si ana IT sistemlerinin çökmesi durumunda sipariş yönetimini sürdüremeyeceğini belirtiyor.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/52-percent-of-uk-firms-underprepared-for-disruption-costs/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Araştırma Birleşik Krallık tedarik zinciri ve lojistik pazarını kapsamaktadır.",
+    "date": "2026-06-05"
+  },
+  {
+    "title": "Group Concorde Yeni Kurumsal Kimliğini Tanıttı",
+    "summary": "Bağımsız GSSA şirketi Group Concorde; Orta Doğu, Hindistan Yarımadası ve Asya-Pasifik bölgelerindeki büyüme stratejisini desteklemek amacıyla kurumsal kimliğini ve logosunu yeniledi. Bölge genelinde <strong>16</strong> ofisi bulunan şirket, havayolu ortaklarına kargo ve yolcu temsilciliği ile havacılık destek hizmetleri sunmaya devam ediyor. Yenilenen kimliğin, şirketin dinamik ve uzun vadeli büyüme vizyonunu yansıttığı belirtildi.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/group-concorde-unveils-a-bold-new-brand-identity/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "GSSA şirketinin kurumsal kimlik yenilemesi belirtilen bölgelerdeki temsilciliklerini kapsamaktadır.",
+    "date": "2026-06-05",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/group-concorde-unveils-new-brand-identity-to-support-future-growth-1359381"
+      }
+    ]
+  },
+  {
+    "title": "Menzies Aviation Yeni Nesil BRS Teknolojisini Yaygınlaştırıyor",
+    "summary": "Menzies Aviation, easyJet ortaklığıyla kağıt bazlı bagaj takip süreçlerini gerçek zamanlı dijital izlenebilirlikle değiştiren yeni nesil Bagaj Mutabakat Sistemi'ni (BRS) Avrupa genelinde devreye alıyor. ABOMIS iş birliğiyle geliştirilen sistem, İtalya'daki Milano Malpensa Havalimanı'nda eksik veya geç kalan bagaj oranını %<strong>70</strong> oranında azalttı. Sistem, şu anda İspanya ve Fransa'daki çok sayıda havalimanında aktif olarak kullanılmaya başlandı.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/menzies-aviation-rolls-out-next-generation-brs-technology/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Avrupa genelindeki havalimanı yer hizmetleri teknolojisi yatırımları.",
+    "date": "2026-06-05"
+  },
+  {
+    "title": "DHL, Afrika'da İnsani Lojistik Akademisi Kuruyor",
+    "summary": "DHL Group, insani yardım kuruluşlarının lojistik kapasitelerini pro bono eğitimlerle güçlendirmek amacıyla İnsani Lojistik Akademisi'ni (DAHL) kurdu. İlk olarak Sahra Altı Afrika'da Johannesburg merkezli bir lansmanla tanıtılan program; gümrük süreçleri, tehlikeli maddelerin taşınması ve güvenlik konularını kapsıyor. Pilot süreçte <strong>80</strong>'den fazla STK'dan <strong>650</strong>'yi aşkın katılımcının eğitildiği programın <strong>2026</strong> yılında Güney Afrika, Kenya, Gana ve Nijerya gibi ülkelerde yaygınlaştırılması hedefleniyor.",
+    "category": "Özel Kargo",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/dhl-builds-humanitarian-logistics-academy-in-africa/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "DHL Group, Küresel Afet Hazırlığını Güçlendirmek İçin İnsani Lojistik Akademisi'ni Kurdu",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Afrika genelinde insani yardım ve lojistik kapasite geliştirme programı.",
+    "date": "2026-06-04"
+  },
+  {
+    "title": "CargoAi, CargoMART Hava Kargo Verilerini Yapay Zeka Platformlarına Bağlıyor",
+    "summary": "CargoAi, CargoMART pazar yeri verilerini ChatGPT, Claude ve Microsoft Copilot gibi yapay zeka asistanlarına Model Context Protocol (MCP) aracılığıyla entegre ettiğini duyurdu. Kullanıcılar, doğal dil komutlarını kullanarak <strong>105</strong>'ten fazla havayolu üzerinden fiyat karşılaştırması yapıp rezervasyon oluşturilecek ve <strong>240</strong>'ın üzerinde havayolunda kargo takibi gerçekleştirebilecek. Bu hamle, operasyon ekiplerinin farklı sistemler arasında geçiş yapmadan günlük iş akışlarını tek bir yapay zeka arayüzünden yönetmelerine olanak tanıyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/cargoai-connects-cargomart-air-cargo-intelligence-to-ai-platforms/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-04"
+  },
+  {
+    "title": "OneReg, 4,5 Milyon Dolarlık Seri A Yatırımının Ardından Billie Moore'u Atadı",
+    "summary": "Havacılık mevzuat uyum platformu OneReg, Yeni Zelanda Havalimanları Birliği CEO'su Billie Moore'u yeni oluşturulan Düzenleme ve Sektörel İlişkiler Başkanı görevine getirdi. Moore, şirketin kamu politikaları, devlet ilişkileri ve küresel pazarlardaki gümrük düzenleme stratejilerini yönetecek. Bu atama, şirketin başarıyla tamamladığı <strong>4,5 milyon ABD Doları</strong> tutarındaki Seri A yatırım turunun ardından uluslararası büyüme hamlesi kapsamında gerçekleştirildi.",
+    "category": "Atama & Görevlendirme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/onereg-appoints-aviation-leader-billie-moore-following-4-5m-series-a-funding/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Atama alanındaki gelişmeler şirketin küresel ve Yeni Zelanda merkezli operasyonlarını kapsamaktadır.",
+    "date": "2026-06-04",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/06/onereg-appoints-aviation-leader-billie-moore-lead-global-government-affairs-regulatory-strategy/"
+      }
+    ]
+  },
+  {
+    "title": "Brüksel Havalimanı Kargo Bölgesinde Yeni Lojistik Tesisi İçin İlk Sütun Töreni",
+    "summary": "Brüksel Havalimanı, kargo bölgesinin modernizasyonu kapsamında <strong>14.000 metrekarelik</strong> alana sahip yeni bir lojistik tesisinin inşaatına başladı. <strong>2027</strong> yılında tamamlanması hedeflenen BREEAM Excellent sertifikalı yeşil tesiste, havalimanının uzun süreli iş ortakları Yusen Logistics ve APA faaliyet gösterecek. Tesis, özellikle ilaç ve genel kargo segmentlerindeki operasyonel kapasiteyi ve verimliliği artırmak üzere tasarlandı.",
+    "category": "Altyapı",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/first-pillar-ceremony-for-a-new-logistics-facility-in-brussels-airports-cargo-zone/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Brüksel Havalimanı'ndaki kargo altyapısının genişletilmesi Avrupa pazarını etkilemektedir.",
+    "date": "2026-06-04",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/06/brussels-airport-expands-cargo-zone-new-logistics-facility/"
+      }
+    ]
+  },
+  {
+    "title": "GEODIS, Küresel Hava Kargo Analizlerini Güçlendirmek İçin Rotate Verilerini Tercih Etti",
+    "summary": "Lojistik sağlayıcısı GEODIS, küresel hava kargo operasyonlarında veri odaklı karar alma süreçlerini desteklemek amacıyla Rotate firmasının Live Capacity ve Air Demand veri çözümlerini kullanmaya başladı. Rotate’in Live Capacity aracı, anlık uçak konum verileri üzerinden tüm havayolları ve charter uçuşlarındaki kargo kapasitesini saatlik olarak sunuyor. Air Demand ürünü ise <strong>5.000</strong>'den fazla emtia ve e-ticaret rotasındaki ticaret verilerini aylık güncellemelerle analiz etme imkanı sağlıyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/geodis-adopts-rotate-data-to-strengthen-global-air-cargo-insight-1359174",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "GEODIS, Küresel Hava Kargo Pazar Analizi İçin Rotate'i Seçti",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Avrupa merkezli lojistik devinin küresel veri analitiği altyapısı ortaklığı.",
+    "date": "2026-06-06"
+  },
+  {
+    "title": "FedEx ve China Southern Air Logistics Stratejik Ortaklık Kurdu",
+    "summary": "FedEx, operasyonel verimliliği ve küresel hizmet kapasitesini artırmak amacıyla <span style='color:#C8102E;font-weight:700;'>China Southern</span> Air Logistics ile stratejik iş birliği anlaşması (MoU) imzaladı. Guangzhou'da imzalanan anlaşma kapsamında iki dev şirket; uluslararası uçuşlar, aktarma merkezlerinin entegrasyonu, filo kaynakları ve dijitalleşme alanlarında ortaklık yapacak. Bu ortaklığın, özellikle Çinli müşterilerin artan sınır ötesi lojistik taleplerini karşılaması ve Guangzhou'nun küresel bir hava kargo merkezi olma konumunu güçlendirmesi bekleniyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/fedex-china-southern-air-logistics-forge-strategic-partnership-1359390",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>China Southern</span>'ın FedEx ile kurduğu bu güçlü ortaklık, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun Guangzhou (CAN) çıkışlı e-ticaret ve Asya-Avrupa koridorundaki pazar payı üzerinde doğrudan rekabetçi baskı oluşturacaktır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Central Europe",
+        "Western Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Guangzhou merkezli stratejik kargo ve e-ticaret koridorunun güçlenmesi.",
+    "date": "2026-06-06"
+  },
+  {
+    "title": "OpenSky World, SolitAir’in İtalya Kargo Acentesi Oldu",
+    "summary": "Birleşik Arap Emirlikleri merkezli B2B kargo havayolu SolitAir, İtalya pazarı için kargo satış acentesi (CSA) olarak OpenSky World'ü yetkilendirdi. <strong>Yedi adet Boeing 737-800 BCF</strong> kargo uçağıyla Dubai merkezli operasyonlar yürüten SolitAir, ilaç, taze gıda ve e-ticaret gibi özel kargo segmentlerinde taşımacılık sunuyor. Bu ortaklığın, Avrupa ile Körfez bölgesi, Afrika ve Asya arasındaki ticaret koridorlarında yeni iş fırsatları yaratması hedefleniyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/opensky-world-named-solitairs-italy-cargo-agent-1359386",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "İtalya ve Orta Doğu arasındaki B2B kargo uçuş operasyonları.",
+    "date": "2026-06-06"
+  },
+  {
+    "title": "Group Concorde Gelecekteki Büyümeyi Desteklemek İçin Yeni Kurumsal Kimliğini Duyurdu",
+    "summary": "Bağımsız GSSA şirketi Group Concorde, Orta Doğu, Hindistan Yarımadası ve Asya-Pasifik bölgelerindeki büyüme adımları kapsamında kurumsal kimliğini ve logosunu yeniledi. <strong>16</strong> bölgesel ofisiyle faaliyet gösteren şirket, havayollarına kargo ve yolcu temsilciliği alanında destek sağlıyor. Yenilenen marka kimliği, şirketin modern havacılık sektörünün ihtiyaçlarına uyum sağlama vizyonunu yansıtıyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/group-concorde-unveils-new-brand-identity-to-support-future-growth-1359381",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Group Concorde Yeni Kurumsal Kimliğini Tanıttı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "GSSA şirketinin kurumsal kimlik yenilemesi belirtilen bölgelerdeki temsilciliklerini kapsamaktadır.",
+    "date": "2026-06-06"
+  },
+  {
+    "title": "Elleçlemeden Zekaya: Kargo Terminalleri Havayolu Ağ Performansını Nasıl Şekillendiriyor?",
+    "summary": "Lödige Industries yöneticisi Björn Ussat, modern hava kargo terminallerinin artık yalnızca fiziksel depolama alanları olmaktan çıkıp havayolu ağlarının performansını belirleyen dijital performans noktalarına dönüştüğünü belirtti. ETV, ASRS ve AGV gibi mekanize sistemlerin tek başına yeterli olmadığını vurgulayan Ussat, Cargo Direct gibi akıllı yazılım sistemlerinin operasyonel tutarlılığı sağladığını ifade etti. Şirketin en son Şanghay Pudong Terminal 4'te uyguladığı <strong>6,8 ton</strong> kapasiteli otonom yönlendirmeli araç (AGV) projesi, esnek ve ölçeklenebilir kargo merkezi tasarımına örnek gösterildi.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/from-handling-intelligence-why-cargo-terminals-shape-airline-network-performance/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Şanghay Pudong havalimanındaki gelişmiş terminal teknolojileri ve otomasyon trendleri.",
+    "date": "2026-06-06"
+  },
+  {
+    "title": "Brüksel Havalimanı Yeni Lojistik Tesisiyle Kargo Bölgesini Genişletiyor",
+    "summary": "Brüksel Havalimanı, kargo bölgesini modernize etme ve optimize etme çalışmaları kapsamında <strong>14.000 metrekarelik</strong> alana sahip yeni bir lojistik tesisinin inşasına başladı. <strong>2027</strong> yılında tamamlanması planlanan ve BREEAM Excellent çevre dostu bina sertifikası hedefleyen tesiste, Yusen Logistics ve APA gibi köklü lojistik ortakları ilaç ve genel kargo alanlarındaki faaliyetlerini büyütecek. Proje, havalimanının Avrupa kargo ekosistemindeki stratejik rolünü güçlendirmeyi amaçlıyor.",
+    "category": "Altyapı",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/brussels-airport-expands-cargo-zone-new-logistics-facility/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Brüksel Havalimanı Kargo Bölgesinde Yeni Lojistik Tesisi İçin İlk Sütun Töreni",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Brüksel Havalimanı'ndaki kargo altyapısının genişletilmesi Avrupa pazarını etkilemektedir.",
+    "date": "2026-06-06"
+  },
+  {
+    "title": "OneReg, Küresel Hükümet İlişkileri ve Düzenleme Stratejisini Yönetmesi İçin Billie Moore'u Atadı",
+    "summary": "Havacılık mevzuat ve uyumluluk platformu OneReg, Yeni Zelanda Havalimanları Birliği CEO'su Billie Moore'u yeni oluşturulan Düzenleme ve Sektörel İlişkiler Başkanı görevine atadı. Moore, şirketin başarıyla tamamladığı <strong>4,5 milyon dolarlık</strong> Seri A yatırım turunun ardından uluslararası pazarlarda hükümet ilişkileri ve kamu politikalarını yönetecek. Eski bir diplomat olan Moore, daha önce Yeni Zelanda Çevre Bakanlığı'nda Başdanışman ve Avustralya'da Başkonsolos olarak görev almıştı.",
+    "category": "Atama & Görevlendirme",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/onereg-appoints-aviation-leader-billie-moore-lead-global-government-affairs-regulatory-strategy/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "OneReg, 4,5 Milyon Dolarlık Seri A Yatırımının Ardından Billie Moore'u Atadı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Havacılık teknoloji şirketinin üst düzey ataması ve küresel genişleme stratejisi.",
+    "date": "2026-06-06"
+  },
+  {
+    "title": "ACC Aviation, Gelişmekte Olan Pazarlarda Bağımsız Uçuş İnceleme ve Kredi Danışmanlığı Yetkinliklerini Artırıyor",
+    "summary": "ACC Aviation, gelişmekte olan pazarlardaki büyük ölçekli havacılık finansmanlarını desteklemek amacıyla gerçekleştirdiği iki bağımsız uçuş inceleme ve kredi değerlendirme görevini başarıyla tamamladı. Şirket, finans kuruluşlarına ve yatırımcılara teknik, ticari ve finansal riskleri bütünsel olarak değerlendiren bağımsız raporlama hizmeti sunuyor. Hizmet kapsamı; havayolu iş planlarının incelenmesi, filo risk analizleri, varlık değerleme ve stres testlerini içeriyor.",
+    "category": "Diğer",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/acc-aviation-expands-independent-due-diligence-aviation-credit-advisory-capabilities-emerging-markets/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-06"
+  },
+  {
+    "title": "IATA; Brezilya, Meksika ve Paraguay'daki Kargo Hizmetlerini Genişletiyor",
+    "summary": "IATA, Latin Amerika bölgesinde Kargo Hesapları Takas Sistemleri (CASS) dahil kargo hizmetlerini genişlettiğini duyurdu. Meksika'da <strong>Nisan 2026</strong>'da yerel CASS operasyonları başlatılırken, ülke gerçek zamanlı faturalandırma sunan FlexiPay sistemini ABD'den sonra kullanan ikinci ülke oldu. Paraguay'da CASS İhracat sisteminin <strong>2026</strong> yılının son çeyreğinde açılması planlanırken, Brezilya'da ise yerel CASS sisteminin <strong>2027</strong> yılı başında devreye alınması hedefleniyor. Brezilya, <strong>2025</strong> yılında toplam <strong>791.000 ton</strong> hava kargosu taşıdı.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/06-05-iata-expands-cargo-services-brazil-mexico-paraguay/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Latin Amerika pazarında IATA CASS finansal takas sistemlerinin genişletilmesi.",
+    "date": "2026-06-05"
+  },
+  {
+    "title": "Orta Doğu'daki Aksaklıklar Kargo Pazarlarını Etkiledi, Mart Ayında Talep Yüzde 4,8 Düştü",
+    "summary": "IATA, Mart 2026 küresel hava kargo verilerini yayımladı. Mart ayında küresel hava kargo talebi, Orta Doğu'daki çatışmaların Körfez aktarma merkezlerinde yol açtığı ciddi aksamalar nedeniyle yıllık bazda %<strong>4,8</strong> oranında düşüş kaydetti. Küresel kargo kapasitesi de %<strong>4,7</strong> oranında azaldı. Orta Doğu merkezli taşıyıcıların kargo talebi bu dönemde %<strong>54,3</strong> gibi ciddi bir daralma gösterirken, jet yakıtı fiyatları Mart ayında yıllık bazda %<strong>106,6</strong> oranında keskin bir artış yaşadı.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-04-29-03/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Orta Doğu kargo koridorlarının daralması ve yakıt maliyetlerindeki %<strong>106,6</strong>'lık artış, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için IST aktarma merkezinde transit maliyet baskısını artırıp operasyonel planlamada esneklik gerektirecektir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Central Europe",
+        "Western Europe",
+        "China"
+      ]
+    },
+    "etkiAlaniGerekce": "Orta Doğu merkezli çatışmalar ve küresel jet yakıtı fiyat artışları İstanbul transit kargo akışlarını etkilemektedir.",
+    "date": "2026-04-29"
+  },
+  {
+    "title": "Hava Kargo Talebi Şubat 2026'da Yüzde 11,2 Arttı",
+    "summary": "IATA verilerine göre, Şubat 2026 döneminde küresel hava kargo talebi yıllık bazda %<strong>11,2</strong> oranında güçlü bir büyüme kaydetti. Sunulan kapasite ise geçen yılın aynı dönemine göre %<strong>8,5</strong> oranında artış gösterip Şubat ayındaki büyümeye, Çin Yeni Yılı öncesinde hızlanan mal hareketleri önemli bir destek sağladı. Bölgesel bazda en güçlü talep artışı %<strong>21,0</strong> ile Afrika havayollarında gerçekleşirken, Latin Amerika %<strong>0,7</strong> ile en zayıf büyümeyi sergiledi.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-30-01/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "Şubat ayındaki güçlü talep büyümesi, küresel kargo ağında kapasite kullanımını artırarak <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun pazar payını güçlendirmesi için fırsat sunmaktadır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Küresel kargo talebindeki genel büyüme ve bölgesel performans değişimleri.",
+    "date": "2026-03-30"
+  },
+  {
+    "title": "IATA, Hava Kargo Operasyonlarını Desteklemek İçin Yapay Zeka Girişimlerini İlerletiyor",
+    "summary": "IATA, küresel hava kargo değer zincirinde operasyonel verimliliği ve güvenliği artırmak amacıyla üç yeni yapay zeka girişimini duyurdu. İlk olarak Tehlikeli Maddeler Düzenlemeleri (DGR) ve Kargo Elleçme El Kitabı (ICHM) için düz metin sorularına hızlı yanıt veren \"AI SME\" mobil ve web uygulaması başlatılıyor. Ayrıca, sektör ortaklarını bir araya getiren Hava Kargo Yapay Zeka Mükemmeliyet Merkezi kurulurken, havayollarının rezervasyon ve aksaklık yönetiminde sistemler arası eşgüdümünü sağlayacak yapay zeka tabanlı kod paylaşımı çalışmaları yürütülüyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-11-01/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-03-11"
+  },
+  {
+    "title": "Hava Kargo, Peru'nun Taze Ürün İhracatı Patlamasını Destekliyor",
+    "summary": "IATA tarafından yayımlanan rapora göre, Peru'nun ihracat değeri <strong>2015</strong> yılındaki <strong>33,7 milyar dolardan</strong>, yıllık ortalama %<strong>10,3</strong> büyüme ile <strong>2025</strong> yılında <strong>90,1 milyar dolara</strong> yükseldi. Hava kargo ile taşınan taze meyve ve sebze ihracatı ise bu dönemde üç kattan fazla artarak <strong>8,1 milyar dolara</strong> ulaştı. Hava kargo, ülkenin tonaj bazında ihracatının yalnızca %<strong>1,3</strong>'ünü temsil etmesine rağmen, değer bazında ihraç edilen malların %<strong>23</strong>'ünü taşıyarak kritik bir rol üstleniyor.",
+    "category": "Özel Kargo",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-10-04/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Peru'nun taze gıda ve tarım ihracatındaki büyüme Güney Amerika kargo pazarını şekillendirmektedir.",
+    "date": "2026-03-10"
+  },
+  {
+    "title": "IATA, Havacılığın Peru İçin Değerini Vurguluyor",
+    "summary": "IATA'nın yayımladığı çalışmaya göre, havacılık sektörü ve buna bağlı turizm faaliyetleri Peru ekonomisinde <strong>6,2 milyar ABD Doları</strong> tutarında ekonomik hacim üreterek GSYİH'nin %<strong>3,2</strong>'sini oluşturuyor. Sektör, <strong>36.100</strong>'ü doğrudan havacılık alanında olmak üzere toplam <strong>364.000</strong> kişiye istihdam sağlıyor ve yıllık <strong>240.300 ton</strong> hava kargosu taşınmasını destekliyor. IATA, Peru'nun Güney Amerika'da lider bir kargo ve turizm merkezi konumunu koruması için altyapı maliyetlerinin düşürülmesini ve etkin düzenlemelerin yapılmasını öneriyor.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-10-03/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Peru havacılık pazarının ekonomik katkısı ve altyapı ihtiyaçlarına yönelik analiz.",
+    "date": "2026-03-10"
+  },
+  {
+    "title": "Hava Kargo, 2025 Yılında 157 Milyar Dolarlık Önleyici Ticareti ve Yapay Zeka Büyümesini Destekledi",
+    "summary": "IATA'nın yeni raporuna göre, hava kargo sektörü, <strong>2025</strong> yılının ilk çeyreğinde gümrük vergisi artışlarından kaçınmak isteyen şirketlerin <strong>157 milyar ABD Doları</strong> tutarındaki ABD ithalatını erkenden (frontload) sevk etmelerine olanak sağladı. Raporda ayrıca, küresel yapay zeka (AI) ilişkili donanım ve ekipman ticaretinin üçte ikisinden fazlasının hava yoluyla taşındığı belirtildi. AI ürünleri hava kargo ile taşınan toplam ticaret değerinin %<strong>53,5</strong>'ini oluştururken, hacim bazında yalnızca %<strong>7</strong>'lik bir yer kapladı.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-10-02/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "Yapay zeka ürünleri ve tarifeden kaçınmak için yapılan öncül yüklemelerdeki artış, kargo uçakları için yüksek değerli ve sürekli bir hacim kaynağı yaratmaktadır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "ABD gümrük vergileri öncesi frontloading ve küresel yüksek teknoloji sevkiyatları kargo akışlarını etkilemiştir.",
+    "date": "2026-03-10"
+  },
+  {
+    "title": "IATA, Hava Kargo İçin Üç Önceliği Vurguluyor",
+    "summary": "IATA, Lima'da düzenlenen Dünya Kargo Sempozyumu'nda (WCS) küresel hava kargo sektörü için üç önceliği açıkladı: dijitalleşmenin hızlandırılması, küresel standartların güçlendirilmesi ve emniyet/güvenliğin artırılması. Sektör verilerinin entegre edilmesi için ONE Record veri paylaşım standardının önemine dikkat çekilen kongrede, tehlikeli maddeler (DGR) ve slot tahsislerindeki uyumsuzlukların azaltılması gerektiği belirtildi. Ayrıca, tehlikeli maddelerin güvenli sevkiyatı için ICAO Annex 18'in güncellenmesi ve e-CSD kullanımının yaygınlaştırılması çağrısı yapıldı.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-10-01/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-03-10"
+  },
+  {
+    "title": "IATA Küresel Kargo Başkanı Brendan Sullivan'ın 19. Dünya Kargo Sempozyumu Konuşması",
+    "summary": "IATA Küresel Kargo Başkanı Brendan Sullivan, Lima'daki <strong>19.</strong> Dünya Kargo Sempozyumu'nda yaptığı açılış konuşmasında, hava kargo sektörünün değişen gümrük politikaları ve Orta Doğu'daki operasyonel aksaklıklara rağmen dayanıklılığını koruduğunu belirtti. Sullivan, ONE Record standardının Ocak ayından itibaren öncelikli veri paylaşım dili olarak belirlendiğini ve küresel konşimento hacminin %<strong>70</strong>'ini temsil eden havayollarının bu geçişe hazırlandığını vurguladı. IATA'nın havacılıkta yapay zeka kullanımını teşvik edecek \"Air Cargo AI Excellence Hub\" ve \"AI SME\" araçlarını devreye alacağını açıkladı.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-speeches/2026-03-10-01/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "IATA Hava Kargo İçin Üç Temel Önceliği Açıkladı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-03-10"
+  },
+  {
+    "title": "ONE Record Açıklayıcı Kılavuzu",
+    "summary": "IATA tarafından yayımlanan bilgilendirmede, hava kargo sektörünün kağıtsız ve tamamen dijital bir geleceğe geçişinde temel taş olan ONE Record veri standardı ele alındı. ONE Record, tüm tedarik zinciri ortaklarının gönderi verilerine tek bir dijital platform üzerinden erişmesini ve veri paylaşımını kolaylaştırmayı amaçlıyor. <strong>1 Ocak 2026</strong> tarihinden itibaren tercih edilen küresel veri paylaşım standardı olan sistem, verilerin mükerrer girilmesini önleyerek operasyonel güvenliği ve verimliliği artırıyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "IATA",
+    "link": "https://airlines.iata.org/2026/03/09/one-record",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun bu standarttaki pilot projeleri, operasyonel dijitalleşme ve küresel veri uyumluluğu açısından sektörde rekabet avantajı sağlamaktadır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Yeni veri standardının yaygınlaşması, THY'nin teknolojik altyapısını küresel iş ortaklarıyla daha hızlı entegre etmesine yardımcı olur.",
+    "date": "2026-03-09"
+  },
+  {
+    "title": "Hava Kargo Talebi Ocak 2026'da Yüzde 5,6 Arttı",
+    "summary": "IATA'nın Ocak 2026 dönemi raporuna göre, küresel hava kargo talebi yıllık bazda %<strong>5,6</strong> oranında büyüme kaydederek yıla güçlü bir başlangıç yaptı. Sunulan kargo kapasitesi ise geçen yıla kıyasla %<strong>3,6</strong> oranında artış gösterdi. Bölgesel düzeyde Afrika %<strong>18,2</strong> ve Orta Doğu %<strong>9,3</strong> artışla büyümenin öncüsü olurken, Kuzey Amerika %<strong>0,5</strong> ve Latin Amerika %<strong>2,0</strong> oranında daralma yaşadı. Küresel jet yakıtı fiyatları ise Ocak ayında yıllık bazda %<strong>6,5</strong> oranında düşüş kaydetti.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-02-01/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "Yılın ilk ayındaki talep canlılığı, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun kilit büyüme pazarlarında kapasite planlaması yapması için olumlu bir zemin oluşturmaktadır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Küresel kargo talebindeki bölgesel ve rotasyonel performans değişimleri.",
+    "date": "2026-03-02"
+  },
+  {
+    "title": "Richard Forson, Cargolux CEO'su: Kanında Kargo Var",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Cargolux</span> CEO'su Richard Forson ile gerçekleştirilen mülakatta, küresel kargo sektörünün mevcut dinamikleri, sürdürülebilirlik hedefleri ve havayolunun filo modernizasyon stratejileri ele alındı. Forson, kargo sektörünün operasyonel zorluklara karşı her dönem direnç gösterdiğini ve dijitalleşmenin bu dayanıklılığı artırdığını belirtti. Şirketin yakıt verimli yeni nesil kargo uçaklarına yaptığı yatırımların uzun vadeli emisyon azaltım hedeflerine katkı sunacağı vurgulandı.",
+    "category": "Atama & Görevlendirme",
+    "source": "IATA",
+    "link": "https://airlines.iata.org/2026/02/25/cargo-blood",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Avrupalı kargo havayolu yöneticisinin sektörel değerlendirmeleri.",
+    "date": "2026-02-25"
+  },
+  {
+    "title": "Özel Kargoyu Bir Üst Seviyeye Taşımak",
+    "summary": "Hava kargo sektöründe özel kargo taşımacılığı, yüksek standartlardaki operasyonel süreçler ve gelişen lojistik teknolojileri sayesinde dönüşüm geçirmeye devam ediyor. Sıcaklığa duyarlı ilaçlar, canlı hayvanlar ve gabari dışı endüstriyel ekipmanlar gibi özel kargoların sevk edilmesinde IATA'nın CEIV sertifikasyon programları kritik bir rol oynamaktadır. Akıllı takip cihazları ve veri paylaşım standartlarının entegrasyonu, uçtan uca soğuk zincir bütünlüğünü koruyarak riskleri asgariye indiriyor.",
+    "category": "Özel Kargo",
+    "source": "IATA",
+    "link": "https://airlines.iata.org/2026/02/22/taking-special-cargo-next-level",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-02-22"
+  },
+  {
+    "title": "IATA Dünya Kargo Sempozyumu 2026: Dinamik Bir Dünyada Hava Kargoyu İlerletmek",
+    "summary": "IATA, 2026 Dünya Kargo Sempozyumu'nun (WCS) \"Dinamik Bir Dünyada Hava Kargoyu İlerletmek\" temasıyla <strong>10-12 Mart 2026</strong> tarihleri arasında Peru'nun başkenti Lima'da gerçekleştirileceğini duyurdu. İlk kez Güney Amerika'da düzenlenecek ve <span style='color:#C8102E;font-weight:700;'>LATAM Cargo</span> ev sahipliğinde yapılacak etkinlikte, değişen gümrük politikaları, e-ticaret lojistiği, dijitalleşme ve özel kargo taşımacılığı ele alınacak. Sempozyum kapsamında ONE Record, lityum pillerin emniyetli taşınması ve sürdürülebilirlik uygulamalarına yönelik çalıştaylar düzenlenecek.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-02-03-01/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "IATA Hava Kargo İçin Üç Temel Önceliği Açıkladı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Küresel havacılık sempozyumunun Güney Amerika'da ilk kez gerçekleştirilmesi.",
+    "date": "2026-02-03"
+  },
+  {
+    "title": "Küresel Hava Kargo Talebi 2025 Yılında Rekor Hacme Ulaştı",
+    "summary": "IATA, 2025 yılının tamamına ve Aralık dönemine ilişkin verileri yayımladı. <strong>2025</strong> yılı genelinde küresel hava kargo talebi yıllık bazda %<strong>3,4</strong> (uluslararası operasyonlarda %<strong>4,2</strong>) oranında artarak rekor bir hacme ulaştı. Sunulan kapasite ise yıllık %<strong>3,7</strong> oranında artış gösterdi. IATA Direktörü Willie Walsh, ABD'nin uyguladığı gümrük vergisi politikalarına rağmen, küresel e-ticaret rüzgarının ve Asya-Avrupa koridorundaki güçlü sevkiyatların bu rekoru desteklediğini belirtti. <strong>2026</strong> yılında büyümenin %<strong>2,4</strong> seviyesine dengelenmesi öngörülüyor.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-01-29-01/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "2025 yılındaki rekor talep, hava kargonun vazgeçilmezliğini teyit ederken <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> gibi geniş ağa sahip taşıyıcıların doluluk oranlarını ve birim gelirlerini desteklemiştir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Küresel kargo talebinde 2025 yılında gerçekleşen rekor hacim artışları.",
+    "date": "2026-01-29"
+  },
+  {
+    "title": "Hava Kargo Talebi Güçlü İvmesini Koruyor, Kasım 2025'te Yüzde 5,5 Arttı",
+    "summary": "IATA verilerine göre, Kasım 2025'te küresel hava kargo talebi, yıl sonu tatil alışverişleri öncesi zaman kısıtlı sevkiyatların artmasıyla yıllık bazda %<strong>5,5</strong> oranında büyüme kaydetti. Küresel kargo kapasitesi ise geçen yılın aynı dönemine kıyasla %<strong>4,7</strong> oranında yükseldi. Bölgesel olarak en güçlü talep büyümesi %<strong>15,6</strong> ile Afrika'da ve %<strong>10,3</strong> ile Asya-Pasifik havayollarında yaşanırken, Latin Amerika %<strong>4,8</strong> ve Kuzey Amerika %<strong>1,6</strong> oranında daralma kaydetti. Küresel jet yakıtı fiyatları ise Kasım ayında %<strong>5,9</strong> oranında yükseldi.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-01-08-01/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "Yoğun sezon dönemindeki %5,5'lik büyüme, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun pazar payını artırma ve yüksek navlun oranlarını koruma stratejisini desteklemektedir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Küresel hava kargo pazarlarında Kasım döneminde gerçekleşen talep ve hacim artışları.",
+    "date": "2026-01-08"
+  },
+  {
+    "title": "Dinamik Bir Dünyada Hava Kargoyu İlerletmek",
+    "summary": "Değişen jeopolitik dengeler, e-ticaret hacimlerindeki artış ve yeni gümrük politikaları, küresel hava kargo tedarik zincirlerini dönüştürmeye devam ediyor. Sektör temsilcileri, bu dinamik ortamda esneklik ve operasyonel hızı korumak amacıyla ONE Record gibi entegre veri paylaşım standartlarına geçişi hızlandırıyor. Sıcaklık kontrollü taze gıda ve ilaç gibi zamana duyarlı özel kargo taşımacılığında standartlaştırılmış süreçler ve gerçek zamanlı takip yetenekleri ön plana çıkıyor.",
+    "category": "Diğer",
+    "source": "IATA",
+    "link": "https://airlines.iata.org/2026/01/06/advancing-air-cargo-dynamic-world",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-01-06"
+  },
+  {
+    "title": "IATA Anketi ONE Record Farkındalığının Arttığını Gösteriyor",
+    "summary": "IATA tarafından gerçekleştirilen anket sonuçları, hava kargo sektörünün <strong>1 Ocak 2026</strong> itibarıyla tercih edilecek veri paylaşım standardı olan ONE Record konusundaki farkındalığının %<strong>70</strong>'in üzerine çıktığını, hazır olma oranının ise yaklaşık %<strong>50</strong> seviyesinde olduğunu ortaya koydu. Katılımcıların %<strong>78</strong>'i daha fazla pilot uygulama ve gösterim yapılmasını, %<strong>80</strong>'i ise düzenli yönlendirme ve kılavuz desteği sağlanmasını talep etti. Öte yandan, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, taşınan ve işlenen tüm kargolar için gönderi düzeyinde ONE Record takip entegrasyonunu devreye alarak pilot projeler arasında yer almaktadır.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "IATA",
+    "link": "https://www.iata.org/en/pressroom/2025-releases/2025-12-10-02/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun ONE Record takip entegrasyonu kapsamında erken aşamada pilot proje yürütmesi, <strong>1 Ocak 2026</strong> geçişi sonrasında dijital veri kalitesinde ve gümrükleme süreçlerinde operasyonel hız avantajı sağlayacaktır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Central Europe",
+        "China"
+      ]
+    },
+    "etkiAlaniGerekce": "İstanbul çıkışlı kargo operasyonlarında erken aşamada ONE Record entegrasyonu operasyonel verimliliği artırmaktadır.",
+    "date": "2025-12-10"
+  },
+  {
     "title": "My Freighter, İsrail'deki GSA Ortağı Olarak MF Cargo'yu Seçti",
     "summary": "Özbekistan merkezli havayolu My Freighter, küresel genişleme adımları kapsamında İsrail'deki kargo satış ve operasyonel destek faaliyetleri için MF Cargo'yu genel satış acentesi (GSA) olarak atadı. Bu atama, havayolunun <strong>9 adet Boeing 767</strong> ve <strong>1 adet Boeing 757-200</strong> kargo uçağından oluşan filosunu genişlettiği bir döneme denk geliyor. GSA grubu ECS Group da yılbaşından bu yana My Freighter'ın Fransa, Hollanda ve Belçika'daki operasyonlarını yürütmektedir.",
     "category": "Ortaklık & İş Birlikleri",
@@ -106,24 +872,6 @@
     },
     "etkiAlaniGerekce": "İngiltere merkezli bölgesel kargo operatörünün iflası batı Avrupa pazarındaki kapasiteyi etkilemektedir.",
     "date": "2026-06-04"
-  },
-  {
-    "title": "GEODIS, Küresel Hava Kargo Analizlerini Güçlendirmek İçin Rotate Verilerini Kullanacak",
-    "summary": "Lojistik sağlayıcısı GEODIS, küresel hava taşımacılığı analitiğini ve stratejik planlamasını geliştirmek amacıyla Rotate şirketinin Live Capacity ve Air Demand veri çözümlerini seçti. Live Capacity ürünü, gerçek zamanlı uçak konum verilerini kullanarak tüm havayolları ve havalimanları için <strong>2018</strong> yılına kadar uzanan geçmiş verilerle uçuş düzeyinde kargo kapasitesi sunuyor. Air Demand ürünü ise <strong>2010</strong> yılına kadar uzanan geçmiş verilerle major rotalarda <strong>5.000</strong>'den fazla emtiayı ve e-ticaret hatlarını kapsayan veri sunarak ticari fırsatların belirlenmesini destekliyor.",
-    "category": "Teknoloji & Dijitalleşme",
-    "source": "stattimes",
-    "link": "https://www.stattimes.com/air-cargo/geodis-adopts-rotate-data-to-strengthen-global-air-cargo-insight-1359174",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "GEODIS, Küresel Hava Kargo Pazar Analizi İçin Rotate'i Seçti",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "GEODIS'in veri odaklı karar alma süreçlerini iyileştirmek için Rotate yazılımlarını kullanmaya başlaması küresel hava kargo analitiğini etkilemektedir.",
-    "date": "2026-06-05"
   },
   {
     "title": "Jetstream, Pascan'a İkinci Saab 340B(F) Kargo Uçağını Teslim Etti",
@@ -308,132 +1056,6 @@
     },
     "etkiAlaniGerekce": "Şanghay Pudong havalimanındaki yeni gümrüklü kargo terminali Çin-Avrupa kargo koridorunu etkilemektedir.",
     "date": "2026-06-05"
-  },
-  {
-    "title": "Orta Doğu'daki Aksaklıklar Kargo Pazarlarını Etkiledi, Mart Ayında Talep %4,8 Düştü",
-    "summary": "IATA verilerine göre, <strong>Mart 2026</strong> döneminde küresel hava kargo talebi yıllık bazda <strong>%4,8</strong> düşüş kaydetti. Düşüşte özellikle Orta Doğu'daki savaş nedeniyle Körfez bölgesindeki büyük kargo merkezlerinde yaşanan ciddi aksaklıklar ve Çin Yeni Yılı sonrası yavaşlama etkili oldu. Küresel hava kargo kapasitesi ise yıllık bazda <strong>%4,7</strong> azaldı. Diğer yandan, <strong>Mart</strong> ayında jet yakıtı fiyatları yıllık bazda <strong>%106,6</strong> artarken, ham petrol fiyatları da <strong>%43,1</strong> yükseldi.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-04-29-03/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "Orta Doğu'daki operasyonel daralma ve yakıt fiyatlarındaki aşırı artış, bölge üzerinden aktarma yapan <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için hem maliyet baskısı hem de hacim yönetimi zorlukları yaratmaktadır.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "IATA'nın küresel Mart ayı hava kargo raporu ve enerji maliyeti artışlarını kapsamaktadır.",
-    "date": "2026-04-29"
-  },
-  {
-    "title": "Hava Kargo Talebi Şubat 2026'da %11,2 Arttı",
-    "summary": "IATA verilerine göre, <strong>Şubat 2026</strong> döneminde küresel hava kargo talebi yıllık bazda <strong>%11,2</strong> artış gösterdi. Küresel kapasite ise yıllık bazda <strong>%8,5</strong> büyüdü. Afrika havayolları <strong>%21,0</strong> büyüme ile en güçlü artışı kaydederken, Latin Amerika <strong>%0,7</strong> ile en zayıf performansı sergiledi. Küresel imalat sektörü PMI verisi <strong>53,1</strong> seviyesine yükselerek genişleme sınırının üzerinde kalmaya devam etti.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-30-01/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "Şubat ayındaki güçlü talep büyümesi, küresel kargo ağında kapasite kullanımını artırarak <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun pazar payını güçlendirmesi için fırsat sunmaktadır.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "IATA'nın küresel Şubat ayı kargo pazarı raporu ve bölgesel büyüme verilerini içermektedir.",
-    "date": "2026-03-30"
-  },
-  {
-    "title": "IATA, Hava Kargo Operasyonlarını Desteklemek İçin Yapay Zeka Girişimlerini Geliştiriyor",
-    "summary": "IATA, hava kargo sektöründe dijital dönüşümü hızlandırmak amacıyla yapay zeka tabanlı <strong>üç</strong> yeni girişim başlattı. İlk olarak, tehlikeli maddeler ve operasyon el kitaplarında hızlı aramayı sağlayan web tabanlı \"AI SME\" uygulaması kullanıma sunuluyor. Ayrıca, havayolları, yer hizmetleri ve otoriteleri bir araya getiren \"Hava Kargo Yapay Zeka Mükemmeliyet Merkezi\" kuruluyor. Son olarak, farklı IT sistemlerine sahip havayolları arasında rezervasyon ve iptal süreçlerini entegre etmek için yapay zeka ajanlarının kullanımı test ediliyor.",
-    "category": "Teknoloji & Dijitalleşme",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-11-01/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "",
-    "date": "2026-03-11"
-  },
-  {
-    "title": "Hava Kargo, Peru'nun Taze Ürün İhracat Patlamasını Destekliyor",
-    "summary": "IATA tarafından yayınlanan rapora göre, Peru'nun ihracat değeri <strong>2015</strong> yılındaki <strong>33,7 milyar dolardan</strong>, <strong>2025</strong> yılında <strong>90,1 milyar dolara</strong> yükselerek yıllık ortalama <strong>%10,3</strong> büyüme kaydetti. Özellikle hava kargo ile taşınan taze meyve ve sebze ihracat değeri katlanarak <strong>8,1 milyar dolara</strong> ulaştı. Hava kargo, ülkenin toplam ihracat tonajının sadece <strong>%1,3</strong>'ünü oluşturmasına rağmen, değer bazında ihraç edilen malların <strong>%23</strong>'ünü taşıyor. <span style='color:#C8102E;font-weight:700;'>LATAM Cargo Group</span>, Peru'nun taze gıda ihracatındaki rekabetçiliğinde hava bağlantılarının kritik rol oynadığını vurguladı.",
-    "category": "Özel Kargo",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-10-04/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "Güney Amerika taze gıda ihracatı ve Peru pazarındaki lojistik büyüme oranlarını kapsamaktadır.",
-    "date": "2026-03-10"
-  },
-  {
-    "title": "IATA, Peru İçin Havacılığın Değerini Vurguladı",
-    "summary": "Güney Amerika'da düzenlenen ilk IATA Dünya Kargo Sempozyumu vesilesiyle yayınlanan rapora göre, havacılık sektörü Peru'da yıllık <strong>6,2 milyar dolarlık</strong> ekonomik faaliyet oluşturuyor ve bu miktar ülkenin GSYİH'sinin <strong>%3,2</strong>'sine denk geliyor. Havacılık sektörü, ülkede <strong>36.100</strong>'ü doğrudan havacılıkta olmak üzere toplam <strong>364.000</strong> istihdamı ve yıllık <strong>240.300 ton</strong> hava kargo taşımacılığını destekliyor. IATA, Peru'nun büyümesini desteklemek için maliyet etkin altyapı, rekabetçi havalimanı ücretleri ve istikrarlı düzenlemeler olmak üzere <strong>üç</strong> öncelik belirledi.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-10-03/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "Peru havacılık pazarının ekonomik etki analizi ve altyapı önceliklerini içermektedir.",
-    "date": "2026-03-10"
-  },
-  {
-    "title": "Hava Kargo 2025 Yılında 157 Milyar Dolarlık Önceden Yüklenen Ticareti Kolaylaştırdı ve Yapay Zeka Büyümesini Destekledi",
-    "summary": "IATA tarafından yayınlanan rapora göre, hava kargo sektörü gümrük vergisi belirsizlikleri nedeniyle <strong>2025'in ilk çeyreğinde</strong> ABD'nin <strong>157 milyar dolarlık</strong> ithalatının önceden yüklenmesini (frontloading) sağladı. Ayrıca, <strong>2025</strong> yılında küresel yapay zeka (AI) ilişkili donanım ve ekipman ticaretinin değer bazında <strong>üçte ikisinden</strong> fazlası hava kargo ile taşındı. AI ile ilgili ürünlerin sevkiyatı yıllık bazda <strong>%20</strong> artış göstererek hava taşımacılığı ticaret değerinin <strong>%53,5</strong>'ini oluşturdu.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-10-02/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "Yapay zeka ürünleri ve tarifeden kaçınmak için yapılan öncül yüklemelerdeki artış, kargo uçakları için yüksek değerli ve sürekli bir hacim kaynağı yaratmaktadır.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "IATA'nın küresel yüksek teknoloji kargo ticareti ve ABD gümrük vergisi etkilerini içeren 2025 yılı raporunu kapsamaktadır.",
-    "date": "2026-03-10"
-  },
-  {
-    "title": "IATA, Hava Kargo İçin Üç Öncelikli Konuyu Açıkladı",
-    "summary": "Lima, Peru'da düzenlenen Dünya Kargo Sempozyumu'nda (WCS) konuşan IATA Kargo Başkanı Brendan Sullivan, küresel hava kargo sektörü için dijitalleşmeyi hızlandırma, küresel standartları güçlendirme ve emniyet ile güvenliği artırma olmak üzere <strong>üç</strong> öncelik açıkladı. Veri paylaşım standardı ONE Record'un <strong>Ocak 2026</strong> itibarıyla tercih edilen yöntem olduğunu belirten Sullivan, havayollarının <strong>%70</strong>'inden fazlasının sisteme geçiş aşamasında olduğunu bildirdi. Ayrıca, tehlikeli maddeler (DGR) standartlarındaki bölgesel varyasyonların azaltılması ve adil havalimanı slot tahsis ilklerine uyulması çağrısında bulunuldu.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-10-01/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "",
-    "date": "2026-03-10"
   },
   {
     "title": "Atlas Air Worldwide, ACMI Sağlayıcısı Air Atlanta'dan %49 Hisse Satın Aldı",
@@ -889,7 +1511,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "DHL'in insani lojistik akademisinin Afrika genelindeki faaliyetleri, bölgedeki afet lojistiği yeteneklerini etkilemektedir.",
-    "date": "2026-06-04"
+    "date": "2026-06-04",
+    "sources": [
+      {
+        "source": "aircargoweek",
+        "link": "https://aircargoweek.com/dhl-builds-humanitarian-logistics-academy-in-africa/"
+      }
+    ]
   },
   {
     "title": "dnata, Singapur'da Silk Way Group ile Çok Yıllı Kargo Elleçleme Sözleşmesi İmzaladı",
@@ -949,7 +1577,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-06-04"
+    "date": "2026-06-04",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/business/2026/06/rotate-acquires-data-engineering-consultancy/"
+      }
+    ]
   },
   {
     "title": "İngiltere-Endonezya Anlaşması B2B Lojistiği İçin Neden Değerli Bir Kazanım?",
@@ -1037,7 +1671,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "Frankfurt ve Şili arasındaki bu yeni doğrudan kargo uçağı rotası, iki bölge arasındaki madencilik kargolarına yönelik özel kapasite sağlamaktadır.",
-    "date": "2026-06-01"
+    "date": "2026-06-01",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/airlines/2026/06/latam-cargo-targets-mining-sector-with-germany-chile-link/"
+      }
+    ]
   },
   {
     "title": "Titan Aviation ve Bain Capital, Boeing 767-300ERF Uçağını CAM'e Sattı",
@@ -1196,7 +1836,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "Kargo uçağı kiralama pazarındaki bu kargo uçağı satışı ve portföy yönetimi işlemi, küresel kargo uçağı arzını şekillendirmektedir.",
-    "date": "2026-06-02"
+    "date": "2026-06-02",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/editorial/2026/06/titan-sells-767f-to-atsgs-cargo-aircraft-management/"
+      }
+    ]
   },
   {
     "title": "Airforwarders Association Sığınak Şehir Havalimanlarındaki Gümrük Kesintilerinin Kapsamlı Etkileri Konusunda Uyardı",
@@ -3815,168 +4461,6 @@
     },
     "etkiAlaniGerekce": "Hindistan pazarındaki sektörel tartışmalar ve gelecek projeksiyonları Güney Asya bölgesini etkilemektedir.",
     "date": "2026-05-19"
-  },
-  {
-    "title": "IATA Kargo Başkanı Brendan Sullivan'ın 19. Dünya Kargo Sempozyumu Konuşması",
-    "summary": "IATA Kargo Başkanı Brendan Sullivan, Lima'daki sempozyumda hava kargonun jeopolitik ve teknolojik değişimlerle dolu dinamik bir dünyadaki rolünü ele aldı. Sullivan; dijitalleşme, küresel standartların uygulanması ve tedarik zinciri güvenliği konularının sektörün dayanıklılığı için kilit olduğunu vurguladı. ONE Record standardının yaygınlaştırılması ve yapay zekanın (AI) operasyonlara entegre edilmesi için yeni bir \"AI Mükemmeliyet Merkezi\" kurulacağını duyurdu. Ayrıca, havalimanlarındaki kargo uçağı slot kısıtlamalarının ve tehlikeli madde düzenlemelerindeki karmaşıklığın giderilmesi gerektiğini belirtti. Güvenlik tarafında ise e-CSD sisteminin manuel süreçleri bitirmek için standart olması gerektiğini ifade etti.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-speeches/2026-03-10-01/",
-    "id": null,
-    "isDuplicate": true,
-    "duplicateOf": "IATA Hava Kargo İçin Üç Temel Önceliği Açıkladı",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "",
-    "date": "2026-03-10"
-  },
-  {
-    "title": "ONE Record Veri Standardı Hakkında Açıklama",
-    "summary": "<strong>IATA</strong> tarafından geliştirilen ONE Record, hava kargo tedarik zincirindeki tüm ortakların tek bir tutarlı dijital dil üzerinden veri paylaşmasını sağlayan yeni bir standarttır. Bu sistem, manuel belge işlemlerini azaltarak verimliliği artırmayı ve tedarik zinciri boyunca tam şeffaflık sağlamayı amaçlıyor. <strong>Ocak 2026</strong> itibarıyla sektördeki ana veri paylaşım yöntemi olarak kabul edilmeye başlanmıştır. ONE Record, otomasyon gibi gelecekteki yenilikler için modern bir veri temeli sunmaktadır. Sistem, kargo bilgilerinin parçalı yapısını ortadan kaldırarak operasyonel hata risklerini düşürmeyi hedefliyor.",
-    "category": "Teknoloji & Dijitalleşme",
-    "source": "IATA",
-    "link": "https://airlines.iata.org/2026/03/09/one-record",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "firsat",
-    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun bu standarttaki pilot projeleri, operasyonel dijitalleşme ve küresel veri uyumluluğu açısından sektörde rekabet avantajı sağlamaktadır.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "Yeni veri standardının yaygınlaşması, THY'nin teknolojik altyapısını küresel iş ortaklarıyla daha hızlı entegre etmesine yardımcı olur.",
-    "date": "2026-03-09"
-  },
-  {
-    "title": "Hava Kargo Talebi Ocak 2026'da %5,6 Arttı",
-    "summary": "<strong>IATA</strong>'nın <strong>Ocak 2026</strong> raporuna göre, küresel hava kargo talebi yıllık bazda %<strong>5,6</strong> oranında büyüdü. Afrika %<strong>18,2</strong>, Orta Doğu %<strong>9,3</strong> ve Asya-Pasifik %<strong>7,8</strong> artışla ortalamanın üzerinde performans sergilerken, Amerika kıtasında daralmalar gözlemlendi. Kargo kapasitesi dünya genelinde %<strong>3,6</strong> artış kaydetti. Yakıt fiyatları Ocak ayında yıllık %<strong>6,5</strong> düşüşle maliyetlere olumlu katkı sağladı. Küresel imalat sektörü (PMI) endeksi ise <strong>51,8</strong> ile son <strong>1,5</strong> yılın en yüksek seviyesine ulaşarak iyimserliğini korudu.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-03-02-01/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "firsat",
-    "thyAnalysis": "Yılın ilk ayındaki talep canlılığı, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun kilit büyüme pazarlarında kapasite planlaması yapması için olumlu bir zemin oluşturmaktadır.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "Afrika ve Orta Doğu'daki yüksek büyüme oranları, THY'nin bu bölgelerdeki güçlü ağ yapısı için potansiyel artışı ifade eder.",
-    "date": "2026-03-02"
-  },
-  {
-    "title": "Cargolux CEO'su Richard Forson: Kargo Kanımızda Var",
-    "summary": "<span style=\"color:#C8102E;font-weight:700;\">Cargolux</span> CEO'su Richard Forson, şirketin kargo odaklı stratejilerini ve sektördeki lider konumunu değerlendirdi. Havayolu, kargo uzmanlığını derinleştirerek özel kargo segmentlerinde büyümeyi hedefliyor. Forson, operasyonel verimlilik ve müşteri güveninin sektördeki zorlu dönemlerde en önemli başarı faktörleri olduğunu belirtti. Şirket, kargo taşımacılığındaki köklü geçmişini modern teknoloji ve sürdürülebilirlik hedefleriyle birleştirmeye odaklanıyor. Forson'a göre hava kargo, sadece bir nakliye hizmeti değil, küresel ekonominin can damarıdır.",
-    "category": "Atama & Görevlendirme",
-    "source": "IATA",
-    "link": "https://airlines.iata.org/2026/02/25/cargo-blood",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "Rakip bir havayolunun yönetici perspektifi ve stratejik vizyonuyla ilgili bir değerlendirmedir.",
-    "date": "2026-02-25"
-  },
-  {
-    "title": "Özel Kargo Taşımacılığı Bir Üst Seviyeye Taşınıyor",
-    "summary": "Hava kargo sektöründe özel kargo segmentlerinin (ilaç, taze gıda, canlı hayvan) büyümesi için yeni standartlar ve teknolojiler geliştiriliyor. Sektör paydaşları, bu hassas ürünlerin kalitesini korumak için kesintisiz soğuk zincir ve dijital takip çözümlerine odaklanıyor. CEIV sertifikasyon programları, özel kargo elleçleme süreçlerinde dünya çapında bir kalite kıstası haline geldi. Özellikle e-ticaretin etkisiyle zaman açısından kritik ve yüksek değerli ürünlerin taşınma talebi artıyor. Sektör, özel kargo vertikallerinde uzmanlaşarak karlılığını artırmayı hedefliyor.",
-    "category": "Özel Kargo",
-    "source": "IATA",
-    "link": "https://airlines.iata.org/2026/02/22/taking-special-cargo-next-level",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "",
-    "date": "2026-02-06"
-  },
-  {
-    "title": "IATA Dünya Kargo Sempozyumu 2026: Dinamik Bir Dünyada Hava Kargoyu İlerletmek",
-    "summary": "<strong>IATA</strong>'nın <strong>2026</strong> Dünya Kargo Sempozyumu, <strong>10-12 Mart 2026</strong> tarihlerinde Peru'nun Lima kentinde düzenlenecek. Etkinliğin ana teması, değişen küresel ticaret koşullarında hava kargonun dijitalleşme, sürdürülebilirlik ve operasyonel esneklik yoluyla ilerlemesi olarak belirlendi. Güney Amerika'da ilk kez yapılacak olan sempozyum, jeopolitik belirsizlikler ve gümrük vergilerinin tedarik zincirleri üzerindeki etkilerini ele alacak. Etkinliğe havayolu liderleri, düzenleyici kurumlar ve teknoloji sağlayıcıları katılacak. Lityum pil güvenliği ve e-ticaret lojistiği gibi kritik başlıklar özel forumlarda tartışılacak.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-02-03-01/",
-    "id": null,
-    "isDuplicate": true,
-    "duplicateOf": "IATA Hava Kargo İçin Üç Temel Önceliği Açıkladı",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "",
-    "date": "2026-02-03"
-  },
-  {
-    "title": "Küresel Hava Kargo Talebi 2025'te Rekor Hacme Ulaştı",
-    "summary": "<strong>IATA</strong> verilerine göre, küresel hava kargo talebi <strong>2025</strong> yılında bir önceki yıla göre %<strong>3,4</strong> artarak tarihi bir rekor kırdı. Büyümeyi tetikleyen en önemli unsur, özellikle Asya-Avrupa hattındaki güçlü e-ticaret talebi oldu. Kargo kapasitesi ise yıl genelinde %<strong>3,7</strong> oranında artış gösterdi. Havayolu navlun ücretleri (yields) pandeminin ardından düşüşe geçse de <strong>2019</strong> seviyelerinin %<strong>37,2</strong> üzerinde kalmaya devam ediyor. <strong>IATA</strong> Başkanı Willie Walsh, sektörün vergi ve jeopolitik belirsizliklere rağmen hızlı adapte olarak dayanıklılığını kanıtladığını belirtti.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-01-29-01/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "firsat",
-    "thyAnalysis": "2025 yılındaki rekor talep, hava kargonun vazgeçilmezliğini teyit ederken <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> gibi geniş ağa sahip taşıyıcıların doluluk oranlarını ve birim gelirlerini desteklemiştir.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "Küresel rekor hacimler, ana ticaret koridorlarındaki pazar potansiyelinin genişlemesini simgelemektedir.",
-    "date": "2026-01-29"
-  },
-  {
-    "title": "Hava Kargo Talebi Güçlü İvmesini Sürdürüyor: Kasım 2025'te %5,5 Artış",
-    "summary": "<strong>IATA</strong> verilerine göre, küresel hava kargo talebi <strong>Kasım 2025</strong>'te yıllık bazda %<strong>5,5</strong> oranında büyüdü. Yıl sonu tatil sezonu öncesinde zamanında teslimata öncelik verilmesi, hacimleri yukarı çekti. Afrika %<strong>15,6</strong> ve Asya-Pasifik %<strong>10,3</strong> artışla büyümeye öncülük ederken, Amerika kıtasında %<strong>1,6</strong>'lık hafif bir daralma yaşandı. Jet yakıtı fiyatları, rafineri kesintileri ve yaptırımlar nedeniyle ham petrol fiyatlarından bağımsız olarak %<strong>5,9</strong> oranında arttı. Küresel imalat sektörü duyarlılığı ise üst üste <strong>dördüncü</strong> ayda da artarak <strong>51,17</strong> seviyesine ulaştı.",
-    "category": "Diğer",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2026-releases/2026-01-08-01/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "firsat",
-    "thyAnalysis": "Yoğun sezon dönemindeki %5,5'lik büyüme, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun pazar payını artırma ve yüksek navlun oranlarını koruma stratejisini desteklemektedir.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "Afrika ve Asya koridorlarındaki çift haneli büyüme rakamları, THY'nin bu bölgelerdeki aktarma trafiği için kritik öneme sahiptir.",
-    "date": "2026-01-08"
-  },
-  {
-    "title": "IATA Anketi ONE Record Farkındalığının Arttığını Ortaya Koydu",
-    "summary": "<strong>IATA</strong> tarafından yapılan bir anket, kargo sektörü paydaşlarının %<strong>70</strong>'inden fazlasının ONE Record standardından haberdar olduğunu ve %<strong>50</strong>'sinin uygulamaya hazır olduğunu gösterdi. Katılımcıların %<strong>80</strong>'i bu geçiş sürecinde <strong>IATA</strong>'dan daha fazla eğitim, web semineri ve rehberlik talep ediyor. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, Cathay Pacific ve <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo gibi büyük oyuncuların halihazırda pilot projeleri sürdürdüğü belirtildi. ONE Record, manuel süreçleri azaltarak tüm tedarik zinciri ortakları arasında tek bir dijital dil oluşturmayı hedefliyor. <strong>IATA</strong>, <strong>Ocak 2026</strong> tarihinden itibaren bu standardı sektörde öncelikli hale getirecek.",
-    "category": "Teknoloji & Dijitalleşme",
-    "source": "IATA",
-    "link": "https://www.iata.org/en/pressroom/2025-releases/2025-12-10-02/",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "firsat",
-    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun ONE Record uygulamasında öncü taşıyıcılar arasında zikredilmesi, teknolojik dönüşüm ve operasyonel verimlilik liderliğini pekiştirmektedir.",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "Yeni dijital veri standardının ana akım haline gelmesi, THY'nin veri entegrasyon maliyetlerini düşürür ve hız avantajı sağlar.",
-    "date": "2025-12-10"
   },
   {
     "title": "Sessiz Dev: Hava Kargo Neden Daha Fazla Tanınmayı ve Adil Slot Erişimini Hak Ediyor?",
