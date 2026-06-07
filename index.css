@@ -6422,7 +6422,7 @@
     border-radius: 0;
     padding: 10px 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     position: relative;
     overflow: hidden;
@@ -6443,6 +6443,7 @@
     display: inline-block;
     position: relative;
     flex-shrink: 0;
+    margin-right: 8px;
   }
   .forex-indicator-dot.usd {
     background: #1D6FE8;
@@ -6457,18 +6458,15 @@
     box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
   }
 
-  .forex-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: relative;
-    z-index: 2;
-  }
   .forex-symbol {
     font-size: 15px;
     font-weight: 700;
     color: var(--text);
     font-family: 'Inter', system-ui, sans-serif;
+    width: 48px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
   }
   .forex-name {
     font-size: 11px;
@@ -6480,7 +6478,7 @@
     height: 10px;
     color: var(--text-3);
     flex-shrink: 0;
-    margin-left: 2px;
+    margin-right: 12px;
     opacity: 0.65;
   }
 
