@@ -2699,9 +2699,18 @@
     color: #3b82f6;
   }
 
-  /* Hide the footer on dashboard KPI cards visually, preserving it in the DOM for telemetry */
-  .dash-cards .dash-card-footer {
+  /* Hide the source note on dashboard KPI cards visually, preserving it in the DOM for the tooltip */
+  .dash-cards .dash-card-note {
     display: none !important;
+  }
+
+  /* Collapse the card footer styling to hide the line separator and padding, letting the absolute timer pill float */
+  .dash-cards .dash-card-footer {
+    border-top: none !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    height: 0 !important;
+    overflow: visible !important;
   }
 
 
