@@ -2429,7 +2429,7 @@
 
     <!-- THY Hisse Grafik Modali -->
     <div id="thy-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="thy-chart-title">
-      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+      <div class="chart-modal-card">
         <div class="rel-add-head">
           <div id="thy-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">THY Hisse Performansı (THYAO) Grafiği</div>
           <button class="rel-add-x" onclick="closeThyChartModal()" aria-label="Kapat">×</button>
@@ -2447,7 +2447,7 @@
 
     <!-- Forex Grafik Modali -->
     <div id="forex-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="forex-chart-title">
-      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+      <div class="chart-modal-card">
         <div class="rel-add-head">
           <div id="forex-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Döviz Kurları Grafiği</div>
           <button class="rel-add-x" onclick="closeForexChartModal()" aria-label="Kapat">×</button>
@@ -2484,7 +2484,7 @@
 
     <!-- Brent Grafik Modali -->
     <div id="brent-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="brent-chart-title">
-      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+      <div class="chart-modal-card">
         <div class="rel-add-head">
           <div id="brent-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Brent Ham Petrol Grafiği</div>
           <button class="rel-add-x" onclick="closeBrentChartModal()" aria-label="Kapat">×</button>
@@ -2510,7 +2510,7 @@
 
     <!-- Jet Yakıtı Grafik Modali -->
     <div id="jetfuel-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="jetfuel-chart-title">
-      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+      <div class="chart-modal-card">
         <div class="rel-add-head">
           <div id="jetfuel-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Jet Yakıtı Fiyat Grafiği</div>
           <button class="rel-add-x" onclick="closeJetfuelChartModal()" aria-label="Kapat">×</button>
@@ -6823,9 +6823,26 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   if (wrap) wrap.classList.remove('loading');
   if (wrap) wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
 
+  // Downsampling / Decimation for large datasets (e.g. > 350 points)
+  let finalLabels = labels;
+  let finalDatasets = datasets;
+  if (labels.length > 350) {
+    const factor = Math.ceil(labels.length / 350);
+    finalLabels = [];
+    finalDatasets = datasets.map(ds => ({ ...ds, data: [] }));
+    for (let i = 0; i < labels.length; i++) {
+      if (i === 0 || i === labels.length - 1 || i % factor === 0) {
+        finalLabels.push(labels[i]);
+        datasets.forEach((ds, dsIdx) => {
+          finalDatasets[dsIdx].data.push(ds.data[i]);
+        });
+      }
+    }
+  }
+
   if (existingChart && !extraOpts.forceRecreate) {
-    existingChart.data.labels = labels;
-    existingChart.data.datasets = datasets;
+    existingChart.data.labels = finalLabels;
+    existingChart.data.datasets = finalDatasets;
     if (yFmt) {
       if (!existingChart.options.scales) existingChart.options.scales = {};
       if (!existingChart.options.scales.y) existingChart.options.scales.y = {};
@@ -6839,7 +6856,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   ctx.style.display = 'block';
   new Chart(ctx, {
     type: 'line',
-    data: { labels, datasets },
+    data: { labels: finalLabels, datasets: finalDatasets },
     plugins: extraOpts.plugins || [],
     options: {
       ...CHART_DEFAULTS,
@@ -8335,6 +8352,16 @@ async function loadDashboard() {
     const activePeriodBtn = document.getElementById(`btn-forex-${_forexCurrentPeriod}`);
     if (activePeriodBtn) activePeriodBtn.classList.add('active');
 
+    // Toggle wide mode based on period selection
+    const cardEl = document.getElementById('forex-chart-modal')?.querySelector('.chart-modal-card');
+    if (cardEl) {
+      if (_forexCurrentPeriod === '5y' || _forexCurrentPeriod === 'max') {
+        cardEl.classList.add('wide-mode');
+      } else {
+        cardEl.classList.remove('wide-mode');
+      }
+    }
+
     const titleEl = document.getElementById('forex-chart-title');
     const canvas = document.getElementById('chart-forex');
     const wrap = canvas?.closest('.dash-chart-wrap');
@@ -8806,6 +8833,16 @@ async function loadDashboard() {
     const activeBtn = document.getElementById(`btn-brent-${_brentCurrentPeriod}`);
     if (activeBtn) activeBtn.classList.add('active');
 
+    // Toggle wide mode based on period selection
+    const cardEl = document.getElementById('brent-chart-modal')?.querySelector('.chart-modal-card');
+    if (cardEl) {
+      if (_brentCurrentPeriod === '5y' || _brentCurrentPeriod === 'max') {
+        cardEl.classList.add('wide-mode');
+      } else {
+        cardEl.classList.remove('wide-mode');
+      }
+    }
+
     const titleEl = document.getElementById('brent-chart-title');
     const canvas = document.getElementById('chart-brent-modal');
     const wrap = canvas?.closest('.dash-chart-wrap');
@@ -9012,6 +9049,16 @@ async function loadDashboard() {
     });
     const activeBtn = document.getElementById(`btn-jetfuel-${_jetfuelCurrentPeriod}`);
     if (activeBtn) activeBtn.classList.add('active');
+
+    // Toggle wide mode based on period selection
+    const cardEl = document.getElementById('jetfuel-chart-modal')?.querySelector('.chart-modal-card');
+    if (cardEl) {
+      if (_jetfuelCurrentPeriod === '5y' || _jetfuelCurrentPeriod === 'max') {
+        cardEl.classList.add('wide-mode');
+      } else {
+        cardEl.classList.remove('wide-mode');
+      }
+    }
 
     const titleEl = document.getElementById('jetfuel-chart-title');
     const canvas = document.getElementById('chart-jetfuel-modal');
@@ -9679,6 +9726,16 @@ async function loadDashboard() {
     });
     const activeBtn = document.getElementById(`btn-thy-${_thyCurrentPeriod}`);
     if (activeBtn) activeBtn.classList.add('active');
+
+    // Toggle wide mode based on period selection
+    const cardEl = document.getElementById('thy-chart-modal')?.querySelector('.chart-modal-card');
+    if (cardEl) {
+      if (_thyCurrentPeriod === '5y' || _thyCurrentPeriod === 'max') {
+        cardEl.classList.add('wide-mode');
+      } else {
+        cardEl.classList.remove('wide-mode');
+      }
+    }
 
     const titleEl = document.getElementById('thy-chart-title');
     const canvas = document.getElementById('chart-thy');
