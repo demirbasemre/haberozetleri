@@ -17,3 +17,11 @@ cf-proxy/.wrangler/
 wrangler-account.json
 .env
 cf-proxy/fetch-proxy/.env
+
+# Scraped raw data files (local only)
+chaviation_data.json
+cha_financials.json
+cha_sources.json
+kaynak2_data.json
+kaynak2_financials.json
+kaynak2_sources.json
