@@ -9705,18 +9705,6 @@ async function loadDashboard() {
       `;
     }
 
-    if (cfg && cfg.initFn) {
-      tooltipHtml += `
-        <button class="market-manual-refresh-btn" onclick="triggerManualCardRefresh('${cardId}', this)">
-          <svg class="refresh-btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M23 4v6h-6"></path>
-            <path d="M1 20v-6h6"></path>
-            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-          </svg>
-          Veriyi Şimdi Güncelle
-        </button>
-      `;
-    }
     tooltipHtml += `</div>`; // Close refresh-wrap
 
     if (noteHtml) {
@@ -9776,49 +9764,6 @@ async function loadDashboard() {
       document.addEventListener('click', clickOutside);
     }, 10);
   }
-
-  window.triggerManualCardRefresh = function(cardId, btn) {
-    const cfg = _marketStatusConfig[cardId];
-    if (!cfg || !cfg.initFn) return;
-
-    btn.disabled = true;
-    btn.classList.add('loading');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = `
-      <svg class="refresh-btn-svg spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M23 4v6h-6"></path>
-        <path d="M1 20v-6h6"></path>
-        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-      </svg>
-      Güncelleniyor...
-    `;
-
-    const timerEl = document.querySelector(`#${cardId} .dash-card-timer`);
-    if (timerEl) timerEl.classList.add('updating');
-
-    cfg.initFn().then(() => {
-      if (cfg.countdown !== null) cfg.countdown = cfg.interval;
-      setTimeout(() => {
-        const tooltip = document.getElementById('market-info-tooltip');
-        if (tooltip) {
-          tooltip.classList.remove('show');
-          setTimeout(() => tooltip.remove(), 180);
-        }
-      }, 600);
-    }).catch((e) => {
-      console.warn("Manual refresh failed:", e);
-      btn.innerHTML = "Güncelleme Başarısız";
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.classList.remove('loading');
-        btn.innerHTML = originalText;
-      }, 1500);
-    }).finally(() => {
-      if (timerEl) {
-        setTimeout(() => timerEl.classList.remove('updating'), 800);
-      }
-    });
-  };
 
   const _marketStatusConfig = {
     'dc-thy': { countdown: 60, interval: 60, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
