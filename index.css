@@ -2366,6 +2366,9 @@
   .dash-card:hover::after { opacity: 1; }
   .dash-card-clickable { cursor: pointer; }
   .dash-card-clickable:hover { border-color: rgba(29,111,232,0.35); }
+  #dc-usd {
+    padding-bottom: 42px !important;
+  }
   .dash-card-label {
     font-size: 10.5px;
     font-weight: 700;
@@ -2373,10 +2376,6 @@
     text-transform: uppercase;
     letter-spacing: 0.07em;
     margin-bottom: 4px;
-    padding-right: 75px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
   .dash-card-value {
     font-size: 26px;
@@ -2462,7 +2461,7 @@
   }
   .dash-card-timer {
     position: absolute;
-    top: 14px;
+    bottom: 14px;
     right: 14px;
     display: flex;
     align-items: center;
