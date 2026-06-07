@@ -1953,49 +1953,61 @@
       <h2 class="dash-section-title">Anlık Göstergeler</h2>
       <div class="dash-cards">
         <div class="dash-card dash-card-clickable" id="dc-jetfuel" title="Jet yakıtı fiyat detayları için tıkla" onclick="openJetfuelChartModal()">
-          <div class="dash-card-label">Jet Yakıt Fiyatı</div>
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">Jet Yakıt Fiyatı</div>
+            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+              <span class="timer-dot"></span>
+              <span class="timer-secs">60s</span>
+            </div>
+          </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">ABD Gulf Coast · ton</div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://fred.stlouisfed.org/series/DJFUELUSGULF" target="_blank" rel="noopener">fred.stlouisfed.org →</a> · Günlük</div>
+          </div>
+        </div>
+        <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">Brent Ham Petrol</div>
             <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
               <span class="timer-dot"></span>
               <span class="timer-secs">60s</span>
             </div>
           </div>
-        </div>
-        <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
-          <div class="dash-card-label">Brent Ham Petrol</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Europe Brent · varil</div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Anlık</div>
+          </div>
+        </div>
+        <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
+          <div class="dash-card-header-row">
+            <div class="dash-card-label" style="display: flex; align-items: center; gap: 5px;">
+              <span class="thy-dot" style="width: 7px; height: 7px; background: #C8102E; border-radius: 50%; display: inline-block;"></span>
+              THYAO
+            </div>
             <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
               <span class="timer-dot"></span>
               <span class="timer-secs">60s</span>
             </div>
-          </div>
-        </div>
-        <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
-          <div class="dash-card-label" style="display: flex; align-items: center; gap: 5px;">
-            <span class="thy-dot" style="width: 7px; height: 7px; background: #C8102E; border-radius: 50%; display: inline-block;"></span>
-            THYAO
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Borsa İstanbul · hisse fiyatı</div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
+          </div>
+        </div>
+        <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">Döviz &amp; Parite</div>
             <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
               <span class="timer-dot"></span>
               <span class="timer-secs">60s</span>
             </div>
           </div>
-        </div>
-        <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
-          <div class="dash-card-label">Döviz &amp; Parite</div>
           <div class="forex-row">
             <span class="forex-indicator-dot usd"></span>
             <span class="forex-symbol">$</span>
@@ -2036,10 +2048,6 @@
           </div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
-            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
-              <span class="timer-dot"></span>
-              <span class="timer-secs">60s</span>
-            </div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-imf" title="Türkiye yıllık dizi için tıkla">
