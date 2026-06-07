@@ -3540,6 +3540,21 @@
     display: flex; flex-direction: column; gap: 10px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.25);
   }
+  .chart-modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    width: 95vw;
+    max-width: 880px; /* Standart genişlik */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+    transition: max-width 0.3s ease;
+  }
+  .chart-modal-card.wide-mode {
+    max-width: 1320px; /* Geniş mod aralıklarında (5Y, Tümü) */
+  }
   .rel-add-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
   .rel-add-title { font-size: 14px; font-weight: 700; color: var(--text); }
   .rel-add-x {
