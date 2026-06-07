@@ -2513,23 +2513,16 @@
     background-color: #64748b !important;
     animation: none;
   }
-  .timer-info-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  .timer-info-svg {
     width: 10px;
     height: 10px;
-    font-size: 8px;
-    font-weight: 800;
-    border-radius: 50%;
-    background: var(--text-3);
-    color: var(--surface);
-    line-height: 1;
-    margin-right: 1px;
+    color: var(--text-3);
+    flex-shrink: 0;
+    margin-right: 2px;
+    transition: color 0.2s;
   }
-  [data-theme="dark"] .timer-info-icon {
-    background: var(--text-2);
-    color: #0f172a;
+  .dash-card-timer.interactive:hover .timer-info-svg {
+    color: var(--text);
   }
   @keyframes pulse-timer-dot {
     0% { transform: scale(0.85); opacity: 0.6; }
@@ -2540,20 +2533,35 @@
   /* Market info tooltip styling */
   .market-tooltip {
     background: var(--surface-overlay, var(--surface));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    max-width: 220px;
-    font-size: 11px;
-    color: var(--text);
-    line-height: 1.4;
-    transition: opacity 0.15s ease-in-out;
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: var(--shadow-lg, 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1));
+    max-width: 240px;
+    font-size: 11.5px;
+    color: var(--text-2);
+    line-height: 1.5;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1), transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
   }
   [data-theme="dark"] .market-tooltip {
-    background: #1e293b;
-    border-color: #334155;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    background: rgba(30, 41, 59, 0.85);
+    border-color: rgba(51, 65, 85, 0.8);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+  [data-theme="light"] .market-tooltip {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(226, 232, 240, 0.8);
+  }
+  .market-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
   .market-tooltip-content {
     font-weight: 500;
@@ -2576,8 +2584,12 @@
     border-top: 1px solid var(--border);
   }
   [data-theme="dark"] .market-tooltip-arrow {
-    background: #1e293b;
-    border-color: #334155;
+    background: rgba(30, 41, 59, 0.85);
+    border-color: rgba(51, 65, 85, 0.8);
+  }
+  [data-theme="light"] .market-tooltip-arrow {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(226, 232, 240, 0.8);
   }
 
 

@@ -9828,6 +9828,7 @@ async function loadDashboard() {
   function showMarketTooltip(element, message) {
     const existing = document.getElementById('market-info-tooltip');
     if (existing) {
+      existing.classList.remove('show');
       existing.remove();
     }
 
@@ -9862,9 +9863,17 @@ async function loadDashboard() {
     tooltip.style.top = top + 'px';
     tooltip.style.left = left + 'px';
 
+    // Trigger smooth CSS animation
+    requestAnimationFrame(() => {
+      tooltip.classList.add('show');
+    });
+
     const clickOutside = (e) => {
       if (!tooltip.contains(e.target) && e.target !== element && !element.contains(e.target)) {
-        tooltip.remove();
+        tooltip.classList.remove('show');
+        setTimeout(() => {
+          tooltip.remove();
+        }, 180);
         document.removeEventListener('click', clickOutside);
       }
     };
@@ -9894,13 +9903,29 @@ async function loadDashboard() {
         const timerEl = cardEl.querySelector('.dash-card-timer');
         if (!timerEl) return;
 
+        // Prevent clicking on the timer pill from opening the chart modal
+        if (!timerEl.hasAttribute('data-has-click-preventer')) {
+          timerEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+          });
+          timerEl.setAttribute('data-has-click-preventer', 'true');
+        }
+
         const status = checkMarketStatus(cardId);
+
+        const infoIconSvg = `
+          <svg class="timer-info-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        `;
 
         let newHtml = '';
         if (status.isStatic) {
-          newHtml = `<span class="timer-dot" style="background-color: #64748b; animation: none;"></span><span class="timer-secs">${status.pillText}</span>`;
+          newHtml = `${infoIconSvg}<span class="timer-secs">${status.pillText}</span>`;
         } else if (!status.isOpen) {
-          newHtml = `<span class="timer-info-icon">i</span><span class="timer-secs">${status.pillText}</span>`;
+          newHtml = `${infoIconSvg}<span class="timer-secs">${status.pillText}</span>`;
         } else {
           newHtml = `<span class="timer-dot"></span><span class="timer-secs">${cfg.countdown}s</span>`;
         }
