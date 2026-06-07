@@ -2458,8 +2458,8 @@
   }
   .dash-card-timer {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 10px;
+    right: 10px;
     display: flex;
     align-items: center;
     gap: 5.5px;
@@ -2469,12 +2469,8 @@
     font-variant-numeric: tabular-nums;
     background: var(--border-soft);
     padding: 3.5px 7.5px;
-    border-top-right-radius: var(--radius);
-    border-bottom-left-radius: 8px;
-    border-top-left-radius: 0;
-    border-bottom-right-radius: 0;
-    border-left: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-radius: 6px;
+    border: 1px solid var(--border);
     opacity: 0.9;
     transition: background 0.3s, color 0.3s, opacity 0.2s;
     line-height: 1;
@@ -2484,7 +2480,7 @@
   }
   [data-theme="light"] .dash-card-timer {
     background: rgba(0,0,0,0.03);
-    border: 1px solid rgba(0,0,0,0.02);
+    border: 1px solid var(--border);
   }
   .dash-card-timer.interactive {
     cursor: pointer;
