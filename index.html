@@ -9737,47 +9737,217 @@ async function loadDashboard() {
   }
   initThyCard();
 
+  // ── PİYASA DURUM VE GÜNCELLEME SİSTEMİ ──────────────────────────
+  function getTrTime() {
+    const utc = new Date().getTime() + new Date().getTimezoneOffset() * 60000;
+    return new Date(utc + (3600000 * 3));
+  }
+
+  function checkMarketStatus(cardId) {
+    const trDate = getTrTime();
+    const day = trDate.getDay(); // 0: Pazar, 1: Pazartesi, ..., 6: Cumartesi
+    const hour = trDate.getHours();
+    const min = trDate.getMinutes();
+    const timeInMins = hour * 60 + min;
+
+    if (cardId === 'dc-thy') {
+      // Borsa İstanbul: Hafta içi 10:00 - 18:15
+      const isOpen = (day >= 1 && day <= 5) && (timeInMins >= 10 * 60 && timeInMins < (18 * 60 + 15));
+      let nextOpen = '';
+      if (!isOpen) {
+        if (day >= 1 && day <= 5 && timeInMins < 10 * 60) {
+          nextOpen = 'Bugün saat 10:00\'da';
+        } else {
+          const isFridayNight = (day === 5 && timeInMins >= (18 * 60 + 15));
+          if (isFridayNight || day === 6 || day === 0) {
+            nextOpen = 'Pazartesi saat 10:00\'da';
+          } else {
+            nextOpen = 'Yarın saat 10:00\'da';
+          }
+        }
+      }
+      return {
+        isOpen,
+        pillText: isOpen ? null : 'Piyasa Kapalı',
+        tooltipMessage: isOpen 
+          ? 'Borsa İstanbul açıktır. Veriler 60 saniyede bir otomatik güncellenir.' 
+          : `Borsa İstanbul şu anda kapalıdır. Hafta içi her gün TR saatiyle 10:00 - 18:15 saatleri arasında işlem görür. Bir sonraki açılış: <strong>${nextOpen}</strong>.`
+      };
+    }
+
+    if (cardId === 'dc-usd') {
+      // Döviz & Parite: Hafta içi 24 saat (Pazartesi 00:00 - Cuma 24:00)
+      const isOpen = (day >= 1 && day <= 5);
+      const tooltipMessage = isOpen 
+        ? 'Döviz & Parite piyasası açıktır. Veriler 60 saniyede bir otomatik güncellenir.' 
+        : 'Döviz & Parite piyasası hafta sonları kapalıdır. Hafta içi 24 saat kesintisiz işlem görür. Bir sonraki açılış: <strong>Pazartesi saat 00:00\'da</strong>.';
+      return {
+        isOpen,
+        pillText: isOpen ? null : 'Piyasa Kapalı',
+        tooltipMessage
+      };
+    }
+
+    if (cardId === 'dc-brent') {
+      // Brent Petrol: Hafta içi 24 saat (Pazartesi 01:00 - Cuma 24:00) - Günlük 00:00-01:00 bakım arası kapalı
+      let isOpen = true;
+      let nextOpen = '';
+      if (day === 0 || day === 6) {
+        isOpen = false;
+        nextOpen = 'Pazartesi saat 01:00\'de';
+      } else if (day === 1 && hour < 1) {
+        isOpen = false;
+        nextOpen = 'Bugün saat 01:00\'de';
+      } else if (hour === 0) {
+        isOpen = false;
+        nextOpen = 'Bugün saat 01:00\'de';
+      }
+      
+      return {
+        isOpen,
+        pillText: isOpen ? null : 'Piyasa Kapalı',
+        tooltipMessage: isOpen
+          ? 'Brent Petrol piyasası açıktır. Veriler 60 saniyede bir otomatik güncellenir.'
+          : `Brent Petrol piyasası kapalıdır. Hafta içi 24 saat (her gün 00:00 - 01:00 arası teknik bakım arası hariç) işlem görür. Bir sonraki açılış: <strong>${nextOpen}</strong>.`
+      };
+    }
+
+    if (cardId === 'dc-jetfuel') {
+      // Jet Yakıtı: FRED verisi günlük/haftalık istatistik
+      return {
+        isOpen: false,
+        isStatic: true,
+        pillText: 'Günlük',
+        tooltipMessage: 'FRED Jet Yakıtı fiyat verileri günlük/haftalık olarak güncellenen istatistiki serilerdir. Anlık seans yayını yoktur. Bir sonraki veri güncellemesi iş günlerinde TR saatiyle gece yarısı civarındadır.'
+      };
+    }
+
+    return { isOpen: true, pillText: null, tooltipMessage: '' };
+  }
+
+  function showMarketTooltip(element, message) {
+    const existing = document.getElementById('market-info-tooltip');
+    if (existing) {
+      existing.remove();
+    }
+
+    const tooltip = document.createElement('div');
+    tooltip.id = 'market-info-tooltip';
+    tooltip.className = 'market-tooltip';
+    tooltip.innerHTML = `
+      <div class="market-tooltip-content">${message}</div>
+      <div class="market-tooltip-arrow"></div>
+    `;
+
+    document.body.appendChild(tooltip);
+
+    const rect = element.getBoundingClientRect();
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    tooltip.style.position = 'absolute';
+    tooltip.style.zIndex = '1000';
+    
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
+    
+    let top = rect.bottom + scrollTop + 6;
+    let left = rect.left + scrollLeft + (rect.width - tooltipWidth) / 2;
+
+    if (left < 10) left = 10;
+    if (left + tooltipWidth > window.innerWidth - 10) {
+      left = window.innerWidth - tooltipWidth - 10;
+    }
+
+    tooltip.style.top = top + 'px';
+    tooltip.style.left = left + 'px';
+
+    const clickOutside = (e) => {
+      if (!tooltip.contains(e.target) && e.target !== element && !element.contains(e.target)) {
+        tooltip.remove();
+        document.removeEventListener('click', clickOutside);
+      }
+    };
+    setTimeout(() => {
+      document.addEventListener('click', clickOutside);
+    }, 10);
+  }
+
+  const _marketStatusConfig = {
+    'dc-thy': { countdown: 60, interval: 60, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
+    'dc-usd': { countdown: 60, interval: 60, initFn: () => typeof initForexCard === 'function' ? initForexCard() : Promise.resolve() },
+    'dc-brent': { countdown: 60, interval: 60, initFn: () => typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve() },
+    'dc-jetfuel': { countdown: null, interval: null, initFn: null }
+  };
+
   let _dashboardPollInterval = null;
-  let _dashboardCountdown = 60;
+
   function startDashboardPolling() {
     if (_dashboardPollInterval) return;
 
     _dashboardPollInterval = setInterval(() => {
-      // Tab aktif değilse geri sayımı durdur
       if (document.visibilityState !== 'visible') return;
 
-      _dashboardCountdown--;
-      
-      if (_dashboardCountdown < 0) {
-        _dashboardCountdown = 60;
-        console.log("Dashboard otomatik güncelleniyor...");
-        
-        // Pilleri "güncelleniyor" durumuna getir
-        document.querySelectorAll('.dash-card-timer').forEach(pill => {
-          pill.classList.add('updating');
-        });
+      Object.entries(_marketStatusConfig).forEach(([cardId, cfg]) => {
+        const cardEl = document.getElementById(cardId);
+        if (!cardEl) return;
+        const timerEl = cardEl.querySelector('.dash-card-timer');
+        if (!timerEl) return;
 
-        // Tüm kartları paralel güncelle
-        Promise.all([
-          typeof initForexCard === 'function' ? initForexCard() : Promise.resolve(),
-          typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve(),
-          typeof initThyCard === 'function' ? initThyCard() : Promise.resolve(),
-          typeof initJetfuelCard === 'function' ? initJetfuelCard() : Promise.resolve()
-        ]).finally(() => {
-          // Güncelleme bitince durum rengini normale döndür
-          setTimeout(() => {
-            document.querySelectorAll('.dash-card-timer').forEach(pill => {
-              pill.classList.remove('updating');
-            });
-          }, 800);
-        });
-      }
+        const status = checkMarketStatus(cardId);
 
-      // Kalan süreyi güncelle
-      document.querySelectorAll('.dash-card-timer .timer-secs').forEach(el => {
-        el.textContent = _dashboardCountdown + 's';
+        let newHtml = '';
+        if (status.isStatic) {
+          newHtml = `<span class="timer-dot" style="background-color: #64748b; animation: none;"></span><span class="timer-secs">${status.pillText}</span>`;
+        } else if (!status.isOpen) {
+          newHtml = `<span class="timer-info-icon">i</span><span class="timer-secs">${status.pillText}</span>`;
+        } else {
+          newHtml = `<span class="timer-dot"></span><span class="timer-secs">${cfg.countdown}s</span>`;
+        }
+
+        // DOM güncellemesini sadece HTML değiştiğinde veya açık piyasada countdown güncellendiğinde yap
+        if (timerEl.getAttribute('data-last-html') !== newHtml) {
+          timerEl.innerHTML = newHtml;
+          timerEl.setAttribute('data-last-html', newHtml);
+
+          // Sınıfları ve tıklama olaylarını düzenle
+          timerEl.classList.remove('closed', 'static', 'interactive');
+          timerEl.onclick = null;
+
+          if (status.isStatic) {
+            timerEl.classList.add('static', 'interactive');
+            timerEl.onclick = (e) => {
+              e.stopPropagation();
+              showMarketTooltip(timerEl, status.tooltipMessage);
+            };
+          } else if (!status.isOpen) {
+            timerEl.classList.add('closed', 'interactive');
+            timerEl.onclick = (e) => {
+              e.stopPropagation();
+              showMarketTooltip(timerEl, status.tooltipMessage);
+            };
+          }
+        }
+
+        // Açık piyasalar için geri sayımı yürüt
+        if (status.isOpen && cfg.countdown !== null) {
+          cfg.countdown--;
+          if (cfg.countdown < 0) {
+            cfg.countdown = cfg.interval;
+            
+            // Kartı güncelle
+            timerEl.classList.add('updating');
+            if (cfg.initFn) {
+              cfg.initFn().finally(() => {
+                setTimeout(() => {
+                  timerEl.classList.remove('updating');
+                }, 800);
+              });
+            }
+          }
+        }
       });
-    }, 1000); // 1 saniyede bir tetiklenir
+    }, 1000);
   }
   startDashboardPolling();
 
