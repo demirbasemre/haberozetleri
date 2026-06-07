@@ -1586,6 +1586,40 @@
     .filter-bar { top: 120px !important; }
   }
 </style>
+<script>
+  (function() {
+    const hash = window.location.hash.replace('#', '');
+    const validTabs = ['news', 'dashboard', 'todo', 'stats', 'reports'];
+    if (validTabs.includes(hash) && hash !== 'news') {
+      const style = document.createElement('style');
+      style.id = 'early-tab-css';
+      style.innerHTML = `
+        #news-panel { display: none !important; }
+        #news-filter-content { display: none !important; }
+        #${hash}-panel { display: block !important; }
+        #${hash}-filter-content { display: flex !important; }
+        #tab-news-btn {
+          color: var(--text-2) !important;
+          background: rgba(255,255,255,0.06) !important;
+          border-color: rgba(255,255,255,0.08) !important;
+          font-weight: 500 !important;
+          box-shadow: none !important;
+        }
+        #tab-news-btn svg { opacity: 0.8 !important; }
+        #tab-${hash}-btn {
+          color: #FFFFFF !important;
+          background: var(--red) !important;
+          border-color: transparent !important;
+          font-weight: 600 !important;
+          box-shadow: 0 2px 8px rgba(230,57,70,0.35), 0 1px 2px rgba(0,0,0,0.1) !important;
+        }
+        #tab-${hash}-btn svg { opacity: 1 !important; }
+      `;
+      document.head.appendChild(style);
+      document.documentElement.setAttribute('data-early-tab', hash);
+    }
+  })();
+</script>
 </head>
 <body>
 
@@ -6568,6 +6602,9 @@ function getTabElements() {
 }
 
 function switchTab(tab) {
+  const earlyStyle = document.getElementById('early-tab-css');
+  if (earlyStyle) earlyStyle.remove();
+
   if (document.body.getAttribute('data-active-tab') === tab) return;
 
   const isNews    = tab === 'news';
