@@ -6386,6 +6386,8 @@ function getTabElements() {
 }
 
 function switchTab(tab) {
+  if (document.body.getAttribute('data-active-tab') === tab) return;
+
   const isNews    = tab === 'news';
   const isDash    = tab === 'dashboard';
   const isTodo    = tab === 'todo';
@@ -6424,6 +6426,12 @@ function switchTab(tab) {
       else aiPanel.classList.remove('open');
     }
   }
+
+  // Update hash if not matching
+  if (window.location.hash !== '#' + tab) {
+    window.location.hash = tab;
+  }
+
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
@@ -14789,6 +14797,18 @@ async function loadAppData() {
 
 document.addEventListener('DOMContentLoaded', () => {
   loadAppData().catch(e => console.warn('Data load error:', e));
+
+  // Hash routing for SPA tabs
+  const handleHashRouting = () => {
+    const hash = window.location.hash.replace('#', '');
+    const validTabs = ['news', 'dashboard', 'todo', 'stats', 'reports'];
+    if (validTabs.includes(hash)) {
+      switchTab(hash);
+    }
+  };
+
+  handleHashRouting();
+  window.addEventListener('hashchange', handleHashRouting);
 });
 
 (function() {
