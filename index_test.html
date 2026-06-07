@@ -1924,7 +1924,7 @@
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">ABD Gulf Coast · ton</div>
           <div class="dash-card-footer">
-            <div class="dash-card-note"><a href="https://fred.stlouisfed.org" target="_blank" rel="noopener">fred.stlouisfed.org →</a> · Günlük</div>
+            <div class="dash-card-note"><a href="https://fred.stlouisfed.org/series/DJFUELUSGULF" target="_blank" rel="noopener">fred.stlouisfed.org →</a> · Günlük</div>
             <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
               <span class="timer-dot"></span>
               <span class="timer-secs">60s</span>
@@ -7897,7 +7897,7 @@ async function loadDashboard() {
       if (jet && jet.length) {
         const last = jet[jet.length - 1];
         setCard('dc-jetfuel', (last.value * 42 * 7.9).toFixed(1) + ' $', pctChg(jet.slice(-2)),
-          'ABD Gulf Coast · ton', `Son veri: ${last.date}<br><a href="https://fred.stlouisfed.org" target="_blank" rel="noopener">fred.stlouisfed.org →</a>`);
+          'ABD Gulf Coast · ton', `Son veri: ${last.date}<br><a href="https://fred.stlouisfed.org/series/DJFUELUSGULF" target="_blank" rel="noopener">fred.stlouisfed.org →</a>`);
       } else {
         setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
       }
