@@ -2373,6 +2373,7 @@
     text-transform: uppercase;
     letter-spacing: 0.07em;
     margin-bottom: 4px;
+    padding-right: 80px;
   }
   .dash-card-value {
     font-size: 26px;
@@ -2586,6 +2587,121 @@
   [data-theme="light"] .market-tooltip-arrow {
     background: rgba(255, 255, 255, 0.9);
     border-color: rgba(226, 232, 240, 0.8);
+  }
+
+  /* Detailed market/update tooltip additions */
+  .market-tooltip {
+    max-width: 260px !important; /* Slightly wider to accommodate button and text */
+  }
+  .market-tooltip-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .market-tooltip-status {
+    font-size: 11.5px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+  .market-tooltip-refresh-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .market-refresh-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-3);
+  }
+  .refresh-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .refresh-indicator.open {
+    background-color: #10b981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+    animation: pulse-timer-dot 2s infinite ease-in-out;
+  }
+  .refresh-indicator.closed {
+    background-color: var(--red);
+    box-shadow: 0 0 6px rgba(230, 57, 70, 0.6);
+  }
+  .refresh-indicator.static {
+    background-color: #64748b;
+  }
+  .market-manual-refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6.5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  [data-theme="light"] .market-manual-refresh-btn {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: var(--text);
+  }
+  .market-manual-refresh-btn:hover:not(:disabled) {
+    background: var(--red);
+    border-color: transparent;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
+  }
+  .market-manual-refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .refresh-btn-svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+  .refresh-btn-svg.spin {
+    animation: spin-refresh-btn 1s linear infinite;
+  }
+  @keyframes spin-refresh-btn {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .market-tooltip-source-divider {
+    height: 1px;
+    background: var(--border-soft);
+    margin: 6px 0 2px 0;
+  }
+  .market-tooltip-source {
+    font-size: 10px;
+    color: var(--text-3);
+    line-height: 1.4;
+  }
+  .market-tooltip-source a {
+    color: var(--accent, #1d6fe8);
+    text-decoration: underline;
+    font-weight: 500;
+  }
+  [data-theme="dark"] .market-tooltip-source a {
+    color: #3b82f6;
+  }
+
+  /* Hide the footer on dashboard KPI cards visually, preserving it in the DOM for telemetry */
+  .dash-cards .dash-card-footer {
+    display: none !important;
   }
 
 

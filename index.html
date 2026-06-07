@@ -9862,20 +9862,77 @@ async function loadDashboard() {
     return { isOpen: true, pillText: null, tooltipMessage: '' };
   }
 
-  function showMarketTooltip(element, message) {
+  function showMarketTooltip(element, cardId) {
     const existing = document.getElementById('market-info-tooltip');
     if (existing) {
       existing.classList.remove('show');
       existing.remove();
     }
 
+    const status = checkMarketStatus(cardId);
+    const cardEl = document.getElementById(cardId);
+    const noteEl = cardEl ? cardEl.querySelector('.dash-card-note') : null;
+    const noteHtml = noteEl ? noteEl.innerHTML : '';
+    const cfg = _marketStatusConfig[cardId];
+
+    let tooltipHtml = `
+      <div class="market-tooltip-body">
+        <div class="market-tooltip-status">${status.tooltipMessage}</div>
+        <div class="market-tooltip-refresh-wrap">
+    `;
+
+    if (status.isStatic) {
+      tooltipHtml += `
+        <div class="market-refresh-status">
+          <span class="refresh-indicator static"></span>
+          <span>Otomatik güncelleme yok (Statik)</span>
+        </div>
+      `;
+    } else if (!status.isOpen) {
+      tooltipHtml += `
+        <div class="market-refresh-status">
+          <span class="refresh-indicator closed"></span>
+          <span>Piyasa kapalı · Güncelleme askıda</span>
+        </div>
+      `;
+    } else {
+      tooltipHtml += `
+        <div class="market-refresh-status">
+          <span class="refresh-indicator open"></span>
+          <span>Otomatik güncelleniyor (Sıradaki: ${cfg.countdown}s)</span>
+        </div>
+      `;
+    }
+
+    if (cfg && cfg.initFn) {
+      tooltipHtml += `
+        <button class="market-manual-refresh-btn" onclick="triggerManualCardRefresh('${cardId}', this)">
+          <svg class="refresh-btn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 4v6h-6"></path>
+            <path d="M1 20v-6h6"></path>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          Veriyi Şimdi Güncelle
+        </button>
+      `;
+    }
+    tooltipHtml += `</div>`; // Close refresh-wrap
+
+    if (noteHtml) {
+      tooltipHtml += `
+        <div class="market-tooltip-source-divider"></div>
+        <div class="market-tooltip-source">
+          ${noteHtml}
+        </div>
+      `;
+    }
+
+    tooltipHtml += `</div><div class="market-tooltip-arrow"></div>`;
+
     const tooltip = document.createElement('div');
     tooltip.id = 'market-info-tooltip';
     tooltip.className = 'market-tooltip';
-    tooltip.innerHTML = `
-      <div class="market-tooltip-content">${message}</div>
-      <div class="market-tooltip-arrow"></div>
-    `;
+    tooltip.innerHTML = tooltipHtml;
 
     document.body.appendChild(tooltip);
 
@@ -9918,6 +9975,49 @@ async function loadDashboard() {
       document.addEventListener('click', clickOutside);
     }, 10);
   }
+
+  window.triggerManualCardRefresh = function(cardId, btn) {
+    const cfg = _marketStatusConfig[cardId];
+    if (!cfg || !cfg.initFn) return;
+
+    btn.disabled = true;
+    btn.classList.add('loading');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `
+      <svg class="refresh-btn-svg spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 4v6h-6"></path>
+        <path d="M1 20v-6h6"></path>
+        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+      </svg>
+      Güncelleniyor...
+    `;
+
+    const timerEl = document.querySelector(`#${cardId} .dash-card-timer`);
+    if (timerEl) timerEl.classList.add('updating');
+
+    cfg.initFn().then(() => {
+      if (cfg.countdown !== null) cfg.countdown = cfg.interval;
+      setTimeout(() => {
+        const tooltip = document.getElementById('market-info-tooltip');
+        if (tooltip) {
+          tooltip.classList.remove('show');
+          setTimeout(() => tooltip.remove(), 180);
+        }
+      }, 600);
+    }).catch((e) => {
+      console.warn("Manual refresh failed:", e);
+      btn.innerHTML = "Güncelleme Başarısız";
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        btn.innerHTML = originalText;
+      }, 1500);
+    }).finally(() => {
+      if (timerEl) {
+        setTimeout(() => timerEl.classList.remove('updating'), 800);
+      }
+    });
+  };
 
   const _marketStatusConfig = {
     'dc-thy': { countdown: 60, interval: 60, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
@@ -9971,25 +10071,24 @@ async function loadDashboard() {
         if (timerEl.getAttribute('data-last-html') !== newHtml) {
           timerEl.innerHTML = newHtml;
           timerEl.setAttribute('data-last-html', newHtml);
-
-          // Sınıfları ve tıklama olaylarını düzenle
-          timerEl.classList.remove('closed', 'static', 'interactive');
-          timerEl.onclick = null;
-
-          if (status.isStatic) {
-            timerEl.classList.add('static', 'interactive');
-            timerEl.onclick = (e) => {
-              e.stopPropagation();
-              showMarketTooltip(timerEl, status.tooltipMessage);
-            };
-          } else if (!status.isOpen) {
-            timerEl.classList.add('closed', 'interactive');
-            timerEl.onclick = (e) => {
-              e.stopPropagation();
-              showMarketTooltip(timerEl, status.tooltipMessage);
-            };
-          }
         }
+
+        // Her zaman interactive sınıfını ekle ve tıklama fonksiyonunu bağla
+        timerEl.classList.add('interactive');
+        if (status.isStatic) {
+          timerEl.classList.remove('closed');
+          timerEl.classList.add('static');
+        } else if (!status.isOpen) {
+          timerEl.classList.remove('static');
+          timerEl.classList.add('closed');
+        } else {
+          timerEl.classList.remove('static', 'closed');
+        }
+
+        timerEl.onclick = (e) => {
+          e.stopPropagation();
+          showMarketTooltip(timerEl, cardId);
+        };
 
         // Açık piyasalar için geri sayımı yürüt
         if (status.isOpen && cfg.countdown !== null) {
