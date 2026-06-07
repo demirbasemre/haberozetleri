@@ -25,3 +25,9 @@ cha_sources.json
 kaynak2_data.json
 kaynak2_financials.json
 kaynak2_sources.json
+
+# Scraper scripts (local only)
+scrape_cha_financials.py
+scrape_chaviation.py
+scrape_kaynak1.py
+scrape_kaynak2_financials.py
