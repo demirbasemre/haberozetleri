@@ -2366,8 +2366,16 @@
   .dash-card:hover::after { opacity: 1; }
   .dash-card-clickable { cursor: pointer; }
   .dash-card-clickable:hover { border-color: rgba(29,111,232,0.35); }
-  #dc-usd {
-    padding-bottom: 42px !important;
+  .dash-card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 6px;
+    gap: 8px;
+  }
+  .dash-card-header-row .dash-card-label {
+    margin-bottom: 0;
   }
   .dash-card-label {
     font-size: 10.5px;
@@ -2460,9 +2468,6 @@
     margin-top: 0 !important;
   }
   .dash-card-timer {
-    position: absolute;
-    bottom: 14px;
-    right: 14px;
     display: flex;
     align-items: center;
     gap: 5.5px;
