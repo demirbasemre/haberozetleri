@@ -6791,7 +6791,7 @@
   }
 
   /* Segmented control layout for Forex toggles */
-  .forex-toggle-btns, .forex-period-btns, .brent-period-btns, .jetfuel-period-btns, .wci-period-btns {
+  .forex-toggle-btns, .forex-period-btns, .brent-period-btns, .jetfuel-period-btns, .wci-period-btns, .thy-period-btns {
     display: flex;
     background: var(--bg);
     padding: 3px;
@@ -7313,5 +7313,38 @@
   @media (max-width: 400px) {
     .fleet-stats-grid { grid-template-columns: repeat(2, 1fr); }
     .fleet-compare-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Chart modal controls layout */
+  .chart-modal-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Excel/CSV export button */
+  .export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .export-btn:hover {
+    background: var(--hover);
+    color: var(--text);
   }
   }
