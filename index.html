@@ -6676,16 +6676,21 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   // Downsampling / Decimation for large datasets (e.g. > 350 points)
   let finalLabels = labels;
   let finalDatasets = datasets;
+  let finalRawDates = extraOpts.rawDates || [];
   if (labels.length > 350) {
     const factor = Math.ceil(labels.length / 350);
     finalLabels = [];
     finalDatasets = datasets.map(ds => ({ ...ds, data: [] }));
+    finalRawDates = [];
     for (let i = 0; i < labels.length; i++) {
       if (i === 0 || i === labels.length - 1 || i % factor === 0) {
         finalLabels.push(labels[i]);
         datasets.forEach((ds, dsIdx) => {
           finalDatasets[dsIdx].data.push(ds.data[i]);
         });
+        if (extraOpts.rawDates) {
+          finalRawDates.push(extraOpts.rawDates[i]);
+        }
       }
     }
   }
@@ -6693,6 +6698,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   if (existingChart && !extraOpts.forceRecreate) {
     existingChart.data.labels = finalLabels;
     existingChart.data.datasets = finalDatasets;
+    existingChart.$rawDates = finalRawDates;
     if (yFmt) {
       if (!existingChart.options.scales) existingChart.options.scales = {};
       if (!existingChart.options.scales.y) existingChart.options.scales.y = {};
@@ -6704,7 +6710,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   }
   if (existingChart) existingChart.destroy();
   ctx.style.display = 'block';
-  new Chart(ctx, {
+  const newChart = new Chart(ctx, {
     type: 'line',
     data: { labels: finalLabels, datasets: finalDatasets },
     plugins: extraOpts.plugins || [],
@@ -6752,6 +6758,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
       }
     }
   });
+  newChart.$rawDates = finalRawDates;
 }
 
 function barChart(id, labels, data, colors, opts = {}) {
@@ -8778,8 +8785,8 @@ async function loadDashboard() {
       monthsAgo = 65;
       ttl = 12 * 60 * 60 * 1000; // 12h
     } else if (period === 'max') {
-      limit = 3000;
-      monthsAgo = 150;
+      limit = 8000;
+      monthsAgo = 320;
       ttl = 24 * 60 * 60 * 1000; // 24h
     }
 
@@ -8844,6 +8851,111 @@ async function loadDashboard() {
       // Galon -> Ton dönüşümü: price * 42 * 7.9 = price * 331.8
       const prices = validPoints.map(p => p.value * 42 * 7.9);
       
+      // Önemli tarihleri grafikte vurgulamak için özel eklenti
+      const jetfuelAnnotationsPlugin = {
+        id: 'jetfuelAnnotations',
+        afterDatasetsDraw(chart) {
+          const { ctx, chartArea: { top, bottom }, scales: { x } } = chart;
+          ctx.save();
+          
+          const events = [
+            { dateIso: '2001-09-11', label: '9/11 Saldırıları', color: '#64748B' },
+            { dateIso: '2020-03-11', label: 'COVID-19 Pandemisi', color: '#10B981' },
+            { dateIso: '2022-02-24', label: 'Rusya-Ukrayna Savaşı', color: '#F59E0B' },
+            { dateIso: '2026-02-26', label: 'Ortadoğu Savaşı (28 Şub)', color: '#E63946' }
+          ];
+
+          const rawDatesArray = chart.$rawDates;
+          if (!rawDatesArray || rawDatesArray.length === 0) {
+            ctx.restore();
+            return;
+          }
+
+          const firstDate = new Date(rawDatesArray[0]).getTime();
+          const lastDate = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+
+          events.forEach(event => {
+            const targetTime = new Date(event.dateIso).getTime();
+            
+            if (targetTime < firstDate || targetTime > lastDate) return;
+
+            let closestIndex = -1;
+            let minDiff = Infinity;
+            for (let i = 0; i < rawDatesArray.length; i++) {
+              const time = new Date(rawDatesArray[i]).getTime();
+              const diff = Math.abs(time - targetTime);
+              if (diff < minDiff) {
+                minDiff = diff;
+                closestIndex = i;
+              }
+            }
+
+            if (closestIndex === -1) return;
+
+            const totalSpan = lastDate - firstDate;
+            const threshold = Math.max(totalSpan * 0.1, 15 * 24 * 60 * 60 * 1000);
+            if (minDiff > threshold) return;
+
+            const xPos = x.getPixelForValue(closestIndex);
+            
+            // Dikey kesikli çizgi
+            ctx.strokeStyle = event.color;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(xPos, top);
+            ctx.lineTo(xPos, bottom);
+            ctx.stroke();
+            
+            // Noktayı vurgula
+            const meta = chart.getDatasetMeta(0);
+            if (meta && meta.data && meta.data[closestIndex]) {
+              const point = meta.data[closestIndex];
+              ctx.fillStyle = event.color;
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.fill();
+              
+              ctx.strokeStyle = '#FFFFFF';
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([]);
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.stroke();
+            }
+            
+            // Etiket metni
+            ctx.setLineDash([]);
+            const font = 'bold 9.5px Inter, sans-serif';
+            ctx.font = font;
+            const textWidth = ctx.measureText(event.label).width;
+            const textHeight = 9.5;
+            const paddingX = 6;
+            const paddingY = 4;
+            const pillWidth = textWidth + paddingX * 2;
+            const pillHeight = textHeight + paddingY * 2;
+            const pillX = xPos - pillWidth / 2;
+            const pillY = top + 10;
+            
+            ctx.fillStyle = event.color;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+              ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 4);
+            } else {
+              ctx.rect(pillX, pillY, pillWidth, pillHeight);
+            }
+            ctx.fill();
+            
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(event.label, xPos, pillY + pillHeight / 2 + 0.5);
+          });
+          
+          ctx.restore();
+        }
+      };
+
       lineChart('chart-jetfuel-modal', labels,
         [
           {
@@ -8860,7 +8972,9 @@ async function loadDashboard() {
         v => v != null ? Number(v).toFixed(1) + ' $' : '',
         {
           forceRecreate: true,
-          xTickFont: { size: 9, family: 'Inter' }
+          xTickFont: { size: 9, family: 'Inter' },
+          rawDates: validPoints.map(p => p.date),
+          plugins: [jetfuelAnnotationsPlugin]
         }
       );
       
