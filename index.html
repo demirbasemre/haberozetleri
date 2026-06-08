@@ -8647,7 +8647,7 @@ async function loadDashboard() {
       
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-        titleEl.textContent = 'Brent Ham Petrol';
+        titleEl.textContent = 'Brent Petrol';
 
         // Dynamic dashboard sync
         const cardValEl = document.querySelector('#dc-brent .dash-card-value');
@@ -16501,7 +16501,7 @@ window.toggleFinSources = function() {
     <div id="brent-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="brent-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div id="brent-chart-title" class="rel-add-title">Brent Ham Petrol</div>
+          <div id="brent-chart-title" class="rel-add-title">Brent Petrol</div>
           <button class="rel-add-x" onclick="closeBrentChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
