@@ -2380,156 +2380,6 @@
       <div class="dash-section-note">ⓘ Tarihler yaklaşık olup yayıncı tarafından değiştirilebilir. Kullanıcı eklemeleri tarayıcınızda saklanır.</div>
     </section>
 
-    <!-- Kullanıcı tarihi ekleme modali -->
-    <div id="rel-add-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="rel-add-title">
-      <div class="rel-add-card">
-        <div class="rel-add-head">
-          <div id="rel-add-title" class="rel-add-title">Yeni tarih ekle</div>
-          <button class="rel-add-x" onclick="closeReleaseAddModal()" aria-label="Kapat">×</button>
-        </div>
-        <label class="rel-add-field">
-          <span>Başlık</span>
-          <input id="rel-add-input-title" type="text" maxlength="80" placeholder="Örn: TIACA Air Cargo Forum">
-        </label>
-        <label class="rel-add-field">
-          <span>Tarih</span>
-          <input id="rel-add-input-date" type="date">
-        </label>
-        <label class="rel-add-field">
-          <span>Kaynak / Konum (opsiyonel)</span>
-          <input id="rel-add-input-source" type="text" maxlength="60" placeholder="Örn: Miami / IATA">
-        </label>
-        <label class="rel-add-field">
-          <span>Not (opsiyonel)</span>
-          <input id="rel-add-input-note" type="text" maxlength="80" placeholder="Örn: Yıllık · sektör etkinliği">
-        </label>
-        <label class="rel-add-field">
-          <span>Bağlantı (opsiyonel)</span>
-          <input id="rel-add-input-link" type="url" placeholder="https://...">
-        </label>
-        <div class="rel-add-actions">
-          <button class="rel-add-cancel" onclick="closeReleaseAddModal()">İptal</button>
-          <button class="rel-add-save" onclick="saveReleaseAddModal()">Ekle</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- WCI Grafik Modali -->
-    <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
-      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
-        <div class="rel-add-head">
-          <div id="wci-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Drewry Dünya Konteyner Endeksi (WCI) Grafiği</div>
-          <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-wci"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- THY Hisse Grafik Modali -->
-    <div id="thy-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="thy-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="thy-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">THY Hisse Performansı (THYAO) Grafiği</div>
-          <button class="rel-add-x" onclick="closeThyChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div class="thy-period-btns" style="margin-top: 12px; margin-bottom: 8px; display: flex; gap: 4px; justify-content: flex-start;">
-          <button class="thy-period-btn energy-period-btn" id="btn-thy-1m" data-period="1m">1 Ay</button>
-          <button class="thy-period-btn energy-period-btn active" id="btn-thy-1y" data-period="1y">1 Yıl</button>
-          <button class="thy-period-btn energy-period-btn" id="btn-thy-max" data-period="max">Tümü</button>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-thy"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Forex Grafik Modali -->
-    <div id="forex-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="forex-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="forex-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Döviz Kurları Grafiği</div>
-          <button class="rel-add-x" onclick="closeForexChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-          <!-- Currency Toggle -->
-          <div class="forex-toggle-btns">
-            <button class="forex-currency-btn forex-btn active" id="btn-forex-usd" data-currency="USD">
-              <span class="forex-indicator-dot usd"></span>
-              $ Dolar
-            </button>
-            <button class="forex-currency-btn forex-btn" id="btn-forex-eur" data-currency="EUR">
-              <span class="forex-indicator-dot eur"></span>
-              € Euro
-            </button>
-          </div>
-          <!-- Period Toggle -->
-          <div class="forex-period-btns">
-            <button class="forex-period-btn forex-btn active" id="btn-forex-1d" data-period="1d">1G</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1A</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-6m" data-period="6m">6A</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-ytd" data-period="ytd">YTD</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-1y" data-period="1y">1Y</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-5y" data-period="5y">5Y</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
-          </div>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-forex"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Brent Grafik Modali -->
-    <div id="brent-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="brent-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="brent-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Brent Ham Petrol Grafiği</div>
-          <button class="rel-add-x" onclick="closeBrentChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-          <!-- Period Toggle -->
-          <div class="brent-period-btns">
-            <button class="brent-period-btn forex-btn active" id="btn-brent-1d" data-period="1d">1G</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-5d" data-period="5d">5G</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-1m" data-period="1m">1A</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-6m" data-period="6m">6A</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-ytd" data-period="ytd">YTD</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-1y" data-period="1y">1Y</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-5y" data-period="5y">5Y</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-max" data-period="max">Tümü</button>
-          </div>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-brent-modal"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Jet Yakıtı Grafik Modali -->
-    <div id="jetfuel-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="jetfuel-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="jetfuel-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Jet Yakıtı Fiyat Grafiği</div>
-          <button class="rel-add-x" onclick="closeJetfuelChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div style="display: flex; justify-content: flex-start; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-          <!-- Period Toggle -->
-          <div class="jetfuel-period-btns">
-            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1m" data-period="1m">1A</button>
-            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-6m" data-period="6m">6A</button>
-            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-ytd" data-period="ytd">YTD</button>
-            <button class="jetfuel-period-btn forex-btn active" id="btn-jetfuel-1y" data-period="1y">1Y</button>
-            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-max" data-period="max">Tümü</button>
-          </div>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-jetfuel-modal"></canvas>
-        </div>
-      </div>
-    </div>
 
   </div><!-- /dashboard-panel -->
 
@@ -16044,5 +15894,152 @@ window.toggleFinSources = function() {
 };
 </script>
 
-</body>
+    <!-- Kullanıcı tarihi ekleme modali -->
+    <div id="rel-add-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="rel-add-title">
+      <div class="rel-add-card">
+        <div class="rel-add-head">
+          <div id="rel-add-title" class="rel-add-title">Yeni tarih ekle</div>
+          <button class="rel-add-x" onclick="closeReleaseAddModal()" aria-label="Kapat">×</button>
+        </div>
+        <label class="rel-add-field">
+          <span>Başlık</span>
+          <input id="rel-add-input-title" type="text" maxlength="80" placeholder="Örn: TIACA Air Cargo Forum">
+        </label>
+        <label class="rel-add-field">
+          <span>Tarih</span>
+          <input id="rel-add-input-date" type="date">
+        </label>
+        <label class="rel-add-field">
+          <span>Kaynak / Konum (opsiyonel)</span>
+          <input id="rel-add-input-source" type="text" maxlength="60" placeholder="Örn: Miami / IATA">
+        </label>
+        <label class="rel-add-field">
+          <span>Not (opsiyonel)</span>
+          <input id="rel-add-input-note" type="text" maxlength="80" placeholder="Örn: Yıllık · sektör etkinliği">
+        </label>
+        <label class="rel-add-field">
+          <span>Bağlantı (opsiyonel)</span>
+          <input id="rel-add-input-link" type="url" placeholder="https://...">
+        </label>
+        <div class="rel-add-actions">
+          <button class="rel-add-cancel" onclick="closeReleaseAddModal()">İptal</button>
+          <button class="rel-add-save" onclick="saveReleaseAddModal()">Ekle</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- WCI Grafik Modali -->
+    <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="wci-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Drewry Dünya Konteyner Endeksi (WCI) Grafiği</div>
+          <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-wci"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- THY Hisse Grafik Modali -->
+    <div id="thy-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="thy-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="thy-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">THY Hisse Performansı (THYAO) Grafiği</div>
+          <button class="rel-add-x" onclick="closeThyChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="thy-period-btns" style="margin-top: 12px; margin-bottom: 8px; display: flex; gap: 4px; justify-content: flex-start;">
+          <button class="thy-period-btn energy-period-btn" id="btn-thy-1m" data-period="1m">1 Ay</button>
+          <button class="thy-period-btn energy-period-btn active" id="btn-thy-1y" data-period="1y">1 Yıl</button>
+          <button class="thy-period-btn energy-period-btn" id="btn-thy-max" data-period="max">Tümü</button>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-thy"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forex Grafik Modali -->
+    <div id="forex-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="forex-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="forex-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Döviz Kurları Grafiği</div>
+          <button class="rel-add-x" onclick="closeForexChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <div class="forex-toggle-btns">
+            <button class="forex-currency-btn forex-btn active" id="btn-forex-usd" data-currency="USD">
+              <span class="forex-indicator-dot usd"></span>
+              $ Dolar
+            </button>
+            <button class="forex-currency-btn forex-btn" id="btn-forex-eur" data-currency="EUR">
+              <span class="forex-indicator-dot eur"></span>
+              € Euro
+            </button>
+          </div>
+          <div class="forex-period-btns">
+            <button class="forex-period-btn forex-btn active" id="btn-forex-1d" data-period="1d">1G</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1A</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-6m" data-period="6m">6A</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-ytd" data-period="ytd">YTD</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-1y" data-period="1y">1Y</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-5y" data-period="5y">5Y</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-forex"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brent Grafik Modali -->
+    <div id="brent-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="brent-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="brent-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Brent Ham Petrol Grafiği</div>
+          <button class="rel-add-x" onclick="closeBrentChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <div class="brent-period-btns">
+            <button class="brent-period-btn forex-btn active" id="btn-brent-1d" data-period="1d">1G</button>
+            <button class="brent-period-btn forex-btn" id="btn-brent-5d" data-period="5d">5G</button>
+            <button class="brent-period-btn forex-btn" id="btn-brent-1m" data-period="1m">1A</button>
+            <button class="brent-period-btn forex-btn" id="btn-brent-6m" data-period="6m">6A</button>
+            <button class="brent-period-btn forex-btn" id="btn-brent-ytd" data-period="ytd">YTD</button>
+            <button class="brent-period-btn forex-btn" id="btn-brent-1y" data-period="1y">1Y</button>
+            <button class="brent-period-btn forex-btn" id="btn-brent-5y" data-period="5y">5Y</button>
+            <button class="brent-period-btn forex-btn" id="btn-brent-max" data-period="max">Tümü</button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-brent-modal"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jet Yakıtı Grafik Modali -->
+    <div id="jetfuel-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="jetfuel-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="jetfuel-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Jet Yakıtı Fiyat Grafiği</div>
+          <button class="rel-add-x" onclick="closeJetfuelChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div style="display: flex; justify-content: flex-start; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <div class="jetfuel-period-btns">
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1m" data-period="1m">1A</button>
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-6m" data-period="6m">6A</button>
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-ytd" data-period="ytd">YTD</button>
+            <button class="jetfuel-period-btn forex-btn active" id="btn-jetfuel-1y" data-period="1y">1Y</button>
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-max" data-period="max">Tümü</button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-jetfuel-modal"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </body>
 </html>
