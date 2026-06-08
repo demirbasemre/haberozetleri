@@ -8855,11 +8855,15 @@ async function loadDashboard() {
       const jetfuelAnnotationsPlugin = {
         id: 'jetfuelAnnotations',
         afterDatasetsDraw(chart) {
-          const { ctx, chartArea: { top, bottom }, scales: { x } } = chart;
+          const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
           ctx.save();
           
           const events = [
             { dateIso: '2001-09-11', label: '9/11 Saldırıları', color: '#64748B' },
+            { dateIso: '2003-03-12', label: 'SARS Salgını (Mar \'03)', color: '#10B981' },
+            { dateIso: '2007-02-15', label: 'Emtia Rallisi (Şub \'07)', color: '#D97706' },
+            { dateIso: '2008-07-03', label: 'Tarihi Petrol Zirvesi (Tem \'08)', color: '#B45309' },
+            { dateIso: '2008-09-15', label: 'Küresel Finansal Kriz (Eyl \'08)', color: '#475569' },
             { dateIso: '2020-03-11', label: 'COVID-19 Pandemisi', color: '#10B981' },
             { dateIso: '2022-02-24', label: 'Rusya-Ukrayna Savaşı', color: '#F59E0B' },
             { dateIso: '2026-02-26', label: 'Ortadoğu Savaşı (28 Şub)', color: '#E63946' }
@@ -8873,6 +8877,8 @@ async function loadDashboard() {
 
           const firstDate = new Date(rawDatesArray[0]).getTime();
           const lastDate = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+
+          const drawnPills = [];
 
           events.forEach(event => {
             const targetTime = new Date(event.dateIso).getTime();
@@ -8898,15 +8904,6 @@ async function loadDashboard() {
 
             const xPos = x.getPixelForValue(closestIndex);
             
-            // Dikey kesikli çizgi
-            ctx.strokeStyle = event.color;
-            ctx.lineWidth = 1.5;
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath();
-            ctx.moveTo(xPos, top);
-            ctx.lineTo(xPos, bottom);
-            ctx.stroke();
-            
             // Noktayı vurgula
             const meta = chart.getDatasetMeta(0);
             if (meta && meta.data && meta.data[closestIndex]) {
@@ -8924,7 +8921,7 @@ async function loadDashboard() {
               ctx.stroke();
             }
             
-            // Etiket metni
+            // Etiket metni hesaplama
             ctx.setLineDash([]);
             const font = 'bold 9.5px Inter, sans-serif';
             ctx.font = font;
@@ -8934,9 +8931,55 @@ async function loadDashboard() {
             const paddingY = 4;
             const pillWidth = textWidth + paddingX * 2;
             const pillHeight = textHeight + paddingY * 2;
-            const pillX = xPos - pillWidth / 2;
-            const pillY = top + 10;
             
+            let pillX = xPos - pillWidth / 2;
+            
+            // Kenar sınırlandırması (Kırpılmayı önlemek için)
+            if (pillX < chartLeft) {
+              pillX = chartLeft;
+            } else if (pillX + pillWidth > chartRight) {
+              pillX = chartRight - pillWidth;
+            }
+            
+            // Üst üste binmeyi önleyen konumlandırma
+            let pillY = top + 10;
+            let hasOverlap = true;
+            while (hasOverlap) {
+              hasOverlap = false;
+              const x1 = pillX;
+              const x2 = pillX + pillWidth;
+              const y1 = pillY;
+              const y2 = pillY + pillHeight;
+              
+              for (const p of drawnPills) {
+                const overlapX = !(x2 < p.x1 - 4 || x1 > p.x2 + 4);
+                const overlapY = !(y2 < p.y1 - 2 || y1 > p.y2 + 2);
+                if (overlapX && overlapY) {
+                  hasOverlap = true;
+                  pillY += pillHeight + 6;
+                  break;
+                }
+              }
+            }
+            
+            drawnPills.push({
+              x1: pillX,
+              x2: pillX + pillWidth,
+              y1: pillY,
+              y2: pillY + pillHeight
+            });
+
+            // Dikey kesikli çizgi (Pill altından başla)
+            ctx.strokeStyle = event.color;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(xPos, pillY + pillHeight);
+            ctx.lineTo(xPos, bottom);
+            ctx.stroke();
+            
+            // Badge çizimi
+            ctx.setLineDash([]);
             ctx.fillStyle = event.color;
             ctx.beginPath();
             if (ctx.roundRect) {
@@ -8946,10 +8989,11 @@ async function loadDashboard() {
             }
             ctx.fill();
             
+            // Badge içi metin (pillX referansı ile ortalanmış)
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(event.label, xPos, pillY + pillHeight / 2 + 0.5);
+            ctx.fillText(event.label, pillX + pillWidth / 2, pillY + pillHeight / 2 + 0.5);
           });
           
           ctx.restore();
@@ -9445,7 +9489,7 @@ async function loadDashboard() {
       const wciAnnotationsPlugin = {
         id: 'wciAnnotations',
         afterDatasetsDraw(chart) {
-          const { ctx, chartArea: { top, bottom }, scales: { x } } = chart;
+          const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
           ctx.save();
           
           const events = [
@@ -9458,16 +9502,7 @@ async function loadDashboard() {
             
             const xPos = x.getPixelForValue(index);
             
-            // Dikey kesikli çizgi
-            ctx.strokeStyle = event.color;
-            ctx.lineWidth = 1.5;
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath();
-            ctx.moveTo(xPos, top);
-            ctx.lineTo(xPos, bottom);
-            ctx.stroke();
-            
-            // Veri noktasını kırmızı daireyle vurgula
+            // Noktayı kırmızı daireyle vurgula
             const meta = chart.getDatasetMeta(0);
             const point = meta.data[index];
             if (point) {
@@ -9494,10 +9529,28 @@ async function loadDashboard() {
             const paddingY = 4;
             const pillWidth = textWidth + paddingX * 2;
             const pillHeight = textHeight + paddingY * 2;
-            const pillX = xPos - pillWidth / 2;
+            
+            let pillX = xPos - pillWidth / 2;
             const pillY = top + 10;
             
+            // Kenar sınırlandırması (Kırpılmayı önlemek için)
+            if (pillX < chartLeft) {
+              pillX = chartLeft;
+            } else if (pillX + pillWidth > chartRight) {
+              pillX = chartRight - pillWidth;
+            }
+
+            // Dikey kesikli çizgi (Pill altından başla)
+            ctx.strokeStyle = event.color;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(xPos, pillY + pillHeight);
+            ctx.lineTo(xPos, bottom);
+            ctx.stroke();
+            
             // Draw background pill
+            ctx.setLineDash([]);
             ctx.fillStyle = event.color;
             ctx.beginPath();
             if (ctx.roundRect) {
@@ -9507,11 +9560,11 @@ async function loadDashboard() {
             }
             ctx.fill();
             
-            // Draw text inside pill
+            // Draw text inside pill (pillX referansı ile ortalanmış)
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(event.label, xPos, pillY + pillHeight / 2 + 0.5);
+            ctx.fillText(event.label, pillX + pillWidth / 2, pillY + pillHeight / 2 + 0.5);
           });
           
           ctx.restore();
