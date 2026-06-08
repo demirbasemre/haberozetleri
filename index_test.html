@@ -2249,7 +2249,7 @@
 
     <!-- WCI Grafik Modali -->
     <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
-      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+      <div class="chart-modal-card">
         <div class="rel-add-head">
           <div id="wci-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Drewry Dünya Konteyner Endeksi (WCI) Grafiği</div>
           <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
@@ -9472,6 +9472,16 @@ async function loadDashboard() {
     const activePeriodBtn = document.getElementById(`btn-wci-${_wciCurrentPeriod}`);
     if (activePeriodBtn) activePeriodBtn.classList.add('active');
 
+    // Toggle wide mode for long time ranges
+    const cardEl = document.getElementById('wci-chart-modal')?.querySelector('.chart-modal-card');
+    if (cardEl) {
+      if (_wciCurrentPeriod === 'max') {
+        cardEl.classList.add('wide-mode');
+      } else {
+        cardEl.classList.remove('wide-mode');
+      }
+    }
+
     console.log("renderWciChart tetiklendi. _wciHistory:", _wciHistory, "_wciLatest:", _wciLatest);
     const titleEl = document.getElementById('wci-chart-title');
     try {
@@ -9756,7 +9766,8 @@ async function loadDashboard() {
       cutoff.setFullYear(cutoff.getFullYear() - 1);
       allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
     }
-    const csv = '﻿' + 'Tarih,WCI (USD)\n' + allData.map(d => `${d.date},${d.value}`).join('\n');
+    const isoToTR = iso => { const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
+    const csv = '﻿' + 'Tarih,WCI (USD)\n' + allData.map(d => `${isoToTR(d.date)},${d.value}`).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -15985,32 +15996,6 @@ window.toggleFinSources = function() {
         <div class="rel-add-actions">
           <button class="rel-add-cancel" onclick="closeReleaseAddModal()">İptal</button>
           <button class="rel-add-save" onclick="saveReleaseAddModal()">Ekle</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- WCI Grafik Modali -->
-    <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="wci-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Drewry Dünya Konteyner Endeksi (WCI) Grafiği</div>
-          <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div class="chart-modal-controls">
-          <div class="wci-period-btns">
-            <button class="wci-period-btn forex-btn" id="btn-wci-1m" data-period="1m">1A</button>
-            <button class="wci-period-btn forex-btn" id="btn-wci-6m" data-period="6m">6A</button>
-            <button class="wci-period-btn forex-btn" id="btn-wci-ytd" data-period="ytd">YTD</button>
-            <button class="wci-period-btn forex-btn active" id="btn-wci-1y" data-period="1y">1Y</button>
-            <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
-          </div>
-          <button class="export-btn" onclick="exportWciToCSV()" title="WCI verisini CSV olarak indir">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Excel
-          </button>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-wci"></canvas>
         </div>
       </div>
     </div>

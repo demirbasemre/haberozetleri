@@ -9625,6 +9625,16 @@ async function loadDashboard() {
     const activePeriodBtn = document.getElementById(`btn-wci-${_wciCurrentPeriod}`);
     if (activePeriodBtn) activePeriodBtn.classList.add('active');
 
+    // Toggle wide mode for long time ranges
+    const cardEl = document.getElementById('wci-chart-modal')?.querySelector('.chart-modal-card');
+    if (cardEl) {
+      if (_wciCurrentPeriod === 'max') {
+        cardEl.classList.add('wide-mode');
+      } else {
+        cardEl.classList.remove('wide-mode');
+      }
+    }
+
     console.log("renderWciChart tetiklendi. _wciHistory:", _wciHistory, "_wciLatest:", _wciLatest);
     const titleEl = document.getElementById('wci-chart-title');
     try {
@@ -9909,7 +9919,8 @@ async function loadDashboard() {
       cutoff.setFullYear(cutoff.getFullYear() - 1);
       allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
     }
-    const csv = '﻿' + 'Tarih,WCI (USD)\n' + allData.map(d => `${d.date},${d.value}`).join('\n');
+    const isoToTR = iso => { const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
+    const csv = '﻿' + 'Tarih,WCI (USD)\n' + allData.map(d => `${isoToTR(d.date)},${d.value}`).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
