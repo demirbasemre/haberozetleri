@@ -2251,14 +2251,7 @@
     <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div class="chart-modal-header">
-            <div id="wci-chart-title" class="chart-modal-title">Drewry WCI</div>
-            <div id="wci-price-badge" class="chart-price-badge" style="display:none">
-              <span id="wci-price-value" class="chart-price-value">—</span>
-              <span class="chart-price-unit">$ / konteyner</span>
-              <span id="wci-price-change" class="chart-price-change"></span>
-            </div>
-          </div>
+          <div id="wci-chart-title" class="rel-add-title">Drewry Dünya Konteyner Endeksi (WCI)</div>
           <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
@@ -8017,9 +8010,6 @@ async function loadDashboard() {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         const symbol = currency === 'USD' ? '$' : '€';
         titleEl.textContent = `${symbol} Kuru`;
-        const prevCloseForex = result.meta?.previousClose || result.meta?.chartPreviousClose;
-        const changeForex = prevCloseForex ? ((latestPrice - prevCloseForex) / prevCloseForex) * 100 : null;
-        updatePriceBadge('forex', latestPrice.toLocaleString('tr-TR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }), null, changeForex);
         
         // Dynamic dashboard sync
         const cardValEl = document.getElementById(`forex-${currency.toLowerCase()}-val`);
@@ -8505,9 +8495,6 @@ async function loadDashboard() {
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         titleEl.textContent = 'Brent Ham Petrol';
-        const prevCloseBrent = result.meta.previousClose || result.meta.chartPreviousClose;
-        const changeBrent = prevCloseBrent ? ((latestPrice - prevCloseBrent) / prevCloseBrent) * 100 : null;
-        updatePriceBadge('brent', latestPrice.toFixed(2), null, changeBrent);
 
         // Dynamic dashboard sync
         const cardValEl = document.querySelector('#dc-brent .dash-card-value');
@@ -8865,9 +8852,6 @@ async function loadDashboard() {
       if (titleEl) {
         const latestPrice = prices[prices.length - 1];
         titleEl.textContent = 'Jet Yakıtı Fiyatı';
-        const prevCloseJet = result.meta?.previousClose || result.meta?.chartPreviousClose;
-        const changeJet = prevCloseJet ? ((latestPrice - prevCloseJet) / prevCloseJet) * 100 : null;
-        updatePriceBadge('jetfuel', latestPrice.toFixed(1), null, changeJet);
         
         // Dynamic dashboard sync
         const cardValEl = document.querySelector('#dc-jetfuel .dash-card-value');
@@ -9704,10 +9688,7 @@ async function loadDashboard() {
           }
         }
       );
-      if (titleEl) titleEl.textContent = 'Drewry WCI';
-      if (_wciLatest && _wciLatest.price) {
-        updatePriceBadge('wci', _wciLatest.price.toLocaleString('en-US'), null, null);
-      }
+      if (titleEl) titleEl.textContent = 'Drewry Dünya Konteyner Endeksi (WCI)';
     } catch (err) {
       console.error("WCI Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
@@ -9759,23 +9740,6 @@ async function loadDashboard() {
   }
   window.exportWciToCSV = exportWciToCSV;
 
-  function updatePriceBadge(prefix, value, unit, change) {
-    const badge = document.getElementById(prefix + '-price-badge');
-    const valEl = document.getElementById(prefix + '-price-value');
-    const chgEl = document.getElementById(prefix + '-price-change');
-    if (!badge || !valEl) return;
-    valEl.textContent = value;
-    if (chgEl && change !== null && change !== undefined) {
-      const sign = change >= 0 ? '+' : '';
-      chgEl.textContent = `${sign}${change.toFixed(2)}%`;
-      chgEl.className = 'chart-price-change ' + (change > 0.05 ? 'positive' : change < -0.05 ? 'negative' : 'flat');
-      chgEl.style.display = '';
-    } else if (chgEl) {
-      chgEl.style.display = 'none';
-    }
-    badge.style.display = 'flex';
-  }
-  window.updatePriceBadge = updatePriceBadge;
 
   function exportChartCSV(canvasId, colLabel, colValue, filename) {
     const chart = Chart.getChart(document.getElementById(canvasId));
@@ -9924,9 +9888,6 @@ async function loadDashboard() {
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         titleEl.textContent = 'THY Hisse Performansı (THYAO)';
-        const prevCloseThy = result.meta?.previousClose || result.meta?.chartPreviousClose;
-        const changeThy = prevCloseThy ? ((latestPrice - prevCloseThy) / prevCloseThy) * 100 : null;
-        updatePriceBadge('thy', latestPrice.toFixed(2), null, changeThy);
       }
     } catch (err) {
       console.error("THY Grafik çizim hatası:", err);
@@ -16002,14 +15963,7 @@ window.toggleFinSources = function() {
     <div id="thy-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="thy-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div class="chart-modal-header">
-            <div id="thy-chart-title" class="chart-modal-title">THY Hisse Performansı (THYAO)</div>
-            <div id="thy-price-badge" class="chart-price-badge" style="display:none">
-              <span id="thy-price-value" class="chart-price-value">—</span>
-              <span class="chart-price-unit">₺</span>
-              <span id="thy-price-change" class="chart-price-change"></span>
-            </div>
-          </div>
+          <div id="thy-chart-title" class="rel-add-title">THY Hisse Performansı (THYAO)</div>
           <button class="rel-add-x" onclick="closeThyChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
@@ -16035,14 +15989,7 @@ window.toggleFinSources = function() {
     <div id="forex-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="forex-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div class="chart-modal-header">
-            <div id="forex-chart-title" class="chart-modal-title">Döviz Kuru</div>
-            <div id="forex-price-badge" class="chart-price-badge" style="display:none">
-              <span id="forex-price-value" class="chart-price-value">—</span>
-              <span id="forex-price-unit" class="chart-price-unit">₺</span>
-              <span id="forex-price-change" class="chart-price-change"></span>
-            </div>
-          </div>
+          <div id="forex-chart-title" class="rel-add-title">Döviz Kuru</div>
           <button class="rel-add-x" onclick="closeForexChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
@@ -16083,14 +16030,7 @@ window.toggleFinSources = function() {
     <div id="brent-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="brent-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div class="chart-modal-header">
-            <div id="brent-chart-title" class="chart-modal-title">Brent Ham Petrol</div>
-            <div id="brent-price-badge" class="chart-price-badge" style="display:none">
-              <span id="brent-price-value" class="chart-price-value">—</span>
-              <span class="chart-price-unit">$ / varil</span>
-              <span id="brent-price-change" class="chart-price-change"></span>
-            </div>
-          </div>
+          <div id="brent-chart-title" class="rel-add-title">Brent Ham Petrol</div>
           <button class="rel-add-x" onclick="closeBrentChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
@@ -16119,14 +16059,7 @@ window.toggleFinSources = function() {
     <div id="jetfuel-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="jetfuel-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div class="chart-modal-header">
-            <div id="jetfuel-chart-title" class="chart-modal-title">Jet Yakıtı Fiyatı</div>
-            <div id="jetfuel-price-badge" class="chart-price-badge" style="display:none">
-              <span id="jetfuel-price-value" class="chart-price-value">—</span>
-              <span class="chart-price-unit">$ / ton</span>
-              <span id="jetfuel-price-change" class="chart-price-change"></span>
-            </div>
-          </div>
+          <div id="jetfuel-chart-title" class="rel-add-title">Jet Yakıtı Fiyatı</div>
           <button class="rel-add-x" onclick="closeJetfuelChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
