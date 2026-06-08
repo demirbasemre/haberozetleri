@@ -9954,7 +9954,7 @@ async function loadDashboard() {
   // ── THY Hisse Verisini Çek ve Göster ──────────────────────────────
   let _thy1yRaw = null;
   let _thyMaxRaw = null;
-  let _thyCurrentPeriod = '1y';
+  let _thyCurrentPeriod = 'ytd';
 
   async function fetchThyStock(range = '1y') {
     const cacheKey = `thy_stock_${range}`;
@@ -9988,9 +9988,15 @@ async function loadDashboard() {
           });
         }
       }
-      
+
       if (period === '1m') {
         validPoints = validPoints.slice(-22); // son ~22 işlem günü (1 ay)
+      } else if (period === '6m') {
+        const cutoff = new Date(); cutoff.setMonth(cutoff.getMonth() - 6);
+        validPoints = validPoints.filter(p => new Date(p.time * 1000) >= cutoff);
+      } else if (period === 'ytd') {
+        const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+        validPoints = validPoints.filter(p => new Date(p.time * 1000) >= startOfYear);
       }
       
       if (validPoints.length === 0) {
@@ -10056,7 +10062,7 @@ async function loadDashboard() {
     
     if (wrap) wrap.classList.add('loading');
 
-    if (_thyCurrentPeriod === '1m' || _thyCurrentPeriod === '1y') {
+    if (_thyCurrentPeriod === '1m' || _thyCurrentPeriod === '6m' || _thyCurrentPeriod === 'ytd' || _thyCurrentPeriod === '1y') {
       if (!_thy1yRaw) {
         if (titleEl) titleEl.textContent = "THY Hisse Performansı (Veri yok)";
         if (wrap) wrap.classList.remove('loading');
@@ -16433,7 +16439,9 @@ window.toggleFinSources = function() {
         <div class="chart-modal-controls">
           <div class="thy-period-btns">
             <button class="thy-period-btn forex-btn" id="btn-thy-1m" data-period="1m">1A</button>
-            <button class="thy-period-btn forex-btn active" id="btn-thy-1y" data-period="1y">1Y</button>
+            <button class="thy-period-btn forex-btn" id="btn-thy-6m" data-period="6m">6A</button>
+            <button class="thy-period-btn forex-btn active" id="btn-thy-ytd" data-period="ytd">YTD</button>
+            <button class="thy-period-btn forex-btn" id="btn-thy-1y" data-period="1y">1Y</button>
             <button class="thy-period-btn forex-btn" id="btn-thy-max" data-period="max">Tümü</button>
           </div>
           <button class="export-btn" onclick="exportThyToCSV()" title="THY verisini CSV olarak indir">
