@@ -2258,8 +2258,8 @@
           <div class="wci-period-btns">
             <button class="wci-period-btn forex-btn" id="btn-wci-1m" data-period="1m">1A</button>
             <button class="wci-period-btn forex-btn" id="btn-wci-6m" data-period="6m">6A</button>
-            <button class="wci-period-btn forex-btn" id="btn-wci-ytd" data-period="ytd">YTD</button>
-            <button class="wci-period-btn forex-btn active" id="btn-wci-1y" data-period="1y">1Y</button>
+            <button class="wci-period-btn forex-btn active" id="btn-wci-ytd" data-period="ytd">YTD</button>
+            <button class="wci-period-btn forex-btn" id="btn-wci-1y" data-period="1y">1Y</button>
             <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
           </div>
           <button class="export-btn" onclick="exportWciToCSV()" title="WCI verisini CSV olarak indir">
@@ -7869,7 +7869,7 @@ async function loadDashboard() {
     'EUR': { '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null }
   };
   let _forexCurrentCurrency = 'USD';
-  let _forexCurrentPeriod = '1d';
+  let _forexCurrentPeriod = 'ytd';
 
   async function fetchForexData(currency, period = '1y') {
     const symbol = currency === 'USD' ? 'USDTRY=X' : 'EURTRY=X';
@@ -8317,7 +8317,7 @@ async function loadDashboard() {
   let _brentCache = {
     '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null
   };
-  let _brentCurrentPeriod = '1d';
+  let _brentCurrentPeriod = 'ytd';
 
   async function fetchBrentYahoo(period = '1y') {
     const symbol = 'BZ=F';
@@ -8585,7 +8585,7 @@ async function loadDashboard() {
 
 
   // ── Jet Yakıtı (FRED) Modal Verisini Çek ve Göster ──
-  let _jetfuelCurrentPeriod = '1y';
+  let _jetfuelCurrentPeriod = 'ytd';
 
   async function fetchJetFred(period = '1y') {
     const seriesId = 'DJFUELUSGULF';
@@ -9431,7 +9431,7 @@ async function loadDashboard() {
 
   let _wciHistory = [];
   let _wciLatest = null;
-  let _wciCurrentPeriod = '1y';
+  let _wciCurrentPeriod = 'ytd';
 
   function renderWciChart(period) {
     if (period) _wciCurrentPeriod = period;
@@ -15996,11 +15996,11 @@ window.toggleFinSources = function() {
               </button>
             </div>
             <div class="forex-period-btns">
-              <button class="forex-period-btn forex-btn active" id="btn-forex-1d" data-period="1d">1G</button>
+              <button class="forex-period-btn forex-btn" id="btn-forex-1d" data-period="1d">1G</button>
               <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
               <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1A</button>
               <button class="forex-period-btn forex-btn" id="btn-forex-6m" data-period="6m">6A</button>
-              <button class="forex-period-btn forex-btn" id="btn-forex-ytd" data-period="ytd">YTD</button>
+              <button class="forex-period-btn forex-btn active" id="btn-forex-ytd" data-period="ytd">YTD</button>
               <button class="forex-period-btn forex-btn" id="btn-forex-1y" data-period="1y">1Y</button>
               <button class="forex-period-btn forex-btn" id="btn-forex-5y" data-period="5y">5Y</button>
               <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
@@ -16026,11 +16026,11 @@ window.toggleFinSources = function() {
         </div>
         <div class="chart-modal-controls">
           <div class="brent-period-btns">
-            <button class="brent-period-btn forex-btn active" id="btn-brent-1d" data-period="1d">1G</button>
+            <button class="brent-period-btn forex-btn" id="btn-brent-1d" data-period="1d">1G</button>
             <button class="brent-period-btn forex-btn" id="btn-brent-5d" data-period="5d">5G</button>
             <button class="brent-period-btn forex-btn" id="btn-brent-1m" data-period="1m">1A</button>
             <button class="brent-period-btn forex-btn" id="btn-brent-6m" data-period="6m">6A</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-ytd" data-period="ytd">YTD</button>
+            <button class="brent-period-btn forex-btn active" id="btn-brent-ytd" data-period="ytd">YTD</button>
             <button class="brent-period-btn forex-btn" id="btn-brent-1y" data-period="1y">1Y</button>
             <button class="brent-period-btn forex-btn" id="btn-brent-5y" data-period="5y">5Y</button>
             <button class="brent-period-btn forex-btn" id="btn-brent-max" data-period="max">Tümü</button>
@@ -16057,8 +16057,8 @@ window.toggleFinSources = function() {
           <div class="jetfuel-period-btns">
             <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1m" data-period="1m">1A</button>
             <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-6m" data-period="6m">6A</button>
-            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-ytd" data-period="ytd">YTD</button>
-            <button class="jetfuel-period-btn forex-btn active" id="btn-jetfuel-1y" data-period="1y">1Y</button>
+            <button class="jetfuel-period-btn forex-btn active" id="btn-jetfuel-ytd" data-period="ytd">YTD</button>
+            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1y" data-period="1y">1Y</button>
             <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-max" data-period="max">Tümü</button>
           </div>
           <button class="export-btn" onclick="exportJetfuelToCSV()" title="Jet yakıtı verisini CSV olarak indir">
