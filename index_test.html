@@ -9743,10 +9743,12 @@ async function loadDashboard() {
   function exportChartCSV(canvasId, colLabel, colValue, filename) {
     const chart = Chart.getChart(document.getElementById(canvasId));
     if (!chart) return;
+    const rawDates = chart.$rawDates || [];
     const labels = chart.data.labels || [];
     const values = (chart.data.datasets[0] || {}).data || [];
+    const isoToTR = iso => { const [y, m, d] = (iso || '').split('-'); return (d && m && y) ? `${d}.${m}.${y}` : (iso || ''); };
     const csv = '﻿' + colLabel + ',' + colValue + '\n' +
-      labels.map((l, i) => `${l},${values[i] ?? ''}`).join('\n');
+      labels.map((l, i) => `${isoToTR(rawDates[i] || l)},${values[i] ?? ''}`).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
