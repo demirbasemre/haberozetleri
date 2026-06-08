@@ -3546,14 +3546,10 @@
     border-radius: 14px;
     padding: 24px;
     width: 95vw;
-    max-width: 880px; /* Standart genişlik */
+    max-width: 1320px;
     display: flex;
     flex-direction: column;
     box-shadow: 0 24px 64px rgba(0,0,0,0.22);
-    transition: max-width 0.3s ease;
-  }
-  .chart-modal-card.wide-mode {
-    max-width: 1320px; /* Geniş mod aralıklarında (5Y, Tümü) */
   }
   .rel-add-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
   .rel-add-title { font-size: 14px; font-weight: 700; color: var(--text); }
