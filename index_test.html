@@ -154,6 +154,9 @@
     display: flex; align-items: center; gap: 4px;
   }
   .fin-type-btn--active, .fin-range-btn--active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .wci-period-btns { display: flex; gap: 2px; }
+  .wci-csv-btn { font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-3); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
+  .wci-csv-btn:hover { background: var(--hover); color: var(--text); }
 
   .fin-airline-toggles {
     display: flex; flex-wrap: wrap; gap: 6px; padding-bottom: 12px;
@@ -2247,6 +2250,31 @@
     </section>
 
 
+    <!-- WCI Grafik Modali -->
+    <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
+      <div class="rel-add-card" style="max-width: 600px; width: 100%;">
+        <div class="rel-add-head">
+          <div id="wci-chart-title" class="rel-add-title" style="font-size: 14px; font-weight: 700; color: var(--text);">Drewry Dünya Konteyner Endeksi (WCI) Grafiği</div>
+          <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div style="display: flex; justify-content: flex-start; align-items: center; margin-top: 12px; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <div class="wci-period-btns">
+            <button class="wci-period-btn forex-btn" id="btn-wci-1m" data-period="1m">1A</button>
+            <button class="wci-period-btn forex-btn" id="btn-wci-6m" data-period="6m">6A</button>
+            <button class="wci-period-btn forex-btn" id="btn-wci-ytd" data-period="ytd">YTD</button>
+            <button class="wci-period-btn forex-btn active" id="btn-wci-1y" data-period="1y">1Y</button>
+            <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
+          </div>
+          <button class="wci-csv-btn" onclick="exportWciToCSV()" title="Veriyi CSV olarak indir (Excel ile açılabilir)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Excel
+          </button>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-wci"></canvas>
+        </div>
+      </div>
+    </div>
 
 
   </div><!-- /dashboard-panel -->
@@ -9436,8 +9464,17 @@ async function loadDashboard() {
 
   let _wciHistory = [];
   let _wciLatest = null;
+  let _wciCurrentPeriod = '1y';
 
-  function renderWciChart() {
+  function renderWciChart(period) {
+    if (period) _wciCurrentPeriod = period;
+
+    document.querySelectorAll('#wci-chart-modal .wci-period-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    const activePeriodBtn = document.getElementById(`btn-wci-${_wciCurrentPeriod}`);
+    if (activePeriodBtn) activePeriodBtn.classList.add('active');
+
     console.log("renderWciChart tetiklendi. _wciHistory:", _wciHistory, "_wciLatest:", _wciLatest);
     const titleEl = document.getElementById('wci-chart-title');
     try {
@@ -9470,14 +9507,38 @@ async function loadDashboard() {
         }
       }
 
+      // Period filtering
+      if (_wciCurrentPeriod === '1m') {
+        const cutoff = new Date();
+        cutoff.setMonth(cutoff.getMonth() - 1);
+        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        allData = allData.filter(d => d.date >= cutoffStr);
+      } else if (_wciCurrentPeriod === '6m') {
+        const cutoff = new Date();
+        cutoff.setMonth(cutoff.getMonth() - 6);
+        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        allData = allData.filter(d => d.date >= cutoffStr);
+      } else if (_wciCurrentPeriod === 'ytd') {
+        const cutoffStr = `${new Date().getFullYear()}-01-01`;
+        allData = allData.filter(d => d.date >= cutoffStr);
+      } else if (_wciCurrentPeriod === '1y') {
+        const cutoff = new Date();
+        cutoff.setFullYear(cutoff.getFullYear() - 1);
+        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        allData = allData.filter(d => d.date >= cutoffStr);
+      }
+
       const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
       const labels = allData.map(d => {
-        const dateObj = new Date(d.date);
+        const dateObj = new Date(d.date + 'T12:00:00Z');
         if (isNaN(dateObj)) return d.date;
-        const day = dateObj.getDate();
-        const month = monthNamesTR[dateObj.getMonth()];
-        const year = dateObj.getFullYear();
-        return `${day} ${month} '${String(year).slice(-2)}`;
+        const day = dateObj.getUTCDate();
+        const month = monthNamesTR[dateObj.getUTCMonth()];
+        const year = dateObj.getUTCFullYear();
+        if (_wciCurrentPeriod === '1m' || _wciCurrentPeriod === '6m' || _wciCurrentPeriod === 'ytd') {
+          return `${day} ${month}`;
+        }
+        return `${month} '${String(year).slice(-2)}`;
       });
       const prices = allData.map(d => d.value);
       const rawDates = allData.map(d => d.date);
@@ -9639,8 +9700,8 @@ async function loadDashboard() {
             borderColor: '#1D6FE8',
             backgroundColor: 'rgba(29,111,232,0.07)',
             fill: true,
-            tension: 0.35,
-            pointRadius: 2,
+            tension: _wciCurrentPeriod === 'max' ? 0.2 : 0.35,
+            pointRadius: _wciCurrentPeriod === 'max' ? 0 : 2,
             borderWidth: 2
           }
         ],
@@ -9667,6 +9728,49 @@ async function loadDashboard() {
     }
   }
   window.renderWciChart = renderWciChart;
+
+  document.querySelectorAll('.wci-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      renderWciChart(btn.dataset.period);
+    });
+  });
+
+  function exportWciToCSV() {
+    let allData = [..._wciHistory];
+    if (_wciLatest && _wciLatest.price) {
+      const latestIso = convertDrewryDate(_wciLatest.date);
+      const lastHist = allData[allData.length - 1];
+      if (latestIso && (!lastHist || lastHist.date < latestIso)) {
+        allData.push({ date: latestIso, value: _wciLatest.price });
+      }
+    }
+    if (_wciCurrentPeriod === '1m') {
+      const cutoff = new Date();
+      cutoff.setMonth(cutoff.getMonth() - 1);
+      allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
+    } else if (_wciCurrentPeriod === '6m') {
+      const cutoff = new Date();
+      cutoff.setMonth(cutoff.getMonth() - 6);
+      allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
+    } else if (_wciCurrentPeriod === 'ytd') {
+      allData = allData.filter(d => d.date >= `${new Date().getFullYear()}-01-01`);
+    } else if (_wciCurrentPeriod === '1y') {
+      const cutoff = new Date();
+      cutoff.setFullYear(cutoff.getFullYear() - 1);
+      allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
+    }
+    const csv = '﻿' + 'Tarih,WCI (USD)\n' + allData.map(d => `${d.date},${d.value}`).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `WCI_${_wciCurrentPeriod}_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+  window.exportWciToCSV = exportWciToCSV;
 
   function convertDrewryDate(dStr) {
     if (!dStr) return null;
