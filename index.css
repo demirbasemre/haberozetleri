@@ -7343,4 +7343,50 @@
     background: var(--hover);
     color: var(--text);
   }
+
+  /* Chart modal price badge */
+  .chart-modal-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .chart-modal-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .chart-price-badge {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+  }
+  .chart-price-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .chart-price-unit {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-3);
+    line-height: 1;
+  }
+  .chart-price-change {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    line-height: 1.4;
+  }
+  .chart-price-change.positive { color: #16a34a; background: rgba(22,163,74,0.12); }
+  .chart-price-change.negative { color: #dc2626; background: rgba(220,38,38,0.12); }
+  .chart-price-change.flat { color: var(--text-3); background: var(--bg); }
   }
