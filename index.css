@@ -6791,7 +6791,7 @@
   }
 
   /* Segmented control layout for Forex toggles */
-  .forex-toggle-btns, .forex-period-btns, .brent-period-btns, .jetfuel-period-btns {
+  .forex-toggle-btns, .forex-period-btns, .brent-period-btns, .jetfuel-period-btns, .wci-period-btns {
     display: flex;
     background: var(--bg);
     padding: 3px;
