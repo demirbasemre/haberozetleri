@@ -9809,9 +9809,7 @@ async function loadDashboard() {
   function startDashboardPolling() {
     if (_dashboardPollInterval) return;
 
-    _dashboardPollInterval = setInterval(() => {
-      if (document.visibilityState !== 'visible') return;
-
+    function updateTimers(isTick = false) {
       Object.entries(_marketStatusConfig).forEach(([cardId, cfg]) => {
         const cardEl = document.getElementById(cardId);
         if (!cardEl) return;
@@ -9869,7 +9867,7 @@ async function loadDashboard() {
         };
 
         // Açık piyasalar için geri sayımı yürüt
-        if (status.isOpen && cfg.countdown !== null) {
+        if (isTick && status.isOpen && cfg.countdown !== null) {
           cfg.countdown--;
           if (cfg.countdown < 0) {
             cfg.countdown = cfg.interval;
@@ -9886,6 +9884,14 @@ async function loadDashboard() {
           }
         }
       });
+    }
+
+    // İlk yüklemede flaşsız, anında doğru gösterim için çalıştır
+    updateTimers(false);
+
+    _dashboardPollInterval = setInterval(() => {
+      if (document.visibilityState !== 'visible') return;
+      updateTimers(true);
     }, 1000);
   }
   startDashboardPolling();
