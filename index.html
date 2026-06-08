@@ -9880,7 +9880,7 @@ async function loadDashboard() {
       allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
     }
     const isoToTR = iso => { const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
-    const csv = '﻿' + 'Tarih,WCI (USD)\n' + allData.map(d => `${isoToTR(d.date)},${d.value}`).join('\n');
+    const csv = '﻿' + 'Tarih;WCI (USD)\n' + allData.map(d => `${isoToTR(d.date)};${d.value}`).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -9900,8 +9900,8 @@ async function loadDashboard() {
     const labels = chart.data.labels || [];
     const values = (chart.data.datasets[0] || {}).data || [];
     const isoToTR = iso => { const [y, m, d] = (iso || '').split('-'); return (d && m && y) ? `${d}.${m}.${y}` : (iso || ''); };
-    const csv = '﻿' + colLabel + ',' + colValue + '\n' +
-      labels.map((l, i) => `${isoToTR(rawDates[i] || l)},${values[i] ?? ''}`).join('\n');
+    const csv = '﻿' + colLabel + ';' + colValue + '\n' +
+      labels.map((l, i) => `${isoToTR(rawDates[i] || l)};${values[i] ?? ''}`).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
