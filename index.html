@@ -8162,7 +8162,7 @@ async function loadDashboard() {
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         const symbol = currency === 'USD' ? '$' : '€';
-        titleEl.textContent = `${symbol} Kuru`;
+        titleEl.textContent = 'Döviz Kuru';
         
         // Dynamic dashboard sync
         const cardValEl = document.getElementById(`forex-${currency.toLowerCase()}-val`);
