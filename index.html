@@ -9493,19 +9493,50 @@ async function loadDashboard() {
           ctx.save();
           
           const events = [
+            { dateIso: '2025-06-05', label: 'Kızıldeniz Navlun Artışı (Haz \'25)', color: '#D97706' },
+            { dateIso: '2026-01-08', label: 'Gümrük & De Minimis (Oca \'26)', color: '#F59E0B' },
             { dateIso: '2026-02-26', label: 'Ortadoğu Savaşı (28 Şub)', color: '#E63946' }
           ];
-          
+
+          const rawDatesArray = chart.$rawDates || rawDates;
+          if (!rawDatesArray || rawDatesArray.length === 0) {
+            ctx.restore();
+            return;
+          }
+
+          const firstDate = new Date(rawDatesArray[0]).getTime();
+          const lastDate = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+
+          const drawnPills = [];
+
           events.forEach(event => {
-            const index = rawDates.indexOf(event.dateIso);
-            if (index === -1) return;
+            const targetTime = new Date(event.dateIso).getTime();
             
-            const xPos = x.getPixelForValue(index);
+            if (targetTime < firstDate || targetTime > lastDate) return;
+
+            let closestIndex = -1;
+            let minDiff = Infinity;
+            for (let i = 0; i < rawDatesArray.length; i++) {
+              const time = new Date(rawDatesArray[i]).getTime();
+              const diff = Math.abs(time - targetTime);
+              if (diff < minDiff) {
+                minDiff = diff;
+                closestIndex = i;
+              }
+            }
+
+            if (closestIndex === -1) return;
+
+            const totalSpan = lastDate - firstDate;
+            const threshold = Math.max(totalSpan * 0.1, 15 * 24 * 60 * 60 * 1000);
+            if (minDiff > threshold) return;
+
+            const xPos = x.getPixelForValue(closestIndex);
             
             // Noktayı kırmızı daireyle vurgula
             const meta = chart.getDatasetMeta(0);
-            const point = meta.data[index];
-            if (point) {
+            if (meta && meta.data && meta.data[closestIndex]) {
+              const point = meta.data[closestIndex];
               ctx.fillStyle = event.color;
               ctx.beginPath();
               ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
@@ -9539,13 +9570,41 @@ async function loadDashboard() {
             } else if (pillX + pillWidth > chartRight) {
               pillX = chartRight - pillWidth;
             }
+            
+            // Üst üste binmeyi önleyen konumlandırma
+            let hasOverlap = true;
+            let currentPillY = pillY;
+            while (hasOverlap) {
+              hasOverlap = false;
+              const x1 = pillX;
+              const x2 = pillX + pillWidth;
+              const y1 = currentPillY;
+              const y2 = currentPillY + pillHeight;
+              
+              for (const p of drawnPills) {
+                const overlapX = !(x2 < p.x1 - 4 || x1 > p.x2 + 4);
+                const overlapY = !(y2 < p.y1 - 2 || y1 > p.y2 + 2);
+                if (overlapX && overlapY) {
+                  hasOverlap = true;
+                  currentPillY += pillHeight + 6;
+                  break;
+                }
+              }
+            }
+            
+            drawnPills.push({
+              x1: pillX,
+              x2: pillX + pillWidth,
+              y1: currentPillY,
+              y2: currentPillY + pillHeight
+            });
 
             // Dikey kesikli çizgi (Pill altından başla)
             ctx.strokeStyle = event.color;
             ctx.lineWidth = 1.5;
             ctx.setLineDash([4, 4]);
             ctx.beginPath();
-            ctx.moveTo(xPos, pillY + pillHeight);
+            ctx.moveTo(xPos, currentPillY + pillHeight);
             ctx.lineTo(xPos, bottom);
             ctx.stroke();
             
@@ -9554,9 +9613,9 @@ async function loadDashboard() {
             ctx.fillStyle = event.color;
             ctx.beginPath();
             if (ctx.roundRect) {
-              ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 4);
+              ctx.roundRect(pillX, currentPillY, pillWidth, pillHeight, 4);
             } else {
-              ctx.rect(pillX, pillY, pillWidth, pillHeight);
+              ctx.rect(pillX, currentPillY, pillWidth, pillHeight);
             }
             ctx.fill();
             
@@ -9564,7 +9623,7 @@ async function loadDashboard() {
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(event.label, pillX + pillWidth / 2, pillY + pillHeight / 2 + 0.5);
+            ctx.fillText(event.label, pillX + pillWidth / 2, currentPillY + pillHeight / 2 + 0.5);
           });
           
           ctx.restore();
@@ -9590,6 +9649,7 @@ async function loadDashboard() {
         {
           forceRecreate: true,
           plugins: [wciAnnotationsPlugin],
+          rawDates: rawDates,
           xTickFont: function(context) {
             const label = context.tick ? context.tick.label : '';
             const isBold = label && (label.includes("'25") || label.includes("'26"));
