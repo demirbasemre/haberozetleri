@@ -2944,14 +2944,15 @@
     <div class="fin-cy-note" id="fin-cy-note">
       📐 <strong>Takvim yılı normalize modu (hibrit):</strong> Nisan–Mart mali yılı
       kullanan EK, QR, SQ, NH Ocak–Aralık takvim yılına hizalanır:
-      <em>CY(N) = FY(N)'in Oca–Mar çeyreği + FY(N+1)'in Nis–Ara kısmı</em>.
+      <em>CY(N) = FY(N−1)'in Oca–Mar çeyreği + FY(N)'in Nis–Ara kısmı</em>.
       <strong>SQ ve NH</strong>'de bu hesap 2011'den itibaren her yılın
       <strong>gerçek çeyreklik raporlarındaki</strong> Q4 payıyla birebir yapılır
       (ör. COVID yılı 2019'da pay ~%19.9'a düşer, toparlanma yılı 2021'de %28–32'ye çıkar).
       <strong>EK ve QR</strong> çeyreklik veri yayınlamadığından sabit tahmini pay kullanılır
       (EK %24.4 — yarı-yıllık rapordan; QR %25.0 — eşit çeyrek varsayımı).
       Mutlak değerlere uygulanır; büyüme ve marj metriklerine uygulanmaz.
-      Son yıl hesaplanamaz — <strong>—</strong> olarak gösterilir.
+      Serinin ilk yılı hesaplanamaz (bir önceki mali yıl gerekir) —
+      <strong>—</strong> olarak gösterilir.
     </div>
 
     <!-- Havayolu seçici -->
@@ -15487,8 +15488,9 @@ function getFYPeriodLabel(yearStr, fyEnd) {
 }
 
 // ── Takvim Yılı normalize: HİBRİT model ─────────────────────────────────
-// Birebir hesap: CY(N) = s(N) × FY(N) + (1 − s(N+1)) × FY(N+1)
+// Birebir hesap: CY(N) = s(N−1) × FY(N−1) + (1 − s(N)) × FY(N)
 //   s(y) = FY(y) içindeki Q4 (Oca–Mar) gelir payı.
+//   FY(N−1)'in Q4'ü = Oca–Mar N; FY(N)'in ilk 9 ayı = Nis–Ara N → toplam takvim yılı N.
 //   SQ ve NH çeyreklik raporladığı için s(y) yıl yıl GERÇEK değerdir
 //   (9 aylık ara rapor + yıllık rapor farkından: Q4 = FY − 9M).
 //   EK/QR çeyreklik veri yayınlamaz → sabit α tahminine düşülür.
@@ -15537,15 +15539,16 @@ function getEffectiveData(airline, slug, metric) {
 
   for (let i = 0; i < sortedYears.length; i++) {
     const y = sortedYears[i];
-    const yNext = String(parseInt(y) + 1);
-    const vy  = raw[y];
-    const vyn = raw[yNext];
-    if (vy != null && vyn != null) {
-      // CY(y) = FY(y)'nin Oca–Mar çeyreği + FY(y+1)'in Nis–Ara (ilk 9 ay) kısmı.
+    const yPrev = String(parseInt(y) - 1);
+    const vy = raw[y];
+    const vp = raw[yPrev];
+    if (vy != null && vp != null) {
+      // Takvim yılı N = Oca–Mar N (FY(N−1)'in son çeyreği) + Nis–Ara N (FY(N)'in ilk 9 ayı).
+      // FY etiketi başlangıç yılıdır: FY(N) = Nis N – Mar N+1.
       // Çeyreklik veri olan yıllarda birebir, olmayanlarda α tahmini.
-      result[y] = getCYShare(slug, y) * vy + (1 - getCYShare(slug, yNext)) * vyn;
+      result[y] = getCYShare(slug, yPrev) * vp + (1 - getCYShare(slug, y)) * vy;
     }
-    // Bir sonraki yıl yoksa → undefined (— gösterilir)
+    // Bir önceki yıl yoksa (serinin ilk yılı) → undefined (— gösterilir)
   }
   return result;
 }
