@@ -6541,20 +6541,34 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
     }
   }
 
-  if (existingChart && !extraOpts.forceRecreate) {
+  if (existingChart) {
+    // Yerinde güncelle — canvas asla temizlenmez, boş kare yanıp sönmez
     existingChart.data.labels = finalLabels;
-    existingChart.data.datasets = finalDatasets;
+    // Dataset nesnelerini Object.assign ile güncelle: Chart.js iç meta korunur
+    if (existingChart.data.datasets.length === finalDatasets.length) {
+      finalDatasets.forEach((ds, i) => Object.assign(existingChart.data.datasets[i], ds));
+    } else {
+      existingChart.data.datasets = finalDatasets;
+    }
     existingChart.$rawDates = finalRawDates;
     if (yFmt) {
-      if (!existingChart.options.scales) existingChart.options.scales = {};
-      if (!existingChart.options.scales.y) existingChart.options.scales.y = {};
-      if (!existingChart.options.scales.y.ticks) existingChart.options.scales.y.ticks = {};
       existingChart.options.scales.y.ticks.callback = yFmt;
     }
-    existingChart.update();
+    // X ekseni tick ayarlarını periyoda göre güncelle (xTickCallback değişebilir)
+    const xTicks = existingChart.options.scales.x.ticks;
+    if (extraOpts.xTickCallback) {
+      xTicks.callback   = extraOpts.xTickCallback;
+      xTicks.autoSkip   = false;
+      xTicks.maxRotation = 0;
+      delete xTicks.maxTicksLimit;
+    } else {
+      delete xTicks.callback;
+      xTicks.autoSkip      = true;
+      xTicks.maxTicksLimit = 8;
+    }
+    existingChart.update('none'); // anında render, animasyon yok, boş kare yok
     return;
   }
-  if (existingChart) existingChart.destroy();
   ctx.style.display = 'block';
   const newChart = new Chart(ctx, {
     type: 'line',
@@ -6562,7 +6576,6 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
     plugins: extraOpts.plugins || [],
     options: {
       ...CHART_DEFAULTS,
-      animation: false,
       plugins: {
         ...CHART_DEFAULTS.plugins,
         legend: {
