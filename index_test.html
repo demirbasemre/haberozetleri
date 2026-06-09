@@ -6566,7 +6566,8 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
       xTicks.autoSkip      = true;
       xTicks.maxTicksLimit = 8;
     }
-    existingChart.update('none'); // anında render, animasyon yok, boş kare yok
+    existingChart.stop(); // süregelen animasyonu kes — takılmayı önler
+    existingChart.update({ duration: 280, easing: 'easeOutQuart' });
     return;
   }
   ctx.style.display = 'block';
