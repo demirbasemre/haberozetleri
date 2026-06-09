@@ -154,6 +154,27 @@
     display: flex; align-items: center; gap: 4px;
   }
   .fin-type-btn--active, .fin-range-btn--active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .fin-cy-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 7px; font-size: 11px; font-weight: 700;
+    cursor: pointer; border: 1.5px solid var(--border); background: var(--bg);
+    color: var(--text-3); transition: all 0.15s;
+  }
+  .fin-cy-btn:hover { border-color: #F59E0B; color: #92400E; background: #F59E0B10; }
+  .fin-cy-btn--active {
+    background: #FEF3C7; border-color: #F59E0B; color: #92400E;
+  }
+  [data-theme="dark"] .fin-cy-btn--active {
+    background: #F59E0B18; border-color: #F59E0B55; color: #FCD34D;
+  }
+  .fin-cy-note {
+    font-size: 10.5px; color: #92400E; background: #FEF3C740;
+    border: 1px solid #F59E0B44; border-radius: 6px;
+    padding: 5px 10px; margin-top: 6px; display: none;
+    line-height: 1.5;
+  }
+  [data-theme="dark"] .fin-cy-note { color: #FCD34D; background: #F59E0B0D; border-color: #F59E0B33; }
+  .fin-cy-note.visible { display: block; }
 
   .fin-airline-toggles {
     display: flex; flex-wrap: wrap; gap: 6px; padding-bottom: 12px;
@@ -169,6 +190,16 @@
   .fin-atoggle:hover { transform: translateY(-1px); }
   .fin-atoggle.hidden { opacity: 0.28; }
   .fin-atoggle-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .fin-atoggle-logo { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; object-fit: contain; }
+  .fin-airline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .fin-airline-header-label { font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
+  .fin-deselect-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 10px; font-size: 10.5px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--border); background: var(--bg);
+    color: var(--text-3); transition: all 0.15s;
+  }
+  .fin-deselect-btn:hover { border-color: #DC2626; color: #DC2626; background: #DC262611; }
 
   .fin-chart-section {
     background: var(--surface); border: 1px solid var(--border);
@@ -193,23 +224,114 @@
     background: var(--bg);
   }
   .fin-table-note { font-size: 11px; color: var(--text-3); }
+  /* Mali dönem bilgisi */
+  .fin-fy-bar {
+    border-top: 1px solid var(--border-soft);
+    background: color-mix(in srgb, var(--surface) 50%, #F59E0B08 50%);
+  }
+  .fin-fy-toggle {
+    display: flex; align-items: center; gap: 6px; width: 100%;
+    padding: 7px 16px; cursor: pointer; font-size: 11.5px; font-weight: 600;
+    color: var(--text-2); background: none; border: none;
+    transition: color 0.15s;
+  }
+  .fin-fy-toggle:hover { color: var(--text); }
+  .fin-fy-icon { font-size: 13px; flex-shrink: 0; }
+  .fin-fy-chevron { margin-left: auto; transition: transform 0.2s; font-size: 10px; }
+  .fin-fy-toggle[aria-expanded="true"] .fin-fy-chevron { transform: rotate(180deg); }
+  .fin-fy-panel {
+    padding: 0 16px 12px; display: none;
+  }
+  .fin-fy-panel.open { display: block; }
+  .fin-fy-desc {
+    font-size: 11.5px; color: var(--text-2); line-height: 1.6;
+    padding: 8px 12px; background: var(--bg); border-radius: 7px;
+    border-left: 3px solid #F59E0B; margin-bottom: 10px;
+  }
+  .fin-fy-airlines {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
+  }
+  .fin-fy-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 600;
+    background: #F59E0B18; border: 1px solid #F59E0B44; color: #92400E;
+  }
+  [data-theme="dark"] .fin-fy-chip { color: #FCD34D; background: #F59E0B14; border-color: #F59E0B33; }
+  .fin-fy-chip img { width: 13px; height: 13px; border-radius: 2px; }
+  /* Dönem satırı (tabloda) */
+  .fin-period-row td {
+    font-size: 9.5px; color: var(--text-3); font-weight: 500;
+    padding: 3px 12px 5px; text-align: right; background: var(--bg);
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .fin-period-row td:first-child { text-align: left; }
+  .fin-period-cell--alt {
+    color: #B45309; font-weight: 700;
+  }
+  [data-theme="dark"] .fin-period-cell--alt { color: #FCD34D; }
+  /* Havayolu adının yanındaki dönem rozeti */
+  .fin-fy-badge {
+    display: inline-flex; align-items: center;
+    padding: 1px 5px; border-radius: 4px; font-size: 9px; font-weight: 700;
+    background: #F59E0B18; color: #92400E; border: 1px solid #F59E0B33;
+    margin-left: 4px; vertical-align: middle; white-space: nowrap;
+  }
+  [data-theme="dark"] .fin-fy-badge { color: #FCD34D; background: #F59E0B14; }
+  /* Dönem göster toggle */
+  .fin-period-toggle-wrap {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--text-3); cursor: pointer;
+    padding: 4px 0;
+  }
+  .fin-period-toggle-wrap input { accent-color: var(--accent); cursor: pointer; }
+  .fin-period-toggle-wrap:hover { color: var(--text); }
   .fin-table-wrap { overflow-x: auto; }
   .fin-cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
   .fin-cmp-table th {
     background: var(--navy); color: rgba(255,255,255,0.85);
     padding: 8px 12px; text-align: right; font-size: 11px; font-weight: 600;
     white-space: nowrap; border-bottom: 2px solid rgba(255,255,255,0.1);
+    cursor: pointer; user-select: none; transition: background 0.15s;
+    position: relative;
+  }
+  .fin-cmp-table th:hover { background: color-mix(in srgb, var(--navy) 80%, white 20%); }
+  .fin-cmp-table th[aria-sort="ascending"],
+  .fin-cmp-table th[aria-sort="descending"] {
+    background: color-mix(in srgb, var(--navy) 70%, var(--accent) 30%);
   }
   .fin-cmp-table th:first-child { text-align: left; min-width: 160px; }
+  .fin-sort-icon {
+    display: inline-block; margin-left: 4px; font-size: 9px; opacity: 0.35;
+    transition: opacity 0.15s, transform 0.2s;
+    vertical-align: middle; line-height: 1;
+  }
+  th[aria-sort="ascending"] .fin-sort-icon,
+  th[aria-sort="descending"] .fin-sort-icon { opacity: 1; }
   .fin-cmp-table td {
     padding: 7px 12px; text-align: right; border-bottom: 1px solid var(--border-soft);
-    color: var(--text); white-space: nowrap;
+    color: var(--text); white-space: nowrap; transition: background 0.12s;
+    position: relative;
   }
   .fin-cmp-table td:first-child { text-align: left; font-weight: 600; }
   .fin-cmp-table tr:hover td { background: var(--bg); }
   .fin-cell-pos { color: #059669; font-weight: 600; }
   .fin-cell-neg { color: #DC2626; font-weight: 600; }
   .fin-cell-na  { color: var(--text-3); }
+  /* Sıralanmış sütun */
+  .fin-col-sorted { background: rgba(99,102,241,0.055); }
+  [data-theme="dark"] .fin-col-sorted { background: rgba(99,102,241,0.10); }
+  .fin-cmp-table tr:hover .fin-col-sorted { background: color-mix(in srgb, var(--bg) 70%, rgba(99,102,241,0.12) 30%); }
+  /* Sıra rozeti */
+  .fin-rank {
+    display: inline-block; font-size: 9px; font-weight: 800;
+    color: var(--text-3); min-width: 18px; margin-right: 3px;
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .fin-rank--top { color: var(--accent); }
+  /* Tablo header sort hint */
+  .fin-table-sort-hint {
+    font-size: 10px; color: var(--text-3); display: flex; align-items: center; gap: 4px;
+  }
   @media (max-width: 768px) {
     .fin-control-bar { gap: 8px; }
     .fin-chart-wrap { height: 220px; }
@@ -2801,9 +2923,33 @@
           <button class="fin-range-btn" data-range="99">Max</button>
         </div>
       </div>
+      <!-- Takvim Yılı modu -->
+      <div class="fin-ctrl-group">
+        <span class="fin-ctrl-label">Mali Yıl</span>
+        <button class="fin-cy-btn" id="fin-cy-toggle" onclick="toggleFinCYMode()"
+            title="Nisan-Mart FY havayollarını Ocak-Aralık takvim yılına hizala">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          CY Normalize
+        </button>
+      </div>
+    </div>
+    <div class="fin-cy-note" id="fin-cy-note">
+      📐 <strong>Takvim yılı normalize modu:</strong> EK, QR, SQ, NH için
+      <em>CY(N) = α × FY(N) + (1−α) × FY(N+1)</em> formülü uygulanır
+      (α: gerçek çeyreklik raporlardan hesaplanan Q4 payı —
+      SQ %24.9, NH %24.8, EK %24.4, QR %25.0).
+      Mutlak değerlere uygulanır; büyüme ve marj metriklerine uygulanmaz.
+      Son yıl hesaplanamaz — <strong>—</strong> olarak gösterilir.
     </div>
 
     <!-- Havayolu seçici -->
+    <div class="fin-airline-header">
+      <span class="fin-airline-header-label">Havayolları</span>
+      <div style="display:flex;gap:5px">
+        <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Sıfırla</button>
+        <button class="fin-deselect-btn" onclick="deselAllFinAirlines()" title="Tümünü tablodan kaldır">— Tümünü Gizle</button>
+      </div>
+    </div>
     <div class="fin-airline-toggles" id="fin-airline-toggles"></div>
 
     <!-- Ana grafik -->
@@ -2821,7 +2967,10 @@
     <div class="fin-table-section">
       <div class="fin-table-header">
         <span class="fin-chart-title" id="fin-table-title">Toplam Gelir · Havayolu Karşılaştırması</span>
-        <span class="fin-table-note">Tüm değerler USD · Eksik veri: —</span>
+        <span class="fin-table-sort-hint">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+          Sütun başlığına tıklayarak sırala
+        </span>
       </div>
       <div class="fin-table-wrap">
         <table class="fin-cmp-table" id="fin-cmp-table">
@@ -2829,16 +2978,36 @@
           <tbody id="fin-cmp-tbody"></tbody>
         </table>
       </div>
+      <!-- Mali dönem uyarısı -->
+      <div class="fin-fy-bar">
+        <button class="fin-fy-toggle" onclick="toggleFinFY()" aria-expanded="false" id="fin-fy-btn">
+          <svg class="fin-fy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Mali Dönem Uyarısı — 4 havayolu Nisan–Mart mali yılı kullanır
+          <svg class="fin-fy-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="fin-fy-panel" id="fin-fy-panel">
+          <div class="fin-fy-desc">
+            <strong>Emirates, Qatar Airways, Singapore Airlines ve ANA</strong> havayolları <strong>Nisan–Mart mali yılı</strong> kullanır.
+            Bu nedenle tablodaki <em>"2025"</em> etiketi bu havayolları için <strong>Nisan 2024 – Mart 2025</strong> dönemini,
+            diğerleri için ise <strong>Ocak – Aralık 2025</strong> dönemini ifade eder.
+          </div>
+          <div class="fin-fy-airlines" id="fin-fy-airline-list"><!-- JS ile doldurulur --></div>
+          <label class="fin-period-toggle-wrap">
+            <input type="checkbox" id="fin-show-periods" onchange="toggleFinPeriodRow(this.checked)">
+            Tabloda dönem aralığını göster
+          </label>
+        </div>
+      </div>
     </div>
 
     <!-- Kaynak Açıklaması -->
     <div class="fin-sources-section">
-      <button class="fin-sources-toggle" onclick="toggleFinSources()" aria-expanded="false" id="fin-src-toggle">
+      <button class="fin-sources-toggle" onclick="toggleFinSources()" aria-expanded="true" id="fin-src-toggle">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
         Veri Kaynakları
         <svg class="fin-src-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="fin-sources-panel" id="fin-sources-panel" style="display:none">
+      <div class="fin-sources-panel" id="fin-sources-panel">
         <p class="fin-src-intro">
           Tüm finansal veriler ilgili havayollarının <strong>resmi yıllık raporları</strong>ndan derlenmiştir.
           Değerler döviz kuru esas alınarak <strong>USD</strong>'ye dönüştürülmüştür.
@@ -15274,7 +15443,75 @@ let _finMetric = 'total_revenue_musd';
 let _finChartType = 'line';
 let _finRange = 5;
 let _finHidden = new Set();
+let _finSort   = { col: null, dir: 'none' }; // col: 'airline' | yıl string, dir: 'none'|'asc'|'desc'
+let _finShowPeriods = false;
+let _finCYMode = false;    // Takvim Yılı normalize modu
 let _finBuilt = false;
+
+// ── Mali yıl sonu ayları (Aralık=12 varsayılan; belirtilenler farklı)
+const FIN_FISCAL_YEAR_END = {
+  'EK': 3,   // Emirates:           Nisan–Mart
+  'QR': 3,   // Qatar Airways:      Nisan–Mart
+  'SQ': 3,   // Singapore Airlines: Nisan–Mart
+  'NH': 3,   // ANA Holdings:       Nisan–Mart (Japon mali yılı)
+};
+function getFYEnd(slug)   { return FIN_FISCAL_YEAR_END[slug] || 12; }
+function isNonDecFY(slug) { return getFYEnd(slug) !== 12; }
+
+// Yıl etiketi için takvim dönem aralığı açıklaması
+const TR_MONTHS = ['','Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+function getFYPeriodLabel(yearStr, fyEnd) {
+  const y = parseInt(yearStr);
+  if (fyEnd === 12) return `Oca – Ara ${y}`;
+  // fyEnd=3 → Nisan(y-1) – Mart(y)
+  const startM = (fyEnd % 12) + 1;  // ay sonrası = başlangıç
+  return `${TR_MONTHS[startM]} ${y-1} – ${TR_MONTHS[fyEnd]} ${y}`;
+}
+
+// ── Takvim Yılı normalize katsayıları (alpha = Q4'ün yıllık pay'ı) ──────
+// CY(N) ≈ alpha × FY(N) + (1-alpha) × FY(N+1)
+// Kaynak: Havayollarının kamuya açık çeyreklik/yarı-yıllık sonuçları
+// SQ: FY23/24 ve FY24/25 çeyreklik gelir ortalaması (Kaynak: SIA press releases)
+// NH: FY23/24 ve FY24/25 çeyreklik gelir ortalaması (Kaynak: ANA Holdings IR)
+// EK: H1 FY24/25 yarı-yıllık sonuç → Q4 ≈ H2/2 (Kaynak: Emirates Group)
+// QR: Çeyreklik veri kamuya açık değil → eşit çeyrek varsayımı (0.25)
+const FIN_CY_ALPHA = {
+  // Kaynak: Havayollarının kamuya açık çeyreklik/yarı-yıllık basın açıklamaları
+  // Yöntem: CY(N) = α × FY(N) + (1-α) × FY(N+1)  |  α = Q4(Oca-Mar) / yıllık gelir
+  'SQ': 0.249,  // %24.9 — SG Airlines: Q4/FY23-24=%25.1, Q4/FY24-25=%24.7 ort.
+                //   9M FY23/24=14,244M; FY=19,013M → Q4=4,769M | 9M FY24/25=14,716M; FY=19,540M → Q4=4,824M
+  'NH': 0.248,  // %24.8 — ANA Holdings: Q4/FY23-24=%24.9, Q4/FY24-25=%24.7 ort.
+                //   Q4 FY24(Apr24-Mar25)=¥559.0B/¥2261.8B; Q4 FY23=¥512.3B/¥2055.9B (IR PDF)
+  'EK': 0.244,  // %24.4 — Emirates: H1 FY24/25=%51.2 → Q4≈H2/2=%24.4 (yarı-yıllık veri)
+  'QR': 0.250,  // %25.0 — Qatar Airways: çeyreklik veri kamuya açık değil; eşit çeyrek
+};
+function getCYAlpha(slug) { return FIN_CY_ALPHA[slug] ?? 0.25; }
+
+// Sadece mutlak değer metriklerine uygulanır; yüzdeler ham kalır.
+function getEffectiveData(airline, slug, metric) {
+  const raw = getMetricValues(airline, metric);
+  if (!_finCYMode || !isNonDecFY(slug)) return raw;
+
+  const def = FIN_METRIC_MAP[metric];
+  // Yüzde metrikleri dönüştürme
+  if (!def || def.fmt === 'pct' || def.fmt === 'pct_s') return raw;
+
+  const alpha = getCYAlpha(slug);   // Gerçek çeyreklik veri tabanlı katsayı
+  const result = {};
+  const sortedYears = Object.keys(raw).sort();
+
+  for (let i = 0; i < sortedYears.length; i++) {
+    const y = sortedYears[i];
+    const yNext = String(parseInt(y) + 1);
+    const vy  = raw[y];
+    const vyn = raw[yNext];
+    if (vy != null && vyn != null) {
+      result[y] = alpha * vy + (1 - alpha) * vyn;
+    }
+    // Bir sonraki yıl yoksa → undefined (— gösterilir)
+  }
+  return result;
+}
 
 // Metrik tanımları — 4 renk grubu
 const FIN_METRIC_DEFS = [
@@ -15330,6 +15567,35 @@ function fmtFinVal(v, fmt) {
   }
 }
 
+// Havayolu favicon domain haritası
+// Haberler'deki logos haritasıyla birebir uyumlu — doğrudan URL saklanır
+(function() {
+  const F = d => `https://www.google.com/s2/favicons?sz=32&domain=${d}`;
+  const _FIN_LOGO_MAP = {
+    'QR':  F('qatarairways.com'),
+    'EK':  F('emirates.com'),
+    'TK':  F('turkishairlines.com'),
+    'AF':  F('airfrance.com'),           // airfranceklm.com değil
+    'CI':  F('china-airlines.com'),
+    'CX':  F('cathaypacific.com'),
+    'ET':  F('ethiopianairlines.com'),
+    'LH':  F('lufthansa.com'),           // lufthansagroup.com değil
+    'LA':  F('latamairlines.com'),       // latam.com değil
+    'KE':  F('koreanair.com'),
+    'CA':  F('airchina.com'),            // .com.cn → uluslararası domain
+    'SQ':  F('singaporeair.com'),
+    'OZ':  F('flyasiana.com'),
+    'SV':  F('saudia.com'),
+    'NH':  F('ana.co.jp'),               // ANA Airlines
+    'ETI': F('etihad.com'),
+    'CZ':  'https://companieslogo.com/img/orig/600029.SS-e7ea2d1d.png?t=1720244490',
+    'AV':  F('avianca.com'),
+    'CV':  F('cargolux.com'),
+    'A4B': F('ajet.com'),
+  };
+  window.finLogoUrl = function(slug) { return _FIN_LOGO_MAP[slug] || ''; };
+})();
+
 window.initFinansalTab = function() {
   if (!FIN_DATA) {
     setTimeout(initFinansalTab, 200);
@@ -15339,23 +15605,49 @@ window.initFinansalTab = function() {
   _finBuilt = true;
   buildFinToggles();
   bindFinControls();
+  // Akıllı varsayılan: en son yıla göre büyükten küçüğe
+  const _initYears = getFinYears();
+  if (_initYears.length && _finSort.col === null) {
+    _finSort = { col: _initYears[_initYears.length - 1], dir: 'desc' };
+  }
   renderFinChart();
   renderFinTable();
+  // Veri kaynakları varsayılan açık — içeriği hemen oluştur
+  if (!_finSrcBuilt) {
+    _finSrcBuilt = true;
+    buildFinSourcesGrid();
+  }
 };
 
 function buildFinToggles() {
   const cont = document.getElementById('fin-airline-toggles');
   if (!cont) return;
   cont.innerHTML = Object.entries(FIN_DATA).map(([slug, d]) => {
-    const bg = d.color + '22'; // 13% opacity
+    const bg = d.color + '22';
+    const logo = finLogoUrl(slug);
+    const logoEl = logo
+      ? `<img class="fin-atoggle-logo" src="${logo}" alt="" onerror="this.style.display='none'">`
+      : `<span class="fin-atoggle-dot" style="background:${d.color}"></span>`;
     return `<button class="fin-atoggle" data-slug="${slug}"
       style="background:${bg};border-color:${d.color};color:${d.color}"
       onclick="toggleFinAirline('${slug}')">
-      <span class="fin-atoggle-dot" style="background:${d.color}"></span>
-      ${d.name}
+      ${logoEl}${d.name}
     </button>`;
   }).join('');
 }
+
+window.deselAllFinAirlines = function() {
+  Object.keys(FIN_DATA || {}).forEach(slug => _finHidden.add(slug));
+  document.querySelectorAll('.fin-atoggle').forEach(b => b.classList.add('hidden'));
+  renderFinChart();
+  renderFinTable();
+};
+window.resetFinAirlines = function() {
+  _finHidden.clear();
+  document.querySelectorAll('.fin-atoggle').forEach(b => b.classList.remove('hidden'));
+  renderFinChart();
+  renderFinTable();
+};
 
 window.toggleFinAirline = function(slug) {
   if (_finHidden.has(slug)) _finHidden.delete(slug);
@@ -15432,7 +15724,7 @@ function renderFinChart() {
   const datasets = Object.entries(FIN_DATA || {})
     .filter(([slug]) => !_finHidden.has(slug))
     .map(([slug, airline]) => {
-      const metricData = getMetricValues(airline, _finMetric);
+      const metricData = getEffectiveData(airline, slug, _finMetric);
       const data = years.map(y => {
         const v = metricData[y];
         if (v == null) return null;
@@ -15498,6 +15790,12 @@ function renderFinChart() {
               if (d2.fmt === 'pct' || d2.fmt === 'pct_s') return v + '%';
               if (d2.fmt === 'pax') return v + 'M';
               if (d2.fmt === 'munit') return v + 'B';
+              if (d2.fmt === 'count') {
+                // Çalışan sayısı — para birimi gösterme
+                const abs = Math.abs(v);
+                if (abs >= 1000) return (v/1000).toFixed(0) + 'k';
+                return Math.round(v).toLocaleString('tr-TR');
+              }
               const abs = Math.abs(v);
               if (abs >= 1000) return (v/1000).toFixed(1) + 'B$';
               return v + 'M$';
@@ -15509,43 +15807,197 @@ function renderFinChart() {
   });
 }
 
+// Sıralama ikonları
+function _sortIcon(col) {
+  if (_finSort.col !== col) return '<span class="fin-sort-icon">⇅</span>';
+  return _finSort.dir === 'asc'
+    ? '<span class="fin-sort-icon">↑</span>'
+    : '<span class="fin-sort-icon">↓</span>';
+}
+function _ariaSort(col) {
+  if (_finSort.col !== col) return 'none';
+  return _finSort.dir === 'asc' ? 'ascending' : 'descending';
+}
+
 function renderFinTable() {
   const thead = document.getElementById('fin-cmp-thead');
   const tbody = document.getElementById('fin-cmp-tbody');
   if (!thead || !tbody) return;
   const years = getFinYears();
-
-  // Yıl başlıklarına kaynak linkleri — birden fazla havayolunda aynı yıl için farklı link
-  // En yaygın kaynağı (QR, TK gibi büyük havayolları) göster
-  thead.innerHTML = `<tr>
-    <th>Havayolu</th>
-    ${years.map(y => `<th>${y}</th>`).join('')}
-  </tr>`;
-
-  const def2 = FIN_METRIC_MAP[_finMetric];
+  const def2  = FIN_METRIC_MAP[_finMetric];
   const isSigned = def2?.fmt === 'musd_s' || def2?.fmt === 'pct_s';
 
-  tbody.innerHTML = Object.entries(FIN_DATA || {})
-    .filter(([slug]) => !_finHidden.has(slug))
-    .map(([slug, airline]) => {
-      const metricData = getMetricValues(airline, _finMetric);
-      const cells = years.map(y => {
-        const v = metricData[y];
-        if (v == null) return `<td class="fin-cell-na">—</td>`;
-        const label = fmtFinVal(v, def2?.fmt || 'musd');
-        const cls = isSigned ? (v >= 0 ? 'fin-cell-pos' : 'fin-cell-neg') : '';
-        return `<td class="${cls}">${label}</td>`;
-      }).join('');
-      const note = airline.k1note ? ` <span style="font-size:9px;color:var(--text-3)">(${airline.k1note})</span>` : '';
-      return `<tr>
-        <td><span style="display:inline-flex;align-items:center;gap:6px">
-          <span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0"></span>
-          ${airline.name}${note}
-        </span></td>
-        ${cells}
-      </tr>`;
+  // ── Veri sıralama (önce entries hazırla, thead buna bakar) ──
+  let entries = Object.entries(FIN_DATA || {}).filter(([slug]) => !_finHidden.has(slug));
+  const sc = _finSort.col, sd = _finSort.dir;
+
+  if (sc === 'airline') {
+    entries.sort(([,a],[,b]) => a.name.localeCompare(b.name, 'tr'));
+    if (sd === 'desc') entries.reverse();
+  } else if (sc && years.includes(sc)) {
+    entries.sort(([slugA,a],[slugB,b]) => {
+      const va = getEffectiveData(a, slugA, _finMetric)[sc] ?? null;
+      const vb = getEffectiveData(b, slugB, _finMetric)[sc] ?? null;
+      if (va === null && vb === null) return 0;
+      if (va === null) return 1;  // null → en alta
+      if (vb === null) return -1;
+      return sd === 'asc' ? va - vb : vb - va;
+    });
+  }
+
+  // ── Sıralı sütun için max değer (data bar) ───────────────
+  let maxSortedAbs = 0;
+  if (sc && years.includes(sc)) {
+    entries.forEach(([slug,a]) => {
+      const v = getEffectiveData(a, slug, _finMetric)[sc];
+      if (v != null) maxSortedAbs = Math.max(maxSortedAbs, Math.abs(v));
+    });
+  }
+
+  // ── Sıra haritası (sadece sıralı sayısal sütun için) ─────
+  const rankMap = {};
+  if (sc && years.includes(sc)) {
+    let rank = 1;
+    entries.forEach(([slug,a]) => {
+      const v = getEffectiveData(a, slug, _finMetric)[sc];
+      if (v != null) rankMap[slug] = rank++;
+    });
+  }
+
+  // ── Başlık satırı (entries hazır olduktan sonra oluştur) ──
+  const hasNonDec = entries.some(([s]) => isNonDecFY(s));
+
+  thead.innerHTML = `<tr>
+    <th aria-sort="${_ariaSort('airline')}"
+        onclick="sortFinTable('airline')"
+        title="Havayoluna göre sırala (A→Z / Z→A)">
+      Havayolu ${_sortIcon('airline')}
+    </th>
+    ${years.map(y => {
+      const decLabel = getFYPeriodLabel(y, 12);
+      const marLabel = getFYPeriodLabel(y, 3);
+      const ttip = hasNonDec
+        ? `Ara-FY: ${decLabel} | Nis-Mar FY: ${marLabel}`
+        : decLabel;
+      return `<th aria-sort="${_ariaSort(y)}" onclick="sortFinTable('${y}')" title="${ttip}">
+        ${y} ${_sortIcon(y)}
+      </th>`;
+    }).join('')}
+  </tr>
+  ${_finShowPeriods ? `<tr class="fin-period-row">
+    <td>Dönem aralığı</td>
+    ${years.map(y => {
+      const decLabel = getFYPeriodLabel(y, 12);
+      const marLabel = getFYPeriodLabel(y, 3);
+      return hasNonDec
+        ? `<td><span style="display:block">${decLabel}</span><span class="fin-period-cell--alt">${marLabel}</span></td>`
+        : `<td>${decLabel}</td>`;
+    }).join('')}
+  </tr>` : ''}`;
+
+  // ── Satır oluşturma ──────────────────────────────────────
+  tbody.innerHTML = entries.map(([slug, airline]) => {
+    const metricData = getEffectiveData(airline, slug, _finMetric);
+
+    const cells = years.map(y => {
+      const v = metricData[y];
+      const isSortedCol = sc === y;
+      const colCls = isSortedCol ? ' fin-col-sorted' : '';
+
+      if (v == null) return `<td class="fin-cell-na${colCls}">—</td>`;
+
+      const label  = fmtFinVal(v, def2?.fmt || 'musd');
+      const signCls = isSigned ? (v >= 0 ? ' fin-cell-pos' : ' fin-cell-neg') : '';
+
+      // Data bar: sıralı sütunda orantılı arka plan
+      let barStyle = '';
+      if (isSortedCol && maxSortedAbs > 0) {
+        const pct  = Math.round((Math.abs(v) / maxSortedAbs) * 72);
+        const clr  = v < 0 ? '#DC262618' : '#6366F118';
+        barStyle = ` style="background:linear-gradient(90deg,${clr} ${pct}%,transparent ${pct}%)"`;
+      }
+
+      // Sıra rozeti
+      const rank = rankMap[slug];
+      const rankHtml = (isSortedCol && rank)
+        ? `<span class="fin-rank${rank <= 3 ? ' fin-rank--top' : ''}">#${rank}</span>`
+        : '';
+
+      return `<td class="${signCls}${colCls}"${barStyle}>${rankHtml}${label}</td>`;
     }).join('');
+
+    const note   = airline.psnote ? ` <span style="font-size:9px;color:var(--text-3)">(${airline.psnote})</span>` : '';
+    const logo   = finLogoUrl(slug);
+    const logoEl = logo
+      ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0;display:block" alt="" onerror="this.style.display='none'">`
+      : `<span style="width:10px;height:10px;border-radius:3px;background:${airline.color};flex-shrink:0;display:inline-block"></span>`;
+    const nameCls = sc === 'airline' ? ' fin-col-sorted' : '';
+    const fyEnd = getFYEnd(slug);
+    const fyBadge = fyEnd !== 12
+      ? `<span class="fin-fy-badge" title="Mali yıl: Nis–${TR_MONTHS[fyEnd]} (Oca–Ara değil)">Nis–Mar</span>`
+      : '';
+
+    return `<tr>
+      <td class="${nameCls}">
+        <span style="display:inline-flex;align-items:center;gap:7px">
+          ${logoEl}
+          <span style="font-weight:700;color:${airline.color}">${airline.name}${note}</span>${fyBadge}
+        </span>
+      </td>
+      ${cells}
+    </tr>`;
+  }).join('');
 }
+
+window.toggleFinCYMode = function() {
+  _finCYMode = !_finCYMode;
+  const btn  = document.getElementById('fin-cy-toggle');
+  const note = document.getElementById('fin-cy-note');
+  if (btn)  btn.classList.toggle('fin-cy-btn--active', _finCYMode);
+  if (note) note.classList.toggle('visible', _finCYMode);
+  renderFinChart();
+  renderFinTable();
+};
+
+window.toggleFinFY = function() {
+  const panel = document.getElementById('fin-fy-panel');
+  const btn   = document.getElementById('fin-fy-btn');
+  if (!panel || !btn) return;
+  const isOpen = btn.getAttribute('aria-expanded') === 'true';
+  panel.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', String(!isOpen));
+  // Airline chip listesini doldur (ilk açılışta)
+  const list = document.getElementById('fin-fy-airline-list');
+  if (list && list.childElementCount === 0) {
+    list.innerHTML = Object.entries(FIN_FISCAL_YEAR_END).map(([slug, fyEnd]) => {
+      const d = (FIN_DATA || {})[slug];
+      if (!d) return '';
+      const logo = finLogoUrl(slug);
+      const logoEl = logo
+        ? `<img src="${logo}" alt="" onerror="this.style.display='none'">`
+        : '';
+      return `<span class="fin-fy-chip">${logoEl}${d.name} — Nis–${TR_MONTHS[fyEnd]}</span>`;
+    }).join('');
+  }
+};
+
+window.toggleFinPeriodRow = function(show) {
+  _finShowPeriods = show;
+  renderFinTable();
+};
+
+window.sortFinTable = function(col) {
+  if (_finSort.col === col) {
+    // none → desc → asc → none döngüsü
+    if      (_finSort.dir === 'none') _finSort.dir = 'desc';
+    else if (_finSort.dir === 'desc') _finSort.dir = 'asc';
+    else { _finSort.col = null; _finSort.dir = 'none'; }
+  } else {
+    _finSort.col = col;
+    _finSort.dir = 'desc'; // ilk tıkta büyükten küçüğe
+  }
+  renderFinTable();
+};
 
 // Dark mode değişince grafiği yeniden çiz
 new MutationObserver(() => { if (_finBuilt) renderFinChart(); })
@@ -16004,42 +16456,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let _finSrcBuilt = false;
 
+function buildFinSourcesGrid() {
+  const grid = document.getElementById('fin-src-grid');
+  if (!grid) return;
+  const yearSrcs = FIN_YEAR_SOURCES || {};
+  grid.innerHTML = Object.entries(FIN_INVESTOR_URLS_STATIC || {}).map(([slug, d]) => {
+    const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
+    const logo = finLogoUrl(slug);
+    const perYear = yearSrcs[slug] || {};
+    const yearLinks = Object.entries(perYear)
+      .sort(([a],[b]) => b.localeCompare(a))
+      .map(([yr, s]) => s.href
+        ? `<a href="${s.href}" target="_blank" rel="noopener"
+            style="display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:10px;
+                   background:var(--bg);border:1px solid var(--border);font-size:10px;color:var(--accent);
+                   text-decoration:none;margin:2px 2px 0 0"
+            title="${s.text} ${yr}">${yr} ↗</a>`
+        : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
+              border:1px solid var(--border-soft);font-size:10px;color:var(--text-3);margin:2px 2px 0 0">${yr}</span>`
+      ).join('');
+    const logoEl = logo
+      ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0" alt="" onerror="this.src='';this.style.display='none'">`
+      : `<span class="fin-src-dot" style="background:${color}"></span>`;
+    return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:5px;cursor:default">
+      <div style="display:flex;align-items:center;gap:8px;width:100%">
+        ${logoEl}
+        <span class="fin-src-name" style="flex:1;color:${color}">${d.name}</span>
+        <a href="${d.url}" target="_blank" rel="noopener"
+          style="font-size:10px;color:var(--accent);text-decoration:none;opacity:.7" title="Yatırımcı İlişkileri">IR →</a>
+      </div>
+      ${yearLinks ? `<div style="padding-left:24px;line-height:1.4">${yearLinks}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
 window.toggleFinSources = function() {
   const panel  = document.getElementById('fin-sources-panel');
   const toggle = document.getElementById('fin-src-toggle');
   if (!panel) return;
-  const open = panel.style.display === 'none' || panel.style.display === '';
-  panel.style.display = open ? '' : 'none';
-  if (toggle) toggle.setAttribute('aria-expanded', String(open));
-  if (open && !_finSrcBuilt) {
+  const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+  const willOpen = !isOpen;
+  panel.style.display = willOpen ? '' : 'none';
+  toggle.setAttribute('aria-expanded', String(willOpen));
+  if (willOpen && !_finSrcBuilt) {
     _finSrcBuilt = true;
-    const grid = document.getElementById('fin-src-grid');
-    if (!grid) return;
-    const yearSrcs = FIN_YEAR_SOURCES || {};
-    grid.innerHTML = Object.entries(FIN_INVESTOR_URLS_STATIC || {}).map(([slug, d]) => {
-      const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
-      const perYear = yearSrcs[slug] || {};
-      const yearLinks = Object.entries(perYear)
-        .sort(([a],[b]) => b.localeCompare(a))
-        .map(([yr, s]) => s.href
-          ? `<a href="${s.href}" target="_blank" rel="noopener"
-              style="display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:10px;
-                     background:var(--bg);border:1px solid var(--border);font-size:10px;color:var(--accent);
-                     text-decoration:none;margin:2px 2px 0 0"
-              title="${s.text} ${yr}">${yr} ↗</a>`
-          : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
-                border:1px solid var(--border-soft);font-size:10px;color:var(--text-3);margin:2px 2px 0 0">${yr}</span>`
-        ).join('');
-      return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:5px;cursor:default">
-        <div style="display:flex;align-items:center;gap:8px;width:100%">
-          <span class="fin-src-dot" style="background:${color}"></span>
-          <span class="fin-src-name" style="flex:1">${d.name}</span>
-          <a href="${d.url}" target="_blank" rel="noopener"
-            style="font-size:10px;color:var(--accent);text-decoration:none;opacity:.7" title="Yatırımcı İlişkileri">IR →</a>
-        </div>
-        ${yearLinks ? `<div style="padding-left:18px;line-height:1.4">${yearLinks}</div>` : ''}
-      </div>`;
-    }).join('');
+    buildFinSourcesGrid();
   }
 };
 </script>
