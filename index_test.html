@@ -1969,7 +1969,7 @@
         </div>
         <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
           <div class="dash-card-header-row">
-            <div class="dash-card-label">Brent Ham Petrol</div>
+            <div class="dash-card-label">Brent Petrol</div>
             <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
               <span class="timer-dot"></span>
               <span class="timer-secs">60s</span>
@@ -8582,7 +8582,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(v).toFixed(2) + ' $' : '',
+        v => v != null ? Number(Number(v).toFixed(1)) + ' $' : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' },
@@ -8945,7 +8945,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(v).toFixed(1) + ' $' : '',
+        v => v != null ? Number(Number(v).toFixed(1)) + ' $' : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' },
@@ -9983,13 +9983,13 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(v).toFixed(2) + ' ₺' : '',
+        v => v != null ? Number(Number(v).toFixed(1)) + ' ₺' : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' }
         }
       );
-      
+
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
         titleEl.textContent = 'THY Hisse Performansı (THYAO)';
