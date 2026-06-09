@@ -2934,10 +2934,14 @@
       </div>
     </div>
     <div class="fin-cy-note" id="fin-cy-note">
-      📐 <strong>Takvim yılı normalize modu:</strong> EK, QR, SQ, NH için
-      <em>CY(N) = α × FY(N) + (1−α) × FY(N+1)</em> formülü uygulanır
-      (α: gerçek çeyreklik raporlardan hesaplanan Q4 payı —
-      SQ %24.9, NH %24.8, EK %24.4, QR %25.0).
+      📐 <strong>Takvim yılı normalize modu (hibrit):</strong> Nisan–Mart mali yılı
+      kullanan EK, QR, SQ, NH Ocak–Aralık takvim yılına hizalanır:
+      <em>CY(N) = FY(N)'in Oca–Mar çeyreği + FY(N+1)'in Nis–Ara kısmı</em>.
+      <strong>SQ ve NH</strong>'de bu hesap 2011'den itibaren her yılın
+      <strong>gerçek çeyreklik raporlarındaki</strong> Q4 payıyla birebir yapılır
+      (ör. COVID yılı 2019'da pay ~%19.9'a düşer, toparlanma yılı 2021'de %28–32'ye çıkar).
+      <strong>EK ve QR</strong> çeyreklik veri yayınlamadığından sabit tahmini pay kullanılır
+      (EK %24.4 — yarı-yıllık rapordan; QR %25.0 — eşit çeyrek varsayımı).
       Mutlak değerlere uygulanır; büyüme ve marj metriklerine uygulanmaz.
       Son yıl hesaplanamaz — <strong>—</strong> olarak gösterilir.
     </div>
@@ -15468,24 +15472,42 @@ function getFYPeriodLabel(yearStr, fyEnd) {
   return `${TR_MONTHS[startM]} ${y-1} – ${TR_MONTHS[fyEnd]} ${y}`;
 }
 
-// ── Takvim Yılı normalize katsayıları (alpha = Q4'ün yıllık pay'ı) ──────
-// CY(N) ≈ alpha × FY(N) + (1-alpha) × FY(N+1)
-// Kaynak: Havayollarının kamuya açık çeyreklik/yarı-yıllık sonuçları
-// SQ: FY23/24 ve FY24/25 çeyreklik gelir ortalaması (Kaynak: SIA press releases)
-// NH: FY23/24 ve FY24/25 çeyreklik gelir ortalaması (Kaynak: ANA Holdings IR)
-// EK: H1 FY24/25 yarı-yıllık sonuç → Q4 ≈ H2/2 (Kaynak: Emirates Group)
-// QR: Çeyreklik veri kamuya açık değil → eşit çeyrek varsayımı (0.25)
+// ── Takvim Yılı normalize: HİBRİT model ─────────────────────────────────
+// Birebir hesap: CY(N) = s(N) × FY(N) + (1 − s(N+1)) × FY(N+1)
+//   s(y) = FY(y) içindeki Q4 (Oca–Mar) gelir payı.
+//   SQ ve NH çeyreklik raporladığı için s(y) yıl yıl GERÇEK değerdir
+//   (9 aylık ara rapor + yıllık rapor farkından: Q4 = FY − 9M).
+//   EK/QR çeyreklik veri yayınlamaz → sabit α tahminine düşülür.
+//   FIN_CY_Q4_SHARE'de olmayan yıl da sabit α'ya düşer (fallback).
+// Yıl etiketi financials.json ile aynı: 'y' = Nis y – Mar y+1 mali yılı.
 const FIN_CY_ALPHA = {
-  // Kaynak: Havayollarının kamuya açık çeyreklik/yarı-yıllık basın açıklamaları
-  // Yöntem: CY(N) = α × FY(N) + (1-α) × FY(N+1)  |  α = Q4(Oca-Mar) / yıllık gelir
-  'SQ': 0.249,  // %24.9 — SG Airlines: Q4/FY23-24=%25.1, Q4/FY24-25=%24.7 ort.
-                //   9M FY23/24=14,244M; FY=19,013M → Q4=4,769M | 9M FY24/25=14,716M; FY=19,540M → Q4=4,824M
-  'NH': 0.248,  // %24.8 — ANA Holdings: Q4/FY23-24=%24.9, Q4/FY24-25=%24.7 ort.
-                //   Q4 FY24(Apr24-Mar25)=¥559.0B/¥2261.8B; Q4 FY23=¥512.3B/¥2055.9B (IR PDF)
   'EK': 0.244,  // %24.4 — Emirates: H1 FY24/25=%51.2 → Q4≈H2/2=%24.4 (yarı-yıllık veri)
   'QR': 0.250,  // %25.0 — Qatar Airways: çeyreklik veri kamuya açık değil; eşit çeyrek
+  'SQ': 0.249,  // fallback — tablo dışı yıllar için (FY23/24-24/25 ort.)
+  'NH': 0.248,  // fallback — tablo dışı yıllar için (FY23/24-24/25 ort.)
 };
 function getCYAlpha(slug) { return FIN_CY_ALPHA[slug] ?? 0.25; }
+
+// Gerçek yıl-bazlı Q4 payları (kaynaklar: SIA nr-q3/q4 basın bültenleri ve
+// 3Ç business update'leri; ANA HD 9 aylık sonuç bültenleri + kessan tanshin).
+// Pay aynı para biriminde (SGD / JPY) FY içi orandır → USD kur çevriminden etkilenmez.
+const FIN_CY_Q4_SHARE = {
+  'SQ': { // Q4 = FY − 9M (S$M); ör. 2023: 19.012,7 − 14.244 = 4.768,7 → %25.08
+    '2011':0.2494, '2012':0.2429, '2013':0.2380, '2014':0.2492, '2015':0.2436,
+    '2016':0.2502, '2017':0.2542, '2018':0.2497, '2019':0.1991, '2020':0.2922,
+    '2021':0.3246, '2022':0.2538, '2023':0.2508, '2024':0.2469, '2025':0.2603,
+  },
+  'NH': { // Q4 = FY − 9M (¥Mr); ör. 2019: 1.974,2 − 1.582,1 = 392,1 → %19.86 (COVID)
+    '2011':0.2421, '2012':0.2369, '2013':0.2430, '2014':0.2429, '2015':0.2357,
+    '2016':0.2456, '2017':0.2439, '2018':0.2380, '2019':0.1986, '2020':0.2759,
+    '2021':0.2767, '2022':0.2629, '2023':0.2492, '2024':0.2472, '2025':0.2606,
+  },
+};
+// Yıl için pay: gerçek çeyreklik değer varsa onu, yoksa sabit α'yı döndürür.
+function getCYShare(slug, year) {
+  const v = FIN_CY_Q4_SHARE[slug]?.[String(year)];
+  return (typeof v === 'number') ? v : getCYAlpha(slug);
+}
 
 // Sadece mutlak değer metriklerine uygulanır; yüzdeler ham kalır.
 function getEffectiveData(airline, slug, metric) {
@@ -15496,7 +15518,6 @@ function getEffectiveData(airline, slug, metric) {
   // Yüzde metrikleri dönüştürme
   if (!def || def.fmt === 'pct' || def.fmt === 'pct_s') return raw;
 
-  const alpha = getCYAlpha(slug);   // Gerçek çeyreklik veri tabanlı katsayı
   const result = {};
   const sortedYears = Object.keys(raw).sort();
 
@@ -15506,7 +15527,9 @@ function getEffectiveData(airline, slug, metric) {
     const vy  = raw[y];
     const vyn = raw[yNext];
     if (vy != null && vyn != null) {
-      result[y] = alpha * vy + (1 - alpha) * vyn;
+      // CY(y) = FY(y)'nin Oca–Mar çeyreği + FY(y+1)'in Nis–Ara (ilk 9 ay) kısmı.
+      // Çeyreklik veri olan yıllarda birebir, olmayanlarda α tahmini.
+      result[y] = getCYShare(slug, y) * vy + (1 - getCYShare(slug, yNext)) * vyn;
     }
     // Bir sonraki yıl yoksa → undefined (— gösterilir)
   }
