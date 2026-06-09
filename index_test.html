@@ -6562,6 +6562,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
     plugins: extraOpts.plugins || [],
     options: {
       ...CHART_DEFAULTS,
+      animation: false,
       plugins: {
         ...CHART_DEFAULTS.plugins,
         legend: {
@@ -7995,14 +7996,20 @@ async function loadDashboard() {
             backgroundColor: bgColor,
             fill: true,
             tension: period === 'max' ? 0.2 : 0.35,
-            pointRadius: period === 'max' ? 0 : 2,
+            pointRadius: (period === 'max' || period === '5y') ? 0 : 2,
             borderWidth: 2
           }
         ],
         v => v != null ? Number(v).toLocaleString('tr-TR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + ' ₺' : '',
         {
           forceRecreate: true,
-          xTickFont: { size: 9, family: 'Inter' }
+          xTickFont: { size: 9, family: 'Inter' },
+          xTickCallback: (period === '1y') ? function(value, index) {
+            if (index === 0) return this.getLabelForValue(value);
+            const curr = this.getLabelForValue(value);
+            const prev = this.getLabelForValue(value - 1);
+            return curr !== prev ? curr : null;
+          } : undefined
         }
       );
       
@@ -8471,7 +8478,97 @@ async function loadDashboard() {
       });
       
       const prices = validPoints.map(p => p.value);
-      
+      const rawDates = validPoints.map(p => new Date(p.time * 1000).toISOString().slice(0, 10));
+
+      const brentAnnotationsPlugin = {
+        id: 'brentAnnotations',
+        afterDatasetsDraw(chart) {
+          const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
+          ctx.save();
+
+          const events = [
+            { dateIso: '2014-11-27', label: 'OPEC Arz Savaşı', color: '#64748B' },
+            { dateIso: '2016-12-10', label: 'OPEC Üretim Anlaşması', color: '#10B981' },
+            { dateIso: '2020-03-09', label: 'COVID-19 & Petrol Savaşı', color: '#E63946' },
+            { dateIso: '2022-02-24', label: 'Rusya-Ukrayna Savaşı', color: '#F59E0B' },
+            { dateIso: '2023-04-02', label: 'OPEC+ Üretim Kesintisi', color: '#B45309' },
+            { dateIso: '2024-01-12', label: 'Kızıldeniz Krizi', color: '#7C3AED' },
+          ];
+
+          const rawDatesArray = chart.$rawDates;
+          if (!rawDatesArray || rawDatesArray.length === 0) { ctx.restore(); return; }
+
+          const firstDate = new Date(rawDatesArray[0]).getTime();
+          const lastDate  = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+          const drawnPills = [];
+
+          events.forEach(event => {
+            const targetTime = new Date(event.dateIso).getTime();
+            if (targetTime < firstDate || targetTime > lastDate) return;
+
+            let closestIndex = -1;
+            let minDiff = Infinity;
+            for (let i = 0; i < rawDatesArray.length; i++) {
+              const diff = Math.abs(new Date(rawDatesArray[i]).getTime() - targetTime);
+              if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+            }
+            if (closestIndex === -1) return;
+
+            const totalSpan = lastDate - firstDate;
+            const threshold = Math.max(totalSpan * 0.1, 15 * 24 * 60 * 60 * 1000);
+            if (minDiff > threshold) return;
+
+            const xPos = x.getPixelForValue(closestIndex);
+
+            const meta = chart.getDatasetMeta(0);
+            if (meta && meta.data && meta.data[closestIndex]) {
+              const point = meta.data[closestIndex];
+              ctx.fillStyle = event.color;
+              ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.fill();
+              ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+              ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.stroke();
+            }
+
+            ctx.setLineDash([]);
+            const font = 'bold 9.5px Inter, sans-serif';
+            ctx.font = font;
+            const textWidth = ctx.measureText(event.label).width;
+            const paddingX = 6, paddingY = 4;
+            const pillWidth  = textWidth + paddingX * 2;
+            const pillHeight = 9.5 + paddingY * 2;
+
+            let pillX = xPos - pillWidth / 2;
+            if (pillX < chartLeft) pillX = chartLeft;
+            else if (pillX + pillWidth > chartRight) pillX = chartRight - pillWidth;
+
+            let pillY = top + 10;
+            let hasOverlap = true;
+            while (hasOverlap) {
+              hasOverlap = false;
+              for (const p of drawnPills) {
+                const overlapX = !(pillX + pillWidth < p.x1 - 4 || pillX > p.x2 + 4);
+                const overlapY = !(pillY + pillHeight < p.y1 - 2 || pillY > p.y2 + 2);
+                if (overlapX && overlapY) { hasOverlap = true; pillY += pillHeight + 6; break; }
+              }
+            }
+            drawnPills.push({ x1: pillX, x2: pillX + pillWidth, y1: pillY, y2: pillY + pillHeight });
+
+            ctx.strokeStyle = event.color; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+            ctx.beginPath(); ctx.moveTo(xPos, pillY + pillHeight); ctx.lineTo(xPos, bottom); ctx.stroke();
+
+            ctx.setLineDash([]); ctx.fillStyle = event.color; ctx.beginPath();
+            if (ctx.roundRect) { ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 4); }
+            else               { ctx.rect(pillX, pillY, pillWidth, pillHeight); }
+            ctx.fill();
+
+            ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(event.label, pillX + pillWidth / 2, pillY + pillHeight / 2 + 0.5);
+          });
+
+          ctx.restore();
+        }
+      };
+
       lineChart('chart-brent-modal', labels,
         [
           {
@@ -8488,7 +8585,15 @@ async function loadDashboard() {
         v => v != null ? Number(v).toFixed(2) + ' $' : '',
         {
           forceRecreate: true,
-          xTickFont: { size: 9, family: 'Inter' }
+          xTickFont: { size: 9, family: 'Inter' },
+          rawDates: rawDates,
+          plugins: [brentAnnotationsPlugin],
+          xTickCallback: (period === '1y') ? function(value, index) {
+            if (index === 0) return this.getLabelForValue(value);
+            const curr = this.getLabelForValue(value);
+            const prev = this.getLabelForValue(value - 1);
+            return curr !== prev ? curr : null;
+          } : undefined
         }
       );
       
