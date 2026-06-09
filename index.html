@@ -213,6 +213,14 @@
   .fin-chart-source { font-size: 11px; color: var(--text-3); }
   .fin-chart-wrap { position: relative; height: 280px; }
   .fin-chart-wrap canvas { max-height: 280px; }
+  .fin-chart-empty {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 6px; text-align: center;
+    color: var(--text-3); padding: 0 24px;
+  }
+  .fin-chart-empty svg { opacity: .45; margin-bottom: 2px; }
+  .fin-chart-empty-title { font-size: 13px; font-weight: 600; color: var(--text-2); }
+  .fin-chart-empty-sub { font-size: 11.5px; line-height: 1.5; max-width: 420px; }
 
   .fin-table-section {
     background: var(--surface); border: 1px solid var(--border);
@@ -2949,6 +2957,12 @@
       </div>
       <div class="fin-chart-wrap">
         <canvas id="fin-main-chart" aria-label="Finansal karşılaştırma grafiği"></canvas>
+        <div class="fin-chart-empty" id="fin-chart-empty" style="display:none" role="status">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="3" x2="21" y2="21"/></svg>
+          <div class="fin-chart-empty-title">Bu seçim için veri yok</div>
+          <div class="fin-chart-empty-sub">Seçili havayollarının bu metrikte yıllık verisi bulunmuyor.
+            AJet ve Saudia için kaynaklarda finansal seri yayınlanmıyor — başka bir havayolu veya metrik ekleyin.</div>
+        </div>
       </div>
     </div>
 
@@ -15750,6 +15764,17 @@ function renderFinChart() {
       };
     });
 
+  // Boş durum: seçili havayollarının hiçbirinde bu metrik için veri yoksa
+  // varsayılan 0–1 ölçeğiyle boş ızgara çizme; açıklayıcı mesaj göster.
+  const hasData = datasets.some(ds => ds.data.some(v => v != null));
+  const emptyEl = document.getElementById('fin-chart-empty');
+  if (emptyEl) emptyEl.style.display = hasData ? 'none' : 'flex';
+  canvas.style.visibility = hasData ? 'visible' : 'hidden';
+  if (!hasData) {
+    if (_finChart) { _finChart.destroy(); _finChart = null; }
+    return;
+  }
+
   if (_finChart) { _finChart.destroy(); _finChart = null; }
 
   const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
@@ -15788,6 +15813,7 @@ function renderFinChart() {
         },
         y: {
           grid: { color: gridColor },
+          grace: '6%',  // görünür serilerin min–max aralığına nefes payı
           ticks: { color: textColor, font: { size: 11 },
             callback: v => {
               const d2 = FIN_METRIC_MAP[_finMetric];
