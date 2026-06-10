@@ -192,6 +192,23 @@
     display: flex; align-items: center; gap: 4px;
   }
   .fin-type-btn--active, .fin-range-btn--active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .fin-cy-opt {
+    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    font-size: 11.5px; font-weight: 600; border: 1.5px solid var(--border);
+    background: var(--bg); color: var(--text-3); transition: all 0.15s;
+    touch-action: manipulation;
+  }
+  .fin-cy-opt--active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .fin-cy-opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .fin-cy-opt:active { transform: scale(0.96); }
+  .fin-info-dot {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 13px; height: 13px; border-radius: 50%;
+    border: 1px solid var(--text-3); color: var(--text-3);
+    font: italic 700 9px Georgia, serif; text-transform: none;
+    margin-left: 4px; cursor: help; vertical-align: -2px;
+  }
+  .fin-info-dot:hover, .fin-info-dot:focus-visible { color: var(--accent); border-color: var(--accent); outline: none; }
   .fin-cy-btn {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 4px 10px; border-radius: 7px; font-size: 11px; font-weight: 700;
@@ -3069,14 +3086,16 @@
           <button class="fin-range-btn" data-range="99">Max</button>
         </div>
       </div>
-      <!-- Takvim Yılı modu -->
+      <!-- Takvim Yılı Hizalaması -->
       <div class="fin-ctrl-group">
-        <span class="fin-ctrl-label">Mali Yıl</span>
-        <button class="fin-cy-btn" id="fin-cy-toggle" onclick="toggleFinCYMode()"
-            title="Nisan-Mart FY havayollarını Ocak-Aralık takvim yılına hizala">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          CY Normalize
-        </button>
+        <span class="fin-ctrl-label">Takvim Yılı Hizalaması
+          <span class="fin-info-dot" tabindex="0"
+            title="Nisan–Mart mali yılı kullanan 4 havayolunun rakamlarını Ocak–Aralık takvimine çevirir. Böylece tüm havayolları aynı 12 ay üzerinden karşılaştırılır.">i</span>
+        </span>
+        <div style="display:flex;gap:4px">
+          <button class="fin-cy-opt fin-cy-opt--active" data-cy="off" onclick="setFinCYMode(false)" aria-pressed="true">Kapalı</button>
+          <button class="fin-cy-opt" data-cy="on" onclick="setFinCYMode(true)" aria-pressed="false">Açık</button>
+        </div>
       </div>
       </div><!-- /fin-ctrl-left -->
       <!-- Havayolu seçici — metriklerin sağındaki alan -->
@@ -15909,7 +15928,8 @@ function bindFinControls() {
     b.setAttribute('aria-pressed', String(b.classList.contains('fin-type-btn--active'))));
   document.querySelectorAll('.fin-range-btn').forEach(b =>
     b.setAttribute('aria-pressed', String(b.classList.contains('fin-range-btn--active'))));
-  document.getElementById('fin-cy-toggle')?.setAttribute('aria-pressed', String(_finCYMode));
+  document.querySelectorAll('.fin-cy-opt').forEach(b =>
+    b.setAttribute('aria-pressed', String((b.dataset.cy === 'on') === _finCYMode)));
 
   // Grafik tipi
   document.querySelectorAll('.fin-type-btn').forEach(btn => {
@@ -16498,8 +16518,13 @@ window.toggleFinCYMode = function() {
   // CY modunda yapılan hesabın özeti.
   const title = document.getElementById('fin-fy-title');
   if (title) title.textContent = _finCYMode
-    ? 'CY Normalize aktif — 4 havayolunun değerleri takvim yılına çevrildi: önceki mali yılın son çeyreği + ilgili mali yılın ilk 9 ayı'
+    ? 'Takvim yılı hizalaması açık — 4 havayolunun değerleri çevrildi: önceki mali yılın son çeyreği + ilgili mali yılın ilk 9 ayı'
     : 'Mali Dönem Uyarısı — 4 havayolu Nisan–Mart mali yılı kullanır';
+  document.querySelectorAll('.fin-cy-opt').forEach(b => {
+    const active = (b.dataset.cy === 'on') === _finCYMode;
+    b.classList.toggle('fin-cy-opt--active', active);
+    b.setAttribute('aria-pressed', String(active));
+  });
   const iw = document.getElementById('fin-fy-icon-warn');
   const ic = document.getElementById('fin-fy-icon-cy');
   if (iw) iw.style.display = _finCYMode ? 'none' : '';
@@ -16509,6 +16534,11 @@ window.toggleFinCYMode = function() {
   document.getElementById('fin-fy-bar')?.classList.toggle('fin-fy-bar--cy', _finCYMode);
   renderFinChart();
   renderFinTable();
+};
+
+// Açık/Kapalı seçenekleri için: hedef durumdan farklıysa geçiş yap
+window.setFinCYMode = function(on) {
+  if (on !== _finCYMode) toggleFinCYMode();
 };
 
 window.toggleFinFY = function() {
