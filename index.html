@@ -256,7 +256,7 @@
   .fin-table-note { font-size: 11px; color: var(--text-3); }
   /* Mali dönem bilgisi */
   .fin-fy-bar {
-    border-top: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
     background: color-mix(in srgb, var(--surface) 50%, #F59E0B08 50%);
   }
   .fin-fy-toggle {
@@ -343,6 +343,17 @@
     position: relative;
   }
   .fin-cmp-table td:first-child { text-align: left; font-weight: 600; }
+  /* Havayolu sütunu her ekran genişliğinde sabit — tablo sağa kayınca isimler kaybolmaz */
+  .fin-cmp-table th:first-child, .fin-cmp-table td:first-child {
+    position: sticky; left: 0; z-index: 2; background: var(--surface);
+  }
+  .fin-cmp-table th:first-child { background: var(--navy); z-index: 3; }
+  .fin-cmp-table tr:hover td:first-child { background: var(--bg); }
+  .fin-cmp-table th:first-child::after, .fin-cmp-table td:first-child::after {
+    content: ''; position: absolute; top: 0; bottom: 0; right: -8px; width: 8px;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(0,0,0,0.10), transparent);
+  }
   .fin-cmp-table tr:hover td { background: var(--bg); }
   .fin-cell-pos { color: #059669; font-weight: 600; }
   .fin-cell-neg { color: #DC2626; font-weight: 600; }
@@ -380,18 +391,9 @@
     .fin-atoggle { padding: 7px 12px 7px 9px; }
     .fin-atoggle:hover { transform: none; } /* dokunmatikte zıplama olmasın */
     .fin-deselect-btn { padding: 7px 11px; }
-    /* Tablo: havayolu sütunu sabit kalsın, yıllar kaydırılsın */
+    /* Dar ekranda havayolu sütunu daraltılır (sticky kurallar base CSS'te) */
     .fin-cmp-table th:first-child, .fin-cmp-table td:first-child {
-      position: sticky; left: 0; z-index: 2;
-      background: var(--surface); min-width: 132px; max-width: 168px;
-      white-space: normal;
-    }
-    .fin-cmp-table th:first-child { background: var(--navy); z-index: 3; }
-    .fin-cmp-table tr:hover td:first-child { background: var(--bg); }
-    .fin-cmp-table th:first-child::after, .fin-cmp-table td:first-child::after {
-      content: ''; position: absolute; top: 0; bottom: 0; right: -8px; width: 8px;
-      pointer-events: none;
-      background: linear-gradient(90deg, rgba(0,0,0,0.12), transparent);
+      min-width: 132px; max-width: 168px; white-space: normal;
     }
     .fin-table-header { flex-wrap: wrap; gap: 6px; }
     .fin-table-sort-hint { display: none; } /* dar ekranda gereksiz kalabalık */
@@ -3032,12 +3034,6 @@
           Sütun başlığına tıklayarak sırala
         </span>
       </div>
-      <div class="fin-table-wrap">
-        <table class="fin-cmp-table" id="fin-cmp-table">
-          <thead id="fin-cmp-thead"></thead>
-          <tbody id="fin-cmp-tbody"></tbody>
-        </table>
-      </div>
       <!-- Mali dönem uyarısı -->
       <div class="fin-fy-bar">
         <button class="fin-fy-toggle" onclick="toggleFinFY()" aria-expanded="false" id="fin-fy-btn">
@@ -3057,6 +3053,12 @@
             Tabloda dönem aralığını göster
           </label>
         </div>
+      </div>
+      <div class="fin-table-wrap">
+        <table class="fin-cmp-table" id="fin-cmp-table">
+          <thead id="fin-cmp-thead"></thead>
+          <tbody id="fin-cmp-tbody"></tbody>
+        </table>
       </div>
     </div>
 
@@ -16069,7 +16071,7 @@ function renderFinTable() {
     const nameCls = sc === 'airline' ? ' fin-col-sorted' : '';
     const fyEnd = getFYEnd(slug);
     const fyBadge = fyEnd !== 12
-      ? `<span class="fin-fy-badge" title="Mali yıl: Nis–${TR_MONTHS[fyEnd]} (Oca–Ara değil)">Nis–Mar</span>`
+      ? `<span class="fin-fy-badge" title="Mali yılı Nisan'da başlar, Mart'ta biter (Ocak–Aralık değil)">Nisan–Mart</span>`
       : '';
 
     return `<tr>
@@ -16114,7 +16116,7 @@ window.toggleFinFY = function() {
       const logoEl = logo
         ? `<img src="${logo}" alt="" onerror="this.style.display='none'">`
         : '';
-      return `<span class="fin-fy-chip">${logoEl}${d.name} — Nis–${TR_MONTHS[fyEnd]}</span>`;
+      return `<span class="fin-fy-chip">${logoEl}${d.name} — Nisan–Mart</span>`;
     }).join('');
   }
 };
