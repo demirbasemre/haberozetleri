@@ -406,14 +406,6 @@
     margin-left: 4px; vertical-align: middle; white-space: nowrap;
   }
   [data-theme="dark"] .fin-fy-badge { color: #FCD34D; background: #F59E0B14; }
-  /* Dönem göster toggle */
-  .fin-period-toggle-wrap {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--text-3); cursor: pointer;
-    padding: 4px 0;
-  }
-  .fin-period-toggle-wrap input { accent-color: var(--accent); cursor: pointer; }
-  .fin-period-toggle-wrap:hover { color: var(--text); }
   .fin-table-wrap { overflow-x: auto; }
   .fin-cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
   .fin-cmp-table th {
@@ -3144,10 +3136,6 @@
           <div class="fin-cy-affected" id="fin-cy-affected"><!-- JS doldurur --></div>
         </div>
         <div class="fin-fy-airlines" id="fin-fy-airline-list"><!-- JS ile doldurulur --></div>
-        <label class="fin-period-toggle-wrap">
-          <input type="checkbox" id="fin-show-periods" onchange="toggleFinPeriodRow(this.checked)">
-          Tabloda dönem aralığını göster
-        </label>
       </div>
     </div>
 
@@ -15647,7 +15635,6 @@ let _finChartType = 'line';
 let _finRange = 5;
 let _finHidden = new Set();
 let _finSort   = { col: null, dir: 'none' }; // col: 'airline' | yıl string, dir: 'none'|'asc'|'desc'
-let _finShowPeriods = false;
 let _finCYMode = false;    // Takvim Yılı normalize modu
 let _finChartValDisplay = localStorage.getItem('finChartValDisplay') || 'smart';
 let _finBuilt = false;
@@ -16449,7 +16436,7 @@ function renderFinTable() {
       </th>`;
     }).join('')}
   </tr>
-  ${_finShowPeriods ? `<tr class="fin-period-row">
+  ${hasNonDec ? `<tr class="fin-period-row">
     <td>Dönem aralığı</td>
     ${years.map(y => {
       const decLabel = getFYPeriodLabel(y, 12);
@@ -16560,11 +16547,6 @@ window.toggleFinFY = function() {
       return `<span class="fin-fy-chip">${logoEl}${d.name} — Nisan–Mart</span>`;
     }).join('');
   }
-};
-
-window.toggleFinPeriodRow = function(show) {
-  _finShowPeriods = show;
-  renderFinTable();
 };
 
 window.sortFinTable = function(col) {
