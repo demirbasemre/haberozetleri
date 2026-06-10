@@ -15716,6 +15716,8 @@ window.initFinansalTab = function() {
   }
   if (_finBuilt) { renderFinChart(); return; }
   _finBuilt = true;
+  // Varsayılan görünüm: yalnız THY seçili gelir; "Sıfırla" tümünü açar
+  Object.keys(FIN_DATA).forEach(s => { if (s !== 'TK') _finHidden.add(s); });
   buildFinToggles();
   bindFinControls();
   // Akıllı varsayılan: en son yıla göre büyükten küçüğe
@@ -15747,7 +15749,7 @@ function buildFinToggles() {
     const logoEl = logo
       ? `<img class="fin-atoggle-logo" src="${logo}" alt="" onerror="this.style.display='none'">`
       : `<span class="fin-atoggle-dot" style="background:${d.color}"></span>`;
-    const chip = `<button class="fin-atoggle" data-slug="${slug}" aria-pressed="${!_finHidden.has(slug)}"
+    const chip = `<button class="fin-atoggle${_finHidden.has(slug) ? ' hidden' : ''}" data-slug="${slug}" aria-pressed="${!_finHidden.has(slug)}"
       style="background:${bg};border-color:${d.color};color:${d.color}"
       onclick="toggleFinAirline('${slug}')">
       ${logoEl}${d.name}
@@ -15896,9 +15898,8 @@ function renderFinChart() {
 
   const def = FIN_METRIC_MAP[_finMetric];
   // Palet sorunu: birden çok havayolu AYNI marka rengini kullanıyor
-  // (ör. AF=KE=NH, CA=AV=EK). Çözüm iki katmanlı:
-  //  1) Yinelenen rengin 2., 3. serisi otomatik ton kaydırır (açık/koyu varyant)
-  //  2) Aynı seriler ek olarak kesikli desen alır (renk körlüğü güvencesi)
+  // (ör. AF=KE=NH, CA=AV=EK). Çözüm: yinelenen rengin 2., 3. serisi
+  // otomatik ton kaydırır (açık/koyu varyant); çizgi uçlarında kod etiketi var.
   const _rgb = h => { h = String(h).replace('#', ''); return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)); };
   const _close = (a, b) => { const A = _rgb(a), B = _rgb(b); return Math.hypot(A[0]-B[0], A[1]-B[1], A[2]-B[2]) < 30; };
   const _shade = (hex, f) => {  // f>0: beyaza doğru aç, f<0: koyulaştır
@@ -15906,7 +15907,6 @@ function renderFinChart() {
     return '#' + _rgb(hex).map(m).map(v => v.toString(16).padStart(2, '0')).join('');
   };
   const SHADE_STEPS = [0, 0.32, -0.30, 0.55, -0.5];
-  const DASHES = [[], [7, 4], [2, 3], [12, 4, 3, 4]];
   const seenColors = [];
   const datasets = Object.entries(FIN_DATA || {})
     .filter(([slug]) => !_finHidden.has(slug))
@@ -15937,7 +15937,6 @@ function renderFinChart() {
         pointHoverRadius: 5,
         pointHitRadius: 12,
         spanGaps: true,
-        borderDash: DASHES[Math.min(similar, DASHES.length - 1)],
         $base: lineColor,
         $code: slug,
       };
