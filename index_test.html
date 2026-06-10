@@ -15872,6 +15872,40 @@ function fmtVal(v, metric) {
   return (v >= 0 ? '+' : '') + v.toLocaleString('tr-TR', {maximumFractionDigits: 0}) + 'M';
 }
 
+// ── Çizgi sonu etiketleri: her serinin ucunda havayolu kodu ──
+// Yakın marka renkleri (kırmızılar, maviler) grafikte karışıyor; uç etiketi
+// + kesikli desen, rengi tek ayırt edici olmaktan çıkarır.
+const finEndLabelsPlugin = {
+  id: 'finEndLabels',
+  afterDatasetsDraw(chart) {
+    if (chart.config.type !== 'line') return;
+    const { ctx, chartArea } = chart;
+    const items = [];
+    chart.data.datasets.forEach((ds, i) => {
+      const meta = chart.getDatasetMeta(i);
+      if (meta.hidden) return;
+      let last = -1;
+      for (let k = ds.data.length - 1; k >= 0; k--) { if (ds.data[k] != null) { last = k; break; } }
+      if (last < 0 || !meta.data[last]) return;
+      items.push({ x: meta.data[last].x, y: meta.data[last].y, color: ds.borderColor, code: ds.$code || '' });
+    });
+    // Dikey çakışma önleme: y'ye göre sırala, en az 11px aralık bırak
+    items.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < items.length; i++) {
+      if (items[i].y - items[i - 1].y < 11) items[i].y = items[i - 1].y + 11;
+    }
+    ctx.save();
+    ctx.font = '700 9.5px sans-serif';
+    ctx.textBaseline = 'middle';
+    items.forEach(it => {
+      const y = Math.max(chartArea.top + 5, Math.min(it.y, chartArea.bottom + 8));
+      ctx.fillStyle = it.color;
+      ctx.fillText(it.code, Math.min(it.x, chartArea.right) + 5, y);
+    });
+    ctx.restore();
+  }
+};
+
 function renderFinChart() {
   const canvas = document.getElementById('fin-main-chart');
   if (!canvas) return;
@@ -15879,9 +15913,27 @@ function renderFinChart() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
   const def = FIN_METRIC_MAP[_finMetric];
+  // Palet sorunu: birden çok havayolu AYNI marka rengini kullanıyor
+  // (ör. AF=KE=NH, CA=AV=EK). Çözüm iki katmanlı:
+  //  1) Yinelenen rengin 2., 3. serisi otomatik ton kaydırır (açık/koyu varyant)
+  //  2) Aynı seriler ek olarak kesikli desen alır (renk körlüğü güvencesi)
+  const _rgb = h => { h = String(h).replace('#', ''); return [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16)); };
+  const _close = (a, b) => { const A = _rgb(a), B = _rgb(b); return Math.hypot(A[0]-B[0], A[1]-B[1], A[2]-B[2]) < 30; };
+  const _shade = (hex, f) => {  // f>0: beyaza doğru aç, f<0: koyulaştır
+    const m = v => Math.max(0, Math.min(255, Math.round(f > 0 ? v + (255 - v) * f : v * (1 + f))));
+    return '#' + _rgb(hex).map(m).map(v => v.toString(16).padStart(2, '0')).join('');
+  };
+  const SHADE_STEPS = [0, 0.32, -0.30, 0.55, -0.5];
+  const DASHES = [[], [7, 4], [2, 3], [12, 4, 3, 4]];
+  const seenColors = [];
   const datasets = Object.entries(FIN_DATA || {})
     .filter(([slug]) => !_finHidden.has(slug))
     .map(([slug, airline]) => {
+      const similar = seenColors.filter(c => _close(c, airline.color)).length;
+      seenColors.push(airline.color);
+      const lineColor = similar
+        ? _shade(airline.color, SHADE_STEPS[Math.min(similar, SHADE_STEPS.length - 1)])
+        : airline.color;
       const metricData = getEffectiveData(airline, slug, _finMetric);
       const data = years.map(y => {
         const v = metricData[y];
@@ -15893,17 +15945,19 @@ function renderFinChart() {
       return {
         label: airline.name,
         data,
-        borderColor: airline.color,
-        backgroundColor: _finChartType === 'bar' ? airline.color + 'BB' : airline.color + '22',
-        pointBackgroundColor: airline.color,
-        pointHoverBackgroundColor: airline.color,
+        borderColor: lineColor,
+        backgroundColor: _finChartType === 'bar' ? lineColor + 'BB' : lineColor + '22',
+        pointBackgroundColor: lineColor,
+        pointHoverBackgroundColor: lineColor,
         tension: 0.35,
         borderWidth: 2,
         pointRadius: 3,
         pointHoverRadius: 5,
         pointHitRadius: 12,
         spanGaps: true,
-        $base: airline.color,
+        borderDash: DASHES[Math.min(similar, DASHES.length - 1)],
+        $base: lineColor,
+        $code: slug,
       };
     });
 
@@ -15943,9 +15997,12 @@ function renderFinChart() {
   _finChart = new Chart(canvas, {
     type: _finChartType,
     data: { labels: years, datasets },
+    plugins: [finEndLabelsPlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      // Çizgi sonu kodları için sağda pay
+      layout: { padding: { right: _finChartType === 'line' ? 34 : 0 } },
       animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? false : undefined,
       // 'nearest': tooltip tüm havayollarını değil, yalnız en yakın serinin
       // noktasını gösterir (kullanıcı tercihi).
