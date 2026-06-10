@@ -343,7 +343,32 @@
   @media (max-width: 768px) {
     .fin-control-bar { gap: 8px; }
     .fin-chart-wrap { height: 220px; }
+    /* Dokunma hedefleri (44px hedefine yaklaş; site dili kompakt chip) */
+    .fin-mpill { padding: 8px 13px; }
+    .fin-type-btn, .fin-range-btn, .fin-cy-btn { padding: 8px 12px; }
+    .fin-atoggle { padding: 7px 12px 7px 9px; }
+    .fin-atoggle:hover { transform: none; } /* dokunmatikte zıplama olmasın */
+    .fin-deselect-btn { padding: 7px 11px; }
+    /* Tablo: havayolu sütunu sabit kalsın, yıllar kaydırılsın */
+    .fin-cmp-table th:first-child, .fin-cmp-table td:first-child {
+      position: sticky; left: 0; z-index: 2;
+      background: var(--surface); min-width: 132px; max-width: 168px;
+      white-space: normal;
+    }
+    .fin-cmp-table th:first-child { background: var(--navy); z-index: 3; }
+    .fin-cmp-table tr:hover td:first-child { background: var(--bg); }
+    .fin-cmp-table th:first-child::after, .fin-cmp-table td:first-child::after {
+      content: ''; position: absolute; top: 0; bottom: 0; right: -8px; width: 8px;
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(0,0,0,0.12), transparent);
+    }
+    .fin-table-header { flex-wrap: wrap; gap: 6px; }
+    .fin-table-sort-hint { display: none; } /* dar ekranda gereksiz kalabalık */
+    .fin-chart-empty-sub { font-size: 11px; }
   }
+  /* Dokunmatik gecikme azaltma */
+  .fin-mpill, .fin-atoggle, .fin-type-btn, .fin-range-btn, .fin-cy-btn,
+  .fin-deselect-btn, .fin-cmp-table th { touch-action: manipulation; }
 
   /* Kaynak accordion */
   .fin-sources-section { margin-top: 12px; }
@@ -15778,10 +15803,14 @@ function renderFinChart() {
         borderColor: airline.color,
         backgroundColor: _finChartType === 'bar' ? airline.color + 'BB' : airline.color + '22',
         pointBackgroundColor: airline.color,
+        pointHoverBackgroundColor: airline.color,
         tension: 0.35,
         borderWidth: 2,
         pointRadius: 3,
+        pointHoverRadius: 5,
+        pointHitRadius: 12,
         spanGaps: true,
+        $base: airline.color,
       };
     });
 
@@ -15801,13 +15830,33 @@ function renderFinChart() {
   const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
   const textColor = isDark ? '#555E78' : '#9CA3AF';
 
+  // Hover'da yalnız üzerinde olunan seri vurgulanır; diğerleri soluklaşır.
+  const setHoverEmphasis = (chart, idx) => {
+    if (chart.$hoverDS === idx) return;
+    chart.$hoverDS = idx;
+    chart.data.datasets.forEach((ds, i) => {
+      const dim = idx !== null && i !== idx;
+      ds.borderColor = dim ? ds.$base + '30' : ds.$base;
+      ds.pointBackgroundColor = dim ? ds.$base + '30' : ds.$base;
+      ds.borderWidth = (idx !== null && i === idx) ? 3 : 2;
+      ds.backgroundColor = _finChartType === 'bar'
+        ? (dim ? ds.$base + '26' : ds.$base + 'BB')
+        : ds.$base + '22';
+    });
+    chart.update('none');
+  };
+  canvas.onmouseleave = () => { if (_finChart) setHoverEmphasis(_finChart, null); };
+
   _finChart = new Chart(canvas, {
     type: _finChartType,
     data: { labels: years, datasets },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
+      // 'nearest': tooltip tüm havayollarını değil, yalnız en yakın serinin
+      // noktasını gösterir (kullanıcı tercihi).
+      interaction: { mode: 'nearest', intersect: false },
+      onHover: (evt, els, chart) => setHoverEmphasis(chart, els.length ? els[0].datasetIndex : null),
       plugins: {
         legend: { display: false },
         tooltip: {
@@ -15830,7 +15879,7 @@ function renderFinChart() {
       scales: {
         x: {
           grid: { color: gridColor },
-          ticks: { color: textColor, font: { size: 11 } }
+          ticks: { color: textColor, font: { size: 11 }, maxRotation: 0, autoSkipPadding: 12 }
         },
         y: {
           grid: { color: gridColor },
