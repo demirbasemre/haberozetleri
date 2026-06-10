@@ -127,6 +127,14 @@
     border-left: 1px solid var(--border-soft); padding-left: 14px;
   }
   .fin-atoggle-break { flex-basis: 100%; height: 0; }
+  /* Mali yıl havayolları alt bölümü — uyarı barıyla aynı görsel dil */
+  .fin-airline-fy-divider {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    color: #92400E; margin: 10px 0 6px; padding-top: 9px;
+    border-top: 1px dashed #F59E0B55;
+  }
+  [data-theme="dark"] .fin-airline-fy-divider { color: #FCD34D; }
   /* Klavye erişimi: tüm finansal kontrollerde görünür odak halkası */
   .fin-mpill:focus-visible, .fin-atoggle:focus-visible, .fin-type-btn:focus-visible,
   .fin-range-btn:focus-visible, .fin-cy-btn:focus-visible, .fin-deselect-btn:focus-visible,
@@ -199,11 +207,27 @@
     background: #F59E0B18; border-color: #F59E0B55; color: #FCD34D;
   }
   .fin-cy-note {
-    font-size: 10.5px; color: #92400E; background: #FEF3C740;
-    border: 1px solid #F59E0B44; border-radius: 6px;
-    padding: 5px 10px; margin-top: 6px; display: none;
-    line-height: 1.5;
+    font-size: 12px; color: var(--text-2); line-height: 1.65;
+    margin-bottom: 12px; max-width: 980px; display: none;
   }
+  /* Bu modda DEĞİŞEN metrikler — dikkat çekici vurgu çipleri */
+  .fin-cy-affected {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 5px;
+    margin-top: 10px; padding-top: 9px;
+    border-top: 1px dashed color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  .fin-cy-affected-label {
+    font-size: 11px; font-weight: 800; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.04em; margin-right: 3px;
+  }
+  .fin-cy-mchip {
+    padding: 2px 9px; border-radius: 10px; font-size: 10.5px; font-weight: 700;
+    color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--surface) 86%, var(--accent) 14%);
+  }
+  [data-theme="dark"] .fin-cy-mchip { color: #A5B4FC; }
+  [data-theme="dark"] .fin-cy-affected-label { color: #A5B4FC; }
+  .fin-cy-unaffected { font-size: 10.5px; color: var(--text-3); margin-left: 4px; }
   [data-theme="dark"] .fin-cy-note { color: #FCD34D; background: #F59E0B0D; border-color: #F59E0B33; }
   .fin-cy-note.visible { display: block; }
 
@@ -315,18 +339,25 @@
   /* Mali dönem bilgisi */
   .fin-fy-bar {
     border: 1px solid #F59E0B66; border-radius: var(--radius-sm);
-    background: color-mix(in srgb, var(--surface) 88%, #F59E0B 12%);
-    margin: 0 0 14px;
-    transition: background 0.2s, border-color 0.2s;
+    background: var(--surface);
+    margin: 0 0 14px; overflow: hidden;
+    transition: border-color 0.2s;
   }
-  .fin-fy-bar .fin-fy-toggle { color: #92400E; }
+  /* Renk vurgusu YALNIZ başlık satırında — gövde nötr kalır, göz yorulmaz */
+  .fin-fy-bar .fin-fy-toggle {
+    color: #92400E;
+    background: color-mix(in srgb, var(--surface) 88%, #F59E0B 12%);
+    transition: background 0.2s, color 0.15s;
+  }
   [data-theme="dark"] .fin-fy-bar .fin-fy-toggle { color: #FCD34D; }
   /* CY Normalize aktif: uyarı değil bilgi durumu — vurgu rengi değişir */
   .fin-fy-bar--cy {
     border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-    background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%);
   }
-  .fin-fy-bar--cy .fin-fy-toggle { color: var(--accent); }
+  .fin-fy-bar--cy .fin-fy-toggle {
+    color: var(--accent);
+    background: color-mix(in srgb, var(--surface) 90%, var(--accent) 10%);
+  }
   [data-theme="dark"] .fin-fy-bar--cy .fin-fy-toggle { color: #A5B4FC; }
   .fin-fy-bar--cy .fin-fy-icon { stroke: var(--accent); }
   .fin-fy-toggle {
@@ -340,23 +371,22 @@
   .fin-fy-chevron { margin-left: auto; transition: transform 0.2s; font-size: 10px; }
   .fin-fy-toggle[aria-expanded="true"] .fin-fy-chevron { transform: rotate(180deg); }
   .fin-fy-panel {
-    padding: 0 16px 12px; display: none;
+    padding: 12px 16px 14px; display: none;
+    border-top: 1px solid var(--border-soft);
   }
   .fin-fy-panel.open { display: block; }
   .fin-fy-desc {
-    font-size: 11.5px; color: var(--text-2); line-height: 1.6;
-    padding: 8px 12px; background: var(--bg); border-radius: 7px;
-    border-left: 3px solid #F59E0B; margin-bottom: 10px;
+    font-size: 12px; color: var(--text-2); line-height: 1.65;
+    margin-bottom: 12px; max-width: 920px;
   }
   .fin-fy-airlines {
     display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
   }
   .fin-fy-chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 600;
-    background: #F59E0B18; border: 1px solid #F59E0B44; color: #92400E;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;
+    background: var(--bg); border: 1px solid var(--border); color: var(--text-2);
   }
-  [data-theme="dark"] .fin-fy-chip { color: #FCD34D; background: #F59E0B14; border-color: #F59E0B33; }
   .fin-fy-chip img { width: 13px; height: 13px; border-radius: 2px; }
   /* Dönem satırı (tabloda) */
   .fin-period-row td {
@@ -3081,6 +3111,11 @@
           </div>
         </div>
         <div class="fin-airline-toggles" id="fin-airline-toggles"></div>
+        <div class="fin-airline-fy-divider">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Nisan–Mart mali yılı
+        </div>
+        <div class="fin-airline-toggles" id="fin-airline-toggles-fy"></div>
       </div>
     </div>
     <!-- Mali dönem / CY uyarısı — CY Normalize butonuyla ilişkili, moda göre içerik değişir -->
@@ -3098,7 +3133,7 @@
           diğerleri için ise <strong>Ocak – Aralık 2025</strong> dönemini ifade eder.
         </div>
         <div class="fin-cy-note" id="fin-cy-note">
-          📐 <strong>Takvim yılı normalizasyonu (hibrit) aktif:</strong> Nisan–Mart mali yılı
+          <strong>Takvim yılı normalizasyonu (hibrit) aktif:</strong> Nisan–Mart mali yılı
           kullanan Emirates, Qatar, Singapore Airlines ve ANA, Ocak–Aralık takvimine hizalanır:
           <em>Takvim N = bir önceki mali yılın son çeyreği (Oca–Mar N) + ilgili mali yılın ilk 9 ayı (Nis–Ara N)</em>.
           <strong>Singapore Airlines ve ANA</strong>'da bu hesap 2011'den itibaren her yılın
@@ -3106,8 +3141,8 @@
           (ör. COVID yılı 2019'da pay ~%19.9'a düşer, toparlanma yılı 2021'de %28–32'ye çıkar).
           <strong>Emirates ve Qatar</strong> çeyreklik veri yayınlamadığından sabit tahmini pay kullanılır
           (Emirates %24.4 — yarı-yıl raporundan; Qatar %25.0 — eşit çeyrek varsayımı).
-          Mutlak değerlere uygulanır; büyüme ve marj metriklerine uygulanmaz.
           Serinin ilk yılı hesaplanamaz (bir önceki mali yıl gerekir) — <strong>—</strong> olarak gösterilir.
+          <div class="fin-cy-affected" id="fin-cy-affected"><!-- JS doldurur --></div>
         </div>
         <div class="fin-fy-airlines" id="fin-fy-airline-list"><!-- JS ile doldurulur --></div>
         <label class="fin-period-toggle-wrap">
@@ -15797,6 +15832,14 @@ window.initFinansalTab = function() {
   // Varsayılan görünüm: yalnız THY seçili gelir; "Sıfırla" tümünü açar
   Object.keys(FIN_DATA).forEach(s => { if (s !== 'TK') _finHidden.add(s); });
   buildFinToggles();
+  // CY açıklamasına "bu modda değişen metrikler" çiplerini bas (oran/büyüme hariç)
+  const affEl = document.getElementById('fin-cy-affected');
+  if (affEl) {
+    const affected = FIN_METRIC_DEFS.filter(d => d.fmt !== 'pct' && d.fmt !== 'pct_s');
+    affEl.innerHTML = '<span class="fin-cy-affected-label">Bu 4 havayolunda değişen metrikler:</span>'
+      + affected.map(d => `<span class="fin-cy-mchip">${d.label}</span>`).join('')
+      + '<span class="fin-cy-unaffected">— oran ve büyüme metrikleri (%, marj, doluluk) değişmez</span>';
+  }
   bindFinControls();
   // Akıllı varsayılan: en son yıla göre büyükten küçüğe
   const _initYears = getFinYears();
@@ -15815,25 +15858,33 @@ window.initFinansalTab = function() {
 function buildFinToggles() {
   const cont = document.getElementById('fin-airline-toggles');
   if (!cont) return;
-  // THY en üstte kendi satırında; kalanlar ada göre alfabetik (TR yereli)
-  const entries = Object.entries(FIN_DATA).sort((a, b) => {
-    if (a[0] === 'TK') return -1;
-    if (b[0] === 'TK') return 1;
-    return a[1].name.localeCompare(b[1].name, 'tr');
-  });
-  cont.innerHTML = entries.map(([slug, d]) => {
+  const chipHtml = ([slug, d]) => {
     const bg = d.color + '22';
     const logo = finLogoUrl(slug);
     const logoEl = logo
       ? `<img class="fin-atoggle-logo" src="${logo}" alt="" onerror="this.style.display='none'">`
       : `<span class="fin-atoggle-dot" style="background:${d.color}"></span>`;
-    const chip = `<button class="fin-atoggle${_finHidden.has(slug) ? ' hidden' : ''}" data-slug="${slug}" aria-pressed="${!_finHidden.has(slug)}"
+    return `<button class="fin-atoggle${_finHidden.has(slug) ? ' hidden' : ''}" data-slug="${slug}" aria-pressed="${!_finHidden.has(slug)}"
       style="background:${bg};border-color:${d.color};color:${d.color}"
       onclick="toggleFinAirline('${slug}')">
       ${logoEl}${d.name}
     </button>`;
-    return slug === 'TK' ? chip + '<span class="fin-atoggle-break" aria-hidden="true"></span>' : chip;
-  }).join('');
+  };
+  const byName = (a, b) => a[1].name.localeCompare(b[1].name, 'tr');
+  // Takvim yılı raporlayanlar: THY üstte kendi satırında, kalanlar alfabetik.
+  // Nisan–Mart mali yılı kullananlar ayrı alt bölümde (uyarı başlıklı).
+  const all = Object.entries(FIN_DATA);
+  const calendar = all.filter(([s]) => !isNonDecFY(s)).sort((a, b) => {
+    if (a[0] === 'TK') return -1;
+    if (b[0] === 'TK') return 1;
+    return byName(a, b);
+  });
+  const fiscal = all.filter(([s]) => isNonDecFY(s)).sort(byName);
+  cont.innerHTML = calendar.map(e =>
+    e[0] === 'TK' ? chipHtml(e) + '<span class="fin-atoggle-break" aria-hidden="true"></span>' : chipHtml(e)
+  ).join('');
+  const fyCont = document.getElementById('fin-airline-toggles-fy');
+  if (fyCont) fyCont.innerHTML = fiscal.map(chipHtml).join('');
 }
 
 window.deselAllFinAirlines = function() {
