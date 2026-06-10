@@ -113,8 +113,30 @@
   /* ══════ FİNANSAL TABLOLAR ══════════════════════ */
   .fin-control-bar {
     display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
-    padding: 10px 0 14px;
-    border-bottom: 1px solid var(--border); margin-bottom: 14px;
+    padding: 12px 16px 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    margin-bottom: 14px;
+  }
+  /* Klavye erişimi: tüm finansal kontrollerde görünür odak halkası */
+  .fin-mpill:focus-visible, .fin-atoggle:focus-visible, .fin-type-btn:focus-visible,
+  .fin-range-btn:focus-visible, .fin-cy-btn:focus-visible, .fin-deselect-btn:focus-visible,
+  .fin-cmp-table th:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  /* Basış geri bildirimi (dokunmatik dahil) */
+  .fin-mpill:active, .fin-atoggle:active, .fin-type-btn:active,
+  .fin-range-btn:active, .fin-cy-btn:active, .fin-deselect-btn:active {
+    transform: scale(0.96);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fin-mpill, .fin-atoggle, .fin-type-btn, .fin-range-btn, .fin-cy-btn,
+    .fin-deselect-btn, .fin-cmp-table td, .fin-fy-chevron, .fin-src-chevron {
+      transition: none !important;
+    }
+    .fin-mpill:active, .fin-atoggle:active, .fin-type-btn:active,
+    .fin-range-btn:active, .fin-cy-btn:active, .fin-deselect-btn:active,
+    .fin-atoggle:hover { transform: none !important; }
   }
   .fin-ctrl-group { display: flex; flex-direction: column; gap: 5px; }
   .fin-ctrl-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -343,6 +365,15 @@
   @media (max-width: 768px) {
     .fin-control-bar { gap: 8px; }
     .fin-chart-wrap { height: 220px; }
+    /* Metrik grupları: 4 satır kaplamak yerine tek satır kaydırılabilir şerit */
+    .fin-metric-pills {
+      flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      padding-bottom: 6px; scrollbar-width: none;
+      mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent);
+    }
+    .fin-metric-pills::-webkit-scrollbar { display: none; }
+    .fin-metric-pills .fin-mpill, .fin-metric-pills .fin-mpill-sep { flex: 0 0 auto; }
+    .fin-metric-pills .fin-mpill-sep { flex-basis: auto; margin-top: 0; align-self: center; }
     /* Dokunma hedefleri (44px hedefine yaklaş; site dili kompakt chip) */
     .fin-mpill { padding: 8px 13px; }
     .fin-type-btn, .fin-range-btn, .fin-cy-btn { padding: 8px 12px; }
@@ -15675,7 +15706,7 @@ function buildFinToggles() {
     const logoEl = logo
       ? `<img class="fin-atoggle-logo" src="${logo}" alt="" onerror="this.style.display='none'">`
       : `<span class="fin-atoggle-dot" style="background:${d.color}"></span>`;
-    return `<button class="fin-atoggle" data-slug="${slug}"
+    return `<button class="fin-atoggle" data-slug="${slug}" aria-pressed="${!_finHidden.has(slug)}"
       style="background:${bg};border-color:${d.color};color:${d.color}"
       onclick="toggleFinAirline('${slug}')">
       ${logoEl}${d.name}
@@ -15699,8 +15730,9 @@ window.resetFinAirlines = function() {
 window.toggleFinAirline = function(slug) {
   if (_finHidden.has(slug)) _finHidden.delete(slug);
   else _finHidden.add(slug);
-  document.querySelector(`.fin-atoggle[data-slug="${slug}"]`)
-    ?.classList.toggle('hidden', _finHidden.has(slug));
+  const chip = document.querySelector(`.fin-atoggle[data-slug="${slug}"]`);
+  chip?.classList.toggle('hidden', _finHidden.has(slug));
+  chip?.setAttribute('aria-pressed', String(!_finHidden.has(slug)));
   renderFinChart();
   renderFinTable();
 };
@@ -15711,8 +15743,12 @@ function bindFinControls() {
       const key = btn.dataset.metric;
       if (!key) return;
       _finMetric = key;
-      document.querySelectorAll('.fin-mpill').forEach(b => b.classList.remove('fin-mpill--active'));
+      document.querySelectorAll('.fin-mpill').forEach(b => {
+        b.classList.remove('fin-mpill--active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('fin-mpill--active');
+      btn.setAttribute('aria-pressed', 'true');
       const def = FIN_METRIC_MAP[key];
       const title = def ? `${def.label} (${def.unit || 'USD'})` : key;
       const el = document.getElementById('fin-chart-title');
@@ -15723,11 +15759,23 @@ function bindFinControls() {
       renderFinTable();
     });
   });
+  // Başlangıç ARIA durumları (toggle butonları ekran okuyucuya durum bildirsin)
+  document.querySelectorAll('.fin-mpill').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.classList.contains('fin-mpill--active'))));
+  document.querySelectorAll('.fin-type-btn').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.classList.contains('fin-type-btn--active'))));
+  document.querySelectorAll('.fin-range-btn').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.classList.contains('fin-range-btn--active'))));
+  document.getElementById('fin-cy-toggle')?.setAttribute('aria-pressed', String(_finCYMode));
+
   // Grafik tipi
   document.querySelectorAll('.fin-type-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       _finChartType = btn.dataset.chart;
-      document.querySelectorAll('.fin-type-btn').forEach(b => b.classList.toggle('fin-type-btn--active', b === btn));
+      document.querySelectorAll('.fin-type-btn').forEach(b => {
+        b.classList.toggle('fin-type-btn--active', b === btn);
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
       renderFinChart();
     });
   });
@@ -15735,7 +15783,10 @@ function bindFinControls() {
   document.querySelectorAll('.fin-range-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       _finRange = parseInt(btn.dataset.range);
-      document.querySelectorAll('.fin-range-btn').forEach(b => b.classList.toggle('fin-range-btn--active', b === btn));
+      document.querySelectorAll('.fin-range-btn').forEach(b => {
+        b.classList.toggle('fin-range-btn--active', b === btn);
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
       renderFinChart();
       renderFinTable();
     });
@@ -15835,6 +15886,7 @@ function renderFinChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? false : undefined,
       // 'nearest': tooltip tüm havayollarını değil, yalnız en yakın serinin
       // noktasını gösterir (kullanıcı tercihi).
       interaction: { mode: 'nearest', intersect: false },
@@ -16036,7 +16088,10 @@ window.toggleFinCYMode = function() {
   _finCYMode = !_finCYMode;
   const btn  = document.getElementById('fin-cy-toggle');
   const note = document.getElementById('fin-cy-note');
-  if (btn)  btn.classList.toggle('fin-cy-btn--active', _finCYMode);
+  if (btn) {
+    btn.classList.toggle('fin-cy-btn--active', _finCYMode);
+    btn.setAttribute('aria-pressed', String(_finCYMode));
+  }
   if (note) note.classList.toggle('visible', _finCYMode);
   renderFinChart();
   renderFinTable();
