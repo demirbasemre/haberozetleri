@@ -400,6 +400,26 @@
   }
   [data-theme="dark"] .fin-fy-bar--cy .fin-fy-toggle { color: #A5B4FC; }
   .fin-fy-bar--cy .fin-fy-icon { stroke: var(--accent); }
+  /* Uyarı animasyonu: ünlem yavaşça "nefes alır" (göz yormayan ambient nabız),
+     başlık metni tek seferlik yumuşak girişle gelir. */
+  @keyframes finWarnPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.14); opacity: 0.68; }
+  }
+  @keyframes finWarnIn {
+    from { opacity: 0; transform: translateX(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+  #fin-fy-icon-warn {
+    animation: finWarnPulse 2.6s ease-in-out infinite;
+    transform-origin: center; will-change: transform, opacity;
+  }
+  #fin-fy-title { display: inline-block; animation: finWarnIn 0.5s ease-out; }
+  /* CY modunda uyarı değil bilgi — takvim ikonu sabittir (display:none zaten) */
+  .fin-fy-bar--cy #fin-fy-icon-warn { animation: none; }
+  @media (prefers-reduced-motion: reduce) {
+    #fin-fy-icon-warn, #fin-fy-title { animation: none !important; }
+  }
   .fin-fy-toggle {
     display: flex; align-items: center; gap: 6px; width: 100%;
     padding: 7px 16px; cursor: pointer; font-size: 11.5px; font-weight: 600;
