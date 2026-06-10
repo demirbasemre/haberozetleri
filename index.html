@@ -265,10 +265,21 @@
   .fin-table-note { font-size: 11px; color: var(--text-3); }
   /* Mali dönem bilgisi */
   .fin-fy-bar {
-    border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
-    background: color-mix(in srgb, var(--surface) 50%, #F59E0B08 50%);
-    margin: -4px 0 14px;
+    border: 1px solid #F59E0B66; border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--surface) 88%, #F59E0B 12%);
+    margin: 0 0 14px;
+    transition: background 0.2s, border-color 0.2s;
   }
+  .fin-fy-bar .fin-fy-toggle { color: #92400E; }
+  [data-theme="dark"] .fin-fy-bar .fin-fy-toggle { color: #FCD34D; }
+  /* CY Normalize aktif: uyarı değil bilgi durumu — vurgu rengi değişir */
+  .fin-fy-bar--cy {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--surface) 88%, var(--accent) 12%);
+  }
+  .fin-fy-bar--cy .fin-fy-toggle { color: var(--accent); }
+  [data-theme="dark"] .fin-fy-bar--cy .fin-fy-toggle { color: #A5B4FC; }
+  .fin-fy-bar--cy .fin-fy-icon { stroke: var(--accent); }
   .fin-fy-toggle {
     display: flex; align-items: center; gap: 6px; width: 100%;
     padding: 7px 16px; cursor: pointer; font-size: 11.5px; font-weight: 600;
@@ -14937,7 +14948,7 @@ function initControls(allArticles) {
     const emptyEl   = document.getElementById('reports-empty');
     const viewEl    = document.getElementById('reports-view');
 
-    loadingEl.style.display = 'flex';
+    if (_activeReportType === 'arz_talep_navlun') loadingEl.style.display = 'flex';
     emptyEl.style.display   = 'none';
     viewEl.style.display    = 'none';
 
@@ -14974,10 +14985,12 @@ function initControls(allArticles) {
 
       _currentIdx = 0;
       renderReport();
-      viewEl.style.display = 'block';
+      // Derin link (#reports/finansal vb.) ile başka sekmeye geçilmiş olabilir;
+      // asenkron yükleme bitince navlun görünümünü yalnız hâlâ o sekmedeyken aç.
+      if (_activeReportType === 'arz_talep_navlun') viewEl.style.display = 'block';
     } catch (err) {
       loadingEl.style.display = 'none';
-      emptyEl.style.display   = 'block';
+      if (_activeReportType === 'arz_talep_navlun') emptyEl.style.display = 'block';
       console.error('Raporlar yüklenemedi:', err);
     }
   }
@@ -16134,6 +16147,7 @@ window.toggleFinCYMode = function() {
   if (ic) ic.style.display = _finCYMode ? '' : 'none';
   const rawDesc = document.getElementById('fin-fy-desc-raw');
   if (rawDesc) rawDesc.style.display = _finCYMode ? 'none' : '';
+  document.getElementById('fin-fy-bar')?.classList.toggle('fin-fy-bar--cy', _finCYMode);
   renderFinChart();
   renderFinTable();
 };
