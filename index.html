@@ -112,12 +112,21 @@
 
   /* ══════ FİNANSAL TABLOLAR ══════════════════════ */
   .fin-control-bar {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+    display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start;
     padding: 12px 16px 14px;
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); box-shadow: var(--shadow-sm);
     margin-bottom: 14px;
   }
+  .fin-ctrl-left {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+    flex: 1 1 560px; min-width: 320px;
+  }
+  .fin-ctrl-airlines {
+    flex: 1 1 320px; min-width: 280px; align-self: stretch;
+    border-left: 1px solid var(--border-soft); padding-left: 14px;
+  }
+  .fin-atoggle-break { flex-basis: 100%; height: 0; }
   /* Klavye erişimi: tüm finansal kontrollerde görünür odak halkası */
   .fin-mpill:focus-visible, .fin-atoggle:focus-visible, .fin-type-btn:focus-visible,
   .fin-range-btn:focus-visible, .fin-cy-btn:focus-visible, .fin-deselect-btn:focus-visible,
@@ -396,6 +405,7 @@
     .fin-cmp-table th:first-child, .fin-cmp-table td:first-child {
       min-width: 132px; max-width: 168px; white-space: normal;
     }
+    .fin-ctrl-airlines { border-left: none; padding-left: 0; min-width: 100%; }
     .fin-table-header { flex-wrap: wrap; gap: 6px; }
     .fin-table-sort-hint { display: none; } /* dar ekranda gereksiz kalabalık */
     .fin-chart-empty-sub { font-size: 11px; }
@@ -1655,7 +1665,7 @@
 </style>
 <script>
   (function() {
-    const hash = window.location.hash.replace('#', '');
+    const hash = window.location.hash.replace('#', '').split('/')[0];
     const validTabs = ['news', 'dashboard', 'todo', 'stats', 'reports'];
     if (validTabs.includes(hash) && hash !== 'news') {
       const style = document.createElement('style');
@@ -2918,6 +2928,7 @@
 
     <!-- Kontrol barı -->
     <div class="fin-control-bar">
+      <div class="fin-ctrl-left">
       <!-- Metrik seçici -->
       <div class="fin-ctrl-group">
         <span class="fin-ctrl-label">Metrik</span>
@@ -2984,6 +2995,18 @@
           CY Normalize
         </button>
       </div>
+      </div><!-- /fin-ctrl-left -->
+      <!-- Havayolu seçici — metriklerin sağındaki alan -->
+      <div class="fin-ctrl-airlines">
+        <div class="fin-airline-header">
+          <span class="fin-airline-header-label">Havayolları</span>
+          <div style="display:flex;gap:5px">
+            <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Sıfırla</button>
+            <button class="fin-deselect-btn" onclick="deselAllFinAirlines()" title="Tümünü tablodan kaldır">— Tümünü Gizle</button>
+          </div>
+        </div>
+        <div class="fin-airline-toggles" id="fin-airline-toggles"></div>
+      </div>
     </div>
     <!-- Mali dönem / CY uyarısı — CY Normalize butonuyla ilişkili, moda göre içerik değişir -->
     <div class="fin-fy-bar" id="fin-fy-bar">
@@ -3018,16 +3041,6 @@
         </label>
       </div>
     </div>
-
-    <!-- Havayolu seçici -->
-    <div class="fin-airline-header">
-      <span class="fin-airline-header-label">Havayolları</span>
-      <div style="display:flex;gap:5px">
-        <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Sıfırla</button>
-        <button class="fin-deselect-btn" onclick="deselAllFinAirlines()" title="Tümünü tablodan kaldır">— Tümünü Gizle</button>
-      </div>
-    </div>
-    <div class="fin-airline-toggles" id="fin-airline-toggles"></div>
 
     <!-- Ana grafik -->
     <div class="fin-chart-section">
@@ -6582,8 +6595,9 @@ function switchTab(tab) {
     }
   }
 
-  // Update hash if not matching
-  if (window.location.hash !== '#' + tab) {
+  // Update hash if not matching (alt rota varsa koru: #reports/finansal gibi)
+  const curHashTab = window.location.hash.replace('#', '').split('/')[0];
+  if (curHashTab !== tab) {
     window.location.hash = tab;
   }
 
@@ -15436,6 +15450,11 @@ function initControls(allArticles) {
 
   function switchReportType(type) {
     _activeReportType = type;
+    // Derin link: rapor alt sekmesi URL'de taşınır (#reports/<tip>) —
+    // link paylaşıldığında doğrudan bu sekme açılır.
+    if ((window.location.hash || '').split('/')[0] === '#reports') {
+      history.replaceState(null, '', '#reports/' + type);
+    }
     window.scrollTo({ top: 0, behavior: 'instant' });
     const loadingEl = document.getElementById('reports-loading');
     const emptyEl   = document.getElementById('reports-empty');
@@ -15654,7 +15673,7 @@ function fmtFinVal(v, fmt) {
   const F = d => `https://www.google.com/s2/favicons?sz=32&domain=${d}`;
   const _FIN_LOGO_MAP = {
     'QR':  F('qatarairways.com'),
-    'EK':  F('emirates.com'),
+    'EK':  'https://www.gstatic.com/flights/airline_logos/70px/EK.png',  // favicon API jenerik küre döndürüyor
     'TK':  F('turkishairlines.com'),
     'AF':  F('airfrance.com'),           // airfranceklm.com değil
     'CI':  F('china-airlines.com'),
@@ -15703,17 +15722,24 @@ window.initFinansalTab = function() {
 function buildFinToggles() {
   const cont = document.getElementById('fin-airline-toggles');
   if (!cont) return;
-  cont.innerHTML = Object.entries(FIN_DATA).map(([slug, d]) => {
+  // THY en üstte kendi satırında; kalanlar ada göre alfabetik (TR yereli)
+  const entries = Object.entries(FIN_DATA).sort((a, b) => {
+    if (a[0] === 'TK') return -1;
+    if (b[0] === 'TK') return 1;
+    return a[1].name.localeCompare(b[1].name, 'tr');
+  });
+  cont.innerHTML = entries.map(([slug, d]) => {
     const bg = d.color + '22';
     const logo = finLogoUrl(slug);
     const logoEl = logo
       ? `<img class="fin-atoggle-logo" src="${logo}" alt="" onerror="this.style.display='none'">`
       : `<span class="fin-atoggle-dot" style="background:${d.color}"></span>`;
-    return `<button class="fin-atoggle" data-slug="${slug}" aria-pressed="${!_finHidden.has(slug)}"
+    const chip = `<button class="fin-atoggle" data-slug="${slug}" aria-pressed="${!_finHidden.has(slug)}"
       style="background:${bg};border-color:${d.color};color:${d.color}"
       onclick="toggleFinAirline('${slug}')">
       ${logoEl}${d.name}
     </button>`;
+    return slug === 'TK' ? chip + '<span class="fin-atoggle-break" aria-hidden="true"></span>' : chip;
   }).join('');
 }
 
@@ -16238,9 +16264,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hash routing for SPA tabs
   const handleHashRouting = () => {
     const hash = window.location.hash.replace('#', '');
+    const [tab, sub] = hash.split('/');
     const validTabs = ['news', 'dashboard', 'todo', 'stats', 'reports'];
-    if (validTabs.includes(hash)) {
-      switchTab(hash);
+    if (validTabs.includes(tab)) {
+      switchTab(tab);
+      // Alt rota: #reports/arz_talep_navlun | filo | finansal → ilgili rapor sekmesi
+      if (tab === 'reports' && sub) {
+        const pill = document.querySelector(`.report-type-pill[data-report-type="${sub}"]`);
+        if (pill && !pill.classList.contains('fdd-btn--active')) pill.click();
+      }
     }
   };
 
