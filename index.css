@@ -521,6 +521,16 @@
   }
   .fdd-panel.open { display: block; animation: dropIn 0.16s ease; }
 
+  /* Mobil portal: açılan panel body'ye taşınır (bkz. portalPanelToBody).
+     Panel .filter-bar (sticky, z-index:90) içinde kalırsa z-index'i ne olursa
+     olsun o bağlamın 90 katmanına hapsolur ve overflow-x kaydırıcısı kırpar
+     (özellikle iOS Safari). Yeni dropdown eklerken aynı deseni kullan. */
+  .fdd-panel--portal {
+    position: fixed;
+    z-index: 9990;
+    max-width: calc(100vw - 20px);
+  }
+
   @keyframes dropIn {
     from { opacity: 0; transform: translateY(-6px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -1357,8 +1367,9 @@
     /* Daha büyük dokunma hedefleri */
     .airline-col-item { min-height: 38px; }
     .fdd-btn { min-height: 36px; }
-    /* Dropdown tam genişlik değil, ekran kenarına sığacak */
-    #airline-dropdown.airline-grid-mode {
+    /* Dropdown tam genişlik değil, ekran kenarına sığacak
+       (id değil sınıf: stats-airline-panel gibi diğer grid panelleri de kapsasın) */
+    .fdd-panel.airline-grid-mode {
       max-width: calc(100vw - 20px);
     }
     /* Entegratörler barı mobilde kaydırılabilir */
