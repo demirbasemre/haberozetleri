@@ -4513,27 +4513,30 @@ const CAT_SHORT = {
 const ALL_DROPDOWNS = ['cat', 'date', 'region', 'airline', 'gsa', 'source'];
 function panelId(id) { return id === 'airline' ? 'airline-dropdown' : `${id}-panel`; }
 
-function closeDropdown(id) {
-  const panel = document.getElementById(panelId(id));
-  if (panel) {
-    panel.classList.remove('open');
-    // mobil fixed konumlama artıklarını temizle
-    panel.style.position = '';
-    panel.style.top = '';
-    panel.style.left = '';
-    panel.style.right = '';
-    panel.style.maxHeight = '';
-  }
-  document.getElementById(`${id}-btn`)?.setAttribute('aria-expanded', 'false');
+// Mobil portal: panel, sticky .filter-bar'ın stacking context'inde (z-index:90)
+// kaldıkça kendi z-index'i ne olursa olsun sayfadaki z-index>90 öğelerin
+// arkasında kalır; yatay kaydırıcı (overflow-x) da kırpar — özellikle iOS
+// Safari'de. Açılırken paneli body'ye taşı, kapanırken yer tutucuyla geri koy.
+// YENİ DROPDOWN EKLERKEN BU DESENİ KULLAN (bkz. CSS .fdd-panel--portal).
+function portalPanelToBody(panel) {
+  if (!panel || panel.parentElement === document.body) return;
+  const ph = document.createComment('fdd-home');
+  panel.parentNode.insertBefore(ph, panel);
+  panel._fddHome = ph;
+  panel.classList.add('fdd-panel--portal');
+  document.body.appendChild(panel);
 }
-// Mobilde: paneli viewport'a sabitle (yatay-kaydırmalı filtre çubuğunun
-// overflow kırpmasından kaçır), butonun hemen altına konumla.
-function positionMobileDropdown(id) {
-  const panel = document.getElementById(panelId(id));
-  const btn = document.getElementById(`${id}-btn`);
+function restorePanelHome(panel) {
+  if (!panel) return;
+  panel.classList.remove('fdd-panel--portal');
+  const ph = panel._fddHome;
+  if (ph && ph.parentNode) { ph.parentNode.insertBefore(panel, ph); ph.remove(); }
+  panel._fddHome = null;
+}
+// Paneli butonun hemen altına, viewport'a sabitle (portal sonrası konumlama).
+function positionFixedPanel(panel, btn) {
   if (!panel || !btn) return;
-  const wrap = panel.closest('.fdd-wrap') || btn;
-  const a = wrap.getBoundingClientRect();
+  const a = (btn.closest('.fdd-wrap') || btn).getBoundingClientRect();
   panel.style.position = 'fixed';
   panel.style.top = (a.bottom + 6) + 'px';
   panel.style.maxHeight = Math.max(180, window.innerHeight - a.bottom - 20) + 'px';
@@ -4544,6 +4547,24 @@ function positionMobileDropdown(id) {
   if (left < 10) left = 10;
   panel.style.left = left + 'px';
   panel.style.right = 'auto';
+}
+
+function closeDropdown(id) {
+  const panel = document.getElementById(panelId(id));
+  if (panel) {
+    panel.classList.remove('open');
+    // mobil fixed konumlama artıklarını temizle, paneli yuvasına geri koy
+    panel.style.position = '';
+    panel.style.top = '';
+    panel.style.left = '';
+    panel.style.right = '';
+    panel.style.maxHeight = '';
+    restorePanelHome(panel);
+  }
+  document.getElementById(`${id}-btn`)?.setAttribute('aria-expanded', 'false');
+}
+function positionMobileDropdown(id) {
+  positionFixedPanel(document.getElementById(panelId(id)), document.getElementById(`${id}-btn`));
 }
 function openDropdown(id) {
   ALL_DROPDOWNS.forEach(d => { if (d !== id) closeDropdown(d); });
@@ -4567,8 +4588,10 @@ function openDropdown(id) {
       }
     });
   } else {
-    // Mobil: overflow kırpmasından kaçmak için fixed konumla.
-    // rAF bazı ortamlarda kısıtlanabildiğinden hem hemen hem rAF'ta çağır.
+    // Mobil: body'ye taşı (stacking context + overflow tuzağından çık) ve
+    // fixed konumla. rAF bazı ortamlarda kısıtlanabildiğinden hem hemen
+    // hem rAF'ta çağır.
+    portalPanelToBody(panel);
     positionMobileDropdown(id);
     requestAnimationFrame(() => positionMobileDropdown(id));
   }
@@ -14427,21 +14450,31 @@ function initChartTypeToggle() {
 function initAirlineDropdown() {
   const btn = document.getElementById('stats-airline-btn');
   const panel = document.getElementById('stats-airline-panel');
-  btn.addEventListener('click', e => {
-    e.stopPropagation();
-    const open = panel.classList.toggle('open');
-    btn.setAttribute('aria-expanded', open);
-    if (open) {
-      buildStatsAirlineFilter();
-    } else {
-      panel.style.left = '';
-    }
-  });
-  document.addEventListener('click', () => {
+  function closeStatsAirlinePanel() {
     panel.classList.remove('open');
     btn.setAttribute('aria-expanded','false');
+    panel.style.position = '';
+    panel.style.top = '';
     panel.style.left = '';
+    panel.style.right = '';
+    panel.style.maxHeight = '';
+    restorePanelHome(panel);
+  }
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (panel.classList.contains('open')) { closeStatsAirlinePanel(); return; }
+    panel.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    buildStatsAirlineFilter();
+    if (window.innerWidth < 769) {
+      // Mobil: sticky filter-bar stacking context'i + overflow kırpması
+      // tuzağından çık (bkz. portalPanelToBody).
+      portalPanelToBody(panel);
+      positionFixedPanel(panel, btn);
+      requestAnimationFrame(() => positionFixedPanel(panel, btn));
+    }
   });
+  document.addEventListener('click', closeStatsAirlinePanel);
   panel.addEventListener('click', e => e.stopPropagation());
 }
 
