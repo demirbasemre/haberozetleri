@@ -242,6 +242,55 @@
   }
   .fin-chart-title { font-size: 13.5px; font-weight: 700; color: var(--text); }
   .fin-chart-source { font-size: 11px; color: var(--text-3); }
+  .fin-chart-ctrl-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .fin-chart-ctrl-label {
+    font-size: 11px;
+    color: var(--text-3);
+    user-select: none;
+  }
+  .fin-chart-select-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  .fin-chart-select {
+    padding: 3px 22px 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--bg);
+    color: var(--text-2);
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .fin-chart-select:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+  }
+  .fin-chart-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(29, 111, 232, 0.15);
+  }
+  .fin-chart-select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 3.5px solid transparent;
+    border-right: 3.5px solid transparent;
+    border-top: 4.5px solid var(--text-3);
+    pointer-events: none;
+  }
   .fin-chart-wrap { position: relative; height: 280px; }
   .fin-chart-wrap canvas { max-height: 280px; }
   .fin-chart-empty {
@@ -3057,7 +3106,17 @@
     <div class="fin-chart-section">
       <div class="fin-chart-header">
         <span class="fin-chart-title" id="fin-chart-title">Toplam Gelir (USD)</span>
-        <span class="fin-chart-source">USD · Resmi yıllık raporlar</span>
+        <div class="fin-chart-ctrl-wrap">
+          <label for="fin-chart-val-display" class="fin-chart-ctrl-label">Değerler:</label>
+          <div class="fin-chart-select-wrapper">
+            <select id="fin-chart-val-display" class="fin-chart-select" onchange="changeFinValDisplay(this.value)">
+              <option value="none">Gizle</option>
+              <option value="smart">Akıllı (Çakışmasız)</option>
+              <option value="hover">Sadece Vurgulanan</option>
+              <option value="all">Tümünü Göster</option>
+            </select>
+          </div>
+        </div>
       </div>
       <div class="fin-chart-wrap">
         <canvas id="fin-main-chart" aria-label="Finansal karşılaştırma grafiği"></canvas>
@@ -15538,6 +15597,7 @@ let _finHidden = new Set();
 let _finSort   = { col: null, dir: 'none' }; // col: 'airline' | yıl string, dir: 'none'|'asc'|'desc'
 let _finShowPeriods = false;
 let _finCYMode = false;    // Takvim Yılı normalize modu
+let _finChartValDisplay = localStorage.getItem('finChartValDisplay') || 'smart';
 let _finBuilt = false;
 
 // ── Mali yıl sonu ayları (Aralık=12 varsayılan; belirtilenler farklı)
@@ -15835,6 +15895,11 @@ function bindFinControls() {
       renderFinTable();
     });
   });
+
+  const displaySelect = document.getElementById('fin-chart-val-display');
+  if (displaySelect) {
+    displaySelect.value = _finChartValDisplay;
+  }
 }
 
 function getFinYears() {
@@ -15886,6 +15951,205 @@ const finEndLabelsPlugin = {
       ctx.fillStyle = it.color;
       ctx.fillText(it.code, Math.min(it.x, chartArea.right) + 5, y);
     });
+    ctx.restore();
+  }
+};
+
+window.changeFinValDisplay = function(val) {
+  _finChartValDisplay = val;
+  localStorage.setItem('finChartValDisplay', val);
+  renderFinChart();
+};
+
+function getPointLabelVal(v, fmt) {
+  if (v == null) return '';
+  switch(fmt) {
+    case 'musd': {
+      const abs = Math.abs(v);
+      if (abs >= 1000) return (v/1000).toFixed(1) + 'B$';
+      return Math.round(v) + 'M$';
+    }
+    case 'musd_s': {
+      const sign = v >= 0 ? '+' : '';
+      const abs = Math.abs(v);
+      if (abs >= 1000) return sign + (v/1000).toFixed(1) + 'B$';
+      return sign + Math.round(v) + 'M$';
+    }
+    case 'pct':   return v.toFixed(1) + '%';
+    case 'pct_s': return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+    case 'pax':   return v.toFixed(1) + 'M';
+    case 'munit': return v.toFixed(1) + 'B';
+    case 'count': {
+      const abs = Math.abs(v);
+      if (abs >= 1000) return (v/1000).toFixed(0) + 'k';
+      return Math.round(v).toLocaleString('tr-TR');
+    }
+    default:      return String(v);
+  }
+}
+
+const finPointValuesPlugin = {
+  id: 'finPointValues',
+  afterDatasetsDraw(chart) {
+    if (_finChartValDisplay === 'none') return;
+    const { ctx, chartArea } = chart;
+    const def = FIN_METRIC_MAP[_finMetric];
+    const fmt = def?.fmt || 'musd';
+    
+    const pointsToDraw = [];
+    
+    chart.data.datasets.forEach((ds, dsIdx) => {
+      const meta = chart.getDatasetMeta(dsIdx);
+      if (meta.hidden) return;
+      
+      if (_finChartValDisplay === 'hover' && chart.$hoverDS !== dsIdx) {
+        return;
+      }
+      
+      ds.data.forEach((val, dataIdx) => {
+        if (val == null) return;
+        const point = meta.data[dataIdx];
+        if (!point) return;
+        
+        const x = point.x;
+        const y = point.y;
+        
+        if (x < chartArea.left || x > chartArea.right || y < chartArea.top || y > chartArea.bottom) {
+          return;
+        }
+        
+        const label = getPointLabelVal(val, fmt);
+        
+        pointsToDraw.push({
+          x,
+          y,
+          label,
+          color: ds.borderColor,
+          dsIdx,
+          dataIdx,
+          val
+        });
+      });
+    });
+    
+    if (pointsToDraw.length === 0) return;
+    
+    ctx.save();
+    ctx.font = '600 9px sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    
+    const groups = {};
+    pointsToDraw.forEach(pt => {
+      if (!groups[pt.dataIdx]) groups[pt.dataIdx] = [];
+      groups[pt.dataIdx].push(pt);
+    });
+    
+    if (_finChartValDisplay === 'smart' && pointsToDraw.length > 1) {
+      Object.keys(groups).forEach(dataIdx => {
+        const group = groups[dataIdx];
+        if (group.length <= 1) {
+          group[0].drawY = group[0].y - 8;
+          group[0].drawX = group[0].x;
+          return;
+        }
+        
+        group.sort((a, b) => a.y - b.y);
+        
+        group.forEach((pt, i) => {
+          pt.drawY = pt.y - 8;
+          pt.drawX = pt.x;
+        });
+      });
+    } else {
+      pointsToDraw.forEach(pt => {
+        pt.drawY = pt.y - 8;
+        pt.drawX = pt.x;
+      });
+    }
+    
+    pointsToDraw.forEach(pt => {
+      let drawX = pt.drawX ?? pt.x;
+      let drawY = pt.drawY ?? (pt.y - 8);
+      let align = 'center';
+      
+      if (_finChartValDisplay === 'smart' && pointsToDraw.length > 1) {
+        const group = groups[pt.dataIdx];
+        if (group && group.length > 1) {
+          const idx = group.indexOf(pt);
+          if (group.length === 2) {
+            if (idx === 0) {
+              drawY = pt.y - 8;
+            } else {
+              drawY = pt.y + 8;
+            }
+          } else if (group.length === 3) {
+            if (idx === 0) {
+              drawY = pt.y - 8;
+            } else if (idx === 1) {
+              drawX = pt.x - 11;
+              drawY = pt.y;
+              align = 'right';
+            } else {
+              drawY = pt.y + 8;
+            }
+          } else {
+            if (idx === 0) {
+              drawY = pt.y - 8;
+            } else if (idx === 1) {
+              drawX = pt.x - 11;
+              drawY = pt.y;
+              align = 'right';
+            } else if (idx === 2) {
+              drawX = pt.x + 11;
+              drawY = pt.y;
+              align = 'left';
+            } else if (idx === 3) {
+              drawY = pt.y + 8;
+            } else {
+              if (idx % 2 === 0) {
+                drawX = pt.x - 11;
+                drawY = pt.y + (idx > 4 ? 6 : 0);
+                align = 'right';
+              } else {
+                drawX = pt.x + 11;
+                drawY = pt.y + (idx > 4 ? 6 : 0);
+                align = 'left';
+              }
+            }
+          }
+        }
+      }
+      
+      drawY = Math.max(chartArea.top + 6, Math.min(drawY, chartArea.bottom - 4));
+      drawX = Math.max(chartArea.left + 15, Math.min(drawX, chartArea.right - 15));
+      
+      ctx.font = '600 9px sans-serif';
+      const textWidth = ctx.measureText(pt.label).width;
+      const bgW = textWidth + 6;
+      const bgH = 12;
+      
+      ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(26,29,39,0.85)' : 'rgba(255,255,255,0.85)';
+      
+      let bgX = drawX - bgW / 2;
+      if (align === 'left') bgX = drawX;
+      if (align === 'right') bgX = drawX - bgW;
+      
+      const bgY = drawY - bgH / 2;
+      
+      ctx.beginPath();
+      if (typeof ctx.roundRect === 'function') {
+        ctx.roundRect(bgX, bgY, bgW, bgH, 3);
+      } else {
+        ctx.rect(bgX, bgY, bgW, bgH);
+      }
+      ctx.fill();
+      
+      ctx.textAlign = align;
+      ctx.fillStyle = pt.color;
+      ctx.fillText(pt.label, drawX, drawY);
+    });
+    
     ctx.restore();
   }
 };
@@ -15978,7 +16242,7 @@ function renderFinChart() {
   _finChart = new Chart(canvas, {
     type: _finChartType,
     data: { labels: years, datasets },
-    plugins: [finEndLabelsPlugin],
+    plugins: [finEndLabelsPlugin, finPointValuesPlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
