@@ -5941,6 +5941,23 @@ window.mainDataPromise = Promise.all([
     const idMap = new Map();
     const titleMap = new Map();
     raw.forEach(a => {
+      // Normalize source names (fix typos)
+      if (a.source) {
+        const lowerSrc = a.source.toLowerCase().trim();
+        if (lowerSrc === 'aircargonoupdate' || lowerSrc === 'aircargonupdate') {
+          a.source = 'aircargoupdate';
+        }
+      }
+      if (Array.isArray(a.sources)) {
+        a.sources.forEach(s => {
+          if (s.source) {
+            const lowerSub = s.source.toLowerCase().trim();
+            if (lowerSub === 'aircargonoupdate' || lowerSub === 'aircargonupdate') {
+              s.source = 'aircargoupdate';
+            }
+          }
+        });
+      }
       a._sources = [{ source: a.source, link: a.link }];
       if (a.id != null) {
         const idStr = String(a.id);
@@ -14806,6 +14823,24 @@ window.initStatsTab = function() {
       .then(r => r.json())
       .then(data => {
         const raw = Array.isArray(data) ? data : (data.items || data.news || []);
+        raw.forEach(a => {
+          if (a.source) {
+            const lowerSrc = a.source.toLowerCase().trim();
+            if (lowerSrc === 'aircargonoupdate' || lowerSrc === 'aircargonupdate') {
+              a.source = 'aircargoupdate';
+            }
+          }
+          if (Array.isArray(a.sources)) {
+            a.sources.forEach(s => {
+              if (s.source) {
+                const lowerSub = s.source.toLowerCase().trim();
+                if (lowerSub === 'aircargonoupdate' || lowerSub === 'aircargonupdate') {
+                  s.source = 'aircargoupdate';
+                }
+              }
+            });
+          }
+        });
         const items = raw.filter(a => !a.isDuplicate);
         proceed(items);
       })
