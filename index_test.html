@@ -256,8 +256,9 @@
   .fin-table-note { font-size: 11px; color: var(--text-3); }
   /* Mali dönem bilgisi */
   .fin-fy-bar {
-    border-bottom: 1px solid var(--border-soft);
+    border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
     background: color-mix(in srgb, var(--surface) 50%, #F59E0B08 50%);
+    margin: -4px 0 14px;
   }
   .fin-fy-toggle {
     display: flex; align-items: center; gap: 6px; width: 100%;
@@ -2999,18 +3000,38 @@
         </button>
       </div>
     </div>
-    <div class="fin-cy-note" id="fin-cy-note">
-      📐 <strong>Takvim yılı normalize modu (hibrit):</strong> Nisan–Mart mali yılı
-      kullanan EK, QR, SQ, NH Ocak–Aralık takvim yılına hizalanır:
-      <em>CY(N) = FY(N−1)'in Oca–Mar çeyreği + FY(N)'in Nis–Ara kısmı</em>.
-      <strong>SQ ve NH</strong>'de bu hesap 2011'den itibaren her yılın
-      <strong>gerçek çeyreklik raporlarındaki</strong> Q4 payıyla birebir yapılır
-      (ör. COVID yılı 2019'da pay ~%19.9'a düşer, toparlanma yılı 2021'de %28–32'ye çıkar).
-      <strong>EK ve QR</strong> çeyreklik veri yayınlamadığından sabit tahmini pay kullanılır
-      (EK %24.4 — yarı-yıllık rapordan; QR %25.0 — eşit çeyrek varsayımı).
-      Mutlak değerlere uygulanır; büyüme ve marj metriklerine uygulanmaz.
-      Serinin ilk yılı hesaplanamaz (bir önceki mali yıl gerekir) —
-      <strong>—</strong> olarak gösterilir.
+    <!-- Mali dönem / CY uyarısı — CY Normalize butonuyla ilişkili, moda göre içerik değişir -->
+    <div class="fin-fy-bar" id="fin-fy-bar">
+      <button class="fin-fy-toggle" onclick="toggleFinFY()" aria-expanded="false" id="fin-fy-btn">
+        <svg id="fin-fy-icon-warn" class="fin-fy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg id="fin-fy-icon-cy" class="fin-fy-icon" style="display:none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="fin-fy-title">Mali Dönem Uyarısı — 4 havayolu Nisan–Mart mali yılı kullanır</span>
+        <svg class="fin-fy-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="fin-fy-panel" id="fin-fy-panel">
+        <div class="fin-fy-desc" id="fin-fy-desc-raw">
+          <strong>Emirates, Qatar Airways, Singapore Airlines ve ANA</strong> havayolları <strong>Nisan–Mart mali yılı</strong> kullanır.
+          Bu nedenle tablodaki <em>"2025"</em> etiketi bu havayolları için <strong>Nisan 2025 – Mart 2026</strong> dönemini,
+          diğerleri için ise <strong>Ocak – Aralık 2025</strong> dönemini ifade eder.
+        </div>
+        <div class="fin-cy-note" id="fin-cy-note">
+          📐 <strong>Takvim yılı normalizasyonu (hibrit) aktif:</strong> Nisan–Mart mali yılı
+          kullanan Emirates, Qatar, Singapore Airlines ve ANA, Ocak–Aralık takvimine hizalanır:
+          <em>Takvim N = bir önceki mali yılın son çeyreği (Oca–Mar N) + ilgili mali yılın ilk 9 ayı (Nis–Ara N)</em>.
+          <strong>Singapore Airlines ve ANA</strong>'da bu hesap 2011'den itibaren her yılın
+          <strong>gerçek çeyreklik raporlarındaki</strong> son çeyrek payıyla birebir yapılır
+          (ör. COVID yılı 2019'da pay ~%19.9'a düşer, toparlanma yılı 2021'de %28–32'ye çıkar).
+          <strong>Emirates ve Qatar</strong> çeyreklik veri yayınlamadığından sabit tahmini pay kullanılır
+          (Emirates %24.4 — yarı-yıl raporundan; Qatar %25.0 — eşit çeyrek varsayımı).
+          Mutlak değerlere uygulanır; büyüme ve marj metriklerine uygulanmaz.
+          Serinin ilk yılı hesaplanamaz (bir önceki mali yıl gerekir) — <strong>—</strong> olarak gösterilir.
+        </div>
+        <div class="fin-fy-airlines" id="fin-fy-airline-list"><!-- JS ile doldurulur --></div>
+        <label class="fin-period-toggle-wrap">
+          <input type="checkbox" id="fin-show-periods" onchange="toggleFinPeriodRow(this.checked)">
+          Tabloda dönem aralığını göster
+        </label>
+      </div>
     </div>
 
     <!-- Havayolu seçici -->
@@ -3048,26 +3069,6 @@
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
           Sütun başlığına tıklayarak sırala
         </span>
-      </div>
-      <!-- Mali dönem uyarısı -->
-      <div class="fin-fy-bar">
-        <button class="fin-fy-toggle" onclick="toggleFinFY()" aria-expanded="false" id="fin-fy-btn">
-          <svg class="fin-fy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Mali Dönem Uyarısı — 4 havayolu Nisan–Mart mali yılı kullanır
-          <svg class="fin-fy-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="fin-fy-panel" id="fin-fy-panel">
-          <div class="fin-fy-desc">
-            <strong>Emirates, Qatar Airways, Singapore Airlines ve ANA</strong> havayolları <strong>Nisan–Mart mali yılı</strong> kullanır.
-            Bu nedenle tablodaki <em>"2025"</em> etiketi bu havayolları için <strong>Nisan 2024 – Mart 2025</strong> dönemini,
-            diğerleri için ise <strong>Ocak – Aralık 2025</strong> dönemini ifade eder.
-          </div>
-          <div class="fin-fy-airlines" id="fin-fy-airline-list"><!-- JS ile doldurulur --></div>
-          <label class="fin-period-toggle-wrap">
-            <input type="checkbox" id="fin-show-periods" onchange="toggleFinPeriodRow(this.checked)">
-            Tabloda dönem aralığını göster
-          </label>
-        </div>
       </div>
       <div class="fin-table-wrap">
         <table class="fin-cmp-table" id="fin-cmp-table">
@@ -16113,6 +16114,18 @@ window.toggleFinCYMode = function() {
     btn.setAttribute('aria-pressed', String(_finCYMode));
   }
   if (note) note.classList.toggle('visible', _finCYMode);
+  // Uyarı barı moda göre içerik değiştirir: ham modda mali yıl uyarısı,
+  // CY modunda yapılan hesabın özeti.
+  const title = document.getElementById('fin-fy-title');
+  if (title) title.textContent = _finCYMode
+    ? 'CY Normalize aktif — 4 havayolunun değerleri takvim yılına çevrildi: önceki mali yılın son çeyreği + ilgili mali yılın ilk 9 ayı'
+    : 'Mali Dönem Uyarısı — 4 havayolu Nisan–Mart mali yılı kullanır';
+  const iw = document.getElementById('fin-fy-icon-warn');
+  const ic = document.getElementById('fin-fy-icon-cy');
+  if (iw) iw.style.display = _finCYMode ? 'none' : '';
+  if (ic) ic.style.display = _finCYMode ? '' : 'none';
+  const rawDesc = document.getElementById('fin-fy-desc-raw');
+  if (rawDesc) rawDesc.style.display = _finCYMode ? 'none' : '';
   renderFinChart();
   renderFinTable();
 };
