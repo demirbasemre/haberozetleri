@@ -7349,7 +7349,7 @@ function barChart(id, labels, data, colors, opts = {}) {
         meta.data.forEach((bar, index) => {
           const val = dataset.data[index];
           if (val === null || val === undefined) return;
-          c.fillStyle = chart.config.options.scales.y.ticks.color || '#374151';
+          c.fillStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? '#E5E7EB' : '#374151';
           c.font = '600 10.5px Inter, sans-serif';
           c.textBaseline = 'middle';
           
