@@ -8555,7 +8555,8 @@ async function loadDashboard() {
   // ── Forex Verisini Çek ve Göster ──────────────────────────────
   let _forexCache = {
     'USD': { '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null },
-    'EUR': { '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null }
+    'EUR': { '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null },
+    'PARITY': { '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null }
   };
   let _forexCurrentCurrency = 'USD';
   let _forexCurrentPeriod = 'ytd';
@@ -8608,34 +8609,155 @@ async function loadDashboard() {
     }, ttl);
   }
 
+  // Yahoo raw JSON'dan { time, value } noktaları çıkarır ve periyoda göre filtreler
+  function extractForexPoints(rawJSON, period) {
+    const result = rawJSON.chart.result[0];
+    const timestamps = result.timestamp || [];
+    const closes = result.indicators.quote[0].close || [];
+
+    let validPoints = [];
+    for (let i = 0; i < timestamps.length; i++) {
+      if (closes[i] != null) {
+        validPoints.push({
+          time: timestamps[i],
+          value: closes[i]
+        });
+      }
+    }
+
+    if (period === '1m') {
+      validPoints = validPoints.slice(-22); // son ~22 işlem günü (1 ay)
+    } else if (period === '6m') {
+      const cutoff = Date.now() - 6 * 30 * 24 * 60 * 60 * 1000;
+      validPoints = validPoints.filter(p => p.time * 1000 >= cutoff);
+    } else if (period === 'ytd') {
+      const currentYear = new Date().getFullYear();
+      const cutoff = new Date(currentYear, 0, 1).getTime();
+      validPoints = validPoints.filter(p => p.time * 1000 >= cutoff);
+    }
+
+    return { result, validPoints };
+  }
+
+  // Önemli döviz/parite olaylarını grafikte not olarak göstermek için eklenti
+  const forexAnnotationsPlugin = {
+    id: 'forexAnnotations',
+    afterDatasetsDraw(chart) {
+      const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
+      ctx.save();
+
+      const events = [
+        { dateIso: '2018-08-13', label: 'Kur Şoku (Ağustos 2018)', color: '#E63946' },
+        { dateIso: '2021-03-20', label: 'Merkez Bankası Başkanı Görevden Alındı', color: '#F59E0B' },
+        { dateIso: '2021-12-20', label: 'Faiz İndirimi & Kur Atağı', color: '#E63946' },
+        { dateIso: '2023-05-28', label: 'Cumhurbaşkanlığı Seçimi (2. Tur)', color: '#6366F1' },
+        { dateIso: '2023-06-08', label: 'Ekonomi Yönetimi Değişti', color: '#10B981' },
+      ];
+
+      const rawDatesArray = chart.$rawDates;
+      if (!rawDatesArray || rawDatesArray.length === 0) { ctx.restore(); return; }
+
+      const firstDate = new Date(rawDatesArray[0]).getTime();
+      const lastDate  = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+      const drawnPills = [];
+
+      events.forEach(event => {
+        const targetTime = new Date(event.dateIso).getTime();
+        if (targetTime < firstDate || targetTime > lastDate) return;
+
+        let closestIndex = -1;
+        let minDiff = Infinity;
+        for (let i = 0; i < rawDatesArray.length; i++) {
+          const diff = Math.abs(new Date(rawDatesArray[i]).getTime() - targetTime);
+          if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+        }
+        if (closestIndex === -1) return;
+
+        const totalSpan = lastDate - firstDate;
+        const threshold = Math.max(totalSpan * 0.1, 15 * 24 * 60 * 60 * 1000);
+        if (minDiff > threshold) return;
+
+        const xPos = x.getPixelForValue(closestIndex);
+
+        const meta = chart.getDatasetMeta(0);
+        if (meta && meta.data && meta.data[closestIndex]) {
+          const point = meta.data[closestIndex];
+          ctx.fillStyle = event.color;
+          ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.fill();
+          ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+          ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.stroke();
+        }
+
+        ctx.setLineDash([]);
+        const font = 'bold 9.5px Inter, sans-serif';
+        ctx.font = font;
+        const textWidth = ctx.measureText(event.label).width;
+        const paddingX = 6, paddingY = 4;
+        const pillWidth  = textWidth + paddingX * 2;
+        const pillHeight = 9.5 + paddingY * 2;
+
+        let pillX = xPos - pillWidth / 2;
+        if (pillX < chartLeft) pillX = chartLeft;
+        else if (pillX + pillWidth > chartRight) pillX = chartRight - pillWidth;
+
+        let pillY = top + 10;
+        let hasOverlap = true;
+        while (hasOverlap) {
+          hasOverlap = false;
+          for (const p of drawnPills) {
+            const overlapX = !(pillX + pillWidth < p.x1 - 4 || pillX > p.x2 + 4);
+            const overlapY = !(pillY + pillHeight < p.y1 - 2 || pillY > p.y2 + 2);
+            if (overlapX && overlapY) { hasOverlap = true; pillY += pillHeight + 6; break; }
+          }
+        }
+        drawnPills.push({ x1: pillX, x2: pillX + pillWidth, y1: pillY, y2: pillY + pillHeight });
+
+        ctx.strokeStyle = event.color; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(xPos, pillY + pillHeight); ctx.lineTo(xPos, bottom); ctx.stroke();
+
+        ctx.setLineDash([]); ctx.fillStyle = event.color; ctx.beginPath();
+        if (ctx.roundRect) { ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 4); }
+        else               { ctx.rect(pillX, pillY, pillWidth, pillHeight); }
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(event.label, pillX + pillWidth / 2, pillY + pillHeight / 2 + 0.5);
+      });
+
+      ctx.restore();
+    }
+  };
+
   function drawForexChartFromRaw(rawJSON, currency, period) {
     const titleEl = document.getElementById('forex-chart-title');
     try {
-      const result = rawJSON.chart.result[0];
-      const timestamps = result.timestamp || [];
-      const closes = result.indicators.quote[0].close || [];
-      
-      let validPoints = [];
-      for (let i = 0; i < timestamps.length; i++) {
-        if (closes[i] != null) {
-          validPoints.push({
-            time: timestamps[i],
-            value: closes[i]
-          });
-        }
+      let validPoints, result, prices, rawDates;
+
+      if (currency === 'PARITY') {
+        const usdData = extractForexPoints(rawJSON.usd, period);
+        const eurData = extractForexPoints(rawJSON.eur, period);
+        result = usdData.result;
+
+        // İki seri arasında ortak tarihleri bularak noktaları hizala
+        const eurByDate = new Map();
+        eurData.validPoints.forEach(p => {
+          const dateKey = new Date(p.time * 1000).toISOString().slice(0, 10);
+          eurByDate.set(dateKey, p.value);
+        });
+
+        validPoints = [];
+        usdData.validPoints.forEach(p => {
+          const dateKey = new Date(p.time * 1000).toISOString().slice(0, 10);
+          if (eurByDate.has(dateKey) && p.value) {
+            validPoints.push({ time: p.time, value: eurByDate.get(dateKey) / p.value });
+          }
+        });
+      } else {
+        const data = extractForexPoints(rawJSON, period);
+        result = data.result;
+        validPoints = data.validPoints;
       }
-      
-      if (period === '1m') {
-        validPoints = validPoints.slice(-22); // son ~22 işlem günü (1 ay)
-      } else if (period === '6m') {
-        const cutoff = Date.now() - 6 * 30 * 24 * 60 * 60 * 1000;
-        validPoints = validPoints.filter(p => p.time * 1000 >= cutoff);
-      } else if (period === 'ytd') {
-        const currentYear = new Date().getFullYear();
-        const cutoff = new Date(currentYear, 0, 1).getTime();
-        validPoints = validPoints.filter(p => p.time * 1000 >= cutoff);
-      }
-      
+
       if (validPoints.length === 0) {
         if (period === '1d') {
           console.warn("Forex 1d has no points, falling back to 5d");
@@ -8644,14 +8766,14 @@ async function loadDashboard() {
         }
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
-      
+
       const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
       const labels = validPoints.map(p => {
         const d = new Date(p.time * 1000);
         const day = d.getDate();
         const month = monthNamesTR[d.getMonth()];
         const year = d.getFullYear();
-        
+
         if (period === '1d') {
           const pad = num => String(num).padStart(2, '0');
           return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -8663,26 +8785,32 @@ async function loadDashboard() {
           return `${month} '${String(year).slice(-2)}`;
         }
       });
-      
-      const prices = validPoints.map(p => p.value);
-      const color = currency === 'USD' ? '#1D6FE8' : '#059669';
-      const bgColor = currency === 'USD' ? 'rgba(29,111,232,0.06)' : 'rgba(5,150,105,0.06)';
-      
+
+      prices = validPoints.map(p => p.value);
+      rawDates = validPoints.map(p => new Date(p.time * 1000).toISOString().slice(0, 10));
+
+      const color = currency === 'USD' ? '#1D6FE8' : currency === 'EUR' ? '#059669' : '#8B5CF6';
+      const bgColor = currency === 'USD' ? 'rgba(29,111,232,0.06)' : currency === 'EUR' ? 'rgba(5,150,105,0.06)' : 'rgba(139,92,246,0.06)';
+      const seriesLabel = currency === 'USD' ? '$ Kuru' : currency === 'EUR' ? '€ Kuru' : '€ / $ Paritesi';
+      const unitSuffix = currency === 'PARITY' ? '' : ' ₺';
+
       // Calculate dynamic decimals based on spread
       const minPrice = Math.min(...prices);
       const maxPrice = Math.max(...prices);
       const spread = maxPrice - minPrice;
       let decimals = 1;
-      if (spread < 0.05) {
+      if (currency === 'PARITY') {
+        decimals = 3;
+      } else if (spread < 0.05) {
         decimals = 3;
       } else if (spread < 0.5) {
         decimals = 2;
       }
-      
+
       lineChart('chart-forex', labels,
         [
           {
-            label: `${currency === 'USD' ? '$' : '€'} Kuru`,
+            label: seriesLabel,
             data: prices,
             borderColor: color,
             backgroundColor: bgColor,
@@ -8692,9 +8820,11 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(v).toLocaleString('tr-TR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + ' ₺' : '',
+        v => v != null ? Number(v).toLocaleString('tr-TR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + unitSuffix : '',
         {
           forceRecreate: true,
+          rawDates: rawDates,
+          plugins: [forexAnnotationsPlugin],
           xTickFont: { size: 9, family: 'Inter' },
           xTickCallback: (period === '1y') ? function(value, index) {
             if (index === 0) return this.getLabelForValue(value);
@@ -8706,10 +8836,11 @@ async function loadDashboard() {
       );
 
       if (titleEl) {
+        titleEl.textContent = 'Döviz & Parite';
+      }
+
+      if (currency !== 'PARITY') {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-        const symbol = currency === 'USD' ? '$' : '€';
-        titleEl.textContent = 'Döviz Kuru';
-        
         // Dynamic dashboard sync
         const cardValEl = document.getElementById(`forex-${currency.toLowerCase()}-val`);
         if (cardValEl) {
@@ -8774,8 +8905,12 @@ async function loadDashboard() {
       if (wrap) wrap.classList.remove('loading');
     } else {
       const fetchPeriod = (_forexCurrentPeriod === '1m' || _forexCurrentPeriod === '6m' || _forexCurrentPeriod === 'ytd') ? '1y' : _forexCurrentPeriod;
-      
-      fetchForexData(_forexCurrentCurrency, fetchPeriod).then(data => {
+
+      const fetchPromise = _forexCurrentCurrency === 'PARITY'
+        ? Promise.all([fetchForexData('USD', fetchPeriod), fetchForexData('EUR', fetchPeriod)]).then(([usd, eur]) => ({ usd, eur }))
+        : fetchForexData(_forexCurrentCurrency, fetchPeriod);
+
+      fetchPromise.then(data => {
         if (fetchPeriod === '1y') {
           _forexCache[_forexCurrentCurrency]['1y'] = data;
           _forexCache[_forexCurrentCurrency]['1m'] = data;
@@ -8784,7 +8919,7 @@ async function loadDashboard() {
         } else {
           _forexCache[_forexCurrentCurrency][_forexCurrentPeriod] = data;
         }
-        
+
         drawForexChartFromRaw(data, _forexCurrentCurrency, _forexCurrentPeriod);
         if (wrap) wrap.classList.remove('loading');
       }).catch(err => {
@@ -17845,11 +17980,11 @@ window.toggleFinSources = function() {
     <div id="forex-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="forex-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div id="forex-chart-title" class="rel-add-title">Döviz Kuru</div>
+          <div id="forex-chart-title" class="rel-add-title">Döviz &amp; Parite</div>
           <button class="rel-add-x" onclick="closeForexChartModal()" aria-label="Kapat">×</button>
         </div>
-        <div class="chart-modal-controls">
-          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+        <div class="chart-modal-controls" style="flex-direction: column; align-items: stretch; gap: 8px;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
             <div class="forex-toggle-btns">
               <button class="forex-currency-btn forex-btn active" id="btn-forex-usd" data-currency="USD">
                 <span class="forex-indicator-dot usd"></span>
@@ -17859,22 +17994,26 @@ window.toggleFinSources = function() {
                 <span class="forex-indicator-dot eur"></span>
                 € Euro
               </button>
+              <button class="forex-currency-btn forex-btn" id="btn-forex-parity" data-currency="PARITY">
+                <span class="forex-indicator-dot parity"></span>
+                € / $ Parite
+              </button>
             </div>
-            <div class="forex-period-btns">
-              <button class="forex-period-btn forex-btn" id="btn-forex-1d" data-period="1d">1G</button>
-              <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
-              <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1A</button>
-              <button class="forex-period-btn forex-btn" id="btn-forex-6m" data-period="6m">6A</button>
-              <button class="forex-period-btn forex-btn active" id="btn-forex-ytd" data-period="ytd">YTD</button>
-              <button class="forex-period-btn forex-btn" id="btn-forex-1y" data-period="1y">1Y</button>
-              <button class="forex-period-btn forex-btn" id="btn-forex-5y" data-period="5y">5Y</button>
-              <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
-            </div>
+            <button class="export-btn" onclick="exportForexToCSV()" title="Döviz verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
           </div>
-          <button class="export-btn" onclick="exportForexToCSV()" title="Döviz verisini CSV olarak indir">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Excel
-          </button>
+          <div class="forex-period-btns">
+            <button class="forex-period-btn forex-btn" id="btn-forex-1d" data-period="1d">1G</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1A</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-6m" data-period="6m">6A</button>
+            <button class="forex-period-btn forex-btn active" id="btn-forex-ytd" data-period="ytd">YTD</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-1y" data-period="1y">1Y</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-5y" data-period="5y">5Y</button>
+            <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
+          </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-forex"></canvas>

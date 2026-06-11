@@ -6894,6 +6894,12 @@
   [data-theme="dark"] #btn-forex-eur.active {
     color: #34D399 !important;
   }
+  #btn-forex-parity.active {
+    color: #8B5CF6 !important;
+  }
+  [data-theme="dark"] #btn-forex-parity.active {
+    color: #A78BFA !important;
+  }
 
   /* ════════════════════════════════════════════════════════════
      MOBİL MERCEK ARAMA  (overlay)
