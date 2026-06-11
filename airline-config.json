@@ -205,5 +205,14 @@
     "keywords": "france klm martinair cargo",
     "merge_with": [],
     "deleted": true
+  },
+  {
+    "airline_id": "sf",
+    "label": "SF Airlines",
+    "region": "asiapac",
+    "focus": true,
+    "icon_url": "",
+    "keywords": "sf airlines,sf express,sf cargo,shunfeng",
+    "merge_with": []
   }
 ]
