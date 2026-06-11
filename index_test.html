@@ -615,6 +615,45 @@
     transition: opacity 0.15s;
   }
   .fin-src-card:hover .fin-src-arrow { opacity: 1; }
+
+  /* Turkish Airlines (TK) Custom Themed Card */
+  .fin-src-card--tk {
+    border: 1.5px solid rgba(227, 6, 19, 0.45) !important;
+    background: linear-gradient(135deg, rgba(227, 6, 19, 0.05) 0%, var(--bg) 100%) !important;
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.06) !important;
+  }
+  .fin-src-card--tk::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 6px;
+    background: radial-gradient(circle at 10% 10%, rgba(227, 6, 19, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .fin-src-card--tk:hover {
+    border-color: rgba(227, 6, 19, 0.95) !important;
+    box-shadow: 0 4px 18px rgba(227, 6, 19, 0.18) !important;
+    background: linear-gradient(135deg, rgba(227, 6, 19, 0.09) 0%, var(--surface) 100%) !important;
+  }
+  .fin-src-card--tk .fin-src-year-latest {
+    background: var(--red) !important;
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.45) !important;
+  }
+  .fin-src-card--tk a.fin-src-year-latest:hover {
+    background: #ff1c2a !important;
+  }
+  .fin-src-card--tk .fin-src-ir {
+    background: rgba(227, 6, 19, 0.12) !important;
+    border-color: rgba(227, 6, 19, 0.3) !important;
+    color: var(--red) !important;
+  }
+  .fin-src-card--tk .fin-src-ir:hover,
+  .fin-src-card--tk .fin-src-ir:focus-visible {
+    background: var(--red) !important;
+    color: #fff !important;
+    box-shadow: 0 3px 12px rgba(227, 6, 19, 0.45) !important;
+  }
+
   /* Kaynak kartı v2: sol üstte son yıl rozeti, sağ üst köşede çeyrek çember IR dilimi */
   .fin-src-card { position: relative; overflow: visible; }
   .fin-src-years {
@@ -3964,6 +4003,7 @@ const AIRLINE_DEFS = [
   { id: 'atlas',     label: 'Atlas Air',      group: 'cargo',  region: 'americas', integrator: false, kw: ['atlas air'] },
   { id: 'cargolux',  label: 'Cargolux',       group: 'cargo',  region: 'europe',   integrator: false, kw: ['cargolux'] },
   { id: 'amazon',    label: 'Amazon Air',     group: 'cargo',  region: 'americas', integrator: true,  kw: ['amazon air'] },
+  { id: 'sf',        label: 'SF Airlines',    group: 'cargo',  region: 'asiapac',  integrator: true,  kw: ['sf airlines','sf express','sf cargo','shunfeng'] },
   { id: 'geosky',    label: 'Geosky',         group: 'cargo',  region: 'europe',   integrator: false, kw: ['geosky'] },
   { id: 'cargojet',  label: 'Cargojet',       group: 'cargo',  region: 'americas', integrator: false, kw: ['cargojet'] },
   { id: 'silkway',   label: 'Silk Way West',  group: 'cargo',  region: 'asiapac',  integrator: false, kw: ['silk way'] },
@@ -4182,6 +4222,7 @@ function getAirlineLogo(airlineId) {
     'ups':             F('ups.com'),
     'dhl':             F('dhl.com'),
     'amazon':          F('amazon.com'),
+    'sf':              'https://upload.wikimedia.org/wikipedia/en/1/1a/SF_Airlines_logo.svg',
     // Avrupa
     'lufthansa':       G('LH'),
     'airfrance':       G('AF'),
@@ -10572,9 +10613,13 @@ async function loadDashboard() {
       let validPoints = [];
       for (let i = 0; i < timestamps.length; i++) {
         if (closes[i] != null && closes[i] > 0) {
+          let val = closes[i];
+          if (timestamps[i] < 1104530400) { // before 2005-01-01 YTL transition
+            val = val * 1000;
+          }
           validPoints.push({
             time: timestamps[i],
-            value: closes[i]
+            value: val
           });
         }
       }
@@ -10606,7 +10651,144 @@ async function loadDashboard() {
       });
       
       const prices = validPoints.map(p => p.value);
-      
+      const rawDates = validPoints.map(p => new Date(p.time * 1000).toISOString().slice(0, 10));
+
+      // Önemli tarihleri grafikte vurgulamak için özel eklenti
+      const thyAnnotationsPlugin = {
+        id: 'thyAnnotations',
+        afterDatasetsDraw(chart) {
+          const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
+          ctx.save();
+
+          const events = [
+            { dateIso: '2001-09-11', label: '9/11 Saldırıları', color: '#64748B' },
+            { dateIso: '2003-03-12', label: 'SARS Salgını', color: '#10B981' },
+            { dateIso: '2005-01-01', label: 'TL\'den 6 Sıfır Atılması', color: '#3B82F6' },
+            { dateIso: '2008-09-15', label: 'Küresel Finansal Kriz', color: '#475569' },
+            { dateIso: '2018-10-29', label: 'İstanbul Havalimanı Açılışı', color: '#10B981' },
+            { dateIso: '2020-03-11', label: 'COVID-19 Pandemisi', color: '#E63946' },
+            { dateIso: '2022-02-24', label: 'Rusya-Ukrayna Savaşı', color: '#F59E0B' },
+            { dateIso: '2023-02-06', label: 'Kahramanmaraş Depremi', color: '#6B7280' },
+            { dateIso: '2026-02-26', label: 'Ortadoğu Savaşı (28 Şub)', color: '#E63946' }
+          ];
+
+          const rawDatesArray = chart.$rawDates || rawDates;
+          if (!rawDatesArray || rawDatesArray.length === 0) { ctx.restore(); return; }
+
+          const firstDate = new Date(rawDatesArray[0]).getTime();
+          const lastDate  = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+          const drawnPills = [];
+
+          events.forEach(event => {
+            const targetTime = new Date(event.dateIso).getTime();
+            if (targetTime < firstDate || targetTime > lastDate) return;
+
+            let closestIndex = -1;
+            let minDiff = Infinity;
+            for (let i = 0; i < rawDatesArray.length; i++) {
+              const time = new Date(rawDatesArray[i]).getTime();
+              const diff = Math.abs(time - targetTime);
+              if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+            }
+            if (closestIndex === -1) return;
+
+            const totalSpan = lastDate - firstDate;
+            const threshold = Math.max(totalSpan * 0.1, 15 * 24 * 60 * 60 * 1000);
+            if (minDiff > threshold) return;
+
+            const xPos = x.getPixelForValue(closestIndex);
+
+            // Noktayı daireyle vurgula
+            const meta = chart.getDatasetMeta(0);
+            if (meta && meta.data && meta.data[closestIndex]) {
+              const point = meta.data[closestIndex];
+              ctx.fillStyle = event.color;
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.fill();
+
+              ctx.strokeStyle = '#FFFFFF';
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([]);
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.stroke();
+            }
+
+            ctx.setLineDash([]);
+            const font = 'bold 9.5px Inter, sans-serif';
+            ctx.font = font;
+            const textWidth = ctx.measureText(event.label).width;
+            const textHeight = 9.5;
+            const paddingX = 6;
+            const paddingY = 4;
+            const pillWidth = textWidth + paddingX * 2;
+            const pillHeight = textHeight + paddingY * 2;
+
+            let pillX = xPos - pillWidth / 2;
+            const pillY = top + 10;
+
+            if (pillX < chartLeft) {
+              pillX = chartLeft;
+            } else if (pillX + pillWidth > chartRight) {
+              pillX = chartRight - pillWidth;
+            }
+
+            let hasOverlap = true;
+            let currentPillY = pillY;
+            while (hasOverlap) {
+              hasOverlap = false;
+              const x1 = pillX;
+              const x2 = pillX + pillWidth;
+              const y1 = currentPillY;
+              const y2 = currentPillY + pillHeight;
+
+              for (const p of drawnPills) {
+                const overlapX = !(x2 < p.x1 - 4 || x1 > p.x2 + 4);
+                const overlapY = !(y2 < p.y1 - 2 || y1 > p.y2 + 2);
+                if (overlapX && overlapY) {
+                  hasOverlap = true;
+                  currentPillY += pillHeight + 6;
+                  break;
+                }
+              }
+            }
+
+            drawnPills.push({
+              x1: pillX,
+              x2: pillX + pillWidth,
+              y1: currentPillY,
+              y2: currentPillY + pillHeight
+            });
+
+            ctx.strokeStyle = event.color;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(xPos, currentPillY + pillHeight);
+            ctx.lineTo(xPos, bottom);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+            ctx.fillStyle = event.color;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+              ctx.roundRect(pillX, currentPillY, pillWidth, pillHeight, 4);
+            } else {
+              ctx.rect(pillX, currentPillY, pillWidth, pillHeight);
+            }
+            ctx.fill();
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(event.label, pillX + pillWidth / 2, currentPillY + pillHeight / 2 + 0.5);
+          });
+
+          ctx.restore();
+        }
+      };
+
       lineChart('chart-thy', labels,
         [
           {
@@ -10623,6 +10805,8 @@ async function loadDashboard() {
         v => v != null ? Number(Number(v).toFixed(1)) + ' ₺' : '',
         {
           forceRecreate: true,
+          plugins: [thyAnnotationsPlugin],
+          rawDates: rawDates,
           xTickFont: { size: 9, family: 'Inter' }
         }
       );
@@ -17441,7 +17625,22 @@ function buildFinSourcesGrid() {
   const grid = document.getElementById('fin-src-grid');
   if (!grid) return;
   const yearSrcs = FIN_YEAR_SOURCES || {};
-  grid.innerHTML = Object.entries(FIN_INVESTOR_URLS_STATIC || {}).map(([slug, d]) => {
+  
+  const entries = Object.entries(FIN_INVESTOR_URLS_STATIC || {});
+  // Separate TK and others
+  const tkEntry = entries.find(([slug]) => slug === 'TK');
+  const otherEntries = entries.filter(([slug]) => slug !== 'TK');
+  
+  // Sort others alphabetically by name
+  otherEntries.sort((a, b) => a[1].name.localeCompare(b[1].name, 'tr'));
+  
+  // Combine: TK first, then sorted others
+  const sortedEntries = [];
+  if (tkEntry) sortedEntries.push(tkEntry);
+  sortedEntries.push(...otherEntries);
+
+  grid.innerHTML = sortedEntries.map(([slug, d]) => {
+    const isTk = slug === 'TK';
     const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
     const logo = finLogoUrl(slug);
     const perYear = yearSrcs[slug] || {};
@@ -17454,7 +17653,7 @@ function buildFinSourcesGrid() {
           title="${s.text} ${yr}">${yr} ↗</a>`
       : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
             border:1px solid var(--border-soft);font-size:10px;color:var(--text-3)">${yr}</span>`;
-    // Sol üstte son mevcut yıl (vurgulu rozet), kalan yıllar küçük çiplerle daha uzakta
+    
     let yearsHtml = '';
     if (yearEntries.length) {
       const [lyr, ls] = yearEntries[0];
@@ -17468,10 +17667,14 @@ function buildFinSourcesGrid() {
     const logoEl = logo
       ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0" alt="" onerror="this.src='';this.style.display='none'">`
       : `<span class="fin-src-dot" style="background:${color}"></span>`;
-    return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:6px;cursor:default">
+
+    const cardClass = isTk ? 'fin-src-card fin-src-card--tk' : 'fin-src-card';
+    const nameColor = isTk ? 'var(--red)' : color;
+
+    return `<div class="${cardClass}" style="flex-direction:column;align-items:flex-start;gap:6px;cursor:default">
       <div style="display:flex;align-items:center;gap:8px;width:100%;padding-right:40px">
         ${logoEl}
-        <span class="fin-src-name" style="flex:1;color:${color}">${d.name}</span>
+        <span class="fin-src-name" style="flex:1;color:${nameColor}">${d.name}</span>
       </div>
       ${yearsHtml}
       <a class="fin-src-ir" href="${d.url}" target="_blank" rel="noopener"
