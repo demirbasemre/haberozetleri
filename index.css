@@ -6911,6 +6911,7 @@
     .search-wrap { display: none; }
     /* mobilde beta etiketi gizli */
     .beta-badge { display: none !important; }
+    .hdr-bell-wrap { margin-left: 0; }    /* sağ küme tek auto margin ile (mercek) hizalanır */
     .hdr-lens {
       display: inline-flex; align-items: center; justify-content: center;
       margin-left: auto;                /* sağ kümeyi başlat */

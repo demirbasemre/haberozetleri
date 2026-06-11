@@ -4602,13 +4602,16 @@ function renderCards(articles, prevLimit = 0) {
   }
   elEmpty.style.display = 'none';
 
-  // Sort articles to put 'Tarihsiz' (undated/date-problematic) at the very beginning
+  // Sort articles: 'Tarihsiz' (undated/date-problematic) first, then newest date first
   const sorted = [...articles].sort((a, b) => {
-    const aUndated = !(extractDateParts(a.date) || extractDateParts(a.publishDate));
-    const bUndated = !(extractDateParts(b.date) || extractDateParts(b.publishDate));
-    if (aUndated && !bUndated) return -1;
-    if (!aUndated && bUndated) return 1;
-    return 0;
+    const aParts = extractDateParts(a.date) || extractDateParts(a.publishDate);
+    const bParts = extractDateParts(b.date) || extractDateParts(b.publishDate);
+    if (!aParts && !bParts) return 0;
+    if (!aParts) return -1;
+    if (!bParts) return 1;
+    const aKey = `${aParts.y}-${aParts.m}-${aParts.day}`;
+    const bKey = `${bParts.y}-${bParts.m}-${bParts.day}`;
+    return bKey.localeCompare(aKey);
   });
 
   // Slice to current display limit
