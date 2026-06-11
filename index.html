@@ -1935,6 +1935,7 @@
 </style>
 <style>
   /* index.html gizleme kuralları */
+  #region-filter-wrap { display: none !important; }
   .etki-info-btn { display: none !important; }
   .etki-section { display: none !important; }
   button.analysis-toggle { display: none !important; }
@@ -2275,7 +2276,7 @@
     </div>
 
     <!-- Bölge -->
-    <div class="fdd-wrap" style="display:none">
+    <div class="fdd-wrap" style="display:none" id="region-filter-wrap">
       <button class="fdd-btn" id="region-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Etki alanı filtresi">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -2562,6 +2563,13 @@
             <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
           </div>
         </div>
+        <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
+          <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
+          <div class="dash-card-note">Drewry · Haftalık<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
+        </div>
         <div class="dash-card dash-card-clickable" id="dc-imf" title="Türkiye yıllık dizi için tıkla">
           <!-- Normal görünüm -->
           <div id="dc-imf-normal">
@@ -2586,13 +2594,6 @@
               <span class="dcimf-leg-i" style="--c:#6366F1">Öngörü</span>
             </div>
           </div>
-        </div>
-        <div class="dash-card" id="dc-gdp">
-          <div class="dash-card-label">Küresel GDP Büyümesi</div>
-          <div class="dash-card-value skeleton">&nbsp;</div>
-          <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Yıllık büyüme oranı</div>
-          <div class="dash-card-note">IMF WEO · Yıllık</div>
         </div>
       </div>
     </section>
@@ -2680,13 +2681,6 @@
     <section class="dash-section" id="dash-sec-endeks">
       <h2 class="dash-section-title">Hava Kargo Endeksleri</h2>
       <div class="dash-cards">
-        <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
-          <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
-          <div class="dash-card-value skeleton">&nbsp;</div>
-          <div class="dash-card-change"></div>
-          <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
-          <div class="dash-card-note">Drewry · Haftalık<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
-        </div>
         <div class="dash-card card-in-progress" id="dc-bafi">
           <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
           <div class="card-in-progress-badge" style="margin-top: 10px;">
@@ -5755,13 +5749,6 @@ const SEARCHABLE_METRICS = [
     tabName: 'Dashboard',
     id: 'dc-imf',
     kw: ['türkiye', 'gsyh', 'büyüme', 'gdp', 'imf', 'weo']
-  },
-  {
-    name: 'Küresel GDP Büyümesi',
-    tab: 'dashboard',
-    tabName: 'Dashboard',
-    id: 'dc-gdp',
-    kw: ['küresel', 'gdp', 'büyüme', 'growth', 'imf', 'weo']
   },
   {
     name: 'Jet Yakıt & Brent Ham Petrol Grafiği',
@@ -10518,17 +10505,30 @@ async function loadDashboard() {
     _wciHistory = history && history.length ? history : WCI_DEFAULT_HISTORY;
     _wciLatest = latest;
 
+    let price = '—';
+    let change = null;
+    let subText = "40' konteyner ortalama spot fiyat";
+    let footerText = 'Veri alınamadı';
+
     if (latest && latest.price) {
-      const formattedPrice = latest.price.toLocaleString('en-US') + ' $';
-      setCard('dc-wci',
-        formattedPrice,
-        latest.change,
-        "40' konteyner ortalama spot fiyat",
-        `Son veri: ${latest.date}<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`
-      );
-    } else {
-      setCard('dc-wci', '—', null, '', 'Veri alınamadı');
+      price = latest.price.toLocaleString('en-US') + ' $';
+      change = latest.change;
+      footerText = `Son veri: ${latest.date}<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`;
+    } else if (_wciHistory && _wciHistory.length >= 1) {
+      const lastHist = _wciHistory[_wciHistory.length - 1];
+      price = lastHist.value.toLocaleString('en-US') + ' $';
+      
+      if (_wciHistory.length >= 2) {
+        const prevHist = _wciHistory[_wciHistory.length - 2];
+        change = ((lastHist.value - prevHist.value) / prevHist.value) * 100;
+      }
+      
+      const parts = lastHist.date.split('-');
+      const formattedDate = parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : lastHist.date;
+      footerText = `Son veri: ${formattedDate} (Geçmiş)<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`;
     }
+
+    setCard('dc-wci', price, change, subText, footerText);
   });
 
   // ── THY Hisse Verisini Çek ve Göster ──────────────────────────────
@@ -11474,6 +11474,9 @@ async function loadDashboard() {
     <button class="ai-chip">Turkish Cargo ile ilgili haberler</button>
   </div>
   <div id="ai-input-row">
+    <button id="ai-web-search-toggle" title="Web Araması" aria-label="Web Araması">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.4z"/></svg>
+    </button>
     <textarea id="ai-input" rows="1" placeholder="Bir soru sor…"></textarea>
     <button id="ai-send" aria-label="Gönder / Duraklat">
       <svg class="icon-send" viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
@@ -11500,6 +11503,7 @@ async function loadDashboard() {
   const searchInput = document.getElementById('ai-history-search');
   const btnNewChat = document.getElementById('ai-btn-new-chat');
   const feedbackContainer = document.getElementById('ai-feedback-container');
+  const webSearchToggle = document.getElementById('ai-web-search-toggle');
 
   const AI_WEBHOOK       = 'https://n8n.emredemirbas.com/webhook/haber-ai-v2';
   const FEEDBACK_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/haber-ai-feedback';
@@ -11575,6 +11579,10 @@ async function loadDashboard() {
     renderActiveChat();
     dropdown.classList.remove('open');
     titleRow.classList.remove('dropdown-active');
+    if (webSearchToggle) {
+      webSearchToggle.classList.remove('active');
+      input.placeholder = 'Bir soru sor…';
+    }
   }
 
   function selectConversation(id) {
@@ -11704,6 +11712,18 @@ async function loadDashboard() {
   btnNewChat.addEventListener('click', () => {
     startNewConversation();
   });
+
+  if (webSearchToggle) {
+    webSearchToggle.addEventListener('click', () => {
+      webSearchToggle.classList.toggle('active');
+      if (webSearchToggle.classList.contains('active')) {
+        input.placeholder = 'Web\'de ve arşivde ara…';
+      } else {
+        input.placeholder = 'Bir soru sor…';
+      }
+      input.focus();
+    });
+  }
 
   chips.forEach(c => c.addEventListener('click', () => {
     input.value = c.textContent;
@@ -11978,6 +11998,7 @@ async function loadDashboard() {
       return;
     }
 
+    const webSearchActive = webSearchToggle && webSearchToggle.classList.contains('active');
     const userBubble = addMsg(q, 'user');
     const thinking = addThinkingMsg();
 
@@ -11987,7 +12008,7 @@ async function loadDashboard() {
       const res = await fetch(AI_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q, history: activeHistory.map(h => ({ q: h.q, a: h.a })) }),
+        body: JSON.stringify({ question: q, history: activeHistory.map(h => ({ q: h.q, a: h.a })), webSearch: webSearchActive }),
         signal: currentAbortController.signal
       });
       const data = await res.json();
@@ -11996,8 +12017,31 @@ async function loadDashboard() {
       const tokenInfo = data.tokensUsed ? `<div class="ai-token-info">${data.tokensUsed} token · çıktı: ${data.outputTokens || '?'}</div>` : '';
       
       const articlesMeta = data.articlesMeta || [];
-      addBotHTML(formatAIText(answerText, articlesMeta) + tokenInfo, articlesMeta, false);
+      const botBubble = addBotHTML(formatAIText(answerText, articlesMeta) + tokenInfo, articlesMeta, false);
       showFeedbackBar(q, answerText);
+
+      // Web Search Suggestion
+      const usedWebSearch = data.webSearch || false;
+      if (!usedWebSearch) {
+        const suggestBox = document.createElement('div');
+        suggestBox.className = 'ai-web-search-suggest-box';
+        suggestBox.innerHTML = `
+          <span class="ai-web-search-suggest-text">Arşivde bulamadınız mı?</span>
+          <button class="ai-web-search-suggest-btn">
+            <svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: currentColor; vertical-align: middle;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.4z"/></svg>
+            Web araması ile sor
+          </button>
+        `;
+        suggestBox.querySelector('.ai-web-search-suggest-btn').addEventListener('click', () => {
+          if (webSearchToggle) {
+            webSearchToggle.classList.add('active');
+            input.placeholder = 'Web\'de ve arşivde ara…';
+          }
+          input.value = q;
+          askAI();
+        });
+        botBubble.appendChild(suggestBox);
+      }
       
       // Update history
       activeHistory.push({ q: q, a: answerText, articlesMeta: articlesMeta });
