@@ -83,6 +83,9 @@ export default {
 
     // Çekme ve yedekleme (Funnel -> Doğrudan) mantığını gerçekleştiren yardımcı fonksiyon
     async function doFetch(url, forceDirect = false, customTtl = 300) {
+      console.log(`[doFetch] Initiating fetch for: ${url}. forceDirect: ${forceDirect}`);
+      console.log(`[doFetch] env.FUNNEL_URL is: "${FUNNEL_URL || 'undefined/empty'}"`);
+      
       // forceDirect değilse önce Tailscale Funnel üzerindeki ev proxy'sini dene
       if (!forceDirect && FUNNEL_URL) {
         try {
@@ -90,26 +93,38 @@ export default {
           if (env.PROXY_TOKEN) {
             headers['X-Proxy-Token'] = env.PROXY_TOKEN;
           }
+          const targetFunnelUrl = `${FUNNEL_URL}/?url=${encodeURIComponent(url)}`;
+          console.log(`[doFetch] Attempting fetch via Tailscale Funnel: ${targetFunnelUrl}`);
+          
           const funnelResp = await fetch(
-            `${FUNNEL_URL}/?url=${encodeURIComponent(url)}`,
+            targetFunnelUrl,
             { 
               headers,
               signal: AbortSignal.timeout(15000) 
             }
           );
+          
+          console.log(`[doFetch] Tailscale Funnel response status: ${funnelResp.status} ok: ${funnelResp.ok}`);
+          
           if (funnelResp.ok) {
             const body = await funnelResp.text();
+            console.log(`[doFetch] Tailscale Funnel fetch succeeded!`);
             return {
               body,
               proxy: 'tailscale-funnel',
               status: funnelResp.status,
               contentType: funnelResp.headers.get('content-type') || 'text/html'
             };
+          } else {
+            console.warn(`[doFetch] Tailscale Funnel response not ok. Status: ${funnelResp.status}`);
           }
-        } catch (_) { /* funnel erişilemez veya hata verdi — doğrudan dene */ }
+        } catch (err) {
+          console.error(`[doFetch] Tailscale Funnel attempt failed with error: ${err.message || err}`);
+        }
       }
 
       // Fallback: CF datacenter'ından doğrudan çek
+      console.log(`[doFetch] Falling back to direct Cloudflare fetch...`);
       const response = await fetch(url, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -120,6 +135,7 @@ export default {
         cf: { cacheTtl: customTtl, cacheEverything: true },
       });
 
+      console.log(`[doFetch] Direct Cloudflare fetch response status: ${response.status}`);
       const body = await response.text();
       return {
         body,
