@@ -5811,7 +5811,7 @@
   .hdr-tools-link { display: none; }
 
   /* ── Bildirim zili: çarkın solunda, aynı çemberli dil ── */
-  .hdr-bell-wrap { position: relative; flex-shrink: 0; }
+  .hdr-bell-wrap { position: relative; flex-shrink: 0; margin-left: auto; }
   .hdr-bell {
     display: flex; width: 34px; height: 34px; border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.07);
