@@ -598,6 +598,46 @@
     transition: opacity 0.15s;
   }
   .fin-src-card:hover .fin-src-arrow { opacity: 1; }
+  /* Kaynak kartı v2: sol üstte son yıl rozeti, sağ üst köşede çeyrek çember IR dilimi */
+  .fin-src-card { position: relative; overflow: visible; }
+  .fin-src-years {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+    width: 100%; padding-right: 40px; /* IR dilimine çarpmasın */
+  }
+  .fin-src-year-latest {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 3px 10px; border-radius: 11px;
+    background: var(--accent); color: #fff;
+    font-size: 11px; font-weight: 700; text-decoration: none;
+    box-shadow: 0 1px 4px rgba(29,111,232,0.35);
+  }
+  a.fin-src-year-latest:hover { filter: brightness(1.1); }
+  .fin-src-years-rest {
+    display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px;
+    margin-left: 8px; padding-left: 10px;
+    border-left: 1px dashed var(--border);
+  }
+  .fin-src-ir {
+    position: absolute; top: -1px; right: -1px;
+    width: 42px; height: 42px;
+    border-radius: 0 7px 0 100%;
+    background: rgba(29,111,232,0.10);
+    border: 1px solid rgba(29,111,232,0.22);
+    color: var(--accent);
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.04em;
+    display: flex; align-items: flex-start; justify-content: flex-end;
+    padding: 7px 9px 0 0; text-decoration: none; z-index: 1;
+    transition: transform 0.18s ease, background 0.18s, color 0.18s, box-shadow 0.18s ease;
+  }
+  .fin-src-ir:hover, .fin-src-ir:focus-visible {
+    transform: translate(3px, -3px);
+    background: var(--accent); color: #fff;
+    box-shadow: 0 3px 10px rgba(29,111,232,0.35);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fin-src-ir { transition: none; }
+    .fin-src-ir:hover, .fin-src-ir:focus-visible { transform: none; }
+  }
 
   /* ══════ Formula Builder ══════════════════════════ */
   .flt-formula-wrap {
@@ -3140,7 +3180,7 @@
         <div style="display:flex;gap:4px">
           <button class="fin-range-btn" data-range="3">3Y</button>
           <button class="fin-range-btn fin-range-btn--active" data-range="5">5Y</button>
-          <button class="fin-range-btn" data-range="99">Max</button>
+          <button class="fin-range-btn" data-range="99">Maks.</button>
         </div>
       </div>
       <!-- Takvim Yılı Hizalaması -->
@@ -3148,7 +3188,7 @@
         <span class="fin-ctrl-label fin-ctrl-label--info">Takvim Yılı Hizalaması
           <button type="button" class="fin-info-dot" aria-label="Takvim yılı hizalaması nedir?"
             onclick="this.classList.toggle('open'); event.stopPropagation();"
-            onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip">Nisan–Mart mali yılı kullanan 4 havayolunun rakamlarını Ocak–Aralık takvimine çevirir. Böylece tüm havayolları aynı 12 ay üzerinden karşılaştırılır.</span></button>
+            onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip">Nisan–Mart mali yılı kullanan 4 havayolunun finansal sonuçlarını Ocak–Aralık takvimine çevirir. Böylece tüm havayolları aynı 12 ay üzerinden karşılaştırılır.</span></button>
         </span>
         <div style="display:flex;gap:4px">
           <button class="fin-cy-opt fin-cy-opt--active" data-cy="off" onclick="setFinCYMode(false)" aria-pressed="true">Kapalı</button>
@@ -3212,7 +3252,7 @@
           <div class="fin-chart-select-wrapper">
             <select id="fin-chart-val-display" class="fin-chart-select" onchange="changeFinValDisplay(this.value)">
               <option value="none">Gizle</option>
-              <option value="smart">Akıllı (Çakışmasız)</option>
+              <option value="smart" selected>Akıllı (Çakışmasız)</option>
               <option value="hover">Sadece Vurgulanan</option>
               <option value="all">Tümünü Göster</option>
             </select>
@@ -3258,7 +3298,7 @@
         <p class="fin-src-intro">
           Tüm finansal veriler ilgili havayollarının <strong>resmi yıllık raporları</strong>ndan derlenmiştir.
           Değerler döviz kuru esas alınarak <strong>USD</strong>'ye dönüştürülmüştür.
-          <strong>*</strong> işareti tahmini veya önceden raporlanmış değerleri, <strong>**</strong> EBITDA bazlı değerleri gösterir.
+          Her kartta <strong>renkli rozet son mevcut yılı</strong>, köşedeki dilim havayolunun <strong>Yatırımcı İlişkileri (IR)</strong> sayfasını gösterir.
         </p>
         <div class="fin-src-grid" id="fin-src-grid">
           <!-- JS tarafından doldurulur -->
@@ -15239,12 +15279,13 @@ function initControls(allArticles) {
     document.getElementById('reports-current-date').textContent  = r.date
       ? new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
       : '';
-    document.getElementById('reports-nav-indicator').textContent = (_currentIdx + 1) + ' / ' + _reports.length;
+    // Gösterge kronolojik: en eski bülten 1, en yenisi N (dizi en yeniden eskiye)
+    document.getElementById('reports-nav-indicator').textContent = (_reports.length - _currentIdx) + ' / ' + _reports.length;
 
     const prevBtn = document.getElementById('reports-prev-btn');
     const nextBtn = document.getElementById('reports-next-btn');
-    prevBtn.disabled = _currentIdx === 0;
-    nextBtn.disabled = _currentIdx === _reports.length - 1;
+    prevBtn.disabled = _currentIdx === _reports.length - 1;
+    nextBtn.disabled = _currentIdx === 0;
 
     const frame = document.getElementById('reports-bulletin-frame');
     let html = r.html_content || '<!DOCTYPE html><html><body style="font-family:system-ui;padding:2rem;color:#666">İçerik bulunamadı.</body></html>';
@@ -15473,7 +15514,9 @@ function initControls(allArticles) {
   });
 
   function navigateReport(dir) {
-    const newIdx = _currentIdx + dir;
+    // _reports en yeniden eskiye sıralı: "Sonraki" (dir=+1) daha YENİ tarihe
+    // gitmeli, bu yüzden dizide geriye gidilir.
+    const newIdx = _currentIdx - dir;
     if (newIdx >= 0 && newIdx < _reports.length) {
       _currentIdx = newIdx;
       renderReport();
@@ -15762,13 +15805,17 @@ function initControls(allArticles) {
   window.initReportsTab  = initReportsTab;
   window.navigateReport  = navigateReport;
 let _finChart = null;
+let _finPrevChartSig = null;        // son render'ın metrik/tip/dönem/CY/tema imzası
+let _finPrevChartSlugs = new Set(); // son render'da görünür seriler
 let _finMetric = 'total_revenue_musd';
 let _finChartType = 'line';
 let _finRange = 5;
 let _finHidden = new Set();
 let _finSort   = { col: null, dir: 'none' }; // col: 'airline' | yıl string, dir: 'none'|'asc'|'desc'
 let _finCYMode = false;    // Takvim Yılı normalize modu
-let _finChartValDisplay = localStorage.getItem('finChartValDisplay') || 'smart';
+// Anahtar 'finChartValDisplay2': eski sürümün kaydettiği 'none' değeri yok
+// sayılır, herkes 'Akıllı' varsayılanıyla başlar.
+let _finChartValDisplay = localStorage.getItem('finChartValDisplay2') || 'smart';
 let _finBuilt = false;
 
 // ── Mali yıl sonu ayları (Aralık=12 varsayılan; belirtilenler farklı)
@@ -16145,7 +16192,7 @@ const finEndLabelsPlugin = {
 
 window.changeFinValDisplay = function(val) {
   _finChartValDisplay = val;
-  localStorage.setItem('finChartValDisplay', val);
+  localStorage.setItem('finChartValDisplay2', val);
   renderFinChart();
 };
 
@@ -16402,10 +16449,19 @@ function renderFinChart() {
   canvas.style.visibility = hasData ? 'visible' : 'hidden';
   if (!hasData) {
     if (_finChart) { _finChart.destroy(); _finChart = null; }
+    _finPrevChartSig = null; // sonraki dolu render tamamen yeniden animasyonlu girsin
     return;
   }
 
   if (_finChart) { _finChart.destroy(); _finChart = null; }
+
+  // Yalnız YENİ eklenen seri animasyonla girsin: görünüm (metrik/tip/dönem/
+  // CY/tema/yıllar) değişmediyse önceki render'da da olan seriler animasyonsuz çizilir.
+  const chartSig = [_finMetric, _finChartType, _finRange, _finCYMode, isDark, years.join(',')].join('|');
+  const sameView = chartSig === _finPrevChartSig;
+  const prevSlugs = _finPrevChartSlugs;
+  _finPrevChartSig = chartSig;
+  _finPrevChartSlugs = new Set(datasets.map(ds => ds.$code));
 
   const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
   const textColor = isDark ? '#555E78' : '#9CA3AF';
@@ -16436,7 +16492,9 @@ function renderFinChart() {
       maintainAspectRatio: false,
       // Çizgi sonu kodları için sağda pay
       layout: { padding: { right: _finChartType === 'line' ? 34 : 0 } },
-      animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? false : undefined,
+      animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? false
+        : { duration: ctx => (sameView && prevSlugs.has(datasets[ctx.datasetIndex]?.$code)) ? 0 : 1000 },
       // 'nearest': tooltip tüm havayollarını değil, yalnız en yakın serinin
       // noktasını gösterir (kullanıcı tercihi).
       interaction: { mode: 'nearest', intersect: false },
@@ -16569,7 +16627,7 @@ function renderFinTable() {
       </th>`;
     }).join('')}
   </tr>
-  ${hasNonDec ? `<tr class="fin-period-row">
+  ${entries.length ? `<tr class="fin-period-row">
     <td>Dönem aralığı</td>
     ${years.map(y => {
       const decLabel = getFYPeriodLabel(y, 12);
@@ -17176,28 +17234,37 @@ function buildFinSourcesGrid() {
     const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
     const logo = finLogoUrl(slug);
     const perYear = yearSrcs[slug] || {};
-    const yearLinks = Object.entries(perYear)
-      .sort(([a],[b]) => b.localeCompare(a))
-      .map(([yr, s]) => s.href
-        ? `<a href="${s.href}" target="_blank" rel="noopener"
-            style="display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:10px;
-                   background:var(--bg);border:1px solid var(--border);font-size:10px;color:var(--accent);
-                   text-decoration:none;margin:2px 2px 0 0"
-            title="${s.text} ${yr}">${yr} ↗</a>`
-        : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
-              border:1px solid var(--border-soft);font-size:10px;color:var(--text-3);margin:2px 2px 0 0">${yr}</span>`
-      ).join('');
+    const yearEntries = Object.entries(perYear).sort(([a],[b]) => b.localeCompare(a));
+    const smallChip = ([yr, s]) => s.href
+      ? `<a href="${s.href}" target="_blank" rel="noopener"
+          style="display:inline-flex;align-items:center;gap:2px;padding:2px 8px;border-radius:10px;
+                 background:var(--bg);border:1px solid var(--border);font-size:10px;color:var(--accent);
+                 text-decoration:none"
+          title="${s.text} ${yr}">${yr} ↗</a>`
+      : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
+            border:1px solid var(--border-soft);font-size:10px;color:var(--text-3)">${yr}</span>`;
+    // Sol üstte son mevcut yıl (vurgulu rozet), kalan yıllar küçük çiplerle daha uzakta
+    let yearsHtml = '';
+    if (yearEntries.length) {
+      const [lyr, ls] = yearEntries[0];
+      const latestChip = ls.href
+        ? `<a class="fin-src-year-latest" href="${ls.href}" target="_blank" rel="noopener"
+             title="${ls.text} ${lyr} — son mevcut yıl">${lyr} ↗</a>`
+        : `<span class="fin-src-year-latest" title="Son mevcut yıl">${lyr}</span>`;
+      const rest = yearEntries.slice(1).map(smallChip).join('');
+      yearsHtml = `<div class="fin-src-years">${latestChip}${rest ? `<span class="fin-src-years-rest">${rest}</span>` : ''}</div>`;
+    }
     const logoEl = logo
       ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0" alt="" onerror="this.src='';this.style.display='none'">`
       : `<span class="fin-src-dot" style="background:${color}"></span>`;
-    return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:5px;cursor:default">
-      <div style="display:flex;align-items:center;gap:8px;width:100%">
+    return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:6px;cursor:default">
+      ${yearsHtml}
+      <div style="display:flex;align-items:center;gap:8px;width:100%;padding-right:${yearsHtml ? 0 : 40}px">
         ${logoEl}
         <span class="fin-src-name" style="flex:1;color:${color}">${d.name}</span>
-        <a href="${d.url}" target="_blank" rel="noopener"
-          style="font-size:10px;color:var(--accent);text-decoration:none;opacity:.7" title="Yatırımcı İlişkileri">IR →</a>
       </div>
-      ${yearLinks ? `<div style="padding-left:24px;line-height:1.4">${yearLinks}</div>` : ''}
+      <a class="fin-src-ir" href="${d.url}" target="_blank" rel="noopener"
+        title="${d.name} Yatırımcı İlişkileri" aria-label="${d.name} Yatırımcı İlişkileri sayfası">IR</a>
     </div>`;
   }).join('');
 }
