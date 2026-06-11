@@ -615,6 +615,45 @@
     transition: opacity 0.15s;
   }
   .fin-src-card:hover .fin-src-arrow { opacity: 1; }
+
+  /* Turkish Airlines (TK) Custom Themed Card */
+  .fin-src-card--tk {
+    border: 1.5px solid rgba(227, 6, 19, 0.45) !important;
+    background: linear-gradient(135deg, rgba(227, 6, 19, 0.05) 0%, var(--bg) 100%) !important;
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.06) !important;
+  }
+  .fin-src-card--tk::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 6px;
+    background: radial-gradient(circle at 10% 10%, rgba(227, 6, 19, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .fin-src-card--tk:hover {
+    border-color: rgba(227, 6, 19, 0.95) !important;
+    box-shadow: 0 4px 18px rgba(227, 6, 19, 0.18) !important;
+    background: linear-gradient(135deg, rgba(227, 6, 19, 0.09) 0%, var(--surface) 100%) !important;
+  }
+  .fin-src-card--tk .fin-src-year-latest {
+    background: var(--red) !important;
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.45) !important;
+  }
+  .fin-src-card--tk a.fin-src-year-latest:hover {
+    background: #ff1c2a !important;
+  }
+  .fin-src-card--tk .fin-src-ir {
+    background: rgba(227, 6, 19, 0.12) !important;
+    border-color: rgba(227, 6, 19, 0.3) !important;
+    color: var(--red) !important;
+  }
+  .fin-src-card--tk .fin-src-ir:hover,
+  .fin-src-card--tk .fin-src-ir:focus-visible {
+    background: var(--red) !important;
+    color: #fff !important;
+    box-shadow: 0 3px 12px rgba(227, 6, 19, 0.45) !important;
+  }
+
   /* Kaynak kartı v2: sol üstte son yıl rozeti, sağ üst köşede çeyrek çember IR dilimi */
   .fin-src-card { position: relative; overflow: visible; }
   .fin-src-years {
@@ -17412,7 +17451,22 @@ function buildFinSourcesGrid() {
   const grid = document.getElementById('fin-src-grid');
   if (!grid) return;
   const yearSrcs = FIN_YEAR_SOURCES || {};
-  grid.innerHTML = Object.entries(FIN_INVESTOR_URLS_STATIC || {}).map(([slug, d]) => {
+  
+  const entries = Object.entries(FIN_INVESTOR_URLS_STATIC || {});
+  // Separate TK and others
+  const tkEntry = entries.find(([slug]) => slug === 'TK');
+  const otherEntries = entries.filter(([slug]) => slug !== 'TK');
+  
+  // Sort others alphabetically by name
+  otherEntries.sort((a, b) => a[1].name.localeCompare(b[1].name, 'tr'));
+  
+  // Combine: TK first, then sorted others
+  const sortedEntries = [];
+  if (tkEntry) sortedEntries.push(tkEntry);
+  sortedEntries.push(...otherEntries);
+
+  grid.innerHTML = sortedEntries.map(([slug, d]) => {
+    const isTk = slug === 'TK';
     const color = (typeof FIN_DATA !== 'undefined' && FIN_DATA[slug]?.color) || '#6b7280';
     const logo = finLogoUrl(slug);
     const perYear = yearSrcs[slug] || {};
@@ -17425,7 +17479,7 @@ function buildFinSourcesGrid() {
           title="${s.text} ${yr}">${yr} ↗</a>`
       : `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:var(--bg);
             border:1px solid var(--border-soft);font-size:10px;color:var(--text-3)">${yr}</span>`;
-    // Sol üstte son mevcut yıl (vurgulu rozet), kalan yıllar küçük çiplerle daha uzakta
+    
     let yearsHtml = '';
     if (yearEntries.length) {
       const [lyr, ls] = yearEntries[0];
@@ -17439,10 +17493,14 @@ function buildFinSourcesGrid() {
     const logoEl = logo
       ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0" alt="" onerror="this.src='';this.style.display='none'">`
       : `<span class="fin-src-dot" style="background:${color}"></span>`;
-    return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:6px;cursor:default">
+
+    const cardClass = isTk ? 'fin-src-card fin-src-card--tk' : 'fin-src-card';
+    const nameColor = isTk ? 'var(--red)' : color;
+
+    return `<div class="${cardClass}" style="flex-direction:column;align-items:flex-start;gap:6px;cursor:default">
       <div style="display:flex;align-items:center;gap:8px;width:100%;padding-right:40px">
         ${logoEl}
-        <span class="fin-src-name" style="flex:1;color:${color}">${d.name}</span>
+        <span class="fin-src-name" style="flex:1;color:${nameColor}">${d.name}</span>
       </div>
       ${yearsHtml}
       <a class="fin-src-ir" href="${d.url}" target="_blank" rel="noopener"
