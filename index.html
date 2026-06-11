@@ -8639,95 +8639,6 @@ async function loadDashboard() {
     return { result, validPoints };
   }
 
-  // Önemli döviz/parite olaylarını grafikte not olarak göstermek için eklenti
-  const forexAnnotationsPlugin = {
-    id: 'forexAnnotations',
-    afterDatasetsDraw(chart) {
-      const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
-      ctx.save();
-
-      const events = [
-        { dateIso: '2018-08-13', label: 'Kur Şoku (Ağustos 2018)', color: '#E63946' },
-        { dateIso: '2021-03-20', label: 'Merkez Bankası Başkanı Görevden Alındı', color: '#F59E0B' },
-        { dateIso: '2021-12-20', label: 'Faiz İndirimi & Kur Atağı', color: '#E63946' },
-        { dateIso: '2023-05-28', label: 'Cumhurbaşkanlığı Seçimi (2. Tur)', color: '#6366F1' },
-        { dateIso: '2023-06-08', label: 'Ekonomi Yönetimi Değişti', color: '#10B981' },
-      ];
-
-      const rawDatesArray = chart.$rawDates;
-      if (!rawDatesArray || rawDatesArray.length === 0) { ctx.restore(); return; }
-
-      const firstDate = new Date(rawDatesArray[0]).getTime();
-      const lastDate  = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
-      const drawnPills = [];
-
-      events.forEach(event => {
-        const targetTime = new Date(event.dateIso).getTime();
-        if (targetTime < firstDate || targetTime > lastDate) return;
-
-        let closestIndex = -1;
-        let minDiff = Infinity;
-        for (let i = 0; i < rawDatesArray.length; i++) {
-          const diff = Math.abs(new Date(rawDatesArray[i]).getTime() - targetTime);
-          if (diff < minDiff) { minDiff = diff; closestIndex = i; }
-        }
-        if (closestIndex === -1) return;
-
-        const totalSpan = lastDate - firstDate;
-        const threshold = Math.max(totalSpan * 0.1, 15 * 24 * 60 * 60 * 1000);
-        if (minDiff > threshold) return;
-
-        const xPos = x.getPixelForValue(closestIndex);
-
-        const meta = chart.getDatasetMeta(0);
-        if (meta && meta.data && meta.data[closestIndex]) {
-          const point = meta.data[closestIndex];
-          ctx.fillStyle = event.color;
-          ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.fill();
-          ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
-          ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.stroke();
-        }
-
-        ctx.setLineDash([]);
-        const font = 'bold 9.5px Inter, sans-serif';
-        ctx.font = font;
-        const textWidth = ctx.measureText(event.label).width;
-        const paddingX = 6, paddingY = 4;
-        const pillWidth  = textWidth + paddingX * 2;
-        const pillHeight = 9.5 + paddingY * 2;
-
-        let pillX = xPos - pillWidth / 2;
-        if (pillX < chartLeft) pillX = chartLeft;
-        else if (pillX + pillWidth > chartRight) pillX = chartRight - pillWidth;
-
-        let pillY = top + 10;
-        let hasOverlap = true;
-        while (hasOverlap) {
-          hasOverlap = false;
-          for (const p of drawnPills) {
-            const overlapX = !(pillX + pillWidth < p.x1 - 4 || pillX > p.x2 + 4);
-            const overlapY = !(pillY + pillHeight < p.y1 - 2 || pillY > p.y2 + 2);
-            if (overlapX && overlapY) { hasOverlap = true; pillY += pillHeight + 6; break; }
-          }
-        }
-        drawnPills.push({ x1: pillX, x2: pillX + pillWidth, y1: pillY, y2: pillY + pillHeight });
-
-        ctx.strokeStyle = event.color; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
-        ctx.beginPath(); ctx.moveTo(xPos, pillY + pillHeight); ctx.lineTo(xPos, bottom); ctx.stroke();
-
-        ctx.setLineDash([]); ctx.fillStyle = event.color; ctx.beginPath();
-        if (ctx.roundRect) { ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 4); }
-        else               { ctx.rect(pillX, pillY, pillWidth, pillHeight); }
-        ctx.fill();
-
-        ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(event.label, pillX + pillWidth / 2, pillY + pillHeight / 2 + 0.5);
-      });
-
-      ctx.restore();
-    }
-  };
-
   function drawForexChartFromRaw(rawJSON, currency, period) {
     const titleEl = document.getElementById('forex-chart-title');
     try {
@@ -8824,7 +8735,6 @@ async function loadDashboard() {
         {
           forceRecreate: true,
           rawDates: rawDates,
-          plugins: [forexAnnotationsPlugin],
           xTickFont: { size: 9, family: 'Inter' },
           xTickCallback: (period === '1y') ? function(value, index) {
             if (index === 0) return this.getLabelForValue(value);
