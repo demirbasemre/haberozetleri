@@ -2128,6 +2128,7 @@
     .article-grid { grid-template-columns: 1fr; gap: 12px; }
     .main { padding: 20px 16px 56px; }
     .header-inner { padding: 0 16px; gap: 12px; }
+    .hdr-tools-trigger { margin-right: -6px; }
     .fdd-panel { min-width: 180px; }
   }
 
@@ -5779,6 +5780,7 @@
     display: none;
     width: 34px;
     height: 34px;
+    margin-right: -10px;
     border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.15);
     background: rgba(255,255,255,0.07);
@@ -5845,13 +5847,15 @@
     .hdr-tools-trigger { display: flex; }
     /* Eski tasarım standalone butonu gizli (menü satırı da #gm-eski ile gizli) */
     .design-switch-btn { display: none !important; }
-    /* Popover, header yerine içerik kolonuna (header-inner) hizalanır */
+    /* Popover, header yüksekliği sabit olduğundan viewport'a göre konumlanır
+       (header-inner'ın gerçek genişliği taşma vb. nedenlerle değişse de
+       popover her zaman çarkın altında, sağa yaslı kalır) */
     .header-inner { position: relative; }
 
     .hdr-tools-group {
       display: none;
-      position: absolute;
-      top: calc(100% + 8px);
+      position: fixed;
+      top: 68px;
       right: 12px;
       flex-direction: column;
       align-items: stretch;

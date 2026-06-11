@@ -9,6 +9,38 @@
       {
         "text": "Brent ham petrol ve jet yakıtı fiyat kartları tıklanabilir hale getirilerek interaktif popover grafik modülleri eklendi. Ayrıca döviz, petrol ve jet yakıtı grafikleri için '6 Ay' (6A) ve 'Yıl Başından Beri' (YTD) periyot filtreleme seçenekleri devreye alındı.",
         "major": true
+      },
+      {
+        "text": "Header'a bildirim zili ve görünüm ayarları çarkı eklendi; aktif rapor sekmesi vurgulanıyor ve karanlık mod kontrastı iyileştirildi.",
+        "major": true
+      },
+      {
+        "text": "Raporlar giriş ekranı bülten kart ızgarasıyla yenilendi; her rapor kartına genel özet metni ve sayfa içeriğini yansıtan mini görsel eklendi.",
+        "major": true
+      },
+      {
+        "text": "Finansal Tablolar sekmesi öne alındı, üzerindeki TEST etiketi kaldırıldı; filo ve navlun gezinmesinde UI iyileştirmeleri yapıldı.",
+        "major": false
+      },
+      {
+        "text": "THY hisse grafiğinde 2005 öncesi dönem ölçeklendirmesi düzeltildi ve grafiğe tarihsel olay notları eklendi.",
+        "major": false
+      },
+      {
+        "text": "Veri kaynakları listesi THY önce gelecek şekilde sıralandı.",
+        "major": false
+      },
+      {
+        "text": "SF Airlines entegratör olarak havayolu filtrelerine eklendi.",
+        "major": false
+      },
+      {
+        "text": "Raporlar sekmesine geçişte üst sekme çubuğunun (pill bar) bir an görünüp kaybolması ve bülten iframe yüksekliğinin ilk yüklemede kesilmesi sorunları giderildi.",
+        "major": false
+      },
+      {
+        "text": "Görünüm ayarları çarkı menüsü artık her zaman çarkın hemen altında, sayfaya göre doğru konumda açılıyor; bildirim ve ayarlar ikonları sağa yaklaştırıldı.",
+        "major": false
       }
     ]
   },
