@@ -10562,9 +10562,13 @@ async function loadDashboard() {
       let validPoints = [];
       for (let i = 0; i < timestamps.length; i++) {
         if (closes[i] != null && closes[i] > 0) {
+          let val = closes[i];
+          if (timestamps[i] < 1104530400) { // before 2005-01-01 YTL transition
+            val = val * 1000;
+          }
           validPoints.push({
             time: timestamps[i],
-            value: closes[i]
+            value: val
           });
         }
       }
@@ -10596,7 +10600,144 @@ async function loadDashboard() {
       });
       
       const prices = validPoints.map(p => p.value);
-      
+      const rawDates = validPoints.map(p => new Date(p.time * 1000).toISOString().slice(0, 10));
+
+      // Önemli tarihleri grafikte vurgulamak için özel eklenti
+      const thyAnnotationsPlugin = {
+        id: 'thyAnnotations',
+        afterDatasetsDraw(chart) {
+          const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
+          ctx.save();
+
+          const events = [
+            { dateIso: '2001-09-11', label: '9/11 Saldırıları', color: '#64748B' },
+            { dateIso: '2003-03-12', label: 'SARS Salgını', color: '#10B981' },
+            { dateIso: '2005-01-01', label: 'TL\'den 6 Sıfır Atılması', color: '#3B82F6' },
+            { dateIso: '2008-09-15', label: 'Küresel Finansal Kriz', color: '#475569' },
+            { dateIso: '2018-10-29', label: 'İstanbul Havalimanı Açılışı', color: '#10B981' },
+            { dateIso: '2020-03-11', label: 'COVID-19 Pandemisi', color: '#E63946' },
+            { dateIso: '2022-02-24', label: 'Rusya-Ukrayna Savaşı', color: '#F59E0B' },
+            { dateIso: '2023-02-06', label: 'Kahramanmaraş Depremi', color: '#6B7280' },
+            { dateIso: '2026-02-26', label: 'Ortadoğu Savaşı (28 Şub)', color: '#E63946' }
+          ];
+
+          const rawDatesArray = chart.$rawDates || rawDates;
+          if (!rawDatesArray || rawDatesArray.length === 0) { ctx.restore(); return; }
+
+          const firstDate = new Date(rawDatesArray[0]).getTime();
+          const lastDate  = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+          const drawnPills = [];
+
+          events.forEach(event => {
+            const targetTime = new Date(event.dateIso).getTime();
+            if (targetTime < firstDate || targetTime > lastDate) return;
+
+            let closestIndex = -1;
+            let minDiff = Infinity;
+            for (let i = 0; i < rawDatesArray.length; i++) {
+              const time = new Date(rawDatesArray[i]).getTime();
+              const diff = Math.abs(time - targetTime);
+              if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+            }
+            if (closestIndex === -1) return;
+
+            const totalSpan = lastDate - firstDate;
+            const threshold = Math.max(totalSpan * 0.1, 15 * 24 * 60 * 60 * 1000);
+            if (minDiff > threshold) return;
+
+            const xPos = x.getPixelForValue(closestIndex);
+
+            // Noktayı daireyle vurgula
+            const meta = chart.getDatasetMeta(0);
+            if (meta && meta.data && meta.data[closestIndex]) {
+              const point = meta.data[closestIndex];
+              ctx.fillStyle = event.color;
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.fill();
+
+              ctx.strokeStyle = '#FFFFFF';
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([]);
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.stroke();
+            }
+
+            ctx.setLineDash([]);
+            const font = 'bold 9.5px Inter, sans-serif';
+            ctx.font = font;
+            const textWidth = ctx.measureText(event.label).width;
+            const textHeight = 9.5;
+            const paddingX = 6;
+            const paddingY = 4;
+            const pillWidth = textWidth + paddingX * 2;
+            const pillHeight = textHeight + paddingY * 2;
+
+            let pillX = xPos - pillWidth / 2;
+            const pillY = top + 10;
+
+            if (pillX < chartLeft) {
+              pillX = chartLeft;
+            } else if (pillX + pillWidth > chartRight) {
+              pillX = chartRight - pillWidth;
+            }
+
+            let hasOverlap = true;
+            let currentPillY = pillY;
+            while (hasOverlap) {
+              hasOverlap = false;
+              const x1 = pillX;
+              const x2 = pillX + pillWidth;
+              const y1 = currentPillY;
+              const y2 = currentPillY + pillHeight;
+
+              for (const p of drawnPills) {
+                const overlapX = !(x2 < p.x1 - 4 || x1 > p.x2 + 4);
+                const overlapY = !(y2 < p.y1 - 2 || y1 > p.y2 + 2);
+                if (overlapX && overlapY) {
+                  hasOverlap = true;
+                  currentPillY += pillHeight + 6;
+                  break;
+                }
+              }
+            }
+
+            drawnPills.push({
+              x1: pillX,
+              x2: pillX + pillWidth,
+              y1: currentPillY,
+              y2: currentPillY + pillHeight
+            });
+
+            ctx.strokeStyle = event.color;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(xPos, currentPillY + pillHeight);
+            ctx.lineTo(xPos, bottom);
+            ctx.stroke();
+
+            ctx.setLineDash([]);
+            ctx.fillStyle = event.color;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+              ctx.roundRect(pillX, currentPillY, pillWidth, pillHeight, 4);
+            } else {
+              ctx.rect(pillX, currentPillY, pillWidth, pillHeight);
+            }
+            ctx.fill();
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(event.label, pillX + pillWidth / 2, currentPillY + pillHeight / 2 + 0.5);
+          });
+
+          ctx.restore();
+        }
+      };
+
       lineChart('chart-thy', labels,
         [
           {
@@ -10613,6 +10754,8 @@ async function loadDashboard() {
         v => v != null ? Number(Number(v).toFixed(1)) + ' ₺' : '',
         {
           forceRecreate: true,
+          plugins: [thyAnnotationsPlugin],
+          rawDates: rawDates,
           xTickFont: { size: 9, family: 'Inter' }
         }
       );
