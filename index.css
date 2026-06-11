@@ -35,7 +35,7 @@
     --accent: #4D8EF5;
     --text: #E8EAF0;
     --text-2: #9AA3B8;
-    --text-3: #555E78;
+    --text-3: #717C99; /* eski #555E78 koyu zeminde ~2.5:1 kalıyordu; ~4:1'e yükseltildi */
     --border: #252A3A;
     --border-soft: #1E2130;
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
@@ -486,8 +486,10 @@
     white-space: nowrap;
   }
   .fdd-btn:hover { background: #fff; border-color: rgba(0,0,0,0.2); color: var(--text); }
-  .fdd-btn.active { background: var(--navy); color: white; border-color: transparent; }
-  .fdd-btn.active:hover { background: #1a2332; }
+  .fdd-btn.active, .fdd-btn.fdd-btn--active { background: var(--navy); color: white; border-color: transparent; }
+  .fdd-btn.active:hover, .fdd-btn.fdd-btn--active:hover { background: #1a2332; }
+  .fdd-btn.fdd-btn--active { box-shadow: 0 2px 8px rgba(13,17,23,0.28); }
+  .fdd-btn.fdd-btn--active svg { stroke: #fff; }
 
   .fdd-dot {
     width: 7px;
@@ -575,7 +577,8 @@
   .dp-pill:hover:not(.dp-disabled):not(.dp-active) { background: var(--bg); }
   /* aktif: tema-duyarlı dolu çip (iki temada da yüksek kontrast) */
   .dp-pill.dp-active { background: var(--text); color: var(--surface); font-weight: 600; }
-  .dp-pill.dp-disabled { opacity: 0.26; cursor: default; }
+  .dp-pill.dp-disabled { opacity: 0.38; cursor: default; }
+  [data-theme="dark"] .dp-pill.dp-disabled { opacity: 0.45; }
   /* GÜN: düzenli dairesel ızgara */
   .dp-day {
     width: 36px; height: 36px; min-width: 36px; padding: 0;
@@ -2242,11 +2245,13 @@
     color: #fff;
   }
   [data-theme="dark"] .stats-date-input::-webkit-calendar-picker-indicator { filter: invert(1); }
-  [data-theme="dark"] .fdd-btn.active {
+  [data-theme="dark"] .fdd-btn.active,
+  [data-theme="dark"] .fdd-btn.fdd-btn--active {
     background: var(--accent);
     border-color: transparent;
     color: #fff;
   }
+  [data-theme="dark"] .fdd-btn.fdd-btn--active { box-shadow: 0 2px 10px rgba(29,111,232,0.35); }
   [data-theme="dark"] .fdd-toggle.active {
     background: #1a3a2a;
     border-color: transparent;
@@ -3631,7 +3636,8 @@
     flex-shrink: 0;
   }
   .dash-tl-btn:hover:not(:disabled) { background: var(--bg); border-color: var(--text-3); color: var(--text); }
-  .dash-tl-btn:disabled { opacity: 0.3; cursor: default; }
+  .dash-tl-btn:disabled { opacity: 0.38; cursor: default; }
+  [data-theme="dark"] .dash-tl-btn:disabled { opacity: 0.45; }
 
   .dash-tl-today-btn {
     font-size: 11px; font-weight: 600;
@@ -5802,10 +5808,45 @@
   .hpp-head { display: none; }
   .hdr-tools-link { display: none; }
 
-  @media (max-width: 768px) {
+  /* ── Bildirim zili: çarkın solunda, aynı çemberli dil ── */
+  .hdr-bell-wrap { position: relative; flex-shrink: 0; }
+  .hdr-bell {
+    display: flex; width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.7); cursor: pointer;
+    align-items: center; justify-content: center; padding: 0;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .hdr-bell:hover, .hdr-bell[aria-expanded="true"] {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.28);
+    color: #fff;
+  }
+  .hdr-bell-panel {
+    display: none; position: absolute; top: calc(100% + 10px); right: 0;
+    width: 244px; background: var(--navy-soft);
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 14px;
+    padding: 10px; z-index: 200; box-shadow: 0 18px 44px rgba(0,0,0,0.45);
+  }
+  .hdr-bell-panel.open { display: block; }
+  .hdr-bell-head {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    color: rgba(255,255,255,0.42); padding: 2px 4px 8px;
+  }
+  .hdr-bell-empty {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 12.5px; color: rgba(255,255,255,0.72); padding: 8px 6px 6px;
+  }
+  .hdr-bell-empty svg { flex-shrink: 0; opacity: 0.6; }
+
+  /* Çark menüsü artık TÜM genişliklerde (masaüstü dahil) — eski satır-içi
+     ikon dizilimi yerine mobil tasarım dilindeki popover kullanılır. */
+  @media (min-width: 0px) {
     .hdr-tools-trigger { display: flex; }
-    /* Eski tasarım standalone butonu mobilde menüye taşındı → gizle */
+    /* Eski tasarım standalone butonu gizli (menü satırı da #gm-eski ile gizli) */
     .design-switch-btn { display: none !important; }
+    /* Popover, header yerine içerik kolonuna (header-inner) hizalanır */
+    .header-inner { position: relative; }
 
     .hdr-tools-group {
       display: none;
@@ -5939,9 +5980,10 @@
     .hdr-tools-group .hdr-pref-opt.on .opt-sub { color: #ff5b62; opacity: 0.75; }
   }
 
-  /* ── Header eylem butonları: mercek + dişli çemberli, tutarlı ── */
-  @media (max-width: 768px) {
+  /* ── Header eylem butonları: mercek + zil + dişli çemberli, tutarlı ── */
+  @media (min-width: 0px) {
     .hdr-lens,
+    .hdr-bell,
     .hdr-tools-trigger {
       width: 38px; height: 38px;
       border-radius: 50%;
@@ -5952,6 +5994,8 @@
       transition: background 0.18s, border-color 0.18s, box-shadow 0.18s, transform 0.14s;
     }
     .hdr-lens:hover,
+    .hdr-bell:hover,
+    .hdr-bell[aria-expanded="true"],
     .hdr-tools-trigger:hover,
     .hdr-tools-trigger[aria-expanded="true"] {
       background: rgba(255,255,255,0.16);
@@ -5959,6 +6003,7 @@
       box-shadow: 0 0 0 4px rgba(255,255,255,0.07);
     }
     .hdr-lens:active,
+    .hdr-bell:active,
     .hdr-tools-trigger:active { transform: scale(0.92); }
   }
 
@@ -6992,8 +7037,11 @@
      • Yalnızca mobilde; masaüstü satır-içi ikonlar değişmez.
      ════════════════════════════════════════════════════════════ */
   .gmenu { display: none; }
+  /* Eski tasarıma dönüş satırı gizli (kullanıcı isteği) */
+  #gm-eski, #hdr-eski-link { display: none !important; }
 
-  @media (max-width: 768px) {
+  /* Kompakt dişli menüsü artık tüm genişliklerde (masaüstü dahil) */
+  @media (min-width: 0px) {
     /* Eski liste satırlarını popover içinde gizle → kompakt menü devrede */
     .hdr-tools-group .hdr-pref-wrap,
     .hdr-tools-group .theme-toggle,
@@ -7292,7 +7340,8 @@
     transition: background 0.15s, border-color 0.15s, opacity 0.2s;
   }
   .fleet-chart-legend-item:hover { background: var(--bg); border-color: var(--border); }
-  .fleet-chart-legend-item.fci-hidden { opacity: 0.35; }
+  .fleet-chart-legend-item.fci-hidden { opacity: 0.45; filter: grayscale(0.35); }
+  [data-theme="dark"] .fleet-chart-legend-item.fci-hidden { opacity: 0.6; filter: grayscale(0.45) brightness(1.1); }
   .fleet-chart-legend-dot {
     width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
   }

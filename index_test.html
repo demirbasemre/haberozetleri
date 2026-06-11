@@ -283,7 +283,24 @@
     user-select: none;
   }
   .fin-atoggle:hover { transform: translateY(-1px); }
-  .fin-atoggle.hidden { opacity: 0.28; }
+  .fin-atoggle.hidden { opacity: 0.42; filter: grayscale(0.35); }
+  .fin-atoggle.hidden:hover { opacity: 0.75; filter: none; }
+  /* Karanlıkta marka renkleri (özellikle koyu laciverler: AF/LH/NH/SQ) zeminde
+     kayboluyor — seçilisiz çipler tek tip okunur gri olur, seçililer hafif parlar */
+  [data-theme="dark"] .fin-atoggle { filter: brightness(1.25) saturate(1.05); }
+  [data-theme="dark"] .fin-atoggle.hidden {
+    opacity: 1; filter: none;
+    color: rgba(255,255,255,0.55) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    background: rgba(255,255,255,0.05) !important;
+  }
+  [data-theme="dark"] .fin-atoggle.hidden .fin-atoggle-logo { filter: grayscale(1); opacity: .6; }
+  [data-theme="dark"] .fin-atoggle.hidden:hover {
+    color: rgba(255,255,255,0.92) !important;
+    border-color: rgba(255,255,255,0.45) !important;
+    background: rgba(255,255,255,0.1) !important;
+  }
+  [data-theme="dark"] .fin-atoggle.hidden:hover .fin-atoggle-logo { filter: none; opacity: 1; }
   .fin-atoggle-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .fin-atoggle-logo { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; object-fit: contain; }
   .fin-airline-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -1914,7 +1931,26 @@
       <span>Eski tasarım</span>
     </a>
 
-    <!-- Mobile gear trigger — sadece dar ekranlarda görünür -->
+    <!-- Bildirim zili — çarkın yanında -->
+    <div class="hdr-bell-wrap">
+      <button class="hdr-bell" id="hdr-bell" aria-label="Bildirimler" title="Bildirimler" aria-haspopup="true" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </button>
+      <div class="hdr-bell-panel" id="hdr-bell-panel" role="menu">
+        <div class="hdr-bell-head">Bildirimler</div>
+        <div class="hdr-bell-empty">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.33-5"/><line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+          Henüz bildirim yok
+        </div>
+      </div>
+    </div>
+
+    <!-- Görünüm ayarları çarkı — tüm genişliklerde görünür -->
     <button class="hdr-tools-trigger" id="hdr-tools-trigger" aria-label="Görünüm ayarları" aria-expanded="false" aria-controls="hdr-tools-group">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"/>
@@ -13145,6 +13181,23 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   });
 })();
 
+// Bildirim zili: paneli aç/kapa (dış tıklama ve Esc ile kapanır)
+(function() {
+  const bell = document.getElementById('hdr-bell');
+  const panel = document.getElementById('hdr-bell-panel');
+  if (!bell || !panel) return;
+  function close() { panel.classList.remove('open'); bell.setAttribute('aria-expanded', 'false'); }
+  bell.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const open = panel.classList.toggle('open');
+    bell.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.hdr-bell-wrap')) close();
+  });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+})();
+
 // ── MOBİL MERCEK ARAMA OVERLAY ──
 (function() {
   const lens   = document.getElementById('hdr-lens');
@@ -15614,7 +15667,7 @@ function initControls(allArticles) {
       bg:   isDark ? '#1A1D27' : '#FFFFFF',
       grid: isDark ? '#252A3A' : '#F3F4F6',
       axis: isDark ? '#252A3A' : '#E5E5E5',
-      txt:  isDark ? '#555E78' : '#9CA3AF',
+      txt:  isDark ? '#717C99' : '#9CA3AF',
       txt2: isDark ? '#9AA3B8' : '#374151'
     };
     const YEARS = [2022,2023,2024,2025,2026];
@@ -16464,7 +16517,7 @@ function renderFinChart() {
   _finPrevChartSlugs = new Set(datasets.map(ds => ds.$code));
 
   const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-  const textColor = isDark ? '#555E78' : '#9CA3AF';
+  const textColor = isDark ? '#717C99' : '#9CA3AF';
 
   // Hover'da yalnız üzerinde olunan seri vurgulanır; diğerleri soluklaşır.
   const setHoverEmphasis = (chart, idx) => {
@@ -17258,11 +17311,11 @@ function buildFinSourcesGrid() {
       ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0" alt="" onerror="this.src='';this.style.display='none'">`
       : `<span class="fin-src-dot" style="background:${color}"></span>`;
     return `<div class="fin-src-card" style="flex-direction:column;align-items:flex-start;gap:6px;cursor:default">
-      ${yearsHtml}
-      <div style="display:flex;align-items:center;gap:8px;width:100%;padding-right:${yearsHtml ? 0 : 40}px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;padding-right:40px">
         ${logoEl}
         <span class="fin-src-name" style="flex:1;color:${color}">${d.name}</span>
       </div>
+      ${yearsHtml}
       <a class="fin-src-ir" href="${d.url}" target="_blank" rel="noopener"
         title="${d.name} Yatırımcı İlişkileri" aria-label="${d.name} Yatırımcı İlişkileri sayfası">IR</a>
     </div>`;
