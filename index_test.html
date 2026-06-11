@@ -2564,6 +2564,13 @@
             <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
           </div>
         </div>
+        <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
+          <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
+          <div class="dash-card-note">Drewry · Haftalık<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
+        </div>
         <div class="dash-card dash-card-clickable" id="dc-imf" title="Türkiye yıllık dizi için tıkla">
           <!-- Normal görünüm -->
           <div id="dc-imf-normal">
@@ -2588,13 +2595,6 @@
               <span class="dcimf-leg-i" style="--c:#6366F1">Öngörü</span>
             </div>
           </div>
-        </div>
-        <div class="dash-card" id="dc-gdp">
-          <div class="dash-card-label">Küresel GDP Büyümesi</div>
-          <div class="dash-card-value skeleton">&nbsp;</div>
-          <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Yıllık büyüme oranı</div>
-          <div class="dash-card-note">IMF WEO · Yıllık</div>
         </div>
       </div>
     </section>
@@ -2682,13 +2682,6 @@
     <section class="dash-section" id="dash-sec-endeks">
       <h2 class="dash-section-title">Hava Kargo Endeksleri</h2>
       <div class="dash-cards">
-        <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
-          <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
-          <div class="dash-card-value skeleton">&nbsp;</div>
-          <div class="dash-card-change"></div>
-          <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
-          <div class="dash-card-note">Drewry · Haftalık<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
-        </div>
         <div class="dash-card card-in-progress" id="dc-bafi">
           <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
           <div class="card-in-progress-badge" style="margin-top: 10px;">
@@ -5845,13 +5838,6 @@ const SEARCHABLE_METRICS = [
     tabName: 'Dashboard',
     id: 'dc-imf',
     kw: ['türkiye', 'gsyh', 'büyüme', 'gdp', 'imf', 'weo']
-  },
-  {
-    name: 'Küresel GDP Büyümesi',
-    tab: 'dashboard',
-    tabName: 'Dashboard',
-    id: 'dc-gdp',
-    kw: ['küresel', 'gdp', 'büyüme', 'growth', 'imf', 'weo']
   },
   {
     name: 'Jet Yakıt & Brent Ham Petrol Grafiği',
