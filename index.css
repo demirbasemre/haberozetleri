@@ -7067,7 +7067,8 @@
   }
 
   /* ── FİLO ANALİZİ ───────────────────────────────────────────── */
-  .fleet-report-container { padding: 0 0 24px; }
+  /* Üst boşluk arz-talep görünümüyle (.reports-main-layout margin-top) hizalı */
+  .fleet-report-container { padding: 0 0 24px; margin-top: 16px; }
 
   .fleet-source-bar {
     display: flex; align-items: center; gap: 8px;
