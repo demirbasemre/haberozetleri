@@ -1689,47 +1689,49 @@
     transition: height 0.2s ease;
   }
 
-  /* ── Rapor kartları: sekme girişinde arşiv ızgarası ── */
-  .reports-cards-wrap { margin-top: 16px; }
-  .reports-cards-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
-  .reports-cards-title { font-size: 15px; font-weight: 700; color: var(--text); }
-  .reports-cards-count { font-size: 11.5px; color: var(--text-3); }
-  .reports-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
-  .report-card {
-    display: flex; flex-direction: column; align-items: flex-start; gap: 8px; text-align: left;
-    padding: 14px 16px; background: var(--surface); border: 1px solid var(--border);
+  /* ── Raporlar girişi: ana rapor türü kartları ── */
+  .reports-home { margin-top: 16px; }
+  .reports-home-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+  .reports-home-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .reports-home-sub { font-size: 11.5px; color: var(--text-3); }
+  .reports-home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .rhome-card {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 9px; text-align: left;
+    padding: 18px; background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); cursor: pointer; font-family: inherit;
     transition: transform .16s ease, box-shadow .16s ease, border-color .16s;
   }
-  .report-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: var(--shadow-md); }
-  .report-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .report-card-top { display: flex; align-items: center; gap: 8px; width: 100%; }
-  .report-card-date { font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: .02em; }
-  .report-card-new {
-    font-size: 9px; font-weight: 700; background: var(--accent); color: #fff;
-    padding: 2px 7px; border-radius: 9px; letter-spacing: .04em; margin-left: auto;
+  .rhome-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: var(--shadow-md); }
+  .rhome-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .rhome-top { display: flex; align-items: center; gap: 10px; width: 100%; }
+  .rhome-icon {
+    width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
   }
-  .report-card-title { font-size: 13.5px; font-weight: 700; color: var(--text); line-height: 1.35; }
-  .report-card-snippet {
-    margin: 0; font-size: 11.8px; line-height: 1.55; color: var(--text-2);
+  .rhome-icon--arz  { background: rgba(29,111,232,0.12); color: var(--accent); }
+  .rhome-icon--fin  { background: rgba(5,150,105,0.14); color: #059669; }
+  .rhome-icon--filo { background: rgba(245,158,11,0.16); color: #D97706; }
+  [data-theme="dark"] .rhome-icon--fin  { color: #34D399; }
+  [data-theme="dark"] .rhome-icon--filo { color: #FBBF24; }
+  .rhome-title { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .rhome-badge {
+    font-size: 9px; font-weight: 700; background: #F59E0B; color: #fff;
+    padding: 1px 5px; border-radius: 4px; letter-spacing: .03em; vertical-align: middle;
+  }
+  .rhome-desc {
+    margin: 0; font-size: 12px; line-height: 1.55; color: var(--text-2);
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
-  .report-card-cta {
+  .rhome-meta { font-size: 11px; font-weight: 600; color: var(--text-3); }
+  .rhome-cta {
     display: inline-flex; align-items: center; gap: 5px;
     font-size: 11.5px; font-weight: 600; color: var(--accent); margin-top: auto;
   }
-  .report-card-cta svg { transition: transform .16s; }
-  .report-card:hover .report-card-cta svg { transform: translateX(2px); }
-  .reports-back-btn {
-    display: none; align-items: center; gap: 6px; margin-top: 16px;
-    padding: 6px 13px; border-radius: 18px; border: 1px solid var(--border);
-    background: var(--surface); color: var(--text-2); font-size: 12px; font-weight: 600; cursor: pointer;
-    transition: all .15s;
-  }
-  .reports-back-btn:hover { color: var(--text); border-color: var(--text-3); background: var(--bg); }
+  .rhome-cta svg { transition: transform .16s; }
+  .rhome-card:hover .rhome-cta svg { transform: translateX(2px); }
   @media (prefers-reduced-motion: reduce) {
-    .report-card, .report-card-cta svg { transition: none; }
-    .report-card:hover { transform: none; }
+    .rhome-card, .rhome-cta svg { transition: none; }
+    .rhome-card:hover { transform: none; }
   }
 
   /* Reports Main Flex Layout */
@@ -2979,6 +2981,50 @@
 
   <!-- Reports panel -->
   <div id="reports-panel" style="display:none">
+    <!-- Giriş: ana rapor türleri kart olarak (tıklayınca ilgili görünüm açılır) -->
+    <div class="reports-home" id="reports-home" style="display:none">
+      <div class="reports-home-grid">
+        <button class="rhome-card" onclick="switchReportType('arz_talep_navlun')">
+          <div class="rhome-top">
+            <span class="rhome-icon rhome-icon--arz">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </span>
+            <span class="rhome-title">Arz &amp; Talep &amp; Navlun Analizi</span>
+          </div>
+          <p class="rhome-desc" id="rhome-arz-snippet">Konteyner navlun, hava kargo fiyatları, yakıt maliyetleri ve arz/talep dinamiklerini özetleyen günlük analiz bülteni.</p>
+          <span class="rhome-meta" id="rhome-arz-meta">Günlük bülten arşivi</span>
+          <span class="rhome-cta">Bültenleri aç
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </button>
+        <button class="rhome-card" onclick="switchReportType('finansal')">
+          <div class="rhome-top">
+            <span class="rhome-icon rhome-icon--fin">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </span>
+            <span class="rhome-title">Finansal Tablolar</span>
+          </div>
+          <p class="rhome-desc">20 havayolunun gelir, kârlılık, çalışan ve yolcu metriklerini yıllara göre karşılaştırın — takvim yılı hizalaması ve kaynak bağlantılarıyla.</p>
+          <span class="rhome-meta">20 havayolu · 21 metrik · grafik + tablo</span>
+          <span class="rhome-cta">Tabloları aç
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </button>
+        <button class="rhome-card" onclick="switchReportType('filo')">
+          <div class="rhome-top">
+            <span class="rhome-icon rhome-icon--filo">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+            </span>
+            <span class="rhome-title">Filo <span class="rhome-badge">TEST</span></span>
+          </div>
+          <p class="rhome-desc">Havayollarının filo büyüklüğü ve gelişimi — iki bağımsız kaynaktan karşılaştırmalı grafikler, gövde tipi kırılımı ve sipariş verileri.</p>
+          <span class="rhome-meta">Kaynak 1 &amp; Kaynak 2 karşılaştırması</span>
+          <span class="rhome-cta">Grafikleri aç
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </button>
+      </div>
+    </div>
     <div class="reports-loading" id="reports-loading">
       <div class="spinner"></div>
       <div>Raporlar yükleniyor…</div>
@@ -3000,21 +3046,6 @@
       <button class="reports-pdf-float-btn" id="reports-pdf-btn" onclick="downloadReportPDF()" title="Bülteni PDF olarak indir" aria-label="PDF İndir">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span>PDF İndir</span>
-      </button>
-
-      <!-- Giriş görünümü: tüm bültenlerin kart ızgarası (ilk rapor otomatik açılmaz) -->
-      <div class="reports-cards-wrap" id="reports-cards-wrap">
-        <div class="reports-cards-head">
-          <span class="reports-cards-title">Yayınlanan Bültenler</span>
-          <span class="reports-cards-count" id="reports-cards-count"></span>
-        </div>
-        <div class="reports-cards" id="reports-cards"><!-- JS doldurur --></div>
-      </div>
-
-      <!-- Detaydan kart ızgarasına dönüş -->
-      <button class="reports-back-btn" id="reports-back-btn" onclick="showReportCards()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Tüm bültenler
       </button>
 
       <div class="reports-main-layout">
@@ -15313,7 +15344,7 @@ function initControls(allArticles) {
     const emptyEl   = document.getElementById('reports-empty');
     const viewEl    = document.getElementById('reports-view');
 
-    if (_activeReportType === 'arz_talep_navlun') loadingEl.style.display = 'flex';
+    if (_activeReportType === 'arz_talep_navlun' && !_reportsHomeActive) loadingEl.style.display = 'flex';
     emptyEl.style.display   = 'none';
     viewEl.style.display    = 'none';
 
@@ -15349,15 +15380,15 @@ function initControls(allArticles) {
       }
 
       _currentIdx = 0;
-      // Giriş görünümü: ilk raporu otomatik açmak yerine kart ızgarası göster
-      buildReportCards();
-      showReportCards();
+      renderReport();
+      // Giriş kartındaki canlı önizlemeyi doldur (son bülten tarihi + özet)
+      updateReportsHomeCard();
       // Derin link (#reports/finansal vb.) ile başka sekmeye geçilmiş olabilir;
       // asenkron yükleme bitince navlun görünümünü yalnız hâlâ o sekmedeyken aç.
-      if (_activeReportType === 'arz_talep_navlun') viewEl.style.display = 'block';
+      if (_activeReportType === 'arz_talep_navlun' && !_reportsHomeActive) viewEl.style.display = 'block';
     } catch (err) {
       loadingEl.style.display = 'none';
-      if (_activeReportType === 'arz_talep_navlun') emptyEl.style.display = 'block';
+      if (_activeReportType === 'arz_talep_navlun' && !_reportsHomeActive) emptyEl.style.display = 'block';
       console.error('Raporlar yüklenemedi:', err);
     }
   }
@@ -15828,11 +15859,18 @@ function initControls(allArticles) {
       .observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
   }
 
-  // Rapor tipi: 'arz_talep_navlun' | 'filo'
+  // Rapor tipi: 'arz_talep_navlun' | 'filo' | 'finansal'
   let _activeReportType = 'arz_talep_navlun';
+  // Giriş kartları görünümü aktif mi? (true iken alt görünümler kendini göstermez)
+  let _reportsHomeActive = false;
 
   function switchReportType(type) {
     _activeReportType = type;
+    _reportsHomeActive = false;
+    const homeEl = document.getElementById('reports-home');
+    if (homeEl) homeEl.style.display = 'none';
+    const filterEl = document.getElementById('reports-filter-content');
+    if (filterEl) filterEl.style.display = 'flex';
     // Derin link: rapor alt sekmesi URL'de taşınır (#reports/<tip>) —
     // link paylaşıldığında doğrudan bu sekme açılır.
     if ((window.location.hash || '').split('/')[0] === '#reports') {
@@ -15884,7 +15922,8 @@ function initControls(allArticles) {
     const pill = e.target.closest('.report-type-pill');
     if (pill) {
       const type = pill.dataset.reportType;
-      if (type && type !== _activeReportType) switchReportType(type);
+      // Giriş kartları açıkken aynı tipe tıklamak da görünümü açmalı
+      if (type && (type !== _activeReportType || _reportsHomeActive)) switchReportType(type);
     }
   });
 
@@ -15897,7 +15936,7 @@ function initControls(allArticles) {
     }
   }
 
-  // ── Rapor kartları: giriş ızgarası (ilk rapor otomatik açılmaz) ──
+  // ── Raporlar girişi: arz-talep kartına canlı önizleme ──
   function _stripReportHtml(html) {
     const d = document.createElement('div');
     d.innerHTML = html || '';
@@ -15905,15 +15944,11 @@ function initControls(allArticles) {
     return (d.textContent || '').replace(/\s+/g, ' ').trim();
   }
 
-  function buildReportCards() {
-    const grid = document.getElementById('reports-cards');
-    if (!grid) return;
-    const cnt = document.getElementById('reports-cards-count');
-    if (cnt) cnt.textContent = _reports.length + ' bülten';
-    grid.innerHTML = _reports.map((r, idx) => {
-      const dateStr = r.date
-        ? new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
-        : 'Yayın ' + (idx + 1);
+  function updateReportsHomeCard() {
+    if (!_reports.length) return;
+    const r = _reports[0]; // en yeni bülten
+    const sn = document.getElementById('rhome-arz-snippet');
+    if (sn) {
       let text = _stripReportHtml(r.html_content);
       // Önizleme yönetici özetinden başlasın; başlık/künye tekrarını atla.
       // Not: Türkçe İ, regex /i bayrağıyla eşleşmez — iki yazımı da dene.
@@ -15921,53 +15956,44 @@ function initControls(allArticles) {
       let m = text.indexOf(mark);
       if (m === -1) { mark = 'YÖNETİCİ ÖZETİ'; m = text.indexOf(mark); }
       if (m > -1) text = text.slice(m + mark.length);
-      const snippet = text.trim().slice(0, 220);
-      return `<button class="report-card" onclick="openReportCard(${idx})"
-        aria-label="${(r.title || 'Rapor').replace(/"/g, '&quot;')} — ${dateStr}">
-        <div class="report-card-top">
-          <span class="report-card-date">${dateStr}</span>
-          ${idx === 0 ? '<span class="report-card-new">EN YENİ</span>' : ''}
-        </div>
-        <div class="report-card-title">${r.title || 'Arz/Talep & Navlun Analiz Raporu'}</div>
-        <p class="report-card-snippet">${snippet}${snippet.length >= 220 ? '…' : ''}</p>
-        <span class="report-card-cta">Bülteni oku
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </span>
-      </button>`;
-    }).join('');
+      const s = text.trim().slice(0, 180);
+      if (s) sn.textContent = s + (s.length >= 180 ? '…' : '');
+    }
+    const meta = document.getElementById('rhome-arz-meta');
+    if (meta) {
+      const d = r.date
+        ? new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
+        : '';
+      meta.textContent = (d ? 'Son bülten: ' + d + ' · ' : '') + _reports.length + ' bülten';
+    }
   }
 
-  function openReportCard(idx) {
-    if (isNaN(idx) || idx < 0 || idx >= _reports.length) return;
-    _currentIdx = idx;
-    renderReport();
-    const wrap = document.getElementById('reports-cards-wrap');
-    if (wrap) wrap.style.display = 'none';
-    const layout = document.querySelector('#reports-view .reports-main-layout');
-    if (layout) layout.style.display = '';
-    const back = document.getElementById('reports-back-btn');
-    if (back) back.style.display = 'inline-flex';
-    const pdf = document.getElementById('reports-pdf-btn');
-    if (pdf) pdf.style.display = '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function showReportCards() {
-    const wrap = document.getElementById('reports-cards-wrap');
-    if (wrap) wrap.style.display = '';
-    const layout = document.querySelector('#reports-view .reports-main-layout');
-    if (layout) layout.style.display = 'none';
-    const back = document.getElementById('reports-back-btn');
-    if (back) back.style.display = 'none';
-    const pdf = document.getElementById('reports-pdf-btn');
-    if (pdf) pdf.style.display = 'none';
+  // Giriş görünümü: üç rapor türü kart olarak; alt görünümler gizlenir
+  function showReportsHome() {
+    _reportsHomeActive = true;
+    const filterEl = document.getElementById('reports-filter-content');
+    if (filterEl) filterEl.style.display = 'none';
+    if ((window.location.hash || '').split('/')[0] === '#reports') {
+      history.replaceState(null, '', '#reports');
+    }
+    ['reports-loading', 'reports-empty', 'reports-view',
+     'fleet-report-container', 'finansal-report-container'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    const catBar = document.getElementById('fleet-cat-bar');
+    if (catBar) catBar.style.display = 'none';
+    const home = document.getElementById('reports-home');
+    if (home) home.style.display = '';
+    // Giriş ekranında hiçbir pill aktif değil
+    document.querySelectorAll('.report-type-pill').forEach(p => p.classList.remove('fdd-btn--active'));
   }
 
   // Global'e aç (onclick="..." attribute'ları için)
-  window.initReportsTab  = initReportsTab;
-  window.navigateReport  = navigateReport;
-  window.openReportCard  = openReportCard;
-  window.showReportCards = showReportCards;
+  window.initReportsTab    = initReportsTab;
+  window.navigateReport    = navigateReport;
+  window.showReportsHome   = showReportsHome;
+  window.switchReportType  = switchReportType;
 let _finChart = null;
 let _finPrevChartSig = null;        // son render'ın metrik/tip/dönem/CY/tema imzası
 let _finPrevChartSlugs = new Set(); // son render'da görünür seriler
@@ -17021,6 +17047,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tab === 'reports' && sub) {
         const pill = document.querySelector(`.report-type-pill[data-report-type="${sub}"]`);
         if (pill && !pill.classList.contains('fdd-btn--active')) pill.click();
+      } else if (tab === 'reports' && !sub) {
+        // Alt rota yoksa giriş: rapor türleri kart olarak listelenir
+        if (window.showReportsHome) showReportsHome();
       }
     }
   };
