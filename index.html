@@ -7022,7 +7022,13 @@ function switchTab(tab) {
   if (el.dashFilter)    el.dashFilter.style.display    = isDash    ? 'flex' : 'none';
   if (el.todoFilter)    el.todoFilter.style.display    = isTodo    ? 'flex' : 'none';
   if (el.statsFilter)   el.statsFilter.style.display   = isStats   ? 'flex' : 'none';
-  if (el.reportsFilter) el.reportsFilter.style.display = isReports ? 'flex' : 'none';
+  if (el.reportsFilter) {
+    // Giriş kartları (reports-home) görünürken pill bar gizli kalmalı —
+    // aksi halde hashchange ile showReportsHome() tetiklendiğinde pill bar bir an görünüp kaybolur.
+    const reportsHomeEl = document.getElementById('reports-home');
+    const reportsHomeVisible = reportsHomeEl && reportsHomeEl.style.display !== 'none';
+    el.reportsFilter.style.display = (isReports && !reportsHomeVisible) ? 'flex' : 'none';
+  }
   if (el.newsBtn)    el.newsBtn.classList.toggle('main-tab-active',    isNews || isStats);
   if (el.dashBtn)    el.dashBtn.classList.toggle('main-tab-active',    isDash);
   if (el.todoBtn)    el.todoBtn.classList.toggle('main-tab-active',    isTodo);
