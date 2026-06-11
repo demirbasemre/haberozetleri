@@ -15699,8 +15699,13 @@ function initControls(allArticles) {
       try {
         const doc = frame.contentDocument || (frame.contentWindow && frame.contentWindow.document);
         if (doc && doc.body) {
-          frame.style.height = (doc.body.scrollHeight + 48) + 'px';
+          const resize = () => { frame.style.height = (doc.body.scrollHeight + 48) + 'px'; };
+          resize();
           buildReportsTOC(doc);
+          // İçerik (yazı tipi, görsel, geç render olan grafikler) yüklenmeye devam edebilir;
+          // ilk ölçümden sonra birkaç kez tekrar ölçerek "kesilmiş" görünümü önle.
+          [50, 200, 500, 1000].forEach(t => setTimeout(resize, t));
+          new ResizeObserver(resize).observe(doc.body);
         }
       } catch(e) {
         frame.style.height = '3200px';
