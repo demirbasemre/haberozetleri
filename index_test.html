@@ -10623,12 +10623,32 @@ async function loadDashboard() {
 
   async function fetchThyStock(range = '1y') {
     const cacheKey = `thy_stock_${range}`;
-    const ttl = range === 'max' ? 24 * 60 * 60 * 1000 : 1 * 60 * 60 * 1000; // max: 24h, 1y: 1h
-    
+    let ttl = 1 * 60 * 60 * 1000; // default (1y, 1m, 6m, ytd): 1h
+    if (range === 'max') {
+      ttl = 24 * 60 * 60 * 1000; // max: 24h
+    } else if (range === '5y') {
+      ttl = 12 * 60 * 60 * 1000; // 5y: 12h
+    } else if (range === '1d') {
+      ttl = 30 * 1000; // 1d: 30s
+    } else if (range === '5d') {
+      ttl = 5 * 60 * 1000; // 5d: 5m
+    }
+
+    let interval = '1d';
+    if (range === '1d') {
+      interval = '15m';
+    } else if (range === '5d') {
+      interval = '1h';
+    } else if (range === '5y') {
+      interval = '1wk';
+    } else if (range === 'max') {
+      interval = '1mo';
+    }
+
     return fetchCached(cacheKey, async () => {
-      const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/THYAO.IS?interval=1d&range=${range}`;
+      const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/THYAO.IS?interval=${interval}&range=${range}`;
       const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
-      
+
       const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
       const d = await res.json();
@@ -10669,6 +10689,11 @@ async function loadDashboard() {
       }
 
       if (validPoints.length === 0) {
+        if (period === '1d') {
+          console.warn("THY 1d has no points, falling back to 5d");
+          setTimeout(() => renderThyChart('5d'), 50);
+          return;
+        }
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
 
@@ -10678,6 +10703,16 @@ async function loadDashboard() {
         const day = d.getDate();
         const month = monthNamesTR[d.getMonth()];
         const year = d.getFullYear();
+        if (period === '1d') {
+          const pad = num => String(num).padStart(2, '0');
+          return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+        if (period === '5d' || period === '1m' || period === '6m' || period === 'ytd') {
+          return `${day} ${month}`;
+        }
+        if (period === '1y' || period === '5y') {
+          return `${month} ${year}`;
+        }
         if (period === 'max') {
           return `${month} '${String(year).slice(-2)}`;
         }
@@ -10832,7 +10867,7 @@ async function loadDashboard() {
             backgroundColor: 'rgba(200,16,46,0.06)',
             fill: true,
             tension: period === 'max' ? 0.2 : 0.35,
-            pointRadius: period === 'max' ? 0 : 2,
+            pointRadius: (period === 'max' || period === '5y') ? 0 : 2,
             borderWidth: 2
           }
         ],
@@ -10855,6 +10890,10 @@ async function loadDashboard() {
     }
   }
 
+  let _thyCache = {
+    '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null
+  };
+
   function renderThyChart(period) {
     if (period) _thyCurrentPeriod = period;
 
@@ -10867,38 +10906,53 @@ async function loadDashboard() {
     const titleEl = document.getElementById('thy-chart-title');
     const canvas = document.getElementById('chart-thy');
     const wrap = canvas?.closest('.dash-chart-wrap');
-    
+
     if (wrap) wrap.classList.add('loading');
 
-    if (_thyCurrentPeriod === '1m' || _thyCurrentPeriod === '6m' || _thyCurrentPeriod === 'ytd' || _thyCurrentPeriod === '1y') {
-      if (!_thy1yRaw) {
-        if (titleEl) titleEl.textContent = "THY Hisse Performansı (Veri yok)";
+    if (!_thyCache[_thyCurrentPeriod] && (_thyCurrentPeriod === '1m' || _thyCurrentPeriod === '6m' || _thyCurrentPeriod === 'ytd') && (_thyCache['1y'] || _thy1yRaw)) {
+      _thyCache[_thyCurrentPeriod] = _thyCache['1y'] || _thy1yRaw;
+    }
+    if (!_thyCache['1y'] && _thy1yRaw) _thyCache['1y'] = _thy1yRaw;
+    if (!_thyCache['max'] && _thyMaxRaw) _thyCache['max'] = _thyMaxRaw;
+
+    const cachedData = _thyCache[_thyCurrentPeriod];
+    if (cachedData) {
+      drawThyChartFromRaw(cachedData, _thyCurrentPeriod);
+      if (wrap) wrap.classList.remove('loading');
+    } else {
+      const fetchPeriod = (_thyCurrentPeriod === '1m' || _thyCurrentPeriod === '6m' || _thyCurrentPeriod === 'ytd') ? '1y' : _thyCurrentPeriod;
+
+      fetchThyStock(fetchPeriod).then(data => {
+        if (fetchPeriod === '1y') {
+          _thyCache['1y'] = data;
+          _thyCache['1m'] = data;
+          _thyCache['6m'] = data;
+          _thyCache['ytd'] = data;
+          _thy1yRaw = data;
+        } else {
+          _thyCache[_thyCurrentPeriod] = data;
+          if (_thyCurrentPeriod === 'max') _thyMaxRaw = data;
+        }
+
+        drawThyChartFromRaw(data, _thyCurrentPeriod);
         if (wrap) wrap.classList.remove('loading');
-        return;
-      }
-      drawThyChartFromRaw(_thy1yRaw, _thyCurrentPeriod);
-    } else if (_thyCurrentPeriod === 'max') {
-      if (_thyMaxRaw) {
-        drawThyChartFromRaw(_thyMaxRaw, 'max');
-      } else {
-        fetchThyStock('max').then(data => {
-          _thyMaxRaw = data;
-          if (_thyCurrentPeriod === 'max') {
-            drawThyChartFromRaw(data, 'max');
-          }
-        }).catch(err => {
-          console.error("Max range THY stock fetch error:", err);
-          if (titleEl) titleEl.textContent = "Hata: Veri alınamadı";
-          if (wrap) {
-            wrap.classList.remove('loading');
-            wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
-            const errDiv = document.createElement('div');
-            errDiv.className = 'dash-chart-error';
-            errDiv.innerHTML = 'Maksimum veri yüklenirken hata oluştu.';
-            wrap.appendChild(errDiv);
-          }
-        });
-      }
+      }).catch(err => {
+        console.error(`THY fetch error for ${_thyCurrentPeriod}:`, err);
+        if (_thyCurrentPeriod === '1d') {
+          console.warn("THY 1d fetch failed, trying 5d");
+          setTimeout(() => renderThyChart('5d'), 50);
+          return;
+        }
+        if (titleEl) titleEl.textContent = "Hata: Veri alınamadı";
+        if (wrap) {
+          wrap.classList.remove('loading');
+          wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
+          const errDiv = document.createElement('div');
+          errDiv.className = 'dash-chart-error';
+          errDiv.innerHTML = 'THY hisse verisi yüklenirken hata oluştu.';
+          wrap.appendChild(errDiv);
+        }
+      });
     }
   }
   window.renderThyChart = renderThyChart;
@@ -17761,10 +17815,13 @@ window.toggleFinSources = function() {
         </div>
         <div class="chart-modal-controls">
           <div class="thy-period-btns">
+            <button class="thy-period-btn forex-btn" id="btn-thy-1d" data-period="1d">1G</button>
+            <button class="thy-period-btn forex-btn" id="btn-thy-5d" data-period="5d">5G</button>
             <button class="thy-period-btn forex-btn" id="btn-thy-1m" data-period="1m">1A</button>
             <button class="thy-period-btn forex-btn" id="btn-thy-6m" data-period="6m">6A</button>
             <button class="thy-period-btn forex-btn active" id="btn-thy-ytd" data-period="ytd">YTD</button>
             <button class="thy-period-btn forex-btn" id="btn-thy-1y" data-period="1y">1Y</button>
+            <button class="thy-period-btn forex-btn" id="btn-thy-5y" data-period="5y">5Y</button>
             <button class="thy-period-btn forex-btn" id="btn-thy-max" data-period="max">Tümü</button>
           </div>
           <button class="export-btn" onclick="exportThyToCSV()" title="THY verisini CSV olarak indir">
