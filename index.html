@@ -3951,6 +3951,7 @@ const AIRLINE_DEFS = [
   { id: 'atlas',     label: 'Atlas Air',      group: 'cargo',  region: 'americas', integrator: false, kw: ['atlas air'] },
   { id: 'cargolux',  label: 'Cargolux',       group: 'cargo',  region: 'europe',   integrator: false, kw: ['cargolux'] },
   { id: 'amazon',    label: 'Amazon Air',     group: 'cargo',  region: 'americas', integrator: true,  kw: ['amazon air'] },
+  { id: 'sf',        label: 'SF Airlines',    group: 'cargo',  region: 'asiapac',  integrator: true,  kw: ['sf airlines','sf express','sf cargo','shunfeng'] },
   { id: 'geosky',    label: 'Geosky',         group: 'cargo',  region: 'europe',   integrator: false, kw: ['geosky'] },
   { id: 'cargojet',  label: 'Cargojet',       group: 'cargo',  region: 'americas', integrator: false, kw: ['cargojet'] },
   { id: 'silkway',   label: 'Silk Way West',  group: 'cargo',  region: 'asiapac',  integrator: false, kw: ['silk way'] },
@@ -4169,6 +4170,7 @@ function getAirlineLogo(airlineId) {
     'ups':             F('ups.com'),
     'dhl':             F('dhl.com'),
     'amazon':          F('amazon.com'),
+    'sf':              F('sf-airlines.com'),
     // Avrupa
     'lufthansa':       G('LH'),
     'airfrance':       G('AF'),
