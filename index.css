@@ -6727,7 +6727,6 @@
     position: relative;
     flex-shrink: 0;
     margin-right: 8px;
-    margin-top: 8px;
   }
   .forex-indicator-dot.usd {
     background: #1D6FE8;
@@ -6854,6 +6853,7 @@
     border-radius: 8px;
     border: 1px solid var(--border-soft);
     gap: 2px;
+    align-self: flex-start;
   }
   .forex-btn {
     font-size: 12px;
