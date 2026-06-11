@@ -11806,15 +11806,9 @@ async function loadDashboard() {
       if (art) {
         const targetUrl = art.url || art.link || '';
         const encodedUrl = encodeURIComponent(targetUrl);
-        if (art.isWebResult) {
-          formattedContent = cleanLine.replace(/\*\*(.*?)\*\*/g, (m, p1) => {
-            return `<a href="${targetUrl}" target="_blank" class="ai-title-link" title="Dış siteye git: ${p1}">${p1} ↗</a>`;
-          });
-        } else {
-          formattedContent = cleanLine.replace(/\*\*(.*?)\*\*/g, (m, p1) => {
-            return `<a href="#" onclick="window.filterByArticle(event, '${encodedUrl}')" class="ai-title-link" title="Karta git: ${p1}">${p1}</a>`;
-          });
-        }
+        formattedContent = cleanLine.replace(/\*\*(.*?)\*\*/g, (m, p1) => {
+          return `<a href="#" onclick="window.filterByArticle(event, '${encodedUrl}')" class="ai-title-link" title="Karta git: ${p1}">${p1}</a>`;
+        });
       } else {
         formattedContent = cleanLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       }
@@ -12088,7 +12082,7 @@ async function loadDashboard() {
         })
       }).catch(() => {});
 
-      if (data.articles && data.articles.length > 0 && !data.articles.some(a => a.isWebResult)) {
+      if (data.articles && data.articles.length > 0) {
         addShowCardsPrompt(data.articles, false);
       }
 
