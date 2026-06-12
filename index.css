@@ -5854,7 +5854,7 @@
 
     .hdr-tools-group {
       display: none;
-      position: fixed;
+      position: absolute;
       top: 68px;
       right: 12px;
       flex-direction: column;
