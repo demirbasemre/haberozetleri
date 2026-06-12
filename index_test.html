@@ -2682,27 +2682,24 @@
     <section class="dash-section" id="dash-sec-endeks">
       <h2 class="dash-section-title">Hava Kargo Endeksleri</h2>
       <div class="dash-cards">
-        <div class="dash-card card-in-progress" id="dc-bafi">
+        <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
           <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
-          <div class="card-in-progress-badge" style="margin-top: 10px;">
-            <span class="badge-dot"></span>Otomasyon süreci devam ediyor
-          </div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
           <div class="dash-card-sub">Hava kargo spot tarifesi endeksi</div>
           <div class="dash-card-note">Baltic Exchange · <a href="https://www.balticexchange.com/en/data/routes/air.html" target="_blank" rel="noopener">balticexchange.com →</a></div>
         </div>
-        <div class="dash-card card-in-progress" id="dc-iata">
+        <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
           <div class="dash-card-label">IATA Air Cargo Market Analysis</div>
-          <div class="card-in-progress-badge" style="margin-top: 10px;">
-            <span class="badge-dot"></span>Otomasyon süreci devam ediyor
-          </div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
           <div class="dash-card-sub">CTK büyümesi, kapasite ve verim değişimi</div>
           <div class="dash-card-note">IATA · Aylık rapor · <a href="https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/" target="_blank" rel="noopener">iata.org →</a></div>
         </div>
-        <div class="dash-card card-in-progress" id="dc-fbx">
+        <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
           <div class="dash-card-label">Freightos Baltic Index (FBX)</div>
-          <div class="card-in-progress-badge" style="margin-top: 10px;">
-            <span class="badge-dot"></span>Otomasyon süreci devam ediyor
-          </div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
           <div class="dash-card-sub">Global konteyner spot fiyat endeksi</div>
           <div class="dash-card-note">Freightos · Günlük · <a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a></div>
         </div>
@@ -2775,6 +2772,83 @@
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-wci"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAFI Grafik Modali -->
+    <div id="bafi-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="bafi-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="bafi-chart-title" class="rel-add-title">Baltic Air Freight Index (BAFI)</div>
+          <button class="rel-add-x" onclick="closeBafiChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="chart-modal-controls">
+          <div class="bafi-period-btns">
+            <button class="bafi-period-btn forex-btn" id="btn-bafi-1m" data-period="1m">1A</button>
+            <button class="bafi-period-btn forex-btn" id="btn-bafi-6m" data-period="6m">6A</button>
+            <button class="bafi-period-btn forex-btn active" id="btn-bafi-ytd" data-period="ytd">YTD</button>
+            <button class="bafi-period-btn forex-btn" id="btn-bafi-1y" data-period="1y">1Y</button>
+            <button class="bafi-period-btn forex-btn" id="btn-bafi-max" data-period="max">Tümü</button>
+          </div>
+          <button class="export-btn" onclick="exportBafiToCSV()" title="BAFI verisini CSV olarak indir">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Excel
+          </button>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-bafi"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- IATA Grafik Modali -->
+    <div id="iata-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="iata-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="iata-chart-title" class="rel-add-title">IATA Air Cargo Market Analysis</div>
+          <button class="rel-add-x" onclick="closeIataChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="chart-modal-controls">
+          <div class="iata-period-btns">
+            <button class="iata-period-btn forex-btn" id="btn-iata-6m" data-period="6m">6A</button>
+            <button class="iata-period-btn forex-btn active" id="btn-iata-ytd" data-period="ytd">YTD</button>
+            <button class="iata-period-btn forex-btn" id="btn-iata-1y" data-period="1y">1Y</button>
+            <button class="iata-period-btn forex-btn" id="btn-iata-max" data-period="max">Tümü</button>
+          </div>
+          <button class="export-btn" onclick="exportIataToCSV()" title="IATA verisini CSV olarak indir">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Excel
+          </button>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-iata"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- FBX Grafik Modali -->
+    <div id="fbx-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fbx-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="fbx-chart-title" class="rel-add-title">Freightos Baltic Index (FBX)</div>
+          <button class="rel-add-x" onclick="closeFbxChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="chart-modal-controls">
+          <div class="fbx-period-btns">
+            <button class="fbx-period-btn forex-btn" id="btn-fbx-1m" data-period="1m">1A</button>
+            <button class="fbx-period-btn forex-btn" id="btn-fbx-6m" data-period="6m">6A</button>
+            <button class="fbx-period-btn forex-btn active" id="btn-fbx-ytd" data-period="ytd">YTD</button>
+            <button class="fbx-period-btn forex-btn" id="btn-fbx-1y" data-period="1y">1Y</button>
+            <button class="fbx-period-btn forex-btn" id="btn-fbx-max" data-period="max">Tümü</button>
+          </div>
+          <button class="export-btn" onclick="exportFbxToCSV()" title="FBX verisini CSV olarak indir">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Excel
+          </button>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-fbx"></canvas>
         </div>
       </div>
     </div>
@@ -7519,6 +7593,57 @@ function closeWciChartModal() {
   const m = document.getElementById('wci-chart-modal');
   if (m) m.style.display = 'none';
 }
+function openBafiChartModal() {
+  const m = document.getElementById('bafi-chart-modal');
+  if (m) {
+    m.style.display = 'flex';
+    setTimeout(() => {
+      if (typeof window.renderBafiChart === 'function') {
+        window.renderBafiChart();
+      } else {
+        console.warn("window.renderBafiChart henüz hazır değil.");
+      }
+    }, 150);
+  }
+}
+function closeBafiChartModal() {
+  const m = document.getElementById('bafi-chart-modal');
+  if (m) m.style.display = 'none';
+}
+function openIataChartModal() {
+  const m = document.getElementById('iata-chart-modal');
+  if (m) {
+    m.style.display = 'flex';
+    setTimeout(() => {
+      if (typeof window.renderIataChart === 'function') {
+        window.renderIataChart();
+      } else {
+        console.warn("window.renderIataChart henüz hazır değil.");
+      }
+    }, 150);
+  }
+}
+function closeIataChartModal() {
+  const m = document.getElementById('iata-chart-modal');
+  if (m) m.style.display = 'none';
+}
+function openFbxChartModal() {
+  const m = document.getElementById('fbx-chart-modal');
+  if (m) {
+    m.style.display = 'flex';
+    setTimeout(() => {
+      if (typeof window.renderFbxChart === 'function') {
+        window.renderFbxChart();
+      } else {
+        console.warn("window.renderFbxChart henüz hazır değil.");
+      }
+    }, 150);
+  }
+}
+function closeFbxChartModal() {
+  const m = document.getElementById('fbx-chart-modal');
+  if (m) m.style.display = 'none';
+}
 function openThyChartModal() {
   const m = document.getElementById('thy-chart-modal');
   if (m) {
@@ -10295,6 +10420,18 @@ async function loadDashboard() {
   let _wciLatest = null;
   let _wciCurrentPeriod = 'ytd';
 
+  let _bafiHistory = [];
+  let _bafiLatest = null;
+  let _bafiCurrentPeriod = 'ytd';
+
+  let _fbxHistory = [];
+  let _fbxLatest = null;
+  let _fbxCurrentPeriod = 'ytd';
+
+  let _iataHistory = [];
+  let _iataLatest = null;
+  let _iataCurrentPeriod = 'ytd';
+
   function renderWciChart(period) {
     if (period) _wciCurrentPeriod = period;
 
@@ -10602,6 +10739,223 @@ async function loadDashboard() {
   }
   window.exportWciToCSV = exportWciToCSV;
 
+  function renderBafiChart(period) {
+    if (period) _bafiCurrentPeriod = period;
+    document.querySelectorAll('#bafi-chart-modal .bafi-period-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById(`btn-bafi-${_bafiCurrentPeriod}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const titleEl = document.getElementById('bafi-chart-title');
+    try {
+      if (!_bafiHistory || !_bafiHistory.length) {
+        if (titleEl) titleEl.textContent = "BAFI Grafiği (Veri yüklenemedi!)";
+        return;
+      }
+      
+      let allData = [..._bafiHistory];
+      if (_bafiLatest && _bafiLatest.price) {
+        const latestIso = _bafiLatest.date.includes('-') ? _bafiLatest.date : new Date().toISOString().slice(0, 10);
+        const lastHist = allData[allData.length - 1];
+        if (latestIso && (!lastHist || lastHist.date < latestIso)) {
+          allData.push({ date: latestIso, value: _bafiLatest.price });
+        }
+      }
+
+      const cutoff = new Date();
+      if (_bafiCurrentPeriod === '1m') cutoff.setMonth(cutoff.getMonth() - 1);
+      else if (_bafiCurrentPeriod === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
+      else if (_bafiCurrentPeriod === 'ytd') cutoff.setMonth(0, 1);
+      else if (_bafiCurrentPeriod === '1y') cutoff.setFullYear(cutoff.getFullYear() - 1);
+      
+      if (_bafiCurrentPeriod !== 'max') {
+        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        allData = allData.filter(d => d.date >= cutoffStr);
+      }
+
+      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const labels = allData.map(d => {
+        const dateObj = new Date(d.date + 'T12:00:00Z');
+        if (isNaN(dateObj)) return d.date;
+        const day = dateObj.getUTCDate();
+        const month = monthNamesTR[dateObj.getUTCMonth()];
+        const year = dateObj.getUTCFullYear();
+        if (['1m', '6m', 'ytd'].includes(_bafiCurrentPeriod)) return `${day} ${month}`;
+        return `${month} '${String(year).slice(-2)}`;
+      });
+      const values = allData.map(d => d.value);
+
+      lineChart('chart-bafi', labels,
+        [
+          {
+            label: 'Baltic Air Freight Index (BAFI)',
+            data: values,
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16,185,129,0.07)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: _bafiCurrentPeriod === 'max' ? 0 : 2,
+            borderWidth: 2
+          }
+        ],
+        v => v != null ? Number(v).toFixed(2) + ' $' : '',
+        { forceRecreate: true }
+      );
+      if (titleEl) titleEl.textContent = 'Baltic Air Freight Index (BAFI)';
+    } catch (err) {
+      console.error("BAFI Grafik çizim hatası:", err);
+      if (titleEl) titleEl.textContent = "Hata: " + err.message;
+    }
+  }
+  window.renderBafiChart = renderBafiChart;
+
+  document.querySelectorAll('.bafi-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => renderBafiChart(btn.dataset.period));
+  });
+
+  function renderFbxChart(period) {
+    if (period) _fbxCurrentPeriod = period;
+    document.querySelectorAll('#fbx-chart-modal .fbx-period-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById(`btn-fbx-${_fbxCurrentPeriod}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const titleEl = document.getElementById('fbx-chart-title');
+    try {
+      if (!_fbxHistory || !_fbxHistory.length) {
+        if (titleEl) titleEl.textContent = "FBX Grafiği (Veri yüklenemedi!)";
+        return;
+      }
+      
+      let allData = [..._fbxHistory];
+      if (_fbxLatest && _fbxLatest.price) {
+        const latestIso = _fbxLatest.date.includes('-') ? _fbxLatest.date : new Date().toISOString().slice(0, 10);
+        const lastHist = allData[allData.length - 1];
+        if (latestIso && (!lastHist || lastHist.date < latestIso)) {
+          allData.push({ date: latestIso, value: _fbxLatest.price });
+        }
+      }
+
+      const cutoff = new Date();
+      if (_fbxCurrentPeriod === '1m') cutoff.setMonth(cutoff.getMonth() - 1);
+      else if (_fbxCurrentPeriod === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
+      else if (_fbxCurrentPeriod === 'ytd') cutoff.setMonth(0, 1);
+      else if (_fbxCurrentPeriod === '1y') cutoff.setFullYear(cutoff.getFullYear() - 1);
+      
+      if (_fbxCurrentPeriod !== 'max') {
+        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        allData = allData.filter(d => d.date >= cutoffStr);
+      }
+
+      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const labels = allData.map(d => {
+        const dateObj = new Date(d.date + 'T12:00:00Z');
+        if (isNaN(dateObj)) return d.date;
+        const day = dateObj.getUTCDate();
+        const month = monthNamesTR[dateObj.getUTCMonth()];
+        const year = dateObj.getUTCFullYear();
+        if (['1m', '6m', 'ytd'].includes(_fbxCurrentPeriod)) return `${day} ${month}`;
+        return `${month} '${String(year).slice(-2)}`;
+      });
+      const values = allData.map(d => d.value);
+
+      lineChart('chart-fbx', labels,
+        [
+          {
+            label: 'Freightos Baltic Index (FBX)',
+            data: values,
+            borderColor: '#3B82F6',
+            backgroundColor: 'rgba(59,130,246,0.07)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: _fbxCurrentPeriod === 'max' ? 0 : 2,
+            borderWidth: 2
+          }
+        ],
+        v => v != null ? Number(v).toLocaleString('en-US') + ' $' : '',
+        { forceRecreate: true }
+      );
+      if (titleEl) titleEl.textContent = 'Freightos Baltic Index (FBX)';
+    } catch (err) {
+      console.error("FBX Grafik çizim hatası:", err);
+      if (titleEl) titleEl.textContent = "Hata: " + err.message;
+    }
+  }
+  window.renderFbxChart = renderFbxChart;
+
+  document.querySelectorAll('.fbx-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => renderFbxChart(btn.dataset.period));
+  });
+
+  function renderIataChart(period) {
+    if (period) _iataCurrentPeriod = period;
+    document.querySelectorAll('#iata-chart-modal .iata-period-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById(`btn-iata-${_iataCurrentPeriod}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const titleEl = document.getElementById('iata-chart-title');
+    try {
+      if (!_iataHistory || !_iataHistory.length) {
+        if (titleEl) titleEl.textContent = "IATA Grafiği (Veri yüklenemedi!)";
+        return;
+      }
+      
+      let allData = [..._iataHistory];
+      if (_iataLatest && _iataLatest.demand) {
+        const latestIso = new Date().toISOString().slice(0, 10);
+        const lastHist = allData[allData.length - 1];
+        const demandVal = parseFloat(_iataLatest.demand.replace(/[^\d.-]/g, ''));
+        if (latestIso && (!lastHist || lastHist.date < latestIso) && !isNaN(demandVal)) {
+          allData.push({ date: latestIso, value: demandVal });
+        }
+      }
+
+      const cutoff = new Date();
+      if (_iataCurrentPeriod === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
+      else if (_iataCurrentPeriod === 'ytd') cutoff.setMonth(0, 1);
+      else if (_iataCurrentPeriod === '1y') cutoff.setFullYear(cutoff.getFullYear() - 1);
+      
+      if (_iataCurrentPeriod !== 'max') {
+        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        allData = allData.filter(d => d.date >= cutoffStr);
+      }
+
+      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const labels = allData.map(d => {
+        const dateObj = new Date(d.date + 'T12:00:00Z');
+        if (isNaN(dateObj)) return d.date;
+        const month = monthNamesTR[dateObj.getUTCMonth()];
+        const year = dateObj.getUTCFullYear();
+        return `${month} '${String(year).slice(-2)}`;
+      });
+      const values = allData.map(d => d.value);
+
+      lineChart('chart-iata', labels,
+        [
+          {
+            label: 'Hava Kargo Talebi (CTK Büyümesi)',
+            data: values,
+            borderColor: '#EF4444',
+            backgroundColor: 'rgba(239,68,68,0.07)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 2,
+            borderWidth: 2
+          }
+        ],
+        v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '',
+        { forceRecreate: true }
+      );
+      if (titleEl) titleEl.textContent = 'IATA Küresel Hava Kargo Talebi Büyümesi (YoY)';
+    } catch (err) {
+      console.error("IATA Grafik çizim hatası:", err);
+      if (titleEl) titleEl.textContent = "Hata: " + err.message;
+    }
+  }
+  window.renderIataChart = renderIataChart;
+
+  document.querySelectorAll('.iata-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => renderIataChart(btn.dataset.period));
+  });
+
 
   function exportChartCSV(canvasId, colLabel, colValue, filename) {
     const chart = Chart.getChart(document.getElementById(canvasId));
@@ -10624,6 +10978,9 @@ async function loadDashboard() {
   window.exportJetfuelToCSV = () => exportChartCSV('chart-jetfuel-modal', 'Tarih', 'Jet Yakıtı ($/ton)', 'JetFuel');
   window.exportForexToCSV = () => exportChartCSV('chart-forex', 'Tarih', 'Döviz Kuru (₺)', 'Forex');
   window.exportBrentToCSV = () => exportChartCSV('chart-brent-modal', 'Tarih', 'Brent ($/varil)', 'Brent');
+  window.exportBafiToCSV = () => exportChartCSV('chart-bafi', 'Tarih', 'BAFI ($/kg)', 'BAFI');
+  window.exportFbxToCSV = () => exportChartCSV('chart-fbx', 'Tarih', 'FBX (USD)', 'FBX');
+  window.exportIataToCSV = () => exportChartCSV('chart-iata', 'Tarih', 'CTK Büyümesi (%)', 'IATA');
 
   function convertDrewryDate(dStr) {
     if (!dStr) return null;
@@ -10658,6 +11015,81 @@ async function loadDashboard() {
       );
     } else {
       setCard('dc-wci', '—', null, '', 'Veri alınamadı');
+    }
+  });
+
+  // BAFI Verisini Çek ve Göster
+  fetchCached('bafi_full_data', async () => {
+    const [history, latest] = await Promise.all([
+      fetch('bafi-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi').then(r => r.ok ? r.json() : null).catch(() => null)
+    ]);
+    return { history, latest };
+  }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
+    _bafiHistory = history;
+    _bafiLatest = latest;
+
+    if (latest && latest.price) {
+      const formattedPrice = latest.price.toFixed(2) + ' $';
+      setCard('dc-bafi',
+        formattedPrice,
+        latest.change,
+        "Hava kargo spot tarifesi endeksi",
+        `Son veri: ${latest.date}<br><a href="https://www.tacindex.com" target="_blank" rel="noopener">tacindex.com →</a>`
+      );
+    } else {
+      setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
+    }
+  });
+
+  // FBX Verisini Çek ve Göster
+  fetchCached('fbx_full_data', async () => {
+    const [history, latest] = await Promise.all([
+      fetch('fbx-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null)
+    ]);
+    return { history, latest };
+  }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
+    if (latest && latest.history && latest.history.length) {
+      _fbxHistory = latest.history;
+    } else {
+      _fbxHistory = history;
+    }
+    _fbxLatest = latest;
+
+    if (latest && latest.price) {
+      const formattedPrice = latest.price.toLocaleString('en-US') + ' $';
+      setCard('dc-fbx',
+        formattedPrice,
+        latest.change,
+        "Global konteyner spot fiyat endeksi",
+        `Son veri: ${latest.date}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`
+      );
+    } else {
+      setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
+    }
+  });
+
+  // IATA Verisini Çek ve Göster
+  fetchCached('iata_full_data', async () => {
+    const [history, latest] = await Promise.all([
+      fetch('iata-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null)
+    ]);
+    return { history, latest };
+  }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
+    _iataHistory = history;
+    _iataLatest = latest;
+
+    if (latest && latest.demand) {
+      setCard('dc-iata',
+        latest.demand,
+        null,
+        `Kapasite değişimi: ${latest.capacity}`,
+        `Son Rapor: ${latest.date}<br><a href="${latest.pdfLink}" target="_blank" rel="noopener">iata.org PDF →</a>`
+      );
+    } else {
+      setCard('dc-iata', '—', null, '', 'Veri alınamadı');
     }
   });
 

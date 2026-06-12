@@ -20,6 +20,12 @@ const PROXY_ALLOWED_HOSTS = new Set([
   'www.iata.org',
   'query1.finance.yahoo.com',
   'n8n.emredemirbas.com',
+  'balticexchange.com',
+  'www.balticexchange.com',
+  'tacindex.com',
+  'www.tacindex.com',
+  'freightos.com',
+  'www.freightos.com',
 ]);
 
 function parseWCI(html) {
@@ -60,6 +66,84 @@ function parseWCI(html) {
     change: changePercent,
     date: dateStr,
     direction: ['increased', 'surged', 'rose'].includes(directionStr) ? 'up' : ['decreased', 'dropped', 'declined', 'fell'].includes(directionStr) ? 'down' : 'flat'
+  };
+}
+
+function parseBAFI(html) {
+  const indexRegex = /BAI00[^]*?(?:was\s+)?(increased|decreased|dropped|rose|fell|changed|up|down)(?:\s+by)?\s*(?:([\d.]+)(?:%)?)?\s*(?:to|at)?\s*(?:[\$]?)([\d,.]+)/i;
+  const match = html.match(indexRegex);
+  
+  if (!match) {
+    const fallbackRegex = /Baltic Air Freight Index[^]*?(?:[\$]?)([\d,.]+)/i;
+    const fallbackMatch = html.match(fallbackRegex);
+    if (fallbackMatch) {
+      return {
+        success: true,
+        price: parseFloat(fallbackMatch[1].replace(/,/g, '')),
+        change: 0,
+        direction: 'flat'
+      };
+    }
+    return { success: false, error: 'Could not parse BAFI values' };
+  }
+
+  const directionStr = match[1].toLowerCase();
+  const changePercentVal = match[2] ? parseFloat(match[2]) : 0;
+  const price = parseFloat(match[3].replace(/,/g, ''));
+  
+  let changePercent = changePercentVal;
+  let direction = 'flat';
+  if (['decreased', 'dropped', 'declined', 'fell', 'down'].includes(directionStr)) {
+    changePercent = -changePercentVal;
+    direction = 'down';
+  } else if (['increased', 'surged', 'rose', 'up'].includes(directionStr)) {
+    direction = 'up';
+  }
+
+  return {
+    success: true,
+    price,
+    change: changePercent,
+    direction
+  };
+}
+
+function parseFBX(html) {
+  const fbxRegex = /Freightos Baltic Index \(FBX\) composite[^]*?(increased|decreased|dropped|rose|fell|changed|up|down)(?:\s+by)?\s*(?:([\d.]+)(?:%)?)?\s*(?:to|at)?\s*(?:\$)([\d,]+)/i;
+  let match = html.match(fbxRegex);
+
+  if (!match) {
+    const fallbackRegex = /FBX composite[^]*?(?:[\$])([\d,]+)/i;
+    match = html.match(fallbackRegex);
+    if (match) {
+      return {
+        success: true,
+        price: parseFloat(match[1].replace(/,/g, '')),
+        change: 0,
+        direction: 'flat'
+      };
+    }
+    return { success: false, error: 'Could not parse FBX values' };
+  }
+
+  const directionStr = match[1].toLowerCase();
+  const changePercentVal = match[2] ? parseFloat(match[2]) : 0;
+  const price = parseFloat(match[3].replace(/,/g, ''));
+
+  let changePercent = changePercentVal;
+  let direction = 'flat';
+  if (['decreased', 'dropped', 'declined', 'fell', 'down'].includes(directionStr)) {
+    changePercent = -changePercentVal;
+    direction = 'down';
+  } else if (['increased', 'surged', 'rose', 'up'].includes(directionStr)) {
+    direction = 'up';
+  }
+
+  return {
+    success: true,
+    price,
+    change: changePercent,
+    direction
   };
 }
 
@@ -168,6 +252,218 @@ export default {
         return new Response(JSON.stringify({ error: err.message }), {
           status: 502,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // ── /bafi Canlı Rotası ──
+    if (urlObj.pathname === '/bafi') {
+      const forceDirect = urlObj.searchParams.get('direct') === '1';
+      try {
+        const indexRes = await doFetch('https://www.tacindex.com/category/market-commentary/', {}, forceDirect);
+        const linkMatch = indexRes.body.match(/href=["'](https?:\/\/(?:www\.)?tacindex\.com\/blog\/air-freight-rates-costs-latest-([a-z]+)-(\d{4})\/?)["']/i);
+        
+        let parsed = null;
+        if (linkMatch && linkMatch[1]) {
+          const articleRes = await doFetch(linkMatch[1], {}, forceDirect);
+          parsed = parseBAFI(articleRes.body);
+          if (parsed && parsed.success) {
+            parsed.date = `${linkMatch[2].substring(0, 3)} ${linkMatch[3].substring(2)}`;
+          }
+        }
+
+        if (!parsed || !parsed.success || parsed.price === null || isNaN(parsed.price)) {
+          console.warn("BAFI canlı kazıma başarısız, n8n API'sinden fallback çekiliyor...");
+          const fallbackRes = await doFetch('https://n8n.emredemirbas.com/webhook/raporlar', {}, forceDirect);
+          const reportsJson = JSON.parse(fallbackRes.body);
+          const latestReport = reportsJson.reports[0];
+          
+          let price = null;
+          let change = 0;
+          let direction = 'flat';
+          
+          // Try to match Air Freight Index from KPI (span-based markup in new reports)
+          let valM = latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Air Freight Index<\/span><span class="kpi-value">([\d.,\s$/kg—]+)<\/span>/i);
+          if (valM && !valM[1].includes('—')) {
+            price = parseFloat(valM[1].replace(/[^\d.]/g, ''));
+            const chgM = latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Air Freight Index<\/span>[\s\S]*?<span class="kpi-change"[^>]*>([^<]+)<\/span>/i);
+            if (chgM) {
+              change = parseFloat(chgM[1].replace(/[^\d.-]/g, ''));
+              if (chgM[1].includes('▼') || chgM[1].includes('-')) change = -change;
+              direction = chgM[1].includes('▲') ? 'up' : chgM[1].includes('▼') ? 'down' : 'flat';
+            }
+          }
+          
+          // If not found or empty, try Global Spot Rates KPI
+          if (!price) {
+            valM = latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Global Spot Rates<\/span><span class="kpi-value">([\d.,\s$/kg—]+)<\/span>/i);
+            if (valM && !valM[1].includes('—')) {
+              price = parseFloat(valM[1].replace(/[^\d.]/g, ''));
+              const chgM = latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Global Spot Rates<\/span>[\s\S]*?<span class="kpi-change"[^>]*>([^<]+)<\/span>/i);
+              if (chgM) {
+                change = parseFloat(chgM[1].replace(/[^\d.-]/g, ''));
+                if (chgM[1].includes('▼') || chgM[1].includes('-')) change = -change;
+                direction = chgM[1].includes('▲') ? 'up' : chgM[1].includes('▼') ? 'down' : 'flat';
+              }
+            }
+          }
+
+          // If still not found, try old div-based metric labels
+          if (!price) {
+            valM = latestReport.html_content.match(/<div class="metric-label">Air Freight Index<\/div><div class="metric-value">([\d.,\s$/kg—]+)<\/div>/i);
+            if (valM && !valM[1].includes('—')) {
+              price = parseFloat(valM[1].replace(/[^\d.]/g, ''));
+              const chgM = latestReport.html_content.match(/<div class="metric-label">Air Freight Index<\/div><div class="metric-value">[^<]+<\/div><div class="metric-change"[^>]*>([^<]+)<\/div>/i);
+              if (chgM) {
+                change = parseFloat(chgM[1].replace(/[^\d.-]/g, ''));
+                if (chgM[1].includes('▼') || chgM[1].includes('-')) change = -change;
+                direction = chgM[1].includes('▲') ? 'up' : chgM[1].includes('▼') ? 'down' : 'flat';
+              }
+            }
+          }
+
+          if (price) {
+            parsed = {
+              success: true,
+              price: price,
+              change: change,
+              direction: direction,
+              date: new Date(latestReport.date).toLocaleDateString('tr-TR', { month: 'short', year: 'numeric' })
+            };
+          }
+        }
+
+        if (!parsed || !parsed.success) {
+          throw new Error('BAFI parsing failed both live and fallback');
+        }
+
+        return new Response(JSON.stringify(parsed), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 502,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ── /fbx Canlı Rotası ──
+    if (urlObj.pathname === '/fbx') {
+      const forceDirect = urlObj.searchParams.get('direct') === '1';
+      try {
+        const updateRes = await doFetch('https://fbx.freightos.com/', {}, forceDirect);
+        
+        let parsed = null;
+        
+        // Extract ticker data from script blocks
+        const tickerMatch = updateRes.body.match(/window\.frProductIntroTickerData\[[^\]]+\]\s*=\s*(\[[\s\S]*?\]);/);
+        const chartMatch = updateRes.body.match(/window\.frProductIntroChartData\[[^\]]+\]\s*=\s*(\[[\s\S]*?\]);/);
+        
+        if (tickerMatch && tickerMatch[1]) {
+          const tickerData = JSON.parse(tickerMatch[1]);
+          const fbxTicker = tickerData.find(item => item.label === 'FBX');
+          if (fbxTicker) {
+            const priceVal = parseFloat(fbxTicker.value.replace(/[^\d.]/g, ''));
+            const changeVal = parseFloat(fbxTicker.change.replace(/[^\d.-]/g, ''));
+            parsed = {
+              success: true,
+              price: priceVal,
+              change: isNaN(changeVal) ? 0 : changeVal,
+              direction: fbxTicker.positive ? 'up' : (changeVal < 0 ? 'down' : 'flat'),
+              date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })
+            };
+            
+            if (chartMatch && chartMatch[1]) {
+              const chartData = JSON.parse(chartMatch[1]);
+              parsed.history = chartData.map(d => ({
+                date: d.indexDate,
+                value: d.value
+              }));
+            }
+          }
+        }
+
+        if (!parsed || !parsed.success) {
+          console.warn("FBX canlı kazıma başarısız, n8n API'sinden fallback çekiliyor...");
+          const fallbackRes = await doFetch('https://n8n.emredemirbas.com/webhook/raporlar', {}, forceDirect);
+          const reportsJson = JSON.parse(fallbackRes.body);
+          const latestReport = reportsJson.reports[0];
+          
+          // Try to match WCI as a fallback container index
+          const wciValM = latestReport.html_content.match(/WCI Bileşik Endeks<\/div>\s*<div[^>]*>([\d.,\s$%-]+)<\/div>/i) || 
+                          latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Drewry WCI<\/span><span class="kpi-value">([\d.,\s$/kg—]+)<\/span>/i);
+          
+          if (wciValM) {
+            parsed = {
+              success: true,
+              price: parseFloat(wciValM[1].trim().replace(/[^\d.]/g, '')),
+              change: 0,
+              direction: 'flat',
+              date: new Date(latestReport.date).toLocaleDateString('tr-TR', { month: 'short', year: 'numeric' })
+            };
+          }
+        }
+
+        if (!parsed || !parsed.success) {
+          throw new Error('FBX parsing failed both live and fallback');
+        }
+
+        return new Response(JSON.stringify(parsed), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=3600' }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 502,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ── /iata Canlı Rotası ──
+    if (urlObj.pathname === '/iata') {
+      const forceDirect = urlObj.searchParams.get('direct') === '1';
+      try {
+        const iataRes = await doFetch('https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/', {}, forceDirect);
+        const linkMatch = iataRes.body.match(/href=["'](https?:\/\/[^"']*?air-freight-monthly-analysis[^"']*?\.pdf)["']/i);
+        
+        let parsed = null;
+        if (linkMatch && linkMatch[1]) {
+          const pdfUrl = linkMatch[1];
+          const nameMatch = pdfUrl.match(/analysis-([a-z]+)-(\d{4})/i);
+          const reportMonth = nameMatch ? `${nameMatch[1]} ${nameMatch[2]}` : 'Son Rapor';
+          parsed = {
+            success: true,
+            pdfLink: pdfUrl,
+            date: reportMonth
+          };
+        }
+
+        const fallbackRes = await doFetch('https://n8n.emredemirbas.com/webhook/raporlar', {}, forceDirect);
+        const reportsJson = JSON.parse(fallbackRes.body);
+        const latestReport = reportsJson.reports[0];
+        
+        const demandM = latestReport.html_content.match(/Hava Kargo Talebi<\/div>\s*<div[^>]*>([^<]+)<\/div>/i);
+        const capacityM = latestReport.html_content.match(/Hava Kargo Kapasitesi<\/div>\s*<div[^>]*>([^<]+)<\/div>/i);
+
+        parsed = {
+          success: true,
+          pdfLink: parsed ? parsed.pdfLink : 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/',
+          date: parsed ? parsed.date : new Date(latestReport.date).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' }),
+          demand: demandM ? demandM[1].trim() : '—',
+          capacity: capacityM ? capacityM[1].trim() : '—'
+        };
+
+        return new Response(JSON.stringify(parsed), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=86400' }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 502,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         });
       }
     }
