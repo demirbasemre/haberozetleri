@@ -10,19 +10,53 @@ const HEADERS = {
   'Accept-Language': 'en-US,en;q=0.9',
 };
 
-function fetchUrl(targetUrl, res) {
+function fetchUrl(targetUrl, incomingReq, res) {
   let parsed;
   try { parsed = new URL(targetUrl); } catch {
     res.writeHead(400, { 'Content-Type': 'application/json' });
     return res.end(JSON.stringify({ error: 'invalid url' }));
   }
 
-  const lib = parsed.protocol === 'https:' ? https : http;
-  const req = lib.request(parsed, { headers: HEADERS }, upstream => {
-    // Follow redirects (up to 5)
+  const isN8N = parsed.hostname === 'n8n.emredemirbas.com';
+  
+  // Gelen Content-Type başlığını ve varsayılan başlıkları birleştirelim
+  const requestHeaders = {
+    ...HEADERS,
+  };
+  
+  const incomingContentType = incomingReq.headers['content-type'];
+  if (incomingContentType) {
+    requestHeaders['Content-Type'] = incomingContentType;
+  }
+  
+  if (isN8N) {
+    requestHeaders['Host'] = 'n8n.emredemirbas.com';
+  }
+
+  const lib = (isN8N || parsed.protocol === 'https:') ? https : http;
+  
+  const options = {
+    method: incomingReq.method,
+    headers: requestHeaders,
+    path: parsed.pathname + parsed.search,
+  };
+
+  if (isN8N) {
+    options.hostname = '192.168.3.100';
+    options.port = 5083;
+    options.rejectUnauthorized = false; // Yerel SSL sertifika hatalarını yok say
+  } else {
+    options.hostname = parsed.hostname;
+    options.port = parsed.port || (parsed.protocol === 'https:' ? 443 : 80);
+  }
+
+  const req = lib.request(options, upstream => {
+    // Yönlendirmeleri takip et (maksimum 5)
     if ([301, 302, 303, 307, 308].includes(upstream.statusCode) && upstream.headers.location) {
-      return fetchUrl(upstream.headers.location, res);
+      return fetchUrl(upstream.headers.location, incomingReq, res);
     }
+    
+    // CORS başlıkları ile birlikte yanıt yaz
     res.writeHead(upstream.statusCode, {
       'Content-Type': upstream.headers['content-type'] || 'text/html',
       'Access-Control-Allow-Origin': '*',
@@ -40,15 +74,17 @@ function fetchUrl(targetUrl, res) {
   });
 
   req.setTimeout(15000, () => { req.destroy(); });
-  req.end();
+  
+  // Gelen istek gövdesini (body) upstream sunucusuna ilet
+  incomingReq.pipe(req);
 }
 
 const server = http.createServer((req, res) => {
-  // CORS preflight requests
+  // CORS ön uçuş (preflight) istekleri
   if (req.method === 'OPTIONS') {
     res.writeHead(204, { 
       'Access-Control-Allow-Origin': '*', 
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, X-Proxy-Token'
     });
     return res.end();
@@ -76,7 +112,7 @@ const server = http.createServer((req, res) => {
     return res.end(JSON.stringify({ error: 'url param required' }));
   }
 
-  fetchUrl(target, res);
+  fetchUrl(target, req, res);
 });
 
 server.listen(PORT, '0.0.0.0', () => {

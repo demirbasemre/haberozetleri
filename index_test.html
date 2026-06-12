@@ -7426,7 +7426,7 @@ function chartErr(id, html) {
 // ── RELEASE CALENDAR ──────────────────────────────────────────
 const REL_USER_KEY = 'cargo_release_user_items_v1'; // localStorage cache
 const REL_DATA_URL = './data/important-dates.json';
-const REL_WEBHOOK_URL = 'https://n8n.emredemirbas.com/webhook/admin/important-dates';
+const REL_WEBHOOK_URL = 'https://haberozetleri-proxy.demirbasemre.workers.dev/?url=' + encodeURIComponent('https://n8n.emredemirbas.com/webhook/admin/important-dates');
 let _relRender = null;
 let _relUserItems = [];   // bellekteki güncel liste (n8n + cache merge)
 let _relBusy = false;
@@ -12815,7 +12815,7 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
 <script>
 (function(){
   const EDITS_KEY = 'news-edits-v1';
-  const EDIT_WEBHOOK = 'https://n8n.emredemirbas.com/webhook/admin/news-card-edit';
+  const EDIT_WEBHOOK = 'https://haberozetleri-proxy.demirbasemre.workers.dev/?url=' + encodeURIComponent('https://n8n.emredemirbas.com/webhook/admin/news-card-edit');
   const SOURCE_OPTIONS = (typeof SOURCE_LABELS === 'object' && SOURCE_LABELS) ? SOURCE_LABELS : {};
 
   // ── Admin login prompt (CF Access 401) ──────────────────

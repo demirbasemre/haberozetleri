@@ -68,7 +68,7 @@ export default {
     const origin = request.headers.get('Origin') || '';
     const corsHeaders = {
       'Access-Control-Allow-Origin': ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'Access-Control-Max-Age': '86400',
     };
@@ -82,18 +82,20 @@ export default {
     const FUNNEL_URL = env.FUNNEL_URL || '';
 
     // Çekme ve yedekleme (Funnel -> Doğrudan) mantığını gerçekleştiren yardımcı fonksiyon
-    async function doFetch(url, forceDirect = false, customTtl = 300) {
+    async function doFetch(url, options = {}, forceDirect = false, customTtl = 300) {
       // forceDirect değilse önce Tailscale Funnel üzerindeki ev proxy'sini dene
       if (!forceDirect && FUNNEL_URL) {
         try {
-          const headers = {};
+          const headers = { ...options.headers };
           if (env.PROXY_TOKEN) {
             headers['X-Proxy-Token'] = env.PROXY_TOKEN;
           }
           const funnelResp = await fetch(
             `${FUNNEL_URL}/?url=${encodeURIComponent(url)}`,
             { 
+              method: options.method || 'GET',
               headers,
+              body: options.body,
               signal: AbortSignal.timeout(15000) 
             }
           );
@@ -111,13 +113,16 @@ export default {
 
       // Fallback: CF datacenter'ından doğrudan çek
       const response = await fetch(url, {
+        method: options.method || 'GET',
         headers: {
           'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'Accept-Language': 'en-US,en;q=0.9',
+          ...options.headers
         },
+        body: options.body,
         redirect: 'follow',
-        cf: { cacheTtl: customTtl, cacheEverything: true },
+        cf: (options.method || 'GET') === 'GET' ? { cacheTtl: customTtl, cacheEverything: true } : undefined,
       });
 
       const body = await response.text();
@@ -134,7 +139,7 @@ export default {
       const drewryUrl = 'https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry';
       const forceDirect = urlObj.searchParams.get('direct') === '1';
       try {
-        const res = await doFetch(drewryUrl, forceDirect);
+        const res = await doFetch(drewryUrl, {}, forceDirect);
         if (res.status !== 200) {
           return new Response(JSON.stringify({ error: 'Drewry page fetch failed', status: res.status }), {
             status: 502,
@@ -200,6 +205,17 @@ export default {
       });
     }
 
+    const reqHeaders = {};
+    const contentType = request.headers.get('content-type');
+    if (contentType) {
+      reqHeaders['Content-Type'] = contentType;
+    }
+
+    let requestBody = null;
+    if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)) {
+      requestBody = await request.text();
+    }
+
     try {
       let customTtl = 300; // default 5 minutes
       if (parsed.hostname === 'query1.finance.yahoo.com') {
@@ -207,7 +223,11 @@ export default {
           customTtl = 30; // 30 seconds for intraday real-time charts/prices
         }
       }
-      const res = await doFetch(targetUrl, false, customTtl);
+      const res = await doFetch(targetUrl, {
+        method: request.method,
+        headers: reqHeaders,
+        body: requestBody
+      }, false, customTtl);
       return new Response(res.body, {
         status: res.status,
         headers: {
