@@ -7593,6 +7593,7 @@ async function saveReleaseAddModal() {
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Ekle'; }
   if (res) {
     closeReleaseAddModal();
+    if (res.message) alert(res.message);
     if (_relRender) _relRender();
   }
 }
