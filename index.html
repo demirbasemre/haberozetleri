@@ -10695,13 +10695,25 @@ async function loadDashboard() {
             borderColor: '#10B981',
             backgroundColor: 'rgba(16,185,129,0.07)',
             fill: true,
-            tension: 0.3,
+            tension: _bafiCurrentPeriod === 'max' ? 0.2 : 0.35,
             pointRadius: _bafiCurrentPeriod === 'max' ? 0 : 2,
             borderWidth: 2
           }
         ],
         v => v != null ? Number(v).toFixed(2) + ' $' : '',
-        { forceRecreate: true }
+        {
+          forceRecreate: true,
+          rawDates: allData.map(d => d.date),
+          xTickFont: function(context) {
+            const label = context.tick ? context.tick.label : '';
+            const isBold = label && (label.includes("'25") || label.includes("'26"));
+            return {
+              size: 10,
+              family: 'Inter',
+              weight: isBold ? 'bold' : 'normal'
+            };
+          }
+        }
       );
       if (titleEl) titleEl.textContent = 'Baltic Air Freight Index (BAFI)';
     } catch (err) {
@@ -10768,13 +10780,25 @@ async function loadDashboard() {
             borderColor: '#3B82F6',
             backgroundColor: 'rgba(59,130,246,0.07)',
             fill: true,
-            tension: 0.3,
+            tension: _fbxCurrentPeriod === 'max' ? 0.2 : 0.35,
             pointRadius: _fbxCurrentPeriod === 'max' ? 0 : 2,
             borderWidth: 2
           }
         ],
         v => v != null ? Number(v).toLocaleString('en-US') + ' $' : '',
-        { forceRecreate: true }
+        {
+          forceRecreate: true,
+          rawDates: allData.map(d => d.date),
+          xTickFont: function(context) {
+            const label = context.tick ? context.tick.label : '';
+            const isBold = label && (label.includes("'25") || label.includes("'26"));
+            return {
+              size: 10,
+              family: 'Inter',
+              weight: isBold ? 'bold' : 'normal'
+            };
+          }
+        }
       );
       if (titleEl) titleEl.textContent = 'Freightos Baltic Index (FBX)';
     } catch (err) {
@@ -10839,13 +10863,25 @@ async function loadDashboard() {
             borderColor: '#EF4444',
             backgroundColor: 'rgba(239,68,68,0.07)',
             fill: true,
-            tension: 0.3,
+            tension: _iataCurrentPeriod === 'max' ? 0.2 : 0.35,
             pointRadius: 2,
             borderWidth: 2
           }
         ],
         v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '',
-        { forceRecreate: true }
+        {
+          forceRecreate: true,
+          rawDates: allData.map(d => d.date),
+          xTickFont: function(context) {
+            const label = context.tick ? context.tick.label : '';
+            const isBold = label && (label.includes("'25") || label.includes("'26"));
+            return {
+              size: 10,
+              family: 'Inter',
+              weight: isBold ? 'bold' : 'normal'
+            };
+          }
+        }
       );
       if (titleEl) titleEl.textContent = 'IATA Küresel Hava Kargo Talebi Büyümesi (YoY)';
     } catch (err) {
