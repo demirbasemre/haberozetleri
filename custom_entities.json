@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 1311,
-  "lastScanned": "2026-06-06T23:16:01.329Z",
-  "scannedCount": 126,
+  "lastScannedId": 1421,
+  "lastScanned": "2026-06-13T23:15:56.810Z",
+  "scannedCount": 108,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -384,6 +384,51 @@
         "polar air cargo"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=polaraircargo.com"
+    },
+    {
+      "id": "dyn_menzies_aviation",
+      "label": "Menzies Aviation",
+      "group": "cargo",
+      "kw": [
+        "menzies aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=menziesaviation.com"
+    },
+    {
+      "id": "dyn_qatar_aviation_services_cargo",
+      "label": "Qatar Aviation Services Cargo",
+      "group": "cargo",
+      "kw": [
+        "qatar aviation services cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=qataraviation.com"
+    },
+    {
+      "id": "dyn_qas_cargo",
+      "label": "Qas Cargo",
+      "group": "cargo",
+      "kw": [
+        "qas cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=qataraviation.com"
+    },
+    {
+      "id": "dyn_japan_airlines_kargo",
+      "label": "Japan Airlines Kargo",
+      "group": "cargo",
+      "kw": [
+        "japan airlines kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=jalcargo.com"
+    },
+    {
+      "id": "dyn_kalitta_air",
+      "label": "Kalitta Air",
+      "group": "cargo",
+      "kw": [
+        "kalitta air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kalittaair.com"
     }
   ],
   "gsa": []
