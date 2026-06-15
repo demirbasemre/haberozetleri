@@ -2263,6 +2263,26 @@
   "LA": {
     "name": "LATAM",
     "color": "#7C3AED",
+    "footnotes": {
+      "2011": "*",
+      "2012": "**",
+      "2013": "**",
+      "2014": "**",
+      "2015": "**",
+      "2016": "**",
+      "2017": "**",
+      "2018": "***",
+      "2019": "**",
+      "2020": "**",
+      "2021": "**",
+      "2022": "**",
+      "2023": "**",
+      "2024": "**",
+      "2025": "**",
+      "*": "LAN Argentina, LAN Cargo, LAN Ecuador, LAN Express, LAN Perú ve Línea Aérea Carguera de Colombia dahil.",
+      "**": "LATAM Airlines Group finansal sonuçlarına LATAM Airlines Brasil ve LATAM Airlines Perú dahildir.",
+      "***": "LATAM Airlines Group finansal sonuçlarına LATAM Airlines Brasil ve LATAM Airlines Perú dahildir. 2018 verileri IFRS 16 standardının kabul edilmesi nedeniyle yeniden sınıflandırılmıştır."
+    },
     "financial": {
       "passenger_revenue_musd": {
         "2011": 4008.91,
