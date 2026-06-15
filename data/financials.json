@@ -1942,6 +1942,24 @@
   "LH": {
     "name": "Lufthansa",
     "color": "#374151",
+    "footnotes": {
+      "2011": "*",
+      "2012": "*",
+      "2013": "*",
+      "2014": "*",
+      "2015": "*",
+      "2016": "*",
+      "2017": "*",
+      "2018": "*",
+      "2019": "*",
+      "2020": "*",
+      "2021": "*",
+      "2022": "*",
+      "2023": "*",
+      "2024": "*",
+      "2025": "*",
+      "*": "Eurowings, germanwings, Lufthansa Cargo, Lufthansa CityLine, Austrian Airlines ve SWISS dahil."
+    },
     "financial": {
       "passenger_revenue_musd": {
         "2011": 26589.48,
