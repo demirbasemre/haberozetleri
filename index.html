@@ -18666,8 +18666,8 @@ const ALL_INDICATOR_CARDS = [
   { id: 'dc-usd', name: 'Döviz & Parite', defaultVisible: true, isCargo: false },
   { id: 'dc-wci', name: 'Dünya Konteyner Endeksi (WCI)', defaultVisible: true, isCargo: false },
   { id: 'dc-imf', name: 'Türkiye GSYH Büyümesi', defaultVisible: true, isCargo: false },
-  { id: 'dc-bafi', name: 'Baltic Air Freight Index (BAFI)', defaultVisible: false, isCargo: true },
-  { id: 'dc-iata', name: 'IATA Air Cargo Market Analysis', defaultVisible: false, isCargo: true },
+  { id: 'dc-bafi', name: 'Baltic Air Freight Index (BAFI)', defaultVisible: false, isTest: true, isCargo: true },
+  { id: 'dc-iata', name: 'IATA Air Cargo Market Analysis', defaultVisible: false, isTest: true, isCargo: true },
   { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: false, isCargo: true }
 ];
 
@@ -18791,7 +18791,7 @@ window.populateCustomizeList = function(config) {
         </svg>
       </div>
       <div class="customize-item-name">${cardInfo.name}</div>
-      ${cardInfo.isCargo ? `<div class="customize-item-badge cargo">Kargo</div>` : ''}
+      ${cardInfo.isTest ? `<div class="customize-item-badge test">Test</div>` : ''}
       <button class="customize-item-btn btn-move-up" onclick="moveItemUp(this)" title="Yukarı Taşı">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="18 15 12 9 6 15"></polyline>
