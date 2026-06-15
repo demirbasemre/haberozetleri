@@ -2795,13 +2795,13 @@
               <button class="wci-period-btn forex-btn" id="btn-wci-1y" data-period="1y">1Y</button>
               <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi">
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2845,13 +2845,13 @@
               <button class="bafi-period-btn forex-btn" id="btn-bafi-1y" data-period="1y">1Y</button>
               <button class="bafi-period-btn forex-btn" id="btn-bafi-max" data-period="max">Tümü</button>
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="bafi-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="bafi-date-end" aria-label="Bitiş tarihi">
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2894,13 +2894,13 @@
               <button class="iata-period-btn forex-btn" id="btn-iata-1y" data-period="1y">1Y</button>
               <button class="iata-period-btn forex-btn" id="btn-iata-max" data-period="max">Tümü</button>
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="iata-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="iata-date-end" aria-label="Bitiş tarihi">
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2944,13 +2944,13 @@
               <button class="fbx-period-btn forex-btn" id="btn-fbx-1y" data-period="1y">1Y</button>
               <button class="fbx-period-btn forex-btn" id="btn-fbx-max" data-period="max">Tümü</button>
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="fbx-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="fbx-date-end" aria-label="Bitiş tarihi">
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -7537,7 +7537,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   }
   ctx.style.display = 'block';
   const newChart = new Chart(ctx, {
-    type: 'line',
+    type: chartType,
     data: { labels: finalLabels, datasets: finalDatasets },
     plugins: extraOpts.plugins || [],
     options: {
@@ -9008,7 +9008,7 @@ async function loadDashboard() {
         validPoints = data.validPoints;
       }
 
-      if (!_forexCustomRange && validPoints.length > 0) {
+      if (!window._forexCustomRange && validPoints.length > 0) {
         const minDate = new Date(validPoints[0].time * 1000).toISOString().slice(0, 10);
         const maxDate = new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10);
         setDateInputsForPeriod('forex', _forexCurrentPeriod, minDate, maxDate);
@@ -9138,7 +9138,7 @@ async function loadDashboard() {
     if (currency) _forexCurrentCurrency = currency;
     if (period) {
       _forexCurrentPeriod = period;
-      _forexCustomRange = false;
+      window._forexCustomRange = false;
     }
     
     // Currency buton sınıf durumları
@@ -9152,7 +9152,7 @@ async function loadDashboard() {
     document.querySelectorAll('#forex-chart-modal .forex-period-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    if (!_forexCustomRange) {
+    if (!window._forexCustomRange) {
       const activePeriodBtn = document.getElementById(`btn-forex-${_forexCurrentPeriod}`);
       if (activePeriodBtn) activePeriodBtn.classList.add('active');
     }
@@ -9535,7 +9535,7 @@ async function loadDashboard() {
         }
       }
       
-      if (!_brentCustomRange && validPoints.length > 0) {
+      if (!window._brentCustomRange && validPoints.length > 0) {
         const minDate = new Date(validPoints[0].time * 1000).toISOString().slice(0, 10);
         const maxDate = new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10);
         setDateInputsForPeriod('brent', _brentCurrentPeriod, minDate, maxDate);
@@ -9729,13 +9729,13 @@ async function loadDashboard() {
   function renderBrentModalChart(period) {
     if (period) {
       _brentCurrentPeriod = period;
-      _brentCustomRange = false;
+      window._brentCustomRange = false;
     }
     
     document.querySelectorAll('#brent-chart-modal .brent-period-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    if (!_brentCustomRange) {
+    if (!window._brentCustomRange) {
       const activeBtn = document.getElementById(`btn-brent-${_brentCurrentPeriod}`);
       if (activeBtn) activeBtn.classList.add('active');
     }
@@ -9854,7 +9854,7 @@ async function loadDashboard() {
     try {
       let validPoints = rawJSON || [];
       
-      if (!_jetfuelCustomRange && validPoints.length > 0) {
+      if (!window._jetfuelCustomRange && validPoints.length > 0) {
         const minDate = validPoints[0].date;
         const maxDate = validPoints[validPoints.length - 1].date;
         setDateInputsForPeriod('jetfuel', _jetfuelCurrentPeriod, minDate, maxDate);
@@ -10088,13 +10088,13 @@ async function loadDashboard() {
   function renderJetfuelModalChart(period) {
     if (period) {
       _jetfuelCurrentPeriod = period;
-      _jetfuelCustomRange = false;
+      window._jetfuelCustomRange = false;
     }
     
     document.querySelectorAll('#jetfuel-chart-modal .jetfuel-period-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    if (!_jetfuelCustomRange) {
+    if (!window._jetfuelCustomRange) {
       const activeBtn = document.getElementById(`btn-jetfuel-${_jetfuelCurrentPeriod}`);
       if (activeBtn) activeBtn.classList.add('active');
     }
@@ -10659,14 +10659,14 @@ async function loadDashboard() {
   let _iataLatest = null;
   let _iataCurrentPeriod = 'ytd';
 
-  let _wciCustomRange = false;
-  let _bafiCustomRange = false;
-  let _fbxCustomRange = false;
-  let _iataCustomRange = false;
-  let _thyCustomRange = false;
-  let _forexCustomRange = false;
-  let _brentCustomRange = false;
-  let _jetfuelCustomRange = false;
+  window._wciCustomRange = false;
+  window._bafiCustomRange = false;
+  window._fbxCustomRange = false;
+  window._iataCustomRange = false;
+  window._thyCustomRange = false;
+  window._forexCustomRange = false;
+  window._brentCustomRange = false;
+  window._jetfuelCustomRange = false;
 
   function renderWciChart(period) {
     if (period) _wciCurrentPeriod = period;
@@ -10964,10 +10964,10 @@ async function loadDashboard() {
   function renderBafiChart(period) {
     if (period) {
       _bafiCurrentPeriod = period;
-      _bafiCustomRange = false;
+      window._bafiCustomRange = false;
     }
     document.querySelectorAll('#bafi-chart-modal .bafi-period-btn').forEach(btn => btn.classList.remove('active'));
-    if (!_bafiCustomRange) {
+    if (!window._bafiCustomRange) {
       const activeBtn = document.getElementById(`btn-bafi-${_bafiCurrentPeriod}`);
       if (activeBtn) activeBtn.classList.add('active');
     }
@@ -10988,7 +10988,7 @@ async function loadDashboard() {
         }
       }
 
-      if (!_bafiCustomRange) {
+      if (!window._bafiCustomRange) {
         const minDate = allData[0]?.date || '';
         const maxDate = allData[allData.length - 1]?.date || '';
         setDateInputsForPeriod('bafi', _bafiCurrentPeriod, minDate, maxDate);
@@ -11056,10 +11056,10 @@ async function loadDashboard() {
   function renderFbxChart(period) {
     if (period) {
       _fbxCurrentPeriod = period;
-      _fbxCustomRange = false;
+      window._fbxCustomRange = false;
     }
     document.querySelectorAll('#fbx-chart-modal .fbx-period-btn').forEach(btn => btn.classList.remove('active'));
-    if (!_fbxCustomRange) {
+    if (!window._fbxCustomRange) {
       const activeBtn = document.getElementById(`btn-fbx-${_fbxCurrentPeriod}`);
       if (activeBtn) activeBtn.classList.add('active');
     }
@@ -11080,7 +11080,7 @@ async function loadDashboard() {
         }
       }
 
-      if (!_fbxCustomRange) {
+      if (!window._fbxCustomRange) {
         const minDate = allData[0]?.date || '';
         const maxDate = allData[allData.length - 1]?.date || '';
         setDateInputsForPeriod('fbx', _fbxCurrentPeriod, minDate, maxDate);
@@ -11294,10 +11294,10 @@ async function loadDashboard() {
   function renderIataChart(period) {
     if (period) {
       _iataCurrentPeriod = period;
-      _iataCustomRange = false;
+      window._iataCustomRange = false;
     }
     document.querySelectorAll('#iata-chart-modal .iata-period-btn').forEach(btn => btn.classList.remove('active'));
-    if (!_iataCustomRange) {
+    if (!window._iataCustomRange) {
       const activeBtn = document.getElementById(`btn-iata-${_iataCurrentPeriod}`);
       if (activeBtn) activeBtn.classList.add('active');
     }
@@ -11319,7 +11319,7 @@ async function loadDashboard() {
         }
       }
 
-      if (!_iataCustomRange) {
+      if (!window._iataCustomRange) {
         const minDate = allData[0]?.date || '';
         const maxDate = allData[allData.length - 1]?.date || '';
         setDateInputsForPeriod('iata', _iataCurrentPeriod, minDate, maxDate);
@@ -11585,7 +11585,7 @@ async function loadDashboard() {
         }
       }
 
-      if (!_thyCustomRange && validPoints.length > 0) {
+      if (!window._thyCustomRange && validPoints.length > 0) {
         const minDate = new Date(validPoints[0].time * 1000).toISOString().slice(0, 10);
         const maxDate = new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10);
         setDateInputsForPeriod('thy', _thyCurrentPeriod, minDate, maxDate);
@@ -11812,13 +11812,13 @@ async function loadDashboard() {
   function renderThyChart(period) {
     if (period) {
       _thyCurrentPeriod = period;
-      _thyCustomRange = false;
+      window._thyCustomRange = false;
     }
 
     document.querySelectorAll('#thy-chart-modal .thy-period-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    if (!_thyCustomRange) {
+    if (!window._thyCustomRange) {
       const activeBtn = document.getElementById(`btn-thy-${_thyCurrentPeriod}`);
       if (activeBtn) activeBtn.classList.add('active');
     }
@@ -18824,13 +18824,13 @@ window.toggleFinSources = function() {
               <button class="thy-period-btn forex-btn" id="btn-thy-5y" data-period="5y">5Y</button>
               <button class="thy-period-btn forex-btn" id="btn-thy-max" data-period="max">Tümü</button>
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="thy-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="thy-date-end" aria-label="Bitiş tarihi">
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -18903,7 +18903,7 @@ window.toggleFinSources = function() {
               </button>
             </div>
           </div>
-          <div class="modal-controls-left">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; width: 100%;">
             <div class="forex-period-btns">
               <button class="forex-period-btn forex-btn" id="btn-forex-1d" data-period="1d">1G</button>
               <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
@@ -18946,13 +18946,13 @@ window.toggleFinSources = function() {
               <button class="brent-period-btn forex-btn" id="btn-brent-5y" data-period="5y">5Y</button>
               <button class="brent-period-btn forex-btn" id="btn-brent-max" data-period="max">Tümü</button>
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="brent-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="brent-date-end" aria-label="Bitiş tarihi">
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -18996,13 +18996,13 @@ window.toggleFinSources = function() {
               <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1y" data-period="1y">1Y</button>
               <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-max" data-period="max">Tümü</button>
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="jetfuel-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="jetfuel-date-end" aria-label="Bitiş tarihi">
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
