@@ -859,6 +859,27 @@
   "AF": {
     "name": "Air France",
     "color": "#1a3a8f",
+    "footnotes": {
+      "2011": "*",
+      "2012": "*",
+      "2013": "*",
+      "2014": "*",
+      "2015": "**",
+      "2016": "**",
+      "2017": "***",
+      "2018": "***",
+      "2019": "***",
+      "2020": "***",
+      "2021": "***",
+      "2022": "***",
+      "2023": "***",
+      "2024": "****",
+      "2025": "****",
+      "*": "KLM Royal Dutch Airlines, KLM cityhopper, Martinair, HOP!-Airlinair, HOP!-Brit Air, HOP!-Régional, HOP!, Cityjet, VLM Airlines, Transavia Airlines ve Transavia France dahil.",
+      "**": "KLM Royal Dutch Airlines, KLM cityhopper, Martinair, HOP!-Airlinair, HOP!-Brit Air, HOP!-Régional, HOP!, Transavia Airlines ve Transavia France dahil.",
+      "***": "KLM Royal Dutch Airlines, KLM cityhopper, Martinair, HOP!, Transavia Airlines ve Transavia France dahil.",
+      "****": "KLM Royal Dutch Airlines, KLM cityhopper, Martinair, HOP!, Transavia Airlines ve Transavia France dahil. Faaliyet karı EBITDA (FAVÖK) değerini ifade etmektedir."
+    },
     "financial": {
       "passenger_revenue_musd": {
         "2011": 24388.15,
