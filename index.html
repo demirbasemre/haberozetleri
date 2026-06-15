@@ -7202,6 +7202,74 @@ function pctChg(arr) {
   return (b - a) / Math.abs(a) * 100;
 }
 
+function toggleModalChartType(btn) {
+  const group = btn.closest('.modal-chart-type-group');
+  if (!group) return;
+  group.querySelectorAll('.modal-chart-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  const modal = btn.closest('.rel-add-modal');
+  if (!modal) return;
+  const modalId = modal.id;
+  
+  if (modalId === 'wci-chart-modal') {
+    if (typeof window.renderWciChart === 'function') window.renderWciChart();
+  } else if (modalId === 'bafi-chart-modal') {
+    if (typeof window.renderBafiChart === 'function') window.renderBafiChart();
+  } else if (modalId === 'iata-chart-modal') {
+    if (typeof window.renderIataChart === 'function') window.renderIataChart();
+  } else if (modalId === 'fbx-chart-modal') {
+    if (typeof window.renderFbxChart === 'function') window.renderFbxChart();
+  } else if (modalId === 'thy-chart-modal') {
+    if (typeof window.renderThyChart === 'function') window.renderThyChart();
+  } else if (modalId === 'forex-chart-modal') {
+    if (typeof window.renderForexChart === 'function') window.renderForexChart();
+  } else if (modalId === 'brent-chart-modal') {
+    if (typeof window.renderBrentModalChart === 'function') window.renderBrentModalChart();
+  } else if (modalId === 'jetfuel-chart-modal') {
+    if (typeof window.renderJetfuelModalChart === 'function') window.renderJetfuelModalChart();
+  }
+}
+
+function setDateInputsForPeriod(prefix, period, minDate, maxDate) {
+  const startEl = document.getElementById(`${prefix}-date-start`);
+  const endEl = document.getElementById(`${prefix}-date-end`);
+  if (!startEl || !endEl) return;
+  
+  const today = new Date();
+  let start = minDate ? new Date(minDate) : new Date();
+  let end = maxDate ? new Date(maxDate) : new Date();
+  
+  const todayStr = today.toISOString().slice(0, 10);
+  const maxDateStr = maxDate || todayStr;
+  
+  if (period === '1d') {
+    start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+  } else if (period === '5d') {
+    start = new Date(end.getTime() - 5 * 24 * 60 * 60 * 1000);
+  } else if (period === '1m') {
+    start = new Date(end);
+    start.setMonth(start.getMonth() - 1);
+  } else if (period === '6m') {
+    start = new Date(end);
+    start.setMonth(start.getMonth() - 6);
+  } else if (period === 'ytd') {
+    start = new Date(end.getFullYear(), 0, 1);
+  } else if (period === '1y') {
+    start = new Date(end);
+    start.setFullYear(start.getFullYear() - 1);
+  } else if (period === '5y') {
+    start = new Date(end);
+    start.setFullYear(start.getFullYear() - 5);
+  } else if (period === 'max') {
+    start = minDate ? new Date(minDate) : new Date(end.getFullYear() - 10, 0, 1);
+  }
+  
+  const startStr = start.toISOString().slice(0, 10);
+  startEl.value = minDate && startStr < minDate ? minDate : startStr;
+  endEl.value = maxDateStr;
+}
+
 // ── CHART HELPERS ─────────────────────────────────────────────
 const CHART_DEFAULTS = {
   responsive: true,
@@ -7221,10 +7289,21 @@ const CHART_DEFAULTS = {
 function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   const ctx = document.getElementById(id);
   if (!ctx) return;
-  const existingChart = Chart.getChart(ctx);
+  
+  let existingChart = Chart.getChart(ctx);
   const wrap = ctx.closest('.dash-chart-wrap');
   if (wrap) wrap.classList.remove('loading');
   if (wrap) wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
+
+  // Determine chart type (line or bar) based on active button in modal
+  const modal = ctx.closest('.rel-add-modal');
+  const activeTypeBtn = modal ? modal.querySelector('.modal-chart-type-btn.active') : null;
+  const chartType = activeTypeBtn ? activeTypeBtn.dataset.type : (extraOpts.type || 'line');
+
+  if (existingChart && existingChart.config.type !== chartType) {
+    existingChart.destroy();
+    existingChart = null;
+  }
 
   // Downsampling / Decimation for large datasets (e.g. > 350 points)
   let finalLabels = labels;
@@ -7510,13 +7589,23 @@ function closeReleaseAddModal() {
   const m = document.getElementById('rel-add-modal');
   if (m) m.style.display = 'none';
 }
+function resetModalTypeBtn(m) {
+  if (!m) return;
+  const group = m.querySelector('.modal-chart-type-group');
+  if (group) {
+    group.querySelectorAll('.modal-chart-type-btn').forEach(btn => btn.classList.remove('active'));
+    const lineBtn = group.querySelector('[data-type="line"]');
+    if (lineBtn) lineBtn.classList.add('active');
+  }
+}
 function openWciChartModal() {
   const m = document.getElementById('wci-chart-modal');
   if (m) {
+    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderWciChart === 'function') {
-        window.renderWciChart();
+        window.renderWciChart('ytd');
       } else {
         console.warn("window.renderWciChart henüz hazır değil.");
       }
@@ -7530,10 +7619,11 @@ function closeWciChartModal() {
 function openBafiChartModal() {
   const m = document.getElementById('bafi-chart-modal');
   if (m) {
+    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderBafiChart === 'function') {
-        window.renderBafiChart();
+        window.renderBafiChart('ytd');
       } else {
         console.warn("window.renderBafiChart henüz hazır değil.");
       }
@@ -7547,10 +7637,11 @@ function closeBafiChartModal() {
 function openIataChartModal() {
   const m = document.getElementById('iata-chart-modal');
   if (m) {
+    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderIataChart === 'function') {
-        window.renderIataChart();
+        window.renderIataChart('ytd');
       } else {
         console.warn("window.renderIataChart henüz hazır değil.");
       }
@@ -7564,10 +7655,11 @@ function closeIataChartModal() {
 function openFbxChartModal() {
   const m = document.getElementById('fbx-chart-modal');
   if (m) {
+    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderFbxChart === 'function') {
-        window.renderFbxChart();
+        window.renderFbxChart('ytd');
       } else {
         console.warn("window.renderFbxChart henüz hazır değil.");
       }
@@ -7581,10 +7673,11 @@ function closeFbxChartModal() {
 function openThyChartModal() {
   const m = document.getElementById('thy-chart-modal');
   if (m) {
+    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderThyChart === 'function') {
-        window.renderThyChart();
+        window.renderThyChart('ytd');
       } else {
         console.warn("window.renderThyChart henüz hazır değil.");
       }
@@ -7598,10 +7691,11 @@ function closeThyChartModal() {
 function openForexChartModal() {
   const m = document.getElementById('forex-chart-modal');
   if (m) {
+    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderForexChart === 'function') {
-        window.renderForexChart();
+        window.renderForexChart('USD', 'ytd');
       } else {
         console.warn("window.renderForexChart henüz hazır değil.");
       }
@@ -7615,10 +7709,11 @@ function closeForexChartModal() {
 function openBrentChartModal() {
   const m = document.getElementById('brent-chart-modal');
   if (m) {
+    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderBrentModalChart === 'function') {
-        window.renderBrentModalChart();
+        window.renderBrentModalChart('ytd');
       } else {
         console.warn("window.renderBrentModalChart henüz hazır değil.");
       }
@@ -7632,10 +7727,11 @@ function closeBrentChartModal() {
 function openJetfuelChartModal() {
   const m = document.getElementById('jetfuel-chart-modal');
   if (m) {
+    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderJetfuelModalChart === 'function') {
-        window.renderJetfuelModalChart();
+        window.renderJetfuelModalChart('ytd');
       } else {
         console.warn("window.renderJetfuelModalChart henüz hazır değil.");
       }
@@ -8747,6 +8843,24 @@ async function loadDashboard() {
         validPoints = data.validPoints;
       }
 
+      if (!_forexCustomRange && validPoints.length > 0) {
+        const minDate = new Date(validPoints[0].time * 1000).toISOString().slice(0, 10);
+        const maxDate = new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10);
+        setDateInputsForPeriod('forex', _forexCurrentPeriod, minDate, maxDate);
+      }
+
+      // Date filtering
+      const startVal = document.getElementById('forex-date-start')?.value;
+      const endVal = document.getElementById('forex-date-end')?.value;
+      if (startVal) {
+        const startMs = new Date(startVal + 'T00:00:00Z').getTime();
+        validPoints = validPoints.filter(p => p.time * 1000 >= startMs);
+      }
+      if (endVal) {
+        const endMs = new Date(endVal + 'T23:59:59Z').getTime();
+        validPoints = validPoints.filter(p => p.time * 1000 <= endMs);
+      }
+
       if (validPoints.length === 0) {
         if (period === '1d') {
           console.warn("Forex 1d has no points, falling back to 5d");
@@ -8757,6 +8871,7 @@ async function loadDashboard() {
       }
 
       const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = validPoints.map(p => {
         const d = new Date(p.time * 1000);
         const day = d.getDate();
@@ -8766,10 +8881,8 @@ async function loadDashboard() {
         if (period === '1d') {
           const pad = num => String(num).padStart(2, '0');
           return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        } else if (period === '5d' || period === '1m' || period === '6m' || period === 'ytd') {
+        } else if (dateRangeDays <= 370) {
           return `${day} ${month}`;
-        } else if (period === '1y' || period === '5y') {
-          return `${month} ${year}`;
         } else {
           return `${month} '${String(year).slice(-2)}`;
         }
@@ -8858,7 +8971,10 @@ async function loadDashboard() {
 
   function renderForexChart(currency, period) {
     if (currency) _forexCurrentCurrency = currency;
-    if (period) _forexCurrentPeriod = period;
+    if (period) {
+      _forexCurrentPeriod = period;
+      _forexCustomRange = false;
+    }
     
     // Currency buton sınıf durumları
     document.querySelectorAll('#forex-chart-modal .forex-currency-btn').forEach(btn => {
@@ -8871,8 +8987,10 @@ async function loadDashboard() {
     document.querySelectorAll('#forex-chart-modal .forex-period-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    const activePeriodBtn = document.getElementById(`btn-forex-${_forexCurrentPeriod}`);
-    if (activePeriodBtn) activePeriodBtn.classList.add('active');
+    if (!_forexCustomRange) {
+      const activePeriodBtn = document.getElementById(`btn-forex-${_forexCurrentPeriod}`);
+      if (activePeriodBtn) activePeriodBtn.classList.add('active');
+    }
 
     const titleEl = document.getElementById('forex-chart-title');
     const canvas = document.getElementById('chart-forex');
@@ -9252,17 +9370,24 @@ async function loadDashboard() {
         }
       }
       
-      if (period === '1m') {
-        validPoints = validPoints.slice(-22); // son ~22 işlem günü
-      } else if (period === '6m') {
-        const cutoff = Date.now() - 6 * 30 * 24 * 60 * 60 * 1000;
-        validPoints = validPoints.filter(p => p.time * 1000 >= cutoff);
-      } else if (period === 'ytd') {
-        const currentYear = new Date().getFullYear();
-        const cutoff = new Date(currentYear, 0, 1).getTime();
-        validPoints = validPoints.filter(p => p.time * 1000 >= cutoff);
+      if (!_brentCustomRange && validPoints.length > 0) {
+        const minDate = new Date(validPoints[0].time * 1000).toISOString().slice(0, 10);
+        const maxDate = new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10);
+        setDateInputsForPeriod('brent', _brentCurrentPeriod, minDate, maxDate);
       }
-      
+
+      // Date filtering
+      const startVal = document.getElementById('brent-date-start')?.value;
+      const endVal = document.getElementById('brent-date-end')?.value;
+      if (startVal) {
+        const startMs = new Date(startVal + 'T00:00:00Z').getTime();
+        validPoints = validPoints.filter(p => p.time * 1000 >= startMs);
+      }
+      if (endVal) {
+        const endMs = new Date(endVal + 'T23:59:59Z').getTime();
+        validPoints = validPoints.filter(p => p.time * 1000 <= endMs);
+      }
+
       if (validPoints.length === 0) {
         if (period === '1d') {
           console.warn("Brent 1d has no points, falling back to 5d");
@@ -9271,25 +9396,23 @@ async function loadDashboard() {
         }
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
-      
+
       const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = validPoints.map(p => {
         const d = new Date(p.time * 1000);
         const day = d.getDate();
         const month = monthNamesTR[d.getMonth()];
         const year = d.getFullYear();
-        
+
         if (period === '1d') {
           const pad = num => String(num).padStart(2, '0');
           return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        }
-        if (period === '5d' || period === '1m' || period === '6m' || period === 'ytd') {
+        } else if (dateRangeDays <= 370) {
           return `${day} ${month}`;
+        } else {
+          return `${month} '${String(year).slice(-2)}`;
         }
-        if (period === '1y' || period === '5y') {
-          return `${month} ${year}`;
-        }
-        return `${month} '${String(year).slice(-2)}`;
       });
       
       const prices = validPoints.map(p => p.value);
@@ -9439,13 +9562,18 @@ async function loadDashboard() {
   }
 
   function renderBrentModalChart(period) {
-    if (period) _brentCurrentPeriod = period;
+    if (period) {
+      _brentCurrentPeriod = period;
+      _brentCustomRange = false;
+    }
     
     document.querySelectorAll('#brent-chart-modal .brent-period-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    const activeBtn = document.getElementById(`btn-brent-${_brentCurrentPeriod}`);
-    if (activeBtn) activeBtn.classList.add('active');
+    if (!_brentCustomRange) {
+      const activeBtn = document.getElementById(`btn-brent-${_brentCurrentPeriod}`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
 
     const titleEl = document.getElementById('brent-chart-title');
     const canvas = document.getElementById('chart-brent-modal');
@@ -9561,36 +9689,32 @@ async function loadDashboard() {
     try {
       let validPoints = rawJSON || [];
       
-      // Slicing for smaller ranges from cached 1y
-      if (period === '1m') {
-        validPoints = validPoints.slice(-22);
-      } else if (period === '6m') {
-        const cutoff = new Date();
-        cutoff.setMonth(cutoff.getMonth() - 6);
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
-        validPoints = validPoints.filter(p => p.date >= cutoffStr);
-      } else if (period === 'ytd') {
-        const currentYear = new Date().getFullYear();
-        const cutoffStr = `${currentYear}-01-01`;
-        validPoints = validPoints.filter(p => p.date >= cutoffStr);
+      if (!_jetfuelCustomRange && validPoints.length > 0) {
+        const minDate = validPoints[0].date;
+        const maxDate = validPoints[validPoints.length - 1].date;
+        setDateInputsForPeriod('jetfuel', _jetfuelCurrentPeriod, minDate, maxDate);
       }
-      
+
+      // Date filtering
+      const startVal = document.getElementById('jetfuel-date-start')?.value;
+      const endVal = document.getElementById('jetfuel-date-end')?.value;
+      if (startVal) validPoints = validPoints.filter(p => p.date >= startVal);
+      if (endVal) validPoints = validPoints.filter(p => p.date <= endVal);
+
       if (validPoints.length === 0) {
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
-      
+
       const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = validPoints.map(p => {
         const d = new Date(p.date + 'T12:00:00Z');
         const day = d.getUTCDate();
         const month = monthNamesTR[d.getUTCMonth()];
         const year = d.getUTCFullYear();
-        
-        if (period === '1m' || period === '6m' || period === 'ytd') {
+
+        if (dateRangeDays <= 370) {
           return `${day} ${month}`;
-        }
-        if (period === '1y' || period === '5y') {
-          return `${month} ${year}`;
         }
         return `${month} '${String(year).slice(-2)}`;
       });
@@ -9797,13 +9921,18 @@ async function loadDashboard() {
   }
 
   function renderJetfuelModalChart(period) {
-    if (period) _jetfuelCurrentPeriod = period;
+    if (period) {
+      _jetfuelCurrentPeriod = period;
+      _jetfuelCustomRange = false;
+    }
     
     document.querySelectorAll('#jetfuel-chart-modal .jetfuel-period-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    const activeBtn = document.getElementById(`btn-jetfuel-${_jetfuelCurrentPeriod}`);
-    if (activeBtn) activeBtn.classList.add('active');
+    if (!_jetfuelCustomRange) {
+      const activeBtn = document.getElementById(`btn-jetfuel-${_jetfuelCurrentPeriod}`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
 
     const titleEl = document.getElementById('jetfuel-chart-title');
     const canvas = document.getElementById('chart-jetfuel-modal');
@@ -10365,6 +10494,15 @@ async function loadDashboard() {
   let _iataLatest = null;
   let _iataCurrentPeriod = 'ytd';
 
+  let _wciCustomRange = false;
+  let _bafiCustomRange = false;
+  let _fbxCustomRange = false;
+  let _iataCustomRange = false;
+  let _thyCustomRange = false;
+  let _forexCustomRange = false;
+  let _brentCustomRange = false;
+  let _jetfuelCustomRange = false;
+
   function renderWciChart(period) {
     if (period) _wciCurrentPeriod = period;
 
@@ -10406,35 +10544,21 @@ async function loadDashboard() {
         }
       }
 
-      // Period filtering
-      if (_wciCurrentPeriod === '1m') {
-        const cutoff = new Date();
-        cutoff.setMonth(cutoff.getMonth() - 1);
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
-        allData = allData.filter(d => d.date >= cutoffStr);
-      } else if (_wciCurrentPeriod === '6m') {
-        const cutoff = new Date();
-        cutoff.setMonth(cutoff.getMonth() - 6);
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
-        allData = allData.filter(d => d.date >= cutoffStr);
-      } else if (_wciCurrentPeriod === 'ytd') {
-        const cutoffStr = `${new Date().getFullYear()}-01-01`;
-        allData = allData.filter(d => d.date >= cutoffStr);
-      } else if (_wciCurrentPeriod === '1y') {
-        const cutoff = new Date();
-        cutoff.setFullYear(cutoff.getFullYear() - 1);
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
-        allData = allData.filter(d => d.date >= cutoffStr);
-      }
+      // Date filtering
+      const startVal = document.getElementById('wci-date-start')?.value;
+      const endVal = document.getElementById('wci-date-end')?.value;
+      if (startVal) allData = allData.filter(d => d.date >= startVal);
+      if (endVal) allData = allData.filter(d => d.date <= endVal);
 
       const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = allData.map(d => {
         const dateObj = new Date(d.date + 'T12:00:00Z');
         if (isNaN(dateObj)) return d.date;
         const day = dateObj.getUTCDate();
         const month = monthNamesTR[dateObj.getUTCMonth()];
         const year = dateObj.getUTCFullYear();
-        if (_wciCurrentPeriod === '1m' || _wciCurrentPeriod === '6m' || _wciCurrentPeriod === 'ytd') {
+        if (dateRangeDays <= 370) {
           return `${day} ${month}`;
         }
         return `${month} '${String(year).slice(-2)}`;
@@ -10673,10 +10797,15 @@ async function loadDashboard() {
   window.exportWciToCSV = exportWciToCSV;
 
   function renderBafiChart(period) {
-    if (period) _bafiCurrentPeriod = period;
+    if (period) {
+      _bafiCurrentPeriod = period;
+      _bafiCustomRange = false;
+    }
     document.querySelectorAll('#bafi-chart-modal .bafi-period-btn').forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.getElementById(`btn-bafi-${_bafiCurrentPeriod}`);
-    if (activeBtn) activeBtn.classList.add('active');
+    if (!_bafiCustomRange) {
+      const activeBtn = document.getElementById(`btn-bafi-${_bafiCurrentPeriod}`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
 
     const titleEl = document.getElementById('bafi-chart-title');
     try {
@@ -10694,25 +10823,27 @@ async function loadDashboard() {
         }
       }
 
-      const cutoff = new Date();
-      if (_bafiCurrentPeriod === '1m') cutoff.setMonth(cutoff.getMonth() - 1);
-      else if (_bafiCurrentPeriod === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
-      else if (_bafiCurrentPeriod === 'ytd') cutoff.setMonth(0, 1);
-      else if (_bafiCurrentPeriod === '1y') cutoff.setFullYear(cutoff.getFullYear() - 1);
-      
-      if (_bafiCurrentPeriod !== 'max') {
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
-        allData = allData.filter(d => d.date >= cutoffStr);
+      if (!_bafiCustomRange) {
+        const minDate = allData[0]?.date || '';
+        const maxDate = allData[allData.length - 1]?.date || '';
+        setDateInputsForPeriod('bafi', _bafiCurrentPeriod, minDate, maxDate);
       }
 
+      // Date filtering
+      const startVal = document.getElementById('bafi-date-start')?.value;
+      const endVal = document.getElementById('bafi-date-end')?.value;
+      if (startVal) allData = allData.filter(d => d.date >= startVal);
+      if (endVal) allData = allData.filter(d => d.date <= endVal);
+
       const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = allData.map(d => {
         const dateObj = new Date(d.date + 'T12:00:00Z');
         if (isNaN(dateObj)) return d.date;
         const day = dateObj.getUTCDate();
         const month = monthNamesTR[dateObj.getUTCMonth()];
         const year = dateObj.getUTCFullYear();
-        if (['1m', '6m', 'ytd'].includes(_bafiCurrentPeriod)) return `${day} ${month}`;
+        if (dateRangeDays <= 370) return `${day} ${month}`;
         return `${month} '${String(year).slice(-2)}`;
       });
       const values = allData.map(d => d.value);
@@ -10758,10 +10889,15 @@ async function loadDashboard() {
   });
 
   function renderFbxChart(period) {
-    if (period) _fbxCurrentPeriod = period;
+    if (period) {
+      _fbxCurrentPeriod = period;
+      _fbxCustomRange = false;
+    }
     document.querySelectorAll('#fbx-chart-modal .fbx-period-btn').forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.getElementById(`btn-fbx-${_fbxCurrentPeriod}`);
-    if (activeBtn) activeBtn.classList.add('active');
+    if (!_fbxCustomRange) {
+      const activeBtn = document.getElementById(`btn-fbx-${_fbxCurrentPeriod}`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
 
     const titleEl = document.getElementById('fbx-chart-title');
     try {
@@ -10779,25 +10915,27 @@ async function loadDashboard() {
         }
       }
 
-      const cutoff = new Date();
-      if (_fbxCurrentPeriod === '1m') cutoff.setMonth(cutoff.getMonth() - 1);
-      else if (_fbxCurrentPeriod === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
-      else if (_fbxCurrentPeriod === 'ytd') cutoff.setMonth(0, 1);
-      else if (_fbxCurrentPeriod === '1y') cutoff.setFullYear(cutoff.getFullYear() - 1);
-      
-      if (_fbxCurrentPeriod !== 'max') {
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
-        allData = allData.filter(d => d.date >= cutoffStr);
+      if (!_fbxCustomRange) {
+        const minDate = allData[0]?.date || '';
+        const maxDate = allData[allData.length - 1]?.date || '';
+        setDateInputsForPeriod('fbx', _fbxCurrentPeriod, minDate, maxDate);
       }
 
+      // Date filtering
+      const startVal = document.getElementById('fbx-date-start')?.value;
+      const endVal = document.getElementById('fbx-date-end')?.value;
+      if (startVal) allData = allData.filter(d => d.date >= startVal);
+      if (endVal) allData = allData.filter(d => d.date <= endVal);
+
       const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = allData.map(d => {
         const dateObj = new Date(d.date + 'T12:00:00Z');
         if (isNaN(dateObj)) return d.date;
         const day = dateObj.getUTCDate();
         const month = monthNamesTR[dateObj.getUTCMonth()];
         const year = dateObj.getUTCFullYear();
-        if (['1m', '6m', 'ytd'].includes(_fbxCurrentPeriod)) return `${day} ${month}`;
+        if (dateRangeDays <= 370) return `${day} ${month}`;
         return `${month} '${String(year).slice(-2)}`;
       });
       const values = allData.map(d => d.value);
@@ -10989,10 +11127,15 @@ async function loadDashboard() {
   });
 
   function renderIataChart(period) {
-    if (period) _iataCurrentPeriod = period;
+    if (period) {
+      _iataCurrentPeriod = period;
+      _iataCustomRange = false;
+    }
     document.querySelectorAll('#iata-chart-modal .iata-period-btn').forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.getElementById(`btn-iata-${_iataCurrentPeriod}`);
-    if (activeBtn) activeBtn.classList.add('active');
+    if (!_iataCustomRange) {
+      const activeBtn = document.getElementById(`btn-iata-${_iataCurrentPeriod}`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
 
     const titleEl = document.getElementById('iata-chart-title');
     try {
@@ -11011,15 +11154,17 @@ async function loadDashboard() {
         }
       }
 
-      const cutoff = new Date();
-      if (_iataCurrentPeriod === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
-      else if (_iataCurrentPeriod === 'ytd') cutoff.setMonth(0, 1);
-      else if (_iataCurrentPeriod === '1y') cutoff.setFullYear(cutoff.getFullYear() - 1);
-      
-      if (_iataCurrentPeriod !== 'max') {
-        const cutoffStr = cutoff.toISOString().slice(0, 10);
-        allData = allData.filter(d => d.date >= cutoffStr);
+      if (!_iataCustomRange) {
+        const minDate = allData[0]?.date || '';
+        const maxDate = allData[allData.length - 1]?.date || '';
+        setDateInputsForPeriod('iata', _iataCurrentPeriod, minDate, maxDate);
       }
+
+      // Date filtering
+      const startVal = document.getElementById('iata-date-start')?.value;
+      const endVal = document.getElementById('iata-date-end')?.value;
+      if (startVal) allData = allData.filter(d => d.date >= startVal);
+      if (endVal) allData = allData.filter(d => d.date <= endVal);
 
       const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
       const labels = allData.map(d => {
@@ -11275,14 +11420,22 @@ async function loadDashboard() {
         }
       }
 
-      if (period === '1m') {
-        validPoints = validPoints.slice(-22); // son ~22 işlem günü (1 ay)
-      } else if (period === '6m') {
-        const cutoff = new Date(); cutoff.setMonth(cutoff.getMonth() - 6);
-        validPoints = validPoints.filter(p => new Date(p.time * 1000) >= cutoff);
-      } else if (period === 'ytd') {
-        const startOfYear = new Date(new Date().getFullYear(), 0, 1);
-        validPoints = validPoints.filter(p => new Date(p.time * 1000) >= startOfYear);
+      if (!_thyCustomRange && validPoints.length > 0) {
+        const minDate = new Date(validPoints[0].time * 1000).toISOString().slice(0, 10);
+        const maxDate = new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10);
+        setDateInputsForPeriod('thy', _thyCurrentPeriod, minDate, maxDate);
+      }
+
+      // Date filtering
+      const startVal = document.getElementById('thy-date-start')?.value;
+      const endVal = document.getElementById('thy-date-end')?.value;
+      if (startVal) {
+        const startMs = new Date(startVal + 'T00:00:00Z').getTime();
+        validPoints = validPoints.filter(p => p.time * 1000 >= startMs);
+      }
+      if (endVal) {
+        const endMs = new Date(endVal + 'T23:59:59Z').getTime();
+        validPoints = validPoints.filter(p => p.time * 1000 <= endMs);
       }
 
       if (validPoints.length === 0) {
@@ -11492,13 +11645,18 @@ async function loadDashboard() {
   };
 
   function renderThyChart(period) {
-    if (period) _thyCurrentPeriod = period;
+    if (period) {
+      _thyCurrentPeriod = period;
+      _thyCustomRange = false;
+    }
 
     document.querySelectorAll('#thy-chart-modal .thy-period-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    const activeBtn = document.getElementById(`btn-thy-${_thyCurrentPeriod}`);
-    if (activeBtn) activeBtn.classList.add('active');
+    if (!_thyCustomRange) {
+      const activeBtn = document.getElementById(`btn-thy-${_thyCurrentPeriod}`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
 
     const titleEl = document.getElementById('thy-chart-title');
     const canvas = document.getElementById('chart-thy');
@@ -17954,6 +18112,40 @@ async function loadAppData() {
 document.addEventListener('DOMContentLoaded', () => {
   loadAppData().catch(e => console.warn('Data load error:', e));
 
+  // Custom date inputs event binding
+  ['wci', 'bafi', 'iata', 'fbx', 'thy', 'forex', 'brent', 'jetfuel'].forEach(prefix => {
+    const startInput = document.getElementById(`${prefix}-date-start`);
+    const endInput = document.getElementById(`${prefix}-date-end`);
+    
+    const handleInputChange = () => {
+      window[`_${prefix}CustomRange`] = true;
+      document.querySelectorAll(`#${prefix}-chart-modal .${prefix}-period-btn`).forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      if (prefix === 'wci' && typeof window.renderWciChart === 'function') {
+        window.renderWciChart();
+      } else if (prefix === 'bafi' && typeof window.renderBafiChart === 'function') {
+        window.renderBafiChart();
+      } else if (prefix === 'iata' && typeof window.renderIataChart === 'function') {
+        window.renderIataChart();
+      } else if (prefix === 'fbx' && typeof window.renderFbxChart === 'function') {
+        window.renderFbxChart();
+      } else if (prefix === 'thy' && typeof window.renderThyChart === 'function') {
+        window.renderThyChart();
+      } else if (prefix === 'forex' && typeof window.renderForexChart === 'function') {
+        window.renderForexChart();
+      } else if (prefix === 'brent' && typeof window.renderBrentModalChart === 'function') {
+        window.renderBrentModalChart();
+      } else if (prefix === 'jetfuel' && typeof window.renderJetfuelModalChart === 'function') {
+        window.renderJetfuelModalChart();
+      }
+    };
+
+    if (startInput) startInput.addEventListener('change', handleInputChange);
+    if (endInput) endInput.addEventListener('change', handleInputChange);
+  });
+
   // Hash routing for SPA tabs
   const handleHashRouting = () => {
     const hash = window.location.hash.replace('#', '');
@@ -18456,17 +18648,41 @@ window.toggleFinSources = function() {
           <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
-          <div class="wci-period-btns">
-            <button class="wci-period-btn forex-btn" id="btn-wci-1m" data-period="1m">1A</button>
-            <button class="wci-period-btn forex-btn" id="btn-wci-6m" data-period="6m">6A</button>
-            <button class="wci-period-btn forex-btn active" id="btn-wci-ytd" data-period="ytd">YTD</button>
-            <button class="wci-period-btn forex-btn" id="btn-wci-1y" data-period="1y">1Y</button>
-            <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
+          <div class="modal-controls-left">
+            <div class="wci-period-btns">
+              <button class="wci-period-btn forex-btn" id="btn-wci-1m" data-period="1m">1A</button>
+              <button class="wci-period-btn forex-btn" id="btn-wci-6m" data-period="6m">6A</button>
+              <button class="wci-period-btn forex-btn active" id="btn-wci-ytd" data-period="ytd">YTD</button>
+              <button class="wci-period-btn forex-btn" id="btn-wci-1y" data-period="1y">1Y</button>
+              <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi">
+            </div>
           </div>
-          <button class="export-btn" onclick="exportWciToCSV()" title="WCI verisini CSV olarak indir">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Excel
-          </button>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportWciToCSV()" title="WCI verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-wci"></canvas>
@@ -18482,17 +18698,41 @@ window.toggleFinSources = function() {
           <button class="rel-add-x" onclick="closeBafiChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
-          <div class="bafi-period-btns">
-            <button class="bafi-period-btn forex-btn" id="btn-bafi-1m" data-period="1m">1A</button>
-            <button class="bafi-period-btn forex-btn" id="btn-bafi-6m" data-period="6m">6A</button>
-            <button class="bafi-period-btn forex-btn active" id="btn-bafi-ytd" data-period="ytd">YTD</button>
-            <button class="bafi-period-btn forex-btn" id="btn-bafi-1y" data-period="1y">1Y</button>
-            <button class="bafi-period-btn forex-btn" id="btn-bafi-max" data-period="max">Tümü</button>
+          <div class="modal-controls-left">
+            <div class="bafi-period-btns">
+              <button class="bafi-period-btn forex-btn" id="btn-bafi-1m" data-period="1m">1A</button>
+              <button class="bafi-period-btn forex-btn" id="btn-bafi-6m" data-period="6m">6A</button>
+              <button class="bafi-period-btn forex-btn active" id="btn-bafi-ytd" data-period="ytd">YTD</button>
+              <button class="bafi-period-btn forex-btn" id="btn-bafi-1y" data-period="1y">1Y</button>
+              <button class="bafi-period-btn forex-btn" id="btn-bafi-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="bafi-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="bafi-date-end" aria-label="Bitiş tarihi">
+            </div>
           </div>
-          <button class="export-btn" onclick="exportBafiToCSV()" title="BAFI verisini CSV olarak indir">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Excel
-          </button>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportBafiToCSV()" title="BAFI verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-bafi"></canvas>
@@ -18508,16 +18748,40 @@ window.toggleFinSources = function() {
           <button class="rel-add-x" onclick="closeIataChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
-          <div class="iata-period-btns">
-            <button class="iata-period-btn forex-btn" id="btn-iata-6m" data-period="6m">6A</button>
-            <button class="iata-period-btn forex-btn active" id="btn-iata-ytd" data-period="ytd">YTD</button>
-            <button class="iata-period-btn forex-btn" id="btn-iata-1y" data-period="1y">1Y</button>
-            <button class="iata-period-btn forex-btn" id="btn-iata-max" data-period="max">Tümü</button>
+          <div class="modal-controls-left">
+            <div class="iata-period-btns">
+              <button class="iata-period-btn forex-btn" id="btn-iata-6m" data-period="6m">6A</button>
+              <button class="iata-period-btn forex-btn active" id="btn-iata-ytd" data-period="ytd">YTD</button>
+              <button class="iata-period-btn forex-btn" id="btn-iata-1y" data-period="1y">1Y</button>
+              <button class="iata-period-btn forex-btn" id="btn-iata-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="iata-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="iata-date-end" aria-label="Bitiş tarihi">
+            </div>
           </div>
-          <button class="export-btn" onclick="exportIataToCSV()" title="IATA verisini CSV olarak indir">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Excel
-          </button>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportIataToCSV()" title="IATA verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-iata"></canvas>
@@ -18533,17 +18797,41 @@ window.toggleFinSources = function() {
           <button class="rel-add-x" onclick="closeFbxChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
-          <div class="fbx-period-btns">
-            <button class="fbx-period-btn forex-btn" id="btn-fbx-1m" data-period="1m">1A</button>
-            <button class="fbx-period-btn forex-btn" id="btn-fbx-6m" data-period="6m">6A</button>
-            <button class="fbx-period-btn forex-btn active" id="btn-fbx-ytd" data-period="ytd">YTD</button>
-            <button class="fbx-period-btn forex-btn" id="btn-fbx-1y" data-period="1y">1Y</button>
-            <button class="fbx-period-btn forex-btn" id="btn-fbx-max" data-period="max">Tümü</button>
+          <div class="modal-controls-left">
+            <div class="fbx-period-btns">
+              <button class="fbx-period-btn forex-btn" id="btn-fbx-1m" data-period="1m">1A</button>
+              <button class="fbx-period-btn forex-btn" id="btn-fbx-6m" data-period="6m">6A</button>
+              <button class="fbx-period-btn forex-btn active" id="btn-fbx-ytd" data-period="ytd">YTD</button>
+              <button class="fbx-period-btn forex-btn" id="btn-fbx-1y" data-period="1y">1Y</button>
+              <button class="fbx-period-btn forex-btn" id="btn-fbx-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="fbx-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="fbx-date-end" aria-label="Bitiş tarihi">
+            </div>
           </div>
-          <button class="export-btn" onclick="exportFbxToCSV()" title="FBX verisini CSV olarak indir">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Excel
-          </button>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportFbxToCSV()" title="FBX verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-fbx"></canvas>
@@ -18559,20 +18847,44 @@ window.toggleFinSources = function() {
           <button class="rel-add-x" onclick="closeThyChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
-          <div class="thy-period-btns">
-            <button class="thy-period-btn forex-btn" id="btn-thy-1d" data-period="1d">1G</button>
-            <button class="thy-period-btn forex-btn" id="btn-thy-5d" data-period="5d">5G</button>
-            <button class="thy-period-btn forex-btn" id="btn-thy-1m" data-period="1m">1A</button>
-            <button class="thy-period-btn forex-btn" id="btn-thy-6m" data-period="6m">6A</button>
-            <button class="thy-period-btn forex-btn active" id="btn-thy-ytd" data-period="ytd">YTD</button>
-            <button class="thy-period-btn forex-btn" id="btn-thy-1y" data-period="1y">1Y</button>
-            <button class="thy-period-btn forex-btn" id="btn-thy-5y" data-period="5y">5Y</button>
-            <button class="thy-period-btn forex-btn" id="btn-thy-max" data-period="max">Tümü</button>
+          <div class="modal-controls-left">
+            <div class="thy-period-btns">
+              <button class="thy-period-btn forex-btn" id="btn-thy-1d" data-period="1d">1G</button>
+              <button class="thy-period-btn forex-btn" id="btn-thy-5d" data-period="5d">5G</button>
+              <button class="thy-period-btn forex-btn" id="btn-thy-1m" data-period="1m">1A</button>
+              <button class="thy-period-btn forex-btn" id="btn-thy-6m" data-period="6m">6A</button>
+              <button class="thy-period-btn forex-btn active" id="btn-thy-ytd" data-period="ytd">YTD</button>
+              <button class="thy-period-btn forex-btn" id="btn-thy-1y" data-period="1y">1Y</button>
+              <button class="thy-period-btn forex-btn" id="btn-thy-5y" data-period="5y">5Y</button>
+              <button class="thy-period-btn forex-btn" id="btn-thy-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="thy-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="thy-date-end" aria-label="Bitiş tarihi">
+            </div>
           </div>
-          <button class="export-btn" onclick="exportThyToCSV()" title="THY verisini CSV olarak indir">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Excel
-          </button>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportThyToCSV()" title="THY verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-thy"></canvas>
@@ -18603,20 +18915,44 @@ window.toggleFinSources = function() {
                 € / $ Parite
               </button>
             </div>
-            <button class="export-btn" onclick="exportForexToCSV()" title="Döviz verisini CSV olarak indir">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Excel
-            </button>
+            <div class="modal-controls-right">
+              <div class="modal-chart-type-group">
+                <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18"></path>
+                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                  </svg>
+                </button>
+                <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                  </svg>
+                </button>
+              </div>
+              <button class="export-btn" onclick="exportForexToCSV()" title="Döviz verisini CSV olarak indir">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Excel
+              </button>
+            </div>
           </div>
-          <div class="forex-period-btns">
-            <button class="forex-period-btn forex-btn" id="btn-forex-1d" data-period="1d">1G</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1A</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-6m" data-period="6m">6A</button>
-            <button class="forex-period-btn forex-btn active" id="btn-forex-ytd" data-period="ytd">YTD</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-1y" data-period="1y">1Y</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-5y" data-period="5y">5Y</button>
-            <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
+          <div class="modal-controls-left">
+            <div class="forex-period-btns">
+              <button class="forex-period-btn forex-btn" id="btn-forex-1d" data-period="1d">1G</button>
+              <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
+              <button class="forex-period-btn forex-btn" id="btn-forex-1m" data-period="1m">1A</button>
+              <button class="forex-period-btn forex-btn" id="btn-forex-6m" data-period="6m">6A</button>
+              <button class="forex-period-btn forex-btn active" id="btn-forex-ytd" data-period="ytd">YTD</button>
+              <button class="forex-period-btn forex-btn" id="btn-forex-1y" data-period="1y">1Y</button>
+              <button class="forex-period-btn forex-btn" id="btn-forex-5y" data-period="5y">5Y</button>
+              <button class="forex-period-btn forex-btn" id="btn-forex-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="forex-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="forex-date-end" aria-label="Bitiş tarihi">
+            </div>
           </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
@@ -18633,20 +18969,44 @@ window.toggleFinSources = function() {
           <button class="rel-add-x" onclick="closeBrentChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
-          <div class="brent-period-btns">
-            <button class="brent-period-btn forex-btn" id="btn-brent-1d" data-period="1d">1G</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-5d" data-period="5d">5G</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-1m" data-period="1m">1A</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-6m" data-period="6m">6A</button>
-            <button class="brent-period-btn forex-btn active" id="btn-brent-ytd" data-period="ytd">YTD</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-1y" data-period="1y">1Y</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-5y" data-period="5y">5Y</button>
-            <button class="brent-period-btn forex-btn" id="btn-brent-max" data-period="max">Tümü</button>
+          <div class="modal-controls-left">
+            <div class="brent-period-btns">
+              <button class="brent-period-btn forex-btn" id="btn-brent-1d" data-period="1d">1G</button>
+              <button class="brent-period-btn forex-btn" id="btn-brent-5d" data-period="5d">5G</button>
+              <button class="brent-period-btn forex-btn" id="btn-brent-1m" data-period="1m">1A</button>
+              <button class="brent-period-btn forex-btn" id="btn-brent-6m" data-period="6m">6A</button>
+              <button class="brent-period-btn forex-btn active" id="btn-brent-ytd" data-period="ytd">YTD</button>
+              <button class="brent-period-btn forex-btn" id="btn-brent-1y" data-period="1y">1Y</button>
+              <button class="brent-period-btn forex-btn" id="btn-brent-5y" data-period="5y">5Y</button>
+              <button class="brent-period-btn forex-btn" id="btn-brent-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="brent-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="brent-date-end" aria-label="Bitiş tarihi">
+            </div>
           </div>
-          <button class="export-btn" onclick="exportBrentToCSV()" title="Brent verisini CSV olarak indir">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Excel
-          </button>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportBrentToCSV()" title="Brent verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-brent-modal"></canvas>
@@ -18662,17 +19022,41 @@ window.toggleFinSources = function() {
           <button class="rel-add-x" onclick="closeJetfuelChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
-          <div class="jetfuel-period-btns">
-            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1m" data-period="1m">1A</button>
-            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-6m" data-period="6m">6A</button>
-            <button class="jetfuel-period-btn forex-btn active" id="btn-jetfuel-ytd" data-period="ytd">YTD</button>
-            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1y" data-period="1y">1Y</button>
-            <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-max" data-period="max">Tümü</button>
+          <div class="modal-controls-left">
+            <div class="jetfuel-period-btns">
+              <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1m" data-period="1m">1A</button>
+              <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-6m" data-period="6m">6A</button>
+              <button class="jetfuel-period-btn forex-btn active" id="btn-jetfuel-ytd" data-period="ytd">YTD</button>
+              <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1y" data-period="1y">1Y</button>
+              <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="jetfuel-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="jetfuel-date-end" aria-label="Bitiş tarihi">
+            </div>
           </div>
-          <button class="export-btn" onclick="exportJetfuelToCSV()" title="Jet yakıtı verisini CSV olarak indir">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Excel
-          </button>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportJetfuelToCSV()" title="Jet yakıtı verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-jetfuel-modal"></canvas>
