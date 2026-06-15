@@ -2736,8 +2736,7 @@
           <div class="dash-card-note">IATA · Aylık rapor · <a href="https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/" target="_blank" rel="noopener">iata.org →</a></div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
-          <span class="card-test-badge">Test</span>
-          <div class="dash-card-label">Freightos Baltic Index (FBX)</div>
+          <div class="dash-card-label">Freightos Baltık Endeksi (FBX)</div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Global konteyner spot fiyat endeksi</div>
@@ -5892,7 +5891,7 @@ const SEARCHABLE_METRICS = [
     kw: ['iata', 'air cargo', 'cargo', 'market', 'kargo', 'analiz', 'rapor']
   },
   {
-    name: 'Freightos Baltic Index (FBX)',
+    name: 'Freightos Baltık Endeksi (FBX)',
     tab: 'dashboard',
     tabName: 'Dashboard',
     id: 'dc-fbx',
@@ -10951,7 +10950,7 @@ async function loadDashboard() {
       lineChart('chart-fbx', labels,
         [
           {
-            label: 'Freightos Baltic Index (FBX)',
+            label: 'Freightos Baltık Endeksi (FBX)',
             data: values,
             borderColor: '#3B82F6',
             backgroundColor: 'rgba(59,130,246,0.07)',
@@ -10977,7 +10976,7 @@ async function loadDashboard() {
           }
         }
       );
-      if (titleEl) titleEl.textContent = 'Freightos Baltic Index (FBX)';
+      if (titleEl) titleEl.textContent = 'Freightos Baltık Endeksi (FBX)';
     } catch (err) {
       console.error("FBX Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
@@ -18530,7 +18529,7 @@ window.toggleFinSources = function() {
     <div id="fbx-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fbx-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div id="fbx-chart-title" class="rel-add-title">Freightos Baltic Index (FBX)</div>
+          <div id="fbx-chart-title" class="rel-add-title">Freightos Baltık Endeksi (FBX)</div>
           <button class="rel-add-x" onclick="closeFbxChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
