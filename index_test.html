@@ -2491,7 +2491,16 @@
 
     <!-- Anlık göstergeler -->
     <section class="dash-section" id="dash-sec-anlık">
-      <h2 class="dash-section-title">Anlık Göstergeler</h2>
+      <div class="dash-section-header">
+        <h2 class="dash-section-title">Anlık Göstergeler</h2>
+        <button class="dash-customize-btn" id="customize-indicators-btn" title="Göstergeleri Özelleştir">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          Özelleştir
+        </button>
+      </div>
       <div class="dash-cards">
         <div class="dash-card dash-card-clickable" id="dc-jetfuel" title="Jet yakıtı fiyat detayları için tıkla" onclick="openJetfuelChartModal()">
           <div class="dash-card-header-row">
@@ -18374,6 +18383,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Indicators customization button and config load
+  const customizeBtn = document.getElementById('customize-indicators-btn');
+  if (customizeBtn) {
+    customizeBtn.addEventListener('click', openIndicatorsCustomizeModal);
+  }
+  applyIndicatorsConfig();
+
   handleHashRouting();
   window.addEventListener('hashchange', handleHashRouting);
 });
@@ -18814,6 +18830,254 @@ window.toggleFinSources = function() {
     buildFinSourcesGrid();
   }
 };
+
+// ── INDICATORS CUSTOMIZATION ──────────────────────────────────────────
+
+const ALL_INDICATOR_CARDS = [
+  { id: 'dc-jetfuel', name: 'Jet Yakıtı', defaultVisible: true, isCargo: false },
+  { id: 'dc-brent', name: 'Brent Petrol', defaultVisible: true, isCargo: false },
+  { id: 'dc-thy', name: 'THYAO Hisse', defaultVisible: true, isCargo: false },
+  { id: 'dc-usd', name: 'Döviz & Parite', defaultVisible: true, isCargo: false },
+  { id: 'dc-wci', name: 'Dünya Konteyner Endeksi (WCI)', defaultVisible: true, isCargo: false },
+  { id: 'dc-imf', name: 'Türkiye GSYH Büyümesi', defaultVisible: true, isCargo: false },
+  { id: 'dc-bafi', name: 'Baltic Air Freight Index (BAFI)', defaultVisible: false, isTest: true, isCargo: true },
+  { id: 'dc-iata', name: 'IATA Air Cargo Market Analysis', defaultVisible: false, isTest: true, isCargo: true },
+  { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: false, isCargo: true }
+];
+
+const DEFAULT_INDICATORS_CONFIG = {
+  order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-imf', 'dc-bafi', 'dc-iata', 'dc-fbx'],
+  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-imf']
+};
+
+window.getIndicatorsConfig = function() {
+  const saved = localStorage.getItem('haberozetleri_indicators_config');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      const allIds = ALL_INDICATOR_CARDS.map(c => c.id);
+      if (parsed.order && parsed.visible) {
+        // Ensure all IDs are present (self-healing)
+        allIds.forEach(id => {
+          if (!parsed.order.includes(id)) {
+            parsed.order.push(id);
+          }
+        });
+        return parsed;
+      }
+    } catch (e) {
+      console.error('Error parsing indicators config:', e);
+    }
+  }
+  return { ...DEFAULT_INDICATORS_CONFIG };
+};
+
+window.applyIndicatorsConfig = function() {
+  const config = getIndicatorsConfig();
+  const mainContainer = document.querySelector('#dash-sec-anlık .dash-cards');
+  const cargoContainer = document.querySelector('#dash-sec-endeks .dash-cards');
+  const cargoSection = document.getElementById('dash-sec-endeks');
+  
+  if (!mainContainer || !cargoContainer) return;
+  
+  // Find all indicator DOM nodes
+  const cardElements = {};
+  ALL_INDICATOR_CARDS.forEach(item => {
+    const el = document.getElementById(item.id);
+    if (el) {
+      cardElements[item.id] = el;
+    }
+  });
+  
+  let cargoCount = 0;
+  
+  config.order.forEach(id => {
+    const el = cardElements[id];
+    if (!el) return;
+    
+    const isVisible = config.visible.includes(id);
+    const cardInfo = ALL_INDICATOR_CARDS.find(item => item.id === id);
+    
+    if (isVisible) {
+      // Add to main container
+      mainContainer.appendChild(el);
+      el.style.display = '';
+    } else {
+      // If it's a cargo card, keep in cargo container, otherwise hide
+      if (cardInfo && cardInfo.isCargo) {
+        cargoContainer.appendChild(el);
+        el.style.display = '';
+        cargoCount++;
+      } else {
+        el.style.display = 'none';
+      }
+    }
+  });
+  
+  // Hide cargo section if empty
+  if (cargoSection) {
+    cargoSection.style.display = cargoCount > 0 ? '' : 'none';
+  }
+};
+
+window.openIndicatorsCustomizeModal = function() {
+  const config = getIndicatorsConfig();
+  populateCustomizeList(config);
+  
+  const modal = document.getElementById('indicators-customize-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+  }
+};
+
+window.closeIndicatorsCustomizeModal = function() {
+  const modal = document.getElementById('indicators-customize-modal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+};
+
+window.populateCustomizeList = function(config) {
+  const listEl = document.getElementById('customize-indicators-list');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+  
+  config.order.forEach(id => {
+    const cardInfo = ALL_INDICATOR_CARDS.find(item => item.id === id);
+    if (!cardInfo) return;
+    
+    const isVisible = config.visible.includes(id);
+    
+    const item = document.createElement('div');
+    item.className = 'customize-item';
+    item.draggable = true;
+    item.dataset.id = id;
+    
+    item.innerHTML = `
+      <div class="customize-item-drag-handle" title="Sürükle bırak ile sırala">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="9" cy="5" r="1.5"></circle>
+          <circle cx="15" cy="5" r="1.5"></circle>
+          <circle cx="9" cy="12" r="1.5"></circle>
+          <circle cx="15" cy="12" r="1.5"></circle>
+          <circle cx="9" cy="19" r="1.5"></circle>
+          <circle cx="15" cy="19" r="1.5"></circle>
+        </svg>
+      </div>
+      <div class="customize-item-name">${cardInfo.name}</div>
+      ${cardInfo.isTest ? `<div class="customize-item-badge test">Test</div>` : ''}
+      <button class="customize-item-btn btn-move-up" onclick="moveItemUp(this)" title="Yukarı Taşı">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+      </button>
+      <button class="customize-item-btn btn-move-down" onclick="moveItemDown(this)" title="Aşağı Taşı">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+      <label class="customize-item-toggle" title="Göster / Gizle">
+        <input type="checkbox" class="customize-item-check" ${isVisible ? 'checked' : ''}>
+        <span class="customize-toggle-slider"></span>
+      </label>
+    `;
+    listEl.appendChild(item);
+  });
+  
+  setupDragAndDrop(listEl);
+  updateUpDownButtonsStates();
+};
+
+let draggedItem = null;
+window.setupDragAndDrop = function(listEl) {
+  const items = listEl.querySelectorAll('.customize-item');
+  items.forEach(item => {
+    item.addEventListener('dragstart', (e) => {
+      draggedItem = item;
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    
+    item.addEventListener('dragend', () => {
+      if (draggedItem) {
+        draggedItem.classList.remove('dragging');
+      }
+      draggedItem = null;
+      updateUpDownButtonsStates();
+    });
+    
+    item.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      
+      const bounding = item.getBoundingClientRect();
+      const offset = e.clientY - bounding.top - bounding.height / 2;
+      
+      if (offset > 0) {
+        item.after(draggedItem);
+      } else {
+        item.before(draggedItem);
+      }
+    });
+  });
+};
+
+window.updateUpDownButtonsStates = function() {
+  const listEl = document.getElementById('customize-indicators-list');
+  if (!listEl) return;
+  const items = listEl.querySelectorAll('.customize-item');
+  items.forEach((item, index) => {
+    const upBtn = item.querySelector('.btn-move-up');
+    const downBtn = item.querySelector('.btn-move-down');
+    if (upBtn) upBtn.disabled = (index === 0);
+    if (downBtn) downBtn.disabled = (index === items.length - 1);
+  });
+};
+
+window.moveItemUp = function(btn) {
+  const item = btn.closest('.customize-item');
+  const prev = item.previousElementSibling;
+  if (prev) {
+    item.parentNode.insertBefore(item, prev);
+    updateUpDownButtonsStates();
+  }
+};
+
+window.moveItemDown = function(btn) {
+  const item = btn.closest('.customize-item');
+  const next = item.nextElementSibling;
+  if (next) {
+    item.parentNode.insertBefore(next, item);
+    updateUpDownButtonsStates();
+  }
+};
+
+window.saveIndicatorsConfig = function() {
+  const listEl = document.getElementById('customize-indicators-list');
+  if (!listEl) return;
+  
+  const order = [];
+  const visible = [];
+  
+  const items = listEl.querySelectorAll('.customize-item');
+  items.forEach(item => {
+    const id = item.dataset.id;
+    const isChecked = item.querySelector('.customize-item-check').checked;
+    
+    order.push(id);
+    if (isChecked) {
+      visible.push(id);
+    }
+  });
+  
+  localStorage.setItem('haberozetleri_indicators_config', JSON.stringify({ order, visible }));
+  applyIndicatorsConfig();
+  closeIndicatorsCustomizeModal();
+};
+
+window.resetIndicatorsConfig = function() {
+  populateCustomizeList(DEFAULT_INDICATORS_CONFIG);
+};
 </script>
 
     <!-- Kullanıcı tarihi ekleme modali -->
@@ -19084,6 +19348,28 @@ window.toggleFinSources = function() {
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-jetfuel-modal"></canvas>
+        </div>
+      </div>
+    </div>
+    <!-- Göstergeleri Özelleştirme Modali -->
+    <div id="indicators-customize-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="indicators-customize-title">
+      <div class="rel-add-card" style="max-width: 440px;">
+        <div class="rel-add-head" style="margin-bottom: 12px;">
+          <div id="indicators-customize-title" class="rel-add-title" style="font-size: 15px;">Anlık Göstergeleri Özelleştir</div>
+          <button class="rel-add-x" onclick="closeIndicatorsCustomizeModal()" aria-label="Kapat">×</button>
+        </div>
+        <div style="font-size: 12px; color: var(--text-3); margin-bottom: 12px; line-height: 1.5;">
+          Anlık Göstergeler bölümünde görüntülenecek kartları seçin ve sıralamak için sürükleyin veya butonları kullanın.
+        </div>
+        <!-- Liste alanı -->
+        <div class="customize-list" id="customize-indicators-list" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding-right: 4px;">
+          <!-- Kart satırları dinamik olarak buraya eklenecek -->
+        </div>
+        <!-- Alt butonlar -->
+        <div class="customize-actions" style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--border-soft); padding-top: 14px;">
+          <button class="customize-action-btn secondary" onclick="resetIndicatorsConfig()" style="margin-right: auto;">Varsayılana Dön</button>
+          <button class="customize-action-btn secondary" onclick="closeIndicatorsCustomizeModal()">İptal</button>
+          <button class="customize-action-btn primary" onclick="saveIndicatorsConfig()">Kaydet</button>
         </div>
       </div>
     </div>

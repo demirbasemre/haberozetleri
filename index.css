@@ -7770,9 +7770,9 @@
   color: var(--text-3);
   user-select: none;
 }
-.customize-item-badge.cargo {
-  background: rgba(29, 111, 232, 0.08);
-  color: #1d6fe8;
+.customize-item-badge.test {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
 }
 .customize-item-btn {
   background: transparent;
