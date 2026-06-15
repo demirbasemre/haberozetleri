@@ -2,6 +2,18 @@
   "QR": {
     "name": "Qatar Airways",
     "color": "#7C3AED",
+    "footnotes": {
+      "2011": "*",
+      "2012": "*",
+      "2013": "*",
+      "2021": "**",
+      "2022": "**",
+      "2023": "**",
+      "2024": "**",
+      "2025": "**",
+      "*": "Doğrudan taşıyıcı firma tarafından sağlanmıştır.",
+      "**": "Faaliyet karı EBITDA (FAVÖK) değerini ifade etmektedir."
+    },
     "financial": {
       "passenger_revenue_musd": {
         "2011": 5283,
