@@ -7581,13 +7581,18 @@
   .modal-controls-left {
     justify-content: space-between;
     width: 100%;
-    flex-wrap: wrap;
     gap: 8px;
   }
   .modal-controls-right {
     justify-content: flex-end;
     width: 100%;
     margin-top: 4px;
+  }
+}
+
+@media (max-width: 576px) {
+  .modal-controls-left {
+    flex-wrap: wrap;
   }
 }
 
