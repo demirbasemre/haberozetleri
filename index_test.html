@@ -485,6 +485,33 @@
   }
   [data-theme="dark"] .fin-fy-badge { color: #FCD34D; background: #F59E0B14; }
   .fin-table-wrap { overflow-x: auto; }
+  .fin-table-footnotes {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--text-3);
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .fin-table-footnotes p { margin: 0; line-height: 1.4; }
+  .fin-table-footnotes .fin-footnote-item {
+    display: flex;
+    gap: 6px;
+  }
+  .fin-table-footnotes .fin-footnote-symbol {
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .fin-cell-fn {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-left: 1px;
+    cursor: help;
+  }
   .fin-cmp-table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
   .fin-cmp-table th {
     background: var(--navy); color: rgba(255,255,255,0.85);
@@ -3558,6 +3585,7 @@
           <tbody id="fin-cmp-tbody"></tbody>
         </table>
       </div>
+      <div class="fin-table-footnotes" id="fin-table-footnotes" style="display:none"></div>
     </div>
 
     <!-- Kaynak Açıklaması -->
@@ -17648,7 +17676,13 @@ function renderFinTable() {
         ? `<span class="fin-rank${rank <= 3 ? ' fin-rank--top' : ''}">#${rank}</span>`
         : '';
 
-      return `<td class="${signCls}${colCls}"${barStyle}>${rankHtml}${label}</td>`;
+      let cellFnHtml = '';
+      if (airline.footnotes && airline.footnotes[y]) {
+        const sym = airline.footnotes[y];
+        cellFnHtml = `<sup class="fin-cell-fn" title="${airline.footnotes[sym] || ''}">${sym}</sup>`;
+      }
+
+      return `<td class="${signCls}${colCls}"${barStyle}>${rankHtml}${label}${cellFnHtml}</td>`;
     }).join('');
 
     const note   = airline.psnote ? ` <span style="font-size:9px;color:var(--text-3)">(${airline.psnote})</span>` : '';
@@ -17672,6 +17706,45 @@ function renderFinTable() {
       ${cells}
     </tr>`;
   }).join('');
+
+  // ── Footnotes Rendering ──────────────────────────
+  const fnContainer = document.getElementById('fin-table-footnotes');
+  if (fnContainer) {
+    const activeFn = [];
+    entries.forEach(([slug, airline]) => {
+      if (airline.footnotes) {
+        const symbolsUsed = new Set();
+        years.forEach(y => {
+          if (airline.footnotes[y]) {
+            symbolsUsed.add(airline.footnotes[y]);
+          }
+        });
+        symbolsUsed.forEach(sym => {
+          const text = airline.footnotes[sym];
+          if (text) {
+            activeFn.push({
+              airline: airline.name,
+              symbol: sym,
+              text: text
+            });
+          }
+        });
+      }
+    });
+
+    if (activeFn.length > 0) {
+      fnContainer.innerHTML = activeFn.map(fn => `
+        <div class="fin-footnote-item">
+          <span class="fin-footnote-symbol">${fn.symbol}</span>
+          <span><strong>${fn.airline}:</strong> ${fn.text}</span>
+        </div>
+      `).join('');
+      fnContainer.style.display = 'block';
+    } else {
+      fnContainer.innerHTML = '';
+      fnContainer.style.display = 'none';
+    }
+  }
 }
 
 window.toggleFinCYMode = function() {
