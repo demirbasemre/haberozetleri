@@ -11117,11 +11117,16 @@ async function loadDashboard() {
     ]);
     return { history, latest };
   }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
-    if (latest && latest.history && latest.history.length) {
-      _fbxHistory = latest.history;
-    } else {
-      _fbxHistory = history;
+    const fbxMap = new Map();
+    if (Array.isArray(history)) {
+      history.forEach(item => { if (item && item.date) fbxMap.set(item.date, item.value); });
     }
+    if (latest && Array.isArray(latest.history)) {
+      latest.history.forEach(item => { if (item && item.date) fbxMap.set(item.date, item.value); });
+    }
+    _fbxHistory = Array.from(fbxMap.entries())
+      .map(([date, value]) => ({ date, value }))
+      .sort((a, b) => a.date.localeCompare(b.date));
     _fbxLatest = latest;
 
     if (latest && latest.price) {
