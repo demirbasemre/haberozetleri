@@ -7672,3 +7672,203 @@
 .modal-date-input::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
 }
+
+/* ── INDICATORS CUSTOMIZER MODAL & STYLES ────────────────────────── */
+.dash-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.dash-section-header .dash-section-title {
+  margin-bottom: 0;
+}
+.dash-customize-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+.dash-customize-btn:hover {
+  background: var(--border-soft);
+  border-color: rgba(29, 111, 232, 0.35);
+  color: var(--text);
+}
+.dash-customize-btn svg {
+  transition: transform 0.2s ease;
+}
+.dash-customize-btn:hover svg {
+  transform: rotate(30deg);
+}
+
+.customize-list {
+  scrollbar-width: thin;
+}
+.customize-list::-webkit-scrollbar {
+  width: 4px;
+}
+.customize-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+.customize-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.customize-item.dragging {
+  opacity: 0.5;
+  background: var(--border-soft);
+  border-style: dashed;
+}
+.customize-item:hover {
+  background: var(--border-soft);
+}
+.customize-item-drag-handle {
+  display: flex;
+  align-items: center;
+  color: var(--text-3);
+  cursor: grab;
+  padding: 4px 2px;
+  transition: color 0.15s;
+}
+.customize-item-drag-handle:hover {
+  color: var(--text);
+}
+.customize-item-drag-handle:active {
+  cursor: grabbing;
+}
+.customize-item-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+  flex-grow: 1;
+  user-select: none;
+}
+.customize-item-badge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--border-soft);
+  color: var(--text-3);
+  user-select: none;
+}
+.customize-item-badge.cargo {
+  background: rgba(29, 111, 232, 0.08);
+  color: #1d6fe8;
+}
+.customize-item-btn {
+  background: transparent;
+  border: 0;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+.customize-item-btn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+.customize-item-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+.customize-item-toggle {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.customize-item-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.customize-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--border);
+  transition: .2s;
+  border-radius: 20px;
+}
+.customize-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--surface);
+  transition: .2s;
+  border-radius: 50%;
+}
+.customize-item-toggle input:checked + .customize-toggle-slider {
+  background-color: #1d6fe8;
+}
+.customize-item-toggle input:checked + .customize-toggle-slider:before {
+  transform: translateX(14px);
+}
+
+.customize-action-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.customize-action-btn.primary {
+  background: #1d6fe8;
+  color: white;
+}
+.customize-action-btn.primary:hover {
+  background: #1557b5;
+}
+.customize-action-btn.secondary {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-2);
+}
+.customize-action-btn.secondary:hover {
+  background: var(--border-soft);
+  color: var(--text);
+}
+
+/* Make cards layout grid columns adapt nicely on wide screens */
+#dash-sec-anlık .dash-cards {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+[data-tweak-density="compact"] #dash-sec-anlık .dash-cards {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+}
+[data-tweak-density="standard"] #dash-sec-anlık .dash-cards {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+}
+[data-tweak-density="spacious"] #dash-sec-anlık .dash-cards {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+}
