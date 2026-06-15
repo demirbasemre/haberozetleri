@@ -10803,6 +10803,151 @@ async function loadDashboard() {
       });
       const values = allData.map(d => d.value);
 
+      // Önemli tarihleri grafikte vurgulamak için özel eklenti
+      const fbxAnnotationsPlugin = {
+        id: 'fbxAnnotations',
+        afterDatasetsDraw(chart) {
+          const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
+          ctx.save();
+          
+          const events = [
+            { dateIso: '2024-01-15', label: 'Kızıldeniz Krizi Başlangıcı', color: '#EF4444' },
+            { dateIso: '2024-07-15', label: 'Liman Sıkışıklıkları', color: '#F59E0B' },
+            { dateIso: '2024-10-01', label: 'ABD Doğu Yakası Grevi', color: '#64748B' },
+            { dateIso: '2026-02-26', label: 'Ortadoğu Gerginliği', color: '#DC2626' }
+          ];
+
+          const rawDatesArray = chart.$rawDates;
+          if (!rawDatesArray || rawDatesArray.length === 0) {
+            ctx.restore();
+            return;
+          }
+
+          const firstDate = new Date(rawDatesArray[0]).getTime();
+          const lastDate = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+
+          const drawnPills = [];
+
+          events.forEach(event => {
+            const targetTime = new Date(event.dateIso).getTime();
+            
+            if (targetTime < firstDate || targetTime > lastDate) return;
+
+            let closestIndex = -1;
+            let minDiff = Infinity;
+            for (let i = 0; i < rawDatesArray.length; i++) {
+              const time = new Date(rawDatesArray[i]).getTime();
+              const diff = Math.abs(time - targetTime);
+              if (diff < minDiff) {
+                minDiff = diff;
+                closestIndex = i;
+              }
+            }
+
+            if (closestIndex === -1) return;
+
+            const totalSpan = lastDate - firstDate;
+            const threshold = Math.max(totalSpan * 0.1, 15 * 24 * 60 * 60 * 1000);
+            if (minDiff > threshold) return;
+
+            const xPos = x.getPixelForValue(closestIndex);
+            
+            // Noktayı vurgula
+            const meta = chart.getDatasetMeta(0);
+            if (meta && meta.data && meta.data[closestIndex]) {
+              const point = meta.data[closestIndex];
+              ctx.fillStyle = event.color;
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.fill();
+              
+              ctx.strokeStyle = '#FFFFFF';
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([]);
+              ctx.beginPath();
+              ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI);
+              ctx.stroke();
+            }
+            
+            // Etiket metni hesaplama
+            ctx.setLineDash([]);
+            const font = 'bold 9.5px Inter, sans-serif';
+            ctx.font = font;
+            const textWidth = ctx.measureText(event.label).width;
+            const textHeight = 9.5;
+            const paddingX = 6;
+            const paddingY = 4;
+            const pillWidth = textWidth + paddingX * 2;
+            const pillHeight = textHeight + paddingY * 2;
+            
+            let pillX = xPos - pillWidth / 2;
+            
+            // Kenar sınırlandırması (Kırpılmayı önlemek için)
+            if (pillX < chartLeft) {
+              pillX = chartLeft;
+            } else if (pillX + pillWidth > chartRight) {
+              pillX = chartRight - pillWidth;
+            }
+            
+            // Üst üste binmeyi önleyen konumlandırma
+            let pillY = top + 10;
+            let hasOverlap = true;
+            while (hasOverlap) {
+              hasOverlap = false;
+              const x1 = pillX;
+              const x2 = pillX + pillWidth;
+              const y1 = pillY;
+              const y2 = pillY + pillHeight;
+              
+              for (const p of drawnPills) {
+                const overlapX = !(x2 < p.x1 - 4 || x1 > p.x2 + 4);
+                const overlapY = !(y2 < p.y1 - 2 || y1 > p.y2 + 2);
+                if (overlapX && overlapY) {
+                  hasOverlap = true;
+                  pillY += pillHeight + 6;
+                  break;
+                }
+              }
+            }
+            
+            drawnPills.push({
+              x1: pillX,
+              x2: pillX + pillWidth,
+              y1: pillY,
+              y2: pillY + pillHeight
+            });
+
+            // Dikey kesikli çizgi (Pill altından başla)
+            ctx.strokeStyle = event.color;
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(xPos, pillY + pillHeight);
+            ctx.lineTo(xPos, bottom);
+            ctx.stroke();
+            
+            // Badge çizimi
+            ctx.setLineDash([]);
+            ctx.fillStyle = event.color;
+            ctx.beginPath();
+            if (ctx.roundRect) {
+              ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 4);
+            } else {
+              ctx.rect(pillX, pillY, pillWidth, pillHeight);
+            }
+            ctx.fill();
+            
+            // Badge içi metin (pillX referansı ile ortalanmış)
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(event.label, pillX + pillWidth / 2, pillY + pillHeight / 2 + 0.5);
+          });
+          
+          ctx.restore();
+        }
+      };
+
       lineChart('chart-fbx', labels,
         [
           {
@@ -10820,6 +10965,7 @@ async function loadDashboard() {
         {
           forceRecreate: true,
           rawDates: allData.map(d => d.date),
+          plugins: [fbxAnnotationsPlugin],
           xTickFont: function(context) {
             const label = context.tick ? context.tick.label : '';
             const isBold = label && (label.includes("'25") || label.includes("'26"));
