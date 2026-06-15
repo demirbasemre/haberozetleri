@@ -2795,13 +2795,13 @@
               <button class="wci-period-btn forex-btn" id="btn-wci-1y" data-period="1y">1Y</button>
               <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi">
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2845,13 +2845,13 @@
               <button class="bafi-period-btn forex-btn" id="btn-bafi-1y" data-period="1y">1Y</button>
               <button class="bafi-period-btn forex-btn" id="btn-bafi-max" data-period="max">Tümü</button>
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="bafi-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="bafi-date-end" aria-label="Bitiş tarihi">
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2894,13 +2894,13 @@
               <button class="iata-period-btn forex-btn" id="btn-iata-1y" data-period="1y">1Y</button>
               <button class="iata-period-btn forex-btn" id="btn-iata-max" data-period="max">Tümü</button>
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="iata-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="iata-date-end" aria-label="Bitiş tarihi">
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -2944,13 +2944,13 @@
               <button class="fbx-period-btn forex-btn" id="btn-fbx-1y" data-period="1y">1Y</button>
               <button class="fbx-period-btn forex-btn" id="btn-fbx-max" data-period="max">Tümü</button>
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="fbx-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="fbx-date-end" aria-label="Bitiş tarihi">
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -7458,6 +7458,9 @@ function setDateInputsForPeriod(prefix, period, minDate, maxDate) {
   const startStr = start.toISOString().slice(0, 10);
   startEl.value = minDate && startStr < minDate ? minDate : startStr;
   endEl.value = maxDateStr;
+
+  const pickerWrap = startEl.closest('.modal-date-picker');
+  if (pickerWrap) pickerWrap.classList.remove('active');
 }
 
 // ── CHART HELPERS ─────────────────────────────────────────────
@@ -18327,6 +18330,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.classList.remove('active');
       });
       
+      const pickerWrap = startInput?.closest('.modal-date-picker');
+      if (pickerWrap) pickerWrap.classList.add('active');
+
       if (prefix === 'wci' && typeof window.renderWciChart === 'function') {
         window.renderWciChart();
       } else if (prefix === 'bafi' && typeof window.renderBafiChart === 'function') {
@@ -18876,13 +18882,13 @@ window.toggleFinSources = function() {
               <button class="thy-period-btn forex-btn" id="btn-thy-5y" data-period="5y">5Y</button>
               <button class="thy-period-btn forex-btn" id="btn-thy-max" data-period="max">Tümü</button>
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="thy-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="thy-date-end" aria-label="Bitiş tarihi">
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -18955,7 +18961,7 @@ window.toggleFinSources = function() {
               </button>
             </div>
           </div>
-          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; width: 100%;">
+          <div class="modal-controls-left" style="width: 100%; justify-content: flex-start; gap: 12px;">
             <div class="forex-period-btns">
               <button class="forex-period-btn forex-btn" id="btn-forex-1d" data-period="1d">1G</button>
               <button class="forex-period-btn forex-btn" id="btn-forex-5d" data-period="5d">5G</button>
@@ -18998,13 +19004,13 @@ window.toggleFinSources = function() {
               <button class="brent-period-btn forex-btn" id="btn-brent-5y" data-period="5y">5Y</button>
               <button class="brent-period-btn forex-btn" id="btn-brent-max" data-period="max">Tümü</button>
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="brent-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="brent-date-end" aria-label="Bitiş tarihi">
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -19048,13 +19054,13 @@ window.toggleFinSources = function() {
               <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-1y" data-period="1y">1Y</button>
               <button class="jetfuel-period-btn forex-btn" id="btn-jetfuel-max" data-period="max">Tümü</button>
             </div>
-          </div>
-          <div class="modal-controls-right">
             <div class="modal-date-picker">
               <input type="date" class="modal-date-input" id="jetfuel-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" class="modal-date-input" id="jetfuel-date-end" aria-label="Bitiş tarihi">
             </div>
+          </div>
+          <div class="modal-controls-right">
             <div class="modal-chart-type-group">
               <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
