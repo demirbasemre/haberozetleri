@@ -23,6 +23,7 @@
     --cat-alt: #EA580C;
     --cat-atama: #0891B2;
     --cat-diger: #6B7280;
+    --calendar-icon-filter: invert(0.25);
   }
 
   [data-theme="dark"] {
@@ -41,6 +42,7 @@
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
     --shadow-hover: 0 12px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
+    --calendar-icon-filter: invert(0.85);
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -7440,4 +7442,166 @@
     border-color: rgba(59, 130, 246, 0.3);
   }
 
+}
+
+/* --- Tarih Aralığı Seçici & Grafik Tipi Seçici (Arayüz Güncellemeleri) --- */
+.modal-controls-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.modal-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.modal-date-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+[data-theme="dark"] .modal-date-picker {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.modal-date-input {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  padding: 3px 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  outline: none;
+  width: 105px;
+  text-align: center;
+}
+[data-theme="dark"] .modal-date-input {
+  color: rgba(255, 255, 255, 0.85);
+}
+.modal-date-input::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  cursor: pointer;
+  width: 13px;
+  height: 13px;
+  margin-left: 2px;
+}
+[data-theme="dark"] .modal-date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+.modal-date-separator {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 700;
+  user-select: none;
+}
+.modal-chart-type-group {
+  display: flex;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.02);
+}
+[data-theme="dark"] .modal-chart-type-group {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+.modal-chart-type-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 0;
+}
+.modal-chart-type-btn:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+.modal-chart-type-btn.active {
+  background: rgba(29, 111, 232, 0.08);
+  color: var(--accent);
+  border: 1.5px solid var(--accent);
+}
+[data-theme="dark"] .modal-chart-type-btn.active {
+  background: rgba(77, 142, 245, 0.12);
+  color: #60A5FA;
+  border: 1.5px solid rgba(77, 142, 245, 0.4);
+}
+
+/* Mobil Uyum */
+@media (max-width: 768px) {
+  .chart-modal-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .modal-controls-left {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .modal-controls-right {
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 4px;
+  }
+}
+
+/* Modal Date Range Picker Styles */
+.modal-date-range-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  height: 38px;
+  box-sizing: border-box;
+}
+.modal-date-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+}
+.modal-date-input-wrap label {
+  user-select: none;
+  white-space: nowrap;
+}
+.modal-date-input {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12.5px;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  width: 115px;
+}
+/* Custom date input styling on webkit for clean look */
+.modal-date-input::-webkit-calendar-picker-indicator {
+  filter: var(--calendar-icon-filter, invert(0.5));
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.modal-date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
 }
