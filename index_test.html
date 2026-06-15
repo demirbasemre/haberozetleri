@@ -7479,10 +7479,21 @@ const CHART_DEFAULTS = {
 function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   const ctx = document.getElementById(id);
   if (!ctx) return;
-  const existingChart = Chart.getChart(ctx);
+  
+  let existingChart = Chart.getChart(ctx);
   const wrap = ctx.closest('.dash-chart-wrap');
   if (wrap) wrap.classList.remove('loading');
   if (wrap) wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
+
+  // Determine chart type (line or bar) based on active button in modal
+  const modal = ctx.closest('.rel-add-modal');
+  const activeTypeBtn = modal ? modal.querySelector('.modal-chart-type-btn.active') : null;
+  const chartType = activeTypeBtn ? activeTypeBtn.dataset.type : (extraOpts.type || 'line');
+
+  if (existingChart && existingChart.config.type !== chartType) {
+    existingChart.destroy();
+    existingChart = null;
+  }
 
   // Downsampling / Decimation for large datasets (e.g. > 350 points)
   let finalLabels = labels;
@@ -7509,7 +7520,6 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   if (existingChart) {
     // Yerinde güncelle — canvas asla temizlenmez, boş kare yanıp sönmez
     existingChart.data.labels = finalLabels;
-    // Dataset nesnelerini Object.assign ile güncelle: Chart.js iç meta korunur
     if (existingChart.data.datasets.length === finalDatasets.length) {
       finalDatasets.forEach((ds, i) => Object.assign(existingChart.data.datasets[i], ds));
     } else {
@@ -7519,7 +7529,6 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
     if (yFmt) {
       existingChart.options.scales.y.ticks.callback = yFmt;
     }
-    // X ekseni tick ayarlarını periyoda göre güncelle (xTickCallback değişebilir)
     const xTicks = existingChart.options.scales.x.ticks;
     if (extraOpts.xTickCallback) {
       xTicks.callback   = extraOpts.xTickCallback;
@@ -7747,7 +7756,11 @@ async function postReleaseAction(payload) {
     if (Array.isArray(json.items)) setUserReleaseItems(json.items);
     return json;
   } catch (e) {
-    alert('Sunucuya kaydedilemedi: ' + e.message);
+    if (typeof window.__showToast === 'function') {
+      window.__showToast('⚠️ Sunucuya kaydedilemedi: ' + e.message, 'error');
+    } else {
+      alert('Sunucuya kaydedilemedi: ' + e.message);
+    }
     return null;
   } finally {
     _relBusy = false;
@@ -7756,6 +7769,13 @@ async function postReleaseAction(payload) {
 function openReleaseAddModal() {
   const m = document.getElementById('rel-add-modal');
   if (!m) return;
+  
+  // Form ve başarı ekranlarını sıfırla
+  const formWrap = m.querySelector('.rel-add-form-wrapper');
+  const succWrap = m.querySelector('.rel-add-success-wrapper');
+  if (formWrap) formWrap.style.display = 'block';
+  if (succWrap) succWrap.style.display = 'none';
+
   document.getElementById('rel-add-input-title').value = '';
   const today = new Date();
   const iso = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
@@ -7764,7 +7784,10 @@ function openReleaseAddModal() {
   document.getElementById('rel-add-input-note').value = '';
   document.getElementById('rel-add-input-link').value = '';
   m.style.display = 'flex';
-  setTimeout(() => document.getElementById('rel-add-input-title').focus(), 30);
+  setTimeout(() => {
+    const titleInput = document.getElementById('rel-add-input-title');
+    if (titleInput) titleInput.focus();
+  }, 30);
 }
 function closeReleaseAddModal() {
   const m = document.getElementById('rel-add-modal');
@@ -7913,7 +7936,11 @@ async function saveReleaseAddModal() {
   const note   = document.getElementById('rel-add-input-note').value.trim();
   const link   = document.getElementById('rel-add-input-link').value.trim();
   if (!title || !dateS) {
-    alert('Başlık ve tarih zorunlu.');
+    if (typeof window.__showToast === 'function') {
+      window.__showToast('⚠️ Başlık ve tarih zorunlu.', 'warn');
+    } else {
+      alert('Başlık ve tarih zorunlu.');
+    }
     return;
   }
   const saveBtn = document.querySelector('.rel-add-save');
@@ -7930,8 +7957,20 @@ async function saveReleaseAddModal() {
   });
   if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Ekle'; }
   if (res) {
-    closeReleaseAddModal();
-    if (res.message) alert(res.message);
+    // Başarı ekranına geç
+    const m = document.getElementById('rel-add-modal');
+    if (m) {
+      const formWrap = m.querySelector('.rel-add-form-wrapper');
+      const succWrap = m.querySelector('.rel-add-success-wrapper');
+      const msgEl = document.getElementById('rel-add-success-msg');
+      if (formWrap) formWrap.style.display = 'none';
+      if (succWrap) {
+        if (msgEl && res.message) {
+          msgEl.textContent = res.message;
+        }
+        succWrap.style.display = 'block';
+      }
+    }
     if (_relRender) _relRender();
   }
 }
@@ -18774,33 +18813,46 @@ window.toggleFinSources = function() {
     <!-- Kullanıcı tarihi ekleme modali -->
     <div id="rel-add-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="rel-add-title">
       <div class="rel-add-card">
-        <div class="rel-add-head">
-          <div id="rel-add-title" class="rel-add-title">Yeni tarih ekle</div>
-          <button class="rel-add-x" onclick="closeReleaseAddModal()" aria-label="Kapat">×</button>
+        <div class="rel-add-form-wrapper">
+          <div class="rel-add-head">
+            <div id="rel-add-title" class="rel-add-title">Yeni tarih ekle</div>
+            <button class="rel-add-x" onclick="closeReleaseAddModal()" aria-label="Kapat">×</button>
+          </div>
+          <label class="rel-add-field">
+            <span>Başlık</span>
+            <input id="rel-add-input-title" type="text" maxlength="80" placeholder="Örn: TIACA Air Cargo Forum">
+          </label>
+          <label class="rel-add-field">
+            <span>Tarih</span>
+            <input id="rel-add-input-date" type="date">
+          </label>
+          <label class="rel-add-field">
+            <span>Kaynak / Konum (opsiyonel)</span>
+            <input id="rel-add-input-source" type="text" maxlength="60" placeholder="Örn: Miami / IATA">
+          </label>
+          <label class="rel-add-field">
+            <span>Not (opsiyonel)</span>
+            <input id="rel-add-input-note" type="text" maxlength="80" placeholder="Örn: Yıllık · sektör etkinliği">
+          </label>
+          <label class="rel-add-field">
+            <span>Bağlantı (opsiyonel)</span>
+            <input id="rel-add-input-link" type="url" placeholder="https://...">
+          </label>
+          <div class="rel-add-actions" style="margin-top: 14px;">
+            <button class="rel-add-cancel" onclick="closeReleaseAddModal()">İptal</button>
+            <button class="rel-add-save" onclick="saveReleaseAddModal()">Ekle</button>
+          </div>
         </div>
-        <label class="rel-add-field">
-          <span>Başlık</span>
-          <input id="rel-add-input-title" type="text" maxlength="80" placeholder="Örn: TIACA Air Cargo Forum">
-        </label>
-        <label class="rel-add-field">
-          <span>Tarih</span>
-          <input id="rel-add-input-date" type="date">
-        </label>
-        <label class="rel-add-field">
-          <span>Kaynak / Konum (opsiyonel)</span>
-          <input id="rel-add-input-source" type="text" maxlength="60" placeholder="Örn: Miami / IATA">
-        </label>
-        <label class="rel-add-field">
-          <span>Not (opsiyonel)</span>
-          <input id="rel-add-input-note" type="text" maxlength="80" placeholder="Örn: Yıllık · sektör etkinliği">
-        </label>
-        <label class="rel-add-field">
-          <span>Bağlantı (opsiyonel)</span>
-          <input id="rel-add-input-link" type="url" placeholder="https://...">
-        </label>
-        <div class="rel-add-actions">
-          <button class="rel-add-cancel" onclick="closeReleaseAddModal()">İptal</button>
-          <button class="rel-add-save" onclick="saveReleaseAddModal()">Ekle</button>
+        <div class="rel-add-success-wrapper" style="display:none; text-align:center; padding: 24px 12px;">
+          <div style="color: hsl(142, 72%, 29%); background: rgba(22, 163, 74, 0.1); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div style="font-size:15px; font-weight:700; color:var(--text); margin-bottom: 8px;">Tarih Önerisi Gönderildi!</div>
+          <div id="rel-add-success-msg" style="font-size:12px; color:var(--text-2); line-height: 1.6; margin-bottom: 20px;">Öneriniz incelenmek üzere gönderildi. Onaylandığında takvime eklenecek.</div>
+          <button class="rel-add-save" onclick="closeReleaseAddModal()" style="width:100%; text-align:center; display:block;">Tamam</button>
         </div>
       </div>
     </div>
