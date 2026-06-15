@@ -7392,6 +7392,74 @@ function pctChg(arr) {
   return (b - a) / Math.abs(a) * 100;
 }
 
+function toggleModalChartType(btn) {
+  const group = btn.closest('.modal-chart-type-group');
+  if (!group) return;
+  group.querySelectorAll('.modal-chart-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  const modal = btn.closest('.rel-add-modal');
+  if (!modal) return;
+  const modalId = modal.id;
+  
+  if (modalId === 'wci-chart-modal') {
+    if (typeof window.renderWciChart === 'function') window.renderWciChart();
+  } else if (modalId === 'bafi-chart-modal') {
+    if (typeof window.renderBafiChart === 'function') window.renderBafiChart();
+  } else if (modalId === 'iata-chart-modal') {
+    if (typeof window.renderIataChart === 'function') window.renderIataChart();
+  } else if (modalId === 'fbx-chart-modal') {
+    if (typeof window.renderFbxChart === 'function') window.renderFbxChart();
+  } else if (modalId === 'thy-chart-modal') {
+    if (typeof window.renderThyChart === 'function') window.renderThyChart();
+  } else if (modalId === 'forex-chart-modal') {
+    if (typeof window.renderForexChart === 'function') window.renderForexChart();
+  } else if (modalId === 'brent-chart-modal') {
+    if (typeof window.renderBrentModalChart === 'function') window.renderBrentModalChart();
+  } else if (modalId === 'jetfuel-chart-modal') {
+    if (typeof window.renderJetfuelModalChart === 'function') window.renderJetfuelModalChart();
+  }
+}
+
+function setDateInputsForPeriod(prefix, period, minDate, maxDate) {
+  const startEl = document.getElementById(`${prefix}-date-start`);
+  const endEl = document.getElementById(`${prefix}-date-end`);
+  if (!startEl || !endEl) return;
+  
+  const today = new Date();
+  let start = minDate ? new Date(minDate) : new Date();
+  let end = maxDate ? new Date(maxDate) : new Date();
+  
+  const todayStr = today.toISOString().slice(0, 10);
+  const maxDateStr = maxDate || todayStr;
+  
+  if (period === '1d') {
+    start = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+  } else if (period === '5d') {
+    start = new Date(end.getTime() - 5 * 24 * 60 * 60 * 1000);
+  } else if (period === '1m') {
+    start = new Date(end);
+    start.setMonth(start.getMonth() - 1);
+  } else if (period === '6m') {
+    start = new Date(end);
+    start.setMonth(start.getMonth() - 6);
+  } else if (period === 'ytd') {
+    start = new Date(end.getFullYear(), 0, 1);
+  } else if (period === '1y') {
+    start = new Date(end);
+    start.setFullYear(start.getFullYear() - 1);
+  } else if (period === '5y') {
+    start = new Date(end);
+    start.setFullYear(start.getFullYear() - 5);
+  } else if (period === 'max') {
+    start = minDate ? new Date(minDate) : new Date(end.getFullYear() - 10, 0, 1);
+  }
+  
+  const startStr = start.toISOString().slice(0, 10);
+  startEl.value = minDate && startStr < minDate ? minDate : startStr;
+  endEl.value = maxDateStr;
+}
+
 // ── CHART HELPERS ─────────────────────────────────────────────
 const CHART_DEFAULTS = {
   responsive: true,
