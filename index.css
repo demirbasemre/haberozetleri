@@ -8054,6 +8054,39 @@
   margin: 0;
 }
 
+/* ── IATA Yıl Seçici ────────────────────── */
+.iata-year-switcher {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  padding: 3px;
+}
+.iata-year-btn {
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-2);
+  transition: all 200ms ease;
+  letter-spacing: 0.3px;
+}
+.iata-year-btn:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+.iata-year-btn.active {
+  background: #7a64a8;
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(122,100,168,0.35);
+}
+
+
 .iata-reports-feed {
   display: grid;
   grid-template-columns: 1fr;
