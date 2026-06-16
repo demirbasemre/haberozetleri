@@ -7950,121 +7950,372 @@
 .iata-reports-layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
-  margin-top: 16px;
+  gap: 20px;
 }
-@media (min-width: 1024px) {
-  .iata-reports-layout {
-    grid-template-columns: 350px 1fr;
-  }
-}
-.iata-chart-card {
-  background: var(--surface);
+.iata-chart-panel {
+  width: 100%;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px;
+  background: var(--surface);
+  height: fit-content;
   box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.iata-chart-panel-inner {
+  width: 100%;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: fit-content;
 }
+.iata-panel-toggle {
+  display: none;
+}
+
+.iata-panel-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  border-left: 3px solid #7a64a8;
+  padding-left: 8px;
+}
+
+.iata-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 4px;
+}
+.iata-kpi-item {
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.iata-kpi-lbl {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.iata-kpi-val {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 1px;
+}
+.iata-kpi-sub {
+  font-size: 8.5px;
+  color: var(--text-3);
+}
+
 .iata-chart-container {
   position: relative;
-  height: 220px;
-  width: 100%;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  height: 180px;
 }
-.iata-reports-feed {
+.iata-chart-container-secondary {
+  position: relative;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  height: 150px;
+}
+
+.iata-reports-main {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
+.iata-reports-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.iata-reports-header-bar h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.iata-reports-feed {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .iata-reports-feed {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 .iata-report-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 18px;
   box-shadow: var(--shadow-sm);
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-  position: relative;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 420px;
 }
 .iata-report-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(122,100,168,0.3);
+  border-color: rgba(122, 100, 168, 0.4);
   box-shadow: var(--shadow-md);
 }
-.iata-report-header {
+
+.iata-report-period {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
   border-bottom: 1px solid var(--border-soft);
   padding-bottom: 8px;
 }
-.iata-report-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-}
-.iata-report-date {
-  font-size: 11px;
-  color: var(--text-3);
+.iata-report-period-badge {
+  font-size: 9px;
+  background: rgba(122, 100, 168, 0.1);
+  color: #7a64a8;
+  padding: 2px 6px;
+  border-radius: 4px;
   font-weight: 600;
 }
-.iata-report-grid {
+
+.iata-metrics-section-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.iata-metrics-primary, .iata-metrics-secondary, .iata-metrics-macro {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 6px;
   background: var(--bg-soft);
-  padding: 10px 14px;
+  padding: 8px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-soft);
 }
-[data-theme="light"] .iata-report-grid {
-  background: rgba(0,0,0,0.015);
+.iata-metrics-macro {
+  grid-template-columns: repeat(3, 1fr);
 }
 .iata-report-metric {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  align-items: center;
   text-align: center;
+  gap: 2px;
 }
 .iata-report-metric-lbl {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 600;
   color: var(--text-3);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 .iata-report-metric-val {
-  font-size: 13.5px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--text);
 }
-.iata-report-summary {
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--text-2);
-  margin-bottom: 16px;
+
+.iata-region-chart-wrap {
+  background: var(--bg-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
 }
+.iata-region-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.iata-region-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10px;
+}
+.iata-region-name {
+  width: 70px;
+  color: var(--text-2);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.iata-region-bar-track {
+  flex: 1;
+  height: 5px;
+  background: var(--border-soft);
+  border-radius: 3px;
+  position: relative;
+}
+.iata-region-bar-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+  opacity: 0.4;
+}
+.iata-region-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  position: absolute;
+}
+.iata-region-bar-fill.positive {
+  left: 50%;
+  background: #22c55e;
+}
+.iata-region-bar-fill.negative {
+  right: 50%;
+  background: #ef4444;
+}
+.iata-region-val {
+  width: 35px;
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.iata-report-summary {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+  margin: 4px 0;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .iata-report-footer {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 10px;
+  margin-top: auto;
 }
-.iata-report-link {
-  font-size: 11px;
-  font-weight: 700;
-  color: #7a64a8;
+.iata-report-link-pdf, .iata-report-link {
+  font-size: 10.5px;
+  font-weight: 600;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transition: color 0.15s;
+  padding: 5px 9px;
+  border-radius: 6px;
+  transition: background-color 0.15s, color 0.15s;
+}
+.iata-report-link-pdf {
+  background: rgba(122, 100, 168, 0.08);
+  color: #7a64a8;
+  border: 1px solid rgba(122, 100, 168, 0.2);
+}
+.iata-report-link-pdf:hover {
+  background: rgba(122, 100, 168, 0.15);
+  border-color: rgba(122, 100, 168, 0.3);
+}
+.iata-report-link {
+  background: var(--bg-soft);
+  color: var(--text-2);
+  border: 1px solid var(--border-soft);
 }
 .iata-report-link:hover {
-  color: #907bbd;
-  text-decoration: underline;
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+@media (min-width: 1200px) {
+  .iata-reports-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+    transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  .iata-reports-layout:has(.iata-chart-panel.collapsed) {
+    grid-template-columns: 0px 1fr;
+    gap: 0;
+  }
+  .iata-chart-panel {
+    width: 360px;
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    transition: width 0.4s, opacity 0.4s, transform 0.4s, visibility 0.4s, border-color 0.4s;
+    height: fit-content;
+    box-shadow: var(--shadow-sm);
+  }
+  .iata-chart-panel.collapsed {
+    width: 0px;
+    opacity: 0;
+    visibility: hidden;
+    border-color: transparent;
+    transform: translateX(-20px);
+  }
+  .iata-chart-panel-inner {
+    width: 358px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .iata-panel-toggle {
+    display: flex;
+    position: absolute;
+    left: -36px;
+    top: 10px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.2s, color 0.2s, left 0.4s;
+    z-index: 10;
+  }
+  .iata-panel-toggle:hover {
+    background: var(--bg-hover);
+    color: #7a64a8;
+  }
+  .iata-reports-layout:has(.iata-chart-panel.collapsed) .iata-panel-toggle {
+    left: 0px;
+  }
 }
