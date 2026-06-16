@@ -8054,36 +8054,94 @@
   margin: 0;
 }
 
-/* ── IATA Yıl Seçici ────────────────────── */
-.iata-year-switcher {
-  display: flex;
+/* ── IATA Başlık İçi Yıl Seçici ─────────── */
+.iata-title-year-wrapper {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+.iata-title-year-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 2px;
-  background: var(--bg-soft);
+  gap: 3px;
+  background: rgba(122, 100, 168, 0.10);
+  color: #7a64a8;
+  border: 1px solid rgba(122, 100, 168, 0.22);
+  border-radius: 6px;
+  padding: 1px 6px 1px 8px;
+  font-size: inherit;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+  line-height: 1.4;
+  touch-action: manipulation;
+}
+.iata-title-year-btn:hover {
+  background: rgba(122, 100, 168, 0.18);
+  border-color: rgba(122, 100, 168, 0.38);
+}
+.iata-title-year-btn[aria-expanded="true"] {
+  background: rgba(122, 100, 168, 0.22);
+  border-color: rgba(122, 100, 168, 0.45);
+}
+.iata-title-year-btn[aria-expanded="true"] .iata-year-chevron {
+  transform: rotate(180deg);
+}
+.iata-year-chevron {
+  transition: transform 180ms ease;
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+.iata-year-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  background: var(--surface);
   border: 1px solid var(--border-soft);
   border-radius: 8px;
-  padding: 3px;
+  padding: 4px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.13);
+  z-index: 300;
+  min-width: 76px;
+  display: none;
+  animation: iataDropIn 140ms ease;
 }
-.iata-year-btn {
-  padding: 4px 14px;
+.iata-year-dropdown-menu.open {
+  display: block;
+}
+@keyframes iataDropIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.iata-year-option {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
   font-size: 12px;
   font-weight: 700;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
+  text-align: left;
   background: transparent;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
   color: var(--text-2);
-  transition: all 200ms ease;
-  letter-spacing: 0.3px;
+  font-family: inherit;
+  transition: background 110ms;
+  touch-action: manipulation;
 }
-.iata-year-btn:hover {
-  background: var(--surface);
+.iata-year-option:hover {
+  background: var(--bg-soft);
   color: var(--text);
 }
-.iata-year-btn.active {
-  background: #7a64a8;
-  color: #fff;
-  box-shadow: 0 1px 4px rgba(122,100,168,0.35);
+.iata-year-option.active {
+  color: #7a64a8;
+  background: rgba(122, 100, 168, 0.09);
+}
+/* Modal için biraz daha küçük */
+.iata-title-year-btn--modal {
+  font-size: 15px;
+  padding: 1px 5px 1px 7px;
 }
 
 
