@@ -6337,6 +6337,10 @@
     outline: none;
     appearance: none;
     -webkit-appearance: none;
+    display: inline-flex !important;
+    flex-direction: row-reverse !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
   .stats-date-input:focus {
     border-color: var(--accent);
@@ -6347,6 +6351,8 @@
     cursor: pointer;
     width: 13px;
     height: 13px;
+    margin-left: 0 !important;
+    margin-right: 5px !important;
   }
   .stats-date-sep {
     font-size: 13px;
@@ -7661,6 +7667,10 @@
   padding: 0;
   cursor: pointer;
   width: 115px;
+  display: inline-flex !important;
+  flex-direction: row-reverse !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 /* Custom date input styling on webkit for clean look */
 .modal-date-input::-webkit-calendar-picker-indicator {
@@ -7668,6 +7678,8 @@
   cursor: pointer;
   opacity: 0.7;
   transition: opacity 0.15s;
+  margin-left: 0 !important;
+  margin-right: 5px !important;
 }
 .modal-date-input::-webkit-calendar-picker-indicator:hover {
   opacity: 1;

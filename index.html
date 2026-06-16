@@ -3624,7 +3624,8 @@ const SOURCE_LABELS = {
   'stattimes':      'StatTimes',
   'aircargoupdate': 'AirCargoUpdate',
   'payloadasia':    'PayloadAsia',
-  'IATA':           'IATA Pressroom'
+  'IATA':           'IATA Pressroom',
+  'haberekonomi':   'Haber Ekonomi'
 };
 
 const TR_MONTHS_SHORT = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
@@ -4251,7 +4252,8 @@ function getFavicon(source) {
     'aircargoweek':   'aircargoweek.com',
     'stattimes':      'stattimes.com',
     'payloadasia':    'payloadasia.com',
-    'IATA':           'iata.org'
+    'IATA':           'iata.org',
+    'haberekonomi':   'haberekonomi.com.tr'
   };
   const domain = domains[source] || source;
   return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
@@ -8912,21 +8914,13 @@ async function loadDashboard() {
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
 
-      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = validPoints.map(p => {
         const d = new Date(p.time * 1000);
-        const day = d.getDate();
-        const month = monthNamesTR[d.getMonth()];
-        const year = d.getFullYear();
-
         if (period === '1d') {
           const pad = num => String(num).padStart(2, '0');
           return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        } else if (dateRangeDays <= 370) {
-          return `${day} ${month}`;
         } else {
-          return `${month} '${String(year).slice(-2)}`;
+          return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
         }
       });
 
@@ -9439,21 +9433,13 @@ async function loadDashboard() {
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
 
-      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = validPoints.map(p => {
         const d = new Date(p.time * 1000);
-        const day = d.getDate();
-        const month = monthNamesTR[d.getMonth()];
-        const year = d.getFullYear();
-
         if (period === '1d') {
           const pad = num => String(num).padStart(2, '0');
           return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        } else if (dateRangeDays <= 370) {
-          return `${day} ${month}`;
         } else {
-          return `${month} '${String(year).slice(-2)}`;
+          return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
         }
       });
       
@@ -9747,18 +9733,9 @@ async function loadDashboard() {
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
 
-      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = validPoints.map(p => {
         const d = new Date(p.date + 'T12:00:00Z');
-        const day = d.getUTCDate();
-        const month = monthNamesTR[d.getUTCMonth()];
-        const year = d.getUTCFullYear();
-
-        if (dateRangeDays <= 370) {
-          return `${day} ${month}`;
-        }
-        return `${month} '${String(year).slice(-2)}`;
+        return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
       });
       
       // Galon -> Ton dönüşümü: price * 42 * 7.9 = price * 331.8
@@ -10592,18 +10569,10 @@ async function loadDashboard() {
       if (startVal) allData = allData.filter(d => d.date >= startVal);
       if (endVal) allData = allData.filter(d => d.date <= endVal);
 
-      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = allData.map(d => {
         const dateObj = new Date(d.date + 'T12:00:00Z');
         if (isNaN(dateObj)) return d.date;
-        const day = dateObj.getUTCDate();
-        const month = monthNamesTR[dateObj.getUTCMonth()];
-        const year = dateObj.getUTCFullYear();
-        if (dateRangeDays <= 370) {
-          return `${day} ${month}`;
-        }
-        return `${month} '${String(year).slice(-2)}`;
+        return dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
       });
       const prices = allData.map(d => d.value);
       const rawDates = allData.map(d => d.date);
@@ -10877,16 +10846,10 @@ async function loadDashboard() {
       if (startVal) allData = allData.filter(d => d.date >= startVal);
       if (endVal) allData = allData.filter(d => d.date <= endVal);
 
-      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = allData.map(d => {
         const dateObj = new Date(d.date + 'T12:00:00Z');
         if (isNaN(dateObj)) return d.date;
-        const day = dateObj.getUTCDate();
-        const month = monthNamesTR[dateObj.getUTCMonth()];
-        const year = dateObj.getUTCFullYear();
-        if (dateRangeDays <= 370) return `${day} ${month}`;
-        return `${month} '${String(year).slice(-2)}`;
+        return dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
       });
       const values = allData.map(d => d.value);
 
@@ -10969,16 +10932,10 @@ async function loadDashboard() {
       if (startVal) allData = allData.filter(d => d.date >= startVal);
       if (endVal) allData = allData.filter(d => d.date <= endVal);
 
-      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-      const dateRangeDays = (startVal && endVal) ? (new Date(endVal) - new Date(startVal)) / (1000 * 60 * 60 * 24) : 999;
       const labels = allData.map(d => {
         const dateObj = new Date(d.date + 'T12:00:00Z');
         if (isNaN(dateObj)) return d.date;
-        const day = dateObj.getUTCDate();
-        const month = monthNamesTR[dateObj.getUTCMonth()];
-        const year = dateObj.getUTCFullYear();
-        if (dateRangeDays <= 370) return `${day} ${month}`;
-        return `${month} '${String(year).slice(-2)}`;
+        return dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
       });
       const values = allData.map(d => d.value);
 
@@ -11208,13 +11165,10 @@ async function loadDashboard() {
       if (startVal) allData = allData.filter(d => d.date >= startVal);
       if (endVal) allData = allData.filter(d => d.date <= endVal);
 
-      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
       const labels = allData.map(d => {
         const dateObj = new Date(d.date + 'T12:00:00Z');
         if (isNaN(dateObj)) return d.date;
-        const month = monthNamesTR[dateObj.getUTCMonth()];
-        const year = dateObj.getUTCFullYear();
-        return `${month} '${String(year).slice(-2)}`;
+        return dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
       });
       const values = allData.map(d => d.value);
 
@@ -11489,26 +11443,13 @@ async function loadDashboard() {
         throw new Error("Çizilecek veri noktası bulunamadı.");
       }
 
-      const monthNamesTR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
       const labels = validPoints.map(p => {
         const d = new Date(p.time * 1000);
-        const day = d.getDate();
-        const month = monthNamesTR[d.getMonth()];
-        const year = d.getFullYear();
         if (period === '1d') {
           const pad = num => String(num).padStart(2, '0');
           return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
         }
-        if (period === '5d' || period === '1m' || period === '6m' || period === 'ytd') {
-          return `${day} ${month}`;
-        }
-        if (period === '1y' || period === '5y') {
-          return `${month} ${year}`;
-        }
-        if (period === 'max') {
-          return `${month} '${String(year).slice(-2)}`;
-        }
-        return `${day} ${month} '${String(year).slice(-2)}`;
+        return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
       });
       
       const prices = validPoints.map(p => p.value);
