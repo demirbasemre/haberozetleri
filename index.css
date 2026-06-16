@@ -69,7 +69,7 @@
   }
 
   .header-inner {
-    max-width: 1600px;
+    max-width: 1920px;
     margin: 0 auto;
     padding: 0 24px;
     height: 60px;
@@ -1535,7 +1535,7 @@
 
   /* ── MAIN ────────────────────────────────────── */
   .main {
-    max-width: 1600px;
+    max-width: 1920px;
     margin: 0 auto;
     padding: 8px 24px 72px;
   }
@@ -2394,6 +2394,7 @@
     width: 100%;
     margin-bottom: 6px;
     gap: 8px;
+    min-width: 0;
   }
   .dash-card-header-row .dash-card-label {
     margin-bottom: 0;
@@ -2405,6 +2406,10 @@
     text-transform: uppercase;
     letter-spacing: 0.07em;
     margin-bottom: 4px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-width: 0;
   }
   .dash-card-value {
     font-size: 26px;
@@ -7874,16 +7879,16 @@
 }
 
 #dash-sec-anlık .dash-cards {
-  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)) !important;
 }
 [data-tweak-density="compact"] #dash-sec-anlık .dash-cards {
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
 }
 [data-tweak-density="standard"] #dash-sec-anlık .dash-cards {
-  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)) !important;
 }
 [data-tweak-density="spacious"] #dash-sec-anlık .dash-cards {
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
 }
 
 /* ── CARGO METRICS GRID & TIMERS ── */
