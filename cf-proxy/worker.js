@@ -426,39 +426,88 @@ export default {
     if (urlObj.pathname === '/iata') {
       const forceDirect = urlObj.searchParams.get('direct') === '1';
       try {
-        const iataRes = await doFetch('https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/', {}, forceDirect);
-        const linkMatch = iataRes.body.match(/href=["'](https?:\/\/[^"']*?air-freight-monthly-analysis[^"']*?\.pdf)["']/i);
+        // 1. Scrape main portal to get latest monthly report link
+        const portalRes = await doFetch('https://www.iata.org/en/publications/economics/', {}, forceDirect);
+        const linkMatch = portalRes.body.match(/href=["']([^"']*?\/reports\/air-cargo-market-analysis-([a-z]+)-(\d{4})\/?)/i);
         
-        let parsed = null;
-        if (linkMatch && linkMatch[1]) {
-          const pdfUrl = linkMatch[1];
-          const nameMatch = pdfUrl.match(/analysis-([a-z]+)-(\d{4})/i);
-          const reportMonth = nameMatch ? `${nameMatch[1]} ${nameMatch[2]}` : 'Son Rapor';
-          parsed = {
-            success: true,
-            pdfLink: pdfUrl,
-            date: reportMonth
+        let reportUrl = 'https://www.iata.org/en/publications/economics/';
+        let reportMonth = '';
+        if (linkMatch) {
+          reportUrl = linkMatch[1];
+          if (!reportUrl.startsWith('http')) {
+            reportUrl = 'https://www.iata.org' + (reportUrl.startsWith('/') ? '' : '/') + reportUrl;
+          }
+          const monthsTr = {
+            january: 'Ocak', february: 'Şubat', march: 'Mart', april: 'Nisan',
+            may: 'Mayıs', june: 'Haziran', july: 'Temmuz', august: 'Ağustos',
+            september: 'Eylül', october: 'Ekim', november: 'Kasım', december: 'Aralık'
           };
+          const monthEn = linkMatch[2].toLowerCase();
+          const year = linkMatch[3];
+          reportMonth = `${monthsTr[monthEn] || monthEn} ${year}`;
         }
 
+        // 2. Fetch n8n webhook reports to get parsed metrics & summaries
         const fallbackRes = await doFetch('https://n8n.emredemirbas.com/webhook/raporlar', {}, forceDirect);
         const reportsJson = JSON.parse(fallbackRes.body);
-        const latestReport = reportsJson.reports[0];
         
-        const demandM = latestReport.html_content.match(/Hava Kargo Talebi<\/div>\s*<div[^>]*>([^<]+)<\/div>/i);
-        const capacityM = latestReport.html_content.match(/Hava Kargo Kapasitesi<\/div>\s*<div[^>]*>([^<]+)<\/div>/i);
+        // Find the latest report that actually has parsed metrics (not placeholders like '—')
+        const latestReport = (reportsJson.reports || []).find(r => {
+          const html = r.html_content || '';
+          const hasDemand = html.includes('Hava Kargo Talebi') && 
+            !html.match(/<span class="kpi-label">\s*Hava Kargo Talebi\s*<\/span>\s*<span class="kpi-value">\s*—\s*<\/span>/i) && 
+            !html.match(/<div class="metric-label">\s*Hava Kargo Talebi\s*<\/div>\s*<div class="metric-value">\s*—\s*<\/div>/i);
+          return hasDemand;
+        }) || (reportsJson.reports && reportsJson.reports[0]);
+        
+        // Helper to extract values from HTML content
+        const html = latestReport.html_content || '';
+        function extractVal(label) {
+          const escapedLabel = label.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+          // Try metric-card
+          let m = html.match(new RegExp(`<div class="metric-label">\\s*${escapedLabel}\\s*<\/div>\\s*<div class="metric-value">([^<]+)<\/div>`, 'i'));
+          if (m) return m[1].trim();
+          // Try kpi
+          m = html.match(new RegExp(`<span class="kpi-label">\\s*${escapedLabel}\\s*<\/span>\\s*<span class="kpi-value">([^<]+)<\/span>`, 'i'));
+          if (m) return m[1].trim();
+          return '—';
+        }
 
-        parsed = {
+        const demand = extractVal('Hava Kargo Talebi');
+        const capacity = extractVal('Hava Kargo Kapasitesi');
+        const loadFactor = extractVal('Yük Faktörü (CLF)') !== '—' ? extractVal('Yük Faktörü (CLF)') : extractVal('Yük Faktörü');
+        const spotRate = extractVal('Global Spot Rates') !== '—' ? extractVal('Global Spot Rates') : extractVal('Air Freight Index');
+
+        // Extract IATA summary from Section 4 summary-box
+        const sec4Match = html.match(/id="sec-4"[^>]*>[\s\S]*?<div class="summary-box"><strong>ÖZET<\/strong>\s*([\s\S]*?)<\/div>/i) ||
+                           html.match(/id="sec-2"[^>]*>[\s\S]*?<div class="summary-box"><strong>ÖZET<\/strong>\s*([\s\S]*?)<\/div>/i);
+        let summary = sec4Match ? sec4Match[1].replace(/<[^>]+>/g, '').trim() : '';
+        if (!summary) {
+          const execMatch = html.match(/<h2>📋 Yönetici Özeti<\/h2>\s*<p>([\s\S]*?)<\/p>/i);
+          summary = execMatch ? execMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+        }
+
+        const finalDate = reportMonth || new Date(latestReport.date).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
+
+        const parsed = {
           success: true,
-          pdfLink: parsed ? parsed.pdfLink : 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/',
-          date: parsed ? parsed.date : new Date(latestReport.date).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' }),
-          demand: demandM ? demandM[1].trim() : '—',
-          capacity: capacityM ? capacityM[1].trim() : '—'
+          pdfLink: reportUrl,
+          date: finalDate,
+          demand: demand,
+          capacity: capacity,
+          loadFactor: loadFactor,
+          spotRate: spotRate,
+          summary: summary
         };
 
         return new Response(JSON.stringify(parsed), {
           status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=86400' }
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=86400',
+            'X-Scraped-Url': reportUrl
+          }
         });
       } catch (err) {
         return new Response(JSON.stringify({ error: err.message }), {
