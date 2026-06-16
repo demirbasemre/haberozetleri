@@ -7875,7 +7875,6 @@
 
 #dash-sec-anlık .dash-cards {
   grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)) !important;
-  justify-content: start !important;
 }
 [data-tweak-density="compact"] #dash-sec-anlık .dash-cards {
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
