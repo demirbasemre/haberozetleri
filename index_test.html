@@ -2901,11 +2901,18 @@
     <div id="iata-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="iata-chart-title">
       <div class="chart-modal-card" style="max-width: 1050px; width: 95vw; max-height: 95vh; overflow-y: auto;">
         <div class="rel-add-head" style="margin-bottom: 15px; border-bottom: 1px solid var(--border-soft); padding-bottom: 10px;">
-          <div style="display:flex; align-items:center; gap:14px; flex:1;">
-            <div id="iata-chart-title" class="rel-add-title" style="font-size: 16px; font-weight: 800; color: #7a64a8;">IATA Hava Kargo Analizi &amp; Trend Göstergeleri</div>
-            <div class="iata-year-switcher" id="iata-modal-year-switcher">
-              <button class="iata-year-btn" data-year="2025" onclick="window.switchIataYear('2025', true)">2025</button>
-              <button class="iata-year-btn active" data-year="2026" onclick="window.switchIataYear('2026', true)">2026</button>
+          <div style="display:flex; align-items:center; gap:8px; flex:1;">
+            <div id="iata-chart-title" class="rel-add-title" style="font-size: 16px; font-weight: 800; color: #7a64a8; display:flex; align-items:center; gap:0; flex-wrap:wrap;">
+              IATA Hava Kargo Analizi &amp; Trend&nbsp;·&nbsp;<span class="iata-title-year-wrapper" id="iata-modal-title-year-wrapper">
+                <button class="iata-title-year-btn iata-title-year-btn--modal" id="iata-modal-title-year-btn" onclick="toggleIataYearDropdown(event, true)" aria-haspopup="listbox" aria-expanded="false">
+                  <span id="iata-modal-title-year-label">2026</span>
+                  <svg class="iata-year-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="iata-year-dropdown-menu" id="iata-modal-year-dropdown" role="listbox">
+                  <button class="iata-year-option" data-year="2026" onclick="selectIataYearFromDropdown('2026', true)">2026</button>
+                  <button class="iata-year-option" data-year="2025" onclick="selectIataYearFromDropdown('2025', true)">2025</button>
+                </div>
+              </span>
             </div>
           </div>
           <button class="rel-add-x" onclick="closeIataChartModal()" aria-label="Kapat">×</button>
@@ -3794,12 +3801,19 @@
       <div class="iata-reports-main" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 10px;">
         <div class="iata-reports-header-bar" style="margin-bottom: 20px;">
           <div>
-            <h3 id="iata-reports-title">IATA Hava Kargo Market Analizleri · 2026</h3>
+            <h3 id="iata-reports-title" style="display:flex; align-items:center; gap:0; flex-wrap:wrap;">
+              IATA Hava Kargo Market Analizleri&nbsp;·&nbsp;<span class="iata-title-year-wrapper" id="iata-title-year-wrapper">
+                <button class="iata-title-year-btn" id="iata-title-year-btn" onclick="toggleIataYearDropdown(event)" aria-haspopup="listbox" aria-expanded="false">
+                  <span id="iata-title-year-label">2026</span>
+                  <svg class="iata-year-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="iata-year-dropdown-menu" id="iata-year-dropdown" role="listbox">
+                  <button class="iata-year-option" data-year="2026" onclick="selectIataYearFromDropdown('2026')">2026</button>
+                  <button class="iata-year-option" data-year="2025" onclick="selectIataYearFromDropdown('2025')">2025</button>
+                </div>
+              </span>
+            </h3>
             <span style="font-size:11px;color:var(--text-3);">Kaynak: iata.org/economics</span>
-          </div>
-          <div class="iata-year-switcher" id="iata-year-switcher">
-            <button class="iata-year-btn" data-year="2025" onclick="window.switchIataYear('2025')">2025</button>
-            <button class="iata-year-btn active" data-year="2026" onclick="window.switchIataYear('2026')">2026</button>
           </div>
         </div>
 
@@ -7949,10 +7963,12 @@ function openIataChartModal() {
     m.style.display = 'flex';
 
     setTimeout(async () => {
-      // Aktif yıl butonlarını modal açılırken senkronize et
+      // Aktif yıl badge + dropdown option'larını modal açılırken senkronize et
       const activeYear = window._iataActiveYear || '2026';
-      document.querySelectorAll('.iata-year-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.year === activeYear);
+      const modalLbl = document.getElementById('iata-modal-title-year-label');
+      if (modalLbl) modalLbl.textContent = activeYear;
+      document.querySelectorAll('.iata-year-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.year === activeYear);
       });
 
       // reports listesi yuklenmemisse yukle
@@ -18364,17 +18380,50 @@ function initControls(allArticles) {
     printWindow.document.close();
   };
 
+  function toggleIataYearDropdown(e, isModal = false) {
+    e.stopPropagation();
+    const menuId = isModal ? 'iata-modal-year-dropdown' : 'iata-year-dropdown';
+    const btnId  = isModal ? 'iata-modal-title-year-btn' : 'iata-title-year-btn';
+    const menu = document.getElementById(menuId);
+    const btn  = document.getElementById(btnId);
+    if (!menu || !btn) return;
+    const isOpen = menu.classList.contains('open');
+    // Tüm açık dropdown'ları kapat
+    document.querySelectorAll('.iata-year-dropdown-menu.open').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.iata-title-year-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    if (!isOpen) {
+      menu.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  }
+  window.toggleIataYearDropdown = toggleIataYearDropdown;
+
+  function selectIataYearFromDropdown(year, isModal = false) {
+    document.querySelectorAll('.iata-year-dropdown-menu').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.iata-title-year-btn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+    window.switchIataYear(year);
+  }
+  window.selectIataYearFromDropdown = selectIataYearFromDropdown;
+
+  // Dropdown dışı tıklamada kapat
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.iata-year-dropdown-menu.open').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.iata-title-year-btn[aria-expanded="true"]').forEach(b => b.setAttribute('aria-expanded', 'false'));
+  });
+
   async function switchIataYear(year, isModal = false) {
     window._iataActiveYear = year;
 
-    // Tüm yıl butonlarını güncelle (hem rapor sayfası hem modal)
-    document.querySelectorAll('.iata-year-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.year === year);
-    });
+    // Badge etiketlerini güncelle
+    const labelEl      = document.getElementById('iata-title-year-label');
+    const modalLabelEl = document.getElementById('iata-modal-title-year-label');
+    if (labelEl)      labelEl.textContent = year;
+    if (modalLabelEl) modalLabelEl.textContent = year;
 
-    // Başlık güncelle
-    const titleEl = document.getElementById('iata-reports-title');
-    if (titleEl) titleEl.textContent = `IATA Hava Kargo Market Analizleri · ${year}`;
+    // Dropdown option active state'leri güncelle
+    document.querySelectorAll('.iata-year-option').forEach(opt => {
+      opt.classList.toggle('active', opt.dataset.year === year);
+    });
 
     // Veri yükle
     const feedListEl = document.getElementById('iata-report-feed-list');
