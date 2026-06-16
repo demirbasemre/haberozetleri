@@ -2899,56 +2899,89 @@
 
     <!-- IATA Grafik Modali -->
     <div id="iata-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="iata-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="iata-chart-title" class="rel-add-title">IATA Market Analizi</div>
+      <div class="chart-modal-card" style="max-width: 1050px; width: 95vw; max-height: 95vh; overflow-y: auto;">
+        <div class="rel-add-head" style="margin-bottom: 15px; border-bottom: 1px solid var(--border-soft); padding-bottom: 10px;">
+          <div id="iata-chart-title" class="rel-add-title" style="font-size: 16px; font-weight: 800; color: #7a64a8;">IATA Hava Kargo Analizi &amp; Trend Göstergeleri</div>
           <button class="rel-add-x" onclick="closeIataChartModal()" aria-label="Kapat">×</button>
         </div>
-        <!-- Metrik Seçici Sekmeler -->
-        <div class="iata-metric-selector" style="display:flex; gap:6px; margin: 10px 0; padding-bottom:8px; border-bottom:1px solid var(--border-soft); overflow-x:auto;">
-          <button class="fdd-btn fdd-btn--active iata-m-btn" data-metric="demand" onclick="selectIataChartMetric(this, 'demand')">Talep (CTK)</button>
-          <button class="fdd-btn iata-m-btn" data-metric="capacity" onclick="selectIataChartMetric(this, 'capacity')">Kapasite (ACTK)</button>
-          <button class="fdd-btn iata-m-btn" data-metric="loadFactor" onclick="selectIataChartMetric(this, 'loadFactor')">LF</button>
-          <button class="fdd-btn iata-m-btn" data-metric="spotRate" onclick="selectIataChartMetric(this, 'spotRate')">Spot Navlun</button>
-        </div>
-        <div class="chart-modal-controls">
-          <div class="modal-controls-left">
-            <div class="iata-period-btns">
-              <button class="iata-period-btn forex-btn" id="btn-iata-6m" data-period="6m">6A</button>
-              <button class="iata-period-btn forex-btn active" id="btn-iata-ytd" data-period="ytd">YTD</button>
-              <button class="iata-period-btn forex-btn" id="btn-iata-1y" data-period="1y">1Y</button>
-              <button class="iata-period-btn forex-btn" id="btn-iata-max" data-period="max">Tümü</button>
-            </div>
-            <div class="modal-date-picker">
-              <input type="date" class="modal-date-input" id="iata-date-start" aria-label="Başlangıç tarihi">
-              <span class="modal-date-separator">→</span>
-              <input type="date" class="modal-date-input" id="iata-date-end" aria-label="Bitiş tarihi">
-            </div>
+
+        <!-- Latest KPI Strip -->
+        <div class="iata-kpi-strip" id="iata-kpi-strip" style="margin-bottom: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; background: var(--bg-soft); padding: 12px; border-radius: 8px; border: 1px solid var(--border-soft);">
+          <div class="iata-kpi-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <span class="iata-kpi-lbl" style="font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase;">Talep CTK</span>
+            <span class="iata-kpi-val" style="font-size: 20px; font-weight: 800; color:#22c55e" id="kpi-demand">—</span>
+            <span class="iata-kpi-sub" style="font-size: 9px; color: var(--text-3);">Yıllık büyüme</span>
           </div>
-          <div class="modal-controls-right">
-            <div class="modal-chart-type-group">
-              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 3v18h18"></path>
-                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
-                </svg>
-              </button>
-              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="18" y1="20" x2="18" y2="10"></line>
-                  <line x1="12" y1="20" x2="12" y2="4"></line>
-                  <line x1="6" y1="20" x2="6" y2="14"></line>
-                </svg>
-              </button>
-            </div>
-            <button class="export-btn" onclick="exportIataToCSV()" title="IATA verisini CSV olarak indir">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Excel
-            </button>
+          <div class="iata-kpi-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <span class="iata-kpi-lbl" style="font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase;">Kapasite ACTK</span>
+            <span class="iata-kpi-val" id="kpi-capacity" style="font-size: 20px; font-weight: 800; color:var(--text)">—</span>
+            <span class="iata-kpi-sub" style="font-size: 9px; color: var(--text-3);">Yıllık değişim</span>
+          </div>
+          <div class="iata-kpi-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <span class="iata-kpi-lbl" style="font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase;">Load Factor</span>
+            <span class="iata-kpi-val" id="kpi-lf" style="font-size: 20px; font-weight: 800; color:#7a64a8">—</span>
+            <span class="iata-kpi-sub" style="font-size: 9px; color: var(--text-3);">Doluluk oranı</span>
+          </div>
+          <div class="iata-kpi-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+            <span class="iata-kpi-lbl" style="font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase;">Cargo Yield</span>
+            <span class="iata-kpi-val" id="kpi-yield" style="font-size: 20px; font-weight: 800; color:#f59e0b">—</span>
+            <span class="iata-kpi-sub" style="font-size: 9px; color: var(--text-3);">Yıllık artış</span>
           </div>
         </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-iata"></canvas>
+
+        <!-- Charts Grid (2 columns) -->
+        <div class="iata-modal-charts-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          
+          <!-- Sol Sütun: Trend Grafik ve Filtreler -->
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <span style="font-size: 12px; font-weight: 700; color: var(--text-2);">CTK &amp; ACTK Performansı</span>
+              
+              <!-- Filters -->
+              <div style="display:flex; gap:6px;">
+                <select id="iata-filter-segment" onchange="window.updateIataTrendChartData()" style="font-size:10.5px; padding:4px 6px; border-radius:4px; border:1px solid var(--border-soft); background:var(--surface); color:var(--text); font-weight:600; cursor:pointer;">
+                  <option value="totalMarket">Total Market</option>
+                  <option value="international">International</option>
+                </select>
+                <select id="iata-filter-region" onchange="window.updateIataTrendChartData()" style="font-size:10.5px; padding:4px 6px; border-radius:4px; border:1px solid var(--border-soft); background:var(--surface); color:var(--text); font-weight:600; cursor:pointer;">
+                  <option value="world">Küresel (World)</option>
+                  <option value="asiaPacific">Asya-Pasifik</option>
+                  <option value="northAmerica">Kuzey Amerika</option>
+                  <option value="europe">Avrupa</option>
+                  <option value="middleEast">Orta Doğu</option>
+                  <option value="latinAmerica">L. Amerika</option>
+                  <option value="africa">Afrika</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Mode selector radio buttons -->
+            <div style="display:flex; gap:12px; justify-content:center; background:var(--bg-soft); padding:4px; border-radius:4px; border:1px solid var(--border-soft);">
+              <label style="font-size:10px; color:var(--text-2); display:flex; align-items:center; gap:4px; cursor:pointer; font-weight:600;">
+                <input type="radio" name="iata-chart-mode" value="yoy" checked onchange="window.updateIataTrendChartData()" style="cursor:pointer;"> YoY (Yıllık Değişim)
+              </label>
+              <label style="font-size:10px; color:var(--text-2); display:flex; align-items:center; gap:4px; cursor:pointer; font-weight:600;">
+                <input type="radio" name="iata-chart-mode" value="ytd" onchange="window.updateIataTrendChartData()"> YTD (Yıl Başından)
+              </label>
+            </div>
+
+            <!-- Trend Chart Canvas -->
+            <div class="iata-chart-container" style="position:relative; width:100%; height:260px;">
+              <canvas id="iata-trend-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Sağ Sütun: Spot Rate + Doluluk Grafik -->
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; height:34px;">
+              <span style="font-size: 12px; font-weight: 700; color: var(--text-2);">Spot Rate &amp; Yük Faktörü</span>
+            </div>
+            <!-- Secondary Chart Canvas -->
+            <div class="iata-chart-container-secondary" style="position:relative; width:100%; height:304px;">
+              <canvas id="iata-spotrate-chart"></canvas>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -3752,103 +3785,15 @@
 
     <!-- IATA Hava Kargo Market Analizi Raporları -->
     <div id="iata-report-container" class="fleet-report-container" style="display:none">
-      <div class="iata-reports-layout">
-
-        <!-- Sol panel: Trend Grafikleri + KPI Strip -->
-        <div class="iata-chart-panel" id="iata-chart-panel">
-          <div class="iata-chart-panel-inner">
-
-            <!-- Latest KPI Strip -->
-            <div>
-              <div class="iata-panel-section-title">Son Veri (Nisan 2026)</div>
-              <div class="iata-kpi-strip" id="iata-kpi-strip">
-                <div class="iata-kpi-item">
-                  <span class="iata-kpi-lbl">Talep CTK</span>
-                  <span class="iata-kpi-val" style="color:#22c55e" id="kpi-demand">—</span>
-                  <span class="iata-kpi-sub">Yıllık büyüme</span>
-                </div>
-                <div class="iata-kpi-item">
-                  <span class="iata-kpi-lbl">Kapasite ACTK</span>
-                  <span class="iata-kpi-val" id="kpi-capacity" style="color:var(--text)">—</span>
-                  <span class="iata-kpi-sub">Yıllık değişim</span>
-                </div>
-                <div class="iata-kpi-item">
-                  <span class="iata-kpi-lbl">Load Factor</span>
-                  <span class="iata-kpi-val" id="kpi-lf" style="color:#7a64a8">—</span>
-                  <span class="iata-kpi-sub">Doluluk oranı</span>
-                </div>
-                <div class="iata-kpi-item">
-                  <span class="iata-kpi-lbl">Cargo Yield</span>
-                  <span class="iata-kpi-val" id="kpi-yield" style="color:#f59e0b">—</span>
-                  <span class="iata-kpi-sub">Yıllık artış</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Trend Chart: CTK vs ACTK -->
-            <div>
-              <div class="iata-panel-section-title" style="display:flex; justify-content:space-between; align-items:center;">
-                <span>CTK & ACTK Performansı</span>
-              </div>
-              <div class="iata-chart-filters" style="display:grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
-                <select id="iata-filter-segment" onchange="window.updateIataTrendChartData()" style="font-size:10px; padding:4px 6px; border-radius:4px; border:1px solid var(--border-soft); background:var(--surface); color:var(--text); font-weight:600; cursor:pointer;">
-                  <option value="totalMarket">Total Market</option>
-                  <option value="international">International</option>
-                </select>
-                <select id="iata-filter-region" onchange="window.updateIataTrendChartData()" style="font-size:10px; padding:4px 6px; border-radius:4px; border:1px solid var(--border-soft); background:var(--surface); color:var(--text); font-weight:600; cursor:pointer;">
-                  <option value="world">Küresel (World)</option>
-                  <option value="asiaPacific">Asya-Pasifik</option>
-                  <option value="northAmerica">Kuzey Amerika</option>
-                  <option value="europe">Avrupa</option>
-                  <option value="middleEast">Orta Doğu</option>
-                  <option value="latinAmerica">L. Amerika</option>
-                  <option value="africa">Afrika</option>
-                </select>
-              </div>
-              <div class="iata-chart-filters-mode" style="display:flex; gap: 12px; margin-bottom: 8px; justify-content: center; background: var(--bg-soft); padding: 4px; border-radius: 4px; border: 1px solid var(--border-soft);">
-                <label style="font-size:10px; color:var(--text-2); display:flex; align-items:center; gap:4px; cursor:pointer; font-weight:600;">
-                  <input type="radio" name="iata-chart-mode" value="yoy" checked onchange="window.updateIataTrendChartData()" style="cursor:pointer;"> YoY (Yıllık)
-                </label>
-                <label style="font-size:10px; color:var(--text-2); display:flex; align-items:center; gap:4px; cursor:pointer; font-weight:600;">
-                  <input type="radio" name="iata-chart-mode" value="ytd" onchange="window.updateIataTrendChartData()"> YTD (Yıl Başından)
-                </label>
-              </div>
-              <div class="iata-chart-container">
-                <canvas id="iata-trend-chart"></canvas>
-              </div>
-            </div>
-
-            <!-- Spot Rate + Load Factor Chart -->
-            <div>
-              <div class="iata-panel-section-title">Spot Rate & Load Factor</div>
-              <div class="iata-chart-container-secondary">
-                <canvas id="iata-spotrate-chart"></canvas>
-              </div>
-            </div>
-
-          </div>
+      <div class="iata-reports-main" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 10px;">
+        <div class="iata-reports-header-bar" style="margin-bottom: 20px;">
+          <h3>IATA Hava Kargo Market Analizleri · 2026</h3>
+          <span style="font-size:11px;color:var(--text-3);">Kaynak: iata.org/economics</span>
         </div>
 
-        <!-- Ana içerik: Başlık + 2-sütun rapor listesi -->
-        <div class="iata-reports-main">
-          <!-- Panel toggle butonu -->
-          <button class="iata-panel-toggle panel-open" id="iata-panel-toggle"
-                  onclick="window.toggleIataPanel()" title="Grafik panelini gizle/göster">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M15 18l-6-6 6-6"/>
-            </svg>
-          </button>
-
-          <div class="iata-reports-header-bar">
-            <h3>IATA Hava Kargo Market Analizleri · 2026</h3>
-            <span style="font-size:11px;color:var(--text-3);">Kaynak: iata.org/economics</span>
-          </div>
-
-          <div class="iata-reports-feed" id="iata-report-feed-list">
-            <!-- Rapor kartları dynamic olarak JS ile render edilecek -->
-          </div>
+        <div class="iata-reports-feed" id="iata-report-feed-list">
+          <!-- Rapor kartları dynamic olarak JS ile render edilecek -->
         </div>
-
       </div>
     </div>
 
@@ -7984,15 +7929,6 @@ function openIataChartModal() {
   const m = document.getElementById('iata-chart-modal');
   if (m) {
     m.style.display = 'flex';
-    // Metrik secici sekmeleri baslangicta 'demand'e sifirla ve aktif yap
-    window._iataActiveMetric = 'demand';
-    const selector = m.querySelector('.iata-metric-selector');
-    if (selector) {
-      selector.querySelectorAll('.iata-m-btn').forEach(btn => {
-        const active = btn.dataset.metric === 'demand';
-        btn.classList.toggle('fdd-btn--active', active);
-      });
-    }
 
     setTimeout(async () => {
       // reports listesi yuklenmemisse yukle
@@ -8020,10 +7956,32 @@ function openIataChartModal() {
         }
       }
 
-      if (typeof window.renderIataChart === 'function') {
-        window.renderIataChart();
+      // Populate KPI strip
+      const latest = window._iataReportsList[0];
+      if (latest) {
+        const kpiDemand = document.getElementById('kpi-demand');
+        const kpiCapacity = document.getElementById('kpi-capacity');
+        const kpiLF = document.getElementById('kpi-lf');
+        const kpiYield = document.getElementById('kpi-yield');
+        if (kpiDemand) {
+          kpiDemand.textContent = latest.demand || '—';
+          kpiDemand.style.color = (latest.demand || '').startsWith('+') ? '#22c55e' : (latest.demand || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
+        }
+        if (kpiCapacity) {
+          kpiCapacity.textContent = latest.capacity || '—';
+          kpiCapacity.style.color = (latest.capacity || '').startsWith('+') ? '#22c55e' : (latest.capacity || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
+        }
+        if (kpiLF) kpiLF.textContent = latest.loadFactor || '—';
+        if (kpiYield) {
+          kpiYield.textContent = latest.cargoYield || '—';
+          kpiYield.style.color = '#f59e0b';
+        }
+      }
+
+      if (typeof window.renderIataTrendChart === 'function') {
+        window.renderIataTrendChart(window._iataReportsList);
       } else {
-        console.warn("window.renderIataChart henüz hazır değil.");
+        console.warn("window.renderIataTrendChart henüz hazır değil.");
       }
     }, 150);
   }
@@ -17831,10 +17789,6 @@ function initControls(allArticles) {
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               PDF İndir
             </a>
-            <button class="iata-report-link-pdf" onclick="window.downloadTurkishIataReportPdf('${r.date}')" style="cursor:pointer; background:rgba(34,197,94,0.08); color:#16a34a; border:1px solid rgba(34,197,94,0.2);">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Türkçe PDF
-            </button>
             <a class="iata-report-link" href="${r.link}" target="_blank" rel="noopener">
               Basın Bülteni
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
@@ -18390,6 +18344,8 @@ function initControls(allArticles) {
   window.showReportsHome   = showReportsHome;
   window.switchReportType  = switchReportType;
   window.initIataReportsTab = initIataReportsTab;
+  window.renderIataTrendChart = renderIataTrendChart;
+  window.updateIataTrendChartData = updateIataTrendChartData;
 let _finChart = null;
 let _finPrevChartSig = null;        // son render'ın metrik/tip/dönem/CY/tema imzası
 let _finPrevChartSlugs = new Set(); // son render'da görünür seriler
