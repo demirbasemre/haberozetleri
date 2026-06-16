@@ -27,7 +27,49 @@
     },
     "link": "https://www.iata.org/en/pressroom/2026-releases/05-28-air-cargo-demand-up-april-middle-east-disruption/",
     "pdfLink": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-april-2026/",
-    "summary": "Nisan 2026 küresel hava kargo talebi yıllık %4.0 artarak yeniden büyüme bölgesine dönmüştür. Asya-Pasifik havayolları en güçlü performansı (%10.5 CTK artışı) sergilarken, Orta Doğu havayolları Körfez bölgesindeki ciddi kapasite kesintileri nedeniyle %18.2 gerileme yaşadı. Kapasite küresel ölçekte %0.4 daraldı. Cargo yield %32.2 artarken jet yakıt fiyatları %121.1 yükseldi."
+    "summary": "Nisan 2026 küresel hava kargo talebi yıllık %4.0 artarak yeniden büyüme bölgesine dönmüştür. Asya-Pasifik havayolları en güçlü performansı (%10.5 CTK artışı) sergilerken, Orta Doğu havayolları Körfez bölgesindeki ciddi kapasite kesintileri nedeniyle %18.2 gerileme yaşadı. Kapasite küresel ölçekte %0.4 daraldı. Cargo yield %32.2 artarken jet yakıt fiyatları %121.1 yükseldi.",
+    "data": {
+      "totalMarket": {
+        "yoy": {
+          "world": { "ctk": "+4.0%", "actk": "-0.4%" },
+          "africa": { "ctk": "+7.7%", "actk": "-9.4%" },
+          "asiaPacific": { "ctk": "+10.5%", "actk": "+5.3%" },
+          "europe": { "ctk": "+6.0%", "actk": "+3.0%" },
+          "latinAmerica": { "ctk": "-2.8%", "actk": "+1.2%" },
+          "middleEast": { "ctk": "-18.2%", "actk": "-22.9%" },
+          "northAmerica": { "ctk": "+5.0%", "actk": "+1.2%" }
+        },
+        "ytd": {
+          "world": { "ctk": "+3.6%", "actk": "+1.5%" },
+          "africa": { "ctk": "+12.3%", "actk": "+1.6%" },
+          "asiaPacific": { "ctk": "+9.5%", "actk": "+6.3%" },
+          "europe": { "ctk": "+5.4%", "actk": "+4.6%" },
+          "latinAmerica": { "ctk": "-1.5%", "actk": "+3.3%" },
+          "middleEast": { "ctk": "-13.9%", "actk": "-13.9%" },
+          "northAmerica": { "ctk": "+2.6%", "actk": "+0.6%" }
+        }
+      },
+      "international": {
+        "yoy": {
+          "world": { "ctk": "+4.0%", "actk": "-0.9%" },
+          "africa": { "ctk": "+7.8%", "actk": "-9.0%" },
+          "asiaPacific": { "ctk": "+11.3%", "actk": "+7.6%" },
+          "europe": { "ctk": "+6.4%", "actk": "+3.3%" },
+          "latinAmerica": { "ctk": "-2.4%", "actk": "+0.8%" },
+          "middleEast": { "ctk": "-18.2%", "actk": "-23.1%" },
+          "northAmerica": { "ctk": "+4.5%", "actk": "-0.6%" }
+        },
+        "ytd": {
+          "world": { "ctk": "+3.8%", "actk": "+1.6%" },
+          "africa": { "ctk": "+12.4%", "actk": "+1.7%" },
+          "asiaPacific": { "ctk": "+9.9%", "actk": "+7.1%" },
+          "europe": { "ctk": "+5.7%", "actk": "+4.6%" },
+          "latinAmerica": { "ctk": "-0.3%", "actk": "+3.0%" },
+          "middleEast": { "ctk": "-13.9%", "actk": "-14.1%" },
+          "northAmerica": { "ctk": "+3.2%", "actk": "+0.6%" }
+        }
+      }
+    }
   },
   {
     "date": "Mart 2026",
@@ -57,7 +99,49 @@
     },
     "link": "https://www.iata.org/en/pressroom/2026-releases/air-cargo-market-analysis-march-2026/",
     "pdfLink": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-march-2026/",
-    "summary": "Mart 2026 küresel hava kargo talebinde yıllık %4.8'lik bir daralma gözlenmiştir. Orta Doğu'daki jeopolitik kısıtlamalar, operasyonel aksamalar ve Paskalya tatili nedeniyle çalışma günlerinin azalması bu gerilemenin temel nedenleri olmuştur. PMI 51.2 ile büyüme eşiğinde kalmış, ihracat siparişleri ise 49.1 ile küçük ölçeğe gerilemiştir."
+    "summary": "Mart 2026 küresel hava kargo talebinde yıllık %4.8'lik bir daralma gözlenmiştir. Orta Doğu'daki jeopolitik kısıtlamalar, operasyonel aksamalar ve Paskalya tatili nedeniyle çalışma günlerinin azalması bu gerilemenin temel nedenleri olmuştur. PMI 51.2 ile büyüme eşiğinde kalmış, ihracat siparişleri ise 49.1 ile küçük ölçeğe gerilemiştir.",
+    "data": {
+      "totalMarket": {
+        "yoy": {
+          "world": { "ctk": "-4.8%", "actk": "-1.2%" },
+          "africa": { "ctk": "+3.2%", "actk": "-6.1%" },
+          "asiaPacific": { "ctk": "+2.1%", "actk": "+3.8%" },
+          "europe": { "ctk": "+1.5%", "actk": "+1.2%" },
+          "latinAmerica": { "ctk": "-5.1%", "actk": "-1.8%" },
+          "middleEast": { "ctk": "-22.4%", "actk": "-25.1%" },
+          "northAmerica": { "ctk": "-3.2%", "actk": "-0.5%" }
+        },
+        "ytd": {
+          "world": { "ctk": "+3.5%", "actk": "+2.1%" },
+          "africa": { "ctk": "+12.3%", "actk": "+1.6%" },
+          "asiaPacific": { "ctk": "+9.5%", "actk": "+6.3%" },
+          "europe": { "ctk": "+5.4%", "actk": "+4.6%" },
+          "latinAmerica": { "ctk": "-1.5%", "actk": "+3.3%" },
+          "middleEast": { "ctk": "-13.9%", "actk": "-13.9%" },
+          "northAmerica": { "ctk": "+2.6%", "actk": "+0.6%" }
+        }
+      },
+      "international": {
+        "yoy": {
+          "world": { "ctk": "-5.1%", "actk": "-1.8%" },
+          "africa": { "ctk": "+3.4%", "actk": "-5.8%" },
+          "asiaPacific": { "ctk": "+2.3%", "actk": "+4.1%" },
+          "europe": { "ctk": "+1.7%", "actk": "+1.4%" },
+          "latinAmerica": { "ctk": "-4.8%", "actk": "-1.6%" },
+          "middleEast": { "ctk": "-22.4%", "actk": "-25.3%" },
+          "northAmerica": { "ctk": "-2.8%", "actk": "-1.5%" }
+        },
+        "ytd": {
+          "world": { "ctk": "+3.8%", "actk": "+1.6%" },
+          "africa": { "ctk": "+12.4%", "actk": "+1.7%" },
+          "asiaPacific": { "ctk": "+9.9%", "actk": "+7.1%" },
+          "europe": { "ctk": "+5.7%", "actk": "+4.6%" },
+          "latinAmerica": { "ctk": "-0.3%", "actk": "+3.0%" },
+          "middleEast": { "ctk": "-13.9%", "actk": "-14.1%" },
+          "northAmerica": { "ctk": "+3.2%", "actk": "+0.6%" }
+        }
+      }
+    }
   },
   {
     "date": "Şubat 2026",
@@ -87,7 +171,49 @@
     },
     "link": "https://www.iata.org/en/pressroom/2026-releases/air-cargo-market-analysis-february-2026/",
     "pdfLink": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-february-2026/",
-    "summary": "Şubat 2026 küresel hava kargo talebi yıllık %11.2 artışla güçlü bir yükseliş yaşamıştır. Çin Yeni Yılı öncesindeki yoğun sevkiyat trafiği ve e-ticaret lojistiği bu ivmenin başlıca nedenleriydi. Asya-Pasifik %18.4 büyümeyle tüm bölgeler içinde en yüksek performansı gösterdi."
+    "summary": "Şubat 2026 küresel hava kargo talebi yıllık %11.2 artışla güçlü bir yükseliş yaşamıştır. Çin Yeni Yılı öncesindeki yoğun sevkiyat trafiği ve e-ticaret lojistiği bu ivmenin başlıca nedenleriydi. Asya-Pasifik %18.4 büyümeyle tüm bölgeler içinde en yüksek performansı gösterdi.",
+    "data": {
+      "totalMarket": {
+        "yoy": {
+          "world": { "ctk": "+11.2%", "actk": "+4.5%" },
+          "africa": { "ctk": "+12.8%", "actk": "+1.5%" },
+          "asiaPacific": { "ctk": "+18.4%", "actk": "+8.2%" },
+          "europe": { "ctk": "+9.2%", "actk": "+5.1%" },
+          "latinAmerica": { "ctk": "+4.2%", "actk": "+3.1%" },
+          "middleEast": { "ctk": "-8.1%", "actk": "-10.5%" },
+          "northAmerica": { "ctk": "+8.5%", "actk": "+2.8%" }
+        },
+        "ytd": {
+          "world": { "ctk": "+8.4%", "actk": "+3.3%" },
+          "africa": { "ctk": "+13.5%", "actk": "-1.6%" },
+          "asiaPacific": { "ctk": "+13.3%", "actk": "+6.1%" },
+          "europe": { "ctk": "+7.3%", "actk": "+3.8%" },
+          "latinAmerica": { "ctk": "+3.0%", "actk": "+2.6%" },
+          "middleEast": { "ctk": "-6.6%", "actk": "-9.3%" },
+          "northAmerica": { "ctk": "+6.6%", "actk": "+2.3%" }
+        }
+      },
+      "international": {
+        "yoy": {
+          "world": { "ctk": "+11.8%", "actk": "+4.2%" },
+          "africa": { "ctk": "+13.0%", "actk": "+1.2%" },
+          "asiaPacific": { "ctk": "+19.2%", "actk": "+8.5%" },
+          "europe": { "ctk": "+9.5%", "actk": "+5.2%" },
+          "latinAmerica": { "ctk": "+4.5%", "actk": "+2.8%" },
+          "middleEast": { "ctk": "-8.1%", "actk": "-10.7%" },
+          "northAmerica": { "ctk": "+8.0%", "actk": "+1.2%" }
+        },
+        "ytd": {
+          "world": { "ctk": "+8.8%", "actk": "+3.1%" },
+          "africa": { "ctk": "+13.7%", "actk": "-1.7%" },
+          "asiaPacific": { "ctk": "+13.8%", "actk": "+6.4%" },
+          "europe": { "ctk": "+7.6%", "actk": "+3.9%" },
+          "latinAmerica": { "ctk": "+3.2%", "actk": "+2.4%" },
+          "middleEast": { "ctk": "-6.6%", "actk": "-9.5%" },
+          "northAmerica": { "ctk": "+6.1%", "actk": "+0.4%" }
+        }
+      }
+    }
   },
   {
     "date": "Ocak 2026",
@@ -117,6 +243,48 @@
     },
     "link": "https://www.iata.org/en/pressroom/2026-releases/air-cargo-market-analysis-january-2026/",
     "pdfLink": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-january-2026/",
-    "summary": "Ocak 2026 imalat sanayi PMI'sı büyüme bölgesinde (52.1) kalarak hava kargo talebi yıllık %5.6 artışla güçlü bir başlangıç yaptı. Afrika en yüksek büyüme oranını (%14.2) kaydetirken Orta Doğu kapasitesi %8.1 daraldı."
+    "summary": "Ocak 2026 imalat sanayi PMI'sı büyüme bölgesinde (52.1) kalarak hava kargo talebi yıllık %5.6 artışla güçlü bir başlangıç yaptı. Afrika en yüksek büyüme oranını (%14.2) kaydederken Orta Doğu kapasitesi %8.1 daraldı.",
+    "data": {
+      "totalMarket": {
+        "yoy": {
+          "world": { "ctk": "+5.6%", "actk": "+2.2%" },
+          "africa": { "ctk": "+14.2%", "actk": "-4.8%" },
+          "asiaPacific": { "ctk": "+8.2%", "actk": "+4.1%" },
+          "europe": { "ctk": "+5.5%", "actk": "+2.5%" },
+          "latinAmerica": { "ctk": "+1.8%", "actk": "+2.2%" },
+          "middleEast": { "ctk": "-5.2%", "actk": "-8.1%" },
+          "northAmerica": { "ctk": "+4.8%", "actk": "+1.8%" }
+        },
+        "ytd": {
+          "world": { "ctk": "+5.6%", "actk": "+2.2%" },
+          "africa": { "ctk": "+14.2%", "actk": "-4.8%" },
+          "asiaPacific": { "ctk": "+8.2%", "actk": "+4.1%" },
+          "europe": { "ctk": "+5.5%", "actk": "+2.5%" },
+          "latinAmerica": { "ctk": "+1.8%", "actk": "+2.2%" },
+          "middleEast": { "ctk": "-5.2%", "actk": "-8.1%" },
+          "northAmerica": { "ctk": "+4.8%", "actk": "+1.8%" }
+        }
+      },
+      "international": {
+        "yoy": {
+          "world": { "ctk": "+5.9%", "actk": "+2.0%" },
+          "africa": { "ctk": "+14.5%", "actk": "-4.6%" },
+          "asiaPacific": { "ctk": "+8.5%", "actk": "+4.3%" },
+          "europe": { "ctk": "+5.8%", "actk": "+2.6%" },
+          "latinAmerica": { "ctk": "+2.0%", "actk": "+2.0%" },
+          "middleEast": { "ctk": "-5.2%", "actk": "-8.3%" },
+          "northAmerica": { "ctk": "+4.2%", "actk": "-0.4%" }
+        },
+        "ytd": {
+          "world": { "ctk": "+5.9%", "actk": "+2.0%" },
+          "africa": { "ctk": "+14.5%", "actk": "-4.6%" },
+          "asiaPacific": { "ctk": "+8.5%", "actk": "+4.3%" },
+          "europe": { "ctk": "+5.8%", "actk": "+2.6%" },
+          "latinAmerica": { "ctk": "+2.0%", "actk": "+2.0%" },
+          "middleEast": { "ctk": "-5.2%", "actk": "-8.3%" },
+          "northAmerica": { "ctk": "+4.2%", "actk": "-0.4%" }
+        }
+      }
+    }
   }
 ]
