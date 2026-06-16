@@ -2930,8 +2930,15 @@
     <div id="iata-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="iata-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div id="iata-chart-title" class="rel-add-title">IATA Air Cargo Market Analysis</div>
+          <div id="iata-chart-title" class="rel-add-title">IATA Market Analizi</div>
           <button class="rel-add-x" onclick="closeIataChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <!-- Metrik Seçici Sekmeler -->
+        <div class="iata-metric-selector" style="display:flex; gap:6px; margin: 10px 0; padding-bottom:8px; border-bottom:1px solid var(--border-soft); overflow-x:auto;">
+          <button class="fdd-btn fdd-btn--active iata-m-btn" data-metric="demand" onclick="selectIataChartMetric(this, 'demand')">Talep (CTK)</button>
+          <button class="fdd-btn iata-m-btn" data-metric="capacity" onclick="selectIataChartMetric(this, 'capacity')">Kapasite (ACTK)</button>
+          <button class="fdd-btn iata-m-btn" data-metric="loadFactor" onclick="selectIataChartMetric(this, 'loadFactor')">LF</button>
+          <button class="fdd-btn iata-m-btn" data-metric="spotRate" onclick="selectIataChartMetric(this, 'spotRate')">Spot Navlun</button>
         </div>
         <div class="chart-modal-controls">
           <div class="modal-controls-left">
@@ -7923,7 +7930,42 @@ function openIataChartModal() {
   const m = document.getElementById('iata-chart-modal');
   if (m) {
     m.style.display = 'flex';
-    setTimeout(() => {
+    // Metrik secici sekmeleri baslangicta 'demand'e sifirla ve aktif yap
+    window._iataActiveMetric = 'demand';
+    const selector = m.querySelector('.iata-metric-selector');
+    if (selector) {
+      selector.querySelectorAll('.iata-m-btn').forEach(btn => {
+        const active = btn.dataset.metric === 'demand';
+        btn.classList.toggle('fdd-btn--active', active);
+      });
+    }
+
+    setTimeout(async () => {
+      // reports listesi yuklenmemisse yukle
+      if (!window._iataReportsList || window._iataReportsList.length === 0) {
+        try {
+          const staticReports = await fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
+          let merged = [...staticReports];
+          if (window._iataLatest && window._iataLatest.demand) {
+            const exists = staticReports.some(r => r.date === window._iataLatest.date);
+            if (!exists) {
+              merged.unshift({
+                date: window._iataLatest.date,
+                demand: window._iataLatest.demand,
+                capacity: window._iataLatest.capacity,
+                loadFactor: window._iataLatest.loadFactor,
+                spotRate: window._iataLatest.spotRate,
+                link: window._iataLatest.pdfLink,
+                summary: window._iataLatest.summary
+              });
+            }
+          }
+          window._iataReportsList = merged.length > 0 ? merged : [...window.IATA_DEFAULT_2026_REPORTS];
+        } catch (e) {
+          window._iataReportsList = [...(window.IATA_DEFAULT_2026_REPORTS || [])];
+        }
+      }
+
       if (typeof window.renderIataChart === 'function') {
         window.renderIataChart();
       } else {
@@ -11377,6 +11419,16 @@ async function loadDashboard() {
     btn.addEventListener('click', () => renderFbxChart(btn.dataset.period));
   });
 
+  window._iataActiveMetric = 'demand';
+  window.selectIataChartMetric = function(btn, metric) {
+    window._iataActiveMetric = metric;
+    btn.parentNode.querySelectorAll('.iata-m-btn').forEach(b => b.classList.remove('fdd-btn--active'));
+    btn.classList.add('fdd-btn--active');
+    if (typeof window.renderIataChart === 'function') {
+      window.renderIataChart();
+    }
+  };
+
   function renderIataChart(period) {
     if (period) {
       _iataCurrentPeriod = period;
@@ -11390,19 +11442,64 @@ async function loadDashboard() {
 
     const titleEl = document.getElementById('iata-chart-title');
     try {
-      if (!_iataHistory || !_iataHistory.length) {
-        if (titleEl) titleEl.textContent = "IATA Grafiği (Veri yüklenemedi!)";
-        return;
+      // 1. Parse _iataReportsList if available to get 2026 data points
+      const dateMap = {
+        "ocak": "01", "şubat": "02", "mart": "03", "nisan": "04",
+        "mayıs": "05", "haziran": "06", "temmuz": "07", "ağustos": "08",
+        "eylül": "09", "ekim": "10", "kasım": "11", "aralık": "12"
+      };
+
+      const parseFloatVal = str => {
+        if (!str || str === '—') return null;
+        return parseFloat(String(str).replace('%', '').replace('+', '').trim());
+      };
+
+      let parsedReports = [];
+      if (Array.isArray(_iataReportsList)) {
+        parsedReports = _iataReportsList.map(r => {
+          const parts = r.date.toLowerCase().split(' ');
+          const month = dateMap[parts[0]] || "01";
+          const year = parts[1] || "2026";
+          const dateStr = `${year}-${month}-15`;
+          return {
+            date: dateStr,
+            demand: parseFloatVal(r.demand),
+            capacity: parseFloatVal(r.capacity),
+            loadFactor: parseFloatVal(r.loadFactor),
+            spotRate: parseFloatVal(String(r.spotRate).replace('$/kg', '').replace('$', '').trim())
+          };
+        }).filter(r => r.demand !== null || r.capacity !== null);
+        parsedReports.sort((a, b) => a.date.localeCompare(b.date));
       }
-      
-      let allData = [..._iataHistory];
-      if (_iataLatest && _iataLatest.demand) {
-        const latestIso = new Date().toISOString().slice(0, 10);
-        const lastHist = allData[allData.length - 1];
-        const demandVal = parseFloat(_iataLatest.demand.replace(/[^\d.-]/g, ''));
-        if (latestIso && (!lastHist || lastHist.date < latestIso) && !isNaN(demandVal)) {
-          allData.push({ date: latestIso, value: demandVal });
+
+      let allData = [];
+      const metric = window._iataActiveMetric || 'demand';
+
+      if (metric === 'demand') {
+        // Merge historical demand with 2026 reports demand
+        if (_iataHistory && _iataHistory.length) {
+          _iataHistory.forEach(h => {
+            allData.push({ date: h.date, value: h.value });
+          });
         }
+        parsedReports.forEach(r => {
+          if (r.demand !== null && !allData.some(p => p.date.substring(0, 7) === r.date.substring(0, 7))) {
+            allData.push({ date: r.date, value: r.demand });
+          }
+        });
+      } else {
+        // For capacity, loadFactor, spotRate, we plot the 2026 trend from parsed reports
+        parsedReports.forEach(r => {
+          const val = r[metric];
+          if (val !== null) {
+            allData.push({ date: r.date, value: val });
+          }
+        });
+      }
+
+      if (!allData || !allData.length) {
+        if (titleEl) titleEl.textContent = "IATA Grafiği (Seçilen metrik için veri bulunamadı)";
+        return;
       }
 
       if (!window._iataCustomRange) {
@@ -11424,20 +11521,43 @@ async function loadDashboard() {
       });
       const values = allData.map(d => d.value);
 
+      // Metrik spesifik ayarlar
+      let lineLabel = 'Hava Kargo Talebi (CTK Büyümesi)';
+      let lineColor = '#7a64a8';
+      let bgColor = 'rgba(122,100,168,0.08)';
+      let fmtFn = v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '';
+
+      if (metric === 'capacity') {
+        lineLabel = 'Kapasite Büyümesi (ACTK)';
+        lineColor = '#22c55e';
+        bgColor = 'rgba(34,197,94,0.05)';
+        fmtFn = v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '';
+      } else if (metric === 'loadFactor') {
+        lineLabel = 'LF (Yük Faktörü)';
+        lineColor = '#0891b2';
+        bgColor = 'rgba(8,145,178,0.05)';
+        fmtFn = v => v != null ? '%' + Number(v).toFixed(1) : ''; // % başta
+      } else if (metric === 'spotRate') {
+        lineLabel = 'Spot Navlun Fiyatı';
+        lineColor = '#ea580c';
+        bgColor = 'rgba(234,88,12,0.05)';
+        fmtFn = v => v != null ? Number(v).toFixed(2) + ' $/kg' : '';
+      }
+
       lineChart('chart-iata', labels,
         [
           {
-            label: 'Hava Kargo Talebi (CTK Büyümesi)',
+            label: lineLabel,
             data: values,
-            borderColor: '#EF4444',
-            backgroundColor: 'rgba(239,68,68,0.07)',
+            borderColor: lineColor,
+            backgroundColor: bgColor,
             fill: true,
             tension: _iataCurrentPeriod === 'max' ? 0.2 : 0.35,
-            pointRadius: 2,
-            borderWidth: 2
+            pointRadius: 3,
+            borderWidth: 2.5
           }
         ],
-        v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '',
+        fmtFn,
         {
           forceRecreate: true,
           rawDates: allData.map(d => d.date),
@@ -11452,7 +11572,15 @@ async function loadDashboard() {
           }
         }
       );
-      if (titleEl) titleEl.textContent = 'IATA Küresel Hava Kargo Talebi Büyümesi (YoY)';
+
+      const titleMap = {
+        demand: 'IATA Küresel Hava Kargo Talebi Büyümesi (YoY)',
+        capacity: 'IATA Küresel Hava Kargo Kapasite Büyümesi (YoY)',
+        loadFactor: 'IATA Küresel Yük Faktörü (LF)',
+        spotRate: 'Global Spot Hava Kargo Navlun Fiyatı'
+      };
+      if (titleEl) titleEl.textContent = titleMap[metric];
+
     } catch (err) {
       console.error("IATA Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
@@ -11588,6 +11716,13 @@ async function loadDashboard() {
     });
   }
 
+  // LF biçimlendirme fonksiyonu (% işaretini başa taşır)
+  window.formatLF = function(val) {
+    if (!val || val === '—') return '—';
+    const cleaned = String(val).replace('%', '').trim();
+    return '%' + cleaned;
+  };
+
   // IATA Verisini Çek ve Göster
   async function initIataCard() {
     return fetchCached('iata_full_data', async () => {
@@ -11608,7 +11743,7 @@ async function loadDashboard() {
         
         if (dEl) { dEl.textContent = latest.demand; dEl.classList.remove('skeleton'); }
         if (cEl) { cEl.textContent = latest.capacity; cEl.classList.remove('skeleton'); }
-        if (lfEl) { lfEl.textContent = latest.loadFactor || '—'; lfEl.classList.remove('skeleton'); }
+        if (lfEl) { lfEl.textContent = window.formatLF(latest.loadFactor); lfEl.classList.remove('skeleton'); }
         if (srEl) { srEl.textContent = latest.spotRate || '—'; srEl.classList.remove('skeleton'); }
 
         const subEl = document.getElementById('dc-iata-sub');
@@ -17339,7 +17474,7 @@ function initControls(allArticles) {
   }
 
   // ── IATA Raporları Tab Yükleme ve Render Mantığı ──
-  const IATA_DEFAULT_2026_REPORTS = [
+  window.IATA_DEFAULT_2026_REPORTS = [
     {
       "date": "Nisan 2026",
       "demand": "+4.0%",
@@ -17378,7 +17513,7 @@ function initControls(allArticles) {
     }
   ];
 
-  let _iataReportsList = [];
+  window._iataReportsList = [];
   let _iataChartInstance = null;
 
   async function initIataReportsTab() {
@@ -17497,7 +17632,7 @@ function initControls(allArticles) {
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">LF</span>
-              <span class="iata-report-metric-val" style="color:var(--text);">${r.loadFactor || '—'}</span>
+              <span class="iata-report-metric-val" style="color:var(--text);">${window.formatLF(r.loadFactor)}</span>
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Spot Rate</span>
