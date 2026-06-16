@@ -7638,8 +7638,12 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
       xTicks.autoSkip      = true;
       xTicks.maxTicksLimit = 8;
     }
-    existingChart.stop(); // süregelen animasyonu kes — takılmayı önler
-    existingChart.update({ duration: 280, easing: 'easeOutQuart' });
+    // X konumları anında snap — dataset boyut farkından kaynaklanan
+    // "lastik bant" çarpıklığını önler; sadece Y değerleri animasyonlu
+    existingChart.options.animation   = { duration: 280, easing: 'easeOutQuart' };
+    existingChart.options.animations  = { x: { duration: 0 } };
+    existingChart.stop();
+    existingChart.update();
     return;
   }
   ctx.style.display = 'block';
@@ -7649,6 +7653,8 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
     plugins: extraOpts.plugins || [],
     options: {
       ...CHART_DEFAULTS,
+      animation:  { duration: 400, easing: 'easeOutQuart' },
+      animations: { x: { duration: 0 } },
       plugins: {
         ...CHART_DEFAULTS.plugins,
         legend: {
