@@ -2737,7 +2737,7 @@
         </div>
         <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
           <div class="dash-card-header-row">
-            <div class="dash-card-label">IATA Air Cargo Market Analysis</div>
+            <div class="dash-card-label">IATA Market Analizi</div>
             <div class="dash-card-timer" id="dc-iata-timer" title="Güncellenme sıklığı: Aylık (Cloudflare Worker)">
               <span class="timer-dot"></span>Aylık
             </div>
@@ -2752,7 +2752,7 @@
               <span class="cargo-metric-val skeleton" id="iata-val-capacity">-</span>
             </div>
             <div class="cargo-metric-item">
-              <span class="cargo-metric-lbl">Yük Faktörü</span>
+              <span class="cargo-metric-lbl">LF</span>
               <span class="cargo-metric-val skeleton" id="iata-val-loadfactor">-</span>
             </div>
             <div class="cargo-metric-item">
@@ -17339,6 +17339,45 @@ function initControls(allArticles) {
   }
 
   // ── IATA Raporları Tab Yükleme ve Render Mantığı ──
+  const IATA_DEFAULT_2026_REPORTS = [
+    {
+      "date": "Nisan 2026",
+      "demand": "+4.0%",
+      "capacity": "-0.4%",
+      "loadFactor": "46.0%",
+      "spotRate": "3.40 $/kg",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-april-2026/",
+      "summary": "Nisan 2026 küresel hava kargo talebi yıllık %4.0 artarak yeniden büyüme bölgesine dönmüştür. Kapasite ise yıllık %0.4 azalmıştır. Büyüme Asya çıkışlı ticari akışlarla desteklenirken, Orta Doğu jeopolitik gerilimleri kapasite kısıtlamalarına yol açmaktadır."
+    },
+    {
+      "date": "Mart 2026",
+      "demand": "-4.8%",
+      "capacity": "-1.2%",
+      "loadFactor": "44.0%",
+      "spotRate": "3.10 $/kg",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-march-2026/",
+      "summary": "Mart 2026 küresel hava kargo talebinde yıllık %4.8'lik bir daralma gözlenmiştir. Bu gerilemede Orta Doğu'daki jeopolitik kısıtlamalar, operasyonel aksamalar ve Paskalya tatili nedeniyle çalışma günlerinin azalması etkili olmuştur."
+    },
+    {
+      "date": "Şubat 2026",
+      "demand": "+11.2%",
+      "capacity": "+4.5%",
+      "loadFactor": "47.0%",
+      "spotRate": "3.35 $/kg",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-february-2026/",
+      "summary": "Şubat 2026 küresel hava kargo talebi yıllık %11.2 artışla güçlü bir yükseliş yaşamıştır. Bu ivmede Çin Yeni Yılı (Lunar New Year) öncesindeki yoğun sevkiyat trafiği ve e-ticaret lojistiği etkili olmuştur."
+    },
+    {
+      "date": "Ocak 2026",
+      "demand": "+5.6%",
+      "capacity": "+2.2%",
+      "loadFactor": "45.0%",
+      "spotRate": "3.20 $/kg",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-january-2026/",
+      "summary": "Ocak 2026 imalat sanayi satın ama yöneticileri endeksi (PMI) büyüme bölgesinde kalarak hava kargo talebi yıllık %5.6 artışla güçlü bir başlangıç yapmıştır. Bölgesel düzeyde Afrika en yüksek büyüme oranını kaydetmiştir."
+    }
+  ];
+
   let _iataReportsList = [];
   let _iataChartInstance = null;
 
@@ -17349,7 +17388,16 @@ function initControls(allArticles) {
 
     try {
       // 1. Fetch static 2026 reports
-      const staticReports = await fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
+      let staticReports = [];
+      try {
+        staticReports = await fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
+      } catch (e) {
+        console.warn("CORS/file protocol issue. Falling back to local data.");
+      }
+      
+      if (!staticReports || staticReports.length === 0) {
+        staticReports = [...IATA_DEFAULT_2026_REPORTS];
+      }
       
       // 2. Merge with live latest report from worker if available
       let mergedReports = [...staticReports];
@@ -17434,7 +17482,7 @@ function initControls(allArticles) {
               <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity)}">${r.capacity}</span>
             </div>
             <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">Yük Faktörü</span>
+              <span class="iata-report-metric-lbl">LF</span>
               <span class="iata-report-metric-val" style="color:var(--text);">${r.loadFactor || '—'}</span>
             </div>
             <div class="iata-report-metric">
