@@ -8064,6 +8064,11 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+@media (min-width: 1200px) {
+  .iata-reports-layout:not(:has(.iata-chart-panel.collapsed)) .iata-reports-feed {
+    grid-template-columns: 1fr;
+  }
+}
 
 .iata-report-card {
   background: var(--surface);
