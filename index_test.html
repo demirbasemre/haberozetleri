@@ -2899,27 +2899,37 @@
 
     <!-- IATA Grafik Modali -->
     <div id="iata-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="iata-chart-title">
-      <div class="chart-modal-card" style="max-width: 1050px; width: 95vw; max-height: 95vh; overflow-y: auto;">
-        <div class="rel-add-head" style="margin-bottom: 15px; border-bottom: 1px solid var(--border-soft); padding-bottom: 10px;">
-          <div style="display:flex; align-items:center; gap:8px; flex:1;">
-            <div id="iata-chart-title" class="rel-add-title" style="font-size: 16px; font-weight: 800; color: #7a64a8; display:flex; align-items:center; gap:0; flex-wrap:wrap;">
-              IATA Hava Kargo Analizi &amp; Trend&nbsp;·&nbsp;<span class="iata-title-year-wrapper" id="iata-modal-title-year-wrapper">
-                <button class="iata-title-year-btn iata-title-year-btn--modal" id="iata-modal-title-year-btn" onclick="toggleIataYearDropdown(event, true)" aria-haspopup="listbox" aria-expanded="false">
-                  <span id="iata-modal-title-year-label">2026</span>
-                  <svg class="iata-year-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </button>
-                <div class="iata-year-dropdown-menu" id="iata-modal-year-dropdown" role="listbox">
-                  <button class="iata-year-option" data-year="2026" onclick="selectIataYearFromDropdown('2026', true)">2026</button>
-                  <button class="iata-year-option" data-year="2025" onclick="selectIataYearFromDropdown('2025', true)">2025</button>
-                </div>
-              </span>
-            </div>
-          </div>
+      <div class="chart-modal-card" style="max-width: 1100px; width: 96vw; max-height: 96vh; overflow-y: auto;">
+        <div class="rel-add-head" style="margin-bottom: 10px; border-bottom: 1px solid var(--border-soft); padding-bottom: 10px;">
+          <div id="iata-chart-title" class="rel-add-title" style="font-size: 16px; font-weight: 800; color: #7a64a8;">IATA Hava Kargo Analizi</div>
           <button class="rel-add-x" onclick="closeIataChartModal()" aria-label="Kapat">×</button>
         </div>
 
+        <!-- Period Controls -->
+        <div class="chart-modal-controls">
+          <div class="modal-controls-left">
+            <div class="iata-modal-period-btns">
+              <button class="iata-modal-period-btn forex-btn" id="btn-iata-modal-6a" data-period="6a" onclick="iataModalSetPeriod('6a',this)">6A</button>
+              <button class="iata-modal-period-btn forex-btn active" id="btn-iata-modal-ytd" data-period="ytd" onclick="iataModalSetPeriod('ytd',this)">YTD</button>
+              <button class="iata-modal-period-btn forex-btn" id="btn-iata-modal-1y" data-period="1y" onclick="iataModalSetPeriod('1y',this)">1Y</button>
+              <button class="iata-modal-period-btn forex-btn" id="btn-iata-modal-tumu" data-period="tumu" onclick="iataModalSetPeriod('tumu',this)">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="month" class="modal-date-input" id="iata-modal-date-start" aria-label="Başlangıç tarihi" onchange="iataModalSetCustomRange()">
+              <span class="modal-date-separator">→</span>
+              <input type="month" class="modal-date-input" id="iata-modal-date-end" aria-label="Bitiş tarihi" onchange="iataModalSetCustomRange()">
+            </div>
+          </div>
+          <div class="modal-controls-right">
+            <button class="export-btn" onclick="exportIataToCSV()" title="IATA verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
+        </div>
+
         <!-- Latest KPI Strip -->
-        <div class="iata-kpi-strip" id="iata-kpi-strip" style="margin-bottom: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; background: var(--bg-soft); padding: 12px; border-radius: 8px; border: 1px solid var(--border-soft);">
+        <div class="iata-kpi-strip" id="iata-kpi-strip" style="margin-bottom: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; background: var(--bg-soft); padding: 12px; border-radius: 8px; border: 1px solid var(--border-soft);">
           <div class="iata-kpi-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
             <span class="iata-kpi-lbl" style="font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase;">Talep CTK</span>
             <span class="iata-kpi-val" style="font-size: 20px; font-weight: 800; color:#22c55e" id="kpi-demand">—</span>
@@ -2944,12 +2954,12 @@
 
         <!-- Charts Grid (2 columns) -->
         <div class="iata-modal-charts-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          
+
           <!-- Sol Sütun: Trend Grafik ve Filtreler -->
           <div style="display:flex; flex-direction:column; gap:10px;">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
               <span style="font-size: 12px; font-weight: 700; color: var(--text-2);">CTK &amp; ACTK Performansı</span>
-              
+
               <!-- Filters -->
               <div style="display:flex; gap:6px;">
                 <select id="iata-filter-segment" onchange="window.updateIataTrendChartData()" style="font-size:10.5px; padding:4px 6px; border-radius:4px; border:1px solid var(--border-soft); background:var(--surface); color:var(--text); font-weight:600; cursor:pointer;">
@@ -2979,7 +2989,7 @@
             </div>
 
             <!-- Trend Chart Canvas -->
-            <div class="iata-chart-container" style="position:relative; width:100%; height:260px;">
+            <div class="iata-chart-container" style="position:relative; width:100%; height:240px;">
               <canvas id="iata-trend-chart"></canvas>
             </div>
           </div>
@@ -2990,12 +3000,31 @@
               <span style="font-size: 12px; font-weight: 700; color: var(--text-2);">Spot Rate &amp; Yük Faktörü</span>
             </div>
             <!-- Secondary Chart Canvas -->
-            <div class="iata-chart-container-secondary" style="position:relative; width:100%; height:304px;">
+            <div class="iata-chart-container-secondary" style="position:relative; width:100%; height:284px;">
               <canvas id="iata-spotrate-chart"></canvas>
             </div>
           </div>
 
         </div>
+
+        <!-- Multi-Metric Chart -->
+        <div style="margin-top: 22px; border-top: 1px solid var(--border-soft); padding-top: 14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+            <span style="font-size:12px; font-weight:700; color:var(--text-2);">Çok Metrikli Analiz</span>
+            <div style="display:flex; gap:5px; flex-wrap:wrap;" id="iata-metric-toggles">
+              <button class="iata-metric-toggle active" data-metric="demand" onclick="toggleIataMetric('demand',this)">CTK %</button>
+              <button class="iata-metric-toggle active" data-metric="capacity" onclick="toggleIataMetric('capacity',this)">ACTK %</button>
+              <button class="iata-metric-toggle" data-metric="loadFactor" onclick="toggleIataMetric('loadFactor',this)">Yük Faktörü</button>
+              <button class="iata-metric-toggle" data-metric="spotRate" onclick="toggleIataMetric('spotRate',this)">Spot Rate</button>
+              <button class="iata-metric-toggle" data-metric="cargoYield" onclick="toggleIataMetric('cargoYield',this)">Cargo Yield</button>
+              <button class="iata-metric-toggle" data-metric="pmi" onclick="toggleIataMetric('pmi',this)">PMI</button>
+            </div>
+          </div>
+          <div style="position:relative; width:100%; height:270px;">
+            <canvas id="iata-multi-chart"></canvas>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -7957,75 +7986,38 @@ function closeBafiChartModal() {
   const m = document.getElementById('bafi-chart-modal');
   if (m) m.style.display = 'none';
 }
-function openIataChartModal() {
+async function openIataChartModal() {
   const m = document.getElementById('iata-chart-modal');
-  if (m) {
-    m.style.display = 'flex';
+  if (!m) return;
+  m.style.display = 'flex';
 
-    setTimeout(async () => {
-      // Aktif yıl badge + dropdown option'larını modal açılırken senkronize et
-      const activeYear = window._iataActiveYear || '2026';
-      const modalLbl = document.getElementById('iata-modal-title-year-label');
-      if (modalLbl) modalLbl.textContent = activeYear;
-      document.querySelectorAll('.iata-year-option').forEach(opt => {
-        opt.classList.toggle('active', opt.dataset.year === activeYear);
-      });
-
-      // reports listesi yuklenmemisse yukle
-      if (!window._iataReportsList || window._iataReportsList.length === 0) {
-        try {
-          const yearFile = `iata-reports-${activeYear}.json`;
-          const staticReports = await fetch(yearFile).then(r => r.ok ? r.json() : []).catch(() => []);
-          let merged = [...staticReports];
-          if (activeYear === '2026' && window._iataLatest && window._iataLatest.demand) {
-            const exists = staticReports.some(r => r.date === window._iataLatest.date);
-            if (!exists) {
-              merged.unshift({
-                date: window._iataLatest.date,
-                demand: window._iataLatest.demand,
-                capacity: window._iataLatest.capacity,
-                loadFactor: window._iataLatest.loadFactor,
-                spotRate: window._iataLatest.spotRate,
-                link: window._iataLatest.pdfLink,
-                summary: window._iataLatest.summary
-              });
-            }
-          }
-          window._iataReportsList = merged.length > 0 ? merged : [...(window.IATA_DEFAULT_2026_REPORTS || [])];
-        } catch (e) {
-          window._iataReportsList = [...(window.IATA_DEFAULT_2026_REPORTS || [])];
+  setTimeout(async () => {
+    // Load all data (2025 + 2026) into _iataAllData if not yet loaded
+    if (!window._iataAllData || window._iataAllData.length === 0) {
+      try {
+        const [d2026, d2025] = await Promise.all([
+          fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []),
+          fetch('iata-reports-2025.json').then(r => r.ok ? r.json() : []).catch(() => [])
+        ]);
+        let r2026 = [...d2026];
+        if (window._iataLatest && window._iataLatest.demand) {
+          const exists = r2026.some(r => r.date === window._iataLatest.date);
+          if (!exists) r2026.unshift(window._iataLatest);
         }
+        window._iataAllData = [...r2026, ...d2025];
+        if (window._iataAllData.length === 0) {
+          window._iataAllData = [...(window.IATA_DEFAULT_2026_REPORTS || [])];
+        }
+      } catch (e) {
+        window._iataAllData = [...(window.IATA_DEFAULT_2026_REPORTS || [])];
       }
+    }
 
-      // Populate KPI strip
-      const latest = window._iataReportsList[0];
-      if (latest) {
-        const kpiDemand = document.getElementById('kpi-demand');
-        const kpiCapacity = document.getElementById('kpi-capacity');
-        const kpiLF = document.getElementById('kpi-lf');
-        const kpiYield = document.getElementById('kpi-yield');
-        if (kpiDemand) {
-          kpiDemand.textContent = latest.demand || '—';
-          kpiDemand.style.color = (latest.demand || '').startsWith('+') ? '#22c55e' : (latest.demand || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
-        }
-        if (kpiCapacity) {
-          kpiCapacity.textContent = latest.capacity || '—';
-          kpiCapacity.style.color = (latest.capacity || '').startsWith('+') ? '#22c55e' : (latest.capacity || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
-        }
-        if (kpiLF) kpiLF.textContent = latest.loadFactor || '—';
-        if (kpiYield) {
-          kpiYield.textContent = latest.cargoYield || '—';
-          kpiYield.style.color = '#f59e0b';
-        }
-      }
-
-      if (typeof window.renderIataTrendChart === 'function') {
-        window.renderIataTrendChart(window._iataReportsList);
-      } else {
-        console.warn("window.renderIataTrendChart henüz hazır değil.");
-      }
-    }, 150);
-  }
+    // Apply default period (YTD) on first open
+    const activePeriodBtn = document.querySelector('.iata-modal-period-btn.active');
+    const activePeriod = activePeriodBtn ? activePeriodBtn.dataset.period : 'ytd';
+    iataModalSetPeriod(activePeriod, activePeriodBtn);
+  }, 150);
 }
 function closeIataChartModal() {
   const m = document.getElementById('iata-chart-modal');
@@ -18469,6 +18461,220 @@ function initControls(allArticles) {
   window.renderIataTrendChart = renderIataTrendChart;
   window.updateIataTrendChartData = updateIataTrendChartData;
   window.switchIataYear = switchIataYear;
+
+  // ── IATA Modal: Period Filter + Multi-Metric Chart ──────────────────────
+  window._iataAllData = [];
+  let _iataModalPeriod = 'ytd';
+  let _iataMultiChartInstance = null;
+  let _iataActiveMetrics = new Set(['demand', 'capacity']);
+
+  const TR_MONTH_TO_NUM = {
+    'Ocak':1,'Şubat':2,'Mart':3,'Nisan':4,'Mayıs':5,'Haziran':6,
+    'Temmuz':7,'Ağustos':8,'Eylül':9,'Ekim':10,'Kasım':11,'Aralık':12
+  };
+
+  function iataDateToISO(dateStr) {
+    const parts = (dateStr || '').trim().split(' ');
+    if (parts.length < 2) return '0000-00';
+    const m = TR_MONTH_TO_NUM[parts[0]] || 0;
+    const y = parseInt(parts[1]) || 0;
+    return `${y}-${String(m).padStart(2,'0')}`;
+  }
+
+  function iataFilterByPeriod(allData, period, customStart, customEnd) {
+    if (!allData || !allData.length) return [];
+    const withISO = allData.map(r => ({ ...r, _iso: iataDateToISO(r.date) }))
+      .filter(r => r._iso !== '0000-00')
+      .sort((a, b) => b._iso.localeCompare(a._iso)); // newest first
+
+    if (period === 'custom' && customStart && customEnd) {
+      return withISO.filter(r => r._iso >= customStart && r._iso <= customEnd);
+    }
+    if (period === '6a') return withISO.slice(0, 6);
+    if (period === '1y') return withISO.slice(0, 12);
+    if (period === 'tumu') return withISO;
+    // ytd: current year
+    const currentYear = new Date().getFullYear().toString();
+    const ytd = withISO.filter(r => r._iso.startsWith(currentYear));
+    return ytd.length > 0 ? ytd : withISO.slice(0, 4);
+  }
+
+  function iataModalSetPeriod(period, btnEl) {
+    _iataModalPeriod = period;
+    document.querySelectorAll('.iata-modal-period-btn').forEach(b => b.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+
+    const filtered = iataFilterByPeriod(window._iataAllData, period);
+    window._iataReportsList = filtered;
+
+    // Update month inputs
+    if (filtered.length > 0) {
+      const isos = filtered.map(r => r._iso).sort();
+      const startEl = document.getElementById('iata-modal-date-start');
+      const endEl   = document.getElementById('iata-modal-date-end');
+      if (startEl) startEl.value = isos[0];
+      if (endEl)   endEl.value   = isos[isos.length - 1];
+    }
+
+    iataModalUpdateAll(filtered);
+  }
+
+  function iataModalSetCustomRange() {
+    const startEl = document.getElementById('iata-modal-date-start');
+    const endEl   = document.getElementById('iata-modal-date-end');
+    if (!startEl || !endEl || !startEl.value || !endEl.value) return;
+    document.querySelectorAll('.iata-modal-period-btn').forEach(b => b.classList.remove('active'));
+    _iataModalPeriod = 'custom';
+    const filtered = iataFilterByPeriod(window._iataAllData, 'custom', startEl.value, endEl.value);
+    window._iataReportsList = filtered;
+    iataModalUpdateAll(filtered);
+  }
+
+  function iataModalUpdateAll(reports) {
+    if (!reports || !reports.length) return;
+    const latest = reports[0];
+    if (latest) {
+      const kpiDemand   = document.getElementById('kpi-demand');
+      const kpiCapacity = document.getElementById('kpi-capacity');
+      const kpiLF       = document.getElementById('kpi-lf');
+      const kpiYield    = document.getElementById('kpi-yield');
+      if (kpiDemand) {
+        kpiDemand.textContent = latest.demand || '—';
+        kpiDemand.style.color = (latest.demand||'').startsWith('+') ? '#22c55e' : (latest.demand||'').startsWith('-') ? 'var(--red)' : 'var(--text)';
+      }
+      if (kpiCapacity) {
+        kpiCapacity.textContent = latest.capacity || '—';
+        kpiCapacity.style.color = (latest.capacity||'').startsWith('+') ? '#22c55e' : (latest.capacity||'').startsWith('-') ? 'var(--red)' : 'var(--text)';
+      }
+      if (kpiLF) kpiLF.textContent = latest.loadFactor || '—';
+      if (kpiYield) { kpiYield.textContent = latest.cargoYield || '—'; kpiYield.style.color = '#f59e0b'; }
+    }
+    if (typeof window.renderIataTrendChart === 'function') window.renderIataTrendChart(reports);
+    renderIataMultiChart(reports);
+  }
+
+  function parseIataNum(str) {
+    if (!str) return null;
+    const v = parseFloat(str.replace(/[^0-9.\-+]/g, ''));
+    return isNaN(v) ? null : v;
+  }
+
+  const IATA_METRIC_CFG = {
+    demand:     { label: 'CTK YoY (%)',       color: '#7a64a8', yAxis: 'y1' },
+    capacity:   { label: 'ACTK YoY (%)',      color: '#22c55e', yAxis: 'y1' },
+    loadFactor: { label: 'Yük Faktörü (%)',   color: '#3b82f6', yAxis: 'y2' },
+    spotRate:   { label: 'Spot Rate ($/kg)',  color: '#f59e0b', yAxis: 'y2' },
+    cargoYield: { label: 'Cargo Yield YoY (%)', color: '#ef4444', yAxis: 'y1' },
+    pmi:        { label: 'PMI',               color: '#64748b', yAxis: 'y2' }
+  };
+
+  function renderIataMultiChart(reports) {
+    const canvas = document.getElementById('iata-multi-chart');
+    if (!canvas) return;
+    if (_iataMultiChartInstance) { _iataMultiChartInstance.destroy(); _iataMultiChartInstance = null; }
+    if (!reports || !reports.length) return;
+
+    const sorted = [...reports].sort((a, b) => (a._iso||iataDateToISO(a.date)).localeCompare(b._iso||iataDateToISO(b.date)));
+    const labels = sorted.map(r => r.date);
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+    const textColor = isDark ? '#8aa0bf' : '#64748b';
+
+    const datasets = [..._iataActiveMetrics].map(metric => {
+      const cfg = IATA_METRIC_CFG[metric];
+      if (!cfg) return null;
+      return {
+        label: cfg.label,
+        _metricKey: metric,
+        data: sorted.map(r => parseIataNum(r[metric])),
+        borderColor: cfg.color,
+        backgroundColor: cfg.color + '1a',
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 3.5,
+        pointBackgroundColor: cfg.color,
+        yAxisID: cfg.yAxis,
+        fill: false
+      };
+    }).filter(Boolean);
+
+    _iataMultiChartInstance = new Chart(canvas.getContext('2d'), {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            display: true, position: 'bottom',
+            labels: { boxWidth: 10, font: { size: 9.5, family: 'Inter, system-ui, sans-serif', weight: '600' }, color: isDark ? '#e6edf7' : '#1e293b', padding: 8 }
+          },
+          tooltip: {
+            backgroundColor: isDark ? '#162138' : '#ffffff',
+            titleColor: isDark ? '#e6edf7' : '#1e293b',
+            bodyColor: isDark ? '#c3cfe2' : '#334155',
+            borderColor: isDark ? '#26344f' : '#e2e8f0',
+            borderWidth: 1,
+            callbacks: {
+              label: function(ctx) {
+                const v = ctx.parsed.y;
+                if (v === null || v === undefined) return ctx.dataset.label + ': —';
+                const cfg = IATA_METRIC_CFG[ctx.dataset._metricKey];
+                const suffix = cfg && cfg.yAxis === 'y1' ? '%' : '';
+                return `${ctx.dataset.label}: ${v > 0 && suffix ? '+' : ''}${v.toFixed(1)}${suffix}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9 }, maxRotation: 40 } },
+          y1: {
+            type: 'linear', position: 'left',
+            grid: { color: gridColor },
+            ticks: { color: '#7a64a8', font: { size: 9 }, callback: v => (v > 0 ? '+' : '') + v.toFixed(1) + '%' }
+          },
+          y2: {
+            type: 'linear', position: 'right',
+            grid: { drawOnChartArea: false },
+            ticks: { color: textColor, font: { size: 9 } }
+          }
+        }
+      }
+    });
+    window._iataMultiChartInstance = _iataMultiChartInstance;
+  }
+
+  function toggleIataMetric(metric, btnEl) {
+    if (_iataActiveMetrics.has(metric)) {
+      if (_iataActiveMetrics.size <= 1) return;
+      _iataActiveMetrics.delete(metric);
+      if (btnEl) btnEl.classList.remove('active');
+    } else {
+      _iataActiveMetrics.add(metric);
+      if (btnEl) btnEl.classList.add('active');
+    }
+    renderIataMultiChart(window._iataReportsList || []);
+  }
+
+  function exportIataToCSV() {
+    const data = window._iataReportsList || [];
+    if (!data.length) return;
+    const headers = ['Tarih','CTK (%)','ACTK (%)','Yük Faktörü','Spot Rate','Cargo Yield','PMI'];
+    const rows = [...data].reverse().map(r => [
+      r.date, r.demand||'', r.capacity||'', r.loadFactor||'', r.spotRate||'', r.cargoYield||'', r.pmi||''
+    ]);
+    const csv = [headers, ...rows].map(row => row.map(v => `"${v}"`).join(',')).join('\n');
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `iata-hava-kargo-${new Date().toISOString().split('T')[0]}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  window.iataModalSetPeriod    = iataModalSetPeriod;
+  window.iataModalSetCustomRange = iataModalSetCustomRange;
+  window.toggleIataMetric      = toggleIataMetric;
+  window.exportIataToCSV       = exportIataToCSV;
 let _finChart = null;
 let _finPrevChartSig = null;        // son render'ın metrik/tip/dönem/CY/tema imzası
 let _finPrevChartSlugs = new Set(); // son render'da görünür seriler
