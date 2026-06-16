@@ -2919,7 +2919,7 @@
     <div id="iata-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="iata-chart-title">
       <div class="chart-modal-card" style="max-width: 1100px; width: 96vw; max-height: 96vh; overflow-y: auto;">
         <div class="rel-add-head" style="margin-bottom: 10px; border-bottom: 1px solid var(--border-soft); padding-bottom: 10px;">
-          <div id="iata-chart-title" class="rel-add-title" style="font-size: 16px; font-weight: 800; color: #7a64a8;">IATA Hava Kargo Analizi</div>
+          <div id="iata-chart-title" class="rel-add-title">IATA Hava Kargo Analizi</div>
           <button class="rel-add-x" onclick="closeIataChartModal()" aria-label="Kapat">×</button>
         </div>
 
@@ -8844,30 +8844,22 @@ function buildReleaseCalendar() {
   fetchUserReleaseItemsRemote();
 
   // Modal: arka plana tıklayınca kapat, ESC ile kapat
-  const modal = document.getElementById('rel-add-modal');
-  if (modal) {
-    modal.addEventListener('click', e => {
-      if (e.target === modal) closeReleaseAddModal();
-    });
-  }
-  const wciM = document.getElementById('wci-chart-modal');
-  if (wciM) {
-    wciM.addEventListener('click', e => {
-      if (e.target === wciM) closeWciChartModal();
-    });
-  }
-  const thyM = document.getElementById('thy-chart-modal');
-  if (thyM) {
-    thyM.addEventListener('click', e => {
-      if (e.target === thyM) closeThyChartModal();
-    });
-  }
+  const _chartModalMap = [
+    ['rel-add-modal',           closeReleaseAddModal],
+    ['wci-chart-modal',         closeWciChartModal],
+    ['thy-chart-modal',         closeThyChartModal],
+    ['bafi-chart-modal',        closeBafiChartModal],
+    ['fbx-chart-modal',         closeFbxChartModal],
+    ['iata-chart-modal',        closeIataChartModal],
+    ['brent-chart-modal',       closeBrentChartModal],
+    ['jetfuel-chart-modal',     closeJetfuelChartModal],
+  ];
+  _chartModalMap.forEach(([id, closeFn]) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', e => { if (e.target === el) closeFn(); });
+  });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      closeReleaseAddModal();
-      closeWciChartModal();
-      closeThyChartModal();
-    }
+    if (e.key === 'Escape') _chartModalMap.forEach(([, closeFn]) => closeFn());
   });
 }
 
