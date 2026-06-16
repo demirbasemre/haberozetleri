@@ -17438,14 +17438,27 @@ function initControls(allArticles) {
       }
 
       // Render cards
-      renderIataReportFeed(mergedReports);
+      try {
+        renderIataReportFeed(mergedReports);
+      } catch (err) {
+        console.error("IATA Rapor listesi yüklenirken hata:", err);
+        feedListEl.innerHTML = `<div style="padding:20px; text-align:center; color:var(--red);">Rapor listesi yüklenemedi: ${err.message}</div>`;
+      }
 
       // Render trend chart
-      renderIataTrendChart(mergedReports);
+      try {
+        renderIataTrendChart(mergedReports);
+      } catch (err) {
+        console.error("IATA Grafik çizilirken hata:", err);
+        const chartContainer = document.querySelector('.iata-chart-container');
+        if (chartContainer) {
+          chartContainer.innerHTML = `<div style="padding:40px 20px; text-align:center; color:var(--text-3); font-size:12px; border:1px dashed var(--border); border-radius:8px;">Grafik çizilemedi:<br><small style="color:var(--red); font-family:monospace;">${err.message}</small></div>`;
+        }
+      }
 
     } catch (e) {
-      console.error("IATA Raporları yüklenirken hata oluştu:", e);
-      feedListEl.innerHTML = '<div style="padding:40px; text-align:center; color:var(--red);">Veriler yüklenemedi. Lütfen proxy sunucusunun durumunu kontrol edin.</div>';
+      console.error("IATA Raporları yüklenirken genel hata oluştu:", e);
+      feedListEl.innerHTML = `<div style="padding:40px; text-align:center; color:var(--red);">Veriler yüklenemedi.<br><small style="color:var(--text-3); font-family:monospace; margin-top:8px; display:block;">Hata: ${e.message}</small></div>`;
     }
   }
 
@@ -17461,8 +17474,9 @@ function initControls(allArticles) {
     listEl.innerHTML = reports.map(r => {
       const getChangeColor = val => {
         if (!val || val === '—') return 'var(--text)';
-        if (val.startsWith('+')) return '#059669'; // Green positive
-        if (val.startsWith('-')) return 'var(--red)'; // Red negative
+        const valStr = String(val);
+        if (valStr.startsWith('+')) return '#059669'; // Green positive
+        if (valStr.startsWith('-')) return 'var(--red)'; // Red negative
         return 'var(--text)';
       };
 
