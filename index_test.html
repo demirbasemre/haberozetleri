@@ -17467,15 +17467,15 @@ function initControls(allArticles) {
     }
     
     // update IATA home card meta if iata reports are loaded
-    if (_iataLatest && _iataLatest.demand) {
+    if (window._iataLatest && window._iataLatest.demand) {
       const staticPromise = fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
       staticPromise.then(staticReports => {
         let count = staticReports.length;
-        const exists = staticReports.some(r => r.date === _iataLatest.date);
+        const exists = staticReports.some(r => r.date === window._iataLatest.date);
         if (!exists) count++;
         const homeMetaEl = document.getElementById('rhome-iata-meta');
         if (homeMetaEl) {
-          homeMetaEl.textContent = `Son rapor: ${_iataLatest.date} · ${count} rapor`;
+          homeMetaEl.textContent = `Son rapor: ${window._iataLatest.date} · ${count} rapor`;
         }
       });
     }
@@ -17565,29 +17565,29 @@ function initControls(allArticles) {
       
       // 2. Merge with live latest report from worker if available
       let mergedReports = [...staticReports];
-      if (_iataLatest && _iataLatest.demand) {
-        const exists = staticReports.some(r => r.date === _iataLatest.date);
+      if (window._iataLatest && window._iataLatest.demand) {
+        const exists = staticReports.some(r => r.date === window._iataLatest.date);
         if (!exists) {
           mergedReports.unshift({
-            date: _iataLatest.date,
-            demand: _iataLatest.demand,
-            capacity: _iataLatest.capacity,
-            loadFactor: _iataLatest.loadFactor,
-            spotRate: _iataLatest.spotRate,
-            link: _iataLatest.pdfLink,
-            summary: _iataLatest.summary
+            date: window._iataLatest.date,
+            demand: window._iataLatest.demand,
+            capacity: window._iataLatest.capacity,
+            loadFactor: window._iataLatest.loadFactor,
+            spotRate: window._iataLatest.spotRate,
+            link: window._iataLatest.pdfLink,
+            summary: window._iataLatest.summary
           });
         } else {
-          const idx = mergedReports.findIndex(r => r.date === _iataLatest.date);
+          const idx = mergedReports.findIndex(r => r.date === window._iataLatest.date);
           if (idx !== -1) {
             mergedReports[idx] = {
               ...mergedReports[idx],
-              demand: _iataLatest.demand,
-              capacity: _iataLatest.capacity,
-              loadFactor: _iataLatest.loadFactor,
-              spotRate: _iataLatest.spotRate,
-              link: _iataLatest.pdfLink,
-              summary: _iataLatest.summary
+              demand: window._iataLatest.demand,
+              capacity: window._iataLatest.capacity,
+              loadFactor: window._iataLatest.loadFactor,
+              spotRate: window._iataLatest.spotRate,
+              link: window._iataLatest.pdfLink,
+              summary: window._iataLatest.summary
             };
           }
         }
