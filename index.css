@@ -8064,11 +8064,6 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
-@media (min-width: 1200px) {
-  .iata-reports-layout:not(:has(.iata-chart-panel.collapsed)) .iata-reports-feed {
-    grid-template-columns: 1fr;
-  }
-}
 
 .iata-report-card {
   background: var(--surface);
@@ -8214,12 +8209,23 @@
   font-size: 11.5px;
   line-height: 1.5;
   color: var(--text-2);
-  margin: 4px 0;
+  margin: 12px 0;
   flex-grow: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+}
+.iata-report-summary ul {
+  margin: 0;
+  padding-left: 16px;
+  list-style-type: disc;
+}
+.iata-report-summary li {
+  margin-bottom: 6px;
+}
+.iata-report-summary li:last-child {
+  margin-bottom: 0;
+}
+.iata-report-summary strong {
+  color: var(--text);
+  font-weight: 700;
 }
 
 .iata-report-footer {
