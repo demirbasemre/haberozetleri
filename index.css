@@ -7888,6 +7888,19 @@
 }
 
 /* ── CARGO METRICS GRID & TIMERS ── */
+#dash-sec-endeks .dash-cards {
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)) !important;
+}
+[data-tweak-density="compact"] #dash-sec-endeks .dash-cards {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important;
+}
+[data-tweak-density="standard"] #dash-sec-endeks .dash-cards {
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)) !important;
+}
+[data-tweak-density="spacious"] #dash-sec-endeks .dash-cards {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+}
+
 .cargo-metrics-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
