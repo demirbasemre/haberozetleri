@@ -7886,3 +7886,168 @@
 [data-tweak-density="spacious"] #dash-sec-anlık .dash-cards {
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
 }
+
+/* ── CARGO METRICS GRID & TIMERS ── */
+.cargo-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 16px;
+  margin: 12px 0;
+  padding: 10px 14px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+}
+[data-theme="light"] .cargo-metrics-grid {
+  background: rgba(0,0,0,0.02);
+}
+.cargo-metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+}
+.cargo-metric-lbl {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.cargo-metric-val {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--font-mono, monospace);
+}
+.cargo-metric-val.skeleton {
+  color: transparent !important;
+  background: linear-gradient(90deg, var(--border) 25%, var(--border-soft) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: loading-skeleton 1.5s infinite;
+  border-radius: 4px;
+  width: 50px;
+  height: 18px;
+}
+
+/* ── IATA RAPORLARI SEKME TASARIMI ── */
+.iata-reports-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 16px;
+}
+@media (min-width: 1024px) {
+  .iata-reports-layout {
+    grid-template-columns: 350px 1fr;
+  }
+}
+.iata-chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: fit-content;
+}
+.iata-chart-container {
+  position: relative;
+  height: 220px;
+  width: 100%;
+}
+.iata-reports-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.iata-report-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.iata-report-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(122,100,168,0.3);
+  box-shadow: var(--shadow-md);
+}
+.iata-report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 8px;
+}
+.iata-report-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.iata-report-date {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 600;
+}
+.iata-report-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+  background: var(--bg-soft);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+}
+[data-theme="light"] .iata-report-grid {
+  background: rgba(0,0,0,0.015);
+}
+.iata-report-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: center;
+}
+.iata-report-metric-lbl {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.iata-report-metric-val {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+.iata-report-summary {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-2);
+  margin-bottom: 16px;
+}
+.iata-report-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.iata-report-link {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7a64a8;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+}
+.iata-report-link:hover {
+  color: #907bbd;
+  text-decoration: underline;
+}
