@@ -17651,6 +17651,20 @@ function initControls(allArticles) {
     }
   }
 
+  function formatIataSummaryHtml(summaryText) {
+    if (!summaryText) return '';
+    let sentences = summaryText.split(/\.\s+/);
+    sentences = sentences.map(s => s.trim()).filter(s => s.length > 0);
+    
+    const formatted = sentences.map(s => {
+      let text = s;
+      if (!text.endsWith('.')) text += '.';
+      text = text.replace(/(%[+-]?\d+(?:[\.,]\d+)?|[+-]?\d+(?:[\.,]\d+)?%|\b\d+(?:[\.,]\d+)?\s*\$\/kg|\b(?!202\d\b)\d{1,3}(?:[\.,]\d+)+\b)/g, '<strong>$&</strong>');
+      return `<li>${text}</li>`;
+    });
+    return `<ul style="margin:0; padding-left:16px; list-style-type:disc;">${formatted.join('')}</ul>`;
+  }
+
   function renderIataReportFeed(reports) {
     const listEl = document.getElementById('iata-report-feed-list');
     if (!listEl) return;
@@ -17809,7 +17823,7 @@ function initControls(allArticles) {
           </div>` : ''}
 
           <!-- Summary -->
-          <p class="iata-report-summary">${r.summary || 'Özet açıklama bulunmuyor.'}</p>
+          <div class="iata-report-summary">${formatIataSummaryHtml(r.summary) || 'Özet açıklama bulunmuyor.'}</div>
 
           <!-- Footer links -->
           <div class="iata-report-footer">
@@ -18343,7 +18357,7 @@ function initControls(allArticles) {
         
         <div class="section-title">Yönetici Özeti (Önemli Gelişmeler)</div>
         <div class="summary">
-          ${report.summary || 'Özet açıklama bulunmuyor.'}
+          ${formatIataSummaryHtml(report.summary) || 'Özet açıklama bulunmuyor.'}
         </div>
         
         <div class="section-title">Bölgesel CTK Performansı (Yıllık Değişimler)</div>
