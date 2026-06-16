@@ -69,7 +69,7 @@
   }
 
   .header-inner {
-    max-width: 1280px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 0 24px;
     height: 60px;
@@ -1535,7 +1535,7 @@
 
   /* ── MAIN ────────────────────────────────────── */
   .main {
-    max-width: 1280px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 8px 24px 72px;
   }

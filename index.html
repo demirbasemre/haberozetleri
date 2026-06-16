@@ -25,69 +25,69 @@
 <link rel="stylesheet" href="index.css?v=1.0.4">
 <style>
   /* ══════════════════════════════════════
-     FLEET COMPARISON & CHA STYLES
+     FLEET COMPARISON & Kaynak 2 STYLES
   ══════════════════════════════════════ */
 
-  /* ── CHA cards grid ── */
-  .fleet-cha-grid {
+  /* ── Kaynak 2 cards grid ── */
+  .fleet-k2-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 12px;
     padding: 4px 0 16px;
   }
-  .fleet-cha-card {
+  .fleet-k2-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
     transition: box-shadow 0.15s;
   }
-  .fleet-cha-card:hover { box-shadow: var(--shadow-md); }
-  .fleet-cha-card-hdr {
+  .fleet-k2-card:hover { box-shadow: var(--shadow-md); }
+  .fleet-k2-card-hdr {
     display: flex; align-items: center; gap: 10px;
     padding: 12px 14px 10px;
     border-bottom: 1px solid var(--border-soft);
   }
-  .fleet-cha-logo {
+  .fleet-k2-logo {
     width: 36px; height: 36px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: 11px; color: #fff; flex-shrink: 0;
   }
-  .fleet-cha-name { font-weight: 600; font-size: 13.5px; color: var(--text); }
-  .fleet-cha-iata { font-size: 11px; color: var(--text-3); margin-top: 1px; }
-  .fleet-cha-stats {
+  .fleet-k2-name { font-weight: 600; font-size: 13.5px; color: var(--text); }
+  .fleet-k2-iata { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+  .fleet-k2-stats {
     display: grid; grid-template-columns: repeat(3,1fr);
     padding: 10px 14px; gap: 4px; border-bottom: 1px solid var(--border-soft);
   }
-  .fleet-cha-stat { text-align: center; }
-  .fleet-cha-stat-val { font-size: 20px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
-  .fleet-cha-stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 1px; }
-  .fleet-cha-expand-btn {
+  .fleet-k2-stat { text-align: center; }
+  .fleet-k2-stat-val { font-size: 20px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+  .fleet-k2-stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 1px; }
+  .fleet-k2-expand-btn {
     width: 100%; background: none; border: none; cursor: pointer;
     padding: 8px 14px; font-size: 11.5px; color: var(--accent);
     display: flex; align-items: center; gap: 4px; font-weight: 500;
     transition: background 0.12s;
   }
-  .fleet-cha-expand-btn:hover { background: var(--red-muted); }
-  .fleet-cha-type-table {
+  .fleet-k2-expand-btn:hover { background: var(--red-muted); }
+  .fleet-k2-type-table {
     display: none; width: 100%;
     border-collapse: collapse; font-size: 11px;
     border-top: 1px solid var(--border-soft);
   }
-  .fleet-cha-type-table.open { display: table; }
-  .fleet-cha-type-table th {
+  .fleet-k2-type-table.open { display: table; }
+  .fleet-k2-type-table th {
     background: var(--bg); padding: 5px 10px;
     text-align: right; font-weight: 600; color: var(--text-3);
     font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;
   }
-  .fleet-cha-type-table th:first-child { text-align: left; }
-  .fleet-cha-type-table td {
+  .fleet-k2-type-table th:first-child { text-align: left; }
+  .fleet-k2-type-table td {
     padding: 4px 10px; text-align: right; color: var(--text);
     font-variant-numeric: tabular-nums; border-top: 1px solid var(--border-soft);
   }
-  .fleet-cha-type-table td:first-child { text-align: left; color: var(--text-2); }
-  .fleet-cha-type-table tr:hover td { background: var(--bg); }
-  .cha-order-chip {
+  .fleet-k2-type-table td:first-child { text-align: left; color: var(--text-2); }
+  .fleet-k2-type-table tr:hover td { background: var(--bg); }
+  .k2-order-chip {
     display: inline-block; padding: 0 5px; border-radius: 4px;
     background: rgba(37,99,235,0.1); color: var(--accent);
     font-size: 10px; font-weight: 600; margin-left: 3px;
@@ -732,27 +732,27 @@
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); box-shadow: var(--shadow-sm);
   }
-  .flt-formula-bar--ps { border-left: 3px solid #059669; }
-  .flt-formula-bar--cha { border-left: 3px solid #2563eb; }
+  .flt-formula-bar--k1 { border-left: 3px solid #059669; }
+  .flt-formula-bar--k2 { border-left: 3px solid #2563eb; }
   .flt-src-dot { width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0; }
-  .flt-src-dot--ps  { background:#059669; }
-  .flt-src-dot--cha { background:#2563eb; }
+  .flt-src-dot--k1  { background:#059669; }
+  .flt-src-dot--k2 { background:#2563eb; }
   .flt-formula-label {
     display: flex; align-items: center; gap: 5px;
     font-size: 11.5px; font-weight: 800; color: var(--text-2);
     white-space: nowrap; flex-shrink: 0; min-width: 36px;
   }
-  .flt-formula-label--ps  { color: #059669; }
-  .flt-formula-label--cha { color: #2563eb; }
-  .flt-formula-expr--ps {
+  .flt-formula-label--k1  { color: #059669; }
+  .flt-formula-label--k2 { color: #2563eb; }
+  .flt-formula-expr--k1 {
     background: rgba(5,150,105,0.08); border-color: rgba(5,150,105,0.25);
     color: #059669;
   }
-  .flt-fpill--ps.flt-fpill--add {
+  .flt-fpill--k1.flt-fpill--add {
     border-color: #059669; background: rgba(5,150,105,0.08); color: #059669;
   }
-  .flt-fpill--ps.flt-fpill--add .flt-fpill-sign { color: #059669; }
-  [data-theme="dark"] .flt-fpill--ps.flt-fpill--add { background: rgba(5,150,105,0.15); }
+  .flt-fpill--k1.flt-fpill--add .flt-fpill-sign { color: #059669; }
+  [data-theme="dark"] .flt-fpill--k1.flt-fpill--add { background: rgba(5,150,105,0.15); }
   .flt-val-na-star { color: var(--text-3); font-size: 10px; }
 
   .flt-formula-pills { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
@@ -785,8 +785,8 @@
     padding: 8px 0 12px; font-size: 11px;
   }
   .flt-cmp-src { padding: 2px 8px; border-radius: 4px; font-weight: 600; }
-  .flt-cmp-src--ps  { background: rgba(5,150,105,0.12); color: #059669; }
-  .flt-cmp-src--cha { background: rgba(37,99,235,0.12); color: #2563eb; }
+  .flt-cmp-src--k1  { background: rgba(5,150,105,0.12); color: #059669; }
+  .flt-cmp-src--k2 { background: rgba(37,99,235,0.12); color: #2563eb; }
   .flt-cmp-diff { padding: 2px 8px; border-radius: 4px; font-weight: 500; color: var(--text-3); background: var(--bg); }
   .flt-cmp-diff--match { background: rgba(5,150,105,0.08); color: #059669; }
   .flt-cmp-diff--minor { background: rgba(245,158,11,0.1); color: #D97706; }
@@ -811,8 +811,8 @@
     font-weight: 500; border-bottom: 2px solid var(--border);
   }
   .fleet-cmp-subhead th:first-child { text-align: left; }
-  .flt-th-ps  { color: #6ee7b7 !important; }
-  .flt-th-cha { color: #93c5fd !important; }
+  .flt-th-k1  { color: #6ee7b7 !important; }
+  .flt-th-k2 { color: #93c5fd !important; }
 
   .fleet-cmp-table tbody tr {
     cursor: pointer; transition: background 0.1s;
@@ -832,8 +832,8 @@
     font-size: 10px; font-weight: 800; color: #fff; flex-shrink: 0;
   }
   .flt-airline-name { font-weight: 500; font-size: 12px; color: var(--text); }
-  .flt-val-ps  { color: #059669; font-weight: 600; }
-  .flt-val-cha { color: #2563eb; font-weight: 600; }
+  .flt-val-k1  { color: #059669; font-weight: 600; }
+  .flt-val-k2 { color: #2563eb; font-weight: 600; }
   .flt-val-na  { color: var(--text-3); }
   .flt-diff-chip {
     display: inline-flex; align-items: center; gap: 2px;
@@ -880,7 +880,7 @@
     .fleet-cmp-table { font-size: 11px; }
     .fleet-cmp-table td, .fleet-cmp-table th { padding: 7px 7px; }
     .flt-airline-name { display: none; }
-    .fleet-cha-grid { grid-template-columns: 1fr; }
+    .fleet-k2-grid { grid-template-columns: 1fr; }
   }
 
   /* ── NEWS STATS PILL (inside Haberler tab) ────────────────── */
@@ -1974,16 +1974,6 @@
     }
   }
 </style>
-<style>
-  /* index.html gizleme kuralları */
-  .etki-info-btn { display: none !important; }
-  .etki-section { display: none !important; }
-  button.analysis-toggle { display: none !important; }
-  .scroll-fade { display: none !important; }
-  @media (min-width: 769px) {
-    .filter-bar { top: 120px !important; }
-  }
-</style>
 <script>
   (function() {
     const hash = window.location.hash.replace('#', '').split('/')[0];
@@ -2057,7 +2047,7 @@
     </button>
 
     <!-- Eski tasarıma dön -->
-    <a href="index_eski.html" class="design-switch-btn" title="Eski tasarıma dön" style="display:none">
+    <a href="index_eski.html" class="design-switch-btn" title="Eski tasarıma dön">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
         <path d="M3 3v5h5"/>
@@ -2095,7 +2085,7 @@
     <div class="hdr-tools-group" id="hdr-tools-group">
 
     <!-- Yazı tipi seçici -->
-    <div class="hdr-pref-wrap" style="display:none">
+    <div class="hdr-pref-wrap">
       <button class="hdr-pref-btn" id="hdr-font-btn" aria-label="Yazı tipi" title="Yazı tipi" aria-haspopup="true" aria-expanded="false">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/>
@@ -2135,7 +2125,7 @@
     </button>
 
     <!-- Changelog button -->
-    <button class="theme-toggle" id="changelog-btn" aria-label="Güncelleme geçmişi" title="Güncelleme Günlüğü" style="margin-left: 6px; display:none">
+    <button class="theme-toggle" id="changelog-btn" aria-label="Güncelleme geçmişi" title="Güncelleme Günlüğü" style="margin-left: 6px;">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="8" y1="6" x2="21" y2="6"/>
         <line x1="8" y1="12" x2="21" y2="12"/>
@@ -2148,7 +2138,7 @@
     </button>
 
     <!-- Eski tasarıma dön (mobil menü satırı) -->
-    <a class="hdr-tools-link" id="hdr-eski-link" href="index_eski.html" title="Eski tasarıma dön" style="display:none">
+    <a class="hdr-tools-link" id="hdr-eski-link" href="index_eski.html" title="Eski tasarıma dön">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
         <path d="M3 3v5h5"/>
@@ -2165,7 +2155,7 @@
           <button type="button" data-val="dark">Karanlık</button>
         </div>
       </div>
-      <div class="gm-sec" style="display:none">
+      <div class="gm-sec">
         <div class="gm-lbl">Yazı Tipi</div>
         <div class="gm-chips" data-group="font" id="gm-fonts"></div>
       </div>
@@ -2177,8 +2167,8 @@
           <button type="button" data-val="spacious">Ferah</button>
         </div>
       </div>
-      <div class="gm-div" style="display:none"></div>
-      <button class="gm-row" type="button" id="gm-changelog" style="display:none">
+      <div class="gm-div"></div>
+      <button class="gm-row" type="button" id="gm-changelog">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
         Değişiklik günlüğü
       </button>
@@ -2212,7 +2202,7 @@
     <button class="main-tab main-tab-active" id="tab-news-btn" onclick="switchTab('news')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
       Haberler
-      <span class="news-stats-pill" id="news-stats-pill" role="button" tabindex="0" aria-label="Haber istatistiklerini aç" title="Haber istatistikleri" style="display:none">
+      <span class="news-stats-pill" id="news-stats-pill" role="button" tabindex="0" aria-label="Haber istatistiklerini aç" title="Haber istatistikleri">
         <svg class="nsp-bars" viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
           <rect x="0.5"  y="7"   width="2.5" height="4.5"  rx="0.6"/>
           <rect x="4.75" y="4"   width="2.5" height="7.5"  rx="0.6"/>
@@ -2221,7 +2211,7 @@
         <span class="nsp-i" aria-hidden="true">i</span>
       </span>
     </button>
-    <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')" style="display:none">
+    <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       Raporlar
     </button>
@@ -2314,7 +2304,7 @@
     </div>
 
     <!-- Bölge -->
-    <div class="fdd-wrap" style="display:none">
+    <div class="fdd-wrap">
       <button class="fdd-btn" id="region-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Etki alanı filtresi">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
@@ -2381,7 +2371,7 @@
     <div class="filter-sep"></div>
 
     <!-- Analiz toggle -->
-    <button class="fdd-toggle" id="analysis-toggle" aria-pressed="false" style="display:none">
+    <button class="fdd-toggle" id="analysis-toggle" aria-pressed="false">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>
@@ -2445,6 +2435,9 @@
       <div style="display:flex;gap:8px;align-items:center;">
         <button class="fdd-btn fdd-btn--active report-type-pill" data-report-type="arz_talep_navlun" id="report-pill-arz">
           Arz &amp; Talep &amp; Navlun Analizi
+        </button>
+        <button class="fdd-btn report-type-pill" data-report-type="iata_market_analizi" id="report-pill-iata">
+          IATA Hava Kargo Analizi
         </button>
         <button class="fdd-btn report-type-pill" data-report-type="finansal" id="report-pill-finansal">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -2729,27 +2722,62 @@
       <h2 class="dash-section-title">Hava Kargo Endeksleri</h2>
       <div class="dash-cards">
         <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
-          <span class="card-test-badge">Test</span>
-          <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
+            <div class="dash-card-timer" id="dc-bafi-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+              <span class="timer-dot"></span>Haftalık
+            </div>
+          </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Hava kargo spot tarifesi endeksi</div>
-          <div class="dash-card-note">Baltic Exchange · <a href="https://www.balticexchange.com/en/data/routes/air.html" target="_blank" rel="noopener">balticexchange.com →</a></div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">Baltic Exchange · <a href="https://www.balticexchange.com/en/data/routes/air.html" target="_blank" rel="noopener">balticexchange.com →</a></div>
+          </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
-          <span class="card-test-badge">Test</span>
-          <div class="dash-card-label">IATA Air Cargo Market Analysis</div>
-          <div class="dash-card-value skeleton">&nbsp;</div>
-          <div class="dash-card-change"></div>
-          <div class="dash-card-sub">CTK büyümesi, kapasite ve verim değişimi</div>
-          <div class="dash-card-note">IATA · Aylık rapor · <a href="https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/" target="_blank" rel="noopener">iata.org →</a></div>
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">IATA Market Analizi</div>
+            <div class="dash-card-timer" id="dc-iata-timer" title="Güncellenme sıklığı: Aylık (Cloudflare Worker)">
+              <span class="timer-dot"></span>Aylık
+            </div>
+          </div>
+          <div class="cargo-metrics-grid" id="dc-iata-grid">
+            <div class="cargo-metric-item">
+              <span class="cargo-metric-lbl">Talep (CTK)</span>
+              <span class="cargo-metric-val skeleton" id="iata-val-demand">-</span>
+            </div>
+            <div class="cargo-metric-item">
+              <span class="cargo-metric-lbl">Kapasite (ACTK)</span>
+              <span class="cargo-metric-val skeleton" id="iata-val-capacity">-</span>
+            </div>
+            <div class="cargo-metric-item">
+              <span class="cargo-metric-lbl">LF</span>
+              <span class="cargo-metric-val skeleton" id="iata-val-loadfactor">-</span>
+            </div>
+            <div class="cargo-metric-item">
+              <span class="cargo-metric-lbl">Spot Rate</span>
+              <span class="cargo-metric-val skeleton" id="iata-val-spotrate">-</span>
+            </div>
+          </div>
+          <div class="dash-card-sub" id="dc-iata-sub">CTK büyümesi, kapasite ve doluluk değişimi</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note" id="dc-iata-note">IATA · Rapor · <a href="https://www.iata.org/en/publications/economics/" target="_blank" rel="noopener">iata.org Rapor →</a></div>
+          </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
-          <div class="dash-card-label">Freightos Baltık Endeksi (FBX)</div>
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">Freightos Baltık Endeksi (FBX)</div>
+            <div class="dash-card-timer" id="dc-fbx-timer" title="Güncellenme sıklığı: Günlük (Cloudflare Worker)">
+              <span class="timer-dot"></span>Günlük
+            </div>
+          </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Global konteyner spot fiyat endeksi</div>
-          <div class="dash-card-note">Freightos · Günlük · <a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a></div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">Freightos · <a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a></div>
+          </div>
         </div>
       </div>
     </section>
@@ -2796,6 +2824,213 @@
       <div style="display:none"><div class="dash-tl-track" id="tl-track"></div></div>
       <div class="dash-releases" id="dash-releases"></div>
     </section>
+
+
+    <!-- WCI Grafik Modali -->
+    <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="wci-chart-title" class="rel-add-title">Drewry Dünya Konteyner Endeksi (WCI)</div>
+          <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="chart-modal-controls">
+          <div class="modal-controls-left">
+            <div class="wci-period-btns">
+              <button class="wci-period-btn forex-btn" id="btn-wci-1m" data-period="1m">1A</button>
+              <button class="wci-period-btn forex-btn" id="btn-wci-6m" data-period="6m">6A</button>
+              <button class="wci-period-btn forex-btn active" id="btn-wci-ytd" data-period="ytd">YTD</button>
+              <button class="wci-period-btn forex-btn" id="btn-wci-1y" data-period="1y">1Y</button>
+              <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi">
+            </div>
+          </div>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportWciToCSV()" title="WCI verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-wci"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- BAFI Grafik Modali -->
+    <div id="bafi-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="bafi-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="bafi-chart-title" class="rel-add-title">Baltic Air Freight Index (BAFI)</div>
+          <button class="rel-add-x" onclick="closeBafiChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="chart-modal-controls">
+          <div class="modal-controls-left">
+            <div class="bafi-period-btns">
+              <button class="bafi-period-btn forex-btn" id="btn-bafi-1m" data-period="1m">1A</button>
+              <button class="bafi-period-btn forex-btn" id="btn-bafi-6m" data-period="6m">6A</button>
+              <button class="bafi-period-btn forex-btn active" id="btn-bafi-ytd" data-period="ytd">YTD</button>
+              <button class="bafi-period-btn forex-btn" id="btn-bafi-1y" data-period="1y">1Y</button>
+              <button class="bafi-period-btn forex-btn" id="btn-bafi-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="bafi-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="bafi-date-end" aria-label="Bitiş tarihi">
+            </div>
+          </div>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportBafiToCSV()" title="BAFI verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-bafi"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- IATA Grafik Modali -->
+    <div id="iata-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="iata-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="iata-chart-title" class="rel-add-title">IATA Market Analizi</div>
+          <button class="rel-add-x" onclick="closeIataChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <!-- Metrik Seçici Sekmeler -->
+        <div class="iata-metric-selector" style="display:flex; gap:6px; margin: 10px 0; padding-bottom:8px; border-bottom:1px solid var(--border-soft); overflow-x:auto;">
+          <button class="fdd-btn fdd-btn--active iata-m-btn" data-metric="demand" onclick="selectIataChartMetric(this, 'demand')">Talep (CTK)</button>
+          <button class="fdd-btn iata-m-btn" data-metric="capacity" onclick="selectIataChartMetric(this, 'capacity')">Kapasite (ACTK)</button>
+          <button class="fdd-btn iata-m-btn" data-metric="loadFactor" onclick="selectIataChartMetric(this, 'loadFactor')">LF</button>
+          <button class="fdd-btn iata-m-btn" data-metric="spotRate" onclick="selectIataChartMetric(this, 'spotRate')">Spot Navlun</button>
+        </div>
+        <div class="chart-modal-controls">
+          <div class="modal-controls-left">
+            <div class="iata-period-btns">
+              <button class="iata-period-btn forex-btn" id="btn-iata-6m" data-period="6m">6A</button>
+              <button class="iata-period-btn forex-btn active" id="btn-iata-ytd" data-period="ytd">YTD</button>
+              <button class="iata-period-btn forex-btn" id="btn-iata-1y" data-period="1y">1Y</button>
+              <button class="iata-period-btn forex-btn" id="btn-iata-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="iata-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="iata-date-end" aria-label="Bitiş tarihi">
+            </div>
+          </div>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportIataToCSV()" title="IATA verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-iata"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- FBX Grafik Modali -->
+    <div id="fbx-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fbx-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="fbx-chart-title" class="rel-add-title">Freightos Baltık Endeksi (FBX)</div>
+          <button class="rel-add-x" onclick="closeFbxChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="chart-modal-controls">
+          <div class="modal-controls-left">
+            <div class="fbx-period-btns">
+              <button class="fbx-period-btn forex-btn" id="btn-fbx-1m" data-period="1m">1A</button>
+              <button class="fbx-period-btn forex-btn" id="btn-fbx-6m" data-period="6m">6A</button>
+              <button class="fbx-period-btn forex-btn active" id="btn-fbx-ytd" data-period="ytd">YTD</button>
+              <button class="fbx-period-btn forex-btn" id="btn-fbx-1y" data-period="1y">1Y</button>
+              <button class="fbx-period-btn forex-btn" id="btn-fbx-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" class="modal-date-input" id="fbx-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" class="modal-date-input" id="fbx-date-end" aria-label="Bitiş tarihi">
+            </div>
+          </div>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportFbxToCSV()" title="FBX verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-fbx"></canvas>
+        </div>
+      </div>
+    </div>
 
 
   </div><!-- /dashboard-panel -->
@@ -3083,6 +3318,27 @@
           <p class="rhome-desc">Konteyner navlun, hava kargo fiyatları, yakıt maliyetleri, kapasite ve arz/talep dengesindeki gelişmeleri ele alan haftalık piyasa analizi bültenleri.</p>
           <span class="rhome-meta" id="rhome-arz-meta">Günlük bülten arşivi</span>
         </button>
+        <button class="rhome-card" onclick="switchReportType('iata_market_analizi')">
+          <span class="rhome-visual" style="color:#7a64a8" aria-hidden="true">
+            <svg viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="100" cy="60" r="45" stroke-width="1.5" opacity=".2"/>
+              <ellipse cx="100" cy="60" rx="45" ry="18" stroke-width="1.5" opacity=".2"/>
+              <ellipse cx="100" cy="60" rx="18" ry="45" stroke-width="1.5" opacity=".2"/>
+              <line x1="55" y1="60" x2="145" y2="60" stroke-width="1.5" opacity=".2"/>
+              <line x1="100" y1="15" x2="100" y2="105" stroke-width="1.5" opacity=".2"/>
+              <path d="M40,90 Q80,75 110,45 T160,25" stroke-width="3" stroke="#7a64a8"/>
+              <circle cx="160" cy="25" r="4" fill="#7a64a8"/>
+            </svg>
+          </span>
+          <div class="rhome-top">
+            <span class="rhome-icon rhome-icon--iata" style="background-color:rgba(122,100,168,0.1);color:#7a64a8">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-2.9 2.9-2.9-2.9"/><path d="M9 12h6"/><path d="m16.2 16.2-2.9-2.9-2.9 2.9"/></svg>
+            </span>
+            <span class="rhome-title">IATA Hava Kargo Market Analizi</span>
+          </div>
+          <p class="rhome-desc">Küresel kargo ton-kilometre (CTK) talebi, mevcut kapasite (ACTK), yük faktörleri ve spot navlun fiyatlarındaki aylık değişimler ve bölgesel analizler.</p>
+          <span class="rhome-meta" id="rhome-iata-meta">Yükleniyor...</span>
+        </button>
         <button class="rhome-card" onclick="switchReportType('finansal')">
           <span class="rhome-visual" style="color:#059669" aria-hidden="true">
             <svg viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3196,20 +3452,20 @@
       <!-- Kaynak seçici -->
       <div class="fleet-source-bar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
         <div style="display:flex;gap:6px;align-items:center;">
-          <button class="fdd-btn fdd-btn--active fleet-src-pill" data-src="planespotters" id="fleet-src-ps" style="font-size:11.5px;padding:4px 12px">
+          <button class="fdd-btn fdd-btn--active fleet-src-pill" data-src="kaynak1" id="fleet-src-k1" style="font-size:11.5px;padding:4px 12px">
             <span class="fdd-dot" style="background:#059669"></span>
-            Planespotters.net
+            Kaynak 1
           </button>
-          <button class="fdd-btn fleet-src-pill" data-src="chaviation" id="fleet-src-cha" style="font-size:11.5px;padding:4px 12px">
+          <button class="fdd-btn fleet-src-pill" data-src="kaynak2" id="fleet-src-k2" style="font-size:11.5px;padding:4px 12px">
             <span class="fdd-dot" style="background:#2563eb"></span>
-            CH Aviation
+            Kaynak 2
           </button>
           <button class="fdd-btn fleet-src-pill" data-src="compare" id="fleet-src-cmp" style="font-size:11.5px;padding:4px 12px">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h3a2 2 0 0 0 2-2v-3"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
             Karşılaştır
           </button>
         </div>
-        <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Planespotters.net · 2 Haz 2026</span>
+        <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Kaynak 1 · 2 Haz 2026</span>
       </div>
 
       <!-- Global filtre chips: WB / NB / Kargo -->
@@ -3226,19 +3482,19 @@
         </button>
       </div>
 
-      <!-- PS içerik wrapper -->
-      <div id="fleet-ps-content">
+      <!-- Kaynak 1 içerik wrapper -->
+      <div id="fleet-k1-content">
 
 
-      <!-- PS kart grid — buildPsCards() ile dinamik doldurulur -->
-      <div class="fleet-cha-grid" id="fleet-ps-cards"></div>
+      <!-- Kaynak 1 kart grid — buildK1Cards() ile dinamik doldurulur -->
+      <div class="fleet-k2-grid" id="fleet-k1-cards"></div>
 
       <!-- Filo Büyüme Grafiği -->
       <div class="fleet-compare-section" style="margin-top:8px">
         <div class="fleet-compare-header">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           <span class="fleet-compare-title">Filo Büyüme · 2022 – 2026</span>
-          <span class="fleet-chart-note">Planespotters.net · Gerçekleşen veriler</span>
+          <span class="fleet-chart-note">Kaynak 1 · Gerçekleşen veriler</span>
         </div>
         <div id="fleet-chart-legend" class="fleet-chart-legend"></div>
         <div class="fleet-chart-container">
@@ -3248,15 +3504,15 @@
       </div>
 
       <div class="fleet-update-note">
-        Veriler <strong>Planespotters.net</strong> kaynağından alınmıştır (2 Haziran 2026).
+        Veriler <strong>Kaynak 1</strong> kaynağından alınmıştır (2 Haziran 2026).
       </div>
-      </div><!-- /fleet-ps-content -->
+      </div><!-- /fleet-k1-content -->
 
       <!-- ══════ CH AVIATION GÖRÜNÜMÜ ══════ -->
-      <div id="fleet-cha-content" style="display:none">
-        <div class="fleet-cha-grid" id="fleet-cha-cards"></div>
+      <div id="fleet-k2-content" style="display:none">
+        <div class="fleet-k2-grid" id="fleet-k2-cards"></div>
         <div class="fleet-update-note" style="margin-top:16px">
-          Veriler <strong>CH Aviation</strong> kaynağından alınmıştır (2 Haziran 2026). Etihad için ETI kodu kullanılmıştır.
+          Veriler <strong>Kaynak 2</strong> kaynağından alınmıştır (2 Haziran 2026). Etihad için ETI kodu kullanılmıştır.
         </div>
       </div>
 
@@ -3266,28 +3522,28 @@
         <!-- ── Formül Builder ── -->
         <div class="flt-formula-wrap">
 
-          <!-- PS Tarafı -->
-          <div class="flt-formula-bar flt-formula-bar--ps">
-            <div class="flt-formula-label flt-formula-label--ps">
-              <span class="flt-src-dot flt-src-dot--ps"></span>
-              PS
+          <!-- Kaynak 1 Tarafı -->
+          <div class="flt-formula-bar flt-formula-bar--k1">
+            <div class="flt-formula-label flt-formula-label--k1">
+              <span class="flt-src-dot flt-src-dot--k1"></span>
+              Kaynak 1
             </div>
             <div class="flt-formula-pills">
-              <button class="flt-fpill flt-fpill--ps flt-fpill--add" data-pscol="pa" onclick="togglePsPill(this)">
+              <button class="flt-fpill flt-fpill--k1 flt-fpill--add" data-k1col="pa" onclick="toggleK1Pill(this)">
                 <span class="flt-fpill-sign">+</span> In Service
               </button>
-              <button class="flt-fpill flt-fpill--ps" data-pscol="pt" onclick="togglePsPill(this)">
+              <button class="flt-fpill flt-fpill--k1" data-k1col="pt" onclick="toggleK1Pill(this)">
                 <span class="flt-fpill-sign">+</span> Toplam Filo
               </button>
             </div>
-            <div class="flt-formula-expr flt-formula-expr--ps" id="flt-ps-expr">= In Service</div>
+            <div class="flt-formula-expr flt-formula-expr--k1" id="flt-k1-expr">= In Service</div>
           </div>
 
-          <!-- CHA Tarafı -->
-          <div class="flt-formula-bar flt-formula-bar--cha">
-            <div class="flt-formula-label flt-formula-label--cha">
-              <span class="flt-src-dot flt-src-dot--cha"></span>
-              CHA
+          <!-- Kaynak 2 Tarafı -->
+          <div class="flt-formula-bar flt-formula-bar--k2">
+            <div class="flt-formula-label flt-formula-label--k2">
+              <span class="flt-src-dot flt-src-dot--k2"></span>
+              Kaynak 2
             </div>
             <div class="flt-formula-pills">
               <button class="flt-fpill flt-fpill--add" data-col="ca" onclick="toggleFormulaPill(this)">
@@ -3316,11 +3572,11 @@
             <thead>
               <tr>
                 <th>Havayolu</th>
-                <th class="flt-th-ps" id="flt-ps-col-hdr">PS: In Service</th>
-                <th class="flt-th-cha" id="flt-cha-col-hdr">CHA: Active</th>
+                <th class="flt-th-k1" id="flt-k1-col-hdr">Kaynak 1: In Service</th>
+                <th class="flt-th-k2" id="flt-k2-col-hdr">Kaynak 2: Active</th>
                 <th>Δ</th>
-                <th>PS Sipariş</th>
-                <th>CHA Sipariş</th>
+                <th>Kaynak 1 Sipariş</th>
+                <th>Kaynak 2 Sipariş</th>
                 <th>Ort. Yaş</th>
               </tr>
             </thead>
@@ -3522,6 +3778,25 @@
     </div>
 
   </div><!-- /finansal-report-container -->
+
+    <!-- IATA Hava Kargo Market Analizi Raporları -->
+    <div id="iata-report-container" class="fleet-report-container" style="display:none">
+      <div class="iata-reports-layout">
+        <!-- Sol taraf: 2026 Trend Grafiği -->
+        <div class="iata-chart-card">
+          <div class="fleet-airline-title" style="font-size:15px;font-weight:700;">2026 Küresel Hava Kargo Trendleri</div>
+          <div class="fleet-airline-sub" style="font-size:11.5px;color:var(--text-3);margin-top:2px;">Aylara göre kargo hacim büyümesi (CTK) ve kapasite değişimi (ACTK)</div>
+          <div class="iata-chart-container">
+            <canvas id="iata-trend-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Sağ taraf: Raporlar Listesi / Feed -->
+        <div class="iata-reports-feed" id="iata-report-feed-list">
+          <!-- Rapor kartları dynamic olarak JS ile render edilecek -->
+        </div>
+      </div>
+    </div>
 
   </div><!-- /reports-panel -->
 
@@ -4770,9 +5045,9 @@ function updateStats(filteredArticles, totalCount) {
       return `${sep}<span class="stat-reg"${subDetail ? ` title="${subDetail}"` : ''}>${TK_SHORT[tk.id]} <b>${tkCounts[tk.id]}</b></span>`;
     }).join('');
 
-  const metricsCount = (typeof SEARCHABLE_METRICS !== 'undefined') ? SEARCHABLE_METRICS.filter(m => m.tab === 'dashboard').length : 14;
+  const metricsCount = (typeof SEARCHABLE_METRICS !== 'undefined') ? SEARCHABLE_METRICS.length : 22;
 
-  el.innerHTML = `${line1} · <b>${metricsCount}</b> metrik içinde ara`;
+  el.innerHTML = `${line1}${analysisCount ? ` · <b>${analysisCount}</b> analiz` : ''} · <b>${metricsCount}</b> metrik içinde ara`;
 }
 
 const CAT_SHORT = {
@@ -7617,23 +7892,13 @@ function closeReleaseAddModal() {
   const m = document.getElementById('rel-add-modal');
   if (m) m.style.display = 'none';
 }
-function resetModalTypeBtn(m) {
-  if (!m) return;
-  const group = m.querySelector('.modal-chart-type-group');
-  if (group) {
-    group.querySelectorAll('.modal-chart-type-btn').forEach(btn => btn.classList.remove('active'));
-    const lineBtn = group.querySelector('[data-type="line"]');
-    if (lineBtn) lineBtn.classList.add('active');
-  }
-}
 function openWciChartModal() {
   const m = document.getElementById('wci-chart-modal');
   if (m) {
-    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderWciChart === 'function') {
-        window.renderWciChart('ytd');
+        window.renderWciChart();
       } else {
         console.warn("window.renderWciChart henüz hazır değil.");
       }
@@ -7647,11 +7912,10 @@ function closeWciChartModal() {
 function openBafiChartModal() {
   const m = document.getElementById('bafi-chart-modal');
   if (m) {
-    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderBafiChart === 'function') {
-        window.renderBafiChart('ytd');
+        window.renderBafiChart();
       } else {
         console.warn("window.renderBafiChart henüz hazır değil.");
       }
@@ -7665,11 +7929,45 @@ function closeBafiChartModal() {
 function openIataChartModal() {
   const m = document.getElementById('iata-chart-modal');
   if (m) {
-    resetModalTypeBtn(m);
     m.style.display = 'flex';
-    setTimeout(() => {
+    // Metrik secici sekmeleri baslangicta 'demand'e sifirla ve aktif yap
+    window._iataActiveMetric = 'demand';
+    const selector = m.querySelector('.iata-metric-selector');
+    if (selector) {
+      selector.querySelectorAll('.iata-m-btn').forEach(btn => {
+        const active = btn.dataset.metric === 'demand';
+        btn.classList.toggle('fdd-btn--active', active);
+      });
+    }
+
+    setTimeout(async () => {
+      // reports listesi yuklenmemisse yukle
+      if (!window._iataReportsList || window._iataReportsList.length === 0) {
+        try {
+          const staticReports = await fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
+          let merged = [...staticReports];
+          if (window._iataLatest && window._iataLatest.demand) {
+            const exists = staticReports.some(r => r.date === window._iataLatest.date);
+            if (!exists) {
+              merged.unshift({
+                date: window._iataLatest.date,
+                demand: window._iataLatest.demand,
+                capacity: window._iataLatest.capacity,
+                loadFactor: window._iataLatest.loadFactor,
+                spotRate: window._iataLatest.spotRate,
+                link: window._iataLatest.pdfLink,
+                summary: window._iataLatest.summary
+              });
+            }
+          }
+          window._iataReportsList = merged.length > 0 ? merged : [...window.IATA_DEFAULT_2026_REPORTS];
+        } catch (e) {
+          window._iataReportsList = [...(window.IATA_DEFAULT_2026_REPORTS || [])];
+        }
+      }
+
       if (typeof window.renderIataChart === 'function') {
-        window.renderIataChart('ytd');
+        window.renderIataChart();
       } else {
         console.warn("window.renderIataChart henüz hazır değil.");
       }
@@ -7683,11 +7981,10 @@ function closeIataChartModal() {
 function openFbxChartModal() {
   const m = document.getElementById('fbx-chart-modal');
   if (m) {
-    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderFbxChart === 'function') {
-        window.renderFbxChart('ytd');
+        window.renderFbxChart();
       } else {
         console.warn("window.renderFbxChart henüz hazır değil.");
       }
@@ -7701,11 +7998,10 @@ function closeFbxChartModal() {
 function openThyChartModal() {
   const m = document.getElementById('thy-chart-modal');
   if (m) {
-    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderThyChart === 'function') {
-        window.renderThyChart('ytd');
+        window.renderThyChart();
       } else {
         console.warn("window.renderThyChart henüz hazır değil.");
       }
@@ -7719,11 +8015,10 @@ function closeThyChartModal() {
 function openForexChartModal() {
   const m = document.getElementById('forex-chart-modal');
   if (m) {
-    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderForexChart === 'function') {
-        window.renderForexChart('USD', 'ytd');
+        window.renderForexChart();
       } else {
         console.warn("window.renderForexChart henüz hazır değil.");
       }
@@ -7737,11 +8032,10 @@ function closeForexChartModal() {
 function openBrentChartModal() {
   const m = document.getElementById('brent-chart-modal');
   if (m) {
-    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderBrentModalChart === 'function') {
-        window.renderBrentModalChart('ytd');
+        window.renderBrentModalChart();
       } else {
         console.warn("window.renderBrentModalChart henüz hazır değil.");
       }
@@ -7755,11 +8049,10 @@ function closeBrentChartModal() {
 function openJetfuelChartModal() {
   const m = document.getElementById('jetfuel-chart-modal');
   if (m) {
-    resetModalTypeBtn(m);
     m.style.display = 'flex';
     setTimeout(() => {
       if (typeof window.renderJetfuelModalChart === 'function') {
-        window.renderJetfuelModalChart('ytd');
+        window.renderJetfuelModalChart();
       } else {
         console.warn("window.renderJetfuelModalChart henüz hazır değil.");
       }
@@ -8771,6 +9064,11 @@ async function loadDashboard() {
   initJetfuelCard();
 
   // ── Forex Verisini Çek ve Göster ──────────────────────────────
+  let _latestUsdPrice = null;
+  let _latestEurPrice = null;
+  let _latestUsdChange = null;
+  let _latestEurChange = null;
+
   let _forexCache = {
     'USD': { '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null },
     'EUR': { '1d': null, '5d': null, '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null },
@@ -8778,10 +9076,6 @@ async function loadDashboard() {
   };
   let _forexCurrentCurrency = 'USD';
   let _forexCurrentPeriod = 'ytd';
-  let _latestUsdPrice = null;
-  let _latestEurPrice = null;
-  let _latestUsdChange = null;
-  let _latestEurChange = null;
 
   async function fetchForexData(currency, period = '1y') {
     const symbol = currency === 'USD' ? 'USDTRY=X' : 'EURTRY=X';
@@ -9189,7 +9483,6 @@ async function loadDashboard() {
     return { price, change };
   }
 
-  // Sayfa açılışında döviz kartı verilerini yükle
   function updateParityUI() {
     const parityValEl = document.getElementById('forex-parity-val');
     const parityChgEl = document.getElementById('forex-parity-change');
@@ -9224,6 +9517,7 @@ async function loadDashboard() {
     }
   }
 
+  // Sayfa açılışında döviz kartı verilerini yükle
   function initForexCard() {
     return Promise.all([
       fetchForexData('USD', '1y').catch(() => null),
@@ -10497,20 +10791,20 @@ async function loadDashboard() {
     {"date": "2026-06-04", "value": 3433}
   ];
 
-  let _wciHistory = [];
-  let _wciLatest = null;
+  window._wciHistory = [];
+  window._wciLatest = null;
   let _wciCurrentPeriod = 'ytd';
 
-  let _bafiHistory = [];
-  let _bafiLatest = null;
+  window._bafiHistory = [];
+  window._bafiLatest = null;
   let _bafiCurrentPeriod = 'ytd';
 
-  let _fbxHistory = [];
-  let _fbxLatest = null;
+  window._fbxHistory = [];
+  window._fbxLatest = null;
   let _fbxCurrentPeriod = 'ytd';
 
-  let _iataHistory = [];
-  let _iataLatest = null;
+  window._iataHistory = [];
+  window._iataLatest = null;
   let _iataCurrentPeriod = 'ytd';
 
   window._wciCustomRange = false;
@@ -11125,6 +11419,16 @@ async function loadDashboard() {
     btn.addEventListener('click', () => renderFbxChart(btn.dataset.period));
   });
 
+  window._iataActiveMetric = 'demand';
+  window.selectIataChartMetric = function(btn, metric) {
+    window._iataActiveMetric = metric;
+    btn.parentNode.querySelectorAll('.iata-m-btn').forEach(b => b.classList.remove('fdd-btn--active'));
+    btn.classList.add('fdd-btn--active');
+    if (typeof window.renderIataChart === 'function') {
+      window.renderIataChart();
+    }
+  };
+
   function renderIataChart(period) {
     if (period) {
       _iataCurrentPeriod = period;
@@ -11138,19 +11442,64 @@ async function loadDashboard() {
 
     const titleEl = document.getElementById('iata-chart-title');
     try {
-      if (!_iataHistory || !_iataHistory.length) {
-        if (titleEl) titleEl.textContent = "IATA Grafiği (Veri yüklenemedi!)";
-        return;
+      // 1. Parse _iataReportsList if available to get 2026 data points
+      const dateMap = {
+        "ocak": "01", "şubat": "02", "mart": "03", "nisan": "04",
+        "mayıs": "05", "haziran": "06", "temmuz": "07", "ağustos": "08",
+        "eylül": "09", "ekim": "10", "kasım": "11", "aralık": "12"
+      };
+
+      const parseFloatVal = str => {
+        if (!str || str === '—') return null;
+        return parseFloat(String(str).replace('%', '').replace('+', '').trim());
+      };
+
+      let parsedReports = [];
+      if (Array.isArray(_iataReportsList)) {
+        parsedReports = _iataReportsList.map(r => {
+          const parts = r.date.toLowerCase().split(' ');
+          const month = dateMap[parts[0]] || "01";
+          const year = parts[1] || "2026";
+          const dateStr = `${year}-${month}-15`;
+          return {
+            date: dateStr,
+            demand: parseFloatVal(r.demand),
+            capacity: parseFloatVal(r.capacity),
+            loadFactor: parseFloatVal(r.loadFactor),
+            spotRate: parseFloatVal(String(r.spotRate).replace('$/kg', '').replace('$', '').trim())
+          };
+        }).filter(r => r.demand !== null || r.capacity !== null);
+        parsedReports.sort((a, b) => a.date.localeCompare(b.date));
       }
-      
-      let allData = [..._iataHistory];
-      if (_iataLatest && _iataLatest.demand) {
-        const latestIso = new Date().toISOString().slice(0, 10);
-        const lastHist = allData[allData.length - 1];
-        const demandVal = parseFloat(_iataLatest.demand.replace(/[^\d.-]/g, ''));
-        if (latestIso && (!lastHist || lastHist.date < latestIso) && !isNaN(demandVal)) {
-          allData.push({ date: latestIso, value: demandVal });
+
+      let allData = [];
+      const metric = window._iataActiveMetric || 'demand';
+
+      if (metric === 'demand') {
+        // Merge historical demand with 2026 reports demand
+        if (_iataHistory && _iataHistory.length) {
+          _iataHistory.forEach(h => {
+            allData.push({ date: h.date, value: h.value });
+          });
         }
+        parsedReports.forEach(r => {
+          if (r.demand !== null && !allData.some(p => p.date.substring(0, 7) === r.date.substring(0, 7))) {
+            allData.push({ date: r.date, value: r.demand });
+          }
+        });
+      } else {
+        // For capacity, loadFactor, spotRate, we plot the 2026 trend from parsed reports
+        parsedReports.forEach(r => {
+          const val = r[metric];
+          if (val !== null) {
+            allData.push({ date: r.date, value: val });
+          }
+        });
+      }
+
+      if (!allData || !allData.length) {
+        if (titleEl) titleEl.textContent = "IATA Grafiği (Seçilen metrik için veri bulunamadı)";
+        return;
       }
 
       if (!window._iataCustomRange) {
@@ -11172,20 +11521,43 @@ async function loadDashboard() {
       });
       const values = allData.map(d => d.value);
 
+      // Metrik spesifik ayarlar
+      let lineLabel = 'Hava Kargo Talebi (CTK Büyümesi)';
+      let lineColor = '#7a64a8';
+      let bgColor = 'rgba(122,100,168,0.08)';
+      let fmtFn = v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '';
+
+      if (metric === 'capacity') {
+        lineLabel = 'Kapasite Büyümesi (ACTK)';
+        lineColor = '#22c55e';
+        bgColor = 'rgba(34,197,94,0.05)';
+        fmtFn = v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '';
+      } else if (metric === 'loadFactor') {
+        lineLabel = 'LF (Yük Faktörü)';
+        lineColor = '#0891b2';
+        bgColor = 'rgba(8,145,178,0.05)';
+        fmtFn = v => v != null ? '%' + Number(v).toFixed(1) : ''; // % başta
+      } else if (metric === 'spotRate') {
+        lineLabel = 'Spot Navlun Fiyatı';
+        lineColor = '#ea580c';
+        bgColor = 'rgba(234,88,12,0.05)';
+        fmtFn = v => v != null ? Number(v).toFixed(2) + ' $/kg' : '';
+      }
+
       lineChart('chart-iata', labels,
         [
           {
-            label: 'Hava Kargo Talebi (CTK Büyümesi)',
+            label: lineLabel,
             data: values,
-            borderColor: '#EF4444',
-            backgroundColor: 'rgba(239,68,68,0.07)',
+            borderColor: lineColor,
+            backgroundColor: bgColor,
             fill: true,
             tension: _iataCurrentPeriod === 'max' ? 0.2 : 0.35,
-            pointRadius: 2,
-            borderWidth: 2
+            pointRadius: 3,
+            borderWidth: 2.5
           }
         ],
-        v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '',
+        fmtFn,
         {
           forceRecreate: true,
           rawDates: allData.map(d => d.date),
@@ -11200,7 +11572,15 @@ async function loadDashboard() {
           }
         }
       );
-      if (titleEl) titleEl.textContent = 'IATA Küresel Hava Kargo Talebi Büyümesi (YoY)';
+
+      const titleMap = {
+        demand: 'IATA Küresel Hava Kargo Talebi Büyümesi (YoY)',
+        capacity: 'IATA Küresel Hava Kargo Kapasite Büyümesi (YoY)',
+        loadFactor: 'IATA Küresel Yük Faktörü (LF)',
+        spotRate: 'Global Spot Hava Kargo Navlun Fiyatı'
+      };
+      if (titleEl) titleEl.textContent = titleMap[metric];
+
     } catch (err) {
       console.error("IATA Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
@@ -11275,84 +11655,125 @@ async function loadDashboard() {
   });
 
   // BAFI Verisini Çek ve Göster
-  fetchCached('bafi_full_data', async () => {
-    const [history, latest] = await Promise.all([
-      fetch('bafi-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi').then(r => r.ok ? r.json() : null).catch(() => null)
-    ]);
-    return { history, latest };
-  }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
-    _bafiHistory = history;
-    _bafiLatest = latest;
+  // BAFI Verisini Çek ve Göster
+  async function initBafiCard() {
+    return fetchCached('bafi_full_data', async () => {
+      const [history, latest] = await Promise.all([
+        fetch('bafi-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi').then(r => r.ok ? r.json() : null).catch(() => null)
+      ]);
+      return { history, latest };
+    }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
+      _bafiHistory = history;
+      _bafiLatest = latest;
 
-    if (latest && latest.price) {
-      const formattedPrice = latest.price.toFixed(2) + ' $';
-      setCard('dc-bafi',
-        formattedPrice,
-        latest.change,
-        "Hava kargo spot tarifesi endeksi",
-        `Son veri: ${latest.date}<br><a href="https://www.tacindex.com" target="_blank" rel="noopener">tacindex.com →</a>`
-      );
-    } else {
-      setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
-    }
-  });
+      if (latest && latest.price) {
+        const formattedPrice = latest.price.toFixed(2) + ' $';
+        setCard('dc-bafi',
+          formattedPrice,
+          latest.change,
+          "Hava kargo spot tarifesi endeksi",
+          `Son veri: ${latest.date}<br><a href="https://www.tacindex.com" target="_blank" rel="noopener">tacindex.com →</a>`
+        );
+      } else {
+        setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
+      }
+    });
+  }
 
   // FBX Verisini Çek ve Göster
-  fetchCached('fbx_full_data', async () => {
-    const [history, latest] = await Promise.all([
-      fetch('fbx-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null)
-    ]);
-    return { history, latest };
-  }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
-    const fbxMap = new Map();
-    if (Array.isArray(history)) {
-      history.forEach(item => { if (item && item.date) fbxMap.set(item.date, item.value); });
-    }
-    if (latest && Array.isArray(latest.history)) {
-      latest.history.forEach(item => { if (item && item.date) fbxMap.set(item.date, item.value); });
-    }
-    _fbxHistory = Array.from(fbxMap.entries())
-      .map(([date, value]) => ({ date, value }))
-      .sort((a, b) => a.date.localeCompare(b.date));
-    _fbxLatest = latest;
+  async function initFbxCard() {
+    return fetchCached('fbx_full_data', async () => {
+      const [history, latest] = await Promise.all([
+        fetch('fbx-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null)
+      ]);
+      return { history, latest };
+    }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
+      const fbxMap = new Map();
+      if (Array.isArray(history)) {
+        history.forEach(item => { if (item && item.date) fbxMap.set(item.date, item.value); });
+      }
+      if (latest && Array.isArray(latest.history)) {
+        latest.history.forEach(item => { if (item && item.date) fbxMap.set(item.date, item.value); });
+      }
+      _fbxHistory = Array.from(fbxMap.entries())
+        .map(([date, value]) => ({ date, value }))
+        .sort((a, b) => a.date.localeCompare(b.date));
+      _fbxLatest = latest;
 
-    if (latest && latest.price) {
-      const formattedPrice = latest.price.toLocaleString('en-US') + ' $';
-      setCard('dc-fbx',
-        formattedPrice,
-        latest.change,
-        "Global konteyner spot fiyat endeksi",
-        `Son veri: ${latest.date}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`
-      );
-    } else {
-      setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
-    }
-  });
+      if (latest && latest.price) {
+        const formattedPrice = latest.price.toLocaleString('en-US') + ' $';
+        setCard('dc-fbx',
+          formattedPrice,
+          latest.change,
+          "Global konteyner spot fiyat endeksi",
+          `Son veri: ${latest.date}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`
+        );
+      } else {
+        setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
+      }
+    });
+  }
+
+  // LF biçimlendirme fonksiyonu (% işaretini başa taşır)
+  window.formatLF = function(val) {
+    if (!val || val === '—') return '—';
+    const cleaned = String(val).replace('%', '').trim();
+    return '%' + cleaned;
+  };
 
   // IATA Verisini Çek ve Göster
-  fetchCached('iata_full_data', async () => {
-    const [history, latest] = await Promise.all([
-      fetch('iata-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null)
-    ]);
-    return { history, latest };
-  }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
-    _iataHistory = history;
-    _iataLatest = latest;
+  async function initIataCard() {
+    return fetchCached('iata_full_data', async () => {
+      const [history, latest] = await Promise.all([
+        fetch('iata-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null)
+      ]);
+      return { history, latest };
+    }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
+      _iataHistory = history;
+      _iataLatest = latest;
 
-    if (latest && latest.demand) {
-      setCard('dc-iata',
-        latest.demand,
-        null,
-        `Kapasite değişimi: ${latest.capacity}`,
-        `Son Rapor: ${latest.date}<br><a href="${latest.pdfLink}" target="_blank" rel="noopener">iata.org PDF →</a>`
-      );
-    } else {
-      setCard('dc-iata', '—', null, '', 'Veri alınamadı');
-    }
-  });
+      if (latest && latest.demand) {
+        const dEl = document.getElementById('iata-val-demand');
+        const cEl = document.getElementById('iata-val-capacity');
+        const lfEl = document.getElementById('iata-val-loadfactor');
+        const srEl = document.getElementById('iata-val-spotrate');
+        
+        if (dEl) { dEl.textContent = latest.demand; dEl.classList.remove('skeleton'); }
+        if (cEl) { cEl.textContent = latest.capacity; cEl.classList.remove('skeleton'); }
+        if (lfEl) { lfEl.textContent = window.formatLF(latest.loadFactor); lfEl.classList.remove('skeleton'); }
+        if (srEl) { srEl.textContent = latest.spotRate || '—'; srEl.classList.remove('skeleton'); }
+
+        const subEl = document.getElementById('dc-iata-sub');
+        if (subEl) subEl.textContent = `Talep ve kapasite dengesi (${latest.date})`;
+        
+        const noteEl = document.getElementById('dc-iata-note');
+        if (noteEl) {
+          noteEl.innerHTML = `IATA · Son Rapor: ${latest.date} · <a href="${latest.pdfLink}" target="_blank" rel="noopener">iata.org Rapor →</a>`;
+        }
+      } else {
+        const dEl = document.getElementById('iata-val-demand');
+        if (dEl) {
+          dEl.textContent = '—'; dEl.classList.remove('skeleton');
+          document.getElementById('iata-val-capacity').textContent = '—'; document.getElementById('iata-val-capacity').classList.remove('skeleton');
+          document.getElementById('iata-val-loadfactor').textContent = '—'; document.getElementById('iata-val-loadfactor').classList.remove('skeleton');
+          document.getElementById('iata-val-spotrate').textContent = '—'; document.getElementById('iata-val-spotrate').classList.remove('skeleton');
+        }
+      }
+    });
+  }
+
+  // Expose to window scope
+  window.initBafiCard = initBafiCard;
+  window.initFbxCard = initFbxCard;
+  window.initIataCard = initIataCard;
+
+  // Run initializations
+  initBafiCard();
+  initFbxCard();
+  initIataCard();
 
   // ── THY Hisse Verisini Çek ve Göster ──────────────────────────────
   let _thy1yRaw = null;
@@ -11843,6 +12264,33 @@ async function loadDashboard() {
       };
     }
 
+    if (cardId === 'dc-fbx') {
+      return {
+        isOpen: false,
+        isStatic: true,
+        pillText: 'Günlük',
+        tooltipMessage: 'Freightos Baltık Endeksi (FBX) günlük olarak güncellenen küresel konteyner spot fiyat endeksidir. Veriler Cloudflare Worker proxy aracılığıyla canlı kazınmaktadır.'
+      };
+    }
+
+    if (cardId === 'dc-bafi') {
+      return {
+        isOpen: false,
+        isStatic: true,
+        pillText: 'Haftalık',
+        tooltipMessage: 'Baltic Air Freight Index (BAFI) haftalık olarak güncellenen hava kargo spot tarifesi endeksidir. Veriler Cloudflare Worker proxy aracılığıyla canlı kazınmaktadır.'
+      };
+    }
+
+    if (cardId === 'dc-iata') {
+      return {
+        isOpen: false,
+        isStatic: true,
+        pillText: 'Aylık',
+        tooltipMessage: 'IATA Air Cargo Market Analysis aylık olarak yayınlanan küresel hava kargo piyasa analizi raporudur. Veriler ve Türkçe özetler Cloudflare Worker proxy ile n8n webhook raporlarından dinamik olarak çekilir.'
+      };
+    }
+    
     return { isOpen: true, pillText: null, tooltipMessage: '' };
   }
 
@@ -11952,7 +12400,10 @@ async function loadDashboard() {
     'dc-thy': { countdown: 60, interval: 60, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
     'dc-usd': { countdown: 60, interval: 60, initFn: () => typeof initForexCard === 'function' ? initForexCard() : Promise.resolve() },
     'dc-brent': { countdown: 60, interval: 60, initFn: () => typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve() },
-    'dc-jetfuel': { countdown: null, interval: null, initFn: null }
+    'dc-jetfuel': { countdown: null, interval: null, initFn: null },
+    'dc-fbx': { countdown: null, interval: null, initFn: () => typeof initFbxCard === 'function' ? initFbxCard() : Promise.resolve() },
+    'dc-bafi': { countdown: null, interval: null, initFn: () => typeof initBafiCard === 'function' ? initBafiCard() : Promise.resolve() },
+    'dc-iata': { countdown: null, interval: null, initFn: () => typeof initIataCard === 'function' ? initIataCard() : Promise.resolve() }
   };
 
   let _dashboardPollInterval = null;
@@ -12308,7 +12759,7 @@ async function loadDashboard() {
 </script>
 
 <!-- ── AI Chat Panel ─────────────────────────────────── -->
-<button id="ai-fab" aria-label="AI Asistan" style="display:none">
+<button id="ai-fab" aria-label="AI Asistan">
   <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
 </button>
 
@@ -16713,8 +17164,8 @@ function initControls(allArticles) {
   }
 
   // ── FILO BÜYÜME GRAFİĞİ ──────────────────────────────────────────
-  // Kaynak: Planespotters.net (2 Haz 2026) — sadece gerçekleşen veriler
-  // Gelecek projeksiyonları CH Aviation bölümünde gösterilecek
+  // Kaynak: Kaynak 1 (2 Haz 2026) — sadece gerçekleşen veriler
+  // Gelecek projeksiyonları Kaynak 2 bölümünde gösterilecek
   const FLEET_PROJ = [
     { id:'thy',   name:'Turkish Airlines',    color:'#E30613',
       d:{2022:373,2023:423,2024:457,2025:484,2026:410} },
@@ -16743,7 +17194,7 @@ function initControls(allArticles) {
     { id:'ca',    name:'Air China',           color:'#DC2626',
       d:{2022:431,2023:457,2024:488,2025:516,2026:533} },
     { id:'sq',    name:'Singapore Airlines',  color:'#0f4c8a',
-      d:{2022:128,2023:138,2024:148,2025:156,2026:162} }
+      d:{2022:128,2023:138,2024:148,2025:156,2026:162} },
   ];
   const FLEET_HIDDEN = new Set();
 
@@ -16916,12 +17367,15 @@ function initControls(allArticles) {
     const emptyEl   = document.getElementById('reports-empty');
     const viewEl    = document.getElementById('reports-view');
     const fleetEl   = document.getElementById('fleet-report-container');
+    const iataEl    = document.getElementById('iata-report-container');
 
     const isFilo    = type === 'filo';
     const isFinansal = type === 'finansal';
-    const isRapor   = !isFilo && !isFinansal;
+    const isIata    = type === 'iata_market_analizi';
+    const isRapor   = !isFilo && !isFinansal && !isIata;
 
     if (fleetEl) { fleetEl.style.display = isFilo ? 'block' : 'none'; if (isFilo) setTimeout(initFleetChart, 30); }
+    if (iataEl) { iataEl.style.display = isIata ? 'block' : 'none'; if (isIata) setTimeout(initIataReportsTab, 30); }
 
     const finEl = document.getElementById('finansal-report-container');
     const catBar = document.getElementById('fleet-cat-bar');
@@ -16948,8 +17402,8 @@ function initControls(allArticles) {
     // Yan sütunların görünürlüğünü güncelle
     const rightSidebar = document.getElementById('reports-right-sidebar');
     const leftSidebar = document.getElementById('reports-sidebar');
-    if (rightSidebar) rightSidebar.style.display = isFilo ? 'none' : '';
-    if (leftSidebar) leftSidebar.style.display = isFilo ? 'none' : '';
+    if (rightSidebar) rightSidebar.style.display = (isFilo || isIata) ? 'none' : '';
+    if (leftSidebar) leftSidebar.style.display = (isFilo || isIata) ? 'none' : '';
   }
 
   // Pill tıklaması
@@ -16982,6 +17436,20 @@ function initControls(allArticles) {
         : '';
       meta.textContent = (d ? 'Son bülten: ' + d + ' · ' : '') + _reports.length + ' bülten';
     }
+    
+    // update IATA home card meta if iata reports are loaded
+    if (_iataLatest && _iataLatest.demand) {
+      const staticPromise = fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
+      staticPromise.then(staticReports => {
+        let count = staticReports.length;
+        const exists = staticReports.some(r => r.date === _iataLatest.date);
+        if (!exists) count++;
+        const homeMetaEl = document.getElementById('rhome-iata-meta');
+        if (homeMetaEl) {
+          homeMetaEl.textContent = `Son rapor: ${_iataLatest.date} · ${count} rapor`;
+        }
+      });
+    }
   }
 
   // Giriş görünümü: üç rapor türü kart olarak; alt görünümler gizlenir
@@ -16993,7 +17461,7 @@ function initControls(allArticles) {
       history.replaceState(null, '', '#reports');
     }
     ['reports-loading', 'reports-empty', 'reports-view',
-     'fleet-report-container', 'finansal-report-container'].forEach(id => {
+     'fleet-report-container', 'finansal-report-container', 'iata-report-container'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
@@ -17005,11 +17473,316 @@ function initControls(allArticles) {
     document.querySelectorAll('.report-type-pill').forEach(p => p.classList.remove('fdd-btn--active'));
   }
 
+  // ── IATA Raporları Tab Yükleme ve Render Mantığı ──
+  window.IATA_DEFAULT_2026_REPORTS = [
+    {
+      "date": "Nisan 2026",
+      "demand": "+4.0%",
+      "capacity": "-0.4%",
+      "loadFactor": "46.0%",
+      "spotRate": "3.40 $/kg",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-april-2026/",
+      "summary": "Nisan 2026 küresel hava kargo talebi yıllık %4.0 artarak yeniden büyüme bölgesine dönmüştür. Kapasite ise yıllık %0.4 azalmıştır. Büyüme Asya çıkışlı ticari akışlarla desteklenirken, Orta Doğu jeopolitik gerilimleri kapasite kısıtlamalarına yol açmaktadır."
+    },
+    {
+      "date": "Mart 2026",
+      "demand": "-4.8%",
+      "capacity": "-1.2%",
+      "loadFactor": "44.0%",
+      "spotRate": "3.10 $/kg",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-march-2026/",
+      "summary": "Mart 2026 küresel hava kargo talebinde yıllık %4.8'lik bir daralma gözlenmiştir. Bu gerilemede Orta Doğu'daki jeopolitik kısıtlamalar, operasyonel aksamalar ve Paskalya tatili nedeniyle çalışma günlerinin azalması etkili olmuştur."
+    },
+    {
+      "date": "Şubat 2026",
+      "demand": "+11.2%",
+      "capacity": "+4.5%",
+      "loadFactor": "47.0%",
+      "spotRate": "3.35 $/kg",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-february-2026/",
+      "summary": "Şubat 2026 küresel hava kargo talebi yıllık %11.2 artışla güçlü bir yükseliş yaşamıştır. Bu ivmede Çin Yeni Yılı (Lunar New Year) öncesindeki yoğun sevkiyat trafiği ve e-ticaret lojistiği etkili olmuştur."
+    },
+    {
+      "date": "Ocak 2026",
+      "demand": "+5.6%",
+      "capacity": "+2.2%",
+      "loadFactor": "45.0%",
+      "spotRate": "3.20 $/kg",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-january-2026/",
+      "summary": "Ocak 2026 imalat sanayi satın ama yöneticileri endeksi (PMI) büyüme bölgesinde kalarak hava kargo talebi yıllık %5.6 artışla güçlü bir başlangıç yapmıştır. Bölgesel düzeyde Afrika en yüksek büyüme oranını kaydetmiştir."
+    }
+  ];
+
+  window._iataReportsList = [];
+  let _iataChartInstance = null;
+
+  async function initIataReportsTab() {
+    const feedListEl = document.getElementById('iata-report-feed-list');
+    if (!feedListEl) return;
+    feedListEl.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-3);"><div class="spinner" style="margin:0 auto 12px;"></div>Raporlar yükleniyor...</div>';
+
+    try {
+      // 1. Fetch static 2026 reports
+      let staticReports = [];
+      try {
+        staticReports = await fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
+      } catch (e) {
+        console.warn("CORS/file protocol issue. Falling back to local data.");
+      }
+      
+      if (!staticReports || staticReports.length === 0) {
+        staticReports = [...IATA_DEFAULT_2026_REPORTS];
+      }
+      
+      // 2. Merge with live latest report from worker if available
+      let mergedReports = [...staticReports];
+      if (_iataLatest && _iataLatest.demand) {
+        const exists = staticReports.some(r => r.date === _iataLatest.date);
+        if (!exists) {
+          mergedReports.unshift({
+            date: _iataLatest.date,
+            demand: _iataLatest.demand,
+            capacity: _iataLatest.capacity,
+            loadFactor: _iataLatest.loadFactor,
+            spotRate: _iataLatest.spotRate,
+            link: _iataLatest.pdfLink,
+            summary: _iataLatest.summary
+          });
+        } else {
+          const idx = mergedReports.findIndex(r => r.date === _iataLatest.date);
+          if (idx !== -1) {
+            mergedReports[idx] = {
+              ...mergedReports[idx],
+              demand: _iataLatest.demand,
+              capacity: _iataLatest.capacity,
+              loadFactor: _iataLatest.loadFactor,
+              spotRate: _iataLatest.spotRate,
+              link: _iataLatest.pdfLink,
+              summary: _iataLatest.summary
+            };
+          }
+        }
+      }
+
+      _iataReportsList = mergedReports;
+
+      // Update home card meta
+      const homeMetaEl = document.getElementById('rhome-iata-meta');
+      if (homeMetaEl && mergedReports.length > 0) {
+        homeMetaEl.textContent = `Son rapor: ${mergedReports[0].date} · ${mergedReports.length} rapor`;
+      }
+
+      // Render cards
+      try {
+        renderIataReportFeed(mergedReports);
+      } catch (err) {
+        console.error("IATA Rapor listesi yüklenirken hata:", err);
+        feedListEl.innerHTML = `<div style="padding:20px; text-align:center; color:var(--red);">Rapor listesi yüklenemedi: ${err.message}</div>`;
+      }
+
+      // Render trend chart
+      try {
+        renderIataTrendChart(mergedReports);
+      } catch (err) {
+        console.error("IATA Grafik çizilirken hata:", err);
+        const chartContainer = document.querySelector('.iata-chart-container');
+        if (chartContainer) {
+          chartContainer.innerHTML = `<div style="padding:40px 20px; text-align:center; color:var(--text-3); font-size:12px; border:1px dashed var(--border); border-radius:8px;">Grafik çizilemedi:<br><small style="color:var(--red); font-family:monospace;">${err.message}</small></div>`;
+        }
+      }
+
+    } catch (e) {
+      console.error("IATA Raporları yüklenirken genel hata oluştu:", e);
+      feedListEl.innerHTML = `<div style="padding:40px; text-align:center; color:var(--red);">Veriler yüklenemedi.<br><small style="color:var(--text-3); font-family:monospace; margin-top:8px; display:block;">Hata: ${e.message}</small></div>`;
+    }
+  }
+
+  function renderIataReportFeed(reports) {
+    const listEl = document.getElementById('iata-report-feed-list');
+    if (!listEl) return;
+
+    if (reports.length === 0) {
+      listEl.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-3);">Henüz rapor bulunmuyor.</div>';
+      return;
+    }
+
+    listEl.innerHTML = reports.map(r => {
+      const getChangeColor = val => {
+        if (!val || val === '—') return 'var(--text)';
+        const valStr = String(val);
+        if (valStr.startsWith('+')) return '#059669'; // Green positive
+        if (valStr.startsWith('-')) return 'var(--red)'; // Red negative
+        return 'var(--text)';
+      };
+
+      return `
+        <div class="iata-report-card">
+          <div class="iata-report-header">
+            <span class="iata-report-title" style="color:var(--text);font-weight:700;">IATA Hava Kargo Market Analizi</span>
+            <span class="iata-report-date">${r.date}</span>
+          </div>
+          <div class="iata-report-grid">
+            <div class="iata-report-metric">
+              <span class="iata-report-metric-lbl">Talep (CTK)</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand)}">${r.demand}</span>
+            </div>
+            <div class="iata-report-metric">
+              <span class="iata-report-metric-lbl">Kapasite</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity)}">${r.capacity}</span>
+            </div>
+            <div class="iata-report-metric">
+              <span class="iata-report-metric-lbl">LF</span>
+              <span class="iata-report-metric-val" style="color:var(--text);">${window.formatLF(r.loadFactor)}</span>
+            </div>
+            <div class="iata-report-metric">
+              <span class="iata-report-metric-lbl">Spot Rate</span>
+              <span class="iata-report-metric-val" style="color:var(--text);">${r.spotRate || '—'}</span>
+            </div>
+          </div>
+          <p class="iata-report-summary">${r.summary || 'Özet açıklama bulunmuyor.'}</p>
+          <div class="iata-report-footer">
+            <a class="iata-report-link" href="${r.link}" target="_blank" rel="noopener">
+              Resmi Rapor Sayfası (iata.org)
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left:2px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderIataTrendChart(reports) {
+    const canvas = document.getElementById('iata-trend-chart');
+    if (!canvas) return;
+
+    if (_iataChartInstance) {
+      _iataChartInstance.destroy();
+    }
+
+    // Sort chronologically (oldest to newest)
+    const sorted = [...reports].reverse();
+
+    const labels = sorted.map(r => r.date);
+    const parseFloatPct = str => {
+      if (!str || str === '—') return null;
+      return parseFloat(String(str).replace('%', '').replace('+', '').trim());
+    };
+
+    const demandData = sorted.map(r => parseFloatPct(r.demand));
+    const capacityData = sorted.map(r => parseFloatPct(r.capacity));
+
+    const ctx = canvas.getContext('2d');
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+    const textColor = isDark ? '#8aa0bf' : '#64748b';
+
+    _iataChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Talep Büyümesi (CTK)',
+            data: demandData,
+            borderColor: '#7a64a8',
+            backgroundColor: 'rgba(122,100,168,0.08)',
+            borderWidth: 3,
+            tension: 0.3,
+            pointBackgroundColor: '#7a64a8',
+            pointRadius: 4.5,
+            fill: true
+          },
+          {
+            label: 'Kapasite Büyümesi (ACTK)',
+            data: capacityData,
+            borderColor: '#22c55e',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            tension: 0.3,
+            pointBackgroundColor: '#22c55e',
+            pointRadius: 4.5
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              boxWidth: 12,
+              font: { size: 10.5, family: 'Inter, system-ui, sans-serif', weight: '500' },
+              color: isDark ? '#e6edf7' : '#1e293b'
+            }
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: isDark ? '#162138' : '#ffffff',
+            titleColor: isDark ? '#e6edf7' : '#1e293b',
+            bodyColor: isDark ? '#c3cfe2' : '#334155',
+            borderColor: isDark ? '#26344f' : '#e2e8f0',
+            borderWidth: 1,
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  label += (context.parsed.y > 0 ? '+' : '') + context.parsed.y.toFixed(1) + '%';
+                }
+                return label;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: gridColor },
+            ticks: {
+              color: textColor,
+              font: { size: 9.5, family: 'Inter, system-ui, sans-serif' }
+            }
+          },
+          y: {
+            grid: { color: gridColor },
+            ticks: {
+              color: textColor,
+              font: { size: 9.5, family: 'Inter, system-ui, sans-serif' },
+              callback: value => (value > 0 ? '+' : '') + value + '%'
+            }
+          }
+        }
+      }
+    });
+
+    // Theme changes updates the chart colors
+    const observer = new MutationObserver(() => {
+      if (_iataChartInstance) {
+        const isDarkNow = document.documentElement.getAttribute('data-theme') === 'dark';
+        const newGridColor = isDarkNow ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+        const newTextColor = isDarkNow ? '#8aa0bf' : '#64748b';
+        _iataChartInstance.options.scales.x.grid.color = newGridColor;
+        _iataChartInstance.options.scales.y.grid.color = newGridColor;
+        _iataChartInstance.options.scales.x.ticks.color = newTextColor;
+        _iataChartInstance.options.scales.y.ticks.color = newTextColor;
+        _iataChartInstance.options.plugins.legend.labels.color = isDarkNow ? '#e6edf7' : '#1e293b';
+        _iataChartInstance.update();
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  }
+
   // Global'e aç (onclick="..." attribute'ları için)
   window.initReportsTab    = initReportsTab;
   window.navigateReport    = navigateReport;
   window.showReportsHome   = showReportsHome;
   window.switchReportType  = switchReportType;
+  window.initIataReportsTab = initIataReportsTab;
 let _finChart = null;
 let _finPrevChartSig = null;        // son render'ın metrik/tip/dönem/CY/tema imzası
 let _finPrevChartSlugs = new Set(); // son render'da görünür seriler
@@ -18044,7 +18817,7 @@ function classifyVariant(v) {
 
 let _catFilter = 'all';
 
-function chaBreakdown(types, cat) {
+function k2Breakdown(types, cat) {
   const filtered = cat === 'all' ? types : types.filter(t => classifyVariant(t.v) === cat);
   return {
     active: filtered.reduce((s,t) => s+(parseInt(t.a)||0), 0),
@@ -18166,38 +18939,38 @@ document.addEventListener('DOMContentLoaded', () => {
 (function() {
   // ── Kaynak geçiş ──────────────────────────────────
   function switchFleetSrc(src) {
-    ['ps','cha','cmp'].forEach(s => {
+    ['k1','k2','cmp'].forEach(s => {
       const btn = document.getElementById('fleet-src-' + s);
-      if (btn) btn.classList.toggle('fdd-btn--active', s === src.replace('planespotters','ps').replace('chaviation','cha').replace('compare','cmp'));
+      if (btn) btn.classList.toggle('fdd-btn--active', s === src.replace('kaynak1','k1').replace('kaynak2','k2').replace('compare','cmp'));
     });
-    const ps  = document.getElementById('fleet-ps-content');
-    const cha = document.getElementById('fleet-cha-content');
+    const k1  = document.getElementById('fleet-k1-content');
+    const k2  = document.getElementById('fleet-k2-content');
     const cmp = document.getElementById('fleet-cmp-content');
     const dt  = document.getElementById('fleet-src-date');
     const catBar = document.getElementById('fleet-cat-bar');
     // Cache sıfırla filtre değişince yeniden build etmek için
-    _chaBuilt = false;
-    _psBuilt = false;
+    _k2Built = false;
+    _k1Built = false;
     _cmpBuilt = false;
-    if (src === 'planespotters') {
-      if (ps)  ps.style.display  = '';
-      if (cha) cha.style.display = 'none';
+    if (src === 'kaynak1') {
+      if (k1)  k1.style.display  = '';
+      if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = 'none';
-      if (dt)  dt.textContent    = 'Planespotters.net · 2 Haz 2026';
+      if (dt)  dt.textContent    = 'Kaynak 1 · 2 Haz 2026';
       if (catBar) catBar.style.display = '';
-      buildPsCards();
-    } else if (src === 'chaviation') {
-      if (ps)  ps.style.display  = 'none';
-      if (cha) cha.style.display = '';
+      buildK1Cards();
+    } else if (src === 'kaynak2') {
+      if (k1)  k1.style.display  = 'none';
+      if (k2)  k2.style.display = '';
       if (cmp) cmp.style.display = 'none';
-      if (dt)  dt.textContent    = 'CH Aviation · 2 Haz 2026';
+      if (dt)  dt.textContent    = 'Kaynak 2 · 2 Haz 2026';
       if (catBar) catBar.style.display = '';
-      buildChaCards();
+      buildK2Cards();
     } else {
-      if (ps)  ps.style.display  = 'none';
-      if (cha) cha.style.display = 'none';
+      if (k1)  k1.style.display  = 'none';
+      if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = '';
-      if (dt)  dt.textContent    = 'Planespotters.net + CH Aviation · 2 Haz 2026';
+      if (dt)  dt.textContent    = 'Kaynak 1 + Kaynak 2 · 2 Haz 2026';
       if (catBar) catBar.style.display = 'none';
       buildCmpTable();
     }
@@ -18214,8 +18987,8 @@ document.addEventListener('DOMContentLoaded', () => {
         b.classList.toggle('flt-cat-btn--active', b === catBtn)
       );
       // Tüm kartları yeniden build et
-      _chaBuilt = false;
-      _psBuilt = false;
+      _k2Built = false;
+      _k1Built = false;
       _cmpBuilt = false;
       const src = document.querySelector('.fleet-src-pill.fdd-btn--active')?.dataset.src;
       if (src) switchFleetSrc(src);
@@ -18223,112 +18996,112 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── Yardımcı: diff chip ──────────────────────────
-  function diffChip(ps, cha) {
-    if (ps == null) return '<span class="flt-diff-na">—</span>';
-    const d = cha - ps;
-    const pct = ps > 0 ? Math.abs(d/ps) : 1;
+  function diffChip(k1, k2) {
+    if (k1 == null) return '<span class="flt-diff-na">—</span>';
+    const d = k2 - k1;
+    const pct = k1 > 0 ? Math.abs(d/k1) : 1;
     const cls = pct < 0.02 ? 'flt-diff-match' : pct < 0.15 ? 'flt-diff-minor' : 'flt-diff-major';
     const arrow = d === 0 ? '=' : (d > 0 ? '▲' : '▼');
     const label = d === 0 ? 'eşit' : (d > 0 ? '+' : '') + d;
     return `<span class="flt-diff-chip ${cls}">${arrow}${label}</span>`;
   }
 
-  // ── PS kartları (CHA ile aynı stil) ─────────────
-  let _psBuilt = false;
-  function buildPsCards() {
-    _psBuilt = true;
-    const grid = document.getElementById('fleet-ps-cards');
+  // ── Kaynak 1 kartları (Kaynak 2 ile aynı stil) ─────────────
+  let _k1Built = false;
+  function buildK1Cards() {
+    _k1Built = true;
+    const grid = document.getElementById('fleet-k1-cards');
     if (!grid) return;
     grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
       const total = d.pt != null ? d.pt : '—';
       const order = d.po != null ? '+'+d.po : '—';
-      const age   = d.psage ? d.psage+'y' : '—';
-      const note  = d.psnote ? ` <span style="font-size:10px;color:var(--text-3)">(${d.psnote})</span>` : '';
+      const age   = d.k1age ? d.k1age+'y' : '—';
+      const note  = d.k1note ? ` <span style="font-size:10px;color:var(--text-3)">(${d.k1note})</span>` : '';
       const miniItems = [];
       if (d.types && d.types.length) {
-        const wbCount = chaBreakdown(d.types, 'wb').active;
-        const nbCount = chaBreakdown(d.types, 'nb').active;
-        const cargoCount = chaBreakdown(d.types, 'cargo').active;
+        const wbCount = k2Breakdown(d.types, 'wb').active;
+        const nbCount = k2Breakdown(d.types, 'nb').active;
+        const cargoCount = k2Breakdown(d.types, 'cargo').active;
         if (wbCount > 0) miniItems.push({ cat: 'wb', val: Math.round(wbCount/10)*10, color: '#7c3aed', label: 'WB' });
         if (nbCount > 0) miniItems.push({ cat: 'nb', val: Math.round(nbCount/10)*10, color: '#2563eb', label: 'NB' });
         if (cargoCount > 0) miniItems.push({ cat: 'cargo', val: Math.round(cargoCount/10)*10, color: '#b45309', label: 'Kargo' });
       }
       return `
-      <div class="fleet-cha-card">
-        <div class="fleet-cha-card-hdr">
-          <div class="fleet-cha-logo" style="background:${d.color}">${iata}</div>
+      <div class="fleet-k2-card">
+        <div class="fleet-k2-card-hdr">
+          <div class="fleet-k2-logo" style="background:${d.color}">${iata}</div>
           <div>
-            <div class="fleet-cha-name">${d.name}${note}</div>
-            <div class="fleet-cha-iata">IATA: ${iata} · Planespotters.net</div>
+            <div class="fleet-k2-name">${d.name}${note}</div>
+            <div class="fleet-k2-iata">IATA: ${iata} · Kaynak 1</div>
           </div>
         </div>
-        <div class="fleet-cha-stats">
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${total}</div>
-            <div class="fleet-cha-stat-lbl">PS Filo</div>
+        <div class="fleet-k2-stats">
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${total}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 1 Filo</div>
           </div>
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${order}</div>
-            <div class="fleet-cha-stat-lbl">PS Sipariş</div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${order}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 1 Sipariş</div>
           </div>
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${age}</div>
-            <div class="fleet-cha-stat-lbl">Ort. Yaş</div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${age}</div>
+            <div class="fleet-k2-stat-lbl">Ort. Yaş</div>
           </div>
         </div>
         ${miniItems.length ? `
         <div class="fleet-type-mini">
           ${miniItems.map(m => `<div class="fleet-type-mini-item"><div class="fleet-type-mini-dot" style="background:${m.color}"></div>${m.label}: ~${m.val}</div>`).join('')}
-          <div style="font-size:10px;color:var(--text-3);margin-left:auto;white-space:nowrap">(CHA verisi)</div>
+          <div style="font-size:10px;color:var(--text-3);margin-left:auto;white-space:nowrap">(Kaynak 2 verisi)</div>
         </div>` : ''}
         <div style="padding:4px 14px 10px;font-size:11px;color:var(--text-3)">
-          CHA aktif: ${d.ca} vs PS toplam: ${total}
+          Kaynak 2 aktif: ${d.ca} vs Kaynak 1 toplam: ${total}
         </div>
       </div>`}).join('');
-    // Grafik PS'e geçince yeniden çiz (genişlik için)
+    // Grafik Kaynak 1'e geçince yeniden çiz (genişlik için)
     _fleetChartInit = false;
     setTimeout(renderFleetChart, 80);
   }
 
-  // ── CHA kartları ────────────────────────────────
-  let _chaBuilt = false;
-  function buildChaCards() {
-    _chaBuilt = true;
-    const grid = document.getElementById('fleet-cha-cards');
+  // ── Kaynak 2 kartları ────────────────────────────────
+  let _k2Built = false;
+  function buildK2Cards() {
+    _k2Built = true;
+    const grid = document.getElementById('fleet-k2-cards');
     if (!grid) return;
     grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
-      const bd = chaBreakdown(d.types || [], _catFilter);
+      const bd = k2Breakdown(d.types || [], _catFilter);
       const catNote = _catFilter !== 'all' ? ` (${_catFilter === 'cargo' ? 'Kargo' : _catFilter === 'wb' ? 'Geniş Gövde' : 'Dar Gövde'})` : '';
       const miniItems = [];
       if (d.types && d.types.length) {
-        const wbCount = chaBreakdown(d.types, 'wb').active;
-        const nbCount = chaBreakdown(d.types, 'nb').active;
-        const cargoCount = chaBreakdown(d.types, 'cargo').active;
+        const wbCount = k2Breakdown(d.types, 'wb').active;
+        const nbCount = k2Breakdown(d.types, 'nb').active;
+        const cargoCount = k2Breakdown(d.types, 'cargo').active;
         if (wbCount > 0) miniItems.push({ cat: 'wb', val: wbCount, color: '#7c3aed', label: 'WB' });
         if (nbCount > 0) miniItems.push({ cat: 'nb', val: nbCount, color: '#2563eb', label: 'NB' });
         if (cargoCount > 0) miniItems.push({ cat: 'cargo', val: cargoCount, color: '#b45309', label: 'Kargo' });
       }
       return `
-      <div class="fleet-cha-card">
-        <div class="fleet-cha-card-hdr">
-          <div class="fleet-cha-logo" style="background:${d.color}">${iata}</div>
+      <div class="fleet-k2-card">
+        <div class="fleet-k2-card-hdr">
+          <div class="fleet-k2-logo" style="background:${d.color}">${iata}</div>
           <div>
-            <div class="fleet-cha-name">${d.name}</div>
-            <div class="fleet-cha-iata">IATA: ${iata} · CH Aviation${catNote}</div>
+            <div class="fleet-k2-name">${d.name}</div>
+            <div class="fleet-k2-iata">IATA: ${iata} · Kaynak 2${catNote}</div>
           </div>
         </div>
-        <div class="fleet-cha-stats">
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${bd.active||'—'}</div>
-            <div class="fleet-cha-stat-lbl">CHA Aktif</div>
+        <div class="fleet-k2-stats">
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${bd.active||'—'}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 2 Aktif</div>
           </div>
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${bd.total||'—'}</div>
-            <div class="fleet-cha-stat-lbl">CHA Toplam</div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${bd.total||'—'}</div>
+            <div class="fleet-k2-stat-lbl">Kaynak 2 Toplam</div>
           </div>
-          <div class="fleet-cha-stat">
-            <div class="fleet-cha-stat-val">${bd.order||'—'}</div>
-            <div class="fleet-cha-stat-lbl">Sipariş</div>
+          <div class="fleet-k2-stat">
+            <div class="fleet-k2-stat-val">${bd.order||'—'}</div>
+            <div class="fleet-k2-stat-lbl">Sipariş</div>
           </div>
         </div>
         ${miniItems.length ? `
@@ -18336,14 +19109,14 @@ document.addEventListener('DOMContentLoaded', () => {
           ${miniItems.map(m => `<div class="fleet-type-mini-item"><div class="fleet-type-mini-dot" style="background:${m.color}"></div>${m.label}: ${m.val} aktif</div>`).join('')}
         </div>` : ''}
         ${d.types && d.types.length ? `
-        <button class="fleet-cha-expand-btn" onclick="toggleChaDetail(this)">
+        <button class="fleet-k2-expand-btn" onclick="toggleK2Detail(this)">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
           ${bd.types.length} uçak tipi
         </button>
-        <table class="fleet-cha-type-table">
+        <table class="fleet-k2-type-table">
           <tr><th>Tip</th><th>Aktif</th><th>Park</th><th>Islak Kir.</th><th>Toplam</th><th>Sipariş</th><th>Ort. Yaş</th></tr>
           ${bd.types.map(t => `<tr>
-            <td>${t.v}${t.o?`<span class="cha-order-chip">+${t.o}</span>`:''}</td>
+            <td>${t.v}${t.o?`<span class="k2-order-chip">+${t.o}</span>`:''}</td>
             <td>${t.a||'—'}</td><td>${t.i||'—'}</td><td>${t.w||'—'}</td><td>${t.t||'—'}</td>
             <td>${t.o||'—'}</td><td>${t.age?t.age+'y':'—'}</td>
           </tr>`).join('')}
@@ -18351,7 +19124,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
     }).join('');
   }
-  window.toggleChaDetail = function(btn) {
+  window.toggleK2Detail = function(btn) {
     const tbl = btn.nextElementSibling;
     if (!tbl) return;
     const open = tbl.classList.toggle('open');
@@ -18359,32 +19132,32 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ── Karşılaştırma tablosu ────────────────────────
-  // ── PS formülü: 'pa' (In Service) veya 'pt' (Toplam) ──
-  let _psCol = 'pa'; // varsayılan: In Service
+  // ── Kaynak 1 formülü: 'pa' (In Service) veya 'pt' (Toplam) ──
+  let _k1Col = 'pa'; // varsayılan: In Service
 
   function calcPs(d) {
-    if (_psCol === 'pa') return d.pa != null ? { val: d.pa, hasData: true } : { val: d.pt, hasData: false };
+    if (_k1Col === 'pa') return d.pa != null ? { val: d.pa, hasData: true } : { val: d.pt, hasData: false };
     return { val: d.pt, hasData: true };
   }
 
-  window.togglePsPill = function(btn) {
+  window.toggleK1Pill = function(btn) {
     const col = btn.dataset.pscol;
-    _psCol = col;
+    _k1Col = col;
     // Aktif pill güncelle
-    document.querySelectorAll('.flt-fpill--ps').forEach(p => {
+    document.querySelectorAll('.flt-fpill--k1').forEach(p => {
       const on = p.dataset.pscol === col;
       p.classList.toggle('flt-fpill--add', on);
     });
     // Başlık güncelle
-    const h = document.getElementById('flt-ps-col-hdr');
-    const e = document.getElementById('flt-ps-expr');
+    const h = document.getElementById('flt-k1-col-hdr');
+    const e = document.getElementById('flt-k1-expr');
     const lbl = col === 'pa' ? 'In Service' : 'Toplam Filo';
-    if (h) h.textContent = 'PS: ' + lbl;
+    if (h) h.textContent = 'Kaynak 1: ' + lbl;
     if (e) e.textContent = '= ' + lbl;
     rerenderCmpRows();
   };
 
-  // ── CHA Formül durumu: {col: '+' | '-' | null} ──
+  // ── Kaynak 2 Formül durumu: {col: '+' | '-' | null} ──
   const FML_COLS = ['ca','ci','cw','ct','co'];
   const FML_LABELS = { ca:'Active', ci:'Inactive', cw:'Wet Leased In', ct:'Total', co:'To be delivered' };
   let _formula = { ca: '+', ci: null, cw: null, ct: null, co: null };
@@ -18415,27 +19188,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const expr = document.getElementById('flt-formula-expr');
     if (expr) expr.textContent = formulaExpr();
     // Başlığı güncelle
-    const hdr = document.getElementById('flt-cha-col-hdr');
-    if (hdr) hdr.textContent = 'CHA: ' + formulaExpr().replace('= ','');
+    const hdr = document.getElementById('flt-k2-col-hdr');
+    if (hdr) hdr.textContent = 'Kaynak 2: ' + formulaExpr().replace('= ','');
     // Tüm satırları yeniden çiz
     rerenderCmpRows();
   };
 
   function rerenderCmpRows() {
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const psCell  = document.getElementById('flt-ps-val-' + iata);
-      const chaCell = document.getElementById('flt-cha-val-' + iata);
+      const psCell  = document.getElementById('flt-k1-val-' + iata);
+      const k2Cell = document.getElementById('flt-k2-val-' + iata);
       const diff    = document.getElementById('flt-diff-' + iata);
-      if (!chaCell) return;
-      const cha = calcFormula(d);
-      const { val: psVal, hasData: psHasData } = calcPs(d);
-      chaCell.textContent = cha;
+      if (!k2Cell) return;
+      const k2Val = calcFormula(d);
+      const { val: k1Val, hasData: k1HasData } = calcPs(d);
+      k2Cell.textContent = k2Val;
       if (psCell) {
-        psCell.innerHTML = psVal != null
-          ? psVal + (psHasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo gösteriliyor"> *</span>')
+        psCell.innerHTML = k1Val != null
+          ? k1Val + (k1HasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo gösteriliyor"> *</span>')
           : '<span class="flt-val-na">—</span>';
       }
-      if (diff) diff.innerHTML = psVal != null ? diffChip(psVal, cha) : '<span class="flt-diff-na">—</span>';
+      if (diff) diff.innerHTML = k1Val != null ? diffChip(k1Val, k2Val) : '<span class="flt-diff-na">—</span>';
     });
   }
 
@@ -18446,14 +19219,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!tbody) return;
     let html = '';
     Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
-      const psO   = d.po != null ? '+'+d.po : '—';
-      const chaO  = d.co ? '+'+d.co : '—';
-      const psAge = d.psage ? d.psage+'y' : '—';
-      const note  = d.psnote ? `<span style="font-size:9px;color:var(--text-3);display:block">${d.psnote}</span>` : '';
-      // Eğer filtre aktifse, CHA değerini kategoriye göre hesapla
-      let chaVal;
+      const k1O   = d.po != null ? '+'+d.po : '—';
+      const k2O  = d.co ? '+'+d.co : '—';
+      const k1Age = d.k1age ? d.k1age+'y' : '—';
+      const note  = d.k1note ? `<span style="font-size:9px;color:var(--text-3);display:block">${d.k1note}</span>` : '';
+      // Eğer filtre aktifse, Kaynak 2 değerini kategoriye göre hesapla
+      let k2Val;
       if (_catFilter !== 'all') {
-        const bd = chaBreakdown(d.types || [], _catFilter);
+        const bd = k2Breakdown(d.types || [], _catFilter);
         // Formülü filtreli veriye uygula
         let v = 0;
         FML_COLS.forEach(c => {
@@ -18465,13 +19238,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (_formula[c] === '+') v += colVal;
           else if (_formula[c] === '-') v -= colVal;
         });
-        chaVal = v;
+        k2Val = v;
       } else {
-        chaVal = calcFormula(d);
+        k2Val = calcFormula(d);
       }
-      const { val: psVal, hasData: psHasData } = calcPs(d);
-      const psDisplay = psVal != null
-        ? psVal + (psHasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo"> *</span>' + (_catFilter !== 'all' ? '<br/><span style="font-size:9px;color:var(--text-3)">Filtre PS toplam verisine uygulanamıyor</span>' : ''))
+      const { val: k1Val, hasData: k1HasData } = calcPs(d);
+      const k1Display = k1Val != null
+        ? k1Val + (k1HasData ? '' : '<span class="flt-val-na-star" title="In Service verisi yok — Toplam Filo"> *</span>' + (_catFilter !== 'all' ? '<br/><span style="font-size:9px;color:var(--text-3)">Filtre Kaynak 1 toplam verisine uygulanamıyor</span>' : ''))
         : '<span class="flt-val-na">—</span>';
       html += `
       <tr onclick="toggleCmpRow('${iata}')" data-iata="${iata}">
@@ -18479,12 +19252,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="flt-iata-badge" style="background:${d.color}">${iata}</span>
           <span class="flt-airline-name">${d.name}</span>
         </div></td>
-        <td class="flt-val-ps" id="flt-ps-val-${iata}">${psDisplay}${note}</td>
-        <td class="flt-val-cha" id="flt-cha-val-${iata}">${chaVal}</td>
-        <td id="flt-diff-${iata}">${psVal != null ? diffChip(psVal, chaVal) : '<span class="flt-diff-na">—</span>'}</td>
-        <td class="flt-val-ps">${psO}</td>
-        <td class="flt-val-cha">${chaO}</td>
-        <td style="font-size:11.5px;color:var(--text-2)">${psAge}</td>
+        <td class="flt-val-k1" id="flt-k1-val-${iata}">${k1Display}${note}</td>
+        <td class="flt-val-k2" id="flt-k2-val-${iata}">${k2Val}</td>
+        <td id="flt-diff-${iata}">${k1Val != null ? diffChip(k1Val, k2Val) : '<span class="flt-diff-na">—</span>'}</td>
+        <td class="flt-val-k1">${k1O}</td>
+        <td class="flt-val-k2">${k2O}</td>
+        <td style="font-size:11.5px;color:var(--text-2)">${k1Age}</td>
       </tr>
       <tr class="flt-detail-row" id="flt-detail-${iata}" style="display:none">
         <td colspan="7">
@@ -18892,205 +19665,6 @@ window.resetIndicatorsConfig = function() {
           <div style="font-size:15px; font-weight:700; color:var(--text); margin-bottom: 8px;">Tarih Önerisi Gönderildi!</div>
           <div id="rel-add-success-msg" style="font-size:12px; color:var(--text-2); line-height: 1.6; margin-bottom: 20px;">Öneriniz incelenmek üzere gönderildi. Onaylandığında takvime eklenecek.</div>
           <button class="rel-add-save" onclick="closeReleaseAddModal()" style="width:100%; text-align:center; display:block;">Tamam</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- WCI Grafik Modali -->
-    <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="wci-chart-title" class="rel-add-title">Drewry Dünya Konteyner Endeksi (WCI)</div>
-          <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div class="chart-modal-controls">
-          <div class="modal-controls-left">
-            <div class="wci-period-btns">
-              <button class="wci-period-btn forex-btn" id="btn-wci-1m" data-period="1m">1A</button>
-              <button class="wci-period-btn forex-btn" id="btn-wci-6m" data-period="6m">6A</button>
-              <button class="wci-period-btn forex-btn active" id="btn-wci-ytd" data-period="ytd">YTD</button>
-              <button class="wci-period-btn forex-btn" id="btn-wci-1y" data-period="1y">1Y</button>
-              <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
-            </div>
-            <div class="modal-date-picker">
-              <input type="date" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi">
-              <span class="modal-date-separator">→</span>
-              <input type="date" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi">
-            </div>
-          </div>
-          <div class="modal-controls-right">
-            <div class="modal-chart-type-group">
-              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 3v18h18"></path>
-                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
-                </svg>
-              </button>
-              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="18" y1="20" x2="18" y2="10"></line>
-                  <line x1="12" y1="20" x2="12" y2="4"></line>
-                  <line x1="6" y1="20" x2="6" y2="14"></line>
-                </svg>
-              </button>
-            </div>
-            <button class="export-btn" onclick="exportWciToCSV()" title="WCI verisini CSV olarak indir">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Excel
-            </button>
-          </div>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-wci"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- BAFI Grafik Modali -->
-    <div id="bafi-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="bafi-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="bafi-chart-title" class="rel-add-title">Baltic Air Freight Index (BAFI)</div>
-          <button class="rel-add-x" onclick="closeBafiChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div class="chart-modal-controls">
-          <div class="modal-controls-left">
-            <div class="bafi-period-btns">
-              <button class="bafi-period-btn forex-btn" id="btn-bafi-1m" data-period="1m">1A</button>
-              <button class="bafi-period-btn forex-btn" id="btn-bafi-6m" data-period="6m">6A</button>
-              <button class="bafi-period-btn forex-btn active" id="btn-bafi-ytd" data-period="ytd">YTD</button>
-              <button class="bafi-period-btn forex-btn" id="btn-bafi-1y" data-period="1y">1Y</button>
-              <button class="bafi-period-btn forex-btn" id="btn-bafi-max" data-period="max">Tümü</button>
-            </div>
-            <div class="modal-date-picker">
-              <input type="date" class="modal-date-input" id="bafi-date-start" aria-label="Başlangıç tarihi">
-              <span class="modal-date-separator">→</span>
-              <input type="date" class="modal-date-input" id="bafi-date-end" aria-label="Bitiş tarihi">
-            </div>
-          </div>
-          <div class="modal-controls-right">
-            <div class="modal-chart-type-group">
-              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 3v18h18"></path>
-                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
-                </svg>
-              </button>
-              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="18" y1="20" x2="18" y2="10"></line>
-                  <line x1="12" y1="20" x2="12" y2="4"></line>
-                  <line x1="6" y1="20" x2="6" y2="14"></line>
-                </svg>
-              </button>
-            </div>
-            <button class="export-btn" onclick="exportBafiToCSV()" title="BAFI verisini CSV olarak indir">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Excel
-            </button>
-          </div>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-bafi"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- IATA Grafik Modali -->
-    <div id="iata-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="iata-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="iata-chart-title" class="rel-add-title">IATA Air Cargo Market Analysis</div>
-          <button class="rel-add-x" onclick="closeIataChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div class="chart-modal-controls">
-          <div class="modal-controls-left">
-            <div class="iata-period-btns">
-              <button class="iata-period-btn forex-btn" id="btn-iata-6m" data-period="6m">6A</button>
-              <button class="iata-period-btn forex-btn active" id="btn-iata-ytd" data-period="ytd">YTD</button>
-              <button class="iata-period-btn forex-btn" id="btn-iata-1y" data-period="1y">1Y</button>
-              <button class="iata-period-btn forex-btn" id="btn-iata-max" data-period="max">Tümü</button>
-            </div>
-            <div class="modal-date-picker">
-              <input type="date" class="modal-date-input" id="iata-date-start" aria-label="Başlangıç tarihi">
-              <span class="modal-date-separator">→</span>
-              <input type="date" class="modal-date-input" id="iata-date-end" aria-label="Bitiş tarihi">
-            </div>
-          </div>
-          <div class="modal-controls-right">
-            <div class="modal-chart-type-group">
-              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 3v18h18"></path>
-                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
-                </svg>
-              </button>
-              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="18" y1="20" x2="18" y2="10"></line>
-                  <line x1="12" y1="20" x2="12" y2="4"></line>
-                  <line x1="6" y1="20" x2="6" y2="14"></line>
-                </svg>
-              </button>
-            </div>
-            <button class="export-btn" onclick="exportIataToCSV()" title="IATA verisini CSV olarak indir">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Excel
-            </button>
-          </div>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-iata"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- FBX Grafik Modali -->
-    <div id="fbx-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fbx-chart-title">
-      <div class="chart-modal-card">
-        <div class="rel-add-head">
-          <div id="fbx-chart-title" class="rel-add-title">Freightos Baltık Endeksi (FBX)</div>
-          <button class="rel-add-x" onclick="closeFbxChartModal()" aria-label="Kapat">×</button>
-        </div>
-        <div class="chart-modal-controls">
-          <div class="modal-controls-left">
-            <div class="fbx-period-btns">
-              <button class="fbx-period-btn forex-btn" id="btn-fbx-1m" data-period="1m">1A</button>
-              <button class="fbx-period-btn forex-btn" id="btn-fbx-6m" data-period="6m">6A</button>
-              <button class="fbx-period-btn forex-btn active" id="btn-fbx-ytd" data-period="ytd">YTD</button>
-              <button class="fbx-period-btn forex-btn" id="btn-fbx-1y" data-period="1y">1Y</button>
-              <button class="fbx-period-btn forex-btn" id="btn-fbx-max" data-period="max">Tümü</button>
-            </div>
-            <div class="modal-date-picker">
-              <input type="date" class="modal-date-input" id="fbx-date-start" aria-label="Başlangıç tarihi">
-              <span class="modal-date-separator">→</span>
-              <input type="date" class="modal-date-input" id="fbx-date-end" aria-label="Bitiş tarihi">
-            </div>
-          </div>
-          <div class="modal-controls-right">
-            <div class="modal-chart-type-group">
-              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 3v18h18"></path>
-                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
-                </svg>
-              </button>
-              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="18" y1="20" x2="18" y2="10"></line>
-                  <line x1="12" y1="20" x2="12" y2="4"></line>
-                  <line x1="6" y1="20" x2="6" y2="14"></line>
-                </svg>
-              </button>
-            </div>
-            <button class="export-btn" onclick="exportFbxToCSV()" title="FBX verisini CSV olarak indir">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Excel
-            </button>
-          </div>
-        </div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
-          <canvas id="chart-fbx"></canvas>
         </div>
       </div>
     </div>
