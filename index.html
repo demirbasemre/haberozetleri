@@ -17817,6 +17817,10 @@ function initControls(allArticles) {
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
               PDF İndir
             </a>
+            <button class="iata-report-link-pdf" onclick="window.downloadTurkishIataReportPdf('${r.date}')" style="cursor:pointer; background:rgba(34,197,94,0.08); color:#16a34a; border:1px solid rgba(34,197,94,0.2);">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Türkçe PDF
+            </button>
             <a class="iata-report-link" href="${r.link}" target="_blank" rel="noopener">
               Basın Bülteni
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
@@ -18132,6 +18136,246 @@ function initControls(allArticles) {
     }, 380);
   };
 
+
+  window.downloadTurkishIataReportPdf = function(date) {
+    const report = _iataReportsList.find(r => r.date === date);
+    if (!report) return;
+
+    const printWindow = window.open('', '_blank', 'width=850,height=950');
+    if (!printWindow) {
+      alert("Popup engelleyici Türkçe Rapor penceresini açamadı. Lütfen izin verin.");
+      return;
+    }
+
+    const regionNamesTr = {
+      asiaPacific: 'Asya-Pasifik',
+      northAmerica: 'Kuzey Amerika',
+      europe: 'Avrupa',
+      middleEast: 'Orta Doğu',
+      latinAmerica: 'Latin Amerika',
+      africa: 'Afrika'
+    };
+
+    let tableRows = '';
+    if (report.regions) {
+      Object.entries(report.regions).forEach(([key, reg]) => {
+        const name = regionNamesTr[key] || key;
+        const ctkVal = reg.ctk;
+        const actkVal = reg.actk;
+        const ctkNum = parseFloat(ctkVal);
+        const actkNum = parseFloat(actkVal);
+        const ctkClass = ctkNum > 0 ? 'positive' : (ctkNum < 0 ? 'negative' : '');
+        const actkClass = actkNum > 0 ? 'positive' : (actkNum < 0 ? 'negative' : '');
+        tableRows += `
+          <tr>
+            <td><strong>${name}</strong></td>
+            <td>%${reg.share}</td>
+            <td class="${ctkClass}">${ctkVal}</td>
+            <td class="${actkClass}">${actkVal}</td>
+          </tr>
+        `;
+      });
+    }
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>IATA Hava Kargo Raporu - ${report.date}</title>
+        <style>
+          body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            background: #ffffff;
+            padding: 40px;
+            line-height: 1.6;
+          }
+          .header {
+            border-bottom: 3px solid #7a64a8;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+          }
+          .header h1 {
+            font-size: 22px;
+            margin: 0;
+            color: #7a64a8;
+            font-weight: 800;
+          }
+          .header .date {
+            font-size: 15px;
+            font-weight: 700;
+            color: #475569;
+          }
+          .section-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #1e293b;
+            border-bottom: 1.5px solid #e2e8f0;
+            padding-bottom: 6px;
+            margin-top: 30px;
+            margin-bottom: 14px;
+            font-weight: 700;
+          }
+          .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+          }
+          .metric {
+            text-align: center;
+          }
+          .metric-lbl {
+            font-size: 9px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+          }
+          .metric-val {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 4px;
+          }
+          .summary {
+            font-size: 13.5px;
+            color: #334155;
+            margin-bottom: 20px;
+            text-align: justify;
+            background: #fafafa;
+            padding: 14px;
+            border-radius: 6px;
+            border-left: 4px solid #7a64a8;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            margin-top: 15px;
+          }
+          th, td {
+            padding: 10px 12px;
+            text-align: right;
+            border-bottom: 1px solid #e2e8f0;
+          }
+          th {
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 700;
+          }
+          th:first-child, td:first-child {
+            text-align: left;
+          }
+          .positive { color: #16a34a; }
+          .negative { color: #dc2626; }
+          .footer {
+            margin-top: 50px;
+            font-size: 10.5px;
+            color: #94a3b8;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+          }
+          @media print {
+            body { padding: 0; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-print" style="margin-bottom:25px; text-align:right;">
+          <button onclick="window.print()" style="padding:10px 20px; background:#16a34a; color:#fff; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">PDF Olarak Kaydet / Yazdır</button>
+        </div>
+        
+        <div class="header">
+          <div>
+            <span style="font-size:10px; text-transform:uppercase; font-weight:800; color:#64748b; letter-spacing:1px;">HAVA KARGO BÜLTENİ</span>
+            <h1>IATA Hava Kargo Market Analizi</h1>
+          </div>
+          <div class="date">${report.date} Raporu (Türkçe Özet)</div>
+        </div>
+        
+        <div class="section-title">Küresel Göstergeler (Yıllık Değişim)</div>
+        <div class="grid">
+          <div class="metric">
+            <div class="metric-lbl">Talep (CTK)</div>
+            <div class="metric-val" style="color:${parseFloat(report.demand) >= 0 ? '#16a34a' : '#dc2626'}">${report.demand}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-lbl">Kapasite (ACTK)</div>
+            <div class="metric-val" style="color:${parseFloat(report.capacity) >= 0 ? '#16a34a' : '#dc2626'}">${report.capacity}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-lbl">Yük Faktörü (LF)</div>
+            <div class="metric-val" style="color:#7a64a8">${report.loadFactor}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-lbl">Kargo Yield Değişimi</div>
+            <div class="metric-val" style="color:#f59e0b">${report.cargoYield || '—'}</div>
+          </div>
+        </div>
+        
+        <div class="section-title">Makroekonomik & Enerji Metrikleri</div>
+        <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="metric">
+            <div class="metric-lbl">PMI (İmalat Sanayi)</div>
+            <div class="metric-val">${report.pmi || '—'}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-lbl">PMI Yeni İhracat Siparişleri</div>
+            <div class="metric-val">${report.pmi_exports || '—'}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-lbl">Jet Yakıt Fiyatı Yıllık Değişim</div>
+            <div class="metric-val" style="color:${parseFloat(report.jetFuel) >= 0 ? '#dc2626' : '#16a34a'}">${report.jetFuel || '—'}</div>
+          </div>
+        </div>
+        
+        <div class="section-title">Yönetici Özeti (Önemli Gelişmeler)</div>
+        <div class="summary">
+          ${report.summary || 'Özet açıklama bulunmuyor.'}
+        </div>
+        
+        <div class="section-title">Bölgesel CTK Performansı (Yıllık Değişimler)</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Bölge</th>
+              <th>Küresel Kargo Payı</th>
+              <th>Talep Değişimi (YoY)</th>
+              <th>Kapasite Değişimi (YoY)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows || '<tr><td colspan="4" style="text-align:center;">Bölgesel veri bulunmuyor.</td></tr>'}
+          </tbody>
+        </table>
+        
+        <div class="footer">
+          Hava Kargo Bülteni tarafından otomatik olarak üretilmiştir. Orijinal İngilizce Rapor Kaynağı: IATA Economics (www.iata.org)
+        </div>
+        
+        <script>
+          window.onload = function() {
+            setTimeout(() => { window.print(); }, 500);
+          };
+        </script>
+      </body>
+      </html>
+    `;
+    printWindow.document.write(html);
+    printWindow.document.close();
+  };
 
   // Global'e aç (onclick="..." attribute'ları için)
   window.initReportsTab    = initReportsTab;
