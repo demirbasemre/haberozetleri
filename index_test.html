@@ -20318,49 +20318,25 @@ window.getIndicatorsConfig = function() {
 window.applyIndicatorsConfig = function() {
   const config = getIndicatorsConfig();
   const mainContainer = document.querySelector('#dash-sec-anlık .dash-cards');
-  const cargoContainer = document.querySelector('#dash-sec-endeks .dash-cards');
-  const cargoSection = document.getElementById('dash-sec-endeks');
-  
-  if (!mainContainer || !cargoContainer) return;
-  
-  // Find all indicator DOM nodes
+  if (!mainContainer) return;
+
   const cardElements = {};
   ALL_INDICATOR_CARDS.forEach(item => {
     const el = document.getElementById(item.id);
-    if (el) {
-      cardElements[item.id] = el;
-    }
+    if (el) cardElements[item.id] = el;
   });
-  
-  let cargoCount = 0;
-  
+
   config.order.forEach(id => {
     const el = cardElements[id];
     if (!el) return;
-    
     const isVisible = config.visible.includes(id);
-    const cardInfo = ALL_INDICATOR_CARDS.find(item => item.id === id);
-    
     if (isVisible) {
-      // Add to main container
       mainContainer.appendChild(el);
       el.style.display = '';
     } else {
-      // If it's a cargo card, keep in cargo container, otherwise hide
-      if (cardInfo && cardInfo.isCargo) {
-        cargoContainer.appendChild(el);
-        el.style.display = '';
-        cargoCount++;
-      } else {
-        el.style.display = 'none';
-      }
+      el.style.display = 'none';
     }
   });
-  
-  // Hide cargo section if empty
-  if (cargoSection) {
-    cargoSection.style.display = cargoCount > 0 ? '' : 'none';
-  }
 };
 
 window.openIndicatorsCustomizeModal = function() {
