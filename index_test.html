@@ -18292,7 +18292,7 @@ function initControls(allArticles) {
           }
         </style>
       </head>
-      <body>
+      <body onload="setTimeout(function(){ window.print(); }, 500)">
         <div class="no-print" style="margin-bottom:25px; text-align:right;">
           <button onclick="window.print()" style="padding:10px 20px; background:#16a34a; color:#fff; border:none; border-radius:6px; font-weight:700; cursor:pointer; font-size:12.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">PDF Olarak Kaydet / Yazdır</button>
         </div>
@@ -18364,12 +18364,6 @@ function initControls(allArticles) {
         <div class="footer">
           Hava Kargo Bülteni tarafından otomatik olarak üretilmiştir. Orijinal İngilizce Rapor Kaynağı: IATA Economics (www.iata.org)
         </div>
-        
-        <script>
-          window.onload = function() {
-            setTimeout(() => { window.print(); }, 500);
-          };
-        </script>
       </body>
       </html>
     `;
