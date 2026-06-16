@@ -2211,7 +2211,7 @@
         <span class="nsp-i" aria-hidden="true">i</span>
       </span>
     </button>
-    <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')">
+    <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')" style="display:none">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       Raporlar
     </button>
@@ -17467,15 +17467,15 @@ function initControls(allArticles) {
     }
     
     // update IATA home card meta if iata reports are loaded
-    if (_iataLatest && _iataLatest.demand) {
+    if (window._iataLatest && window._iataLatest.demand) {
       const staticPromise = fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
       staticPromise.then(staticReports => {
         let count = staticReports.length;
-        const exists = staticReports.some(r => r.date === _iataLatest.date);
+        const exists = staticReports.some(r => r.date === window._iataLatest.date);
         if (!exists) count++;
         const homeMetaEl = document.getElementById('rhome-iata-meta');
         if (homeMetaEl) {
-          homeMetaEl.textContent = `Son rapor: ${_iataLatest.date} · ${count} rapor`;
+          homeMetaEl.textContent = `Son rapor: ${window._iataLatest.date} · ${count} rapor`;
         }
       });
     }
@@ -17565,29 +17565,29 @@ function initControls(allArticles) {
       
       // 2. Merge with live latest report from worker if available
       let mergedReports = [...staticReports];
-      if (_iataLatest && _iataLatest.demand) {
-        const exists = staticReports.some(r => r.date === _iataLatest.date);
+      if (window._iataLatest && window._iataLatest.demand) {
+        const exists = staticReports.some(r => r.date === window._iataLatest.date);
         if (!exists) {
           mergedReports.unshift({
-            date: _iataLatest.date,
-            demand: _iataLatest.demand,
-            capacity: _iataLatest.capacity,
-            loadFactor: _iataLatest.loadFactor,
-            spotRate: _iataLatest.spotRate,
-            link: _iataLatest.pdfLink,
-            summary: _iataLatest.summary
+            date: window._iataLatest.date,
+            demand: window._iataLatest.demand,
+            capacity: window._iataLatest.capacity,
+            loadFactor: window._iataLatest.loadFactor,
+            spotRate: window._iataLatest.spotRate,
+            link: window._iataLatest.pdfLink,
+            summary: window._iataLatest.summary
           });
         } else {
-          const idx = mergedReports.findIndex(r => r.date === _iataLatest.date);
+          const idx = mergedReports.findIndex(r => r.date === window._iataLatest.date);
           if (idx !== -1) {
             mergedReports[idx] = {
               ...mergedReports[idx],
-              demand: _iataLatest.demand,
-              capacity: _iataLatest.capacity,
-              loadFactor: _iataLatest.loadFactor,
-              spotRate: _iataLatest.spotRate,
-              link: _iataLatest.pdfLink,
-              summary: _iataLatest.summary
+              demand: window._iataLatest.demand,
+              capacity: window._iataLatest.capacity,
+              loadFactor: window._iataLatest.loadFactor,
+              spotRate: window._iataLatest.spotRate,
+              link: window._iataLatest.pdfLink,
+              summary: window._iataLatest.summary
             };
           }
         }
