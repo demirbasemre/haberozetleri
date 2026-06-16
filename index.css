@@ -7874,17 +7874,17 @@
 }
 
 #dash-sec-anlık .dash-cards {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)) !important;
   justify-content: start !important;
 }
 [data-tweak-density="compact"] #dash-sec-anlık .dash-cards {
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
 }
 [data-tweak-density="standard"] #dash-sec-anlık .dash-cards {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)) !important;
 }
 [data-tweak-density="spacious"] #dash-sec-anlık .dash-cards {
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)) !important;
 }
 
 /* ── CARGO METRICS GRID & TIMERS ── */
