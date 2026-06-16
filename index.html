@@ -2403,7 +2403,6 @@
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-anl\u0131k'); return false;" href="#">Anlık Göstergeler</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-enerji'); return false;" href="#">Enerji Fiyatları</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-ekonomi'); return false;" href="#">Büyüme &amp; Enflasyon</a>
-      <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-endeks'); return false;" href="#">Hava Kargo Endeksleri</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-takvim'); return false;" href="#">Veri Yayın Takvimi ve Resmi Tatiller</a>
     </div><!-- /dash-filter-content -->
 
@@ -2610,29 +2609,63 @@
           <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
           <div class="dash-card-note">Drewry · Haftalık<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
         </div>
-        <div class="dash-card dash-card-clickable" id="dc-imf" title="Türkiye yıllık dizi için tıkla">
-          <!-- Normal görünüm -->
-          <div id="dc-imf-normal">
-            <div class="dash-card-label">Türkiye GSYH Büyümesi</div>
-            <div class="dash-card-value skeleton">&nbsp;</div>
-            <div class="dash-card-change"></div>
-            <div class="dash-card-sub">—</div>
-            <div class="dash-card-note">IMF WEO · Detay için tıkla ↗</div>
+        
+        <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
+            <div class="dash-card-timer" id="dc-bafi-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+              <span class="timer-dot"></span>Haftalık
+            </div>
           </div>
-          <!-- Grafik modu (gizli) -->
-          <div id="dc-imf-chart-mode">
-            <div class="dcimf-hd">
-              <span class="dcimf-hd-title">Türkiye · GSYH Büyümesi</span>
-              <button class="dcimf-back" id="dc-imf-back" aria-label="Normal görünüme dön" title="Geri dön">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
-              </button>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Hava kargo spot tarifesi endeksi</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">Baltic Exchange · <a href="https://www.balticexchange.com/en/data/routes/air.html" target="_blank" rel="noopener">balticexchange.com →</a></div>
+          </div>
+        </div>
+        <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">IATA Market Analizi</div>
+            <div class="dash-card-timer" id="dc-iata-timer" title="Güncellenme sıklığı: Aylık (Cloudflare Worker)">
+              <span class="timer-dot"></span>Aylık
             </div>
-            <div class="dcimf-canvas-wrap"><canvas id="dc-imf-canvas"></canvas></div>
-            <div class="dcimf-leg">
-              <span class="dcimf-leg-i" style="--c:#1D6FE8">Gerçekleşen</span>
-              <span class="dcimf-leg-i" style="--c:#D97706">Tahmini</span>
-              <span class="dcimf-leg-i" style="--c:#6366F1">Öngörü</span>
+          </div>
+          <div class="cargo-metrics-grid" id="dc-iata-grid">
+            <div class="cargo-metric-item">
+              <span class="cargo-metric-lbl">Talep (CTK)</span>
+              <span class="cargo-metric-val skeleton" id="iata-val-demand">-</span>
             </div>
+            <div class="cargo-metric-item">
+              <span class="cargo-metric-lbl">Kapasite (ACTK)</span>
+              <span class="cargo-metric-val skeleton" id="iata-val-capacity">-</span>
+            </div>
+            <div class="cargo-metric-item">
+              <span class="cargo-metric-lbl">LF</span>
+              <span class="cargo-metric-val skeleton" id="iata-val-loadfactor">-</span>
+            </div>
+            <div class="cargo-metric-item">
+              <span class="cargo-metric-lbl">Spot Rate</span>
+              <span class="cargo-metric-val skeleton" id="iata-val-spotrate">-</span>
+            </div>
+          </div>
+          <div class="dash-card-sub" id="dc-iata-sub">CTK büyümesi, kapasite ve doluluk değişimi</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note" id="dc-iata-note">IATA · Rapor · <a href="https://www.iata.org/en/publications/economics/" target="_blank" rel="noopener">iata.org Rapor →</a></div>
+          </div>
+        </div>
+        <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">Freightos Baltık Endeksi (FBX)</div>
+            <div class="dash-card-timer" id="dc-fbx-timer" title="Güncellenme sıklığı: Günlük (Cloudflare Worker)">
+              <span class="timer-dot"></span>Günlük
+            </div>
+          </div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Global konteyner spot fiyat endeksi</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">Freightos · <a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a></div>
           </div>
         </div>
       </div>
@@ -2718,69 +2751,7 @@
     </section>
 
     <!-- Takip gereken endeksler -->
-    <section class="dash-section" id="dash-sec-endeks">
-      <h2 class="dash-section-title">Hava Kargo Endeksleri</h2>
-      <div class="dash-cards">
-        <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
-          <div class="dash-card-header-row">
-            <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
-            <div class="dash-card-timer" id="dc-bafi-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
-              <span class="timer-dot"></span>Haftalık
-            </div>
-          </div>
-          <div class="dash-card-value skeleton">&nbsp;</div>
-          <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Hava kargo spot tarifesi endeksi</div>
-          <div class="dash-card-footer">
-            <div class="dash-card-note">Baltic Exchange · <a href="https://www.balticexchange.com/en/data/routes/air.html" target="_blank" rel="noopener">balticexchange.com →</a></div>
-          </div>
-        </div>
-        <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
-          <div class="dash-card-header-row">
-            <div class="dash-card-label">IATA Market Analizi</div>
-            <div class="dash-card-timer" id="dc-iata-timer" title="Güncellenme sıklığı: Aylık (Cloudflare Worker)">
-              <span class="timer-dot"></span>Aylık
-            </div>
-          </div>
-          <div class="cargo-metrics-grid" id="dc-iata-grid">
-            <div class="cargo-metric-item">
-              <span class="cargo-metric-lbl">Talep (CTK)</span>
-              <span class="cargo-metric-val skeleton" id="iata-val-demand">-</span>
-            </div>
-            <div class="cargo-metric-item">
-              <span class="cargo-metric-lbl">Kapasite (ACTK)</span>
-              <span class="cargo-metric-val skeleton" id="iata-val-capacity">-</span>
-            </div>
-            <div class="cargo-metric-item">
-              <span class="cargo-metric-lbl">LF</span>
-              <span class="cargo-metric-val skeleton" id="iata-val-loadfactor">-</span>
-            </div>
-            <div class="cargo-metric-item">
-              <span class="cargo-metric-lbl">Spot Rate</span>
-              <span class="cargo-metric-val skeleton" id="iata-val-spotrate">-</span>
-            </div>
-          </div>
-          <div class="dash-card-sub" id="dc-iata-sub">CTK büyümesi, kapasite ve doluluk değişimi</div>
-          <div class="dash-card-footer">
-            <div class="dash-card-note" id="dc-iata-note">IATA · Rapor · <a href="https://www.iata.org/en/publications/economics/" target="_blank" rel="noopener">iata.org Rapor →</a></div>
-          </div>
-        </div>
-        <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
-          <div class="dash-card-header-row">
-            <div class="dash-card-label">Freightos Baltık Endeksi (FBX)</div>
-            <div class="dash-card-timer" id="dc-fbx-timer" title="Güncellenme sıklığı: Günlük (Cloudflare Worker)">
-              <span class="timer-dot"></span>Günlük
-            </div>
-          </div>
-          <div class="dash-card-value skeleton">&nbsp;</div>
-          <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Global konteyner spot fiyat endeksi</div>
-          <div class="dash-card-footer">
-            <div class="dash-card-note">Freightos · <a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a></div>
-          </div>
-        </div>
-      </div>
-    </section>
+    
 
     <!-- Veri takvimi -->
     <section class="dash-section" id="dash-sec-takvim">
@@ -19381,15 +19352,14 @@ const ALL_INDICATOR_CARDS = [
   { id: 'dc-thy', name: 'THYAO Hisse', defaultVisible: true, isCargo: false },
   { id: 'dc-usd', name: 'Döviz & Parite', defaultVisible: true, isCargo: false },
   { id: 'dc-wci', name: 'Dünya Konteyner Endeksi (WCI)', defaultVisible: true, isCargo: false },
-  { id: 'dc-imf', name: 'Türkiye GSYH Büyümesi', defaultVisible: true, isCargo: false },
-  { id: 'dc-bafi', name: 'Baltic Air Freight Index (BAFI)', defaultVisible: false, isTest: true, isCargo: true },
-  { id: 'dc-iata', name: 'IATA Air Cargo Market Analysis', defaultVisible: false, isTest: true, isCargo: true },
-  { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: false, isCargo: true }
+  { id: 'dc-bafi', name: 'Baltic Air Freight Index (BAFI)', defaultVisible: true, isTest: true, isCargo: false },
+  { id: 'dc-iata', name: 'IATA Market Analizi', defaultVisible: true, isTest: true, isCargo: false },
+  { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: true, isCargo: false }
 ];
 
 const DEFAULT_INDICATORS_CONFIG = {
-  order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-imf', 'dc-bafi', 'dc-iata', 'dc-fbx'],
-  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-imf']
+  order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx'],
+  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx']
 };
 
 window.getIndicatorsConfig = function() {
