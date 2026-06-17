@@ -10083,9 +10083,11 @@ async function loadDashboard() {
       if (endVal)   indices = indices.filter(i => D.dates[i] <= endVal);
       if (!startVal && !endVal) {
         const cutoff = new Date();
-        if      (period === '1m') cutoff.setMonth(cutoff.getMonth() - 1);
-        else if (period === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
-        else cutoff.setFullYear(2000);
+        if      (period === '1m')  cutoff.setMonth(cutoff.getMonth() - 1);
+        else if (period === '6m')  cutoff.setMonth(cutoff.getMonth() - 6);
+        else if (period === 'ytd') { cutoff.setMonth(0); cutoff.setDate(1); }
+        else if (period === '1y')  cutoff.setFullYear(cutoff.getFullYear() - 1);
+        else cutoff.setFullYear(2000); // max
         const cutStr = cutoff.toISOString().slice(0,10);
         indices = indices.filter(i => D.dates[i] >= cutStr);
       }
