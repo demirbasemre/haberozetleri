@@ -7908,20 +7908,29 @@
 .cargo-metrics-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px 16px;
-  margin: 12px 0;
-  padding: 10px 14px;
-  background: var(--bg-soft);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-soft);
-}
-[data-theme="light"] .cargo-metrics-grid {
-  background: rgba(0,0,0,0.02);
+  margin: 10px 0;
 }
 .cargo-metric-item {
   display: flex;
   flex-direction: column;
   gap: 2.5px;
+  padding: 8px 10px;
+}
+.cargo-metric-item:nth-child(1),
+.cargo-metric-item:nth-child(2) {
+  border-bottom: 1px dashed var(--border-soft);
+  padding-bottom: 9px;
+}
+.cargo-metric-item:nth-child(3),
+.cargo-metric-item:nth-child(4) {
+  padding-top: 9px;
+}
+.cargo-metric-item:nth-child(odd) {
+  border-right: 1px dashed var(--border-soft);
+  padding-right: 12px;
+}
+.cargo-metric-item:nth-child(even) {
+  padding-left: 12px;
 }
 .cargo-metric-lbl {
   font-size: 9px;
