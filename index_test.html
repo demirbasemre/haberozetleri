@@ -1829,6 +1829,34 @@
     .rhome-card, .rhome-cta svg { transition: none; }
     .rhome-card:hover { transform: none; }
   }
+  .iata-bell-badge {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(122,100,168,0.12);
+    color: #7a64a8;
+    margin-left: auto;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .iata-bell-dot {
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 8px; height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 1.5px solid var(--bg-card, #fff);
+    animation: bell-pulse 2s ease-in-out infinite;
+  }
+  @keyframes bell-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.7; }
+  }
+  [data-theme="dark"] .iata-bell-badge { background: rgba(122,100,168,0.18); }
+  [data-theme="dark"] .iata-bell-dot { border-color: var(--bg-card, #1a1a2e); }
 
   /* Reports Main Flex Layout */
   .reports-main-layout {
@@ -3360,6 +3388,10 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-2.9 2.9-2.9-2.9"/><path d="M9 12h6"/><path d="m16.2 16.2-2.9-2.9-2.9 2.9"/></svg>
             </span>
             <span class="rhome-title">IATA Hava Kargo Market Analizi <span class="rhome-badge rhome-badge--new">Yeni</span></span>
+            <span id="iata-bell-badge" class="iata-bell-badge" title="Yeni rapor yayınlandı">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="iata-bell-dot"></span>
+            </span>
           </div>
           <p class="rhome-desc">Küresel kargo ton-kilometre (CTK) talebi, mevcut kapasite (ACTK), yük faktörleri ve spot navlun fiyatlarındaki aylık değişimler ve bölgesel analizler.</p>
           <span class="rhome-meta" id="rhome-iata-meta">Yükleniyor...</span>
@@ -17480,7 +17512,17 @@ function initControls(allArticles) {
         if (!exists) count++;
         const homeMetaEl = document.getElementById('rhome-iata-meta');
         if (homeMetaEl) {
-          homeMetaEl.textContent = `Son rapor: ${window._iataLatest.date} · ${count} rapor`;
+          const yrMap2 = {};
+          staticReports.forEach(r => { const y = String(r.date).split(' ').pop(); if (/^\d{4}$/.test(y)) yrMap2[y] = (yrMap2[y]||0)+1; });
+          if (!exists) { const y = String(window._iataLatest.date).split(' ').pop(); if (/^\d{4}$/.test(y)) yrMap2[y] = (yrMap2[y]||0)+1; }
+          const yrStr2 = Object.keys(yrMap2).sort((a,b)=>b-a).map(y=>`${y} (${yrMap2[y]})`).join(' · ');
+          homeMetaEl.textContent = `Son rapor: ${window._iataLatest.date} · ${yrStr2}`;
+          // Bell kontrolü
+          const bellEl2 = document.getElementById('iata-bell-badge');
+          if (bellEl2) {
+            const lastSeen2 = localStorage.getItem('iata_last_seen_date');
+            bellEl2.style.display = lastSeen2 !== window._iataLatest.date ? 'inline-flex' : 'none';
+          }
         }
       });
     }
@@ -17610,7 +17652,22 @@ function initControls(allArticles) {
       // Update home card meta
       const homeMetaEl = document.getElementById('rhome-iata-meta');
       if (homeMetaEl && mergedReports.length > 0) {
-        homeMetaEl.textContent = `Son rapor: ${mergedReports[0].date} · ${mergedReports.length} rapor`;
+        const yrMap = {};
+        mergedReports.forEach(r => { const y = String(r.date).split(' ').pop(); if (/^\d{4}$/.test(y)) yrMap[y] = (yrMap[y]||0)+1; });
+        const yrStr = Object.keys(yrMap).sort((a,b)=>b-a).map(y=>`${y} (${yrMap[y]})`).join(' · ');
+        homeMetaEl.textContent = `Son rapor: ${mergedReports[0].date} · ${yrStr}`;
+      }
+      // Bell: yeni rapor varsa göster, IATA sekmesine gelindiğinde gizle
+      const _iataLatestDate = mergedReports.length > 0 ? mergedReports[0].date : null;
+      const bellEl = document.getElementById('iata-bell-badge');
+      if (bellEl && _iataLatestDate) {
+        const lastSeen = localStorage.getItem('iata_last_seen_date');
+        bellEl.style.display = lastSeen !== _iataLatestDate ? 'inline-flex' : 'none';
+      }
+      // Kullanıcı IATA sekmesindeyse hemen görüldü say
+      if (_iataLatestDate) {
+        localStorage.setItem('iata_last_seen_date', _iataLatestDate);
+        if (bellEl) bellEl.style.display = 'none';
       }
 
       // Render cards
