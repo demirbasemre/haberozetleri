@@ -8217,6 +8217,15 @@
   font-weight: 600;
 }
 
+.iata-report-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 8px 0 6px;
+  border-bottom: 1px solid var(--border-soft);
+  line-height: 1.4;
+}
+
 .iata-metrics-section-lbl {
   font-size: 9px;
   font-weight: 700;

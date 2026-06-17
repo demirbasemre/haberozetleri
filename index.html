@@ -17462,6 +17462,7 @@ function initControls(allArticles) {
   window.IATA_DEFAULT_2026_REPORTS = [
     {
       "date": "Nisan 2026",
+      "title": "Asya Öncülüğünde Büyümeye Dönüş",
       "demand": "+4.0%",
       "capacity": "-0.4%",
       "loadFactor": "46.0%",
@@ -17471,6 +17472,7 @@ function initControls(allArticles) {
     },
     {
       "date": "Mart 2026",
+      "title": "Jeopolitik Kırılganlık ve Tatil Takvimi Talebi Frenliyor",
       "demand": "-4.8%",
       "capacity": "-1.2%",
       "loadFactor": "44.0%",
@@ -17480,6 +17482,7 @@ function initControls(allArticles) {
     },
     {
       "date": "Şubat 2026",
+      "title": "Çin Yeni Yılı Etkisiyle Güçlü İvme",
       "demand": "+11.2%",
       "capacity": "+4.5%",
       "loadFactor": "47.0%",
@@ -17489,12 +17492,16 @@ function initControls(allArticles) {
     },
     {
       "date": "Ocak 2026",
+      "title": "Bölgesel Farklılaşma Ortamında Yılın Dirençli Başlangıcı",
       "demand": "+5.6%",
-      "capacity": "+2.2%",
+      "capacity": "+3.6%",
       "loadFactor": "45.0%",
+      "cargoYield": "-0.8%",
+      "jetFuel": "-6.5%",
+      "pmi": "52.1",
       "spotRate": "3.20 $/kg",
       "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-january-2026/",
-      "summary": "Ocak 2026 imalat sanayi satın ama yöneticileri endeksi (PMI) büyüme bölgesinde kalarak hava kargo talebi yıllık %5.6 artışla güçlü bir başlangıç yapmıştır. Bölgesel düzeyde Afrika en yüksek büyüme oranını kaydetmiştir."
+      "summary": "Hava kargo talebi (CTK) yıla güçlü bir başlangıç yaparak yıllık %5.6 arttı; uluslararası kargo hacimleri ise yıllık %7.2 büyümeyle daha güçlü seyretti. Küresel hava kargo kapasitesi (ACTK) yıllık %3.6 genişleyerek Ocak ayı için tarihi zirveye ulaştı; ancak kapasite artış hızında yavaşlama sinyalleri gözlemlendi. Afrika %18.2 artışla çift haneli büyümesini sürdürerek lider olurken Amerika kıtasında talep üst üste altıncı ayda da gerileme kaydetti. Küresel kargo verimleri yıllık %0.8 gerilerken jet yakıtı fiyatları %6.5 düştü; imalat PMI ise 52.1 seviyesinde gerçekleşti."
     }
   ];
 
@@ -17681,6 +17688,7 @@ function initControls(allArticles) {
             ${r.date}
             <span class="iata-report-period-badge">Aylık</span>
           </div>
+          ${r.title ? `<div class="iata-report-title">${r.title}</div>` : ''}
 
           <!-- Primary metrics: CTK, ACTK, LF, Spot Rate -->
           <div class="iata-metrics-section-lbl">Küresel Göstergeler (Yıllık)</div>
