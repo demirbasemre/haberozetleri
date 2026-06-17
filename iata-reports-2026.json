@@ -1,6 +1,7 @@
 [
   {
     "date": "Nisan 2026",
+    "title": "Asya Öncülüğünde Büyümeye Dönüş",
     "demand": "+4.0%",
     "capacity": "-0.4%",
     "loadFactor": "46.0%",
@@ -73,6 +74,7 @@
   },
   {
     "date": "Mart 2026",
+    "title": "Jeopolitik Kırılganlık ve Tatil Takvimi Talebi Frenliyor",
     "demand": "-4.8%",
     "capacity": "-1.2%",
     "loadFactor": "44.0%",
@@ -145,6 +147,7 @@
   },
   {
     "date": "Şubat 2026",
+    "title": "Çin Yeni Yılı Etkisiyle Güçlü İvme",
     "demand": "+11.2%",
     "capacity": "+4.5%",
     "loadFactor": "47.0%",
@@ -217,29 +220,30 @@
   },
   {
     "date": "Ocak 2026",
+    "title": "Bölgesel Farklılaşma Ortamında Yılın Dirençli Başlangıcı",
     "demand": "+5.6%",
-    "capacity": "+2.2%",
+    "capacity": "+3.6%",
     "loadFactor": "45.0%",
     "clf_pp": "+1.4",
-    "demand_intl": "+5.9%",
-    "capacity_intl": "+2.0%",
+    "demand_intl": "+7.2%",
+    "capacity_intl": "+3.0%",
     "clf_intl": "51.8%",
     "ytd_demand": "+5.6%",
-    "ytd_capacity": "+2.2%",
+    "ytd_capacity": "+3.6%",
     "ytd_clf": "45.0%",
     "spotRate": "3.20 $/kg",
-    "cargoYield": "+15.8%",
-    "brentOil": "+51.4%",
-    "jetFuel": "+78.2%",
+    "cargoYield": "-0.8%",
+    "brentOil": "-5.0%",
+    "jetFuel": "-6.5%",
     "pmi": "52.1",
     "pmi_exports": "50.8",
     "regions": {
       "asiaPacific": { "share": "35.8", "ctk": "+8.2%", "actk": "+4.1%" },
-      "northAmerica": { "share": "24.6", "ctk": "+4.8%", "actk": "+1.8%" },
+      "northAmerica": { "share": "24.6", "ctk": "-1.2%", "actk": "+0.8%" },
       "europe": { "share": "21.4", "ctk": "+5.5%", "actk": "+2.5%" },
       "middleEast": { "share": "13.2", "ctk": "-5.2%", "actk": "-8.1%" },
-      "latinAmerica": { "share": "2.9", "ctk": "+1.8%", "actk": "+2.2%" },
-      "africa": { "share": "2.1", "ctk": "+14.2%", "actk": "-4.8%" }
+      "latinAmerica": { "share": "2.9", "ctk": "-3.4%", "actk": "+2.2%" },
+      "africa": { "share": "2.1", "ctk": "+18.2%", "actk": "-4.8%" }
     },
     "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-january-2026/",
     "pdfLink": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-january-2026/",
@@ -247,42 +251,42 @@
     "data": {
       "totalMarket": {
         "yoy": {
-          "world": { "ctk": "+5.6%", "actk": "+2.2%" },
-          "africa": { "ctk": "+14.2%", "actk": "-4.8%" },
+          "world": { "ctk": "+5.6%", "actk": "+3.6%" },
+          "africa": { "ctk": "+18.2%", "actk": "-4.8%" },
           "asiaPacific": { "ctk": "+8.2%", "actk": "+4.1%" },
           "europe": { "ctk": "+5.5%", "actk": "+2.5%" },
-          "latinAmerica": { "ctk": "+1.8%", "actk": "+2.2%" },
+          "latinAmerica": { "ctk": "-3.4%", "actk": "+2.2%" },
           "middleEast": { "ctk": "-5.2%", "actk": "-8.1%" },
-          "northAmerica": { "ctk": "+4.8%", "actk": "+1.8%" }
+          "northAmerica": { "ctk": "-1.2%", "actk": "+0.8%" }
         },
         "ytd": {
-          "world": { "ctk": "+5.6%", "actk": "+2.2%" },
-          "africa": { "ctk": "+14.2%", "actk": "-4.8%" },
+          "world": { "ctk": "+5.6%", "actk": "+3.6%" },
+          "africa": { "ctk": "+18.2%", "actk": "-4.8%" },
           "asiaPacific": { "ctk": "+8.2%", "actk": "+4.1%" },
           "europe": { "ctk": "+5.5%", "actk": "+2.5%" },
-          "latinAmerica": { "ctk": "+1.8%", "actk": "+2.2%" },
+          "latinAmerica": { "ctk": "-3.4%", "actk": "+2.2%" },
           "middleEast": { "ctk": "-5.2%", "actk": "-8.1%" },
-          "northAmerica": { "ctk": "+4.8%", "actk": "+1.8%" }
+          "northAmerica": { "ctk": "-1.2%", "actk": "+0.8%" }
         }
       },
       "international": {
         "yoy": {
-          "world": { "ctk": "+5.9%", "actk": "+2.0%" },
-          "africa": { "ctk": "+14.5%", "actk": "-4.6%" },
+          "world": { "ctk": "+7.2%", "actk": "+3.0%" },
+          "africa": { "ctk": "+18.5%", "actk": "-4.6%" },
           "asiaPacific": { "ctk": "+8.5%", "actk": "+4.3%" },
           "europe": { "ctk": "+5.8%", "actk": "+2.6%" },
-          "latinAmerica": { "ctk": "+2.0%", "actk": "+2.0%" },
+          "latinAmerica": { "ctk": "-3.0%", "actk": "+2.0%" },
           "middleEast": { "ctk": "-5.2%", "actk": "-8.3%" },
-          "northAmerica": { "ctk": "+4.2%", "actk": "-0.4%" }
+          "northAmerica": { "ctk": "+1.5%", "actk": "-0.4%" }
         },
         "ytd": {
-          "world": { "ctk": "+5.9%", "actk": "+2.0%" },
-          "africa": { "ctk": "+14.5%", "actk": "-4.6%" },
+          "world": { "ctk": "+7.2%", "actk": "+3.0%" },
+          "africa": { "ctk": "+18.5%", "actk": "-4.6%" },
           "asiaPacific": { "ctk": "+8.5%", "actk": "+4.3%" },
           "europe": { "ctk": "+5.8%", "actk": "+2.6%" },
-          "latinAmerica": { "ctk": "+2.0%", "actk": "+2.0%" },
+          "latinAmerica": { "ctk": "-3.0%", "actk": "+2.0%" },
           "middleEast": { "ctk": "-5.2%", "actk": "-8.3%" },
-          "northAmerica": { "ctk": "+4.2%", "actk": "-0.4%" }
+          "northAmerica": { "ctk": "+1.5%", "actk": "-0.4%" }
         }
       }
     }
