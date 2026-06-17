@@ -10179,7 +10179,7 @@ async function loadDashboard() {
       };
 
       lineChart('chart-jetfuel-modal', labels, datasets,
-        v => v != null ? Number(v).toFixed(1) + ' $' : '',
+        v => v != null ? Math.round(v) + ' $' : '',
         { forceRecreate: true, xTickFont: { size: 9, family: 'Inter' }, rawDates: indices.map(i => D.dates[i]), plugins: [jetfuelEventsPlugin] }
       );
 
@@ -10381,7 +10381,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(Number(v).toFixed(1)) + ' $' : '',
+        v => v != null ? Math.round(v) + ' $' : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' },
