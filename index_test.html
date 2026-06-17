@@ -11755,8 +11755,13 @@ async function loadDashboard() {
         const lfEl = document.getElementById('iata-val-loadfactor');
         const srEl = document.getElementById('iata-val-spotrate');
         
-        if (dEl) { dEl.textContent = latest.demand; dEl.classList.remove('skeleton'); }
-        if (cEl) { cEl.textContent = window.formatLF(latest.capacity); cEl.classList.remove('skeleton'); }
+        const applyMetricColor = (el, val) => {
+          const num = parseFloat(String(val).replace(/[^0-9.\-]/g, ''));
+          el.classList.remove('positive', 'negative');
+          if (!isNaN(num)) { if (num > 0) el.classList.add('positive'); else if (num < 0) el.classList.add('negative'); }
+        };
+        if (dEl) { dEl.textContent = window.formatLF(latest.demand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, latest.demand); }
+        if (cEl) { cEl.textContent = window.formatLF(latest.capacity); cEl.classList.remove('skeleton'); applyMetricColor(cEl, latest.capacity); }
         if (lfEl) { lfEl.textContent = window.formatLF(latest.loadFactor); lfEl.classList.remove('skeleton'); }
         if (srEl) {
           const rawSR = latest.spotRate || '';
