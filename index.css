@@ -8144,6 +8144,40 @@
   padding: 1px 5px 1px 7px;
 }
 
+/* Inline yıl pill butonları */
+.iata-year-pills {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.iata-year-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border-soft);
+  background: transparent;
+  color: var(--text-3);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms ease;
+  touch-action: manipulation;
+}
+.iata-year-pill:hover {
+  background: var(--bg-soft);
+  color: var(--text-2);
+  border-color: var(--border);
+}
+.iata-year-pill.active {
+  background: rgba(122, 100, 168, 0.10);
+  color: #7a64a8;
+  border-color: rgba(122, 100, 168, 0.28);
+  font-size: 15px;
+  font-weight: 700;
+}
+
 .iata-metric-toggle {
   display: inline-flex;
   align-items: center;
