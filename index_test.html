@@ -2573,10 +2573,10 @@
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">ABD Gulf Coast · ton</div>
+          <div class="dash-card-sub">Platts Global Endeks · ton</div>
           <div id="dc-jetfuel-date" class="dash-card-date-badge"></div>
           <div class="dash-card-footer">
-            <div class="dash-card-note"><a href="https://fred.stlouisfed.org/series/DJFUELUSGULF" target="_blank" rel="noopener">fred.stlouisfed.org →</a> · Günlük</div>
+            <div class="dash-card-note"><a href="https://www.spglobal.com/energy/en/pricing-benchmarks/assessments/refined-products/jet-fuel" target="_blank" rel="noopener">S&P Global Platts →</a> · Günlük</div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
@@ -8895,6 +8895,19 @@ async function loadDashboard() {
   });
 
 
+  // ── S&P Platts Jet Yakıtı Verisi (19 Mar – 16 Haz 2026) ──────────
+  // Kaynak: S&P Global / IATA Jet Fuel Price Monitor (ortak yayın, aynı veri)
+  const PLATTS_CVT = 3.3173; // 1 cts/gal = 3.3173 $/MT
+  const PLATTS_JET_DATA = {
+    dates: ['2026-03-19','2026-03-20','2026-03-23','2026-03-24','2026-03-25','2026-03-26','2026-03-27','2026-03-30','2026-03-31','2026-04-01','2026-04-02','2026-04-06','2026-04-07','2026-04-08','2026-04-09','2026-04-10','2026-04-13','2026-04-14','2026-04-15','2026-04-16','2026-04-17','2026-04-20','2026-04-21','2026-04-22','2026-04-23','2026-04-24','2026-04-27','2026-04-28','2026-04-29','2026-04-30','2026-05-01','2026-05-04','2026-05-05','2026-05-06','2026-05-07','2026-05-08','2026-05-11','2026-05-12','2026-05-13','2026-05-14','2026-05-15','2026-05-18','2026-05-19','2026-05-20','2026-05-21','2026-05-22','2026-05-25','2026-05-26','2026-05-27','2026-05-28','2026-05-29','2026-06-01','2026-06-02','2026-06-03','2026-06-04','2026-06-05','2026-06-08','2026-06-09','2026-06-10','2026-06-11','2026-06-12','2026-06-15','2026-06-16'],
+    global:   [490.68,496.25,470.09,464.13,428.8,465.79,494.96,508.7,489.59,473.57,518.63,511.45,508.41,432.37,461.24,441.63,454.27,440.07,443.45,454.33,405.86,405.54,417.48,438.48,436.97,438.01,437.99,426.28,439.03,433.81,420.3,414.15,408.55,376.9,365.59,373.93,383.36,398.36,389.24,375.54,388.6,395.7,397.47,379.79,367.22,362.78,355.47,342.27,333.59,331.57,323.23,341.58,347.45,363.44,349.66,338.94,345.48,334.5,335.56,329.05,308.49,293.05,283.2],
+    asia:     [529.56,525.16,552.59,486.53,435.96,477.19,533.32,574.47,522.08,522.47,554.41,547.49,548.47,467.24,516.92,507.26,512.74,503.38,478.67,483.62,491.83,440.82,424.52,440.03,425.37,435.69,440.63,416.83,421.52,444.08,444.08,403.21,398.2,376.91,354.99,358.86,364.27,377.2,382.77,364.74,373.09,383.96,389.36,384.38,361.22,353.06,326.22,327.37,327.37,320.07,307.97,307.97,333.27,356.22,353.86,336.58,351.96,335.46,330.67,332.7,305.09,284.64,277.39],
+    europe:   [527.94,510.33,474.76,467.36,434.17,488.15,503.01,520.59,516.21,481.36,547.48,547.48,527.49,442.28,469.29,437.41,471.4,445.07,457.33,476.61,388.64,419.27,436.24,456.5,454.54,463.82,454.05,442.51,460.54,441.45,429.83,429.83,423.12,380.57,360.27,376.34,389.02,403.24,397.28,385.55,402.75,413.5,407.5,391.92,392.53,375.14,375.14,355.63,341.34,338.02,329.04,356.46,350.05,365.1,349.86,343.07,350.43,337,338.36,334.96,309.31,296.56,286.87],
+    mideast:  [513.39,498.09,524.81,457.69,410.59,448.88,502.05,538.73,492.49,491.45,527.45,519.88,523.36,447.5,494.69,485.99,488.97,478.77,453.34,462.78,468.55,420.47,405.65,421.79,408.12,420.32,426.16,404.85,410.06,432.82,432.82,395.84,392.4,370.33,351.73,353.57,358.45,371.39,375.81,361,368.2,375.9,380.26,376.25,355.78,348.54,323.55,323.39,323.39,315.08,303.07,303.07,324.42,346.41,343.1,325.02,339.8,323.03,318.7,321.74,294.6,273.9,265.77],
+    namerica: [438.42,469.61,415.46,449.96,422.7,445.36,467.8,461.22,451.51,439.87,476.61,464.09,468.87,401.78,419.14,401.1,403.66,396.06,411.26,418.92,362.09,372.39,399.05,424.33,432.72,421.7,425.07,420.23,434.93,420.59,397.89,409.45,404.27,373.5,375.04,381.1,392.11,408.88,387.98,374.75,388.03,390.14,395.2,367.47,352.29,359.24,359.24,341.71,331.17,333.5,327.86,354.38,354.75,366.69,346.32,337.24,337.24,331.81,336.2,321.44,309.32,295.53,283.9],
+    latam:    [473.33,488.22,434.21,464.35,433.97,457.49,476.79,475.58,477.33,446.62,498,488.59,503.11,436.8,449.86,435.66,439.86,419.58,438.06,451.94,388.99,402.79,428.95,450.99,448.57,437.92,440.66,438.63,449.12,441.48,409.45,420.43,411.63,382.49,381.72,389.72,390.29,409.88,390.97,382.53,397.28,404.75,409.06,383.62,367.37,372.52,372.52,351.54,342.47,346.39,341.62,341.62,363.14,378.85,361.95,353.6,356.54,348.58,354.66,343.1,326.36,310.2,299.55]
+  };
+
   // ── Enerji (FRED) ──────────────────────────────────
   let _jetRaw = null, _brentRaw = null;
   let _jetfuelCache = {
@@ -9086,38 +9099,29 @@ async function loadDashboard() {
   });
 
   function initJetfuelCard() {
+    // Platts kartını statik veriyle hemen doldur
+    const n = PLATTS_JET_DATA.dates.length;
+    const lastGlobal = PLATTS_JET_DATA.global[n - 1];
+    const prevGlobal = PLATTS_JET_DATA.global[n - 2];
+    const lastMT = (lastGlobal * PLATTS_CVT).toFixed(1);
+    const chgPct = prevGlobal ? ((lastGlobal - prevGlobal) / prevGlobal * 100) : null;
+    setCard('dc-jetfuel', lastMT + ' $', chgPct, 'Platts Global Endeks · ton',
+      `<a href="https://www.spglobal.com/energy/en/pricing-benchmarks/assessments/refined-products/jet-fuel" target="_blank" rel="noopener">S&P Global Platts →</a>`);
+    const jfDateEl = document.getElementById('dc-jetfuel-date');
+    if (jfDateEl) {
+      const [y, m, d] = PLATTS_JET_DATA.dates[n - 1].split('-');
+      jfDateEl.textContent = `Son veri: ${d}.${m}.${y}`;
+    }
+
+    // FRED verisini arka planda yükle (enerji crack spread grafiği için)
     return Promise.all([
       fredFetch('DJFUELUSGULF', 400).catch(() => null),
       fredFetch('DCOILBRENTEU', 400).catch(() => null)
     ]).then(([jet, brent]) => {
       _jetRaw   = jet;
       _brentRaw = brent;
-
-      if (jet) {
-        _jetfuelCache['1y'] = jet;
-        _jetfuelCache['1m'] = jet;
-        _jetfuelCache['6m'] = jet;
-        _jetfuelCache['ytd'] = jet;
-      }
-
-      if (jet && jet.length) {
-        const last = jet[jet.length - 1];
-        setCard('dc-jetfuel', (last.value * 42 * 7.9).toFixed(1) + ' $', pctChg(jet.slice(-2)),
-          'ABD Gulf Coast · ton', `<a href="https://fred.stlouisfed.org/series/DJFUELUSGULF" target="_blank" rel="noopener">fred.stlouisfed.org →</a>`);
-        const jfDateEl = document.getElementById('dc-jetfuel-date');
-        if (jfDateEl && last.date) {
-          const [y, m, d] = last.date.split('-');
-          jfDateEl.textContent = `Son veri: ${d}.${m}.${y}`;
-        }
-      } else {
-        setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
-      }
-
-      if (jet || brent) {
-        renderEnergyChart('all');
-      } else {
-        chartErr('chart-energy', 'Veri alınamadı');
-      }
+      if (jet || brent) renderEnergyChart('all');
+      else chartErr('chart-energy', 'Veri alınamadı');
     });
   }
   initJetfuelCard();
@@ -10065,7 +10069,69 @@ async function loadDashboard() {
     }, ttl);
   }
 
-  function drawJetfuelModalChartFromRaw(rawJSON, period) {
+  function drawJetfuelModalChartFromRaw(period) {
+    const titleEl = document.getElementById('jetfuel-chart-title');
+    try {
+      const D = PLATTS_JET_DATA;
+      let indices = D.dates.map((_, i) => i);
+
+      const startVal = document.getElementById('jetfuel-date-start')?.value;
+      const endVal   = document.getElementById('jetfuel-date-end')?.value;
+      if (startVal) indices = indices.filter(i => D.dates[i] >= startVal);
+      if (endVal)   indices = indices.filter(i => D.dates[i] <= endVal);
+      if (!startVal && !endVal) {
+        const cutoff = new Date();
+        if      (period === '1m') cutoff.setMonth(cutoff.getMonth() - 1);
+        else if (period === '6m') cutoff.setMonth(cutoff.getMonth() - 6);
+        else cutoff.setFullYear(2000);
+        const cutStr = cutoff.toISOString().slice(0,10);
+        indices = indices.filter(i => D.dates[i] >= cutStr);
+      }
+
+      if (!window._jetfuelCustomRange && indices.length > 0) {
+        setDateInputsForPeriod('jetfuel', period, D.dates[indices[0]], D.dates[indices[indices.length-1]]);
+      }
+      if (indices.length === 0) throw new Error("Çizilecek veri noktası bulunamadı.");
+
+      const toMT = v => parseFloat((v * PLATTS_CVT).toFixed(1));
+      const labels = indices.map(i => {
+        const d = new Date(D.dates[i] + 'T12:00:00Z');
+        return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+      });
+
+      const seriesDef = [
+        { key: 'global',   label: 'Global Endeks',            color: '#3B82F6', width: 2.5 },
+        { key: 'namerica', label: 'Kuzey Amerika (%39)',       color: '#10B981', width: 1.5 },
+        { key: 'europe',   label: 'Avrupa & BDT (%28)',        color: '#F59E0B', width: 1.5 },
+        { key: 'asia',     label: 'Asya & Okyanusya (%22)',    color: '#8B5CF6', width: 1.5 },
+        { key: 'mideast',  label: 'Orta Doğu & Afrika (%7)',   color: '#EF4444', width: 1.5 },
+        { key: 'latam',    label: 'Latin Amerika (%4)',         color: '#06B6D4', width: 1.5 }
+      ];
+
+      const datasets = seriesDef.map(s => ({
+        label: s.label,
+        data: indices.map(i => toMT(D[s.key][i])),
+        borderColor: s.color,
+        backgroundColor: 'transparent',
+        fill: false,
+        tension: 0.3,
+        pointRadius: indices.length <= 30 ? 2 : 0,
+        borderWidth: s.width
+      }));
+
+      lineChart('chart-jetfuel-modal', labels, datasets,
+        v => v != null ? Number(v).toFixed(1) + ' $' : '',
+        { forceRecreate: true, xTickFont: { size: 9, family: 'Inter' }, rawDates: indices.map(i => D.dates[i]) }
+      );
+
+      if (titleEl) titleEl.textContent = 'Jet Yakıtı — S&P Global Platts ($/ton)';
+    } catch (err) {
+      console.error("Jet Yakıtı Grafik çizim hatası:", err);
+      if (titleEl) titleEl.textContent = "Hata: " + err.message;
+    }
+  }
+
+  function _drawJetfuelModalChartFromRaw_legacy(rawJSON, period) {
     const titleEl = document.getElementById('jetfuel-chart-title');
     try {
       let validPoints = rawJSON || [];
@@ -10297,57 +10363,12 @@ async function loadDashboard() {
       _jetfuelCurrentPeriod = period;
       window._jetfuelCustomRange = false;
     }
-    
-    document.querySelectorAll('#jetfuel-chart-modal .jetfuel-period-btn').forEach(btn => {
-      btn.classList.remove('active');
-    });
+    document.querySelectorAll('#jetfuel-chart-modal .jetfuel-period-btn').forEach(btn => btn.classList.remove('active'));
     if (!window._jetfuelCustomRange) {
       const activeBtn = document.getElementById(`btn-jetfuel-${_jetfuelCurrentPeriod}`);
       if (activeBtn) activeBtn.classList.add('active');
     }
-
-    const titleEl = document.getElementById('jetfuel-chart-title');
-    const canvas = document.getElementById('chart-jetfuel-modal');
-    const wrap = canvas?.closest('.dash-chart-wrap');
-    if (wrap) wrap.classList.add('loading');
-    
-    // Cache reuse check
-    if (!_jetfuelCache[_jetfuelCurrentPeriod] && (_jetfuelCurrentPeriod === '1m' || _jetfuelCurrentPeriod === '6m' || _jetfuelCurrentPeriod === 'ytd') && _jetfuelCache['1y']) {
-      _jetfuelCache[_jetfuelCurrentPeriod] = _jetfuelCache['1y'];
-    }
-
-    const cachedData = _jetfuelCache[_jetfuelCurrentPeriod];
-    if (cachedData) {
-      drawJetfuelModalChartFromRaw(cachedData, _jetfuelCurrentPeriod);
-      if (wrap) wrap.classList.remove('loading');
-    } else {
-      const fetchPeriod = (_jetfuelCurrentPeriod === '1m' || _jetfuelCurrentPeriod === '6m' || _jetfuelCurrentPeriod === 'ytd') ? '1y' : _jetfuelCurrentPeriod;
-      
-      fetchJetFred(fetchPeriod).then(data => {
-        if (fetchPeriod === '1y') {
-          _jetfuelCache['1y'] = data;
-          _jetfuelCache['1m'] = data;
-          _jetfuelCache['6m'] = data;
-          _jetfuelCache['ytd'] = data;
-        } else {
-          _jetfuelCache[_jetfuelCurrentPeriod] = data;
-        }
-        
-        drawJetfuelModalChartFromRaw(data, _jetfuelCurrentPeriod);
-        if (wrap) wrap.classList.remove('loading');
-      }).catch(err => {
-        console.error(`Jet Fuel FRED fetch error for ${_jetfuelCurrentPeriod}:`, err);
-        if (titleEl) titleEl.textContent = "Hata: Veri alınamadı";
-        if (wrap) {
-          wrap.classList.remove('loading');
-          wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
-          const errDiv = document.createElement('div');
-          errDiv.className = 'dash-chart-error';
-          errDiv.innerHTML = 'Jet yakıtı verisi yüklenirken hata oluştu.';
-          wrap.appendChild(errDiv);
-        }
-      });
-    }
+    drawJetfuelModalChartFromRaw(_jetfuelCurrentPeriod);
   }
   window.renderJetfuelModalChart = renderJetfuelModalChart;
 
