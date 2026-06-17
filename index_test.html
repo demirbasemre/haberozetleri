@@ -1830,19 +1830,26 @@
     .rhome-card:hover { transform: none; }
   }
   .iata-bell-badge {
-    display: none;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    width: 28px; height: 28px;
+    position: absolute;
+    bottom: 12px; right: 12px;
+    width: 26px; height: 26px;
     border-radius: 50%;
-    background: rgba(122,100,168,0.12);
     color: #7a64a8;
-    margin-left: auto;
-    flex-shrink: 0;
+    opacity: 0.18;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .iata-bell-badge.has-notif {
+    opacity: 1;
+    background: rgba(122,100,168,0.12);
+    pointer-events: auto;
     cursor: pointer;
   }
   .iata-bell-dot {
+    display: none;
     position: absolute;
     top: 4px; right: 4px;
     width: 8px; height: 8px;
@@ -1851,11 +1858,12 @@
     border: 1.5px solid var(--bg-card, #fff);
     animation: bell-pulse 2s ease-in-out infinite;
   }
+  .iata-bell-badge.has-notif .iata-bell-dot { display: block; }
   @keyframes bell-pulse {
     0%, 100% { transform: scale(1); opacity: 1; }
     50% { transform: scale(1.3); opacity: 0.7; }
   }
-  [data-theme="dark"] .iata-bell-badge { background: rgba(122,100,168,0.18); }
+  [data-theme="dark"] .iata-bell-badge.has-notif { background: rgba(122,100,168,0.18); }
   [data-theme="dark"] .iata-bell-dot { border-color: var(--bg-card, #1a1a2e); }
 
   /* Reports Main Flex Layout */
@@ -2108,10 +2116,15 @@
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
         </svg>
+        <span class="hdr-bell-dot" id="hdr-bell-dot"></span>
       </button>
       <div class="hdr-bell-panel" id="hdr-bell-panel" role="menu">
-        <div class="hdr-bell-head">Bildirimler</div>
-        <div class="hdr-bell-empty">
+        <div class="hdr-bell-head">
+          <span>Bildirimler</span>
+          <button class="hdr-bell-clear-btn" id="hdr-bell-clear-btn" onclick="markAllNotifsRead()">Tümünü okundu say</button>
+        </div>
+        <div id="hdr-bell-items"></div>
+        <div class="hdr-bell-empty" id="hdr-bell-empty">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.33-5"/><line x1="1" y1="1" x2="23" y2="23"/>
           </svg>
@@ -3388,13 +3401,13 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-2.9 2.9-2.9-2.9"/><path d="M9 12h6"/><path d="m16.2 16.2-2.9-2.9-2.9 2.9"/></svg>
             </span>
             <span class="rhome-title">IATA Hava Kargo Market Analizi <span class="rhome-badge rhome-badge--new">Yeni</span></span>
-            <span id="iata-bell-badge" class="iata-bell-badge" title="Yeni rapor yayınlandı">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              <span class="iata-bell-dot"></span>
-            </span>
           </div>
           <p class="rhome-desc">Küresel kargo ton-kilometre (CTK) talebi, mevcut kapasite (ACTK), yük faktörleri ve spot navlun fiyatlarındaki aylık değişimler ve bölgesel analizler.</p>
           <span class="rhome-meta" id="rhome-iata-meta">Yükleniyor...</span>
+          <span id="iata-bell-badge" class="iata-bell-badge" title="Yeni rapor yayınlandı">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="iata-bell-dot"></span>
+          </span>
         </button>
         <button class="rhome-card" onclick="switchReportType('finansal')">
           <span class="rhome-visual" style="color:#059669" aria-hidden="true">
@@ -17518,11 +17531,7 @@ function initControls(allArticles) {
           const yrStr2 = Object.keys(yrMap2).sort((a,b)=>b-a).map(y=>`${y} (${yrMap2[y]})`).join(' · ');
           homeMetaEl.textContent = `Son rapor: ${window._iataLatest.date} · ${yrStr2}`;
           // Bell kontrolü
-          const bellEl2 = document.getElementById('iata-bell-badge');
-          if (bellEl2) {
-            const lastSeen2 = localStorage.getItem('iata_last_seen_date');
-            bellEl2.style.display = lastSeen2 !== window._iataLatest.date ? 'inline-flex' : 'none';
-          }
+          if (typeof updateNotifBell === 'function') updateNotifBell();
         }
       });
     }
@@ -17599,6 +17608,88 @@ function initControls(allArticles) {
   window._iataReportsList = [];
   let _iataChartInstance = null;
 
+  // ── IATA Bildirim Sistemi ────────────────────────────────────────────────
+  const IATA_NOTIF_KEY = 'iata_notifs';
+
+  function getNotifStore() {
+    try { return JSON.parse(localStorage.getItem(IATA_NOTIF_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveNotifStore(s) { localStorage.setItem(IATA_NOTIF_KEY, JSON.stringify(s)); }
+
+  function formatNotifDate(ts) {
+    const d = new Date(ts);
+    const p = n => String(n).padStart(2, '0');
+    return `${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()} · ${p(d.getHours())}:${p(d.getMinutes())}'de eklendi`;
+  }
+
+  function initNotifStore(reports) {
+    const store = getNotifStore();
+    const isFirst = Object.keys(store).length === 0;
+    let changed = false;
+    reports.forEach(r => {
+      if (!store[r.date]) {
+        store[r.date] = { detectedAt: Date.now(), read: isFirst };
+        changed = true;
+      }
+    });
+    if (changed) saveNotifStore(store);
+  }
+
+  function updateNotifBell() {
+    const store = getNotifStore();
+    const entries = Object.entries(store).sort((a, b) => b[1].detectedAt - a[1].detectedAt);
+    const unread = entries.filter(([, v]) => !v.read).length;
+
+    const dot = document.getElementById('hdr-bell-dot');
+    if (dot) dot.style.display = unread > 0 ? 'block' : 'none';
+
+    const clearBtn = document.getElementById('hdr-bell-clear-btn');
+    if (clearBtn) clearBtn.style.display = entries.length > 0 ? 'block' : 'none';
+
+    const emptyEl = document.getElementById('hdr-bell-empty');
+    const itemsEl = document.getElementById('hdr-bell-items');
+
+    if (entries.length === 0) {
+      if (emptyEl) emptyEl.style.display = 'flex';
+      if (itemsEl) itemsEl.innerHTML = '';
+    } else {
+      if (emptyEl) emptyEl.style.display = 'none';
+      if (itemsEl) {
+        itemsEl.innerHTML = entries.map(([date, info]) => `
+          <div class="hdr-notif-item" onclick="openIataNotif('${date}')">
+            <span class="hdr-notif-dot${info.read ? ' read' : ''}"></span>
+            <div class="hdr-notif-body">
+              <div class="hdr-notif-tag">IATA Market Analizi</div>
+              <div class="hdr-notif-title">${date} raporu yayınlandı</div>
+              <div class="hdr-notif-date">${formatNotifDate(info.detectedAt)}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    const cardBell = document.getElementById('iata-bell-badge');
+    if (cardBell) cardBell.classList.toggle('has-notif', unread > 0);
+  }
+
+  window.openIataNotif = function(date) {
+    const store = getNotifStore();
+    if (store[date]) { store[date].read = true; saveNotifStore(store); }
+    updateNotifBell();
+    document.getElementById('hdr-bell-panel')?.classList.remove('open');
+    document.getElementById('hdr-bell')?.setAttribute('aria-expanded', 'false');
+    window.location.hash = '#reports';
+    setTimeout(() => { if (typeof switchReportType === 'function') switchReportType('iata_market_analizi'); }, 80);
+  };
+
+  window.markAllNotifsRead = function() {
+    const store = getNotifStore();
+    Object.keys(store).forEach(k => store[k].read = true);
+    saveNotifStore(store);
+    updateNotifBell();
+  };
+  // ────────────────────────────────────────────────────────────────────────
+
   async function initIataReportsTab() {
     const feedListEl = document.getElementById('iata-report-feed-list');
     if (!feedListEl) return;
@@ -17649,6 +17740,11 @@ function initControls(allArticles) {
 
       _iataReportsList = mergedReports;
 
+      // Bildirim sistemi: yeni raporları kaydet, IATA sekmesi açıksa okundu say
+      initNotifStore(mergedReports);
+      window.markAllNotifsRead();
+      updateNotifBell();
+
       // Update home card meta
       const homeMetaEl = document.getElementById('rhome-iata-meta');
       if (homeMetaEl && mergedReports.length > 0) {
@@ -17656,18 +17752,6 @@ function initControls(allArticles) {
         mergedReports.forEach(r => { const y = String(r.date).split(' ').pop(); if (/^\d{4}$/.test(y)) yrMap[y] = (yrMap[y]||0)+1; });
         const yrStr = Object.keys(yrMap).sort((a,b)=>b-a).map(y=>`${y} (${yrMap[y]})`).join(' · ');
         homeMetaEl.textContent = `Son rapor: ${mergedReports[0].date} · ${yrStr}`;
-      }
-      // Bell: yeni rapor varsa göster, IATA sekmesine gelindiğinde gizle
-      const _iataLatestDate = mergedReports.length > 0 ? mergedReports[0].date : null;
-      const bellEl = document.getElementById('iata-bell-badge');
-      if (bellEl && _iataLatestDate) {
-        const lastSeen = localStorage.getItem('iata_last_seen_date');
-        bellEl.style.display = lastSeen !== _iataLatestDate ? 'inline-flex' : 'none';
-      }
-      // Kullanıcı IATA sekmesindeyse hemen görüldü say
-      if (_iataLatestDate) {
-        localStorage.setItem('iata_last_seen_date', _iataLatestDate);
-        if (bellEl) bellEl.style.display = 'none';
       }
 
       // Render cards
