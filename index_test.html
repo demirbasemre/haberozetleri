@@ -10116,9 +10116,70 @@ async function loadDashboard() {
         borderWidth: s.width
       }));
 
+      const jetfuelEventsPlugin = {
+        id: 'jetfuelEvents',
+        afterDatasetsDraw(chart) {
+          const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
+          ctx.save();
+          const events = [
+            { dateIso: '2026-02-26', label: 'Ortadoğu Savaşı (28 Şub)', color: '#E63946' }
+          ];
+          const rawDatesArray = chart.$rawDates;
+          if (!rawDatesArray || rawDatesArray.length === 0) { ctx.restore(); return; }
+          const firstDate = new Date(rawDatesArray[0]).getTime();
+          const lastDate  = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+          const drawnPills = [];
+          events.forEach(event => {
+            const targetTime = new Date(event.dateIso).getTime();
+            if (targetTime < firstDate || targetTime > lastDate) return;
+            let closestIndex = -1, minDiff = Infinity;
+            for (let i = 0; i < rawDatesArray.length; i++) {
+              const diff = Math.abs(new Date(rawDatesArray[i]).getTime() - targetTime);
+              if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+            }
+            if (closestIndex === -1) return;
+            const threshold = Math.max((lastDate - firstDate) * 0.1, 15 * 24 * 60 * 60 * 1000);
+            if (minDiff > threshold) return;
+            const xPos = x.getPixelForValue(closestIndex);
+            const meta = chart.getDatasetMeta(0);
+            if (meta && meta.data && meta.data[closestIndex]) {
+              const point = meta.data[closestIndex];
+              ctx.fillStyle = event.color; ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.fill();
+              ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+              ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.stroke();
+            }
+            ctx.setLineDash([]);
+            ctx.font = 'bold 9.5px Inter, sans-serif';
+            const textWidth = ctx.measureText(event.label).width;
+            const pillWidth = textWidth + 12, pillHeight = 9.5 + 8;
+            let pillX = Math.max(chartLeft, Math.min(xPos - pillWidth / 2, chartRight - pillWidth));
+            let pillY = top + 10, hasOverlap = true;
+            while (hasOverlap) {
+              hasOverlap = false;
+              for (const p of drawnPills) {
+                if (!(pillX + pillWidth < p.x1 - 4 || pillX > p.x2 + 4 || pillY + pillHeight < p.y1 - 2 || pillY > p.y2 + 2)) {
+                  hasOverlap = true; pillY += pillHeight + 6; break;
+                }
+              }
+            }
+            drawnPills.push({ x1: pillX, x2: pillX + pillWidth, y1: pillY, y2: pillY + pillHeight });
+            ctx.strokeStyle = event.color; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+            ctx.beginPath(); ctx.moveTo(xPos, pillY + pillHeight); ctx.lineTo(xPos, bottom); ctx.stroke();
+            ctx.setLineDash([]); ctx.fillStyle = event.color;
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(pillX, pillY, pillWidth, pillHeight, 4);
+            else ctx.rect(pillX, pillY, pillWidth, pillHeight);
+            ctx.fill();
+            ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(event.label, pillX + pillWidth / 2, pillY + pillHeight / 2 + 0.5);
+          });
+          ctx.restore();
+        }
+      };
+
       lineChart('chart-jetfuel-modal', labels, datasets,
         v => v != null ? Number(v).toFixed(1) + ' $' : '',
-        { forceRecreate: true, xTickFont: { size: 9, family: 'Inter' }, rawDates: indices.map(i => D.dates[i]) }
+        { forceRecreate: true, xTickFont: { size: 9, family: 'Inter' }, rawDates: indices.map(i => D.dates[i]), plugins: [jetfuelEventsPlugin] }
       );
 
       if (titleEl) titleEl.textContent = 'Jet Yakıtı — S&P Global Platts ($/ton)';
