@@ -11752,7 +11752,12 @@ async function loadDashboard() {
         if (dEl) { dEl.textContent = latest.demand; dEl.classList.remove('skeleton'); }
         if (cEl) { cEl.textContent = window.formatLF(latest.capacity); cEl.classList.remove('skeleton'); }
         if (lfEl) { lfEl.textContent = window.formatLF(latest.loadFactor); lfEl.classList.remove('skeleton'); }
-        if (srEl) { srEl.textContent = (latest.spotRate || '—').replace('/kg', '').trim(); srEl.classList.remove('skeleton'); }
+        if (srEl) {
+          const rawSR = latest.spotRate || '';
+          const numSR = parseFloat(rawSR);
+          srEl.textContent = !isNaN(numSR) ? '$' + numSR.toFixed(2) : (rawSR || '—');
+          srEl.classList.remove('skeleton');
+        }
 
         const subEl = document.getElementById('dc-iata-sub');
         if (subEl) subEl.textContent = `Talep ve kapasite dengesi (${latest.date})`;
