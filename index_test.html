@@ -2669,7 +2669,7 @@
           </div>
           <div class="dash-card-sub" id="dc-iata-sub">CTK büyümesi, kapasite ve doluluk değişimi</div>
           <div class="dash-card-footer">
-            <div class="dash-card-note" id="dc-iata-note">IATA · Rapor · <a href="https://www.iata.org/en/publications/economics/" target="_blank" rel="noopener">iata.org Rapor →</a></div>
+            <div class="dash-card-note" id="dc-iata-note">Son veri: —<br><a href="https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc" target="_blank" rel="noopener">IATA Reports →</a></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
@@ -11764,7 +11764,7 @@ async function loadDashboard() {
         
         const noteEl = document.getElementById('dc-iata-note');
         if (noteEl) {
-          noteEl.innerHTML = `IATA · Son Rapor: ${latest.date} · <a href="${latest.pdfLink}" target="_blank" rel="noopener">iata.org Rapor →</a>`;
+          noteEl.innerHTML = `Son veri: ${latest.date}<br><a href="https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc" target="_blank" rel="noopener">IATA Reports →</a>`;
         }
       } else {
         const dEl = document.getElementById('iata-val-demand');
@@ -12301,7 +12301,7 @@ async function loadDashboard() {
         isStatic: false,
         isMonthly: true,
         pillText: 'Aylık',
-        tooltipMessage: 'IATA Hava Kargo Market Analizi aylık olarak otomatik güncellenir.'
+        tooltipMessage: 'IATA Hava Kargo Market analizi, aylık olarak yayınlanan küresel hava kargo piyasa analizi raporudur. İlgili ayın raporu, takip eden ayın sonu ya da diğer ayın başında yayınlanır ve otomatik olarak siteye aktarılır.'
       };
     }
     
