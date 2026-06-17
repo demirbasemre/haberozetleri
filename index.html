@@ -9856,7 +9856,7 @@ async function loadDashboard() {
 
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-        titleEl.textContent = 'Brent Petrol';
+        titleEl.textContent = `Brent Petrol — ${latestPrice.toFixed(1)} $/varil`;
 
         // Dynamic dashboard sync
         const cardValEl = document.querySelector('#dc-brent .dash-card-value');
@@ -10205,8 +10205,8 @@ async function loadDashboard() {
       
       if (titleEl) {
         const latestPrice = prices[prices.length - 1];
-        titleEl.textContent = 'Jet Yakıtı Fiyatı';
-        
+        titleEl.textContent = `Jet Yakıtı — ${Math.round(latestPrice)} $/ton`;
+
         // Dynamic dashboard sync
         const cardValEl = document.querySelector('#dc-jetfuel .dash-card-value');
         if (cardValEl) {
@@ -11050,7 +11050,7 @@ async function loadDashboard() {
           }
         }
       );
-      if (titleEl) titleEl.textContent = 'Drewry Dünya Konteyner Endeksi (WCI)';
+      if (titleEl) titleEl.textContent = `WCI — ${Math.round(prices[prices.length-1]).toLocaleString('tr-TR')} $/FEU`;
     } catch (err) {
       console.error("WCI Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
@@ -11176,7 +11176,7 @@ async function loadDashboard() {
           }
         }
       );
-      if (titleEl) titleEl.textContent = 'Baltic Air Freight Index (BAFI)';
+      if (titleEl) titleEl.textContent = `BAFI — ${Number(values[values.length-1]).toFixed(2)} $/kg`;
     } catch (err) {
       console.error("BAFI Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
@@ -11408,7 +11408,7 @@ async function loadDashboard() {
           }
         }
       );
-      if (titleEl) titleEl.textContent = 'Freightos Baltık Endeksi (FBX)';
+      if (titleEl) titleEl.textContent = `FBX — ${Math.round(values[values.length-1]).toLocaleString('tr-TR')} $/FEU`;
     } catch (err) {
       console.error("FBX Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
@@ -12037,7 +12037,7 @@ async function loadDashboard() {
 
       if (titleEl) {
         const latestPrice = result.meta.regularMarketPrice || prices[prices.length - 1];
-        titleEl.textContent = 'THY Hisse Performansı (THYAO)';
+        titleEl.textContent = `THYAO — ${latestPrice.toFixed(1)} ₺`;
       }
     } catch (err) {
       console.error("THY Grafik çizim hatası:", err);
