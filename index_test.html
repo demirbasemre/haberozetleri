@@ -2533,6 +2533,7 @@
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">ABD Gulf Coast · ton</div>
+          <div id="dc-jetfuel-date" class="dash-card-date-badge"></div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://fred.stlouisfed.org/series/DJFUELUSGULF" target="_blank" rel="noopener">fred.stlouisfed.org →</a> · Günlük</div>
           </div>
@@ -9057,7 +9058,12 @@ async function loadDashboard() {
       if (jet && jet.length) {
         const last = jet[jet.length - 1];
         setCard('dc-jetfuel', (last.value * 42 * 7.9).toFixed(1) + ' $', pctChg(jet.slice(-2)),
-          'ABD Gulf Coast · ton', `Son veri: ${last.date}<br><a href="https://fred.stlouisfed.org/series/DJFUELUSGULF" target="_blank" rel="noopener">fred.stlouisfed.org →</a>`);
+          'ABD Gulf Coast · ton', `<a href="https://fred.stlouisfed.org/series/DJFUELUSGULF" target="_blank" rel="noopener">fred.stlouisfed.org →</a>`);
+        const jfDateEl = document.getElementById('dc-jetfuel-date');
+        if (jfDateEl && last.date) {
+          const [y, m, d] = last.date.split('-');
+          jfDateEl.textContent = `Son veri: ${d}.${m}.${y}`;
+        }
       } else {
         setCard('dc-jetfuel', '—', null, '', 'Veri alınamadı');
       }
@@ -12268,12 +12274,13 @@ async function loadDashboard() {
     }
 
     if (cardId === 'dc-jetfuel') {
-      // Jet Yakıtı: FRED verisi günlük/haftalık istatistik
       return {
         isOpen: false,
-        isStatic: true,
+        isStatic: false,
+        isMonthly: true,
+        autoLabel: 'Günlük otomatik güncellenir',
         pillText: 'Günlük',
-        tooltipMessage: 'FRED Jet Yakıtı fiyat verileri günlük/haftalık olarak güncellenen istatistiki serilerdir. Anlık seans yayını yoktur. Bir sonraki veri güncellemesi iş günlerinde TR saatiyle gece yarısı civarındadır.'
+        tooltipMessage: 'FRED Jet Yakıtı, ABD Gulf Coast bölgesindeki havacılık yakıt spot fiyatlarını haftalık olarak yayınlayan istatistiki bir seridir. Veriler iş günlerinde otomatik olarak güncellenir.'
       };
     }
 
@@ -12300,6 +12307,7 @@ async function loadDashboard() {
         isOpen: false,
         isStatic: false,
         isMonthly: true,
+        autoLabel: 'Aylık otomatik güncellenir',
         pillText: 'Aylık',
         tooltipMessage: 'IATA Hava Kargo Market analizi, aylık olarak yayınlanan küresel hava kargo piyasa analizi raporudur. İlgili ayın raporu, takip eden ayın sonu ya da diğer ayın başında yayınlanır.'
       };
@@ -12331,7 +12339,7 @@ async function loadDashboard() {
       tooltipHtml += `
         <div class="market-refresh-status">
           <span class="refresh-indicator open"></span>
-          <span>Aylık otomatik güncellenir</span>
+          <span>${status.autoLabel || 'Aylık otomatik güncellenir'}</span>
         </div>
       `;
     } else if (status.isStatic) {

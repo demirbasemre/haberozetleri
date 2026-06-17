@@ -2767,6 +2767,23 @@
   .dash-card-sub  { font-size: 11px; color: var(--text-2); margin-top: 4px; line-height: 1.4; min-height: 1.4em; }
   .dash-card-note { font-size: 10px; color: var(--text-3); margin-top: 2px; line-height: 1.4; }
   .dash-card-note a { color: var(--text-3); text-decoration: underline; }
+  .dash-card-date-badge {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: #92763a;
+    background: rgba(217, 170, 80, 0.1);
+    border: 1px solid rgba(217, 170, 80, 0.22);
+    border-radius: 5px;
+    padding: 2px 7px;
+    letter-spacing: 0.01em;
+  }
+  [data-theme="dark"] .dash-card-date-badge {
+    color: #c9a84c;
+    background: rgba(217, 170, 80, 0.08);
+    border-color: rgba(217, 170, 80, 0.18);
+  }
 
   /* Visitor sparkline */
   .vis-sparkline-wrap {
