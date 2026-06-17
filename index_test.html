@@ -2663,7 +2663,7 @@
               <span class="cargo-metric-val skeleton" id="iata-val-loadfactor">-</span>
             </div>
             <div class="cargo-metric-item">
-              <span class="cargo-metric-lbl">Spot Rate</span>
+              <span class="cargo-metric-lbl">UR</span>
               <span class="cargo-metric-val skeleton" id="iata-val-spotrate">-</span>
             </div>
           </div>
@@ -11750,9 +11750,9 @@ async function loadDashboard() {
         const srEl = document.getElementById('iata-val-spotrate');
         
         if (dEl) { dEl.textContent = latest.demand; dEl.classList.remove('skeleton'); }
-        if (cEl) { cEl.textContent = latest.capacity; cEl.classList.remove('skeleton'); }
+        if (cEl) { cEl.textContent = window.formatLF(latest.capacity); cEl.classList.remove('skeleton'); }
         if (lfEl) { lfEl.textContent = window.formatLF(latest.loadFactor); lfEl.classList.remove('skeleton'); }
-        if (srEl) { srEl.textContent = latest.spotRate || '—'; srEl.classList.remove('skeleton'); }
+        if (srEl) { srEl.textContent = (latest.spotRate || '—').replace('/kg', '').trim(); srEl.classList.remove('skeleton'); }
 
         const subEl = document.getElementById('dc-iata-sub');
         if (subEl) subEl.textContent = `Talep ve kapasite dengesi (${latest.date})`;
@@ -12293,9 +12293,10 @@ async function loadDashboard() {
     if (cardId === 'dc-iata') {
       return {
         isOpen: false,
-        isStatic: true,
+        isStatic: false,
+        isMonthly: true,
         pillText: 'Aylık',
-        tooltipMessage: 'IATA Air Cargo Market Analysis aylık olarak yayınlanan küresel hava kargo piyasa analizi raporudur. Veriler ve Türkçe özetler Cloudflare Worker proxy ile n8n webhook raporlarından dinamik olarak çekilir.'
+        tooltipMessage: 'IATA Hava Kargo Market Analizi aylık olarak otomatik güncellenir.'
       };
     }
     
@@ -12321,7 +12322,14 @@ async function loadDashboard() {
         <div class="market-tooltip-refresh-wrap">
     `;
 
-    if (status.isStatic) {
+    if (status.isMonthly) {
+      tooltipHtml += `
+        <div class="market-refresh-status">
+          <span class="refresh-indicator open"></span>
+          <span>Aylık otomatik güncellenir</span>
+        </div>
+      `;
+    } else if (status.isStatic) {
       tooltipHtml += `
         <div class="market-refresh-status">
           <span class="refresh-indicator static"></span>
