@@ -7962,6 +7962,8 @@
   color: var(--text);
   font-family: var(--font-mono, monospace);
 }
+.cargo-metric-val.positive { color: #059669; }
+.cargo-metric-val.negative { color: var(--red); }
 .cargo-metric-val.skeleton {
   color: transparent !important;
   background: linear-gradient(90deg, var(--border) 25%, var(--border-soft) 50%, var(--border) 75%);
