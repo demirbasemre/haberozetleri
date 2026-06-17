@@ -10194,7 +10194,7 @@ async function loadDashboard() {
             borderWidth: 2
           }
         ],
-        v => v != null ? Number(Number(v).toFixed(1)) + ' $' : '',
+        v => v != null ? Math.round(v) + ' $' : '',
         {
           forceRecreate: true,
           xTickFont: { size: 9, family: 'Inter' },
