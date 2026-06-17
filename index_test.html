@@ -10421,6 +10421,10 @@ async function loadDashboard() {
     if (period) {
       _jetfuelCurrentPeriod = period;
       window._jetfuelCustomRange = false;
+      const s = document.getElementById('jetfuel-date-start');
+      const e = document.getElementById('jetfuel-date-end');
+      if (s) s.value = '';
+      if (e) e.value = '';
     }
     document.querySelectorAll('#jetfuel-chart-modal .jetfuel-period-btn').forEach(btn => btn.classList.remove('active'));
     if (!window._jetfuelCustomRange) {
