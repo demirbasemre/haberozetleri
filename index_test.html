@@ -2933,9 +2933,9 @@
               <button class="iata-modal-period-btn forex-btn" id="btn-iata-modal-tumu" data-period="tumu" onclick="iataModalSetPeriod('tumu',this)">Tümü</button>
             </div>
             <div class="modal-date-picker">
-              <input type="month" class="modal-date-input" id="iata-modal-date-start" aria-label="Başlangıç tarihi" onchange="iataModalSetCustomRange()">
+              <input type="date" class="modal-date-input" id="iata-modal-date-start" aria-label="Başlangıç tarihi" onchange="iataModalSetCustomRange()">
               <span class="modal-date-separator">→</span>
-              <input type="month" class="modal-date-input" id="iata-modal-date-end" aria-label="Bitiş tarihi" onchange="iataModalSetCustomRange()">
+              <input type="date" class="modal-date-input" id="iata-modal-date-end" aria-label="Bitiş tarihi" onchange="iataModalSetCustomRange()">
             </div>
           </div>
           <div class="modal-controls-right">
@@ -18483,13 +18483,13 @@ function initControls(allArticles) {
     const filtered = iataFilterByPeriod(window._iataAllData, period);
     window._iataReportsList = filtered;
 
-    // Update month inputs
+    // Update date inputs (type="date" needs YYYY-MM-DD, _iso is YYYY-MM)
     if (filtered.length > 0) {
       const isos = filtered.map(r => r._iso).sort();
       const startEl = document.getElementById('iata-modal-date-start');
       const endEl   = document.getElementById('iata-modal-date-end');
-      if (startEl) startEl.value = isos[0];
-      if (endEl)   endEl.value   = isos[isos.length - 1];
+      if (startEl) startEl.value = isos[0] + '-01';
+      if (endEl)   endEl.value   = isos[isos.length - 1] + '-01';
     }
 
     iataModalUpdateAll(filtered);
@@ -18501,7 +18501,10 @@ function initControls(allArticles) {
     if (!startEl || !endEl || !startEl.value || !endEl.value) return;
     document.querySelectorAll('.iata-modal-period-btn').forEach(b => b.classList.remove('active'));
     _iataModalPeriod = 'custom';
-    const filtered = iataFilterByPeriod(window._iataAllData, 'custom', startEl.value, endEl.value);
+    // type="date" returns YYYY-MM-DD; _iso is YYYY-MM — slice to first 7 chars for comparison
+    const customStart = startEl.value.slice(0, 7);
+    const customEnd   = endEl.value.slice(0, 7);
+    const filtered = iataFilterByPeriod(window._iataAllData, 'custom', customStart, customEnd);
     window._iataReportsList = filtered;
     iataModalUpdateAll(filtered);
   }
