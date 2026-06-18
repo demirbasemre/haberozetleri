@@ -2595,9 +2595,8 @@
         <div class="dash-card dash-card-clickable" id="dc-jetfuel" title="Jet yakıtı fiyat detayları için tıkla" onclick="openJetfuelChartModal()">
           <div class="dash-card-header-row">
             <div class="dash-card-label">Jet Yakıtı</div>
-            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
-              <span class="timer-dot"></span>
-              <span class="timer-secs">60s</span>
+            <div class="dash-card-timer" id="dc-jetfuel-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+              <span class="timer-dot"></span>Haftalık
             </div>
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
@@ -2692,11 +2691,18 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
-          <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
+          <div class="dash-card-header-row">
+            <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
+            <div class="dash-card-timer" id="dc-wci-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+              <span class="timer-dot"></span>Haftalık
+            </div>
+          </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
-          <div class="dash-card-note">Drewry · Haftalık<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note"><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
+          </div>
         </div>
         
         <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
@@ -9107,7 +9113,7 @@ async function loadDashboard() {
   });
 
   function initJetfuelCard() {
-    // Platts kartını statik veriyle hemen doldur
+    // 1. Statik veriyle hemen doldur (hızlı yükleme)
     const n = PLATTS_JET_DATA.dates.length;
     const lastGlobal = PLATTS_JET_DATA.global[n - 1];
     const prevGlobal = PLATTS_JET_DATA.global[n - 2];
@@ -9121,7 +9127,26 @@ async function loadDashboard() {
       jfDateEl.textContent = `Son veri: ${d}.${m}.${y}`;
     }
 
-    // FRED DCOILBRENTEU (Dated Brent spot) — IATA raporuyla aynı fiyat serisi
+    // 2. CF Worker'dan canlı veri çek (arka planda, 6 saat önbellekli)
+    fetchCached('jetfuel_live', () =>
+      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/jetfuel')
+        .then(r => r.ok ? r.json() : null)
+        .catch(() => null),
+      6 * 60 * 60 * 1000
+    ).then(live => {
+      if (live && live.success && live.price) {
+        setCard('dc-jetfuel', live.price.toFixed(1) + ' $', live.change,
+          'Platts Global Endeks · ton',
+          `<a href="https://www.iata.org/en/publications/economics/fuel-monitor/" target="_blank" rel="noopener">Jet Fuel Price Monitor →</a>`
+        );
+        if (jfDateEl && live.date) {
+          const [y, m, d] = live.date.split('-');
+          jfDateEl.textContent = `Son veri: ${d}.${m}.${y}`;
+        }
+      }
+    });
+
+    // 3. FRED DCOILBRENTEU (Dated Brent spot) — enerji grafiği için
     return fredFetch('DCOILBRENTEU', 400).catch(() => null).then(brent => {
       _brentRaw = brent;
       if (brent) renderEnergyChart('all');
