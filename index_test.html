@@ -2765,7 +2765,7 @@
         
         <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
           <div class="dash-card-header-row">
-            <div class="dash-card-label">Baltic Air Freight Index (BAFI)</div>
+            <div class="dash-card-label dash-card-label--wrap">Baltic Air<br>Freight Index (BAFI)</div>
             <div class="dash-card-timer" id="dc-bafi-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
               <span class="timer-dot"></span>Haftalık
             </div>
@@ -12621,9 +12621,10 @@ async function loadDashboard() {
     if (cardId === 'dc-bafi') {
       return {
         isOpen: false,
-        isStatic: true,
+        isMonthly: true,
+        autoLabel: 'Haftalık otomatik güncellenir',
         pillText: 'Haftalık',
-        tooltipMessage: 'Baltic Air Freight Index (BAFI) haftalık olarak güncellenen hava kargo spot tarifesi endeksidir. Veriler Cloudflare Worker proxy aracılığıyla canlı kazınmaktadır.'
+        tooltipMessage: 'Baltic Air Freight Index (BAFI), Baltic Exchange tarafından haftalık yayınlanan küresel hava kargo spot tarifesi endeksidir. Veriler Cloudflare Worker aracılığıyla tacindex.com kaynağından otomatik olarak çekilmektedir.'
       };
     }
 
