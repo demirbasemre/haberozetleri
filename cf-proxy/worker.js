@@ -28,6 +28,81 @@ const PROXY_ALLOWED_HOSTS = new Set([
   'www.freightos.com',
 ]);
 
+function parseIATAFuelMonitor(html) {
+  const PLATTS_CVT = 3.3173; // 1 cts/gal = 3.3173 $/MT
+  const BBL_TO_MT = (100 * PLATTS_CVT) / 42; // $/bbl → $/MT (≈7.898)
+
+  // Month lookup for date parsing
+  const MONTHS = {
+    january:1,february:2,march:3,april:4,may:5,june:6,
+    july:7,august:8,september:9,october:10,november:11,december:12,
+    jan:1,feb:2,mar:3,apr:4,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12
+  };
+
+  function parseISODate(text) {
+    let m = text.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+    if (m) {
+      const mo = MONTHS[m[2].toLowerCase()];
+      if (mo) return `${m[3]}-${String(mo).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}`;
+    }
+    m = text.match(/([A-Za-z]+)\s+(\d{1,2}),?\s*(\d{4})/);
+    if (m) {
+      const mo = MONTHS[m[1].toLowerCase()];
+      if (mo) return `${m[3]}-${String(mo).padStart(2,'0')}-${String(m[2]).padStart(2,'0')}`;
+    }
+    return null;
+  }
+
+  let price = null, change = 0, direction = 'flat';
+
+  // Primary: "fell/rose X.X% compared to the week before to $X.XX/bbl"
+  const primaryRe = /global average jet fuel price last week\s+(fell|dropped|declined|decreased|rose|increased|surged|remained\s+unchanged|was\s+unchanged)\s+(?:by\s+)?(\d+\.?\d*)?%?\s*compared to the week before to\s+\$(\d+\.?\d+)\/bbl/i;
+  let match = html.match(primaryRe);
+  if (match) {
+    const dir = match[1].toLowerCase();
+    const changeVal = match[2] ? parseFloat(match[2]) : 0;
+    price = parseFloat((parseFloat(match[3]) * BBL_TO_MT).toFixed(1));
+    if (['fell','dropped','declined','decreased'].some(w => dir.includes(w))) {
+      change = -changeVal; direction = 'down';
+    } else if (['rose','increased','surged'].some(w => dir.includes(w))) {
+      change = changeVal; direction = 'up';
+    }
+  }
+
+  // Fallback: any $X.XX/bbl value
+  if (price === null) {
+    const bblMatch = html.match(/\$(\d+\.?\d+)\/bbl/i);
+    if (bblMatch) price = parseFloat((parseFloat(bblMatch[1]) * BBL_TO_MT).toFixed(1));
+  }
+
+  // Fallback: cts/gal value
+  if (price === null) {
+    const ctsMatch = html.match(/(\d+\.?\d+)\s*(?:cts|cents?)\/gal/i);
+    if (ctsMatch) price = parseFloat((parseFloat(ctsMatch[1]) * PLATTS_CVT).toFixed(1));
+  }
+
+  if (price === null) return { success: false, error: 'Price not found in IATA fuel monitor page' };
+
+  // Extract date — try multiple patterns
+  let dateISO = null;
+  const datePatterns = [
+    /week\s+(?:of|ending)\s+([\d]+\s+[A-Za-z]+\s+\d{4})/i,
+    /for\s+(?:the\s+)?week\s+(?:of|ending)\s+([\d]+\s+[A-Za-z]+\s+\d{4})/i,
+    /(?:as\s+of|dated?)\s+([\d]+\s+[A-Za-z]+\s+\d{4})/i,
+    /([\d]+\s+[A-Za-z]+\s+\d{4})/,
+    /([A-Za-z]+\s+[\d]+,?\s*\d{4})/
+  ];
+  for (const p of datePatterns) {
+    const dm = html.match(p);
+    if (dm) {
+      dateISO = parseISODate(dm[1]);
+      if (dateISO) break;
+    }
+  }
+
+  return { success: true, price, change, direction, date: dateISO };
+}
+
 function parseWCI(html) {
   // Raporun yayınlanma tarihini bul
   const dateMatch = html.match(/Our detailed assessment for [A-Za-z]+,\s+([\d]+\s+[A-Za-z]+\s+[\d]{4})/i);
@@ -513,6 +588,46 @@ export default {
         return new Response(JSON.stringify({ error: err.message }), {
           status: 502,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ── /jetfuel IATA Fuel Monitor Rotası ──
+    if (urlObj.pathname === '/jetfuel') {
+      const forceDirect = urlObj.searchParams.get('direct') === '1';
+      try {
+        const res = await doFetch(
+          'https://www.iata.org/en/publications/economics/fuel-monitor/',
+          { headers: { 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' } },
+          forceDirect,
+          21600 // 6 saat önbellek — veri haftalık güncellenir
+        );
+        if (res.status !== 200) {
+          return new Response(JSON.stringify({ error: 'IATA fetch failed', status: res.status }), {
+            status: 502,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        const parsed = parseIATAFuelMonitor(res.body);
+        if (!parsed.success) {
+          return new Response(JSON.stringify({ error: parsed.error || 'Parse failed' }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        return new Response(JSON.stringify(parsed), {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            'X-Proxy': res.proxy,
+            'Cache-Control': 'public, max-age=21600',
+          },
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), {
+          status: 502,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
     }
