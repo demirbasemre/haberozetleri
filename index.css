@@ -2389,12 +2389,31 @@
   .dash-card-clickable:hover { border-color: rgba(29,111,232,0.35); }
   .dash-card-header-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
     gap: 8px;
     min-width: 0;
+    min-height: 32px;
+    position: relative;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .dash-card-header-row::before {
+    content: '';
+    position: absolute;
+    top: -18px; left: -20px; right: -20px; bottom: 0;
+    background: rgba(0,0,0,0.035);
+    pointer-events: none;
+    z-index: 0;
+  }
+  [data-theme="dark"] .dash-card-header-row::before {
+    background: rgba(255,255,255,0.045);
+  }
+  .dash-card-header-row > * {
+    position: relative;
+    z-index: 1;
   }
   .dash-card-header-row .dash-card-label {
     margin-bottom: 0;
@@ -2410,6 +2429,20 @@
     text-overflow: ellipsis;
     overflow: hidden;
     min-width: 0;
+  }
+  .dash-card-label--wrap {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.35;
+  }
+  .dc-date-footer {
+    margin-top: auto;
+    padding-top: 7px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .dc-date-footer .dash-card-date-badge {
+    margin-top: 0;
   }
   .dash-card-value {
     font-size: 26px;
@@ -2774,16 +2807,25 @@
     font-weight: 500;
     color: #92763a;
     background: rgba(217, 170, 80, 0.1);
-    border: 1px solid rgba(217, 170, 80, 0.22);
+    border: none;
     border-radius: 5px;
     padding: 2px 7px;
     letter-spacing: 0.01em;
+    transition: background 0.3s, color 0.3s;
   }
   [data-theme="dark"] .dash-card-date-badge {
     color: #c9a84c;
-    background: rgba(217, 170, 80, 0.08);
-    border-color: rgba(217, 170, 80, 0.18);
+    background: rgba(217, 170, 80, 0.12);
   }
+  /* Freshness color classes — applied via JS based on data age */
+  .date-badge--fresh   { background: rgba(16,185,129,0.14) !important; color: #059669 !important; }
+  .date-badge--recent  { background: rgba(101,163,13,0.13) !important; color: #4d7c0f !important; }
+  .date-badge--aging   { background: rgba(245,158,11,0.13) !important; color: #b45309 !important; }
+  .date-badge--stale   { background: rgba(146,64,14,0.13) !important; color: #7c2d12 !important; }
+  [data-theme="dark"] .date-badge--fresh  { background: rgba(16,185,129,0.18) !important; color: #34d399 !important; }
+  [data-theme="dark"] .date-badge--recent { background: rgba(132,204,22,0.15) !important; color: #a3e635 !important; }
+  [data-theme="dark"] .date-badge--aging  { background: rgba(245,158,11,0.17) !important; color: #fbbf24 !important; }
+  [data-theme="dark"] .date-badge--stale  { background: rgba(180,83,9,0.17) !important;   color: #fb923c !important; }
 
   /* Visitor sparkline */
   .vis-sparkline-wrap {
