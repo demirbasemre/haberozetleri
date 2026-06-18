@@ -2488,7 +2488,7 @@
 
     <!-- Dashboard nav links (shown when Dashboard tab is active) -->
     <div id="dash-filter-content" style="display:none;">
-      <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-anl\u0131k'); return false;" href="#">Anlık Göstergeler</a>
+      <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-anl\u0131k'); return false;" href="#">Göstergeler</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-enerji'); return false;" href="#">Enerji Fiyatları</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-ekonomi'); return false;" href="#">Büyüme &amp; Enflasyon</a>
       <a class="dash-nav-link" onclick="dashScrollTo('dash-sec-takvim'); return false;" href="#">Veri Yayın Takvimi ve Resmi Tatiller</a>
@@ -2582,7 +2582,7 @@
     <!-- Anlık göstergeler -->
     <section class="dash-section" id="dash-sec-anlık">
       <div class="dash-section-header">
-        <h2 class="dash-section-title">Anlık Göstergeler</h2>
+        <h2 class="dash-section-title">Göstergeler</h2>
         <button class="dash-customize-btn" id="customize-indicators-btn" title="Göstergeleri Özelleştir">
           <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
@@ -2707,7 +2707,7 @@
         
         <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
           <div class="dash-card-header-row">
-            <div class="dash-card-label dash-card-label--wrap">Baltic Air<br>Freight Index (BAFI)</div>
+            <div class="dash-card-label dash-card-label--wrap">Baltık Hava<br>Kargo Endeksi (BAFI)</div>
             <div class="dash-card-timer" id="dc-bafi-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
               <span class="timer-dot"></span>Haftalık
             </div>
@@ -2754,7 +2754,7 @@
         </div>
         <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
           <div class="dash-card-header-row">
-            <div class="dash-card-label">Freightos Baltık Endeksi (FBX)</div>
+            <div class="dash-card-label dash-card-label--wrap">Freightos Baltık<br>Endeksi (FBX)</div>
             <div class="dash-card-timer" id="dc-fbx-timer" title="Güncellenme sıklığı: Günlük (Cloudflare Worker)">
               <span class="timer-dot"></span>Günlük
             </div>
@@ -2949,7 +2949,7 @@
     <div id="bafi-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="bafi-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div id="bafi-chart-title" class="rel-add-title">Baltic Air Freight Index (BAFI)</div>
+          <div id="bafi-chart-title" class="rel-add-title">Baltic Air 
           <button class="rel-add-x" onclick="closeBafiChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
