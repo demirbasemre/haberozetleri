@@ -9106,7 +9106,7 @@ async function loadDashboard() {
           borderDash: [5, 3], spanGaps: true, order: 3
         }
       ],
-      v => v.toFixed(1) + ' $',
+      v => Math.round(v) + ' $',
       {
         legendPosition: 'bottom',
         xTickCallback,
