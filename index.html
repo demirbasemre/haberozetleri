@@ -1993,54 +1993,69 @@
   }
 
   /* ── Enerji grafiği: period buttons ── */
+  .energy-controls-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
   .energy-period-btns {
     display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
+    gap: 2px;
+    align-items: center;
   }
   .energy-period-btn {
-    font-size: 11px;
+    font-size: 12px;
     font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    padding: 4px 11px;
+    font-weight: 600;
+    padding: 6px 13px;
     border-radius: 6px;
-    border: 1.5px solid var(--border);
+    border: none;
     background: transparent;
     color: var(--text-2);
     cursor: pointer;
-    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     touch-action: manipulation;
   }
-  .energy-period-btn:hover:not(.active) { border-color: #1D6FE8; color: #1D6FE8; }
-  .energy-period-btn.active { background: #1D6FE8; color: #fff; border-color: #1D6FE8; }
+  .energy-period-btn:hover:not(.active) {
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+  }
+  [data-theme="light"] .energy-period-btn:hover:not(.active) {
+    background: rgba(0,0,0,0.04);
+  }
+  .energy-period-btn.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-sm);
+  }
 
-  /* ── Crack Spread KPI şeridi ── */
+  /* ── Crack Spread — kontrol satırına inline ── */
   .crack-spread-strip {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    padding: 7px 12px;
-    margin: 4px 0 6px;
-    background: rgba(245, 158, 11, 0.07);
-    border: 1px solid rgba(245, 158, 11, 0.22);
-    border-radius: 8px;
+    gap: 7px;
     font-family: 'Inter', sans-serif;
   }
-  [data-theme="dark"] .crack-spread-strip {
-    background: rgba(245, 158, 11, 0.06);
-    border-color: rgba(245, 158, 11, 0.15);
-  }
   .cs-label {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
     color: #92400E;
+    background: rgba(245, 158, 11, 0.13);
+    border: 1px solid rgba(245, 158, 11, 0.25);
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
+    padding: 2px 6px;
+    border-radius: 4px;
   }
-  [data-theme="dark"] .cs-label { color: #FCD34D; }
+  [data-theme="dark"] .cs-label {
+    color: #FCD34D;
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
+  }
   .cs-value {
     font-size: 15px;
     font-weight: 700;
@@ -2778,17 +2793,19 @@
           <div class="dash-chart-meta">
             <span>$/varil · Haftalık</span>
           </div>
-          <div class="energy-period-btns">
-            <button class="energy-period-btn active" data-period="all">Tümü</button>
-            <button class="energy-period-btn" data-period="1y">1 Yıl</button>
-            <button class="energy-period-btn" data-period="6m">6 Ay</button>
-            <button class="energy-period-btn" data-period="3m">3 Ay</button>
-          </div>
-          <div class="crack-spread-strip" id="crack-spread-strip" aria-live="polite">
-            <span class="cs-label">Crack Spread</span>
-            <span><span class="cs-value" id="cs-value">—</span><span class="cs-unit"> /varil</span></span>
-            <span class="cs-delta" id="cs-delta">—</span>
-            <span class="cs-hint">Jet Yakıt − Brent · rafineri marjı göstergesi</span>
+          <div class="energy-controls-row">
+            <div class="energy-period-btns">
+              <button class="energy-period-btn active" data-period="all">Tümü</button>
+              <button class="energy-period-btn" data-period="1y">1Y</button>
+              <button class="energy-period-btn" data-period="6m">6A</button>
+              <button class="energy-period-btn" data-period="3m">3A</button>
+            </div>
+            <div class="crack-spread-strip" id="crack-spread-strip" aria-live="polite">
+              <span class="cs-label">Crack Spread</span>
+              <span><span class="cs-value" id="cs-value">—</span><span class="cs-unit"> $/varil</span></span>
+              <span class="cs-delta" id="cs-delta">—</span>
+              <span class="cs-hint">Jet Yakıt − Brent · rafineri marjı göstergesi</span>
+            </div>
           </div>
           <div class="dash-chart-wrap loading"><canvas id="chart-energy"></canvas></div>
         </div>
@@ -12197,7 +12214,14 @@ async function loadDashboard() {
           }
         }
         
-        const lastObsDate = validPoints.length ? new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10) : '';
+        const lastObsDate = (() => {
+          const ts = meta.regularMarketTime || (validPoints.length ? validPoints[validPoints.length - 1].time : null);
+          if (!ts) return '';
+          const _d = new Date(ts * 1000);
+          const p = n => String(n).padStart(2, '0');
+          const dateStr = `${p(_d.getDate())}.${p(_d.getMonth()+1)}.${_d.getFullYear()}`;
+          return meta.regularMarketTime ? `${dateStr} ${p(_d.getHours())}:${p(_d.getMinutes())}` : dateStr;
+        })();
         
         setCard('dc-thy',
           price.toFixed(2) + ' ₺',
