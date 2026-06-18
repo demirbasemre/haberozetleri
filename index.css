@@ -2574,6 +2574,7 @@
     border: 1px solid var(--border);
   }
   .dash-card-timer.interactive {
+    position: relative;
     cursor: pointer;
     pointer-events: auto;
   }
@@ -2581,6 +2582,28 @@
     background: var(--border);
     color: var(--text);
     opacity: 1;
+  }
+  .dash-card-timer.interactive::after {
+    content: 'Detay için tıklayın';
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%) translateY(3px);
+    background: rgba(15,23,42,0.92);
+    color: #f1f5f9;
+    font-size: 9.5px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.12s ease, transform 0.12s ease;
+    z-index: 200;
+  }
+  .dash-card-timer.interactive:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
   .dash-card-timer .timer-dot {
     width: 5px;
