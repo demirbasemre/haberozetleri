@@ -2803,7 +2803,7 @@
               <span class="cargo-metric-val skeleton" id="iata-val-spotrate">-</span>
             </div>
           </div>
-          <div class="dash-card-sub" id="dc-iata-sub">CTK büyümesi, kapasite ve doluluk değişimi</div>
+          <div class="dash-card-sub" id="dc-iata-sub" style="display:none"></div>
           <div class="dash-card-footer">
             <div class="dash-card-note" id="dc-iata-note">Son veri: —<br><a href="https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc" target="_blank" rel="noopener">IATA Reports →</a></div>
           </div>
@@ -12007,7 +12007,8 @@ async function loadDashboard() {
           "Global konteyner spot fiyat endeksi",
           `Son veri: ${latest.date}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`
         );
-        const fbxIso = latest.date && latest.date.includes('-') ? latest.date : null;
+        const fbxRaw = latest.date || '';
+        const fbxIso = fbxRaw.includes('-') ? fbxRaw : (fbxRaw ? new Date().toISOString().slice(0,10) : null);
         if (fbxIso) setDateBadge('dc-fbx-date', isoToDisplay(fbxIso));
       } else {
         setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
@@ -12018,7 +12019,7 @@ async function loadDashboard() {
   // LF biçimlendirme fonksiyonu (% işaretini başa taşır)
   window.formatLF = function(val) {
     if (!val || val === '—') return '—';
-    const cleaned = String(val).replace('%', '').trim();
+    const cleaned = String(val).replace('%', '').replace('+', '').trim();
     return '%' + cleaned;
   };
 
@@ -12056,7 +12057,7 @@ async function loadDashboard() {
         }
 
         const subEl = document.getElementById('dc-iata-sub');
-        if (subEl) subEl.textContent = `Talep ve kapasite dengesi (${latest.date})`;
+        if (subEl) subEl.style.display = 'none';
         
         const noteEl = document.getElementById('dc-iata-note');
         if (noteEl) {
