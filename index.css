@@ -6844,7 +6844,7 @@
     padding: 6px 0;
     display: flex;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: center;
     position: relative;
     overflow: hidden;
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
