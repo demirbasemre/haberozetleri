@@ -2692,7 +2692,7 @@
 
     <!-- Enerji fiyatları -->
     <section class="dash-section" id="dash-sec-enerji">
-      <h2 class="dash-section-title">Enerji Fiyatları <span class="dash-section-badge">EIA / FRED</span></h2>
+      <h2 class="dash-section-title">Enerji Fiyatları <span class="dash-section-badge">Yahoo Finance / IATA</span></h2>
       <div class="dash-charts" style="grid-template-columns:1fr;">
         <div class="dash-chart-card" id="dc-energy-chart">
           <div class="dash-chart-title">Jet Yakıt &amp; Brent Ham Petrol</div>
@@ -9045,11 +9045,20 @@ async function loadDashboard() {
       jfDateEl.textContent = `Son veri: ${d}.${m}.${y}`;
     }
 
-    // FRED verisini arka planda yükle (enerji crack spread grafiği — sadece Brent)
-    return fredFetch('DCOILBRENTEU', 400).catch(() => null).then(brent => {
-      _brentRaw = brent;
-      if (brent) renderEnergyChart('all');
-      else chartErr('chart-energy', 'Veri alınamadı');
+    // Yahoo Finance BZ=F haftalık verisini arka planda yükle (enerji grafiği — Brent)
+    return fetchBrentYahoo('5y').catch(() => null).then(rawYahoo => {
+      if (rawYahoo) {
+        const r = rawYahoo.chart.result[0];
+        const ts = r.timestamp || [];
+        const cl = r.indicators.quote[0].close || [];
+        _brentRaw = ts.map((t, i) => ({
+          date: new Date(t * 1000).toISOString().slice(0, 10),
+          value: cl[i]
+        })).filter(d => d.value != null);
+        renderEnergyChart('all');
+      } else {
+        chartErr('chart-energy', 'Veri alınamadı');
+      }
     });
   }
   initJetfuelCard();
