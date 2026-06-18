@@ -10148,7 +10148,7 @@ async function loadDashboard() {
         pointBackgroundColor: '#EA580C',
         borderWidth: 2
       }];
-      
+
       // Önemli tarihleri grafikte vurgulamak için özel eklenti
       const jetfuelAnnotationsPlugin = {
         id: 'jetfuelAnnotations',
@@ -12330,7 +12330,17 @@ async function loadDashboard() {
         tooltipMessage: 'IATA Air Cargo Market Analysis aylık olarak yayınlanan küresel hava kargo piyasa analizi raporudur. Veriler ve Türkçe özetler Cloudflare Worker proxy ile n8n webhook raporlarından dinamik olarak çekilir.'
       };
     }
-    
+
+    if (cardId === 'dc-wci') {
+      return {
+        isOpen: false,
+        isMonthly: true,
+        autoLabel: 'Haftalık otomatik güncellenir',
+        pillText: 'Haftalık',
+        tooltipMessage: 'Drewry Dünya Konteyner Endeksi (WCI), her Perşembe güncellenen küresel spot konteyner taşıma fiyat endeksidir. Şangay-Rotterdam, Şangay-Los Angeles dahil 9 majör rota ortalamasını kapsar. Veriler Cloudflare Worker aracılığıyla drewry.co.uk kaynağından otomatik çekilir.'
+      };
+    }
+
     return { isOpen: true, pillText: null, tooltipMessage: '' };
   }
 
@@ -12443,7 +12453,8 @@ async function loadDashboard() {
     'dc-jetfuel': { countdown: null, interval: null, initFn: null },
     'dc-fbx': { countdown: null, interval: null, initFn: () => typeof initFbxCard === 'function' ? initFbxCard() : Promise.resolve() },
     'dc-bafi': { countdown: null, interval: null, initFn: () => typeof initBafiCard === 'function' ? initBafiCard() : Promise.resolve() },
-    'dc-iata': { countdown: null, interval: null, initFn: () => typeof initIataCard === 'function' ? initIataCard() : Promise.resolve() }
+    'dc-iata': { countdown: null, interval: null, initFn: () => typeof initIataCard === 'function' ? initIataCard() : Promise.resolve() },
+    'dc-wci': { countdown: null, interval: null, initFn: null }
   };
 
   let _dashboardPollInterval = null;
