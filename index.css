@@ -2398,18 +2398,18 @@
     min-height: 32px;
     position: relative;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-soft);
   }
   .dash-card-header-row::before {
     content: '';
     position: absolute;
     top: -18px; left: -20px; right: -20px; bottom: 0;
-    background: rgba(0,0,0,0.035);
+    background: rgba(0,0,0,0.055);
+    border-bottom: 1px solid var(--border-soft);
     pointer-events: none;
     z-index: 0;
   }
   [data-theme="dark"] .dash-card-header-row::before {
-    background: rgba(255,255,255,0.045);
+    background: rgba(255,255,255,0.07);
   }
   .dash-card-header-row > * {
     position: relative;
@@ -2443,6 +2443,28 @@
   }
   .dc-date-footer .dash-card-date-badge {
     margin-top: 0;
+  }
+  .forex-parity-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    padding: 3px 9px 3px 8px;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-3);
+    background: transparent;
+    border: 1px solid var(--border-soft);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .forex-parity-toggle:hover {
+    background: var(--bg-hover, rgba(0,0,0,0.04));
+    border-color: var(--border-mid, rgba(0,0,0,0.18));
+  }
+  [data-theme="dark"] .forex-parity-toggle:hover {
+    background: rgba(255,255,255,0.07);
   }
   .dash-card-value {
     font-size: 26px;
