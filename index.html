@@ -8956,7 +8956,9 @@ async function loadDashboard() {
       ? PLATTS_JET_DATA.dates[0]
       : cutoff.toISOString().slice(0, 10);
     const fJet   = jetW.filter(p => p.date >= filterDate);
-    const fBrent = brentW.filter(p => p.date >= filterDate);
+    // Brent: ISO hafta anahtarıyla hizala — Yahoo pazartesi tarihi verir, PLATTS cumartesi olabilir
+    const minJetKey = fJet[0]?.key ?? isoWeekKey(filterDate);
+    const fBrent = brentW.filter(p => p.key >= minJetKey);
 
     // Merge keys + map to actual dates
     const keyToDate = {};
