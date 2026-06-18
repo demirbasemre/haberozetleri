@@ -9019,7 +9019,10 @@ async function loadDashboard() {
     else if (activePeriod === '3m') cutoff.setMonth(cutoff.getMonth() - 3);
     else cutoff.setFullYear(2000); // all
 
-    const filterDate = cutoff.toISOString().slice(0, 10);
+    // "Tümü" için Brent'i PLATTS verisiyle hizala (BZ=F 5 yıl gidiyor ama jet verisi Ağu 2025'te başlar)
+    const filterDate = activePeriod === 'all'
+      ? PLATTS_JET_DATA.dates[0]
+      : cutoff.toISOString().slice(0, 10);
     const fJet   = jetW.filter(p => p.date >= filterDate);
     const fBrent = brentW.filter(p => p.date >= filterDate);
 
