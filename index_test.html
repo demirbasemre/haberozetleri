@@ -12611,9 +12611,10 @@ async function loadDashboard() {
     if (cardId === 'dc-fbx') {
       return {
         isOpen: false,
-        isStatic: true,
+        isMonthly: true,
+        autoLabel: 'Günlük otomatik güncellenir',
         pillText: 'Günlük',
-        tooltipMessage: 'Freightos Baltık Endeksi (FBX) günlük olarak güncellenen küresel konteyner spot fiyat endeksidir. Veriler Cloudflare Worker proxy aracılığıyla canlı kazınmaktadır.'
+        tooltipMessage: 'Freightos Baltık Endeksi (FBX), günlük güncellenen küresel konteyner spot fiyat endeksidir. Veriler Cloudflare Worker aracılığıyla fbx.freightos.com kaynağından otomatik olarak çekilmektedir.'
       };
     }
 
