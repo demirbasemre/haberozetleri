@@ -2576,7 +2576,7 @@
           <div class="dash-card-sub">Platts Global Endeks · ton</div>
           <div id="dc-jetfuel-date" class="dash-card-date-badge"></div>
           <div class="dash-card-footer">
-            <div class="dash-card-note"><a href="https://www.iata.org/en/publications/economics/fuel-monitor/" target="_blank" rel="noopener">Jet Fuel Price Monitor →</a> · Günlük</div>
+            <div class="dash-card-note"><a href="https://www.iata.org/en/publications/economics/fuel-monitor/" target="_blank" rel="noopener">Jet Fuel Price Monitor →</a> · Haftalık</div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
@@ -8907,7 +8907,7 @@ async function loadDashboard() {
   };
 
   // ── Enerji (FRED) ──────────────────────────────────
-  let _jetRaw = null, _brentRaw = null;
+  let _brentRaw = null;
   let _jetfuelCache = {
     '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null
   };
@@ -8936,8 +8936,10 @@ async function loadDashboard() {
   function renderEnergyChart(period) {
     if (period) _energyCurrentPeriod = period;
     const activePeriod = _energyCurrentPeriod;
-    if (!_jetRaw && !_brentRaw) return;
-    const jetW   = toWeekly(_jetRaw,   v => v * 42);
+    if (!_brentRaw) return;
+    const jetW = PLATTS_JET_DATA.dates.map((date, i) => ({
+      key: isoWeekKey(date), date, value: PLATTS_JET_DATA.global[i] * 42 / 100
+    })).sort((a, b) => a.key.localeCompare(b.key));
     const brentW = toWeekly(_brentRaw, v => v);
 
     // Period filter: cutoff date
@@ -9111,14 +9113,10 @@ async function loadDashboard() {
       jfDateEl.textContent = `Son veri: ${d}.${m}.${y}`;
     }
 
-    // FRED verisini arka planda yükle (enerji crack spread grafiği için)
-    return Promise.all([
-      fredFetch('DJFUELUSGULF', 400).catch(() => null),
-      fredFetch('DCOILBRENTEU', 400).catch(() => null)
-    ]).then(([jet, brent]) => {
-      _jetRaw   = jet;
+    // FRED verisini arka planda yükle (enerji crack spread grafiği — sadece Brent)
+    return fredFetch('DCOILBRENTEU', 400).catch(() => null).then(brent => {
       _brentRaw = brent;
-      if (jet || brent) renderEnergyChart('all');
+      if (brent) renderEnergyChart('all');
       else chartErr('chart-energy', 'Veri alınamadı');
     });
   }
