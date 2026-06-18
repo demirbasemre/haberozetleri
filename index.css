@@ -2445,9 +2445,10 @@
     margin-top: 0;
   }
   .forex-parity-toggle {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: space-between;
+    width: 100%;
     margin-top: 8px;
     padding: 3px 9px 3px 8px;
     font-size: 10.5px;
@@ -2458,6 +2459,7 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.15s, border-color 0.15s;
+    box-sizing: border-box;
   }
   .forex-parity-toggle:hover {
     background: var(--bg-hover, rgba(0,0,0,0.04));
