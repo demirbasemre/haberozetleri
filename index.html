@@ -2031,20 +2031,26 @@
     color: var(--text);
     box-shadow: var(--shadow-sm);
   }
+  [data-theme="light"] .energy-period-btn.active {
+    background: rgba(0,0,0,0.08);
+    box-shadow: none;
+  }
 
   /* ── Crack Spread — kontrol satırına inline ── */
   .crack-spread-strip {
     display: flex;
     align-items: center;
     gap: 7px;
+    border-top: none;
+    padding: 0;
+    margin: 0;
     font-family: 'Inter', sans-serif;
   }
   .cs-label {
     font-size: 9px;
-    font-weight: 700;
+    font-weight: 600;
     color: #92400E;
-    background: rgba(245, 158, 11, 0.13);
-    border: 1px solid rgba(245, 158, 11, 0.25);
+    background: rgba(245, 158, 11, 0.10);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -2053,8 +2059,7 @@
   }
   [data-theme="dark"] .cs-label {
     color: #FCD34D;
-    background: rgba(245, 158, 11, 0.1);
-    border-color: rgba(245, 158, 11, 0.2);
+    background: rgba(245, 158, 11, 0.09);
   }
   .cs-value {
     font-size: 15px;
@@ -2608,11 +2613,11 @@
       </div>
       <div class="dash-cards">
         <div class="dash-card dash-card-clickable" id="dc-jetfuel" title="Jet yakıtı fiyat detayları için tıkla" onclick="openJetfuelChartModal()">
+          <div class="dash-card-timer" id="dc-jetfuel-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+            <span class="timer-dot"></span>Haftalık
+          </div>
           <div class="dash-card-header-row">
             <div class="dash-card-label">Jet Yakıtı</div>
-            <div class="dash-card-timer" id="dc-jetfuel-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
-              <span class="timer-dot"></span>Haftalık
-            </div>
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
@@ -2623,12 +2628,12 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
+          <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+            <span class="timer-dot"></span>
+            <span class="timer-secs">60s</span>
+          </div>
           <div class="dash-card-header-row">
             <div class="dash-card-label">Brent Petrol</div>
-            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
-              <span class="timer-dot"></span>
-              <span class="timer-secs">60s</span>
-            </div>
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
@@ -2638,14 +2643,14 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
+          <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+            <span class="timer-dot"></span>
+            <span class="timer-secs">60s</span>
+          </div>
           <div class="dash-card-header-row">
             <div class="dash-card-label" style="display: flex; align-items: center; gap: 5px;">
               <span class="thy-dot" style="width: 7px; height: 7px; background: #C8102E; border-radius: 50%; display: inline-block;"></span>
               THYAO
-            </div>
-            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
-              <span class="timer-dot"></span>
-              <span class="timer-secs">60s</span>
             </div>
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
@@ -2656,12 +2661,12 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
+          <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+            <span class="timer-dot"></span>
+            <span class="timer-secs">60s</span>
+          </div>
           <div class="dash-card-header-row">
             <div class="dash-card-label">Döviz &amp; Parite</div>
-            <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
-              <span class="timer-dot"></span>
-              <span class="timer-secs">60s</span>
-            </div>
           </div>
           <div class="forex-row">
             <span class="forex-indicator-dot usd"></span>
@@ -2706,11 +2711,11 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
+          <div class="dash-card-timer" id="dc-wci-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+            <span class="timer-dot"></span>Haftalık
+          </div>
           <div class="dash-card-header-row">
-            <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
-            <div class="dash-card-timer" id="dc-wci-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
-              <span class="timer-dot"></span>Haftalık
-            </div>
+            <div class="dash-card-label dash-card-label--wrap">Dünya Konteyner Endeksi (WCI)</div>
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
@@ -2721,11 +2726,11 @@
         </div>
         
         <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
+          <div class="dash-card-timer" id="dc-bafi-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+            <span class="timer-dot"></span>Haftalık
+          </div>
           <div class="dash-card-header-row">
-            <div class="dash-card-label dash-card-label--wrap">Baltık Hava<br>Kargo Endeksi (BAFI)</div>
-            <div class="dash-card-timer" id="dc-bafi-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
-              <span class="timer-dot"></span>Haftalık
-            </div>
+            <div class="dash-card-label dash-card-label--wrap">Baltık Hava Kargo Endeksi (BAFI)</div>
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
@@ -2738,11 +2743,11 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
+          <div class="dash-card-timer" id="dc-iata-timer" title="Güncellenme sıklığı: Aylık (Cloudflare Worker)">
+            <span class="timer-dot"></span>Aylık
+          </div>
           <div class="dash-card-header-row">
-            <div class="dash-card-label">IATA Market Analizi</div>
-            <div class="dash-card-timer" id="dc-iata-timer" title="Güncellenme sıklığı: Aylık (Cloudflare Worker)">
-              <span class="timer-dot"></span>Aylık
-            </div>
+            <div class="dash-card-label">Market Analizi</div>
           </div>
           <div class="cargo-metrics-grid" id="dc-iata-grid">
             <div class="cargo-metric-item">
@@ -2768,11 +2773,11 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
+          <div class="dash-card-timer" id="dc-fbx-timer" title="Güncellenme sıklığı: Günlük (Cloudflare Worker)">
+            <span class="timer-dot"></span>Günlük
+          </div>
           <div class="dash-card-header-row">
-            <div class="dash-card-label dash-card-label--wrap">Freightos Baltık<br>Endeksi (FBX)</div>
-            <div class="dash-card-timer" id="dc-fbx-timer" title="Güncellenme sıklığı: Günlük (Cloudflare Worker)">
-              <span class="timer-dot"></span>Günlük
-            </div>
+            <div class="dash-card-label dash-card-label--wrap">Freightos Baltık Endeksi (FBX)</div>
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
@@ -2790,21 +2795,17 @@
       <div class="dash-charts" style="grid-template-columns:1fr;">
         <div class="dash-chart-card" id="dc-energy-chart">
           <div class="dash-chart-title">Jet Yakıt, Brent &amp; Crack Spread</div>
-          <div class="dash-chart-meta">
-            <span>$/varil · Haftalık</span>
-          </div>
           <div class="energy-controls-row">
             <div class="energy-period-btns">
-              <button class="energy-period-btn active" data-period="all">Tümü</button>
-              <button class="energy-period-btn" data-period="1y">1Y</button>
-              <button class="energy-period-btn" data-period="6m">6A</button>
               <button class="energy-period-btn" data-period="3m">3A</button>
+              <button class="energy-period-btn" data-period="6m">6A</button>
+              <button class="energy-period-btn" data-period="1y">1Y</button>
+              <button class="energy-period-btn active" data-period="all">Tümü</button>
             </div>
             <div class="crack-spread-strip" id="crack-spread-strip" aria-live="polite">
               <span class="cs-label">Crack Spread</span>
               <span><span class="cs-value" id="cs-value">—</span><span class="cs-unit"> $/varil</span></span>
               <span class="cs-delta" id="cs-delta">—</span>
-              <span class="cs-hint">Jet Yakıt − Brent · rafineri marjı göstergesi</span>
             </div>
           </div>
           <div class="dash-chart-wrap loading"><canvas id="chart-energy"></canvas></div>
@@ -9785,7 +9786,7 @@ async function loadDashboard() {
           price.toFixed(1) + ' $',
           change,
           'Europe Brent · varil',
-          `Son veri: ${lastObsDate}<br><a href="https://finance.yahoo.com/quote/BZ%3DF" target="_blank" rel="noopener">finance.yahoo.com →</a>`
+          `<a href="https://finance.yahoo.com/quote/BZ%3DF" target="_blank" rel="noopener">finance.yahoo.com →</a>`
         );
       } catch (err) {
         console.error("Brent kart güncelleme hatası:", err);
@@ -12361,7 +12362,7 @@ async function loadDashboard() {
         isMonthly: true,
         autoLabel: 'Haftalık otomatik güncellenir',
         pillText: 'Haftalık',
-        tooltipMessage: 'Drewry Dünya Konteyner Endeksi (WCI), her Perşembe güncellenen küresel spot konteyner taşıma fiyat endeksidir. Şangay-Rotterdam, Şangay-Los Angeles dahil 9 majör rota ortalamasını kapsar. Veriler Cloudflare Worker aracılığıyla drewry.co.uk kaynağından otomatik çekilir.'
+        tooltipMessage: 'Drewry Dünya Konteyner Endeksi (WCI), her Perşembe güncellenen küresel spot konteyner taşıma fiyat endeksidir. Şangay-Rotterdam, Şangay-Los Angeles dahil 9 majör rota ortalamasını kapsar.'
       };
     }
 
@@ -12405,21 +12406,12 @@ async function loadDashboard() {
       tooltipHtml += `
         <div class="market-refresh-status">
           <span class="refresh-indicator open"></span>
-          <span>Otomatik güncelleniyor (Sıradaki: ${cfg.countdown}s)</span>
+          <span>Otomatik güncelleniyor (Sıradaki: ${formatCountdown(cfg.countdown)})</span>
         </div>
       `;
     }
 
     tooltipHtml += `</div>`; // Close refresh-wrap
-
-    if (noteHtml) {
-      tooltipHtml += `
-        <div class="market-tooltip-source-divider"></div>
-        <div class="market-tooltip-source">
-          ${noteHtml}
-        </div>
-      `;
-    }
 
     tooltipHtml += `</div><div class="market-tooltip-arrow"></div>`;
 
@@ -12470,8 +12462,21 @@ async function loadDashboard() {
     }, 10);
   }
 
+  function secsToNextAligned(intervalMinutes, bufferSecs) {
+    intervalMinutes = intervalMinutes || 15;
+    bufferSecs = (bufferSecs === undefined) ? 8 : bufferSecs;
+    const intervalMs = intervalMinutes * 60 * 1000;
+    const msToNext = intervalMs - (Date.now() % intervalMs) + bufferSecs * 1000;
+    return Math.ceil(msToNext / 1000);
+  }
+
+  function formatCountdown(secs) {
+    if (secs > 90) return Math.ceil(secs / 60) + 'dk';
+    return secs + 's';
+  }
+
   const _marketStatusConfig = {
-    'dc-thy': { countdown: 60, interval: 60, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
+    'dc-thy': { countdown: secsToNextAligned(15, 8), interval: 900, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
     'dc-usd': { countdown: 60, interval: 60, initFn: () => typeof initForexCard === 'function' ? initForexCard() : Promise.resolve() },
     'dc-brent': { countdown: 60, interval: 60, initFn: () => typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve() },
     'dc-jetfuel': { countdown: null, interval: null, initFn: null },
@@ -12517,7 +12522,7 @@ async function loadDashboard() {
         } else if (!status.isOpen) {
           newHtml = `${infoIconSvg}<span class="timer-secs">${status.pillText}</span>`;
         } else {
-          newHtml = `<span class="timer-dot"></span><span class="timer-secs">${cfg.countdown}s</span>`;
+          newHtml = `<span class="timer-dot"></span><span class="timer-secs">${formatCountdown(cfg.countdown)}</span>`;
         }
 
         // DOM güncellemesini sadece HTML değiştiğinde veya açık piyasada countdown güncellendiğinde yap
