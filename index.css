@@ -2835,6 +2835,7 @@
     border-radius: 5px;
     padding: 2px 7px;
     letter-spacing: 0.01em;
+    white-space: nowrap;
     transition: background 0.3s, color 0.3s;
   }
   [data-theme="dark"] .dash-card-date-badge {
