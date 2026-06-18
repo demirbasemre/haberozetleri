@@ -2027,6 +2027,76 @@
       max-width: 1000px;
     }
   }
+
+  /* ── Enerji grafiği: period buttons ── */
+  .energy-period-btns {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .energy-period-btn {
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    touch-action: manipulation;
+  }
+  .energy-period-btn:hover:not(.active) { border-color: #1D6FE8; color: #1D6FE8; }
+  .energy-period-btn.active { background: #1D6FE8; color: #fff; border-color: #1D6FE8; }
+
+  /* ── Crack Spread KPI şeridi ── */
+  .crack-spread-strip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 7px 12px;
+    margin: 4px 0 6px;
+    background: rgba(245, 158, 11, 0.07);
+    border: 1px solid rgba(245, 158, 11, 0.22);
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+  }
+  [data-theme="dark"] .crack-spread-strip {
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.15);
+  }
+  .cs-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #92400E;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+  }
+  [data-theme="dark"] .cs-label { color: #FCD34D; }
+  .cs-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .cs-unit { font-size: 11px; color: var(--text-3); }
+  .cs-delta { font-size: 11px; font-weight: 500; color: var(--text-3); }
+  .cs-delta.up   { color: #DC2626; }
+  .cs-delta.down { color: #16A34A; }
+  [data-theme="dark"] .cs-delta.up   { color: #F87171; }
+  [data-theme="dark"] .cs-delta.down { color: #4ADE80; }
+  .cs-hint {
+    font-size: 10px;
+    color: var(--text-3);
+    margin-left: auto;
+    font-style: italic;
+    white-space: nowrap;
+  }
+  @media (max-width: 600px) { .cs-hint { display: none; } }
 </style>
 <script>
   (function() {
@@ -2736,7 +2806,7 @@
       <h2 class="dash-section-title">Enerji Fiyatları <span class="dash-section-badge">Yahoo Finance / IATA</span></h2>
       <div class="dash-charts" style="grid-template-columns:1fr;">
         <div class="dash-chart-card" id="dc-energy-chart">
-          <div class="dash-chart-title">Jet Yakıt &amp; Brent Ham Petrol</div>
+          <div class="dash-chart-title">Jet Yakıt, Brent &amp; Crack Spread</div>
           <div class="dash-chart-meta">
             <span>$/varil · Haftalık</span>
           </div>
@@ -9053,7 +9123,7 @@ async function loadDashboard() {
         {
           label: 'Jet Yakıt ($/varil)',
           data: jetSeries,
-          borderColor: '#E63946', backgroundColor: 'rgba(140,120,100,0.10)',
+          borderColor: '#E63946', backgroundColor: 'rgba(230,57,70,0.07)',
           fill: { target: 1 },
           tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true,
           order: 1
@@ -9061,9 +9131,16 @@ async function loadDashboard() {
         {
           label: 'Brent Ham Petrol ($/varil)',
           data: brentSeries,
-          borderColor: '#1D6FE8', backgroundColor: 'rgba(29,111,232,0.07)',
+          borderColor: '#1D6FE8', backgroundColor: 'rgba(29,111,232,0.05)',
           fill: false, tension: 0.35, pointRadius: 0, borderWidth: 2, spanGaps: true,
           order: 2
+        },
+        {
+          label: 'Crack Spread ($/varil)',
+          data: spreadSeries,
+          borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.10)',
+          fill: true, tension: 0.35, pointRadius: 0, borderWidth: 1.5,
+          borderDash: [5, 3], spanGaps: true, order: 3
         }
       ],
       v => v.toFixed(1) + ' $',
@@ -9078,12 +9155,6 @@ async function loadDashboard() {
             family: 'Inter',
             weight: isBold ? 'bold' : 'normal'
           };
-        },
-        afterTooltipBody: (items) => {
-          const idx = items[0]?.dataIndex;
-          if (idx == null) return null;
-          const s = spreadSeries[idx];
-          return s != null ? ['Crack Spread: $' + s.toFixed(2)] : null;
         }
       }
     );
