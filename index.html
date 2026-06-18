@@ -2535,7 +2535,7 @@
           <div class="dash-card-sub">Platts Global Endeks · ton</div>
           <div id="dc-jetfuel-date" class="dash-card-date-badge"></div>
           <div class="dash-card-footer">
-            <div class="dash-card-note"><a href="https://www.iata.org/en/publications/economics/fuel-monitor/" target="_blank" rel="noopener">Jet Fuel Price Monitor →</a> · Günlük</div>
+            <div class="dash-card-note"><a href="https://www.iata.org/en/publications/economics/fuel-monitor/" target="_blank" rel="noopener">Jet Fuel Price Monitor →</a> · Haftalık</div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
@@ -8839,7 +8839,7 @@ async function loadDashboard() {
   };
 
   // ── Enerji (FRED) ──────────────────────────────────
-  let _jetRaw = null, _brentRaw = null;
+  let _brentRaw = null;
   let _jetfuelCache = {
     '1m': null, '6m': null, 'ytd': null, '1y': null, '5y': null, 'max': null
   };
@@ -8868,8 +8868,10 @@ async function loadDashboard() {
   function renderEnergyChart(period) {
     if (period) _energyCurrentPeriod = period;
     const activePeriod = _energyCurrentPeriod;
-    if (!_jetRaw && !_brentRaw) return;
-    const jetW   = toWeekly(_jetRaw,   v => v * 42);
+    if (!_brentRaw) return;
+    const jetW = PLATTS_JET_DATA.dates.map((date, i) => ({
+      key: isoWeekKey(date), date, value: PLATTS_JET_DATA.global[i] * 42 / 100
+    })).sort((a, b) => a.key.localeCompare(b.key));
     const brentW = toWeekly(_brentRaw, v => v);
 
     // Period filter: cutoff date
@@ -9043,14 +9045,10 @@ async function loadDashboard() {
       jfDateEl.textContent = `Son veri: ${d}.${m}.${y}`;
     }
 
-    // FRED verisini arka planda yükle (enerji crack spread grafiği için)
-    return Promise.all([
-      fredFetch('DJFUELUSGULF', 400).catch(() => null),
-      fredFetch('DCOILBRENTEU', 400).catch(() => null)
-    ]).then(([jet, brent]) => {
-      _jetRaw   = jet;
+    // FRED verisini arka planda yükle (enerji crack spread grafiği — sadece Brent)
+    return fredFetch('DCOILBRENTEU', 400).catch(() => null).then(brent => {
       _brentRaw = brent;
-      if (jet || brent) renderEnergyChart('all');
+      if (brent) renderEnergyChart('all');
       else chartErr('chart-energy', 'Veri alınamadı');
     });
   }
@@ -9999,34 +9997,51 @@ async function loadDashboard() {
     }, ttl);
   }
 
-  function drawJetfuelModalChartFromRaw(rawJSON, period) {
+  function drawJetfuelModalChartFromRaw(period) {
     const titleEl = document.getElementById('jetfuel-chart-title');
     try {
-      let validPoints = rawJSON || [];
-      
-      if (!window._jetfuelCustomRange && validPoints.length > 0) {
-        const minDate = validPoints[0].date;
-        const maxDate = validPoints[validPoints.length - 1].date;
-        setDateInputsForPeriod('jetfuel', _jetfuelCurrentPeriod, minDate, maxDate);
-      }
+      const D = PLATTS_JET_DATA;
+      let indices = D.dates.map((_, i) => i);
 
-      // Date filtering
+      // Periyot filtresi
       const startVal = document.getElementById('jetfuel-date-start')?.value;
-      const endVal = document.getElementById('jetfuel-date-end')?.value;
-      if (startVal) validPoints = validPoints.filter(p => p.date >= startVal);
-      if (endVal) validPoints = validPoints.filter(p => p.date <= endVal);
-
-      if (validPoints.length === 0) {
-        throw new Error("Çizilecek veri noktası bulunamadı.");
+      const endVal   = document.getElementById('jetfuel-date-end')?.value;
+      if (startVal) indices = indices.filter(i => D.dates[i] >= startVal);
+      if (endVal)   indices = indices.filter(i => D.dates[i] <= endVal);
+      if (!startVal && !endVal) {
+        const cutoff = new Date();
+        if      (period === '1m')  cutoff.setMonth(cutoff.getMonth() - 1);
+        else if (period === '6m')  cutoff.setMonth(cutoff.getMonth() - 6);
+        else if (period === 'ytd') { cutoff.setMonth(0); cutoff.setDate(1); }
+        else if (period === '1y')  cutoff.setFullYear(cutoff.getFullYear() - 1);
+        else cutoff.setFullYear(2000);
+        const cutStr = cutoff.toISOString().slice(0,10);
+        indices = indices.filter(i => D.dates[i] >= cutStr);
       }
 
-      const labels = validPoints.map(p => {
-        const d = new Date(p.date + 'T12:00:00Z');
+      if (!window._jetfuelCustomRange && indices.length > 0) {
+        setDateInputsForPeriod('jetfuel', period, D.dates[indices[0]], D.dates[indices[indices.length-1]]);
+      }
+      if (indices.length === 0) throw new Error("Çizilecek veri noktası bulunamadı.");
+
+      const toMT = v => parseFloat((v * PLATTS_CVT).toFixed(1));
+      const labels = indices.map(i => {
+        const d = new Date(D.dates[i] + 'T12:00:00Z');
         return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
       });
-      
-      // Galon -> Ton dönüşümü: price * 42 * 7.9 = price * 331.8
-      const prices = validPoints.map(p => p.value * 42 * 7.9);
+      const rawDates = indices.map(i => D.dates[i]);
+
+      const datasets = [{
+        label: 'Global Endeks',
+        data: indices.map(i => toMT(D.global[i])),
+        borderColor: '#EA580C',
+        backgroundColor: 'rgba(234,88,12,0.06)',
+        fill: true,
+        tension: indices.length > 50 ? 0.2 : 0.35,
+        pointRadius: 2,
+        pointBackgroundColor: '#EA580C',
+        borderWidth: 2
+      }];
       
       // Önemli tarihleri grafikte vurgulamak için özel eklenti
       const jetfuelAnnotationsPlugin = {
@@ -10177,49 +10192,12 @@ async function loadDashboard() {
         }
       };
 
-      lineChart('chart-jetfuel-modal', labels,
-        [
-          {
-            label: 'Jet Yakıtı Fiyatı ($/ton)',
-            data: prices,
-            borderColor: '#EA580C',
-            backgroundColor: 'rgba(234,88,12,0.06)',
-            fill: true,
-            tension: period === 'max' ? 0.2 : 0.35,
-            pointRadius: (period === 'max' || period === '5y') ? 0 : 2,
-            borderWidth: 2
-          }
-        ],
+      lineChart('chart-jetfuel-modal', labels, datasets,
         v => v != null ? Math.round(v) + ' $' : '',
-        {
-          forceRecreate: true,
-          xTickFont: { size: 9, family: 'Inter' },
-          rawDates: validPoints.map(p => p.date),
-          plugins: [jetfuelAnnotationsPlugin]
-        }
+        { forceRecreate: true, xTickFont: { size: 9, family: 'Inter' }, rawDates, plugins: [jetfuelAnnotationsPlugin] }
       );
-      
-      if (titleEl) {
-        const latestPrice = prices[prices.length - 1];
-        titleEl.textContent = `Jet Yakıtı — ${Math.round(latestPrice)} $/ton`;
 
-        // Dynamic dashboard sync
-        const cardValEl = document.querySelector('#dc-jetfuel .dash-card-value');
-        if (cardValEl) {
-          cardValEl.textContent = latestPrice.toFixed(1) + ' $';
-          if (prices.length >= 2) {
-            const lastVal = prices[prices.length - 1];
-            const prevVal = prices[prices.length - 2];
-            const change = ((lastVal - prevVal) / prevVal) * 100;
-            const cEl = document.querySelector('#dc-jetfuel .dash-card-change');
-            if (cEl) {
-              const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
-              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
-              cEl.className = 'dash-card-change ' + dir;
-            }
-          }
-        }
-      }
+      if (titleEl) titleEl.textContent = `Jet Yakıtı — ${Math.round(toMT(D.global[indices[indices.length - 1]]))} $/ton`;
     } catch (err) {
       console.error("Jet Yakıtı Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
@@ -10235,58 +10213,14 @@ async function loadDashboard() {
       if (s) s.value = '';
       if (e) e.value = '';
     }
-
-    document.querySelectorAll('#jetfuel-chart-modal .jetfuel-period-btn').forEach(btn => {
-      btn.classList.remove('active');
-    });
+    document.querySelectorAll('#jetfuel-chart-modal .jetfuel-period-btn').forEach(btn => btn.classList.remove('active'));
     if (!window._jetfuelCustomRange) {
       const activeBtn = document.getElementById(`btn-jetfuel-${_jetfuelCurrentPeriod}`);
       if (activeBtn) activeBtn.classList.add('active');
     }
-
-    const titleEl = document.getElementById('jetfuel-chart-title');
-    const canvas = document.getElementById('chart-jetfuel-modal');
-    const wrap = canvas?.closest('.dash-chart-wrap');
-    if (wrap) wrap.classList.add('loading');
-    
-    // Cache reuse check
-    if (!_jetfuelCache[_jetfuelCurrentPeriod] && (_jetfuelCurrentPeriod === '1m' || _jetfuelCurrentPeriod === '6m' || _jetfuelCurrentPeriod === 'ytd') && _jetfuelCache['1y']) {
-      _jetfuelCache[_jetfuelCurrentPeriod] = _jetfuelCache['1y'];
-    }
-
-    const cachedData = _jetfuelCache[_jetfuelCurrentPeriod];
-    if (cachedData) {
-      drawJetfuelModalChartFromRaw(cachedData, _jetfuelCurrentPeriod);
-      if (wrap) wrap.classList.remove('loading');
-    } else {
-      const fetchPeriod = (_jetfuelCurrentPeriod === '1m' || _jetfuelCurrentPeriod === '6m' || _jetfuelCurrentPeriod === 'ytd') ? '1y' : _jetfuelCurrentPeriod;
-      
-      fetchJetFred(fetchPeriod).then(data => {
-        if (fetchPeriod === '1y') {
-          _jetfuelCache['1y'] = data;
-          _jetfuelCache['1m'] = data;
-          _jetfuelCache['6m'] = data;
-          _jetfuelCache['ytd'] = data;
-        } else {
-          _jetfuelCache[_jetfuelCurrentPeriod] = data;
-        }
-        
-        drawJetfuelModalChartFromRaw(data, _jetfuelCurrentPeriod);
-        if (wrap) wrap.classList.remove('loading');
-      }).catch(err => {
-        console.error(`Jet Fuel FRED fetch error for ${_jetfuelCurrentPeriod}:`, err);
-        if (titleEl) titleEl.textContent = "Hata: Veri alınamadı";
-        if (wrap) {
-          wrap.classList.remove('loading');
-          wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
-          const errDiv = document.createElement('div');
-          errDiv.className = 'dash-chart-error';
-          errDiv.innerHTML = 'Jet yakıtı verisi yüklenirken hata oluştu.';
-          wrap.appendChild(errDiv);
-        }
-      });
-    }
+    drawJetfuelModalChartFromRaw(_jetfuelCurrentPeriod);
   }
+
   window.renderJetfuelModalChart = renderJetfuelModalChart;
 
   document.querySelectorAll('.jetfuel-period-btn').forEach(btn => {
