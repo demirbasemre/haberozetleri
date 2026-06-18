@@ -2724,7 +2724,7 @@
             </div>
             <div class="forex-watermark eur">€</div>
           </div>
-          <div class="forex-row no-border">
+          <div id="forex-parity-row" class="forex-row no-border" style="display:none">
             <span class="forex-indicator-dot parity"></span>
             <span class="forex-symbol">€<span class="forex-slash" style="color: var(--text-3); margin: 0 4px; font-weight: 500;">/</span>$</span>
             <svg class="forex-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -2736,8 +2736,14 @@
               <span class="forex-change" id="forex-parity-change"></span>
             </div>
           </div>
-          <div class="dash-card-footer">
-            <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
+          <button class="forex-parity-toggle" id="forex-parity-toggle" onclick="event.stopPropagation(); toggleForexParity()" title="EUR/USD paritesini göster/gizle">
+            <span id="forex-parity-toggle-label">€/$ Parite</span>
+            <svg id="forex-parity-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;transition:transform 0.2s">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="dc-date-footer">
+            <div id="dc-usd-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
@@ -2747,7 +2753,12 @@
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
-          <div class="dash-card-note">Drewry · Haftalık<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">Drewry · Haftalık<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-wci-date" class="dash-card-date-badge"></div>
+          </div>
         </div>
         
         <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
@@ -2762,6 +2773,9 @@
           <div class="dash-card-sub">Hava kargo spot tarifesi endeksi</div>
           <div class="dash-card-footer">
             <div class="dash-card-note">Baltic Exchange · <a href="https://www.balticexchange.com/en/data/routes/air.html" target="_blank" rel="noopener">balticexchange.com →</a></div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-bafi-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
@@ -2793,6 +2807,9 @@
           <div class="dash-card-footer">
             <div class="dash-card-note" id="dc-iata-note">Son veri: —<br><a href="https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc" target="_blank" rel="noopener">IATA Reports →</a></div>
           </div>
+          <div class="dc-date-footer">
+            <div id="dc-iata-date" class="dash-card-date-badge"></div>
+          </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
           <div class="dash-card-header-row">
@@ -2806,6 +2823,9 @@
           <div class="dash-card-sub">Global konteyner spot fiyat endeksi</div>
           <div class="dash-card-footer">
             <div class="dash-card-note">Freightos · <a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a></div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-fbx-date" class="dash-card-date-badge"></div>
           </div>
         </div>
       </div>
@@ -7598,6 +7618,30 @@ async function imfSeriesFetch(indicator, countries) {
 }
 
 // ── CARD HELPERS ──────────────────────────────────────────────
+function isoToDisplay(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}.${m}.${y}`;
+}
+
+function setDateBadge(id, dateStr) {
+  const el = document.getElementById(id);
+  if (!el || !dateStr) return;
+  el.textContent = `Son veri: ${dateStr}`;
+  applyDateBadgeFreshness(el);
+}
+
+function toggleForexParity() {
+  const row = document.getElementById('forex-parity-row');
+  const chevron = document.getElementById('forex-parity-chevron');
+  const label = document.getElementById('forex-parity-toggle-label');
+  if (!row) return;
+  const isVisible = row.style.display !== 'none';
+  row.style.display = isVisible ? 'none' : 'flex';
+  if (chevron) chevron.style.transform = isVisible ? '' : 'rotate(180deg)';
+  if (label) label.textContent = isVisible ? '€/$ Parite' : '€/$ Parite';
+}
+
 function applyDateBadgeFreshness(el) {
   if (!el || !el.textContent) return;
   const m = el.textContent.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
@@ -7639,7 +7683,7 @@ function setCard(id, value, change, sub, note) {
   const cEl = el.querySelector('.dash-card-change');
   if (change != null) {
     const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
-    cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+    cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(change).toFixed(2);
     cEl.className = 'dash-card-change ' + dir;
   }
   if (sub  != null) el.querySelector('.dash-card-sub').textContent  = sub;
@@ -9445,7 +9489,7 @@ async function loadDashboard() {
             const cEl = document.getElementById(`forex-${currency.toLowerCase()}-change`);
             if (cEl) {
               const dir = change > 0.01 ? 'up' : change < -0.01 ? 'down' : 'flat';
-              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(change).toFixed(2);
               cEl.className = 'forex-change ' + dir;
             }
           }
@@ -9661,7 +9705,7 @@ async function loadDashboard() {
           parityChgEl.textContent = '';
         } else {
           const dir = parityChange > 0.0001 ? 'up' : parityChange < -0.0001 ? 'down' : 'flat';
-          parityChgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(parityChange).toFixed(2) + '%';
+          parityChgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(parityChange).toFixed(2);
           parityChgEl.className = 'forex-change ' + dir;
         }
       }
@@ -9721,7 +9765,7 @@ async function loadDashboard() {
         }
         if (chgEl && change != null) {
           const dir = change > 0.01 ? 'up' : change < -0.01 ? 'down' : 'flat';
-          chgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+          chgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(change).toFixed(2);
           chgEl.className = 'forex-change ' + dir;
         }
       };
@@ -9730,6 +9774,10 @@ async function loadDashboard() {
         updateEl('forex-usd-val', 'forex-usd-change', usdPrice, usdChange);
         updateEl('forex-eur-val', 'forex-eur-change', eurPrice, eurChange);
         updateParityUI();
+        const _fd = new Date();
+        const _fStr = `${String(_fd.getDate()).padStart(2,'0')}.${String(_fd.getMonth()+1).padStart(2,'0')}.${_fd.getFullYear()} ${String(_fd.getHours()).padStart(2,'0')}:${String(_fd.getMinutes()).padStart(2,'0')}`;
+        const usdDateEl = document.getElementById('dc-usd-date');
+        if (usdDateEl) { usdDateEl.textContent = `Son veri: ${_fStr}`; applyDateBadgeFreshness(usdDateEl); }
       } else {
         useErApiFallback();
       }
@@ -10033,7 +10081,7 @@ async function loadDashboard() {
             const cEl = document.querySelector('#dc-brent .dash-card-change');
             if (cEl) {
               const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
-              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(change).toFixed(2);
               cEl.className = 'dash-card-change ' + dir;
             }
           }
@@ -10507,7 +10555,7 @@ async function loadDashboard() {
             const cEl = document.querySelector('#dc-jetfuel .dash-card-change');
             if (cEl) {
               const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
-              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(change).toFixed(2);
               cEl.className = 'dash-card-change ' + dir;
             }
           }
@@ -11894,6 +11942,8 @@ async function loadDashboard() {
         "40' konteyner ortalama spot fiyat",
         `Son veri: ${latest.date}<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`
       );
+      const wciIso = convertDrewryDate(latest.date);
+      if (wciIso) setDateBadge('dc-wci-date', isoToDisplay(wciIso));
     } else {
       setCard('dc-wci', '—', null, '', 'Veri alınamadı');
     }
@@ -11920,6 +11970,8 @@ async function loadDashboard() {
           "Hava kargo spot tarifesi endeksi",
           `Son veri: ${latest.date}<br><a href="https://www.tacindex.com" target="_blank" rel="noopener">tacindex.com →</a>`
         );
+        const bafiIso = latest.date && latest.date.includes('-') ? latest.date : null;
+        if (bafiIso) setDateBadge('dc-bafi-date', isoToDisplay(bafiIso));
       } else {
         setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
       }
@@ -11955,6 +12007,8 @@ async function loadDashboard() {
           "Global konteyner spot fiyat endeksi",
           `Son veri: ${latest.date}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`
         );
+        const fbxIso = latest.date && latest.date.includes('-') ? latest.date : null;
+        if (fbxIso) setDateBadge('dc-fbx-date', isoToDisplay(fbxIso));
       } else {
         setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
       }
@@ -12008,6 +12062,8 @@ async function loadDashboard() {
         if (noteEl) {
           noteEl.innerHTML = `Son veri: ${latest.date}<br><a href="https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc" target="_blank" rel="noopener">IATA Reports →</a>`;
         }
+        const iataDateEl = document.getElementById('dc-iata-date');
+        if (iataDateEl && latest.date) { iataDateEl.textContent = `Son veri: ${latest.date}`; }
       } else {
         const dEl = document.getElementById('iata-val-demand');
         if (dEl) {
@@ -12708,7 +12764,9 @@ async function loadDashboard() {
         `;
 
         let newHtml = '';
-        if (status.isStatic) {
+        if (status.isMonthly) {
+          newHtml = `<span class="timer-dot"></span><span class="timer-secs">${status.pillText}</span>`;
+        } else if (status.isStatic) {
           newHtml = `${infoIconSvg}<span class="timer-secs">${status.pillText}</span>`;
         } else if (!status.isOpen) {
           newHtml = `${infoIconSvg}<span class="timer-secs">${status.pillText}</span>`;
@@ -12724,7 +12782,9 @@ async function loadDashboard() {
 
         // Her zaman interactive sınıfını ekle ve tıklama fonksiyonunu bağla
         timerEl.classList.add('interactive');
-        if (status.isStatic) {
+        if (status.isMonthly) {
+          timerEl.classList.remove('static', 'closed');
+        } else if (status.isStatic) {
           timerEl.classList.remove('closed');
           timerEl.classList.add('static');
         } else if (!status.isOpen) {
