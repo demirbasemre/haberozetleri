@@ -2644,9 +2644,11 @@
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Platts Global Endeks · ton</div>
-          <div id="dc-jetfuel-date" class="dash-card-date-badge"></div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://www.iata.org/en/publications/economics/fuel-monitor/" target="_blank" rel="noopener">Jet Fuel Price Monitor →</a> · Haftalık</div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-jetfuel-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
@@ -2662,6 +2664,9 @@
           <div class="dash-card-sub">Europe Brent · varil</div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Anlık</div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-brent-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
@@ -2680,6 +2685,9 @@
           <div class="dash-card-sub">Borsa İstanbul · hisse fiyatı</div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-thy-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
@@ -2733,7 +2741,9 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
-          <div class="dash-card-label">Dünya Konteyner Endeksi (WCI)</div>
+          <div class="dash-card-header-row">
+            <div class="dash-card-label dash-card-label--wrap">Dünya Konteyner<br>Endeksi (WCI)</div>
+          </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
@@ -2756,7 +2766,7 @@
         </div>
         <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
           <div class="dash-card-header-row">
-            <div class="dash-card-label">Market Analizi</div>
+            <div class="dash-card-label dash-card-label--wrap">Market<br>Analizi</div>
             <div class="dash-card-timer" id="dc-iata-timer" title="Güncellenme sıklığı: Aylık (Cloudflare Worker)">
               <span class="timer-dot"></span>Aylık
             </div>
@@ -2786,7 +2796,7 @@
         </div>
         <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
           <div class="dash-card-header-row">
-            <div class="dash-card-label">Freightos Baltık Endeksi (FBX)</div>
+            <div class="dash-card-label dash-card-label--wrap">Freightos<br>Baltık (FBX)</div>
             <div class="dash-card-timer" id="dc-fbx-timer" title="Güncellenme sıklığı: Günlük (Cloudflare Worker)">
               <span class="timer-dot"></span>Günlük
             </div>
@@ -7588,6 +7598,19 @@ async function imfSeriesFetch(indicator, countries) {
 }
 
 // ── CARD HELPERS ──────────────────────────────────────────────
+function applyDateBadgeFreshness(el) {
+  if (!el || !el.textContent) return;
+  const m = el.textContent.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if (!m) return;
+  const date = new Date(+m[3], +m[2] - 1, +m[1]);
+  const days = (Date.now() - date.getTime()) / 86400000;
+  el.classList.remove('date-badge--fresh', 'date-badge--recent', 'date-badge--aging', 'date-badge--stale');
+  if (days < 1)       el.classList.add('date-badge--fresh');
+  else if (days < 4)  el.classList.add('date-badge--recent');
+  else if (days < 14) el.classList.add('date-badge--aging');
+  else                el.classList.add('date-badge--stale');
+}
+
 function setCard(id, value, change, sub, note) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -9187,6 +9210,7 @@ async function loadDashboard() {
     if (jfDateEl) {
       const [y, m, d] = PLATTS_JET_DATA.dates[n - 1].split('-');
       jfDateEl.textContent = `Son veri: ${d}.${m}.${y}`;
+      applyDateBadgeFreshness(jfDateEl);
     }
 
     // FRED DCOILBRENTEU (Dated Brent spot) — IATA raporuyla aynı fiyat serisi
@@ -9800,14 +9824,17 @@ async function loadDashboard() {
           }
         }
         const lastPoint = validPoints.length ? validPoints[validPoints.length - 1] : { time: Date.now()/1000 };
-        const lastObsDate = new Date(lastPoint.time * 1000).toISOString().slice(0, 10);
-        
+        const _bD = new Date(lastPoint.time * 1000);
+        const lastObsDate = `${String(_bD.getDate()).padStart(2,'0')}.${String(_bD.getMonth()+1).padStart(2,'0')}.${_bD.getFullYear()} ${String(_bD.getHours()).padStart(2,'0')}:${String(_bD.getMinutes()).padStart(2,'0')}`;
+
         setCard('dc-brent',
           price.toFixed(1) + ' $',
           change,
           'Europe Brent · varil',
           `Son veri: ${lastObsDate}<br><a href="https://finance.yahoo.com/quote/BZ%3DF" target="_blank" rel="noopener">finance.yahoo.com →</a>`
         );
+        const brentDateEl = document.getElementById('dc-brent-date');
+        if (brentDateEl) { brentDateEl.textContent = `Son veri: ${lastObsDate}`; applyDateBadgeFreshness(brentDateEl); }
       } catch (err) {
         console.error("Brent kart güncelleme hatası:", err);
         setCard('dc-brent', '—', null, 'Europe Brent · varil', 'Veri okunamadı');
@@ -10147,6 +10174,7 @@ async function loadDashboard() {
       const D = PLATTS_JET_DATA;
       let indices = D.dates.map((_, i) => i);
 
+      // Periyot filtresi
       const startVal = document.getElementById('jetfuel-date-start')?.value;
       const endVal   = document.getElementById('jetfuel-date-end')?.value;
       if (startVal) indices = indices.filter(i => D.dates[i] >= startVal);
@@ -10172,6 +10200,7 @@ async function loadDashboard() {
         const d = new Date(D.dates[i] + 'T12:00:00Z');
         return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
       });
+      const rawDates = indices.map(i => D.dates[i]);
 
       const seriesDef = [
         { key: 'global', label: 'Global Endeks', color: '#EA580C', width: 2 }
@@ -10217,7 +10246,8 @@ async function loadDashboard() {
             const meta = chart.getDatasetMeta(0);
             if (meta && meta.data && meta.data[closestIndex]) {
               const point = meta.data[closestIndex];
-              ctx.fillStyle = event.color; ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.fill();
+              ctx.fillStyle = event.color;
+              ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.fill();
               ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.5; ctx.setLineDash([]);
               ctx.beginPath(); ctx.arc(xPos, point.y, 5.5, 0, 2 * Math.PI); ctx.stroke();
             }
@@ -10252,7 +10282,7 @@ async function loadDashboard() {
 
       lineChart('chart-jetfuel-modal', labels, datasets,
         v => v != null ? Math.round(v) + ' $' : '',
-        { forceRecreate: true, xTickFont: { size: 9, family: 'Inter' }, rawDates: indices.map(i => D.dates[i]), plugins: [jetfuelEventsPlugin] }
+        { forceRecreate: true, xTickFont: { size: 9, family: 'Inter' }, rawDates, plugins: [jetfuelEventsPlugin] }
       );
 
       if (titleEl) titleEl.textContent = `Jet Yakıtı — ${Math.round(toMT(D.global[indices[indices.length - 1]]))} $/ton`;
@@ -12385,14 +12415,20 @@ async function loadDashboard() {
           }
         }
         
-        const lastObsDate = validPoints.length ? new Date(validPoints[validPoints.length - 1].time * 1000).toISOString().slice(0, 10) : '';
-        
+        const lastObsDate = (() => {
+          if (!validPoints.length) return '';
+          const _d = new Date(validPoints[validPoints.length - 1].time * 1000);
+          return `${String(_d.getDate()).padStart(2,'0')}.${String(_d.getMonth()+1).padStart(2,'0')}.${_d.getFullYear()} ${String(_d.getHours()).padStart(2,'0')}:${String(_d.getMinutes()).padStart(2,'0')}`;
+        })();
+
         setCard('dc-thy',
           price.toFixed(2) + ' ₺',
           change,
           'Borsa İstanbul · hisse fiyatı',
           `Son veri: ${lastObsDate}<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>`
         );
+        const thyDateEl = document.getElementById('dc-thy-date');
+        if (thyDateEl && lastObsDate) { thyDateEl.textContent = `Son veri: ${lastObsDate}`; applyDateBadgeFreshness(thyDateEl); }
       } catch (err) {
         console.error("THY kart güncelleme hatası:", err);
         setCard('dc-thy', '—', null, '', 'Veri okunamadı');
@@ -12485,7 +12521,7 @@ async function loadDashboard() {
         isStatic: false,
         isMonthly: true,
         autoLabel: 'Haftalık otomatik güncellenir',
-        pillText: 'Günlük',
+        pillText: 'Haftalık',
         tooltipMessage: 'IATA Jet Yakıtı Fiyat Monitörü, S&P Global Platts ile ortaklaşa yayınlanan haftalık küresel havacılık yakıt fiyat endeksidir. Küresel, Asya, Avrupa, Orta Doğu, Kuzey Amerika ve Latin Amerika ortalamalarını kapsar.'
       };
     }
