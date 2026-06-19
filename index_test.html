@@ -12004,28 +12004,27 @@ async function loadDashboard() {
   });
 
   // BAFI Verisini Çek ve Göster
-  // BAFI Verisini Çek ve Göster
   async function initBafiCard() {
-    return fetchCached('bafi_full_data', async () => {
-      const [history, latest] = await Promise.all([
-        fetch('bafi-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi').then(r => r.ok ? r.json() : null).catch(() => null)
-      ]);
-      return { history, latest };
-    }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
-      _bafiHistory = history;
+    return fetchCached('bafi_v3', async () => {
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi')
+        .then(r => r.ok ? r.json() : null).catch(() => null);
+      return { latest };
+    }, 6 * 60 * 60 * 1000).then(({ latest }) => {
       _bafiLatest = latest;
 
+      if (latest?.history?.dates) {
+        _bafiHistory = latest.history.dates.map((date, i) => ({ date, value: latest.history.values[i] }));
+      }
+
       if (latest && latest.price) {
-        const formattedPrice = latest.price.toFixed(2) + ' $';
         setCard('dc-bafi',
-          formattedPrice,
+          Number(latest.price).toLocaleString('tr-TR'),
           latest.change,
           "Hava kargo spot tarifesi endeksi",
-          `Son veri: ${latest.date}<br><a href="https://www.tacindex.com" target="_blank" rel="noopener">tacindex.com →</a>`
+          `Son veri: ${isoToDisplay(latest.date)}<br><a href="https://dashboard.tacindex.com/detail?route=BAI00&routeType=basket" target="_blank" rel="noopener">TAC Index →</a>`
         );
-        const bafiIso = latest.date && latest.date.includes('-') ? latest.date : null;
-        if (bafiIso) setDateBadge('dc-bafi-date', isoToDisplay(bafiIso));
+        const bafiDateStr = latest.date && latest.date.includes('-') ? isoToDisplay(latest.date) : (latest.date || '');
+        if (bafiDateStr) setDateBadge('dc-bafi-date', bafiDateStr);
       } else {
         setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
       }
@@ -12625,7 +12624,7 @@ async function loadDashboard() {
         isOpen,
         pillText: isOpen ? null : 'Piyasa Kapalı',
         tooltipMessage: isOpen
-          ? 'Brent Petrol piyasası açıktır. Veriler 60 saniyede bir otomatik güncellenir.'
+          ? 'Brent Petrol piyasası açıktır. Veriler 15 dakikada bir otomatik güncellenir (Yahoo Finance 15 dakika gecikmeli).'
           : `Brent Petrol piyasası kapalıdır. Hafta içi 24 saat (her gün 00:00 - 01:00 arası teknik bakım arası hariç) işlem görür. Bir sonraki açılış: <strong>${nextOpen}</strong>.`
       };
     }
@@ -12736,6 +12735,13 @@ async function loadDashboard() {
 
     tooltipHtml += `</div>`; // Close refresh-wrap
 
+    if (noteHtml) {
+      tooltipHtml += `
+        <div class="market-tooltip-source-divider"></div>
+        <div class="market-tooltip-source">${noteHtml}</div>
+      `;
+    }
+
     tooltipHtml += `</div><div class="market-tooltip-arrow"></div>`;
 
     const tooltip = document.createElement('div');
@@ -12794,14 +12800,14 @@ async function loadDashboard() {
   }
 
   function formatCountdown(secs) {
-    if (secs > 90) return Math.ceil(secs / 60) + 'dk';
+    if (secs >= 60) return Math.ceil(secs / 60) + 'dk';
     return secs + 's';
   }
 
   const _marketStatusConfig = {
     'dc-thy': { countdown: secsToNextAligned(15, 8), interval: 900, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
     'dc-usd': { countdown: 60, interval: 60, initFn: () => typeof initForexCard === 'function' ? initForexCard() : Promise.resolve() },
-    'dc-brent': { countdown: 60, interval: 60, initFn: () => typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve() },
+    'dc-brent': { countdown: secsToNextAligned(15, 8), interval: 900, initFn: () => typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve() },
     'dc-jetfuel': { countdown: null, interval: null, initFn: null },
     'dc-fbx': { countdown: null, interval: null, initFn: () => typeof initFbxCard === 'function' ? initFbxCard() : Promise.resolve() },
     'dc-bafi': { countdown: null, interval: null, initFn: () => typeof initBafiCard === 'function' ? initBafiCard() : Promise.resolve() },
@@ -12904,6 +12910,15 @@ async function loadDashboard() {
     }, 1000);
   }
   startDashboardPolling();
+
+  // BAFI haftalık yenileme: Unix epoch Perşembe'de başlar, 10080dk=7gün boundary + 3600sn buffer
+  (function scheduleBafiWeekly() {
+    const secs = secsToNextAligned(10080, 3600);
+    setTimeout(function() {
+      if (typeof initBafiCard === 'function') initBafiCard();
+      scheduleBafiWeekly();
+    }, secs * 1000);
+  })();
 
   // ── Popover → çizgi grafik modu ────────────────────────────────────
   let _fpopLineChart = null;
@@ -20747,14 +20762,26 @@ const ALL_INDICATOR_CARDS = [
   { id: 'dc-thy', name: 'THYAO Hisse', defaultVisible: true, isCargo: false },
   { id: 'dc-usd', name: 'Döviz & Parite', defaultVisible: true, isCargo: false },
   { id: 'dc-wci', name: 'Dünya Konteyner Endeksi (WCI)', defaultVisible: true, isCargo: false },
-  { id: 'dc-bafi', name: 'Baltic Air Freight Index (BAFI)', defaultVisible: true, isTest: true, isCargo: false },
+  { id: 'dc-bafi', name: 'Baltık Hava Kargo Endeksi (BAFI)', defaultVisible: true, isCargo: false },
   { id: 'dc-iata', name: 'IATA Market Analizi', defaultVisible: true, isTest: true, isCargo: false },
   { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: true, isCargo: false }
 ];
 
+// Yeni eklenen kartlar: { addedAt: ISO tarih, badgeDays: kaç gün "YENİ" etiketi görünsün }
+const NEW_CARDS = {
+  'dc-bafi': { addedAt: '2026-06-18', badgeDays: 3 }
+};
+
+function isNewBadgeVisible(cardId) {
+  const info = NEW_CARDS[cardId];
+  if (!info) return false;
+  const expiryMs = new Date(info.addedAt).getTime() + info.badgeDays * 24 * 60 * 60 * 1000;
+  return Date.now() < expiryMs;
+}
+
 const DEFAULT_INDICATORS_CONFIG = {
-  order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-fbx', 'dc-iata', 'dc-bafi'],
-  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-fbx', 'dc-iata']
+  order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx'],
+  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata']
 };
 
 window.getIndicatorsConfig = function() {
@@ -20764,10 +20791,23 @@ window.getIndicatorsConfig = function() {
       const parsed = JSON.parse(saved);
       const allIds = ALL_INDICATOR_CARDS.map(c => c.id);
       if (parsed.order && parsed.visible) {
-        // Ensure all IDs are present (self-healing)
+        // Kayıp kartları sıralamanın sonuna ekle (self-healing)
         allIds.forEach(id => {
-          if (!parsed.order.includes(id)) {
-            parsed.order.push(id);
+          if (!parsed.order.includes(id)) parsed.order.push(id);
+        });
+        // Yeni kartları kullanıcının görünür listesinin sonuna ekle
+        Object.keys(NEW_CARDS).forEach(id => {
+          if (!parsed.visible.includes(id)) {
+            parsed.visible.push(id);
+            // Sıralamada son görünür kartın hemen ardına taşı
+            const withoutNew = parsed.order.filter(oid => oid !== id);
+            const lastVisIdx = withoutNew.reduce((last, oid, i) =>
+              parsed.visible.includes(oid) ? i : last, -1);
+            parsed.order = [
+              ...withoutNew.slice(0, lastVisIdx + 1),
+              id,
+              ...withoutNew.slice(lastVisIdx + 1)
+            ];
           }
         });
         return parsed;
@@ -20799,6 +20839,23 @@ window.applyIndicatorsConfig = function() {
       el.style.display = '';
     } else {
       el.style.display = 'none';
+    }
+  });
+
+  // "YENİ" badge ekle / kaldır
+  ALL_INDICATOR_CARDS.forEach(card => {
+    const el = document.getElementById(card.id);
+    if (!el) return;
+    const existing = el.querySelector('.dash-card-new-badge');
+    if (isNewBadgeVisible(card.id)) {
+      if (!existing) {
+        const badge = document.createElement('span');
+        badge.className = 'dash-card-new-badge';
+        badge.textContent = 'Yeni';
+        el.prepend(badge);
+      }
+    } else {
+      if (existing) existing.remove();
     }
   });
 };
@@ -20849,6 +20906,7 @@ window.populateCustomizeList = function(config) {
       </div>
       <div class="customize-item-name">${cardInfo.name}</div>
       ${cardInfo.isTest ? `<div class="customize-item-badge test">Test</div>` : ''}
+      ${isNewBadgeVisible(cardInfo.id) ? `<div class="customize-item-badge new">Yeni</div>` : ''}
       <button class="customize-item-btn btn-move-up" onclick="moveItemUp(this)" title="Yukarı Taşı">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="18 15 12 9 6 15"></polyline>

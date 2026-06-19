@@ -335,82 +335,32 @@ export default {
     if (urlObj.pathname === '/bafi') {
       const forceDirect = urlObj.searchParams.get('direct') === '1';
       try {
-        const indexRes = await doFetch('https://www.tacindex.com/category/market-commentary/', {}, forceDirect);
-        const linkMatch = indexRes.body.match(/href=["'](https?:\/\/(?:www\.)?tacindex\.com\/blog\/air-freight-rates-costs-latest-([a-z]+)-(\d{4})\/?)["']/i);
-        
-        let parsed = null;
-        if (linkMatch && linkMatch[1]) {
-          const articleRes = await doFetch(linkMatch[1], {}, forceDirect);
-          parsed = parseBAFI(articleRes.body);
-          if (parsed && parsed.success) {
-            parsed.date = `${linkMatch[2].substring(0, 3)} ${linkMatch[3].substring(2)}`;
-          }
+        // TAC Index Dashboard API — resmi BAI00 verisi
+        const tacApiUrl = 'https://dashboard-api.tacindex.com/api/routes_details?token=&routes=BAI00&currency=USD&index=BAI00&type=absolute&time_frame=1M';
+        const apiRes = await doFetch(tacApiUrl, {
+          headers: { 'Authorization': '2a9c56f7-a0bd-4550-a64b-3672ed26ae03', 'Accept': 'application/json' }
+        }, forceDirect, 3600);
+
+        const apiData = JSON.parse(apiRes.body);
+        if (!apiData.success || !apiData.routes_details?.[0]?.route_data?.index?.[0]) {
+          throw new Error('TAC API: geçersiz yanıt');
         }
 
-        if (!parsed || !parsed.success || parsed.price === null || isNaN(parsed.price)) {
-          console.warn("BAFI canlı kazıma başarısız, n8n API'sinden fallback çekiliyor...");
-          const fallbackRes = await doFetch('https://n8n.emredemirbas.com/webhook/raporlar', {}, forceDirect);
-          const reportsJson = JSON.parse(fallbackRes.body);
-          const latestReport = reportsJson.reports[0];
-          
-          let price = null;
-          let change = 0;
-          let direction = 'flat';
-          
-          // Try to match Air Freight Index from KPI (span-based markup in new reports)
-          let valM = latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Air Freight Index<\/span><span class="kpi-value">([\d.,\s$/kg—]+)<\/span>/i);
-          if (valM && !valM[1].includes('—')) {
-            price = parseFloat(valM[1].replace(/[^\d.]/g, ''));
-            const chgM = latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Air Freight Index<\/span>[\s\S]*?<span class="kpi-change"[^>]*>([^<]+)<\/span>/i);
-            if (chgM) {
-              change = parseFloat(chgM[1].replace(/[^\d.-]/g, ''));
-              if (chgM[1].includes('▼') || chgM[1].includes('-')) change = -change;
-              direction = chgM[1].includes('▲') ? 'up' : chgM[1].includes('▼') ? 'down' : 'flat';
-            }
-          }
-          
-          // If not found or empty, try Global Spot Rates KPI
-          if (!price) {
-            valM = latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Global Spot Rates<\/span><span class="kpi-value">([\d.,\s$/kg—]+)<\/span>/i);
-            if (valM && !valM[1].includes('—')) {
-              price = parseFloat(valM[1].replace(/[^\d.]/g, ''));
-              const chgM = latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Global Spot Rates<\/span>[\s\S]*?<span class="kpi-change"[^>]*>([^<]+)<\/span>/i);
-              if (chgM) {
-                change = parseFloat(chgM[1].replace(/[^\d.-]/g, ''));
-                if (chgM[1].includes('▼') || chgM[1].includes('-')) change = -change;
-                direction = chgM[1].includes('▲') ? 'up' : chgM[1].includes('▼') ? 'down' : 'flat';
-              }
-            }
-          }
+        const rd = apiData.routes_details[0];
+        const idx = rd.route_data.index[0];
+        const changeAbs = parseFloat(idx.change_1w.absolute);
+        const chartData = rd.chart_data?.[0];
 
-          // If still not found, try old div-based metric labels
-          if (!price) {
-            valM = latestReport.html_content.match(/<div class="metric-label">Air Freight Index<\/div><div class="metric-value">([\d.,\s$/kg—]+)<\/div>/i);
-            if (valM && !valM[1].includes('—')) {
-              price = parseFloat(valM[1].replace(/[^\d.]/g, ''));
-              const chgM = latestReport.html_content.match(/<div class="metric-label">Air Freight Index<\/div><div class="metric-value">[^<]+<\/div><div class="metric-change"[^>]*>([^<]+)<\/div>/i);
-              if (chgM) {
-                change = parseFloat(chgM[1].replace(/[^\d.-]/g, ''));
-                if (chgM[1].includes('▼') || chgM[1].includes('-')) change = -change;
-                direction = chgM[1].includes('▲') ? 'up' : chgM[1].includes('▼') ? 'down' : 'flat';
-              }
-            }
-          }
-
-          if (price) {
-            parsed = {
-              success: true,
-              price: price,
-              change: change,
-              direction: direction,
-              date: new Date(latestReport.date).toLocaleDateString('tr-TR', { month: 'short', year: 'numeric' })
-            };
-          }
-        }
-
-        if (!parsed || !parsed.success) {
-          throw new Error('BAFI parsing failed both live and fallback');
-        }
+        const parsed = {
+          success: true,
+          price: Math.round(parseFloat(idx.price)),
+          change: parseFloat(idx.change_1w.percentage),
+          direction: changeAbs > 0 ? 'up' : changeAbs < 0 ? 'down' : 'flat',
+          date: idx.date,
+          change_52w: parseFloat(idx.change_52w.percentage),
+          fetchedAt: Math.floor(Date.now() / 1000),
+          history: chartData ? { dates: chartData.date, values: chartData.absolute } : null
+        };
 
         return new Response(JSON.stringify(parsed), {
           status: 200,
