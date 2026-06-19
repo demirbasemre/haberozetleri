@@ -1,5 +1,450 @@
 [
   {
+    "title": "Bridges Air Cargo İkinci E190F Kargo Uçağını Hizmete Soktu",
+    "summary": "Maltalı kargo operatörü Bridges Air Cargo, dönüştürülmüş ikinci Embraer E190F kargo uçağını hizmete aldığını duyurdu. <strong>9H-CLW</strong> tescilli uçak, Avrupa ile Kuzey Afrika arasındaki bağlantıyı güçlendirerek Malta'nın stratejik konumunu destekleyecek. İlk uçuşunu <strong>15 Haziran</strong>'da gerçekleştiren uçak; Köln, Malta, Trablus ve Roma arasında uçuşlar yaptı. Bridges, maksimum <strong>13.500 kg</strong> taşıma kapasitesine sahip olan E190F modelinin lansman operatörüdür. Şirketin müşterileri arasında FedEx, DHL ve UPS gibi devler yer almaktadır.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/airlines/2026/06/bridges-air-cargo-puts-second-e190f-into-service/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Uçağın operasyon bölgesi olan Avrupa ve Kuzey Afrika koridorları ile Köln ve Trablus gibi hizmet noktalarını kapsamaktadır.",
+    "date": "2026-06-17"
+  },
+  {
+    "title": "Oman Air Cargo, Maskat ve Dubai Arasında Karayolu Besleme Servisi Başlattı",
+    "summary": "Oman Air Cargo, Umman ile BAE arasındaki ticari akışları desteklemek amacıyla Maskat ve Dubai arasında günlük Karayolu Besleme Servisi (RFS) başlattı. Bu yeni hizmet, dar gövdeli uçaklarla taşınamayan geniş gövdeye uygun büyük ebatlı kargoların karayoluyla güvenli bir şekilde sevk edilmesini sağlayacak. Günlük olarak çalışacak olan servis, genel kargonun yanı sıra taze gıda taşımacılığını da kapsıyor. Şirket, bölgedeki varlığını güçlendirmek amacıyla <strong>Ocak</strong> ayında yeni bir Orta Doğu satış yöneticisi atamıştı.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/road-feeder/2026/06/oman-air-cargo-starts-rfs-between-muscat-and-dubai/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Oman Air Cargo Dubai ve Maskat Arasında Yeni Günlük Karayolu Besleme Servisi Başlattı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Umman ve BAE arasındaki karayolu besleme hizmetini kapsamaktadır.",
+    "date": "2026-06-17"
+  },
+  {
+    "title": "Aeroglobe, Hong Kong Air Cargo’nun Türkiye’deki Kargo Hizmet Sağlayıcısı Oldu",
+    "summary": "İstanbul merkezli Aeroglobe Aviation Services, Hong Kong Air Cargo firmasının Türkiye'deki yer hizmetleri ve kargo elleçleme operasyonlarını üstlendiğini duyurdu. Hong Kong Air Cargo, İstanbul Havalimanı ile Hong Kong Uluslararası Havalimanı arasında tarifeli kargo seferleri gerçekleştirmektedir. <strong>16 Haziran</strong>'da başlayan bu yeni sözleşme, uçağın elleçleme denetimini ve yer destek koordinasyonunu kapsıyor. Havayolu ayrıca, <strong>Ocak</strong> ayında filosuna eklediği Airbus A330-200 yolcu uçağından dönüştürülmüş kargo uçağıyla Avrupa ağını genişletmeye devam ediyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/ground-handler/2026/06/aeroglobe-becomes-cargo-handler-for-hong-kong-air-cargo-in-turkey/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Hong Kong Air Cargo'nun İstanbul Havalimanı'ndaki (IST) yer hizmetleri operasyonlarını Aeroglobe ile yapılandırması, rakibin Asya-Avrupa transit hattındaki operasyonel verimliliğini artırabilir. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, Hong Kong-İstanbul koridorunda e-ticaret ve teknoloji kargolarında güçlü bir pazar payına sahip olsa da, rakibin IST hub'ında daha hızlı dönüş süreleri elde etmesi marj baskısı oluşturabilir. Bu durum, özellikle transit bypass akışlarında rekabeti kızıştıracaktır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Central Europe",
+        "Western Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Hong Kong-İstanbul hattındaki kargo akışları ile İstanbul ve Hong Kong operasyonlarını doğrudan etkilemektedir.",
+    "date": "2026-06-17"
+  },
+  {
+    "title": "Google Cloud, Sürdürülebilir Havacılık Yakıtı İçin K+N ile Anlaşma İmzaladı",
+    "summary": "Google Cloud, hava kargo taşımacılığından kaynaklanan emisyonlarını azaltmak amacıyla Kuehne+Nagel'in sürdürülebilir havacılık yakıtı (SAF) programına katıldı. Anlaşma, yaklaşık <strong>12.600</strong> ton CO2e emisyon azaltımına denk gelen <strong>5,2 milyon</strong> litrelik SAF alımını kapsıyor. Bu iş birliği, yapay zeka ve veri yoğun teknolojilerin etkisiyle hızla büyüyen bulut altyapısı lojistiğinde çevre dostu çözümleri test etmek için bir pilot proje görevi görecek. Kuehne+Nagel, <strong>2024</strong> yılında bulut bilişim bileşenlerinin taşınmasına yönelik özel bir forwarding hizmeti başlatmıştı.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/sustainability/2026/06/google-cloud-signs-up-with-kn-on-saf/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Kuehne+Nagel ve Google Cloud 2026 Yılında Hava Kargo İçin SAF İş Birliği Yapıyor",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-17"
+  },
+  {
+    "title": "Antwerp-Bruges Limanı Pharma.Aero Üyesi Oldu",
+    "summary": "Antwerp-Bruges Limanı, ilaç ve sağlık lojistiği birliği Pharma.Aero'ya katılarak organizasyonun tarihindeki ilk deniz limanı üyesi oldu. Bu üyelik, ilaç, tıbbi cihaz ve gelişmiş tedavilerin uçtan uca çok modlu taşınmasında hava ve deniz lojistiği uzmanlığını bir araya getirmeyi hedefliyor. GDP sertifikalı ilaç taşıma yetkinliklerine sahip olan liman, Avrupa'nın önemli bir geçiş kapısı konumundadır. İş birliği, geleceğin entegre sağlık tedarik zincirlerinde deniz taşımacılığının rolünü güçlendirecektir.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/port-of-antwerp-bruges-joins-pharma-aero/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Belçika'daki Antwerp-Bruges limanının ve Batı Avrupa ilaç lojistiği ekosisteminin entegrasyonunu etkilemektedir.",
+    "date": "2026-06-18"
+  },
+  {
+    "title": "Emirates SkyCargo, Kaçak Avcılıkla Mücadele İçin Dogs 4 Wildlife ile Ortaklık Kurdu",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates SkyCargo</span>, Afrika'daki nesli tükenmekte olan vahşi yaşamı korumak amacıyla İngiltere merkezli Dogs 4 Wildlife derneğiyle ortaklık kurdu. Ortaklığın ilk aşamasında, özel eğitimli iki Belçika Malinois köpeği Haziran sonunda Londra'dan Dubai aktarmalı olarak Harare'ye taşınacak. Köpekler, Zimbabwe'deki Matusadona Ulusal Parkı'nda kaçak avcıları izlemek üzere görevlendirilecek. Taşıyıcı, yasa dışı vahşi yaşam ticaretine karşı sıfır tolerans politikası uygulayarak bugüne kadar <strong>46.000</strong>'den fazla çalışanına bu konuda eğitim vermiştir.",
+    "category": "Özel Kargo",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/emirates-skycargo-partners-with-dogs-4-wildlife-to-combat-poaching/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Londra, Dubai ve Harare (Zimbabwe) rotalarındaki özel canlı hayvan taşımacılığını ilgilendirmektedir.",
+    "date": "2026-06-18"
+  },
+  {
+    "title": "SolitAir, Tehlikeli Madde Eğitimi İçin ATC’yi Tercih Etti",
+    "summary": "BAE merkezli B2B kargo havayolu SolitAir, tehlikeli maddelerin (DG) taşınması ve elleçlenmesi konusundaki eğitim ortağı olarak Dubai merkezli Aviation Training Center'ı (ATC) seçti. Ortaklık, ekiplerin <strong>1 Ocak 2026</strong>'dan itibaren zorunlu olan <strong>67.</strong> IATA Tehlikeli Maddeler Düzenlemeleri ile uyumlu olmasını sağlayacak. Al Maktoum Havalimanı (DWC) merkezli şirket, <strong>20.440 metrekare</strong>lik bir lojistik tesisten <strong>7</strong> adet Boeing 737-800 BCF kargo uçağı işletiyor. Şirketin ağı, Dubai'yi Orta Doğu, Afrika, Hindistan ve Çin gibi bölgelerdeki <strong>50</strong>'den fazla noktaya bağlıyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/solitair-appoints-atc-as-dangerous-goods-training-partner/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Dubai merkezli kargo havayolu SolitAir ve ATC eğitim merkezi faaliyetlerini ilgilendirmektedir.",
+    "date": "2026-06-18",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/solitair-appoints-atc-dubai-for-dg-training-1359534"
+      }
+    ]
+  },
+  {
+    "title": "Cold Chain Technologies, CCT Rx Secure Uygulamasını Başlattı",
+    "summary": "Cold Chain Technologies, sıcaklığa duyarlı tıbbi sevkiyatların paketleme kararlarını optimize etmek için tasarlanan CCT Rx Secure dijital uygulamasını kullanıma sundu. Uygulama, özel eczanelerin değişen hava koşullarına göre kuru buz ve paketleme seçeneklerini anlık olarak belirlemesini sağlıyor. Platform; FedEx ve UPS gibi ulusal taşıyıcıların rotalarındaki riskleri analiz etmek için rota ve kulvar izleme araçlarını tek bir arayüzde birleştiriyor. Sistem, kuru buz kullanımında <strong>72</strong> saate kadar süren hafta sonu transit süreleri için uygun kuru buz ağırlığını da otomatik hesaplıyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/cold-chain-technologies-launches-cct-rx-secure/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "ABD merkezli özel eczane ve soğuk zincir paketleme teknolojilerini kapsamaktadır.",
+    "date": "2026-06-18"
+  },
+  {
+    "title": "Brüksel Havalimanı ve Safran, LEAP Motor Bakımı İçin Fabrika İnşaatına Başladı",
+    "summary": "Brüksel Havalimanı ve havacılık şirketi Safran, motor modüllerinin bakımı için <strong>15.000 metrekare</strong>lik bir genişleme tesisinin inşaatına başladı. <strong>2028</strong> yılına kadar yılda <strong>1.500</strong> motor modülü elleçleme kapasitesine ulaşması beklenen tesis, yaklaşık <strong>250</strong> ek istihdam yaratacak. Fabrika, yeni nesil A320neo ve B737 MAX uçaklarına güç veren CFM LEAP motorlarının bakım ve onarım süreçlerini hızlandırmayı amaçlıyor. Tesis, enerji tüketimini tamamen kendi üretimiyle karşılayacak <strong>E0</strong> enerji performans düzeyinde tasarlanmıştır.",
+    "category": "Altyapı",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/brussels-airport-and-safran-launch-construction-of-a-module-factory-for-leap-engine-maintenance/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Brüksel Havalimanı'ndaki havacılık bakım ve MRO altyapısını kapsamaktadır.",
+    "date": "2026-06-18",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/06/brussels-airport-safran-launch-construction-module-factory-leap-engine-maintenance/"
+      }
+    ]
+  },
+  {
+    "title": "Aviator Finlandiya’ya Yeni Genel Müdür Atandı",
+    "summary": "İskandinavya merkezli yer hizmetleri sağlayıcısı Aviator Airport Alliance, Finlandiya operasyonlarının Genel Müdürü olarak Minna Virmajoki'yi atadı. <strong>2023</strong> yılında Finans Direktörü olarak şirkete katılan ve son olarak Geçici Genel Müdür olarak görev yapan Virmajoki, yeni rolünde operasyonel mükemmelliğe odaklanacak. Aviator, Finnair, <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Group ve <span style='color:#C8102E;font-weight:700;'>Turkish Airlines</span> gibi taşıyıcılara <strong>15</strong> İskandinav havalimanında hizmet sunmaktadır. Şirket, dünyanın en büyük ACMI sağlayıcısı olan Avia Solutions Group'un bir parçasıdır.",
+    "category": "Atama & Görevlendirme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/aviator-finland-appoints-new-managing-director/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Yer hizmetleri şirketi Aviator'ın Finlandiya operasyonlarındaki liderlik atamasını kapsamaktadır.",
+    "date": "2026-06-18"
+  },
+  {
+    "title": "GEODIS, Heathrow ve Auckland Havalimanlarındaki Perakende Lojistiği Ortaklığını Genişletti",
+    "summary": "Lojistik şirketi GEODIS, Lagardère Travel Retail ile olan ortaklığını Londra Heathrow ve Auckland havalimanlarındaki yeni mağazaları kapsayacak şekilde genişletti. Şirket, gümrüklü alanlardaki RELAY ve Duty-Free mağazaları için depolama, sipariş hazırlama, gümrük uyumluluğu ve teslimat operasyonlerini yönetecek. Auckland Havalimanı'nda parfüm, alkol ve tekstil dahil <strong>13.000</strong>'den fazla ürün çeşidinin günlük stok transferi gerçekleştirilecek. Heathrow Havalimanı operasyonları ise gümrük kontrollü alanda yer alan <strong>dört</strong> adet RELAY mağazasının tedarik süreçlerini destekleyecek.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/geodis-expands-airport-retail-logistics-partnership-at-heathrow-and-auckland-airports/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Londra Heathrow Havalimanı'ndaki perakende lozikstik operasyonlarını kapsamaktadır.",
+    "date": "2026-06-18"
+  },
+  {
+    "title": "Hactl’ın Hong Kong Havalimanı’ndaki İmtiyaz Sözleşmesi 15 Yıl Uzatıldı",
+    "summary": "Hong Kong Air Cargo Terminals Limited (Hactl), Hong Kong Uluslararası Havalimanı'ndaki (HKIA) kargo elleçleme imtiyaz sözleşmesini <strong>15</strong> yıl süreyle uzattı. Yeni anlaşma, mevcut sözleşmenin sona ereceği <strong>Temmuz 2028</strong>'den başlayarak <strong>2043</strong> yılına kadar geçerli olacak. Şirket, altyapıyı modernize etmek ve yeni teknolojileri devreye almak için en az <strong>1 milyar HKD</strong> tutarında yatırım yapmayı taahhüt etti. Bu uzatmayla Hactl, havalimanındaki en büyük bağımsız kargo terminal işletmecisi konumunu koruyacak.",
+    "category": "Altyapı",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/hactls-franchise-at-hong-kong-international-airport-renewed-for-15-years/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Hong Kong Havalimanı'ndaki kargo terminali imtiyazının uzatılmasını ve planlanan altyapı yatırımlarını kapsamaktadır.",
+    "date": "2026-06-18",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/hactl-renews-hkia-cargo-handling-franchise-1359528"
+      }
+    ]
+  },
+  {
+    "title": "Qatar Airways Ağının Yüzde 85’ini Yeniden Yapılandırdı ve Yeni Yöneticiler Atadı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Qatar Airways</span> Group, kriz öncesi uçuş ağının <strong>%85</strong>'ini yeniden faaliyete geçirerek <strong>160</strong>'tan fazla noktaya günlük <strong>140</strong>'tan fazla uçuş sunan <strong>Yaz 2026</strong> tarifesini başlattı. Havayolu ayrıca, operasyonel mükemmellik ve müşteri deneyimini artırma stratejisi kapsamında iki üst düzey atama gerçekleştirdi. Daha önce Yer Hizmetleri Başkan Yardımcısı olan Abdulla Ali Operasyondan Sorumlu Başkan (COO) olarak atanırken, British Airways'in eski yöneticilerinden Calum Laming ise Müşteri Deneyiminden Sorumlu Başkan (CCO) oldu. Her iki yönetici de görevlerine resmen <strong>1 Kasım 2026</strong> tarihinde başlayacak.",
+    "category": "Filo & Network",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/qatar-airways-restores-85-network-names-new-executives-1359535",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Qatar Airways</span>'in Doha çıkışlı uçuş ağını hızlı bir şekilde <strong>%85</strong> oranında geri kazanması ve <strong>160</strong>'tan fazla destinasyona kapasite sunması, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun İstanbul (IST) hub transit koridorları üzerindeki rekabet baskısını artıracaktır. Özellikle e-ticaret, taze gıda ve pharma gibi özel kargo dikey segmentlerinde, rakibin genişleyen gövde kapasitesi pazar payı ve birim gelirler (yield) üzerinde aşağı yönlü baskı oluşturabilir. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun pazar payını korumak için 6. trafik serbestisi haklarını etkin bir şekilde kullanması gerekecektir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Central Europe",
+        "Western Europe",
+        "China",
+        "Southern Asia",
+        "Southern & Eastern Africa"
+      ]
+    },
+    "etkiAlaniGerekce": "Doha merkezli küresel uçuş ağının geri kazanılması, Orta Doğu çıkışlı ve aktarmalı tüm transit hatları doğrudan etkilemektedir.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "SolitAir, Tehlikeli Madde Eğitimi İçin ATC Dubai ile Anlaştı",
+    "summary": "BAE merkezli kargo taşıyıcısı SolitAir, ekiplerine tehlikeli maddelerin (DG) güvenli taşınmasına yönelik yetkinlikler kazandırmak amacıyla Dubai merkezli Aviation Training Center (ATC) ile iş birliği yaptı. Ortaklık kapsamında ekipler, <strong>1 Ocak 2026</strong>'da yürürlüğe giren yeni <strong>67.</strong> IATA Tehlikeli Maddeler Düzenlemeleri eğitimiyle donatılacak. Al Maktoum Havalimanı (DWC) merkezli olan SolitAir, <strong>7</strong> adet Boeing 737-800 BCF kargo uçağından oluşan filosuyla ilaç, taze gıda, e-ticaret ve lityum piller dahil geniş bir yelpazede kargo taşımaktadır. Şirket, Dubai üzerinden Orta Doğu, Afrika ve Güney Asya'daki <strong>50</strong>'den fazla destinasyona hizmet veriyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/solitair-appoints-atc-dubai-for-dg-training-1359534",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "SolitAir, Tehlikeli Madde Eğitimi İçin ATC’yi Tercih Etti",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Dubai merkezli kargo havayolunun eğitim süreçlerini ilgilendirmektedir.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "Uganda Airlines Filosuna İki Boeing Kargo Uçağı Ekliyor",
+    "summary": "Uganda Airlines, filosunu genişletme stratejisinin bir parçası olarak iki adet dönüştürülmüş kargo uçağı edinmek üzere Boeing ile taahhüt anlaşması imzaladı. Anlaşma kapsamında havayolu, bir adet Boeing 767 geniş gövdeli dönüştürülmüş kargo uçağı ve bir adet Boeing 737 BCF dar gövdeli kargo uçağını filosuna katacak. Entebbe'de imzalanan bu anlaşma, Uganda'nın tarım ihracatını ve bölgesel kargo taşımacılık kapasitesini artırmayı hedefliyor. Bu kargo yatırımları, havayolunun Afrika ve uluslararası pazarlardaki büyüyen freight talebini karşılamasını destekleyecek.",
+    "category": "Filo & Network",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/uganda-airlines-commits-to-boeing-fleet-expansion-1359531",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Uganda Airlines Boeing ile 985 Milyon Dolarlık Anlaşma İmzaladı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Uganda merkezli havayolunun Afrika içi kargo uçağı kapasitesini ilgilendirmektedir.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "Hactl, Hong Kong Havalimanı Kargo İmtiyaz Sözleşmesini Yeniledi",
+    "summary": "Hong Kong Air Cargo Terminals (Hactl), Airport Authority Hong Kong ile <strong>15</strong> yıllık yeni bir anlaşma imzalayarak kargo elleçleme imtiyaz sözleşmesini uzattı. Mevcut anlaşmanın sona ereceği <strong>Temmuz 2028</strong>'den itibaren geçerli olacak sözleşme, <strong>2043</strong> yılına kadar devam edecek. Havalimanındaki en büyük bağımsız kargo terminal işletmecisi olan Hactl, bu süreçte altyapıyı modernleştirmek ve ESG girişimlerini entegre etmek için en az <strong>1 milyar HKD</strong> yatırım yapmayı hedefliyor. Yatırımlar, Üç Pist Sistemi projesinin tamamlanmasıyla birlikte Hong Kong'un küresel hava kargo liderliğini destekleyecek.",
+    "category": "Altyapı",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/hactl-renews-hkia-cargo-handling-franchise-1359528",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Hactl’ın Hong Kong Havalimanı’ndaki İmtiyaz Sözleşmesi 15 Yıl Uzatıldı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Hong Kong Havalimanı'ndaki kargo elleçleme hizmetlerinin imtiyazının uzatılmasını kapsamaktadır.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "Blue Dart, Hindistan’daki Havacılık Faaliyetlerinin 30. Yılını Kutluyor",
+    "summary": "Blue Dart Express, Hindistan genelindeki zaman hassasiyetli hava ekspres taşımacılığını destekleyen havacılık faaliyetlerinin <strong>30.</strong> yılını tamamladı. Şirket, <strong>1996</strong> yılından bu yana <strong>215.000</strong>'den fazla uçuş gerçekleştirerek <strong>2,05 milyon</strong> tonun üzerinde hava kargosu taşıdı. Yaşam bilimleri, e-ticaret, otomotiv ve bankacılık sektörlerine hizmet sunan şirket, filosunda <strong>8</strong> adet Boeing 737 ve 757 kargo uçağı bulunduruyor. Bu uçaklar, Hindistan'ın büyük metropolleri ile gelişmekte olan pazarları arasındaki ertesi gün teslimat garantisini desteklemektedir.",
+    "category": "Diğer",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/blue-dart-marks-30-years-of-aviation-operations-across-india-1359527",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Hindistan içi yurtiçi kargo taşımacılığı ve lojistik ağının yıldönümü kutlamalarını kapsamaktadır.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "Brüksel Havalimanı ve Safran, LEAP Motorları İçin Bakım Tesisi İnşa Ediyor",
+    "summary": "Brüksel Havalimanı ve havacılık devi Safran, LEAP motor modüllerinin bakımı ve onarımı için <strong>15.000 metrekare</strong>lik bir genişleme alanının inşasına başladı. <strong>2028</strong> yılına kadar yılda <strong>1.500</strong> motor modülünün elden geçirilmesine olanak sağlayacak tesis, bölgede yaklaşık <strong>250</strong> yeni istihdam oluşturacak. Bu genişleme, A320neo ve B737 MAX gibi yeni nesil uçaklara güç veren LEAP motorlarının MRO süreçlerini hızlandırarak operasyonel verimliliği artıracak. Çevreci standartlara uygun inşa edilecek olan fabrika, enerji tüketimini tamamen kendi üretimiyle karşılayarak <strong>E0</strong> enerji performansına ulaşacak.",
+    "category": "Altyapı",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/brussels-airport-safran-launch-construction-module-factory-leap-engine-maintenance/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Brüksel Havalimanı ve Safran, LEAP Motor Bakımı İçin Fabrika İnşaatına Başladı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Brüksel Havalimanı'ndaki motor bakım ve altyapı çalışmalarını kapsamaktadır.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "CEVA Logistics, Asya-Pasifik Yapay Zeka Altyapısını Desteklemek İçin AirTrunk Veri Merkezlerine Lojistik Sağlıyor",
+    "summary": "CEVA Logistics, yapay zeka ve bulut teknolojileri talebini karşılamak amacıyla AirTrunk firmasının Sydney ve Johor Bahru'daki devasa veri merkezlerinin lojistik süreçlerini üstlendiğini duyurdu. Şirket; depolama, gümrükleme ve <strong>45</strong> tonluk jeneratörler ile devasa soğutma kuleleri gibi ağır sanayi ekipmanlarının taşınmasını içeren uçtan uca çözümler sunuyor. Sydney'deki projenin ilk <strong>altı</strong> aylık aşamasını tamamlayan CEVA, şimdi Malezya'daki tesislerin lojistik aşamasına odaklandı. Bu iş birliği, yapay zeka çiplerinin ve kritik teknoloji bileşenlerinin bölgedeki hızlı lojistik akışını desteklemektedir.",
+    "category": "Özel Kargo",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/ceva-logistics-advances-asia-pacific-ai-infrastructure-supports-airtrunk-data-centres-australia-malaysia/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Malezya ve Güneydoğu Asya bölgesindeki yapay zeka veri merkezleri yatırımlarını ve ağır yük lojistiği operasyonlarını ilgilendirmektedir.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "FedEx, Asya-Pasifik Firmalarının AB Gümrük Muafiyeti Değişikliklerine Uyumunu Kolaylaştırıyor",
+    "summary": "Federal Express Corporation, AB'nin <strong>1 Temmuz 2026</strong> tarihinde yürürlüğe koyacağı gümrük vergisi muafiyet sınırı (de minimis) iptaline karşı Asya-Pasifik firmalarını hazırlıyor. Yapılan araştırmaya göre, bölgedeki işletmelerin <strong>%59</strong>'u yeni kurallara hazır olduğunu belirtirken, <strong>%41</strong>'i henüz hazırlık aşamasında bulunuyor. FedEx, değişen pazar koşullarını ve sınır ötesi ticareti desteklemek amacıyla Asya ile Avrupa arasında son bir yılda <strong>beş</strong> ek haftalık uçuş ekleyerek toplam haftalık uçuş sayısını <strong>26</strong>'ya çıkardı. Bu uçuşlar, e-ticaret gönderilerinin en kısa sürede teslim edilmesini sağlıyor.",
+    "category": "Diğer",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/fedex-helps-apac-businesses-adapt-confidently-eu-de-minimis-changes/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "AB'nin de minimis sınırını <strong>1 Temmuz 2026</strong>'da kaldırma kararı sonrasında FedEx'in Asya-Avrupa koridorunda haftalık frekans sayısını <strong>26</strong>'ya yükseltmesi, özellikle Çin ve Güneydoğu Asya çıkışlı e-ticaret hacminde ciddi bir kapasite rekabeti yaratacaktır. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, İstanbul (IST) üzerinden bu hatta yüksek hacimli e-ticaret trafiği taşımaktadır. Entegre ekspres taşıyıcıların gümrük entegrasyonu ve uçuş kapasitesini artırması, pazar payı ve birim navlun fiyatları üzerinde baskı oluşturabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Central Europe",
+        "Western Europe",
+        "Northern Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Asya ile Avrupa arasındaki hava kargo akışlarını, gümrük düzenleme değişikliklerini ve artan uçuş kapasitesini kapsamaktadır.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "Oman Air Cargo, Maskat ve Dubai Arasında Günlük Karayolu Besleme Servisini Devreye Aldı",
+    "summary": "Oman Air Cargo, Maskat ile Dubai arasında geniş gövdeli uçaklara uygun kargoların hızlı bir şekilde taşınabilmesi amacıyla günlük Karayolu Besleme Servisi (RFS) başlattı. Bu hizmet, BAE ile Umman arasındaki artan ticari hacimleri destekleyerek dar gövdeli yolcu uçaklarının kargo sınırlandırmalarını aşmayı ve büyük ebatlı genel kargolar ile taze gıdaları taşımayı amaçlıyor. Bu RFS hamlesi, Umman'ın bölgedeki lojistik hub konumunu güçlendirirken esnek tedarik zinciri çözümleri sunuyor. Şirket yetkilileri ayrıca <strong>24-26 Haziran 2026</strong> tarihlerinde Şanghay'daki fuarda yer alacak.",
+    "category": "Filo & Network",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/oman-air-cargo-launches-daily-road-feeder-service-between-dubai-muscat/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Oman Air Cargo Dubai ve Maskat Arasında Yeni Günlük Karayolu Besleme Servisi Başlattı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Umman ile BAE arasındaki RFS ve karayolu bağlantısını kapsamaktadır.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "Los Angeles Limanı’nın Mayıs Ayı Kargo Hacmi Yüzde 17 Arttı",
+    "summary": "Los Angeles Limanı, küresel tedarik zinciri ve ticaret politikalarındaki belirsizliklerin ortasında <strong>Mayıs</strong> ayında yıllık <strong>%17</strong> artışla <strong>840.165 TEU</strong> konteyner elleçledi. <strong>2026</strong>'nın ilk beş ayında toplam <strong>4.119.869 TEU</strong> hacme ulaşan liman, geçen yılın aynı döneminin <strong>%1,4</strong> üzerine çıktı. Mayıs ayında dolu ithalat hacmi <strong>%26</strong> artışla <strong>449.370 TEU</strong> olarak gerçekleşirken, ihracat <strong>%10</strong> düşüşle <strong>107.657 TEU</strong>'ya geriledi. Liman yetkilileri, bu artışın nedenleri arasında stok yenileme, yaklaşan perakende sezonu hazırlıkları ve değişen gümrük tarifesi endişelerini gösterdi.",
+    "category": "Diğer",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/port-of-la-may-cargo-vol-surging-17-amid-trade-policy-uncertainty/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "ABD'nin batı yakasındaki en büyük deniz limanının konteyner elleçleme verilerini kapsamaktadır.",
+    "date": "2026-06-19"
+  },
+  {
+    "title": "Aracınız Yolda Siz Tatildesiniz",
+    "summary": "OMSAN Lojistik, yaz aylarında tatilcilerin kendi araçlarının konforuyla seyahat etmelerini sağlayan \"Arabam Tatilde\" hizmetini bu sezon da sunmaya devam ediyor. Hizmet kapsamında İstanbul ve Ankara'dan teslim alınan binek araçlar, profesyonel oto taşıma tırlarıyla İzmir, Bodrum ve Antalya'daki tatilcilere ulaştırılıyor. Pegasus Hava Yolları ile gerçekleştirilen iş birliği sayesinde, bu hizmetten yararlanan yolcular tek yönde <strong>2.500</strong>, gidiş-dönüşte ise <strong>5.000 BolPuan</strong> kazanıyor. Bu hizmet, araç kiralama fiyatlarının arttığı yaz sezonunda tatilcilere alternatif ve konforlu bir seyahat modeli sunuyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "haberekonomi",
+    "link": "https://haberekonomi.com.tr/index.asp?sayfa=haber&icerik=31165",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Türkiye içi yurtiçi lojistik, otomotiv taşımacılığı ve turizm bölgelerindeki karayolu operasyonlarını kapsamaktadır.",
+    "date": "2026-06-19"
+  },
+  {
     "title": "Baltic Ground Services Vilnius'ta Arkia Israeli Airlines ile İş Birliğine Başladı",
     "summary": "Baltic Ground Services (BGS), Vilnius Havalimanı'nda Arkia Israeli Airlines'a yer hizmetleri ve uçak içi yakıt ikmali sağlamaya başladı. Arkia, yaz sezonu boyunca Vilnius ile Tel Aviv arasında haftada <strong>3</strong> doğrudan sefer düzenliyor. Bu anlaşma, BGS'nin Arkia ile ilk iş birliği olup şirketin Vilnius'taki müşteri portföyünü genişletiyor. İş birliğinin, iki ülke arasındaki ulaşım bağlarını güçlendirmesi bekleniyor.",
     "category": "Ortaklık & İş Birlikleri",
@@ -139,7 +584,13 @@
       ]
     },
     "etkiAlaniGerekce": "Uganda Airlines'ın (Entebbe merkezli) filo genişlemesi Doğu Afrika pazarını doğrudan etkileyecektir. Bu durum, Avrupa'ya yönelik tarımsal ihracat akışları üzerinden dolaylı etkiler yaratabilir.",
-    "date": "2026-06-17"
+    "date": "2026-06-17",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/uganda-airlines-commits-to-boeing-fleet-expansion-1359531"
+      }
+    ]
   },
   {
     "title": "Oman Air Cargo Dubai ve Maskat Arasında Yeni Günlük Karayolu Besleme Servisi Başlattı",
@@ -157,7 +608,17 @@
       "hub": []
     },
     "etkiAlaniGerekce": "Dubai (BAE) ve Maskat (Umman) arasındaki doğrudan karayolu besleme servisi operasyonlarını kapsamaktadır.",
-    "date": "2026-06-17"
+    "date": "2026-06-17",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/road-feeder/2026/06/oman-air-cargo-starts-rfs-between-muscat-and-dubai/"
+      },
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/06/oman-air-cargo-launches-daily-road-feeder-service-between-dubai-muscat/"
+      }
+    ]
   },
   {
     "title": "Azerbaycan Yeni Düzenlemeyle Devlet Havalimanlarını Özel Operatörlere Açıyor",
@@ -293,7 +754,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-06-18"
+    "date": "2026-06-18",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/sustainability/2026/06/google-cloud-signs-up-with-kn-on-saf/"
+      }
+    ]
   },
   {
     "title": "Saudia Cargo, Küresel Tedarik Zincirlerindeki Özel Hizmetlerini Vurgulamak İçin Yeni Bir Kampanya Başlattı",
