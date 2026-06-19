@@ -11730,7 +11730,16 @@ async function loadDashboard() {
           "Hava kargo spot tarifesi endeksi",
           `Son veri: ${latest.date}<br><a href="https://www.tacindex.com" target="_blank" rel="noopener">tacindex.com →</a>`
         );
-        if (latest.date) setDateBadge('dc-bafi-date', latest.date);
+        const bafiBadgeStr = (() => {
+          const p = n => String(n).padStart(2, '0');
+          const ts = latest.fetchedAt || null;
+          if (ts) {
+            const _d = new Date(ts * 1000);
+            return `${p(_d.getDate())}.${p(_d.getMonth()+1)}.${_d.getFullYear()} ${p(_d.getHours())}:${p(_d.getMinutes())}`;
+          }
+          return latest.date && latest.date.includes('-') ? isoToDisplay(latest.date) : (latest.date || '');
+        })();
+        if (bafiBadgeStr) setDateBadge('dc-bafi-date', bafiBadgeStr);
       } else {
         setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
       }
@@ -12312,7 +12321,7 @@ async function loadDashboard() {
         isOpen,
         pillText: isOpen ? null : 'Piyasa Kapalı',
         tooltipMessage: isOpen
-          ? 'Brent Petrol piyasası açıktır. Veriler 60 saniyede bir otomatik güncellenir.'
+          ? 'Brent Petrol piyasası açıktır. Veriler 15 dakikada bir otomatik güncellenir (Yahoo Finance 15 dakika gecikmeli).'
           : `Brent Petrol piyasası kapalıdır. Hafta içi 24 saat (her gün 00:00 - 01:00 arası teknik bakım arası hariç) işlem görür. Bir sonraki açılış: <strong>${nextOpen}</strong>.`
       };
     }
@@ -12486,7 +12495,7 @@ async function loadDashboard() {
   const _marketStatusConfig = {
     'dc-thy': { countdown: secsToNextAligned(15, 8), interval: 900, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
     'dc-usd': { countdown: 60, interval: 60, initFn: () => typeof initForexCard === 'function' ? initForexCard() : Promise.resolve() },
-    'dc-brent': { countdown: 60, interval: 60, initFn: () => typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve() },
+    'dc-brent': { countdown: secsToNextAligned(15, 8), interval: 900, initFn: () => typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve() },
     'dc-jetfuel': { countdown: null, interval: null, initFn: null },
     'dc-fbx': { countdown: null, interval: null, initFn: () => typeof initFbxCard === 'function' ? initFbxCard() : Promise.resolve() },
     'dc-bafi': { countdown: null, interval: null, initFn: () => typeof initBafiCard === 'function' ? initBafiCard() : Promise.resolve() },
@@ -12585,6 +12594,15 @@ async function loadDashboard() {
     }, 1000);
   }
   startDashboardPolling();
+
+  // BAFI haftalık yenileme: Unix epoch Perşembe'de başlar, 10080dk=7gün boundary + 3600sn buffer
+  (function scheduleBafiWeekly() {
+    const secs = secsToNextAligned(10080, 3600);
+    setTimeout(function() {
+      if (typeof initBafiCard === 'function') initBafiCard();
+      scheduleBafiWeekly();
+    }, secs * 1000);
+  })();
 
   // ── Popover → çizgi grafik modu ────────────────────────────────────
   let _fpopLineChart = null;
