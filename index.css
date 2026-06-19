@@ -480,7 +480,7 @@
     font-weight: 500;
     cursor: pointer;
     border: 1.5px solid rgba(0,0,0,0.12);
-    background: rgba(0,0,0,0.05);
+    background: rgba(255,255,255,0.92);
     color: var(--text);
     font-family: 'Inter', sans-serif;
     transition: all 0.18s;
@@ -489,7 +489,7 @@
     user-select: none;
     white-space: nowrap;
   }
-  .fdd-btn:hover { background: rgba(0,0,0,0.09); border-color: rgba(0,0,0,0.2); color: var(--text); }
+  .fdd-btn:hover { background: #fff; border-color: rgba(0,0,0,0.2); color: var(--text); }
   .fdd-btn.active, .fdd-btn.fdd-btn--active { background: var(--navy); color: white; border-color: transparent; }
   .fdd-btn.active:hover, .fdd-btn.fdd-btn--active:hover { background: #1a2332; }
   .fdd-btn.fdd-btn--active { box-shadow: 0 2px 8px rgba(13,17,23,0.28); }
@@ -7944,6 +7944,30 @@
 .customize-item-badge.test {
   background: rgba(239, 68, 68, 0.08);
   color: #ef4444;
+}
+.customize-item-badge.new {
+  background: rgba(37, 99, 235, 0.10);
+  color: #2563eb;
+}
+[data-theme="dark"] .customize-item-badge.new {
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+}
+.dash-card-new-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 7.5px;
+  font-weight: 700;
+  color: #fff;
+  background: #2563eb;
+  padding: 3.5px 8px 3.5px 10px;
+  border-radius: 0 0 8px 0;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  z-index: 5;
+  pointer-events: none;
+  line-height: 1;
 }
 .customize-item-btn {
   background: transparent;

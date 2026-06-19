@@ -20190,14 +20190,26 @@ const ALL_INDICATOR_CARDS = [
   { id: 'dc-thy', name: 'THYAO Hisse', defaultVisible: true, isCargo: false },
   { id: 'dc-usd', name: 'Döviz & Parite', defaultVisible: true, isCargo: false },
   { id: 'dc-wci', name: 'Dünya Konteyner Endeksi (WCI)', defaultVisible: true, isCargo: false },
-  { id: 'dc-bafi', name: 'Baltic Air Freight Index (BAFI)', defaultVisible: true, isTest: true, isCargo: false },
+  { id: 'dc-bafi', name: 'Baltık Hava Kargo Endeksi (BAFI)', defaultVisible: true, isCargo: false },
   { id: 'dc-iata', name: 'IATA Market Analizi', defaultVisible: true, isTest: true, isCargo: false },
   { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: true, isCargo: false }
 ];
 
+// Yeni eklenen kartlar: { addedAt: ISO tarih, badgeDays: kaç gün "YENİ" etiketi görünsün }
+const NEW_CARDS = {
+  'dc-bafi': { addedAt: '2026-06-18', badgeDays: 3 }
+};
+
+function isNewBadgeVisible(cardId) {
+  const info = NEW_CARDS[cardId];
+  if (!info) return false;
+  const expiryMs = new Date(info.addedAt).getTime() + info.badgeDays * 24 * 60 * 60 * 1000;
+  return Date.now() < expiryMs;
+}
+
 const DEFAULT_INDICATORS_CONFIG = {
-  order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-fbx', 'dc-iata', 'dc-bafi'],
-  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-fbx', 'dc-iata']
+  order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx'],
+  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata']
 };
 
 window.getIndicatorsConfig = function() {
@@ -20207,10 +20219,22 @@ window.getIndicatorsConfig = function() {
       const parsed = JSON.parse(saved);
       const allIds = ALL_INDICATOR_CARDS.map(c => c.id);
       if (parsed.order && parsed.visible) {
-        // Ensure all IDs are present (self-healing)
+        // Kayıp kartları sıralamanın sonuna ekle (self-healing)
         allIds.forEach(id => {
-          if (!parsed.order.includes(id)) {
-            parsed.order.push(id);
+          if (!parsed.order.includes(id)) parsed.order.push(id);
+        });
+        // Yeni kartları kullanıcının görünür listesinin sonuna ekle
+        Object.keys(NEW_CARDS).forEach(id => {
+          if (!parsed.visible.includes(id)) {
+            parsed.visible.push(id);
+            const withoutNew = parsed.order.filter(oid => oid !== id);
+            const lastVisIdx = withoutNew.reduce((last, oid, i) =>
+              parsed.visible.includes(oid) ? i : last, -1);
+            parsed.order = [
+              ...withoutNew.slice(0, lastVisIdx + 1),
+              id,
+              ...withoutNew.slice(lastVisIdx + 1)
+            ];
           }
         });
         return parsed;
@@ -20242,6 +20266,23 @@ window.applyIndicatorsConfig = function() {
       el.style.display = '';
     } else {
       el.style.display = 'none';
+    }
+  });
+
+  // "YENİ" badge ekle / kaldır
+  ALL_INDICATOR_CARDS.forEach(card => {
+    const el = document.getElementById(card.id);
+    if (!el) return;
+    const existing = el.querySelector('.dash-card-new-badge');
+    if (isNewBadgeVisible(card.id)) {
+      if (!existing) {
+        const badge = document.createElement('span');
+        badge.className = 'dash-card-new-badge';
+        badge.textContent = 'Yeni';
+        el.prepend(badge);
+      }
+    } else {
+      if (existing) existing.remove();
     }
   });
 };
@@ -20292,6 +20333,7 @@ window.populateCustomizeList = function(config) {
       </div>
       <div class="customize-item-name">${cardInfo.name}</div>
       ${cardInfo.isTest ? `<div class="customize-item-badge test">Test</div>` : ''}
+      ${isNewBadgeVisible(cardInfo.id) ? `<div class="customize-item-badge new">Yeni</div>` : ''}
       <button class="customize-item-btn btn-move-up" onclick="moveItemUp(this)" title="Yukarı Taşı">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="18 15 12 9 6 15"></polyline>
