@@ -2662,7 +2662,7 @@
       </div>
       <div class="dash-cards">
         <div class="dash-card dash-card-clickable" id="dc-jetfuel" title="Jet yakıtı fiyat detayları için tıkla" onclick="openJetfuelChartModal()">
-          <div class="dash-card-timer" id="dc-jetfuel-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+          <div class="dash-card-timer" id="dc-jetfuel-timer">
             <span class="timer-dot"></span>Haftalık
           </div>
           <div class="dash-card-header-row">
@@ -2679,7 +2679,7 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
-          <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+          <div class="dash-card-timer">
             <span class="timer-dot"></span>
             <span class="timer-secs">60s</span>
           </div>
@@ -2697,7 +2697,7 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
-          <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+          <div class="dash-card-timer">
             <span class="timer-dot"></span>
             <span class="timer-secs">60s</span>
           </div>
@@ -2718,7 +2718,7 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
-          <div class="dash-card-timer" title="Sonraki otomatik güncelleme">
+          <div class="dash-card-timer">
             <span class="timer-dot"></span>
             <span class="timer-secs">60s</span>
           </div>
@@ -2774,7 +2774,7 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
-          <div class="dash-card-timer" id="dc-wci-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+          <div class="dash-card-timer" id="dc-wci-timer">
             <span class="timer-dot"></span>Haftalık
           </div>
           <div class="dash-card-header-row">
@@ -2792,7 +2792,7 @@
         </div>
         
         <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
-          <div class="dash-card-timer" id="dc-bafi-timer" title="Güncellenme sıklığı: Haftalık (Cloudflare Worker)">
+          <div class="dash-card-timer" id="dc-bafi-timer">
             <span class="timer-dot"></span>Haftalık
           </div>
           <div class="dash-card-header-row">
@@ -2809,7 +2809,7 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
-          <div class="dash-card-timer" id="dc-iata-timer" title="Güncellenme sıklığı: Aylık (Cloudflare Worker)">
+          <div class="dash-card-timer" id="dc-iata-timer">
             <span class="timer-dot"></span>Aylık
           </div>
           <div class="dash-card-header-row">
@@ -2842,7 +2842,7 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
-          <div class="dash-card-timer" id="dc-fbx-timer" title="Güncellenme sıklığı: Günlük (Cloudflare Worker)">
+          <div class="dash-card-timer" id="dc-fbx-timer">
             <span class="timer-dot"></span>Günlük
           </div>
           <div class="dash-card-header-row">
@@ -11519,7 +11519,71 @@ async function loadDashboard() {
               family: 'Inter',
               weight: isBold ? 'bold' : 'normal'
             };
-          }
+          },
+          plugins: [{
+            id: 'bafiAnnotations',
+            afterDatasetsDraw(chart) {
+              const { ctx, chartArea: { top, bottom, left: chartLeft, right: chartRight }, scales: { x } } = chart;
+              ctx.save();
+              const events = [
+                { dateIso: '2026-02-26', label: 'Ortadoğu Savaşı (28 Şub)', color: '#E63946' }
+              ];
+              const rawDatesArray = chart.$rawDates;
+              if (!rawDatesArray || rawDatesArray.length === 0) { ctx.restore(); return; }
+              const firstDate = new Date(rawDatesArray[0]).getTime();
+              const lastDate = new Date(rawDatesArray[rawDatesArray.length - 1]).getTime();
+              const drawnPills = [];
+              events.forEach(event => {
+                const targetTime = new Date(event.dateIso).getTime();
+                if (targetTime < firstDate || targetTime > lastDate) return;
+                let closestIndex = -1, minDiff = Infinity;
+                for (let i = 0; i < rawDatesArray.length; i++) {
+                  const diff = Math.abs(new Date(rawDatesArray[i]).getTime() - targetTime);
+                  if (diff < minDiff) { minDiff = diff; closestIndex = i; }
+                }
+                if (closestIndex === -1) return;
+                const totalSpan = lastDate - firstDate;
+                const threshold = Math.max(totalSpan * 0.1, 15 * 24 * 60 * 60 * 1000);
+                if (minDiff > threshold) return;
+                const xPos = x.getPixelForValue(closestIndex);
+                if (xPos < chartLeft || xPos > chartRight) return;
+                ctx.beginPath();
+                ctx.strokeStyle = event.color;
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 3]);
+                ctx.moveTo(xPos, top);
+                ctx.lineTo(xPos, bottom);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                const padding = 5, fontSize = 10;
+                ctx.font = `600 ${fontSize}px Inter, sans-serif`;
+                const textW = ctx.measureText(event.label).width;
+                const pillW = textW + padding * 2, pillH = fontSize + padding * 1.5;
+                let pillX = xPos - pillW / 2;
+                const margin = 4;
+                let overlaps = true;
+                while (overlaps) {
+                  overlaps = false;
+                  for (const p of drawnPills) {
+                    if (pillX < p.x + p.w + margin && pillX + pillW > p.x - margin) { pillX = p.x + p.w + margin; overlaps = true; break; }
+                  }
+                }
+                if (pillX < chartLeft) pillX = chartLeft;
+                if (pillX + pillW > chartRight) pillX = chartRight - pillW;
+                const pillY = top + 4;
+                ctx.fillStyle = event.color;
+                ctx.beginPath();
+                ctx.roundRect(pillX, pillY, pillW, pillH, 4);
+                ctx.fill();
+                ctx.fillStyle = '#fff';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(event.label, pillX + padding, pillY + pillH / 2);
+                drawnPills.push({ x: pillX, w: pillW });
+              });
+              ctx.restore();
+            }
+          }]
         }
       );
       if (titleEl) titleEl.textContent = `BAFI — ${Number(values[values.length-1]).toFixed(2)} $/kg`;
@@ -11591,7 +11655,7 @@ async function loadDashboard() {
             { dateIso: '2024-01-15', label: 'Kızıldeniz Krizi Başlangıcı', color: '#EF4444' },
             { dateIso: '2024-07-15', label: 'Liman Sıkışıklıkları', color: '#F59E0B' },
             { dateIso: '2024-10-01', label: 'ABD Doğu Yakası Grevi', color: '#64748B' },
-            { dateIso: '2026-02-26', label: 'Ortadoğu Gerginliği', color: '#DC2626' }
+            { dateIso: '2026-02-26', label: 'Ortadoğu Savaşı (28 Şub)', color: '#E63946' }
           ];
 
           const rawDatesArray = chart.$rawDates;
@@ -12587,7 +12651,7 @@ async function loadDashboard() {
         isOpen,
         pillText: isOpen ? null : 'Piyasa Kapalı',
         tooltipMessage: isOpen 
-          ? 'Borsa İstanbul açıktır. Veriler 60 saniyede bir otomatik güncellenir.' 
+          ? 'Borsa İstanbul açıktır. Veriler 15 dakikada bir otomatik güncellenir (Yahoo Finance 15 dakika gecikmeli).'
           : `Borsa İstanbul şu anda kapalıdır. Hafta içi her gün TR saatiyle 10:00 - 18:15 saatleri arasında işlem görür. Bir sonraki açılış: <strong>${nextOpen}</strong>.`
       };
     }
@@ -12735,7 +12799,7 @@ async function loadDashboard() {
 
     tooltipHtml += `</div>`; // Close refresh-wrap
 
-    if (noteHtml) {
+    if (noteHtml && cardId !== 'dc-thy') {
       tooltipHtml += `
         <div class="market-tooltip-source-divider"></div>
         <div class="market-tooltip-source">${noteHtml}</div>
