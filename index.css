@@ -8109,14 +8109,14 @@
   padding-left: 12px;
 }
 .cargo-metric-lbl {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 .cargo-metric-val {
-  font-size: 14.5px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--text);
   font-family: var(--font-mono, monospace);

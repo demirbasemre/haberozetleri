@@ -11730,6 +11730,7 @@ async function loadDashboard() {
           "Hava kargo spot tarifesi endeksi",
           `Son veri: ${latest.date}<br><a href="https://www.tacindex.com" target="_blank" rel="noopener">tacindex.com →</a>`
         );
+        if (latest.date) setDateBadge('dc-bafi-date', latest.date);
       } else {
         setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
       }
@@ -12412,6 +12413,13 @@ async function loadDashboard() {
     }
 
     tooltipHtml += `</div>`; // Close refresh-wrap
+
+    if (noteHtml) {
+      tooltipHtml += `
+        <div class="market-tooltip-source-divider"></div>
+        <div class="market-tooltip-source">${noteHtml}</div>
+      `;
+    }
 
     tooltipHtml += `</div><div class="market-tooltip-arrow"></div>`;
 
