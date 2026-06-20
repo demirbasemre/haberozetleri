@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 1421,
-  "lastScanned": "2026-06-13T23:15:56.810Z",
-  "scannedCount": 108,
+  "lastScannedId": 1588,
+  "lastScanned": "2026-06-20T23:16:07.325Z",
+  "scannedCount": 167,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -429,6 +429,105 @@
         "kalitta air"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=kalittaair.com"
+    },
+    {
+      "id": "dyn_uganda_airlines",
+      "label": "Uganda Airlines",
+      "group": "combo",
+      "kw": [
+        "uganda airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ugandairlines.com"
+    },
+    {
+      "id": "dyn_oman_air_cargo",
+      "label": "Oman Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "oman air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=omanair.com"
+    },
+    {
+      "id": "dyn_hong_kong_air_cargo",
+      "label": "Hong Kong Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "hong kong air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hkaircargo.com"
+    },
+    {
+      "id": "dyn_vietnam_airlines",
+      "label": "Vietnam Airlines",
+      "group": "combo",
+      "kw": [
+        "vietnam airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=vietnamairlines.com"
+    },
+    {
+      "id": "dyn_royal_brunei_airlines",
+      "label": "Royal Brunei Airlines",
+      "group": "combo",
+      "kw": [
+        "royal brunei airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=flyroyalbrunei.com"
+    },
+    {
+      "id": "dyn_gulf_air",
+      "label": "Gulf Air",
+      "group": "combo",
+      "kw": [
+        "gulf air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=gulfair.com"
+    },
+    {
+      "id": "dyn_el_al_israel_airlines",
+      "label": "El Al Israel Airlines",
+      "group": "combo",
+      "kw": [
+        "el al israel airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=elal.com"
+    },
+    {
+      "id": "dyn_philippine_airlines",
+      "label": "Philippine Airlines",
+      "group": "combo",
+      "kw": [
+        "philippine airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=philippineairlines.com"
+    },
+    {
+      "id": "dyn_arkia_israeli_airlines",
+      "label": "Arkia Israeli Airlines",
+      "group": "combo",
+      "kw": [
+        "arkia israeli airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=arkia.com"
+    },
+    {
+      "id": "dyn_nauru_air",
+      "label": "Nauru Air",
+      "group": "combo",
+      "kw": [
+        "nauru air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=nauruairlines.com"
+    },
+    {
+      "id": "dyn_china_cargo_airlines",
+      "label": "China Cargo Airlines",
+      "group": "cargo",
+      "kw": [
+        "china cargo airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ckair.com"
     }
   ],
   "gsa": []
