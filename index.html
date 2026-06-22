@@ -12478,7 +12478,7 @@ async function loadDashboard() {
 
     tooltipHtml += `</div>`; // Close refresh-wrap
 
-    if (noteHtml && cardId !== 'dc-thy') {
+    if (noteHtml && cardId !== 'dc-thy' && cardId !== 'dc-wci') {
       tooltipHtml += `
         <div class="market-tooltip-source-divider"></div>
         <div class="market-tooltip-source">${noteHtml}</div>
