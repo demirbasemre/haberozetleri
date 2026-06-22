@@ -390,19 +390,21 @@ export default {
       const forceDirect = urlObj.searchParams.get('direct') === '1';
       try {
         const updateRes = await doFetch('https://fbx.freightos.com/', {}, forceDirect);
-        
+
         let parsed = null;
-        
+        let routes = null;
+
         // Extract ticker data from script blocks
         const tickerMatch = updateRes.body.match(/window\.frProductIntroTickerData\[[^\]]+\]\s*=\s*(\[[\s\S]*?\]);/);
         const chartMatch = updateRes.body.match(/window\.frProductIntroChartData\[[^\]]+\]\s*=\s*(\[[\s\S]*?\]);/);
-        
+
         if (tickerMatch && tickerMatch[1]) {
           const tickerData = JSON.parse(tickerMatch[1]);
           const fbxTicker = tickerData.find(item => item.label === 'FBX');
           if (fbxTicker) {
             const priceVal = parseFloat(fbxTicker.value.replace(/[^\d.]/g, ''));
             const changeVal = parseFloat(fbxTicker.change.replace(/[^\d.-]/g, ''));
+            const todayIso = new Date().toISOString().slice(0, 10);
             parsed = {
               success: true,
               price: priceVal,
@@ -410,7 +412,7 @@ export default {
               direction: fbxTicker.positive ? 'up' : (changeVal < 0 ? 'down' : 'flat'),
               date: new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })
             };
-            
+
             if (chartMatch && chartMatch[1]) {
               const chartData = JSON.parse(chartMatch[1]);
               parsed.history = chartData.map(d => ({
@@ -418,6 +420,73 @@ export default {
                 value: d.value
               }));
             }
+
+            // Rota bazlı (FBX01, FBX11, vb.) anlık değerleri çıkar
+            routes = {};
+            tickerData.forEach(item => {
+              if (item.label === 'FBX') return;
+              const rPrice = parseFloat(String(item.value).replace(/[^\d.]/g, ''));
+              const rChange = parseFloat(String(item.change).replace(/[^\d.-]/g, ''));
+              if (isNaN(rPrice)) return;
+              routes[item.label] = {
+                price: rPrice,
+                change: isNaN(rChange) ? 0 : rChange,
+                direction: item.positive ? 'up' : (rChange < 0 ? 'down' : 'flat')
+              };
+            });
+
+            // Cloudflare KV ile rota bazlı geçmişi kalıcı olarak biriktir.
+            // Freightos sadece anlık değer + haftalık % değişim veriyor; geçmiş tarih serisi yok.
+            // Bu yüzden %değişimden önceki haftayı geriye hesaplayıp ilk veriyi 2 noktalı başlatıyoruz,
+            // sonraki her haftalık çekimde son haftayı diziye ekliyoruz (büyüyen geçmiş).
+            if (env.FBX_ROUTES_KV) {
+              try {
+                const stored = await env.FBX_ROUTES_KV.get('fbx_routes_history', { type: 'json' }) || {};
+                let changed = false;
+                Object.entries(routes).forEach(([code, r]) => {
+                  const prevValue = r.change !== 0 ? r.price / (1 + r.change / 100) : r.price;
+                  const prevDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+                  if (!stored[code] || !stored[code].length) {
+                    stored[code] = [
+                      { date: prevDate, value: Math.round(prevValue * 100) / 100 },
+                      { date: todayIso, value: r.price }
+                    ];
+                    changed = true;
+                  } else {
+                    const last = stored[code][stored[code].length - 1];
+                    if (last.date !== todayIso) {
+                      stored[code].push({ date: todayIso, value: r.price });
+                      changed = true;
+                    } else if (last.value !== r.price) {
+                      last.value = r.price;
+                      changed = true;
+                    }
+                  }
+                });
+                if (changed) {
+                  await env.FBX_ROUTES_KV.put('fbx_routes_history', JSON.stringify(stored));
+                }
+                parsed.routesHistory = stored;
+              } catch (kvErr) {
+                console.warn('FBX routes KV hatası:', kvErr.message);
+              }
+            }
+
+            parsed.routes = routes;
+            parsed.routeNames = {
+              FBX01: 'Çin/D.Asya → K.Amerika Batı Kıyısı',
+              FBX02: 'K.Amerika Batı Kıyısı → Çin/D.Asya',
+              FBX03: 'Çin/D.Asya → K.Amerika Doğu Kıyısı',
+              FBX04: 'K.Amerika Doğu Kıyısı → Çin/D.Asya',
+              FBX11: 'Çin/D.Asya → K.Avrupa',
+              FBX12: 'K.Avrupa → Çin/D.Asya',
+              FBX13: 'Çin/D.Asya → Akdeniz',
+              FBX14: 'Akdeniz → Çin/D.Asya',
+              FBX21: 'K.Amerika D.Kıyısı → K.Avrupa',
+              FBX22: 'K.Avrupa → K.Amerika D.Kıyısı',
+              FBX24: 'Avrupa → G.Amerika D.Kıyısı',
+              FBX26: 'Avrupa → G.Amerika B.Kıyısı'
+            };
           }
         }
 
@@ -426,11 +495,11 @@ export default {
           const fallbackRes = await doFetch('https://n8n.emredemirbas.com/webhook/raporlar', {}, forceDirect);
           const reportsJson = JSON.parse(fallbackRes.body);
           const latestReport = reportsJson.reports[0];
-          
+
           // Try to match WCI as a fallback container index
-          const wciValM = latestReport.html_content.match(/WCI Bileşik Endeks<\/div>\s*<div[^>]*>([\d.,\s$%-]+)<\/div>/i) || 
+          const wciValM = latestReport.html_content.match(/WCI Bileşik Endeks<\/div>\s*<div[^>]*>([\d.,\s$%-]+)<\/div>/i) ||
                           latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Drewry WCI<\/span><span class="kpi-value">([\d.,\s$/kg—]+)<\/span>/i);
-          
+
           if (wciValM) {
             parsed = {
               success: true,
