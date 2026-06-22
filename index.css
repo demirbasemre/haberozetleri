@@ -7550,6 +7550,57 @@
     .fleet-compare-grid { grid-template-columns: 1fr; }
   }
 
+  /* FBX Rota Haritası */
+  .fbx-route-map {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #0b1e3d 0%, #102a52 100%);
+  }
+  .fbx-route-map svg { display: block; width: 100%; height: auto; }
+  .fbx-map-land { fill: rgba(255,255,255,0.07); }
+  .fbx-map-node-dot { fill: #5eead4; stroke: #0b1e3d; stroke-width: 1.5; }
+  .fbx-map-node-label { fill: rgba(255,255,255,0.85); font: 600 11px Inter, sans-serif; }
+  .fbx-map-route-path {
+    fill: none;
+    stroke: rgba(94,234,212,0.45);
+    stroke-width: 1.5;
+    cursor: pointer;
+    transition: stroke 0.15s, stroke-width 0.15s;
+  }
+  .fbx-map-route-path:hover, .fbx-map-route-path.is-active {
+    stroke: #5eead4;
+    stroke-width: 3;
+  }
+  .fbx-map-route-pill-bg {
+    fill: rgba(11,30,61,0.92);
+    stroke: rgba(94,234,212,0.5);
+    stroke-width: 1;
+    cursor: pointer;
+  }
+  .fbx-map-route-pill-bg:hover, .fbx-map-route-pill-bg.is-active {
+    fill: #5eead4;
+    stroke: #5eead4;
+  }
+  .fbx-map-route-pill-text {
+    fill: #5eead4;
+    font: 700 10px Inter, sans-serif;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+  }
+  .fbx-map-route-pill-bg.is-active + .fbx-map-route-pill-text,
+  .fbx-map-route-pill-bg:hover + .fbx-map-route-pill-text {
+    fill: #0b1e3d;
+  }
+  .fbx-map-route-group:focus-visible .fbx-map-route-pill-bg {
+    fill: #5eead4;
+    stroke: #fff;
+    stroke-width: 2;
+  }
+
   /* Chart modal controls layout */
   .chart-modal-controls {
     display: flex;
