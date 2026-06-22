@@ -12688,7 +12688,7 @@ async function loadDashboard() {
         isOpen,
         pillText: isOpen ? null : 'Piyasa Kapalı',
         tooltipMessage: isOpen
-          ? 'Brent Petrol piyasası açıktır. Veriler 15 dakikada bir otomatik güncellenir (Yahoo Finance 15 dakika gecikmeli).'
+          ? 'Brent Petrol piyasası açıktır. Sayfa verileri 15 dakikada bir kontrol eder; Yahoo Finance kaynaklı veriler yaklaşık 10 dakika gecikmeli gelmektedir.'
           : `Brent Petrol piyasası kapalıdır. Hafta içi 24 saat (her gün 00:00 - 01:00 arası teknik bakım arası hariç) işlem görür. Bir sonraki açılış: <strong>${nextOpen}</strong>.`
       };
     }
