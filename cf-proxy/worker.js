@@ -83,14 +83,15 @@ function parseIATAFuelMonitor(html) {
 
   if (price === null) return { success: false, error: 'Price not found in IATA fuel monitor page' };
 
-  // Extract date — try multiple patterns
+  // Extract date — only trust patterns explicitly anchored to "week of/ending" or "as of/dated".
+  // The page embeds the actual data date inside a chart image, not as text, so a generic
+  // "any date on the page" fallback previously latched onto unrelated dates elsewhere on the
+  // page (e.g. an AGM event mention) and produced a bogus, too-old date.
   let dateISO = null;
   const datePatterns = [
     /week\s+(?:of|ending)\s+([\d]+\s+[A-Za-z]+\s+\d{4})/i,
     /for\s+(?:the\s+)?week\s+(?:of|ending)\s+([\d]+\s+[A-Za-z]+\s+\d{4})/i,
     /(?:as\s+of|dated?)\s+([\d]+\s+[A-Za-z]+\s+\d{4})/i,
-    /([\d]+\s+[A-Za-z]+\s+\d{4})/,
-    /([A-Za-z]+\s+[\d]+,?\s*\d{4})/
   ];
   for (const p of datePatterns) {
     const dm = html.match(p);
@@ -98,6 +99,16 @@ function parseIATAFuelMonitor(html) {
       dateISO = parseISODate(dm[1]);
       if (dateISO) break;
     }
+  }
+
+  // No explicit date on the page: IATA publishes "last week" data, i.e. the most recently
+  // completed week ending Friday. Use the most recent Friday on/before the fetch date.
+  if (!dateISO) {
+    const now = new Date();
+    const day = now.getUTCDay(); // 0=Sun..6=Sat
+    const diffToFri = (day - 5 + 7) % 7;
+    now.setUTCDate(now.getUTCDate() - diffToFri);
+    dateISO = now.toISOString().slice(0, 10);
   }
 
   return { success: true, price, change, direction, date: dateISO };
