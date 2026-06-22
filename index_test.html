@@ -12651,7 +12651,7 @@ async function loadDashboard() {
         isOpen,
         pillText: isOpen ? null : 'Piyasa Kapalı',
         tooltipMessage: isOpen 
-          ? 'Borsa İstanbul açıktır. Veriler 15 dakikada bir otomatik güncellenir (Yahoo Finance 15 dakika gecikmeli).'
+          ? 'Borsa İstanbul açıktır. Sayfa verileri 1 dakikada bir kontrol eder; Yahoo Finance kaynaklı veriler yaklaşık 15 dakika gecikmeli gelmektedir.'
           : `Borsa İstanbul şu anda kapalıdır. Hafta içi her gün TR saatiyle 10:00 - 18:15 saatleri arasında işlem görür. Bir sonraki açılış: <strong>${nextOpen}</strong>.`
       };
     }
@@ -12869,7 +12869,7 @@ async function loadDashboard() {
   }
 
   const _marketStatusConfig = {
-    'dc-thy': { countdown: secsToNextAligned(15, 8), interval: 900, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
+    'dc-thy': { countdown: secsToNextAligned(1, 2), interval: 60, initFn: () => typeof initThyCard === 'function' ? initThyCard() : Promise.resolve() },
     'dc-usd': { countdown: 60, interval: 60, initFn: () => typeof initForexCard === 'function' ? initForexCard() : Promise.resolve() },
     'dc-brent': { countdown: secsToNextAligned(15, 8), interval: 900, initFn: () => typeof initBrentCard === 'function' ? initBrentCard() : Promise.resolve() },
     'dc-jetfuel': { countdown: null, interval: null, initFn: null },
