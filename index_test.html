@@ -3225,7 +3225,7 @@
           </div>
         </div>
         <div id="fbx-route-note" style="display:none; font-size:11px; color:var(--text-3); margin-top:6px;"></div>
-        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 260px; margin-top: 10px;">
           <canvas id="chart-fbx"></canvas>
         </div>
       </div>
@@ -11948,8 +11948,30 @@ async function loadDashboard() {
 
     const NS = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 1000 400');
+    svg.setAttribute('viewBox', '0 70 1000 270');
     svg.setAttribute('aria-hidden', 'false');
+
+    // Kenar solma gradyanları — Trans-Pasifik rotaları (FBX01-04) Uluslararası
+    // Tarih Çizgisi'nde harita kenarını aşar; gradyan bu geçişi görsel olarak
+    // belirtir (rota harita dışına çıkmaz, devam eder).
+    const defs = document.createElementNS(NS, 'defs');
+    [['fbxEdgeL', 0, 80], ['fbxEdgeR', 920, 1000]].forEach(([id, x1, x2]) => {
+      const lg = document.createElementNS(NS, 'linearGradient');
+      lg.id = id;
+      lg.setAttribute('gradientUnits', 'userSpaceOnUse');
+      lg.setAttribute('x1', x1); lg.setAttribute('x2', x2);
+      lg.setAttribute('y1', 0);  lg.setAttribute('y2', 0);
+      const isLeft = id.endsWith('L');
+      [[0, isLeft ? 1 : 0], [1, isLeft ? 0 : 1]].forEach(([p, op]) => {
+        const s = document.createElementNS(NS, 'stop');
+        s.setAttribute('offset', p * 100 + '%');
+        s.setAttribute('stop-color', '#0b1e3d');
+        s.setAttribute('stop-opacity', op);
+        lg.appendChild(s);
+      });
+      defs.appendChild(lg);
+    });
+    svg.appendChild(defs);
 
     // Gerçek dünya haritası (d3-geo Equirectangular projeksiyon ile üretildi)
     const landPath = document.createElementNS(NS, 'path');
@@ -11957,49 +11979,68 @@ async function loadDashboard() {
     landPath.setAttribute('class', 'fbx-map-land');
     svg.appendChild(landPath);
 
-    // Gerçek deniz yolu rotaları — denizcilik darboğazları (Süveyş, Panama) ve
-    // Pasifik geçişi (harita kenarından "sarılarak") üzerinden, karaya kesmeden çizilir.
-    // Her grup anahtarı (kanonik, sıralı düğüm çifti) iki nokta arasında ya doğrudan bir
-    // hat (Atlantik geçişleri gibi engelsiz rotalarda) ya da ara noktalardan oluşan bir
-    // deniz koridoru tanımlar. PASIFIK_WRAP olan gruplar harita kenarından çıkıp diğer
-    // kenardan giren iki ayrı parça olarak çizilir.
-    const SUEZ_WAYPOINTS = [[788, 246], [620, 215], [590, 163]]; // Malakka Boğazı → Aden Körfezi → Süveyş Kanalı
-    const PANAMA_ATL_TO_PAC = [[278, 224], [279, 225]]; // Panama Kanalı (Atlantik ucu → Pasifik ucu)
+    // Gerçek deniz yolu rotaları — gerçek liman koordinatları ve denizcilik darboğazları
+    // (Malakka Boğazı, Süveyş Kanalı, Panama Kanalı) üzerinden hesaplanan gemi rotaları.
+    // Koordinat: x = (boylam + 180) × (1000/360), y = (90 − enlem) × (500/180)
+    // Pasifik rotaları (FBX01-04) harita kenarından "sarılarak" iki parça olarak çizilir.
 
     const ROUTE_GROUPS = {
+      // ── Trans-Pasifik ──────────────────────────────────────────────────────
       'CEA-NAW': {
+        // Şangay ↔ Los Angeles — Kuzey Pasifik büyük daire rotası
+        // Japonya'nın doğusundan yüksek enlemlere çıkarak tarih çizgisini aşar
         wrap: true,
-        leg1: [[837, 163], [920, 190], [1000, 200]],
-        leg2: [[0, 200], [90, 180], [172, 155]]
+        leg1: [[837, 163], [897, 145], [944, 125], [986, 117], [1000, 115]],
+        leg2: [[0, 115], [40, 118], [90, 130], [140, 143], [165, 150], [172, 155]]
       },
       'CEA-NAE': {
+        // Şangay ↔ New York — Güney Pasifik + Panama Kanalı + Karayipler
         wrap: true,
-        leg1: [[837, 163], [920, 205], [1000, 215]],
-        leg2: [[0, 215], [140, 222], [279, 225], ...PANAMA_ATL_TO_PAC.slice(1), [285, 180], [294, 137]]
+        leg1: [[837, 163], [870, 180], [903, 213], [958, 228], [991, 231], [1000, 232]],
+        leg2: [[0, 232], [14, 231], [70, 224], [130, 220], [180, 213], [245, 218], [279, 225], [285, 200], [292, 160], [294, 137]]
       },
+      // ── Asya–Avrupa (Süveyş Kanalı koridoru) ─────────────────────────────
       'CEA-EU': {
+        // Şangay ↔ Rotterdam
+        // Güney Çin Denizi → Malakka Boğazı → Hint Okyanusu → Aden Körfezi →
+        // Bab el-Mandeb → Kızıldeniz → Süveyş → Doğu Akdeniz → Cebelitarık
         wrap: false,
-        points: [[837, 163], ...SUEZ_WAYPOINTS, [484, 150], [512, 106]]
+        points: [
+          [837, 163], [820, 200], [789, 247],
+          [750, 228], [708, 217], [640, 217],
+          [619, 215], [603, 189], [591, 167],
+          [567, 153], [533, 147], [485, 150],
+          [478, 122], [512, 106]
+        ]
       },
       'CEA-MED': {
+        // Şangay ↔ Algeciras — CEA-EU ile aynı Süveyş koridoru, Cebelitarık'ta son bulur
         wrap: false,
-        points: [[837, 163], ...SUEZ_WAYPOINTS, [485, 150]]
+        points: [
+          [837, 163], [820, 200], [789, 247],
+          [750, 228], [708, 217], [640, 217],
+          [619, 215], [603, 189], [591, 167],
+          [567, 153], [533, 147], [485, 150]
+        ]
       },
+      // ── Kuzey Atlantik ─────────────────────────────────────────────────────
       'EU-NAE': {
-        // Kuzey Atlantik geçişi: büyük daire (great-circle) rotası düz hat değil,
-        // haritada hafifçe kutba (yukarı) doğru kavislidir
+        // Rotterdam ↔ New York — Kuzey Atlantik büyük daire rotası
+        // Newfoundland güneyinden geçen klasik transatlantik yük koridoru
         wrap: false,
-        points: [[512, 106], [445, 92], [380, 98], [294, 137]]
+        points: [[512, 106], [478, 108], [444, 103], [403, 100], [361, 108], [333, 125], [294, 137]]
       },
+      // ── Güney Amerika ──────────────────────────────────────────────────────
       'EU-SAE': {
-        // Güney Atlantik geçişi: Afrika kıyı şeridinden uzak durmak için
-        // açık okyanusa (batıya) doğru hafif kavisli
+        // Rotterdam ↔ Santos — Güney Atlantik, São Roque burnu doğusundan
+        // geçerek kıyı açığından Santos'a iner
         wrap: false,
-        points: [[512, 106], [470, 150], [421, 218], [371, 317]]
+        points: [[512, 106], [472, 128], [456, 172], [433, 208], [430, 258], [420, 285], [400, 305], [371, 317]]
       },
       'EU-SAW': {
+        // Rotterdam ↔ Callao — Atlantik + Panama Kanalı + Güney Pasifik
         wrap: false,
-        points: [[512, 106], [484, 150], [380, 200], ...PANAMA_ATL_TO_PAC, [286, 283]]
+        points: [[512, 106], [472, 128], [456, 172], [433, 206], [403, 222], [305, 217], [279, 225], [272, 250], [286, 283]]
       }
     };
 
@@ -12008,6 +12049,24 @@ async function loadDashboard() {
     }
     function pathFromPoints(points) {
       return points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0]},${p[1]}`).join(' ');
+    }
+    // Catmull-Rom spline → SVG cubic bezier (pürüzsüz gemi rotası eğrileri)
+    function catmullRomPath(pts) {
+      if (pts.length < 2) return '';
+      if (pts.length === 2) return `M${pts[0][0]},${pts[0][1]} L${pts[1][0]},${pts[1][1]}`;
+      let d = `M${pts[0][0]},${pts[0][1]}`;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[Math.max(0, i - 1)];
+        const p1 = pts[i];
+        const p2 = pts[i + 1];
+        const p3 = pts[Math.min(pts.length - 1, i + 2)];
+        const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+        const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+        const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+        const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+        d += ` C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2[0]},${p2[1]}`;
+      }
+      return d;
     }
     function perpOf(points) {
       const first = points[0], last = points[points.length - 1];
@@ -12031,7 +12090,7 @@ async function loadDashboard() {
 
       group.forEach((route, i) => {
         const sign = group.length > 1 ? (i === 0 ? 1 : -1) : 0;
-        const offsetAmount = 9 * sign;
+        const offsetAmount = 5 * sign;
         // route.from === keyA ise tanımlı sıra doğru, değilse ters çevir (yön farklı, koridor aynı)
         const forward = route.from === keyA;
 
@@ -12048,7 +12107,7 @@ async function loadDashboard() {
           const [nx, ny] = perpOf(ordered);
           const pts = offsetAmount ? offsetPoints(ordered, nx, ny, offsetAmount) : ordered;
           const path = document.createElementNS(NS, 'path');
-          path.setAttribute('d', pathFromPoints(pts));
+          path.setAttribute('d', catmullRomPath(pts));
           path.setAttribute('class', 'fbx-map-route-path');
           path.setAttribute('data-code', route.code);
           g.appendChild(path);
@@ -12112,6 +12171,16 @@ async function loadDashboard() {
       label.setAttribute('class', 'fbx-map-node-label');
       label.textContent = node.label;
       svg.appendChild(label);
+    });
+
+    // Harita kenar solmaları — rotalar üzerine katmanlı (pointer-events: none)
+    [['fbxEdgeL', 0], ['fbxEdgeR', 920]].forEach(([id, x]) => {
+      const r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', x);  r.setAttribute('y', 0);
+      r.setAttribute('width', 80); r.setAttribute('height', 500);
+      r.setAttribute('fill', `url(#${id})`);
+      r.setAttribute('pointer-events', 'none');
+      svg.appendChild(r);
     });
 
     container.appendChild(svg);

@@ -3683,6 +3683,8 @@
     padding: 24px;
     width: 95vw;
     max-width: 1320px;
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     box-shadow: 0 24px 64px rgba(0,0,0,0.22);
@@ -7563,16 +7565,19 @@
   .fbx-map-land { fill: rgba(255,255,255,0.16); }
   .fbx-map-node-dot { fill: #5eead4; stroke: #0b1e3d; stroke-width: 1.5; }
   .fbx-map-node-label { fill: rgba(255,255,255,0.85); font: 600 11px Inter, sans-serif; }
+  .fbx-map-route-group { outline: none; }
   .fbx-map-route-path {
     fill: none;
     stroke: rgba(94,234,212,0.45);
     stroke-width: 1.5;
     cursor: pointer;
-    transition: stroke 0.15s, stroke-width 0.15s;
+    transition: stroke 0.2s, stroke-width 0.2s;
   }
-  .fbx-map-route-path:hover, .fbx-map-route-path.is-active {
+  .fbx-map-route-path:hover { stroke: #5eead4; stroke-width: 2.5; }
+  .fbx-map-route-path.is-active {
     stroke: #5eead4;
-    stroke-width: 3;
+    stroke-width: 4;
+    filter: drop-shadow(0 0 5px rgba(94,234,212,0.55));
   }
   .fbx-map-route-pill-bg {
     fill: rgba(11,30,61,0.92);
