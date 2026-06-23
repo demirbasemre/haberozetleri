@@ -3198,7 +3198,7 @@
             <div class="fbx-route-dd" id="fbx-route-dd">
               <button type="button" class="fbx-route-dd-trigger" id="fbx-route-dd-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="fbx-route-dd-panel" onclick="toggleFbxRouteDropdown()">
                 <span class="fbx-route-dd-trigger-code" id="fbx-route-dd-code">FBX</span>
-                <span class="fbx-route-dd-trigger-name" id="fbx-route-dd-name">Kompozit Endeks</span>
+                <span class="fbx-route-dd-trigger-name" id="fbx-route-dd-name">Global Endeks</span>
                 <span class="fbx-route-dd-trigger-badge" id="fbx-route-dd-badge"></span>
                 <svg class="fbx-route-dd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </button>
@@ -11719,7 +11719,7 @@ async function loadDashboard() {
       groups.get(label).push(r);
     });
 
-    let html = `<div class="fbx-route-dd-group-label">Genel</div>` + fbxRouteOptionRow('FBX', 'Kompozit Endeks', null);
+    let html = `<div class="fbx-route-dd-group-label">Genel</div>` + fbxRouteOptionRow('FBX', 'Global Endeks', null);
     groups.forEach((routes, label) => {
       html += `<div class="fbx-route-dd-group-label">${label}</div>`;
       routes.forEach(r => { html += fbxRouteOptionRow(r.code, names[r.code] || r.code, liveRoutes[r.code]); });
@@ -11743,7 +11743,7 @@ async function loadDashboard() {
     if (codeEl) codeEl.textContent = code === 'FBX' ? 'FBX' : code;
     if (nameEl) {
       const names = (window._fbxLatest && window._fbxLatest.routeNames) || {};
-      nameEl.textContent = code === 'FBX' ? 'Kompozit Endeks' : (names[code] || code);
+      nameEl.textContent = code === 'FBX' ? 'Global Endeks' : (names[code] || code);
     }
     const badgeEl = document.getElementById('fbx-route-dd-badge');
     if (badgeEl) {
@@ -12741,22 +12741,12 @@ async function loadDashboard() {
   // FBX Verisini Çek ve Göster
   async function initFbxCard() {
     return fetchCached('fbx_full_data', async () => {
-      const [history, latest] = await Promise.all([
-        fetch('fbx-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null)
-      ]);
-      return { history, latest };
-    }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
-      const fbxMap = new Map();
-      if (Array.isArray(history)) {
-        history.forEach(item => { if (item && item.date) fbxMap.set(item.date, item.value); });
-      }
-      if (latest && Array.isArray(latest.history)) {
-        latest.history.forEach(item => { if (item && item.date) fbxMap.set(item.date, item.value); });
-      }
-      _fbxHistory = Array.from(fbxMap.entries())
-        .map(([date, value]) => ({ date, value }))
-        .sort((a, b) => a.date.localeCompare(b.date));
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null);
+      return { latest };
+    }, 24 * 60 * 60 * 1000).then(({ latest }) => {
+      _fbxHistory = (latest && Array.isArray(latest.history))
+        ? latest.history.slice().sort((a, b) => a.date.localeCompare(b.date))
+        : [];
       _fbxLatest = latest;
 
       if (latest && latest.price) {
