@@ -3096,12 +3096,26 @@
           <div id="fbx-chart-title" class="rel-add-title">Freightos Baltık Endeksi (FBX)</div>
           <button class="rel-add-x" onclick="closeFbxChartModal()" aria-label="Kapat">×</button>
         </div>
-        <div class="fbx-route-map" id="fbx-route-map" role="group" aria-label="FBX rota haritası — bir rotanın üzerine gelin veya tıklayın"></div>
+        <div class="fbx-route-map" id="fbx-route-map" role="group" aria-label="FBX rota haritası — bir rotanın üzerine gelin veya tıklayın">
+          <div class="fbx-map-zoom-ctrl" role="group" aria-label="Harita yakınlaştırma">
+            <button type="button" class="fbx-map-zoom-btn" id="fbx-map-zoom-in" onclick="fbxZoomMapIn()" aria-label="Yakınlaştır">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <button type="button" class="fbx-map-zoom-btn" id="fbx-map-zoom-out" onclick="fbxZoomMapOut()" aria-label="Uzaklaştır">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+          </div>
+        </div>
         <div class="chart-modal-controls">
           <div class="modal-controls-left">
-            <select id="fbx-route-select" aria-label="FBX Rota Seçimi" style="font-size:11px; padding:4px 8px; border-radius:6px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer; margin-right:8px;" onchange="selectFbxRoute(this.value)">
-              <option value="FBX">FBX (Kompozit Endeks)</option>
-            </select>
+            <div class="fbx-route-dd" id="fbx-route-dd">
+              <button type="button" class="fbx-route-dd-trigger" id="fbx-route-dd-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="fbx-route-dd-panel" onclick="toggleFbxRouteDropdown()">
+                <span class="fbx-route-dd-trigger-code" id="fbx-route-dd-code">FBX</span>
+                <span class="fbx-route-dd-trigger-name" id="fbx-route-dd-name">Kompozit Endeks</span>
+                <svg class="fbx-route-dd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+              <div class="fbx-route-dd-panel" id="fbx-route-dd-panel" role="listbox" aria-label="FBX Rota Seçimi" tabindex="-1"></div>
+            </div>
             <div class="fbx-period-btns" id="fbx-period-btns-wrap">
               <button class="fbx-period-btn forex-btn" id="btn-fbx-1m" data-period="1m">1A</button>
               <button class="fbx-period-btn forex-btn" id="btn-fbx-6m" data-period="6m">6A</button>
@@ -11376,10 +11390,117 @@ async function loadDashboard() {
       noteEl.textContent = isComposite ? '' : 'Bu rota için geçmiş veri tutmaya bu hafta başladık; her hafta yeni veri eklendikçe grafik büyüyecek.';
     }
     window._fbxCustomRange = false;
-    const sel = document.getElementById('fbx-route-select');
-    if (sel && sel.value !== code) sel.value = code;
+    updateFbxRouteDropdownUI(code);
+    window.toggleFbxRouteDropdown(false);
     if (typeof window.highlightFbxMapRoute === 'function') window.highlightFbxMapRoute(code, false);
     renderFbxChart();
+  };
+
+  // ── FBX Rota Seçici Menüsü (kategori gruplu, canlı fiyat rozetli) ──
+  function fbxCorridorLabel(route) {
+    const a = FBX_MAP_NODES[route.from], b = FBX_MAP_NODES[route.to];
+    if (!a || !b) return 'Diğer Rotalar';
+    const shortName = label => label.split('(')[0].trim();
+    return [shortName(a.label), shortName(b.label)].sort().join(' ↔ ');
+  }
+
+  function fbxRouteOptionRow(code, name, live) {
+    let badge = '';
+    if (live && typeof live.change === 'number') {
+      const dir = live.direction || (live.change > 0 ? 'up' : live.change < 0 ? 'down' : 'flat');
+      const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '–';
+      badge = `<span class="fbx-route-dd-badge is-${dir}">${arrow} %${Math.abs(live.change).toFixed(2)}</span>`;
+    }
+    return `<div class="fbx-route-dd-option" role="option" aria-selected="false" tabindex="-1" data-code="${code}" onclick="selectFbxRoute('${code}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectFbxRoute('${code}');}">
+      <span class="fbx-route-dd-option-code">${code}</span>
+      <span class="fbx-route-dd-option-name">${name}</span>
+      ${badge}
+    </div>`;
+  }
+
+  function renderFbxRouteOptions() {
+    const panel = document.getElementById('fbx-route-dd-panel');
+    if (!panel) return;
+    const liveRoutes = (window._fbxLatest && window._fbxLatest.routes) || {};
+    const names = (window._fbxLatest && window._fbxLatest.routeNames) || {};
+
+    const groups = new Map();
+    FBX_MAP_ROUTES.forEach(r => {
+      if (!liveRoutes[r.code]) return;
+      const label = fbxCorridorLabel(r);
+      if (!groups.has(label)) groups.set(label, []);
+      groups.get(label).push(r);
+    });
+
+    let html = `<div class="fbx-route-dd-group-label">Genel</div>` + fbxRouteOptionRow('FBX', 'Kompozit Endeks', null);
+    groups.forEach((routes, label) => {
+      html += `<div class="fbx-route-dd-group-label">${label}</div>`;
+      routes.forEach(r => { html += fbxRouteOptionRow(r.code, names[r.code] || r.code, liveRoutes[r.code]); });
+    });
+    panel.innerHTML = html;
+    updateFbxRouteDropdownUI(window._fbxSelectedRoute || 'FBX');
+  }
+  window.renderFbxRouteOptions = renderFbxRouteOptions;
+
+  function updateFbxRouteDropdownUI(code) {
+    const panel = document.getElementById('fbx-route-dd-panel');
+    const codeEl = document.getElementById('fbx-route-dd-code');
+    const nameEl = document.getElementById('fbx-route-dd-name');
+    if (panel) {
+      panel.querySelectorAll('.fbx-route-dd-option').forEach(el => {
+        const active = el.dataset.code === code;
+        el.classList.toggle('is-selected', active);
+        el.setAttribute('aria-selected', String(active));
+      });
+    }
+    if (codeEl) codeEl.textContent = code === 'FBX' ? 'FBX' : code;
+    if (nameEl) {
+      const names = (window._fbxLatest && window._fbxLatest.routeNames) || {};
+      nameEl.textContent = code === 'FBX' ? 'Kompozit Endeks' : (names[code] || code);
+    }
+  }
+
+  function closeFbxRouteDropdownOnOutsideClick(e) {
+    const dd = document.getElementById('fbx-route-dd');
+    if (dd && !dd.contains(e.target)) window.toggleFbxRouteDropdown(false);
+  }
+  function handleFbxRouteDropdownKeydown(e) {
+    const panel = document.getElementById('fbx-route-dd-panel');
+    if (!panel) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      window.toggleFbxRouteDropdown(false);
+      const trigger = document.getElementById('fbx-route-dd-trigger');
+      if (trigger) trigger.focus();
+      return;
+    }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const options = Array.from(panel.querySelectorAll('.fbx-route-dd-option'));
+      if (!options.length) return;
+      const active = panel.contains(document.activeElement) ? document.activeElement : (panel.querySelector('.is-selected') || options[0]);
+      let idx = options.indexOf(active);
+      idx = e.key === 'ArrowDown' ? Math.min(options.length - 1, idx + 1) : Math.max(0, idx - 1);
+      options[idx].focus();
+    }
+  }
+  window.toggleFbxRouteDropdown = function(forceState) {
+    const dd = document.getElementById('fbx-route-dd');
+    const trigger = document.getElementById('fbx-route-dd-trigger');
+    const panel = document.getElementById('fbx-route-dd-panel');
+    if (!dd || !trigger || !panel) return;
+    const isOpen = typeof forceState === 'boolean' ? forceState : !dd.classList.contains('is-open');
+    dd.classList.toggle('is-open', isOpen);
+    trigger.setAttribute('aria-expanded', String(isOpen));
+    if (isOpen) {
+      const target = panel.querySelector('.is-selected') || panel.querySelector('.fbx-route-dd-option');
+      if (target) target.focus();
+      document.addEventListener('click', closeFbxRouteDropdownOnOutsideClick);
+      document.addEventListener('keydown', handleFbxRouteDropdownKeydown);
+    } else {
+      document.removeEventListener('click', closeFbxRouteDropdownOnOutsideClick);
+      document.removeEventListener('keydown', handleFbxRouteDropdownKeydown);
+    }
   };
 
   function renderFbxChart(period) {
@@ -11659,6 +11780,13 @@ async function loadDashboard() {
     svg.setAttribute('viewBox', '0 0 1000 400');
     svg.setAttribute('aria-hidden', 'false');
 
+    // Zoom yapıldığında ekranda sabit boyutta kalması gereken işaretçiler (rota pilleri,
+    // düğüm noktaları ve etiketler). Çizgiler ise vector-effect="non-scaling-stroke" ile
+    // sabit kalır; daireler ve yazılar zoom oranının tersiyle ölçeklenir.
+    const scalableCircles = []; // { el, baseR }
+    const scalableTexts = [];   // { el, baseFont }
+    const scalableShips = [];   // { el, baseScale } — gemi ikonları (animateMotion ile birlikte ölçeklenir)
+
     // Gerçek dünya haritası (d3-geo Equirectangular projeksiyon ile üretildi)
     const landPath = document.createElementNS(NS, 'path');
     landPath.setAttribute('d', FBX_LAND_PATH);
@@ -11687,6 +11815,9 @@ async function loadDashboard() {
       },
       'CEA-EU': {
         wrap: false,
+        // CEA-MED ile aynı Süveyş koridorunu paylaşır; etiketi (11/12) Cebelitarık→Rotterdam
+        // ayrı kuzey ayağına taşıyarak Akdeniz'deki 13/14 kümesinden görsel olarak ayır.
+        pillAt: 4.6,
         points: [[837, 163], ...SUEZ_WAYPOINTS, [484, 150], [512, 106]]
       },
       'CEA-MED': {
@@ -11723,6 +11854,13 @@ async function loadDashboard() {
       const len = Math.sqrt(dx * dx + dy * dy) || 1;
       return [-dy / len, dx / len];
     }
+    // Kesirli (fractional) indeks ile noktalar dizisi üzerinde ara konum hesapla
+    function interpAlong(pts, fidx) {
+      const i = Math.max(0, Math.min(pts.length - 1, Math.floor(fidx)));
+      const j = Math.min(pts.length - 1, i + 1);
+      const t = fidx - i;
+      return [pts[i][0] + (pts[j][0] - pts[i][0]) * t, pts[i][1] + (pts[j][1] - pts[i][1]) * t];
+    }
 
     // Rota gruplarını (aynı iki nokta arasındaki yön çiftlerini) belirle
     const groups = {};
@@ -11740,6 +11878,10 @@ async function loadDashboard() {
       group.forEach((route, i) => {
         const sign = group.length > 1 ? (i === 0 ? 1 : -1) : 0;
         const offsetAmount = 9 * sign;
+        // Pil, çizginin kendisinden daha fazla dışa itilir; böylece aynı koridorun karşı
+        // yönlü pili veya komşu koridorların pilleri (örn. CEA-EU / CEA-MED kümesi) üst
+        // üste binmez. Çizgi gerçek rotaya yakın kalır, sadece etiket dairesi ayrışır.
+        const pillExtra = 14 * sign;
         // route.from === keyA ise tanımlı sıra doğru, değilse ters çevir (yön farklı, koridor aynı)
         const forward = route.from === keyA;
 
@@ -11751,27 +11893,56 @@ async function loadDashboard() {
         g.setAttribute('aria-label', `${route.code}: ${FBX_MAP_NODES[route.from].label} → ${FBX_MAP_NODES[route.to].label}`);
 
         let pillPoint;
+        // Çizgi her zaman aynı (kanonik, yön bağımsız) noktalar üzerinden çizilir; sadece
+        // dik (perpendicular) offset işareti yöne göre değişir. Önceden noktalar yöne göre
+        // ters çevrilip perpendikül de o ters sıradan hesaplanıyordu — bu da bazı çift
+        // yönlü rotalarda (örn. FBX12/FBX21) pilin yanlış noktaya veya başka bir rotanın
+        // pilinin tam üstüne düşmesine yol açıyordu.
         const addSegment = (rawPoints) => {
-          const ordered = forward ? rawPoints : rawPoints.slice().reverse();
-          const [nx, ny] = perpOf(ordered);
-          const pts = offsetAmount ? offsetPoints(ordered, nx, ny, offsetAmount) : ordered;
+          const [nx, ny] = perpOf(rawPoints);
+          const pts = offsetAmount ? offsetPoints(rawPoints, nx, ny, offsetAmount) : rawPoints.slice();
           const path = document.createElementNS(NS, 'path');
           path.setAttribute('d', pathFromPoints(pts));
           path.setAttribute('class', 'fbx-map-route-path');
           path.setAttribute('data-code', route.code);
+          path.setAttribute('vector-effect', 'non-scaling-stroke');
           g.appendChild(path);
-          return pts;
+          return { pts, nx, ny };
         };
 
+        let fullPts;
         if (routeDef.wrap) {
-          const pts1 = addSegment(routeDef.leg1);
-          const pts2 = addSegment(routeDef.leg2);
+          const seg1 = addSegment(routeDef.leg1);
+          const seg2 = addSegment(routeDef.leg2);
           // Pill'i, yönüne göre okyanus geçişinin görünür kenarına yakın bir noktaya koy
-          pillPoint = forward ? pts1[1] : pts2[Math.max(0, pts2.length - 2)];
+          const basePt = forward ? seg1.pts[1] : seg2.pts[Math.max(0, seg2.pts.length - 2)];
+          const { nx, ny } = forward ? seg1 : seg2;
+          pillPoint = [basePt[0] + nx * pillExtra, basePt[1] + ny * pillExtra];
+          fullPts = seg1.pts.concat(seg2.pts);
         } else {
-          const pts = addSegment(routeDef.points);
-          pillPoint = pts[Math.floor(pts.length / 2)];
+          const seg = addSegment(routeDef.points);
+          const at = routeDef.pillAt != null ? routeDef.pillAt : (seg.pts.length - 1) / 2;
+          const basePt = interpAlong(seg.pts, at);
+          pillPoint = [basePt[0] + seg.nx * pillExtra, basePt[1] + seg.ny * pillExtra];
+          fullPts = seg.pts;
         }
+
+        // Yön: rota tanımı her zaman keyA → diğer düğüm sırasında çizilir (fullPts).
+        // Gerçek seyir yönü route.from → route.to ise ve forward=false ise (route.from
+        // koridorun "diğer" ucuysa) gemi animasyonu ters sırada ilerletilir.
+        const motionPts = forward ? fullPts : fullPts.slice().reverse();
+        const ship = document.createElementNS(NS, 'path');
+        ship.setAttribute('class', 'fbx-ship-icon');
+        ship.setAttribute('data-code', route.code);
+        ship.setAttribute('d', 'M -4,-3 L 6,0 L -4,3 L -1,0 Z');
+        const shipMotion = document.createElementNS(NS, 'animateMotion');
+        shipMotion.setAttribute('dur', Math.max(6, motionPts.length * 2.6).toFixed(1) + 's');
+        shipMotion.setAttribute('repeatCount', 'indefinite');
+        shipMotion.setAttribute('rotate', 'auto');
+        shipMotion.setAttribute('path', pathFromPoints(motionPts));
+        ship.appendChild(shipMotion);
+        g.appendChild(ship);
+        scalableShips.push({ el: ship, baseScale: 1 });
 
         const [mx, my] = pillPoint;
 
@@ -11781,7 +11952,9 @@ async function loadDashboard() {
         pillBg.setAttribute('r', '15');
         pillBg.setAttribute('class', 'fbx-map-route-pill-bg');
         pillBg.setAttribute('data-code', route.code);
+        pillBg.setAttribute('vector-effect', 'non-scaling-stroke');
         g.appendChild(pillBg);
+        scalableCircles.push({ el: pillBg, baseR: 15 });
 
         const pillText = document.createElementNS(NS, 'text');
         pillText.setAttribute('x', mx);
@@ -11789,6 +11962,7 @@ async function loadDashboard() {
         pillText.setAttribute('class', 'fbx-map-route-pill-text');
         pillText.textContent = route.code.replace('FBX', '');
         g.appendChild(pillText);
+        scalableTexts.push({ el: pillText, baseFont: 10 });
 
         const onEnter = () => window.previewFbxRoute(route.code);
         const onLeave = () => window.endFbxRoutePreview();
@@ -11805,32 +11979,129 @@ async function loadDashboard() {
       });
     });
 
-    Object.values(FBX_MAP_NODES).forEach(node => {
+    Object.entries(FBX_MAP_NODES).forEach(([key, node]) => {
+      // Çıkış/varış halkası: varsayılan gizli, rota seçilince ilgili düğümde belirir
+      const ring = document.createElementNS(NS, 'circle');
+      ring.setAttribute('cx', node.x);
+      ring.setAttribute('cy', node.y);
+      ring.setAttribute('r', '9');
+      ring.setAttribute('class', 'fbx-map-node-ring');
+      ring.setAttribute('data-node', key);
+      ring.setAttribute('vector-effect', 'non-scaling-stroke');
+      svg.appendChild(ring);
+      scalableCircles.push({ el: ring, baseR: 9 });
+
       const dot = document.createElementNS(NS, 'circle');
       dot.setAttribute('cx', node.x);
       dot.setAttribute('cy', node.y);
       dot.setAttribute('r', '5');
       dot.setAttribute('class', 'fbx-map-node-dot');
+      dot.setAttribute('data-node', key);
+      dot.setAttribute('vector-effect', 'non-scaling-stroke');
       svg.appendChild(dot);
+      scalableCircles.push({ el: dot, baseR: 5 });
 
       const label = document.createElementNS(NS, 'text');
       label.setAttribute('x', node.x);
       label.setAttribute('y', node.y - 11);
       label.setAttribute('text-anchor', 'middle');
       label.setAttribute('class', 'fbx-map-node-label');
+      label.setAttribute('data-node', key);
       label.textContent = node.label;
+      label.dataset.baseDy = '11';
+      label.dataset.baseLabel = node.label;
       svg.appendChild(label);
+      scalableTexts.push({ el: label, baseFont: 11, anchorY: node.y, baseDy: 11 });
     });
 
     container.appendChild(svg);
+
+    // Boş harita alanına (kara/deniz arka planına) tıklayınca seçili rotayı kaldır
+    svg.addEventListener('click', e => {
+      if (e.target === svg || e.target === landPath) {
+        if (window._fbxSelectedRoute && window._fbxSelectedRoute !== 'FBX' && typeof window.selectFbxRoute === 'function') {
+          window.selectFbxRoute('FBX');
+        }
+      }
+    });
+
+    // ── Yakınlaştırma (zoom) — + / - butonları ve fare tekerleği ──
+    const FBX_MAP_BASE_VIEW = { x: 0, y: 0, w: 1000, h: 400 };
+    const FBX_MAP_ZOOM_MAX = 6;
+    let fbxMapView = { ...FBX_MAP_BASE_VIEW };
+
+    function rescaleFbxMapMarkers() {
+      // Zoom oranının tersi: viewBox küçüldükçe (zoom in) işaretçileri küçült ki
+      // ekrandaki görünür boyutları sabit kalsın.
+      const inv = fbxMapView.w / FBX_MAP_BASE_VIEW.w;
+      scalableCircles.forEach(({ el, baseR }) => el.setAttribute('r', (baseR * inv).toFixed(2)));
+      scalableTexts.forEach(({ el, baseFont, anchorY, baseDy }) => {
+        el.style.fontSize = (baseFont * inv).toFixed(2) + 'px';
+        if (anchorY != null && baseDy != null) el.setAttribute('y', (anchorY - baseDy * inv).toFixed(2));
+      });
+      scalableShips.forEach(({ el, baseScale }) => el.setAttribute('transform', `scale(${(baseScale * inv).toFixed(3)})`));
+    }
+    function applyFbxMapView() {
+      svg.setAttribute('viewBox', `${fbxMapView.x} ${fbxMapView.y} ${fbxMapView.w} ${fbxMapView.h}`);
+      rescaleFbxMapMarkers();
+      const zoomInBtn = document.getElementById('fbx-map-zoom-in');
+      const zoomOutBtn = document.getElementById('fbx-map-zoom-out');
+      if (zoomInBtn) zoomInBtn.disabled = fbxMapView.w <= (FBX_MAP_BASE_VIEW.w / FBX_MAP_ZOOM_MAX) + 0.01;
+      if (zoomOutBtn) zoomOutBtn.disabled = fbxMapView.w >= FBX_MAP_BASE_VIEW.w - 0.01;
+    }
+    function zoomFbxMap(factor, originX, originY) {
+      const cx = originX != null ? originX : fbxMapView.x + fbxMapView.w / 2;
+      const cy = originY != null ? originY : fbxMapView.y + fbxMapView.h / 2;
+      const minW = FBX_MAP_BASE_VIEW.w / FBX_MAP_ZOOM_MAX;
+      let newW = Math.min(FBX_MAP_BASE_VIEW.w, Math.max(minW, fbxMapView.w / factor));
+      let newH = newW * (FBX_MAP_BASE_VIEW.h / FBX_MAP_BASE_VIEW.w);
+      const relX = (cx - fbxMapView.x) / fbxMapView.w;
+      const relY = (cy - fbxMapView.y) / fbxMapView.h;
+      let newX = cx - relX * newW;
+      let newY = cy - relY * newH;
+      newX = Math.min(FBX_MAP_BASE_VIEW.x + FBX_MAP_BASE_VIEW.w - newW, Math.max(FBX_MAP_BASE_VIEW.x, newX));
+      newY = Math.min(FBX_MAP_BASE_VIEW.y + FBX_MAP_BASE_VIEW.h - newH, Math.max(FBX_MAP_BASE_VIEW.y, newY));
+      fbxMapView = { x: newX, y: newY, w: newW, h: newH };
+      applyFbxMapView();
+    }
+    window.fbxZoomMapIn = () => zoomFbxMap(1.4);
+    window.fbxZoomMapOut = () => zoomFbxMap(1 / 1.4);
+
+    container.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect = svg.getBoundingClientRect();
+      const relX = (e.clientX - rect.left) / rect.width;
+      const relY = (e.clientY - rect.top) / rect.height;
+      const originX = fbxMapView.x + relX * fbxMapView.w;
+      const originY = fbxMapView.y + relY * fbxMapView.h;
+      zoomFbxMap(e.deltaY < 0 ? 1.15 : 1 / 1.15, originX, originY);
+    }, { passive: false });
+
+    applyFbxMapView();
   }
   window.highlightFbxMapRoute = function(code, isPreview) {
     document.querySelectorAll('#fbx-route-map .is-active').forEach(el => el.classList.remove('is-active'));
+    document.querySelectorAll('#fbx-route-map .fbx-map-node-ring').forEach(el => el.classList.remove('is-origin', 'is-destination'));
+    document.querySelectorAll('#fbx-route-map .fbx-map-node-label').forEach(el => {
+      if (el.dataset.baseLabel) el.textContent = el.dataset.baseLabel;
+    });
     if (!code || code === 'FBX') return;
     document.querySelectorAll(`#fbx-route-map [data-code="${code}"]`).forEach(el => el.classList.add('is-active'));
+    const route = FBX_MAP_ROUTES.find(r => r.code === code);
+    if (route) {
+      const originRing = document.querySelector(`#fbx-route-map .fbx-map-node-ring[data-node="${route.from}"]`);
+      const destRing = document.querySelector(`#fbx-route-map .fbx-map-node-ring[data-node="${route.to}"]`);
+      if (originRing) originRing.classList.add('is-origin');
+      if (destRing) destRing.classList.add('is-destination');
+      const originLabel = document.querySelector(`#fbx-route-map .fbx-map-node-label[data-node="${route.from}"]`);
+      const destLabel = document.querySelector(`#fbx-route-map .fbx-map-node-label[data-node="${route.to}"]`);
+      if (originLabel) originLabel.textContent = (originLabel.dataset.baseLabel || originLabel.textContent) + ' · Çıkış';
+      if (destLabel) destLabel.textContent = (destLabel.dataset.baseLabel || destLabel.textContent) + ' · Varış';
+    }
   };
   window.renderFbxRouteMap = renderFbxRouteMap;
   renderFbxRouteMap();
+  renderFbxRouteOptions();
 
   window._iataActiveMetric = 'demand';
   window.selectIataChartMetric = function(btn, metric) {
@@ -12128,18 +12399,9 @@ async function loadDashboard() {
         setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
       }
 
-      // Rota seçici dropdown'unu doldur (FBX01, FBX11, vb. anlık rota değerleri)
-      if (latest && latest.routes) {
-        const sel = document.getElementById('fbx-route-select');
-        if (sel && sel.options.length <= 1) {
-          const names = latest.routeNames || {};
-          Object.keys(latest.routes).sort().forEach(code => {
-            const opt = document.createElement('option');
-            opt.value = code;
-            opt.textContent = `${code} — ${names[code] || code}`;
-            sel.appendChild(opt);
-          });
-        }
+      // Rota seçici menüsünü doldur (FBX01, FBX11, vb. anlık rota değerleri)
+      if (latest && latest.routes && typeof window.renderFbxRouteOptions === 'function') {
+        window.renderFbxRouteOptions();
       }
     });
   }
