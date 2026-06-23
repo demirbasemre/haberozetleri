@@ -3199,6 +3199,7 @@
               <button type="button" class="fbx-route-dd-trigger" id="fbx-route-dd-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="fbx-route-dd-panel" onclick="toggleFbxRouteDropdown()">
                 <span class="fbx-route-dd-trigger-code" id="fbx-route-dd-code">FBX</span>
                 <span class="fbx-route-dd-trigger-name" id="fbx-route-dd-name">Kompozit Endeks</span>
+                <span class="fbx-route-dd-trigger-badge" id="fbx-route-dd-badge"></span>
                 <svg class="fbx-route-dd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </button>
               <div class="fbx-route-dd-panel" id="fbx-route-dd-panel" role="listbox" aria-label="FBX Rota Seçimi" tabindex="-1"></div>
@@ -3238,7 +3239,6 @@
             </button>
           </div>
         </div>
-        <div id="fbx-route-note" style="display:none; font-size:11px; color:var(--text-3); margin-top:6px;"></div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 260px; margin-top: 10px;">
           <canvas id="chart-fbx"></canvas>
         </div>
@@ -11674,13 +11674,8 @@ async function loadDashboard() {
     const isComposite = code === 'FBX';
     const periodWrap = document.getElementById('fbx-period-btns-wrap');
     const dateWrap = document.getElementById('fbx-date-picker-wrap');
-    const noteEl = document.getElementById('fbx-route-note');
     if (periodWrap) periodWrap.style.display = isComposite ? '' : 'none';
     if (dateWrap) dateWrap.style.display = isComposite ? '' : 'none';
-    if (noteEl) {
-      noteEl.style.display = isComposite ? 'none' : 'block';
-      noteEl.textContent = isComposite ? '' : 'Bu rota için geçmiş veri tutmaya bu hafta başladık; her hafta yeni veri eklendikçe grafik büyüyecek.';
-    }
     window._fbxCustomRange = false;
     updateFbxRouteDropdownUI(code);
     window.toggleFbxRouteDropdown(false);
@@ -11749,6 +11744,20 @@ async function loadDashboard() {
     if (nameEl) {
       const names = (window._fbxLatest && window._fbxLatest.routeNames) || {};
       nameEl.textContent = code === 'FBX' ? 'Kompozit Endeks' : (names[code] || code);
+    }
+    const badgeEl = document.getElementById('fbx-route-dd-badge');
+    if (badgeEl) {
+      const liveRoutes = (window._fbxLatest && window._fbxLatest.routes) || {};
+      const change = code === 'FBX' ? (window._fbxLatest && window._fbxLatest.change) : (liveRoutes[code] && liveRoutes[code].change);
+      if (typeof change === 'number') {
+        const dir = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
+        const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '–';
+        badgeEl.textContent = `${arrow} %${Math.abs(change).toFixed(2)}`;
+        badgeEl.className = `fbx-route-dd-trigger-badge is-${dir}`;
+      } else {
+        badgeEl.textContent = '';
+        badgeEl.className = 'fbx-route-dd-trigger-badge';
+      }
     }
   }
 
