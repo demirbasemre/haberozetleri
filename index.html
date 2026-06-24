@@ -2622,9 +2622,11 @@
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Platts Global Endeks · ton</div>
-          <div id="dc-jetfuel-date" class="dash-card-date-badge"></div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://www.iata.org/en/publications/economics/fuel-monitor/" target="_blank" rel="noopener">Jet Fuel Price Monitor →</a> · Haftalık</div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-jetfuel-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
@@ -2640,6 +2642,9 @@
           <div class="dash-card-sub">Europe Brent · varil</div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Anlık</div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-brent-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
@@ -2658,6 +2663,9 @@
           <div class="dash-card-sub">Borsa İstanbul · hisse fiyatı</div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-thy-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
@@ -2694,7 +2702,7 @@
             </div>
             <div class="forex-watermark eur">€</div>
           </div>
-          <div class="forex-row no-border">
+          <div id="forex-parity-row" class="forex-row no-border" style="display:none">
             <span class="forex-indicator-dot parity"></span>
             <span class="forex-symbol">€<span class="forex-slash" style="color: var(--text-3); margin: 0 4px; font-weight: 500;">/</span>$</span>
             <svg class="forex-arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -2706,8 +2714,14 @@
               <span class="forex-change" id="forex-parity-change"></span>
             </div>
           </div>
-          <div class="dash-card-footer">
-            <div class="dash-card-note"><a href="https://finance.yahoo.com" target="_blank" rel="noopener">finance.yahoo.com →</a> · Günlük</div>
+          <button class="forex-parity-toggle" id="forex-parity-toggle" onclick="event.stopPropagation(); toggleForexParity()" title="EUR/USD paritesini göster/gizle">
+            <span id="forex-parity-toggle-label">€ / $ Parite</span>
+            <svg id="forex-parity-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;transition:transform 0.2s">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="dc-date-footer">
+            <div id="dc-usd-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
@@ -2722,6 +2736,9 @@
           <div class="dash-card-sub">40' konteyner ortalama spot fiyat</div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a></div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-wci-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         
@@ -2763,13 +2780,16 @@
               <span class="cargo-metric-val skeleton" id="iata-val-loadfactor">-</span>
             </div>
             <div class="cargo-metric-item">
-              <span class="cargo-metric-lbl">Spot Rate</span>
+              <span class="cargo-metric-lbl">UR</span>
               <span class="cargo-metric-val skeleton" id="iata-val-spotrate">-</span>
             </div>
           </div>
-          <div class="dash-card-sub" id="dc-iata-sub">CTK büyümesi, kapasite ve doluluk değişimi</div>
+          <div class="dash-card-sub" id="dc-iata-sub" style="display:none"></div>
           <div class="dash-card-footer">
-            <div class="dash-card-note" id="dc-iata-note">IATA · Rapor · <a href="https://www.iata.org/en/publications/economics/" target="_blank" rel="noopener">iata.org Rapor →</a></div>
+            <div class="dash-card-note" id="dc-iata-note">Son veri: —<br><a href="https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc" target="_blank" rel="noopener">IATA Reports →</a></div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-iata-date" class="dash-card-date-badge"></div>
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
@@ -2784,6 +2804,9 @@
           <div class="dash-card-sub">Global konteyner spot fiyat endeksi</div>
           <div class="dash-card-footer">
             <div class="dash-card-note">Freightos · <a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a></div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-fbx-date" class="dash-card-date-badge"></div>
           </div>
         </div>
       </div>
@@ -7549,6 +7572,43 @@ async function imfSeriesFetch(indicator, countries) {
 }
 
 // ── CARD HELPERS ──────────────────────────────────────────────
+function isoToDisplay(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-');
+  return `${d}.${m}.${y}`;
+}
+
+function setDateBadge(id, dateStr) {
+  const el = document.getElementById(id);
+  if (!el || !dateStr) return;
+  el.textContent = `Son veri: ${dateStr}`;
+  applyDateBadgeFreshness(el);
+}
+
+function toggleForexParity() {
+  const row = document.getElementById('forex-parity-row');
+  const chevron = document.getElementById('forex-parity-chevron');
+  const label = document.getElementById('forex-parity-toggle-label');
+  if (!row) return;
+  const isVisible = row.style.display !== 'none';
+  row.style.display = isVisible ? 'none' : 'flex';
+  if (chevron) chevron.style.transform = isVisible ? '' : 'rotate(180deg)';
+  if (label) label.textContent = isVisible ? '€/$ Parite' : '€/$ Parite';
+}
+
+function applyDateBadgeFreshness(el) {
+  if (!el || !el.textContent) return;
+  const m = el.textContent.match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if (!m) return;
+  const date = new Date(+m[3], +m[2] - 1, +m[1]);
+  const days = (Date.now() - date.getTime()) / 86400000;
+  el.classList.remove('date-badge--fresh', 'date-badge--recent', 'date-badge--aging', 'date-badge--stale');
+  if (days < 1)       el.classList.add('date-badge--fresh');
+  else if (days < 4)  el.classList.add('date-badge--recent');
+  else if (days < 14) el.classList.add('date-badge--aging');
+  else                el.classList.add('date-badge--stale');
+}
+
 function setCard(id, value, change, sub, note) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -7577,7 +7637,7 @@ function setCard(id, value, change, sub, note) {
   const cEl = el.querySelector('.dash-card-change');
   if (change != null) {
     const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
-    cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+    cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(change).toFixed(2);
     cEl.className = 'dash-card-change ' + dir;
   }
   if (sub  != null) el.querySelector('.dash-card-sub').textContent  = sub;
@@ -9401,7 +9461,7 @@ async function loadDashboard() {
             const cEl = document.getElementById(`forex-${currency.toLowerCase()}-change`);
             if (cEl) {
               const dir = change > 0.01 ? 'up' : change < -0.01 ? 'down' : 'flat';
-              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(change).toFixed(2);
               cEl.className = 'forex-change ' + dir;
             }
           }
@@ -9617,7 +9677,7 @@ async function loadDashboard() {
           parityChgEl.textContent = '';
         } else {
           const dir = parityChange > 0.0001 ? 'up' : parityChange < -0.0001 ? 'down' : 'flat';
-          parityChgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(parityChange).toFixed(2) + '%';
+          parityChgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(parityChange).toFixed(2);
           parityChgEl.className = 'forex-change ' + dir;
         }
       }
@@ -9677,7 +9737,7 @@ async function loadDashboard() {
         }
         if (chgEl && change != null) {
           const dir = change > 0.01 ? 'up' : change < -0.01 ? 'down' : 'flat';
-          chgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+          chgEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(change).toFixed(2);
           chgEl.className = 'forex-change ' + dir;
         }
       };
@@ -9686,6 +9746,10 @@ async function loadDashboard() {
         updateEl('forex-usd-val', 'forex-usd-change', usdPrice, usdChange);
         updateEl('forex-eur-val', 'forex-eur-change', eurPrice, eurChange);
         updateParityUI();
+        const _fd = new Date();
+        const _fStr = `${String(_fd.getDate()).padStart(2,'0')}.${String(_fd.getMonth()+1).padStart(2,'0')}.${_fd.getFullYear()} ${String(_fd.getHours()).padStart(2,'0')}:${String(_fd.getMinutes()).padStart(2,'0')}`;
+        const usdDateEl = document.getElementById('dc-usd-date');
+        if (usdDateEl) { usdDateEl.textContent = `Son veri: ${_fStr}`; applyDateBadgeFreshness(usdDateEl); }
       } else {
         useErApiFallback();
       }
@@ -9780,14 +9844,17 @@ async function loadDashboard() {
           }
         }
         const lastPoint = validPoints.length ? validPoints[validPoints.length - 1] : { time: Date.now()/1000 };
-        const lastObsDate = new Date(lastPoint.time * 1000).toISOString().slice(0, 10);
-        
+        const _bD = new Date(lastPoint.time * 1000);
+        const lastObsDate = `${String(_bD.getDate()).padStart(2,'0')}.${String(_bD.getMonth()+1).padStart(2,'0')}.${_bD.getFullYear()} ${String(_bD.getHours()).padStart(2,'0')}:${String(_bD.getMinutes()).padStart(2,'0')}`;
+
         setCard('dc-brent',
           price.toFixed(1) + ' $',
           change,
           'Europe Brent · varil',
           `<a href="https://finance.yahoo.com/quote/BZ%3DF" target="_blank" rel="noopener">finance.yahoo.com →</a>`
         );
+        const brentDateEl = document.getElementById('dc-brent-date');
+        if (brentDateEl) { brentDateEl.textContent = `Son veri: ${lastObsDate}`; applyDateBadgeFreshness(brentDateEl); }
       } catch (err) {
         console.error("Brent kart güncelleme hatası:", err);
         setCard('dc-brent', '—', null, 'Europe Brent · varil', 'Veri okunamadı');
@@ -9986,7 +10053,7 @@ async function loadDashboard() {
             const cEl = document.querySelector('#dc-brent .dash-card-change');
             if (cEl) {
               const dir = change > 0.05 ? 'up' : change < -0.05 ? 'down' : 'flat';
-              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + Math.abs(change).toFixed(2) + '%';
+              cEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(change).toFixed(2);
               cEl.className = 'dash-card-change ' + dir;
             }
           }
@@ -11768,6 +11835,8 @@ async function loadDashboard() {
         "40' konteyner ortalama spot fiyat",
         `Son veri: ${latest.date}<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`
       );
+      const wciIso = convertDrewryDate(latest.date);
+      if (wciIso) setDateBadge('dc-wci-date', isoToDisplay(wciIso));
     } else {
       setCard('dc-wci', '—', null, '', 'Veri alınamadı');
     }
@@ -11830,6 +11899,9 @@ async function loadDashboard() {
           "Global konteyner spot fiyat endeksi",
           `Son veri: ${latest.date}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`
         );
+        const fbxRaw = latest.date || '';
+        const fbxIso = fbxRaw.includes('-') ? fbxRaw : (fbxRaw ? new Date().toISOString().slice(0,10) : null);
+        if (fbxIso) setDateBadge('dc-fbx-date', isoToDisplay(fbxIso));
       } else {
         setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
       }
@@ -11839,7 +11911,7 @@ async function loadDashboard() {
   // LF biçimlendirme fonksiyonu (% işaretini başa taşır)
   window.formatLF = function(val) {
     if (!val || val === '—') return '—';
-    const cleaned = String(val).replace('%', '').trim();
+    const cleaned = String(val).replace('%', '').replace('+', '').trim();
     return '%' + cleaned;
   };
 
@@ -11861,18 +11933,30 @@ async function loadDashboard() {
         const lfEl = document.getElementById('iata-val-loadfactor');
         const srEl = document.getElementById('iata-val-spotrate');
         
-        if (dEl) { dEl.textContent = latest.demand; dEl.classList.remove('skeleton'); }
-        if (cEl) { cEl.textContent = latest.capacity; cEl.classList.remove('skeleton'); }
+        const applyMetricColor = (el, val) => {
+          const num = parseFloat(String(val).replace(/[^0-9.\-]/g, ''));
+          el.classList.remove('positive', 'negative');
+          if (!isNaN(num)) { if (num > 0) el.classList.add('positive'); else if (num < 0) el.classList.add('negative'); }
+        };
+        if (dEl) { dEl.textContent = window.formatLF(latest.demand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, latest.demand); }
+        if (cEl) { cEl.textContent = window.formatLF(latest.capacity); cEl.classList.remove('skeleton'); applyMetricColor(cEl, latest.capacity); }
         if (lfEl) { lfEl.textContent = window.formatLF(latest.loadFactor); lfEl.classList.remove('skeleton'); }
-        if (srEl) { srEl.textContent = latest.spotRate || '—'; srEl.classList.remove('skeleton'); }
+        if (srEl) {
+          const rawSR = latest.spotRate || '';
+          const numSR = parseFloat(rawSR);
+          srEl.textContent = !isNaN(numSR) ? '$' + numSR.toFixed(2) : (rawSR || '—');
+          srEl.classList.remove('skeleton');
+        }
 
         const subEl = document.getElementById('dc-iata-sub');
-        if (subEl) subEl.textContent = `Talep ve kapasite dengesi (${latest.date})`;
-        
+        if (subEl) subEl.style.display = 'none';
+
         const noteEl = document.getElementById('dc-iata-note');
         if (noteEl) {
-          noteEl.innerHTML = `IATA · Son Rapor: ${latest.date} · <a href="${latest.pdfLink}" target="_blank" rel="noopener">iata.org Rapor →</a>`;
+          noteEl.innerHTML = `Son veri: ${latest.date}<br><a href="https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc" target="_blank" rel="noopener">IATA Reports →</a>`;
         }
+        const iataDateEl = document.getElementById('dc-iata-date');
+        if (iataDateEl && latest.date) { iataDateEl.textContent = `Son veri: ${latest.date}`; }
       } else {
         const dEl = document.getElementById('iata-val-demand');
         if (dEl) {
@@ -12295,6 +12379,8 @@ async function loadDashboard() {
           'Borsa İstanbul · hisse fiyatı',
           `Son veri: ${lastObsDate}<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>`
         );
+        const thyDateEl = document.getElementById('dc-thy-date');
+        if (thyDateEl && lastObsDate) { thyDateEl.textContent = `Son veri: ${lastObsDate}`; applyDateBadgeFreshness(thyDateEl); }
       } catch (err) {
         console.error("THY kart güncelleme hatası:", err);
         setCard('dc-thy', '—', null, '', 'Veri okunamadı');
@@ -20272,7 +20358,7 @@ const ALL_INDICATOR_CARDS = [
   { id: 'dc-usd', name: 'Döviz & Parite', defaultVisible: true, isCargo: false },
   { id: 'dc-wci', name: 'Dünya Konteyner Endeksi (WCI)', defaultVisible: true, isCargo: false },
   { id: 'dc-bafi', name: 'Baltık Hava Kargo Endeksi (BAFI)', defaultVisible: true, isCargo: false },
-  { id: 'dc-iata', name: 'IATA Market Analizi', defaultVisible: true, isTest: true, isCargo: false },
+  { id: 'dc-iata', name: 'IATA Market Analizi', defaultVisible: true, isCargo: false },
   { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: true, isCargo: false }
 ];
 
@@ -20290,7 +20376,7 @@ function isNewBadgeVisible(cardId) {
 
 const DEFAULT_INDICATORS_CONFIG = {
   order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx'],
-  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata']
+  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx']
 };
 
 window.getIndicatorsConfig = function() {
@@ -20304,20 +20390,8 @@ window.getIndicatorsConfig = function() {
         allIds.forEach(id => {
           if (!parsed.order.includes(id)) parsed.order.push(id);
         });
-        // Yeni kartları kullanıcının görünür listesinin sonuna ekle
-        Object.keys(NEW_CARDS).forEach(id => {
-          if (!parsed.visible.includes(id)) {
-            parsed.visible.push(id);
-            const withoutNew = parsed.order.filter(oid => oid !== id);
-            const lastVisIdx = withoutNew.reduce((last, oid, i) =>
-              parsed.visible.includes(oid) ? i : last, -1);
-            parsed.order = [
-              ...withoutNew.slice(0, lastVisIdx + 1),
-              id,
-              ...withoutNew.slice(lastVisIdx + 1)
-            ];
-          }
-        });
+        // Tüm kartlar her zaman görünür
+        parsed.visible = [...parsed.order];
         return parsed;
       }
     } catch (e) {
@@ -20394,13 +20468,11 @@ window.populateCustomizeList = function(config) {
     const cardInfo = ALL_INDICATOR_CARDS.find(item => item.id === id);
     if (!cardInfo) return;
     
-    const isVisible = config.visible.includes(id);
-    
     const item = document.createElement('div');
     item.className = 'customize-item';
     item.draggable = true;
     item.dataset.id = id;
-    
+
     item.innerHTML = `
       <div class="customize-item-drag-handle" title="Sürükle bırak ile sırala">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -20413,7 +20485,6 @@ window.populateCustomizeList = function(config) {
         </svg>
       </div>
       <div class="customize-item-name">${cardInfo.name}</div>
-      ${cardInfo.isTest ? `<div class="customize-item-badge test">Test</div>` : ''}
       ${isNewBadgeVisible(cardInfo.id) ? `<div class="customize-item-badge new">Yeni</div>` : ''}
       <button class="customize-item-btn btn-move-up" onclick="moveItemUp(this)" title="Yukarı Taşı">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -20425,10 +20496,6 @@ window.populateCustomizeList = function(config) {
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </button>
-      <label class="customize-item-toggle" title="Göster / Gizle">
-        <input type="checkbox" class="customize-item-check" ${isVisible ? 'checked' : ''}>
-        <span class="customize-toggle-slider"></span>
-      </label>
     `;
     listEl.appendChild(item);
   });
@@ -20506,20 +20573,13 @@ window.saveIndicatorsConfig = function() {
   if (!listEl) return;
   
   const order = [];
-  const visible = [];
-  
+
   const items = listEl.querySelectorAll('.customize-item');
   items.forEach(item => {
-    const id = item.dataset.id;
-    const isChecked = item.querySelector('.customize-item-check').checked;
-    
-    order.push(id);
-    if (isChecked) {
-      visible.push(id);
-    }
+    order.push(item.dataset.id);
   });
-  
-  localStorage.setItem('haberozetleri_indicators_config', JSON.stringify({ order, visible }));
+
+  localStorage.setItem('haberozetleri_indicators_config', JSON.stringify({ order, visible: [...order] }));
   applyIndicatorsConfig();
   closeIndicatorsCustomizeModal();
 };
@@ -20808,7 +20868,7 @@ window.resetIndicatorsConfig = function() {
           <button class="rel-add-x" onclick="closeIndicatorsCustomizeModal()" aria-label="Kapat">×</button>
         </div>
         <div style="font-size: 12px; color: var(--text-3); margin-bottom: 12px; line-height: 1.5;">
-          Anlık Göstergeler bölümünde görüntülenecek kartları seçin ve sıralamak için sürükleyin veya butonları kullanın.
+          Anlık Göstergeler bölümündeki kartların sırasını değiştirmek için sürükleyin veya butonları kullanın.
         </div>
         <!-- Liste alanı -->
         <div class="customize-list" id="customize-indicators-list" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding-right: 4px;">

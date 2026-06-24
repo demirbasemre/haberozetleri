@@ -20827,7 +20827,7 @@ const ALL_INDICATOR_CARDS = [
   { id: 'dc-usd', name: 'Döviz & Parite', defaultVisible: true, isCargo: false },
   { id: 'dc-wci', name: 'Dünya Konteyner Endeksi (WCI)', defaultVisible: true, isCargo: false },
   { id: 'dc-bafi', name: 'Baltık Hava Kargo Endeksi (BAFI)', defaultVisible: true, isCargo: false },
-  { id: 'dc-iata', name: 'IATA Market Analizi', defaultVisible: true, isTest: true, isCargo: false },
+  { id: 'dc-iata', name: 'IATA Market Analizi', defaultVisible: true, isCargo: false },
   { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: true, isCargo: false }
 ];
 
@@ -20845,7 +20845,7 @@ function isNewBadgeVisible(cardId) {
 
 const DEFAULT_INDICATORS_CONFIG = {
   order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx'],
-  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata']
+  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx']
 };
 
 window.getIndicatorsConfig = function() {
@@ -20859,21 +20859,8 @@ window.getIndicatorsConfig = function() {
         allIds.forEach(id => {
           if (!parsed.order.includes(id)) parsed.order.push(id);
         });
-        // Yeni kartları kullanıcının görünür listesinin sonuna ekle
-        Object.keys(NEW_CARDS).forEach(id => {
-          if (!parsed.visible.includes(id)) {
-            parsed.visible.push(id);
-            // Sıralamada son görünür kartın hemen ardına taşı
-            const withoutNew = parsed.order.filter(oid => oid !== id);
-            const lastVisIdx = withoutNew.reduce((last, oid, i) =>
-              parsed.visible.includes(oid) ? i : last, -1);
-            parsed.order = [
-              ...withoutNew.slice(0, lastVisIdx + 1),
-              id,
-              ...withoutNew.slice(lastVisIdx + 1)
-            ];
-          }
-        });
+        // Tüm kartlar her zaman görünür
+        parsed.visible = [...parsed.order];
         return parsed;
       }
     } catch (e) {
@@ -20950,13 +20937,11 @@ window.populateCustomizeList = function(config) {
     const cardInfo = ALL_INDICATOR_CARDS.find(item => item.id === id);
     if (!cardInfo) return;
     
-    const isVisible = config.visible.includes(id);
-    
     const item = document.createElement('div');
     item.className = 'customize-item';
     item.draggable = true;
     item.dataset.id = id;
-    
+
     item.innerHTML = `
       <div class="customize-item-drag-handle" title="Sürükle bırak ile sırala">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -20969,7 +20954,6 @@ window.populateCustomizeList = function(config) {
         </svg>
       </div>
       <div class="customize-item-name">${cardInfo.name}</div>
-      ${cardInfo.isTest ? `<div class="customize-item-badge test">Test</div>` : ''}
       ${isNewBadgeVisible(cardInfo.id) ? `<div class="customize-item-badge new">Yeni</div>` : ''}
       <button class="customize-item-btn btn-move-up" onclick="moveItemUp(this)" title="Yukarı Taşı">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -20981,10 +20965,6 @@ window.populateCustomizeList = function(config) {
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </button>
-      <label class="customize-item-toggle" title="Göster / Gizle">
-        <input type="checkbox" class="customize-item-check" ${isVisible ? 'checked' : ''}>
-        <span class="customize-toggle-slider"></span>
-      </label>
     `;
     listEl.appendChild(item);
   });
@@ -21062,20 +21042,13 @@ window.saveIndicatorsConfig = function() {
   if (!listEl) return;
   
   const order = [];
-  const visible = [];
-  
+
   const items = listEl.querySelectorAll('.customize-item');
   items.forEach(item => {
-    const id = item.dataset.id;
-    const isChecked = item.querySelector('.customize-item-check').checked;
-    
-    order.push(id);
-    if (isChecked) {
-      visible.push(id);
-    }
+    order.push(item.dataset.id);
   });
-  
-  localStorage.setItem('haberozetleri_indicators_config', JSON.stringify({ order, visible }));
+
+  localStorage.setItem('haberozetleri_indicators_config', JSON.stringify({ order, visible: [...order] }));
   applyIndicatorsConfig();
   closeIndicatorsCustomizeModal();
 };
@@ -21364,7 +21337,7 @@ window.resetIndicatorsConfig = function() {
           <button class="rel-add-x" onclick="closeIndicatorsCustomizeModal()" aria-label="Kapat">×</button>
         </div>
         <div style="font-size: 12px; color: var(--text-3); margin-bottom: 12px; line-height: 1.5;">
-          Anlık Göstergeler bölümünde görüntülenecek kartları seçin ve sıralamak için sürükleyin veya butonları kullanın.
+          Anlık Göstergeler bölümündeki kartların sırasını değiştirmek için sürükleyin veya butonları kullanın.
         </div>
         <!-- Liste alanı -->
         <div class="customize-list" id="customize-indicators-list" style="max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; padding-right: 4px;">
