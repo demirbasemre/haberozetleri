@@ -4,3 +4,7 @@ compatibility_date = "2024-01-01"
 
 [vars]
 # FUNNEL_URL ve PROXY_TOKEN CF dashboard'dan secret olarak eklenmeli
+
+[[kv_namespaces]]
+binding = "FBX_ROUTES_KV"
+id = "a2c120b335444937a037b916734f4150"

@@ -3683,6 +3683,8 @@
     padding: 24px;
     width: 95vw;
     max-width: 1320px;
+    max-height: calc(100dvh - 40px);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     box-shadow: 0 24px 64px rgba(0,0,0,0.22);
@@ -7549,6 +7551,255 @@
     .fleet-stats-grid { grid-template-columns: repeat(2, 1fr); }
     .fleet-compare-grid { grid-template-columns: 1fr; }
   }
+
+  /* FBX Rota Haritası */
+  .fbx-route-map {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #0b1e3d 0%, #102a52 100%);
+  }
+  .fbx-route-map svg { display: block; width: 100%; height: auto; }
+  .fbx-map-land { fill: rgba(255,255,255,0.16); }
+  .fbx-map-node-dot { fill: #5eead4; stroke: #0b1e3d; stroke-width: 1.5; }
+  .fbx-map-node-label { fill: rgba(255,255,255,0.85); font: 600 11px Inter, sans-serif; }
+  .fbx-map-route-group { outline: none; }
+  .fbx-map-route-path {
+    fill: none;
+    stroke: rgba(94,234,212,0.45);
+    stroke-width: 1.5;
+    cursor: pointer;
+    transition: stroke 0.2s, stroke-width 0.2s;
+  }
+  .fbx-map-route-path:hover { stroke: #5eead4; stroke-width: 2.5; }
+  .fbx-map-route-path.is-active {
+    stroke: #5eead4;
+    stroke-width: 4;
+    filter: drop-shadow(0 0 5px rgba(94,234,212,0.55));
+  }
+  .fbx-map-route-pill-bg {
+    fill: rgba(11,30,61,0.92);
+    stroke: rgba(94,234,212,0.5);
+    stroke-width: 1;
+    cursor: pointer;
+  }
+  .fbx-map-route-pill-bg:hover, .fbx-map-route-pill-bg.is-active {
+    fill: #5eead4;
+    stroke: #5eead4;
+  }
+  .fbx-map-route-pill-text {
+    fill: #5eead4;
+    font: 700 10px Inter, sans-serif;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+  }
+  .fbx-map-route-pill-bg.is-active + .fbx-map-route-pill-text,
+  .fbx-map-route-pill-bg:hover + .fbx-map-route-pill-text {
+    fill: #0b1e3d;
+  }
+  .fbx-map-route-group:focus-visible .fbx-map-route-pill-bg {
+    fill: #5eead4;
+    stroke: #fff;
+    stroke-width: 2;
+  }
+  .fbx-route-map svg { touch-action: none; }
+
+  /* Çıkış (origin) / varış (destination) halkaları — rota seçildiğinde görünür */
+  .fbx-map-node-ring {
+    fill: none;
+    stroke-width: 2;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .fbx-map-node-ring.is-origin {
+    opacity: 1;
+    stroke: #34d399;
+    stroke-dasharray: 3 2.4;
+    animation: fbxRingPulseOrigin 1.6s linear infinite;
+  }
+  .fbx-map-node-ring.is-destination {
+    opacity: 1;
+    stroke: #fbbf24;
+    animation: fbxRingPulseDest 1.4s ease-in-out infinite;
+  }
+  @keyframes fbxRingPulseOrigin {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -12; }
+  }
+  @keyframes fbxRingPulseDest {
+    0%, 100% { stroke-opacity: 1; }
+    50% { stroke-opacity: 0.35; }
+  }
+  .fbx-map-node-label { transition: fill 0.2s; }
+
+  /* Seçili rota üzerinde ilerleyen gemi figürü */
+  .fbx-ship-icon {
+    fill: #5eead4;
+    stroke: #0b1e3d;
+    stroke-width: 0.6;
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 0 3px rgba(94,234,212,0.85));
+    transition: opacity 0.2s;
+  }
+  .fbx-map-route-group.is-active .fbx-ship-icon { opacity: 1; }
+
+  /* FBX Harita Yakınlaştırma Kontrolleri */
+  .fbx-map-zoom-ctrl {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 5;
+  }
+  .fbx-map-zoom-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(11,30,61,0.78);
+    color: #5eead4;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .fbx-map-zoom-btn:hover { background: rgba(94,234,212,0.22); border-color: #5eead4; }
+  .fbx-map-zoom-btn:active { background: rgba(94,234,212,0.32); }
+  .fbx-map-zoom-btn:disabled { opacity: 0.35; cursor: default; }
+  .fbx-map-zoom-btn:focus-visible { outline: 2px solid #5eead4; outline-offset: 2px; }
+
+  /* FBX Rota Seçici Menüsü */
+  .fbx-route-dd {
+    position: relative;
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 11px;
+  }
+  .fbx-route-dd-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    min-height: 30px;
+    width: max-content;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .fbx-route-dd-trigger:hover { border-color: var(--accent); }
+  .fbx-route-dd.is-open .fbx-route-dd-trigger,
+  .fbx-route-dd-trigger:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(94,234,212,0.18);
+  }
+  .fbx-route-dd-trigger-code {
+    font-weight: 800;
+    color: #0d9488;
+    letter-spacing: 0.02em;
+  }
+  [data-theme="dark"] .fbx-route-dd-trigger-code { color: #5eead4; }
+  .fbx-route-dd-trigger-name {
+    color: var(--text-2);
+    white-space: nowrap;
+  }
+  .fbx-route-dd-trigger-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .fbx-route-dd-trigger-badge.is-up { background: rgba(16,185,129,0.12); color: #059669; }
+  [data-theme="dark"] .fbx-route-dd-trigger-badge.is-up { color: #34d399; }
+  .fbx-route-dd-trigger-badge.is-down { background: var(--red-muted); color: var(--red); }
+  .fbx-route-dd-trigger-badge.is-flat { background: rgba(156,163,175,0.15); color: var(--text-3); }
+  .fbx-route-dd-chevron {
+    color: var(--text-3);
+    flex-shrink: 0;
+    transition: transform 0.18s ease;
+  }
+  .fbx-route-dd.is-open .fbx-route-dd-chevron { transform: rotate(180deg); }
+  .fbx-route-dd-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 40;
+    width: 280px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 6px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+  }
+  .fbx-route-dd.is-open .fbx-route-dd-panel { display: block; }
+  .fbx-route-dd-group-label {
+    padding: 7px 8px 3px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-3);
+  }
+  .fbx-route-dd-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 7px;
+    cursor: pointer;
+    outline: none;
+  }
+  .fbx-route-dd-option:hover,
+  .fbx-route-dd-option:focus-visible {
+    background: rgba(94,234,212,0.12);
+  }
+  .fbx-route-dd-option.is-selected {
+    background: rgba(13,148,136,0.12);
+  }
+  .fbx-route-dd-option-code {
+    font-weight: 800;
+    font-size: 10.5px;
+    color: #0d9488;
+    flex-shrink: 0;
+    min-width: 38px;
+  }
+  [data-theme="dark"] .fbx-route-dd-option-code { color: #5eead4; }
+  .fbx-route-dd-option-name {
+    flex: 1;
+    color: var(--text-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .fbx-route-dd-option.is-selected .fbx-route-dd-option-name { color: var(--text); font-weight: 600; }
+  .fbx-route-dd-badge {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 20px;
+  }
+  .fbx-route-dd-badge.is-up { background: rgba(16,185,129,0.12); color: #059669; }
+  [data-theme="dark"] .fbx-route-dd-badge.is-up { color: #34d399; }
+  .fbx-route-dd-badge.is-down { background: var(--red-muted); color: var(--red); }
+  .fbx-route-dd-badge.is-flat { background: rgba(156,163,175,0.15); color: var(--text-3); }
 
   /* Chart modal controls layout */
   .chart-modal-controls {
