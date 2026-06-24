@@ -7605,7 +7605,8 @@
     stroke: #fff;
     stroke-width: 2;
   }
-  .fbx-route-map svg { touch-action: none; }
+  .fbx-route-map svg { touch-action: none; cursor: grab; }
+  .fbx-map-route-group, .fbx-map-route-group * { cursor: pointer; }
 
   /* Çıkış (origin) / varış (destination) halkaları — rota seçildiğinde görünür */
   .fbx-map-node-ring {
@@ -7646,6 +7647,50 @@
     transition: opacity 0.2s;
   }
   .fbx-map-route-group.is-active .fbx-ship-icon { opacity: 1; }
+
+  /* CEA-MED path: inactive'de gizli, sadece seçilince görünür */
+  .fbx-map-route-path[data-corridor="CEA-MED"] { opacity: 0; transition: opacity 0.3s; }
+  .fbx-map-route-path[data-corridor="CEA-MED"].is-active { opacity: 1; }
+
+  /* Düğüm halkası: çıkış/varış göstergeleri */
+  .fbx-map-node-ring.is-origin  { stroke: #f59e0b; stroke-width: 2.5; }
+  .fbx-map-node-ring.is-destination { stroke: #34d399; stroke-width: 2.5; }
+
+  /* Dual pill (iki yönlü koridor) */
+  .fbx-dual-pill-bg {
+    fill: rgba(11,30,61,0.92);
+    stroke: rgba(94,234,212,0.5);
+    stroke-width: 1;
+    cursor: pointer;
+  }
+  .fbx-dual-pill-bg.is-active {
+    stroke: #5eead4;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 6px rgba(94,234,212,0.55));
+  }
+  .fbx-dual-pill-divider { stroke: rgba(94,234,212,0.35); stroke-width: 0.8; }
+  .fbx-dual-pill-half { cursor: pointer; pointer-events: all; }
+  .fbx-dual-pill-half:hover + text.fbx-map-route-pill-text { fill: #fff; }
+  .fbx-dual-pill-bg ~ .fbx-map-route-pill-text.is-route-active { fill: #fff; font-weight: 900; }
+  .fbx-map-route-group.is-active .fbx-dual-pill-bg ~ .fbx-map-route-pill-text:not(.is-route-active) { fill: rgba(94,234,212,0.45); }
+
+  /* Yön değiştirme butonu */
+  .fbx-dir-btn-g { cursor: pointer; }
+  .fbx-dir-btn-circle {
+    fill: rgba(11,30,61,0.95);
+    stroke: #5eead4;
+    stroke-width: 1.5;
+    transition: fill 0.2s;
+  }
+  .fbx-dir-btn-g:hover .fbx-dir-btn-circle { fill: rgba(94,234,212,0.22); }
+  .fbx-dir-btn-icon {
+    fill: none;
+    stroke: #5eead4;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .fbx-dir-btn-g:hover .fbx-dir-btn-icon { stroke: #fff; }
 
   /* FBX Harita Yakınlaştırma Kontrolleri */
   .fbx-map-zoom-ctrl {
