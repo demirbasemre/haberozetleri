@@ -1062,6 +1062,7 @@ export default {
           type: ac.type || null,
           icaoType: ac.icao_type || null,
           manufacturer: ac.manufacturer || null,
+          owner: ac.registered_owner || null,
           photoUrl: ac.url_photo || null,
           photoThumb: ac.url_photo_thumbnail || null,
         };
