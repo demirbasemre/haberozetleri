@@ -370,34 +370,41 @@ const AIRPORT_DB = {
 const CARGO_STATIC_ROUTES = {
   "THY6116": [
     { dep: "HLLM", arr: "HECA" }, // Tripoli (Mitiga) -> Cairo
-    { dep: "LEMD", arr: "LTFM" }  // Madrid -> Istanbul
+    { dep: "HECA", arr: "HLLM" }, // Cairo -> Tripoli (Mitiga)
+    { dep: "LEMD", arr: "LTFM" }, // Madrid -> Istanbul
+    { dep: "LTFM", arr: "LEMD" }  // Istanbul -> Madrid
   ],
   "THY6058": [
-    { dep: "GOBD", arr: "LTFM" }  // Dakar -> Istanbul
+    { dep: "GOBD", arr: "LTFM" }, // Dakar -> Istanbul
+    { dep: "LTFM", arr: "GOBD" }  // Istanbul -> Dakar
   ],
   "THY6112": [
-    { dep: "LTFM", arr: "VABB" }  // Istanbul -> Mumbai
+    { dep: "LTFM", arr: "VABB" }, // Istanbul -> Mumbai
+    { dep: "VABB", arr: "LTFM" }  // Mumbai -> Istanbul
   ],
   "THY6421": [
     { dep: "LTFM", arr: "LFPG" }, // Istanbul -> Paris
-    { dep: "LFSB", arr: "LTFM" }  // Basel -> Istanbul
+    { dep: "LFPG", arr: "LTFM" }, // Paris -> Istanbul
+    { dep: "LFSB", arr: "LTFM" }, // Basel -> Istanbul
+    { dep: "LTFM", arr: "LFSB" }  // Istanbul -> Basel
   ],
   "THY6091": [
-    { dep: "LTFM", arr: "EBLG" }  // Istanbul -> Liège
+    { dep: "LTFM", arr: "EBLG" }, // Istanbul -> Liège
+    { dep: "EBLG", arr: "LTFM" }  // Liège -> Istanbul
   ],
   "THY6118": [
-    { dep: "LTFM", arr: "VOMM" }  // Istanbul -> Chennai (MAA)
+    { dep: "LTFM", arr: "VOMM" }, // Istanbul -> Chennai (MAA)
+    { dep: "VOMM", arr: "LTFM" }  // Chennai -> Istanbul
   ],
   "THY6251": [
-    { dep: "RCTP", arr: "LTFM" }  // Taipei -> Istanbul
+    { dep: "RCTP", arr: "LTFM" }, // Taipei -> Istanbul
+    { dep: "LTFM", arr: "RCTP" }  // Istanbul -> Taipei
   ],
   "THY6261": [
+    { dep: "LTFM", arr: "OJAI" }, // Istanbul -> Amman
+    { dep: "OJAI", arr: "VVNB" }, // Amman -> Hanoi
     { dep: "VVNB", arr: "VIDP" }, // Hanoi -> Delhi
-    { dep: "VIDP", arr: "VVNB" }, // Delhi -> Hanoi
-    { dep: "VIDP", arr: "LTFM" }, // Delhi -> Istanbul
-    { dep: "LTFM", arr: "VIDP" }, // Istanbul -> Delhi
-    { dep: "LTFM", arr: "VVNB" }, // Istanbul -> Hanoi
-    { dep: "VVNB", arr: "LTFM" }  // Hanoi -> Istanbul
+    { dep: "VIDP", arr: "LTFM" }  // Delhi -> Istanbul
   ],
   "THY6215": [
     { dep: "LTFM", arr: "ZGSZ" }, // Istanbul -> Shenzhen
@@ -1538,6 +1545,11 @@ export default {
           if (prev) {
             // E.D. Düzeltme: THY6058 için önbellekteki eski hatalı Columbus (KCMH) rotasını yok say
             if (f.callsign.toUpperCase() === 'THY6058' && prev.dep && prev.dep.icao !== 'GOBD') {
+              prev.dep = null;
+              prev.arr = null;
+            }
+            // E.D. Düzeltme: THY6261 için önbellekteki eski hatalı Delhi -> Hanoi (VIDP -> VVNB) rotasını yok say
+            if (f.callsign.toUpperCase() === 'THY6261' && prev.dep && prev.dep.icao === 'VIDP' && prev.arr && prev.arr.icao === 'VVNB') {
               prev.dep = null;
               prev.arr = null;
             }
