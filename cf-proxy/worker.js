@@ -138,7 +138,9 @@ const AIRPORT_DB = {
   "KCMH": { icao: "KCMH", iata: "CMH", name: "John Glenn Columbus International Airport", city: "Columbus", lat: 39.998, lon: -82.892 },
   "CMH": { icao: "KCMH", iata: "CMH", name: "John Glenn Columbus International Airport", city: "Columbus", lat: 39.998, lon: -82.892 },
   "VOMM": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 },
-  "MAA": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 }
+  "MAA": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 },
+  "RCTP": { icao: "RCTP", iata: "TPE", name: "Taiwan Taoyuan International Airport", city: "Taipei", lat: 25.080, lon: 121.234 },
+  "TPE": { icao: "RCTP", iata: "TPE", name: "Taiwan Taoyuan International Airport", city: "Taipei", lat: 25.080, lon: 121.234 }
 };
 
 const CARGO_STATIC_ROUTES = {
@@ -160,6 +162,12 @@ const CARGO_STATIC_ROUTES = {
   ],
   "THY6118": [
     { dep: "LTFM", arr: "VOMM" }  // Istanbul -> Chennai (MAA)
+  ],
+  "THY6251": [
+    { dep: "RCTP", arr: "LTFM" }  // Taipei -> Istanbul
+  ],
+  "THY6261": [
+    { dep: "VVNB", arr: "VIDP" }  // Hanoi -> Delhi
   ]
 };
 
