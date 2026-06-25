@@ -706,7 +706,7 @@ export default {
     if (urlObj.pathname === '/cargo-debug') {
       try {
         const cs = urlObj.searchParams.get('callsign') || 'THY6354';
-        const adsbRes = await doFetch(`https://api.adsbdb.com/v0/callsign/${cs}`, {}, true, 0);
+        const adsbRes = await doFetch(`https://api.adsbdb.com/v0/callsign/${cs}`, {}, false, 0);
         let parsed = null, parseError = null;
         try { parsed = JSON.parse(adsbRes.body); } catch (e) { parseError = e.message; }
         return new Response(JSON.stringify({
@@ -723,25 +723,41 @@ export default {
     }
 
     // ── /cargo-flights Canlı THY Kargo Uçakları Rotası ──
-    // OpenSky'nin states/all uç noktası ev Tailscale funnel'ı üzerinden ~60sn
-    // sürebiliyor (büyük global ADS-B anlık görüntüsü). Bu yüzden stale-while-
-    // revalidate deseni kullanılır: önbellekte veri varsa anında o döndürülür,
-    // arka planda (ctx.waitUntil) tazesi çekilip önbellek güncellenir. Sadece
-    // worker'ın hiç çalışmadığı ilk istek gerçek gecikmeyi yaşar.
     if (urlObj.pathname === '/cargo-flights') {
       const forceDirect = urlObj.searchParams.get('direct') === '1';
-      const cache = caches.default;
       const cacheKey = new Request('https://internal.cache/cargo-flights-v1');
+      const kvKey = 'cargo_flights_cache_v1';
 
-      // Hızlı yol: sadece states/all (anlık konum + sayım). Hiçbir koşulda
-      // kullanıcıyı bekletmez — kullanıcı her zaman bu fonksiyonun sonucunu görür.
+      async function getCachedFlights() {
+        if (env.FBX_ROUTES_KV) {
+          try {
+            const data = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+            if (data) return data;
+          } catch (_) {}
+        }
+        try {
+          const cached = await caches.default.match(cacheKey);
+          if (cached) return await cached.json();
+        } catch (_) {}
+        return null;
+      }
+
+      async function setCachedFlights(publicData) {
+        if (env.FBX_ROUTES_KV) {
+          try {
+            await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(publicData));
+          } catch (_) {}
+        }
+        try {
+          await caches.default.put(cacheKey, new Response(JSON.stringify(publicData), {
+            headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=70' },
+          }));
+        } catch (_) {}
+      }
+
       async function computeBaseCargoFlights() {
         const token = await getOpenSkyToken(env, doFetch);
         const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
-        // Cloudflare datacenter'larından OpenSky'ye doğrudan bağlantı engelli (522) —
-        // tüm istekler ev funnel'ı üzerinden gider. Funnel, Authorization header'ını
-        // upstream'e iletecek şekilde güncellendi (server.js'in ev sunucuda yeniden
-        // başlatılması gerekir).
         const statesRes = await doFetch('https://opensky-network.org/api/states/all', { headers: authHeaders }, forceDirect, 50);
         if (statesRes.status !== 200) {
           throw new Error(`OpenSky states fetch failed (status ${statesRes.status})`);
@@ -749,10 +765,6 @@ export default {
         const statesData = JSON.parse(statesRes.body);
         const states = statesData.states || [];
 
-        // Havadaki tüm THY seferleri (callsign "THY" ile başlayan). Yolcu/kargo ayrımı
-        // uçuş numarasına dayanan bir sezgiseldir (>=6000 kargo) — THY Kargo'nun resmi
-        // uçuş numarası bloğu kamuya açık şekilde teyit edilemediğinden bazı seferler
-        // yanlış sınıflanabilir.
         const allFlights = [];
         for (const s of states) {
           const callsign = (s[1] || '').trim();
@@ -780,18 +792,8 @@ export default {
         };
       }
 
-      // Yavaş yol: kalkış/varış tahmini. SADECE arka planda (ctx.waitUntil) çalışır,
-      // hiçbir HTTP yanıtı bunu beklemez. En fazla 20 kargo + 15 yolcu uçuşu
-      // zenginleştirilir — OpenSky kotasını ve ev funnel'ının yükünü korumak için.
-      // adsbdb.com: açık kaynak, ücretsiz, kimlik doğrulama gerektirmeyen
-      // callsign → gerçek rota (kalkış/varış) veritabanı. OpenSky'nin ADS-B
-      // izinden tahmin ettiği (ve anonim erişimde tamamen kapalı olan)
-      // /flights/aircraft yerine bunu kullanıyoruz — kota sınırı yok, cruise
-      // aşamasındaki uçuşlarda da çalışıyor (tahmine değil gerçek callsign
-      // eşlemesine dayanıyor). Cloudflare'den doğrudan erişilebiliyor (funnel
-      // gerekmiyor).
       async function fetchRouteFromAdsbdb(callsign) {
-        const res = await doFetch(`https://api.adsbdb.com/v0/callsign/${callsign}`, {}, true, 21600);
+        const res = await doFetch(`https://api.adsbdb.com/v0/callsign/${callsign}`, {}, false, 21600);
         if (res.status !== 200) return null;
         let data;
         try { data = JSON.parse(res.body); } catch { return null; }
@@ -806,8 +808,6 @@ export default {
 
       async function enrichInBackground(data, cachedFlights) {
         const { flights } = data;
-        // adsbdb paralel patlamada IP'yi 300sn engelliyor (429). Bu yüzden
-        // istekler SIRALI ve aralıklı yapılır — sadece rota bilgisi eksik olan kargo uçuşları, en fazla 15.
         const cargoFlightsToFetch = flights.filter(f => f.type === 'cargo' && !f.dep).slice(0, 15);
         if (cargoFlightsToFetch.length > 0) {
           for (const f of cargoFlightsToFetch) {
@@ -817,25 +817,21 @@ export default {
                 f.dep = route.dep;
                 f.arr = route.arr;
               }
-            } catch (_) { /* rota bulunamadı — konum verisi yine de gösterilir */ }
+            } catch (_) { }
             await new Promise(r => setTimeout(r, 1200));
           }
           const { token: _t, authHeaders: _a, ...publicData } = data;
-          await cache.put(cacheKey, new Response(JSON.stringify(publicData), {
-            headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=70' },
-          }));
+          await setCachedFlights(publicData);
         }
       }
 
       async function refreshAndCache() {
         const fresh = await computeBaseCargoFlights();
         
-        // Önbellekteki mevcut rotaları korumak ve API limitlerini korumak için eşleşen rotaları kopyala
         let cachedFlights = [];
         try {
-          const cachedRes = await cache.match(cacheKey);
-          if (cachedRes) {
-            const cachedData = await cachedRes.json();
+          const cachedData = await getCachedFlights();
+          if (cachedData) {
             cachedFlights = cachedData.flights || [];
             for (const f of fresh.flights) {
               const prev = cachedFlights.find(p => p.callsign === f.callsign);
@@ -848,27 +844,21 @@ export default {
         } catch (_) {}
 
         const { token: _t, authHeaders: _a, ...publicData } = fresh;
-        await cache.put(cacheKey, new Response(JSON.stringify(publicData), {
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=70' },
-        }));
-        // Konum verisi hemen kullanılabilir; rota tahmini arka planda gelir.
+        await setCachedFlights(publicData);
         ctx.waitUntil(enrichInBackground(fresh, cachedFlights).catch(() => {}));
         return publicData;
       }
 
       try {
-        const cached = await cache.match(cacheKey);
+        const cachedData = await getCachedFlights();
         let data;
-        if (cached) {
-          data = await cached.json();
+        if (cachedData) {
+          data = cachedData;
           const age = Math.floor(Date.now() / 1000) - data.updated;
           if (age > 55) {
-            // Bayat veri — kullanıcıyı bekletmeden hemen döndür, tazesini arka planda çek.
             ctx.waitUntil(refreshAndCache().catch(() => {}));
           }
         } else {
-          // Önbellekte hiç veri yok (ilk istek/cold start) — sadece hızlı yol beklenir,
-          // rota zenginleştirmesi her zaman arka plandadır.
           data = await refreshAndCache();
         }
         return new Response(JSON.stringify(data), {
