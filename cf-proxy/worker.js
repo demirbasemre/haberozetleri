@@ -981,10 +981,29 @@ export default {
         try { data = JSON.parse(res.body); } catch { return null; }
         const route = data?.response?.flightroute;
         if (!route) return null;
-        const toAirport = (a) => a ? {
-          icao: a.icao_code, iata: a.iata_code, name: a.name,
-          city: a.municipality, lat: a.latitude, lon: a.longitude,
-        } : null;
+        const toAirport = (a) => {
+          if (!a) return null;
+          const icao = a.icao_code ? a.icao_code.toUpperCase() : null;
+          const iata = a.iata_code ? a.iata_code.toUpperCase() : null;
+          const localDb = (icao && AIRPORT_DB[icao]) || (iata && AIRPORT_DB[iata]);
+          
+          let city = a.municipality || a.city || '';
+          if (localDb && localDb.city) {
+            city = localDb.city;
+          } else if (city.includes(',')) {
+            const parts = city.split(',');
+            city = parts[parts.length - 1].trim();
+          }
+          
+          return {
+            icao: a.icao_code || (localDb ? localDb.icao : null),
+            iata: a.iata_code || (localDb ? localDb.iata : null),
+            name: a.name || (localDb ? localDb.name : null),
+            city: city || 'Bilinmiyor',
+            lat: a.latitude || (localDb ? localDb.lat : null),
+            lon: a.longitude || (localDb ? localDb.lon : null),
+          };
+        };
         return { dep: toAirport(route.origin), arr: toAirport(route.destination) };
       }
 
@@ -993,7 +1012,11 @@ export default {
         const icao = a.code_icao || a.code || null;
         const iata = a.code_iata || null;
         const name = a.name || null;
-        const city = a.city || null;
+        let city = a.city || null;
+        if (city && city.includes(',')) {
+          const parts = city.split(',');
+          city = parts[parts.length - 1].trim();
+        }
         
         const localDb = (icao && AIRPORT_DB[icao.toUpperCase()]) || (iata && AIRPORT_DB[iata.toUpperCase()]);
         if (localDb) {
@@ -1001,7 +1024,7 @@ export default {
             icao: icao || localDb.icao,
             iata: iata || localDb.iata,
             name: name || localDb.name,
-            city: city || localDb.city,
+            city: localDb.city || city,
             lat: localDb.lat,
             lon: localDb.lon
           };
@@ -1161,27 +1184,46 @@ export default {
           const cachedData = await getCachedFlights();
           if (cachedData) {
             cachedFlights = cachedData.flights || [];
-            for (const f of fresh.flights) {
-              const prev = cachedFlights.find(p => p.callsign === f.callsign);
-              if (prev) {
-                if (prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null) {
-                  // Verify that the aircraft is still flying along the cached route
-                  const dDep = getDistance(f.lat, f.lon, prev.dep.lat, prev.dep.lon);
-                  const dArr = getDistance(f.lat, f.lon, prev.arr.lat, prev.arr.lon);
-                  const dTotal = getDistance(prev.dep.lat, prev.dep.lon, prev.arr.lat, prev.arr.lon);
-                  const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
-                  if (dDep + dArr <= maxAllowed) {
-                    f.dep = prev.dep;
-                    f.arr = prev.arr;
-                  }
-                }
-                if (prev.aircraftDetails) {
-                  f.aircraftDetails = prev.aircraftDetails;
-                }
-              }
-            }
           }
         } catch (_) {}
+
+        for (const f of fresh.flights) {
+          const prev = cachedFlights.find(p => p.callsign === f.callsign);
+          if (prev) {
+            if (prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null) {
+              // Verify that the aircraft is still flying along the cached route
+              const dDep = getDistance(f.lat, f.lon, prev.dep.lat, prev.dep.lon);
+              const dArr = getDistance(f.lat, f.lon, prev.arr.lat, prev.arr.lon);
+              const dTotal = getDistance(prev.dep.lat, prev.dep.lon, prev.arr.lat, prev.arr.lon);
+              const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
+              if (dDep + dArr <= maxAllowed) {
+                f.dep = prev.dep;
+                f.arr = prev.arr;
+              }
+            }
+            if (prev.aircraftDetails) {
+              f.aircraftDetails = prev.aircraftDetails;
+            }
+          }
+
+          // Quick synchronous KV lookup fallback to prevent blank data on cache misses
+          if (!f.dep && env.FBX_ROUTES_KV) {
+            const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon);
+            if (learnedRoute) {
+              f.dep = learnedRoute.dep;
+              f.arr = learnedRoute.arr;
+            }
+          }
+          if (!f.aircraftDetails && env.FBX_ROUTES_KV) {
+            const kvKey = `aircraft_details_${f.icao24.toUpperCase()}`;
+            try {
+              const cachedDetails = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+              if (cachedDetails) {
+                f.aircraftDetails = cachedDetails;
+              }
+            } catch (_) {}
+          }
+        }
 
         const { token: _t, authHeaders: _a, ...publicData } = fresh;
         await setCachedFlights(publicData);
