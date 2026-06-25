@@ -1278,6 +1278,11 @@ export default {
         for (const f of fresh.flights) {
           const prev = cachedFlights.find(p => p.callsign === f.callsign);
           if (prev) {
+            // E.D. Düzeltme: THY6058 için önbellekteki eski hatalı Columbus (KCMH) rotasını yok say
+            if (f.callsign.toUpperCase() === 'THY6058' && prev.dep && prev.dep.icao === 'KCMH') {
+              prev.dep = null;
+              prev.arr = null;
+            }
             if (prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null) {
               // Verify that the aircraft is still flying along the cached route
               const dDep = getDistance(f.lat, f.lon, prev.dep.lat, prev.dep.lon);
