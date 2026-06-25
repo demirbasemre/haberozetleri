@@ -8310,6 +8310,28 @@ function buildReleaseCalendar() {
 
   function abs(y, m, day) { return new Date(y, m - 1, day); } // m: 1–12 (gerçek ay)
 
+  // IATA aylık raporu ~1 ay gecikmeli yayınlanır (örn. Haziran sonunda Mayıs raporu çıkar).
+  // Worker üzerinden gerçek yayın durumunu kontrol edip takvim kartını buna göre güncelliyoruz.
+  let _iataLatestParsed = null;
+  function parseTrMonthYearIata(str) {
+    if (!str) return null;
+    const monthNames = ['ocak','şubat','mart','nisan','mayıs','haziran','temmuz','ağustos','eylül','ekim','kasım','aralık'];
+    const m = String(str).toLowerCase().match(/([a-zçğıöşü]+)\s+(\d{4})/);
+    if (!m) return null;
+    const idx = monthNames.indexOf(m[1]);
+    if (idx === -1) return null;
+    return { y: parseInt(m[2], 10), m: idx + 1 };
+  }
+  fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).then(data => {
+    if (data && data.date) {
+      const parsed = parseTrMonthYearIata(data.date);
+      if (parsed) {
+        _iataLatestParsed = { y: parsed.y, m: parsed.m, pdfLink: data.pdfLink };
+        if (typeof _relRender === 'function') _relRender();
+      }
+    }
+  }).catch(() => {});
+
   // Sonraki 4 Çarşambayı üret (EIA haftalık raporu için)
   function nextWednesdays(n) {
     const out = [];
@@ -8354,18 +8376,18 @@ function buildReleaseCalendar() {
     { title: 'ABD TÜFE Raporu', source: 'BLS', date: abs(2026,12, 10), cadence: 'Aylık · ~10–15.', link: 'https://www.bls.gov/cpi/' },
 
     // IATA — Hava Kargo Aylık Analizi · ~ayın son haftası
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 1, 28), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 2, 25), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 3, 25), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 4, 29), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 5, 28), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 6, 24), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 7, 29), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 8, 26), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 9, 30), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026,10, 28), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026,11, 25), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
-    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026,12, 16), cadence: 'Aylık · yıl sonu', link: 'https://www.iata.org/en/publications/economics/air-freight-monthly-analysis/' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 1, 28), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 2, 25), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 3, 25), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 4, 29), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 5, 28), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 6, 24), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 7, 29), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 8, 26), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026, 9, 30), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026,10, 28), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026,11, 25), cadence: 'Aylık · ~4. hafta', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
+    { title: 'IATA Hava Kargo Aylık Analizi', source: 'IATA', date: abs(2026,12, 16), cadence: 'Aylık · yıl sonu', link: 'https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc', verify: 'iata-monthly' },
 
     // Diğer küresel makro yayınlar
     { title: 'IMF World Economic Outlook Update', source: 'IMF',        date: abs(2026, 1, 20), cadence: 'Yılda 4x · Oca Nis Tem Eki', link: 'https://www.imf.org/en/Publications/WEO' },
@@ -8759,8 +8781,36 @@ function buildReleaseCalendar() {
     };
     const [viewY, viewM] = key.split('-').map(Number);
     const isCurrentMonth = viewY === now.getFullYear() && viewM === now.getMonth();
+
+    // IATA Hava Kargo Aylık Analizi ~1 ay gecikmeli çıkar; tarihe göre değil,
+    // worker'dan gelen gerçek "son yayınlanan rapor" bilgisine göre açıklandı say.
+    function iataStatus(item) {
+      if (item.verify !== 'iata-monthly') return null;
+      let targetMonth0 = item.date.getMonth() - 1; // 0-indeksli hedef ay (rapor kapsadığı ay)
+      let targetYear = item.date.getFullYear();
+      if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
+      let released = false;
+      let link = item.link;
+      if (_iataLatestParsed) {
+        const latestComparable = _iataLatestParsed.y * 12 + _iataLatestParsed.m;
+        const targetComparable = targetYear * 12 + (targetMonth0 + 1);
+        released = latestComparable >= targetComparable;
+        if (released && _iataLatestParsed.pdfLink) link = _iataLatestParsed.pdfLink;
+      }
+      // IATA'nın tam yayın günü scrape edilemiyor; onaylanınca takvimdeki tahmini
+      // günü (~4. hafta) gösteriyoruz, onaylanana kadar "-" kalır.
+      const day = released ? item.date.getDate() : null;
+      return { released, link, day };
+    }
+    items.forEach(it => { it._iata = iataStatus(it); });
+
+    // Henüz yayınlanmamış IATA kartını bugünün sağına/sonrasına yerleştir
+    function sortKey(item) {
+      if (item._iata && !item._iata.released) return new Date(todayStart.getTime() + 1);
+      return item.date;
+    }
     const allWithToday = isCurrentMonth
-      ? [todayMarker, ...items].sort((a, b) => a.date - b.date)
+      ? [todayMarker, ...items].sort((a, b) => sortKey(a) - sortKey(b))
       : items;
 
     document.getElementById('dash-releases').innerHTML = allWithToday.map(r => {
@@ -8771,7 +8821,14 @@ function buildReleaseCalendar() {
       const itemDay  = new Date(r.date.getFullYear(), r.date.getMonth(), r.date.getDate());
       const isToday  = itemDay.getTime() === todayStart.getTime();
       const isFuture = itemDay > todayStart;
-      const isDataPast = !isEvent && !isHoliday && !isCustom && !isTodayCard && !isFuture;
+
+      const isIataMonthly = !!r._iata;
+      const iataReleased = r._iata ? r._iata.released : false;
+      const iataLink = r._iata ? r._iata.link : r.link;
+
+      const isDataPast = isIataMonthly
+        ? iataReleased
+        : (!isEvent && !isHoliday && !isCustom && !isTodayCard && !isFuture);
 
       let itemClass = 'dash-release-item ';
       if (isTodayCard) {
@@ -8792,10 +8849,10 @@ function buildReleaseCalendar() {
         itemClass += 'upcoming';
       }
 
-      const hasLink  = !!r.link;
+      const hasLink  = !!iataLink;
       const canLink  = hasLink && !isTodayCard;
       const tag      = canLink ? 'a' : 'div';
-      const linkAttr = (tag === 'a') ? ` href="${r.link}" target="_blank" rel="noopener"` : '';
+      const linkAttr = (tag === 'a') ? ` href="${iataLink}" target="_blank" rel="noopener"` : '';
 
       let badge = '';
       if (isTodayCard) {
@@ -8816,7 +8873,7 @@ function buildReleaseCalendar() {
 
       const titleInner = (tag === 'a' || !hasLink)
         ? r.title
-        : `<a href="${r.link}" target="_blank" rel="noopener">${r.title}</a>`;
+        : `<a href="${iataLink}" target="_blank" rel="noopener">${r.title}</a>`;
 
       const delBtn = isCustom
         ? `<button class="dash-rel-del" onclick="event.preventDefault();event.stopPropagation();deleteUserReleaseItem('${r.id}')" aria-label="Sil" title="Sil">×</button>`
@@ -8841,7 +8898,7 @@ function buildReleaseCalendar() {
         ${delBtn}
         <div class="dash-rel-date">
           <div class="dash-rel-date-m">${TR_M[r.date.getMonth()]}</div>
-          <div class="dash-rel-date-d${r.endDate ? ' is-range' : ''}">${r.endDate ? `${r.date.getDate()}<span class="dash-rel-date-sep">–</span>${r.endDate.getDate()}` : r.date.getDate()}</div>
+          <div class="dash-rel-date-d${r.endDate ? ' is-range' : ''}">${isIataMonthly ? (r._iata.day != null ? r._iata.day : '-') : (r.endDate ? `${r.date.getDate()}<span class="dash-rel-date-sep">–</span>${r.endDate.getDate()}` : r.date.getDate())}</div>
         </div>
         <div style="flex:1;min-width:0">
           ${badge}
