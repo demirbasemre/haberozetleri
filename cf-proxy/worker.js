@@ -886,7 +886,16 @@ export default {
           });
         }
 
-        function getDistance(lat1, lon1, lat2, lon2) {
+        return {
+          count: allFlights.filter(f => f.type === 'cargo').length,
+          paxCount: allFlights.filter(f => f.type === 'pax').length,
+          flights: allFlights,
+          updated: Math.floor(Date.now() / 1000),
+          token, authHeaders,
+        };
+      }
+
+      function getDistance(lat1, lon1, lat2, lon2) {
         const R = 6371; // km
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
@@ -979,7 +988,7 @@ export default {
         return { dep: toAirport(route.origin), arr: toAirport(route.destination) };
       }
 
-      function parseAeroAPIAirport(a) {
+      const parseAeroAPIAirport = (a) => {
         if (!a) return null;
         const icao = a.code_icao || a.code || null;
         const iata = a.code_iata || null;
@@ -999,9 +1008,9 @@ export default {
         }
         
         return { icao, iata, name, city, lat: null, lon: null };
-      }
+      };
 
-      async function fetchAirportCoordsFromAeroAPI(icao) {
+      const fetchAirportCoordsFromAeroAPI = async (icao) => {
         if (!icao || !env.AEROAPI_KEY) return null;
         const kvKey = `aeroapi_airport_${icao.toUpperCase()}`;
         if (env.FBX_ROUTES_KV) {
@@ -1029,9 +1038,9 @@ export default {
           } catch (_) {}
         }
         return details;
-      }
+      };
 
-      async function fetchRouteFromAeroAPI(callsign) {
+      const fetchRouteFromAeroAPI = async (callsign) => {
         if (!env.AEROAPI_KEY) return null;
         const uppercaseCallsign = callsign.trim().toUpperCase();
         
@@ -1068,7 +1077,7 @@ export default {
         }
         
         return { dep, arr };
-      }
+      };
 
       async function enrichInBackground(data, cachedFlights) {
         const { flights } = data;
