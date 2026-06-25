@@ -13245,6 +13245,17 @@ async function loadDashboard() {
     const f = _cargoFlights[idx];
     if (!f) return;
     _cargoSelectedIdx = idx;
+    
+    // E.D. Değişiklik: Stale API koordinatları yerine uçağın güncel animasyon koordinatlarını kullanalım
+    const pm = _cargoPlaneMarkers.get(f.icao24);
+    let targetLat = f.lat;
+    let targetLon = f.lon;
+    if (pm && pm.marker) {
+      const currentLatLng = pm.marker.getLatLng();
+      targetLat = currentLatLng.lat;
+      targetLon = currentLatLng.lon;
+    }
+
     if (_cargoMap) {
       // Önceki rotaya ait tüm katmanları temizle
       _cargoRouteLayers.forEach(l => _cargoMap.removeLayer(l));
@@ -13253,10 +13264,10 @@ async function loadDashboard() {
       _cargoRemainingLine = null;
 
       if (_cargoHighlightMarker) _cargoMap.removeLayer(_cargoHighlightMarker);
-      _cargoHighlightMarker = L.marker([f.lat, f.lon], { icon: cargoHighlightIcon, interactive: false, zIndexOffset: -100 });
+      _cargoHighlightMarker = L.marker([targetLat, targetLon], { icon: cargoHighlightIcon, interactive: false, zIndexOffset: -100 });
       _cargoHighlightMarker.addTo(_cargoMap);
 
-      const bounds = [[f.lat, f.lon]];
+      const bounds = [[targetLat, targetLon]];
 
       // Kalkış havalimanı ve rota çizgisi (kat edilen)
       if (f.dep && f.dep.lat != null) {
@@ -13266,7 +13277,7 @@ async function loadDashboard() {
         _cargoRouteLayers.push(depMarker);
         bounds.push([f.dep.lat, f.dep.lon]);
 
-        _cargoTraveledLine = L.polyline(getArcPoints([f.dep.lat, f.dep.lon], [f.lat, f.lon]), { color: '#C8102E', weight: 2.5, opacity: 0.8 });
+        _cargoTraveledLine = L.polyline(getArcPoints([f.dep.lat, f.dep.lon], [targetLat, targetLon]), { color: '#C8102E', weight: 2.5, opacity: 0.8 });
         _cargoTraveledLine.addTo(_cargoMap);
         _cargoRouteLayers.push(_cargoTraveledLine);
       }
@@ -13279,18 +13290,17 @@ async function loadDashboard() {
         _cargoRouteLayers.push(arrMarker);
         bounds.push([f.arr.lat, f.arr.lon]);
 
-        _cargoRemainingLine = L.polyline(getArcPoints([f.lat, f.lon], [f.arr.lat, f.arr.lon]), { color: '#C8102E', weight: 2.5, opacity: 0.4, dashArray: '6,6' });
+        _cargoRemainingLine = L.polyline(getArcPoints([targetLat, targetLon], [f.arr.lat, f.arr.lon]), { color: '#C8102E', weight: 2.5, opacity: 0.4, dashArray: '6,6' });
         _cargoRemainingLine.addTo(_cargoMap);
         _cargoRouteLayers.push(_cargoRemainingLine);
       }
 
       if (pan) {
-        _cargoMap.setView([f.lat, f.lon], 6, { animate: true });
+        _cargoMap.setView([targetLat, targetLon], 6, { animate: true });
       }
 
-      // E.D. Değişiklik: Haritadaki popupları senkronize etmek için programlı popup açma
-      const pm = _cargoPlaneMarkers.get(f.icao24);
-      if (pm && pm.marker) {
+      // E.D. Değişiklik: Haritadaki popupları senkronize etmek için programlı popup açma (eğer açık değilse)
+      if (pm && pm.marker && !pm.marker.isPopupOpen()) {
         pm.marker.openPopup();
       }
     }
@@ -13525,7 +13535,7 @@ async function loadDashboard() {
         : `<span style="font-size:11px;color:#9CA3AF">Rota bilgisi mevcut değil</span><br>`;
       const markerColor = f.signalLost ? '#F59E0B' : '#C8102E';
       const planeMarker = L.marker([f.lat, f.lon], { icon: cargoPlaneIcon(f.track, markerColor) })
-        .bindPopup(`<strong>${f.callsign}</strong><br>${routeInfo}${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°`);
+        .bindPopup(`<strong>${f.callsign}</strong><br>${routeInfo}${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°`, { autoPan: false });
       
       // E.D. Değişiklik: Popup açıldığında seçimi senkronize et
       planeMarker.on('popupopen', () => {
