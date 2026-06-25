@@ -13253,7 +13253,7 @@ async function loadDashboard() {
     if (pm && pm.marker) {
       const currentLatLng = pm.marker.getLatLng();
       targetLat = currentLatLng.lat;
-      targetLon = currentLatLng.lon;
+      targetLon = currentLatLng.lng;
     }
 
     if (_cargoMap) {
