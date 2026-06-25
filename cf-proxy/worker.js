@@ -128,7 +128,39 @@ const AIRPORT_DB = {
   "SBGR": { icao: "SBGR", iata: "GRU", name: "Guarulhos International Airport", city: "São Paulo", lat: -23.435, lon: -46.473 },
   "GRU": { icao: "SBGR", iata: "GRU", name: "Guarulhos International Airport", city: "São Paulo", lat: -23.435, lon: -46.473 },
   "MMMX": { icao: "MMMX", iata: "MEX", name: "Mexico City International Airport", city: "Mexico City", lat: 19.436, lon: -99.072 },
-  "MEX": { icao: "MMMX", iata: "MEX", name: "Mexico City International Airport", city: "Mexico City", lat: 19.436, lon: -99.072 }
+  "MEX": { icao: "MMMX", iata: "MEX", name: "Mexico City International Airport", city: "Mexico City", lat: 19.436, lon: -99.072 },
+  "HLLM": { icao: "HLLM", iata: "MJI", name: "Mitiga International Airport", city: "Tripoli", lat: 32.901, lon: 13.279 },
+  "MJI": { icao: "HLLM", iata: "MJI", name: "Mitiga International Airport", city: "Tripoli", lat: 32.901, lon: 13.279 },
+  "LEMD": { icao: "LEMD", iata: "MAD", name: "Adolfo Suárez Madrid–Barajas Airport", city: "Madrid", lat: 40.472, lon: -3.563 },
+  "MAD": { icao: "LEMD", iata: "MAD", name: "Adolfo Suárez Madrid–Barajas Airport", city: "Madrid", lat: 40.472, lon: -3.563 },
+  "EBLG": { icao: "EBLG", iata: "LGG", name: "Liège Airport", city: "Liège", lat: 50.637, lon: 5.443 },
+  "LGG": { icao: "EBLG", iata: "LGG", name: "Liège Airport", city: "Liège", lat: 50.637, lon: 5.443 },
+  "KCMH": { icao: "KCMH", iata: "CMH", name: "John Glenn Columbus International Airport", city: "Columbus", lat: 39.998, lon: -82.892 },
+  "CMH": { icao: "KCMH", iata: "CMH", name: "John Glenn Columbus International Airport", city: "Columbus", lat: 39.998, lon: -82.892 },
+  "VOMM": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 },
+  "MAA": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 }
+};
+
+const CARGO_STATIC_ROUTES = {
+  "THY6116": [
+    { dep: "HLLM", arr: "HECA" }, // Tripoli (Mitiga) -> Cairo
+    { dep: "LEMD", arr: "LTFM" }  // Madrid -> Istanbul
+  ],
+  "THY6058": [
+    { dep: "KCMH", arr: "LTFM" }  // Columbus -> Istanbul
+  ],
+  "THY6112": [
+    { dep: "LTFM", arr: "VABB" }  // Istanbul -> Mumbai
+  ],
+  "THY6421": [
+    { dep: "LTFM", arr: "LFPG" }  // Istanbul -> Paris
+  ],
+  "THY6091": [
+    { dep: "LTFM", arr: "EBLG" }  // Istanbul -> Liège
+  ],
+  "THY6118": [
+    { dep: "LTFM", arr: "VOMM" }  // Istanbul -> Chennai (MAA)
+  ]
 };
 
 function parseIATAFuelMonitor(html) {
@@ -1131,6 +1163,28 @@ export default {
                   }
                 }
                 
+                // Fallback to static routes list if adsbdb is invalid or missing
+                if (!valid) {
+                  const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
+                  if (candidates) {
+                    for (const c of candidates) {
+                      const depDb = AIRPORT_DB[c.dep.toUpperCase()];
+                      const arrDb = AIRPORT_DB[c.arr.toUpperCase()];
+                      if (depDb && arrDb) {
+                        const dDep = getDistance(f.lat, f.lon, depDb.lat, depDb.lon);
+                        const dArr = getDistance(f.lat, f.lon, arrDb.lat, arrDb.lon);
+                        const dTotal = getDistance(depDb.lat, depDb.lon, arrDb.lat, arrDb.lon);
+                        const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
+                        if (dDep + dArr <= maxAllowed) {
+                          apiRoute = { dep: depDb, arr: arrDb };
+                          valid = true;
+                          break;
+                        }
+                      }
+                    }
+                  }
+                }
+
                 if (!valid && env.AEROAPI_KEY) {
                   const aeroRoute = await fetchRouteFromAeroAPI(f.callsign);
                   if (aeroRoute && aeroRoute.dep && aeroRoute.arr) {
@@ -1212,6 +1266,27 @@ export default {
             if (learnedRoute) {
               f.dep = learnedRoute.dep;
               f.arr = learnedRoute.arr;
+            }
+          }
+          // Quick static routes fallback if KV learned routes were also missing
+          if (!f.dep) {
+            const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
+            if (candidates) {
+              for (const c of candidates) {
+                const depDb = AIRPORT_DB[c.dep.toUpperCase()];
+                const arrDb = AIRPORT_DB[c.arr.toUpperCase()];
+                if (depDb && arrDb) {
+                  const dDep = getDistance(f.lat, f.lon, depDb.lat, depDb.lon);
+                  const dArr = getDistance(f.lat, f.lon, arrDb.lat, arrDb.lon);
+                  const dTotal = getDistance(depDb.lat, depDb.lon, arrDb.lat, arrDb.lon);
+                  const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
+                  if (dDep + dArr <= maxAllowed) {
+                    f.dep = depDb;
+                    f.arr = arrDb;
+                    break;
+                  }
+                }
+              }
             }
           }
           if (!f.aircraftDetails && env.FBX_ROUTES_KV) {
