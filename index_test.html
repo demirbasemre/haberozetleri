@@ -13052,7 +13052,7 @@ async function loadDashboard() {
           const dDep = getDistance(f.lat, f.lon, f.dep.lat, f.dep.lon);
           const dArr = getDistance(f.lat, f.lon, f.arr.lat, f.arr.lon);
           const dTotal = getDistance(f.dep.lat, f.dep.lon, f.arr.lat, f.arr.lon);
-          const maxAllowed = Math.max(dTotal * 1.35, dTotal + 800); // %35 veya +800km tolerans
+          const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400); // %20 veya +400km tolerans
           if (dDep + dArr > maxAllowed) {
             f.dep = null;
             f.arr = null;

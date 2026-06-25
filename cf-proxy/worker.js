@@ -848,7 +848,7 @@ export default {
       async function setCachedFlights(publicData) {
         if (env.FBX_ROUTES_KV) {
           try {
-            await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(publicData));
+            await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(publicData), { expirationTtl: 120 });
           } catch (_) {}
         }
         try {
@@ -916,7 +916,7 @@ export default {
               const dDep = getDistance(lat, lon, r.dep.lat, r.dep.lon);
               const dArr = getDistance(lat, lon, r.arr.lat, r.arr.lon);
               const dTotal = getDistance(r.dep.lat, r.dep.lon, r.arr.lat, r.arr.lon);
-              const maxAllowed = Math.max(dTotal * 1.35, dTotal + 800);
+              const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
               if (dDep + dArr <= maxAllowed) {
                 return r; // Rota eşleşti!
               }
@@ -1097,22 +1097,37 @@ export default {
               // KV'de yoksa API'den çek ve teyit et
               try {
                 let apiRoute = await fetchRouteFromAdsbdb(f.callsign);
-                if (!apiRoute && env.AEROAPI_KEY) {
-                  apiRoute = await fetchRouteFromAeroAPI(f.callsign);
-                }
+                let valid = false;
                 if (apiRoute && apiRoute.dep && apiRoute.arr) {
                   const dDep = getDistance(f.lat, f.lon, apiRoute.dep.lat, apiRoute.dep.lon);
                   const dArr = getDistance(f.lat, f.lon, apiRoute.arr.lat, apiRoute.arr.lon);
                   const dTotal = getDistance(apiRoute.dep.lat, apiRoute.dep.lon, apiRoute.arr.lat, apiRoute.arr.lon);
-                  const maxAllowed = Math.max(dTotal * 1.35, dTotal + 800);
-                  
+                  const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
                   if (dDep + dArr <= maxAllowed) {
-                    f.dep = apiRoute.dep;
-                    f.arr = apiRoute.arr;
-                    cacheUpdated = true;
-                    // Başarılıysa KV'ye öğrenilmiş rota olarak kaydet
-                    await saveLearnedRoute(f.callsign, apiRoute);
+                    valid = true;
                   }
+                }
+                
+                if (!valid && env.AEROAPI_KEY) {
+                  const aeroRoute = await fetchRouteFromAeroAPI(f.callsign);
+                  if (aeroRoute && aeroRoute.dep && aeroRoute.arr) {
+                    const dDep = getDistance(f.lat, f.lon, aeroRoute.dep.lat, aeroRoute.dep.lon);
+                    const dArr = getDistance(f.lat, f.lon, aeroRoute.arr.lat, aeroRoute.arr.lon);
+                    const dTotal = getDistance(aeroRoute.dep.lat, aeroRoute.dep.lon, aeroRoute.arr.lat, aeroRoute.arr.lon);
+                    const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
+                    if (dDep + dArr <= maxAllowed) {
+                      apiRoute = aeroRoute;
+                      valid = true;
+                    }
+                  }
+                }
+
+                if (valid && apiRoute && apiRoute.dep && apiRoute.arr) {
+                  f.dep = apiRoute.dep;
+                  f.arr = apiRoute.arr;
+                  cacheUpdated = true;
+                  // Başarılıysa KV'ye öğrenilmiş rota olarak kaydet
+                  await saveLearnedRoute(f.callsign, apiRoute);
                 }
               } catch (_) {}
               await new Promise(r => setTimeout(r, 1200));
@@ -1149,9 +1164,16 @@ export default {
             for (const f of fresh.flights) {
               const prev = cachedFlights.find(p => p.callsign === f.callsign);
               if (prev) {
-                if (prev.dep) {
-                  f.dep = prev.dep;
-                  f.arr = prev.arr;
+                if (prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null) {
+                  // Verify that the aircraft is still flying along the cached route
+                  const dDep = getDistance(f.lat, f.lon, prev.dep.lat, prev.dep.lon);
+                  const dArr = getDistance(f.lat, f.lon, prev.arr.lat, prev.arr.lon);
+                  const dTotal = getDistance(prev.dep.lat, prev.dep.lon, prev.arr.lat, prev.arr.lon);
+                  const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
+                  if (dDep + dArr <= maxAllowed) {
+                    f.dep = prev.dep;
+                    f.arr = prev.arr;
+                  }
                 }
                 if (prev.aircraftDetails) {
                   f.aircraftDetails = prev.aircraftDetails;
