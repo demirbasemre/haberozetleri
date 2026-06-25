@@ -12867,6 +12867,100 @@ async function loadDashboard() {
     });
   }
 
+  // THY Kargo Network haftalık uçuş takvimi (Haziran 2026, hafta 23-27) kaynaklı
+  // statik destinasyon listesi. Format: [IATA, şehir, ülke, lat, lon, tipler]
+  // tipler: 'c'=kargo, 'p'=yolcu, 'cp'=her ikisi de o havalimanına uçuyor.
+  // Koordinatlar yaklaşıktır, bazı az bilinen kodlarda (KTI, BSZ, COV) düşük güvenle tahmin edilmiştir.
+  const THY_NETWORK = [
+    ['IST','İstanbul','Türkiye',41.262,28.727,'cp'],['ESB','Ankara','Türkiye',40.128,32.995,'p'],
+    ['AYT','Antalya','Türkiye',36.899,30.800,'p'],['ADB','İzmir','Türkiye',38.292,27.157,'p'],
+    ['BJV','Bodrum-Milas','Türkiye',37.251,28.085,'p'],['DLM','Dalaman','Türkiye',36.713,28.792,'p'],
+    ['GZT','Gaziantep','Türkiye',37.115,37.479,'p'],['ASR','Kayseri','Türkiye',38.770,35.495,'p'],
+    ['COV','Çukurova/Adana','Türkiye',37.0,35.3,'p'],
+    ['PEK','Pekin','Çin',40.080,116.584,'p'],['CAN','Guangzhou','Çin',23.392,113.299,'cp'],
+    ['PVG','Şanghay','Çin',31.143,121.805,'cp'],['SZX','Shenzhen','Çin',22.639,113.811,'c'],
+    ['CGO','Zhengzhou','Çin',34.520,113.841,'c'],['URC','Urumçi','Çin',43.907,87.474,'c'],
+    ['CTU','Chengdu','Çin',30.578,103.947,'c'],['TPE','Taipei','Çin Taipei',25.077,121.233,'cp'],
+    ['HKG','Hong Kong','Hong Kong',22.308,113.918,'cp'],['HND','Tokyo Haneda','Japonya',35.549,139.779,'p'],
+    ['NRT','Tokyo Narita','Japonya',35.764,140.386,'p'],['KIX','Osaka','Japonya',34.434,135.244,'p'],
+    ['ICN','Seul','Güney Kore',37.469,126.451,'cp'],['MEL','Melbourne','Avustralya',-37.673,144.844,'p'],
+    ['SYD','Sidney','Avustralya',-33.946,151.177,'p'],['KTI','Kratie','Kamboçya',12.488,106.018,'p'],
+    ['CGK','Cakarta','Endonezya',-6.126,106.656,'p'],['DPS','Denpasar','Endonezya',-8.748,115.167,'p'],
+    ['KUL','Kuala Lumpur','Malezya',2.745,101.710,'p'],['MNL','Manila','Filipinler',14.509,121.020,'p'],
+    ['SIN','Singapur','Singapur',1.350,103.994,'cp'],['BKK','Bangkok','Tayland',13.690,100.750,'cp'],
+    ['HKT','Phuket','Tayland',8.113,98.317,'p'],['HAN','Hanoi','Vietnam',21.221,105.807,'cp'],
+    ['SGN','Ho Chi Minh','Vietnam',10.819,106.652,'cp'],['GYD','Bakü','Azerbaycan',40.467,50.047,'cp'],
+    ['TBS','Tiflis','Gürcistan',41.669,44.951,'cp'],['ALA','Almatı','Kazakistan',43.352,77.041,'cp'],
+    ['CIT','Şimkent','Kazakistan',42.365,69.479,'c'],['NQZ','Astana','Kazakistan',51.022,71.467,'p'],
+    ['BSZ','Bişkek','Kırgızistan',43.061,74.477,'p'],['UBN','Ulan Batur','Moğolistan',47.843,106.766,'p'],
+    ['VKO','Moskova','Rusya',55.599,37.268,'p'],['LED','St. Petersburg','Rusya',59.800,30.263,'p'],
+    ['KZN','Kazan','Rusya',55.606,49.279,'p'],['ASB','Aşkabat','Türkmenistan',37.987,58.361,'p'],
+    ['TAS','Taşkent','Özbekistan',41.258,69.282,'cp'],
+    ['KBL','Kabil','Afganistan',34.566,69.212,'p'],['BAH','Bahreyn','Bahreyn',26.271,50.633,'c'],
+    ['BGW','Bağdat','Irak',33.262,44.235,'c'],['EBL','Erbil','Irak',36.238,43.963,'c'],
+    ['AMM','Amman','Ürdün',31.722,35.993,'c'],['KWI','Kuveyt','Kuveyt',29.227,47.969,'c'],
+    ['BEY','Beyrut','Lübnan',33.821,35.488,'cp'],['MCT','Maskat','Oman',23.593,58.284,'c'],
+    ['KHI','Karaçi','Pakistan',24.907,67.160,'cp'],['LHE','Lahor','Pakistan',31.521,74.404,'p'],
+    ['ISB','İslamabad','Pakistan',33.562,72.835,'p'],['DOH','Doha','Katar',25.273,51.608,'c'],
+    ['RUH','Riyad','Suudi Arabistan',24.957,46.699,'cp'],['JED','Cidde','Suudi Arabistan',21.680,39.157,'p'],
+    ['MED','Medine','Suudi Arabistan',24.553,39.705,'p'],['DAM','Şam','Suriye',33.411,36.516,'p'],
+    ['DWC','Dubai (DWC)','BAE',24.897,55.161,'c'],['ALG','Cezayir','Cezayir',36.691,3.215,'c'],
+    ['OUA','Ouagadougou','Burkina Faso',12.353,-1.512,'p'],['NSI','Yaounde','Kamerun',3.722,11.553,'p'],
+    ['DLA','Douala','Kamerun',4.006,9.719,'p'],['ABJ','Abidjan','Fildişi Sahili',5.261,-3.926,'p'],
+    ['CAI','Kahire','Mısır',30.122,31.406,'cp'],['ASM','Asmara','Eritre',15.292,38.910,'p'],
+    ['BJL','Banjul','Gambiya',13.338,-16.652,'p'],['ACC','Akra','Gana',5.605,-0.167,'p'],
+    ['CKY','Conakry','Gine',9.577,-13.612,'p'],['MJI','Mitiga','Libya',32.894,13.276,'c'],
+    ['NKC','Nuakşot','Moritanya',18.098,-15.945,'p'],['CMN','Kazablanka','Fas',33.367,-7.590,'cp'],
+    ['NIM','Niamey','Nijer',13.481,2.183,'p'],['LOS','Lagos','Nijerya',6.577,3.321,'cp'],
+    ['ABV','Abuja','Nijerya',9.007,7.263,'p'],['DSS','Dakar','Senegal',14.740,-17.490,'cp'],
+    ['TUN','Tunus','Tunus',36.851,10.227,'c'],['FIH','Kinşasa','Kongo Dem. Cum.',-4.386,15.444,'c'],
+    ['ADD','Addis Ababa','Etiyopya',8.978,38.799,'p'],['NBO','Nairobi','Kenya',-1.319,36.928,'cp'],
+    ['TNR','Antananarivo','Madagaskar',-18.797,47.479,'p'],['MRU','Mauritius','Mauritius',-20.430,57.674,'p'],
+    ['MPM','Maputo','Mozambik',-25.921,32.573,'p'],['KGL','Kigali','Ruanda',-1.968,30.139,'p'],
+    ['SEZ','Seyşeller','Seyşeller',-4.674,55.522,'p'],['JNB','Johannesburg','Güney Afrika',-26.139,28.246,'cp'],
+    ['CPT','Cape Town','Güney Afrika',-33.965,18.602,'p'],['DUR','Durban','Güney Afrika',-29.614,31.119,'p'],
+    ['DAR','Dar es Salaam','Tanzanya',-6.878,39.203,'p'],['EBB','Entebbe','Uganda',0.042,32.443,'p'],
+    ['DAC','Dakka','Bangladeş',23.843,90.398,'cp'],['MAA','Chennai','Hindistan',12.990,80.169,'c'],
+    ['DEL','Delhi','Hindistan',28.556,77.100,'cp'],['HYD','Haydarabad','Hindistan',17.231,78.430,'c'],
+    ['BOM','Mumbai','Hindistan',19.089,72.868,'cp'],['BLR','Bangalore','Hindistan',13.198,77.706,'c'],
+    ['MLE','Male','Maldivler',4.192,73.529,'p'],['KTM','Katmandu','Nepal',27.697,85.359,'p'],
+    ['CMB','Kolombo','Sri Lanka',7.181,79.884,'cp'],
+    ['EZE','Buenos Aires','Arjantin',-34.822,-58.536,'p'],['GRU','Sao Paulo','Brezilya',-23.435,-46.473,'cp'],
+    ['SCL','Santiago','Şili',-33.393,-70.786,'p'],['BOG','Bogota','Kolombiya',4.702,-74.147,'p'],
+    ['UIO','Quito','Ekvador',-0.129,-78.358,'c'],['MEX','Mexico City','Meksika',19.436,-99.072,'p'],
+    ['NLU','Felipe Angeles','Meksika',19.745,-99.015,'c'],['CUN','Cancun','Meksika',21.036,-86.877,'p'],
+    ['PTY','Panama','Panama',9.071,-79.383,'p'],['ATL','Atlanta','ABD',33.640,-84.427,'cp'],
+    ['IAH','Houston','ABD',29.984,-95.341,'cp'],['MIA','Miami','ABD',25.793,-80.291,'cp'],
+    ['DFW','Dallas','ABD',32.897,-97.038,'p'],['DEN','Denver','ABD',39.856,-104.674,'p'],
+    ['CCS','Caracas','Venezuela',10.601,-66.991,'p'],['YYZ','Toronto','Kanada',43.677,-79.624,'cp'],
+    ['YUL','Montreal','Kanada',45.470,-73.741,'p'],['YVR','Vancouver','Kanada',49.194,-123.179,'p'],
+    ['ORD','Chicago','ABD',41.978,-87.904,'cp'],['EWR','Newark','ABD',40.692,-74.169,'p'],
+    ['JFK','New York','ABD',40.640,-73.779,'cp'],['LAX','Los Angeles','ABD',33.943,-118.408,'p'],
+    ['SFO','San Francisco','ABD',37.621,-122.379,'p'],['BOS','Boston','ABD',42.365,-71.010,'p'],
+    ['IAD','Washington','ABD',38.953,-77.448,'p'],['SEA','Seattle','ABD',47.450,-122.309,'p'],
+    ['DTW','Detroit','ABD',42.212,-83.353,'p'],
+    ['FRA','Frankfurt','Almanya',50.033,8.570,'cp'],['MUC','Münih','Almanya',48.354,11.786,'p'],
+    ['BER','Berlin','Almanya',52.366,13.503,'p'],['HAM','Hamburg','Almanya',53.630,9.988,'p'],
+    ['DUS','Düsseldorf','Almanya',51.289,6.767,'p'],['STR','Stuttgart','Almanya',48.690,9.222,'p'],
+    ['MXP','Milano','İtalya',45.630,8.728,'cp'],['FCO','Roma','İtalya',41.800,12.239,'p'],
+    ['VCE','Venedik','İtalya',45.505,12.352,'p'],['MLA','Malta','Malta',35.857,14.477,'p'],
+    ['ZRH','Zürih','İsviçre',47.464,8.549,'cp'],['GVA','Cenevre','İsviçre',46.238,6.109,'p'],
+    ['BSL','Basel','İsviçre',47.590,7.529,'c'],['VIE','Viyana','Avusturya',48.110,16.570,'cp'],
+    ['PRG','Prag','Çekya',50.101,14.260,'cp'],['ATH','Atina','Yunanistan',37.936,23.946,'p'],
+    ['BUD','Budapeşte','Macaristan',47.439,19.262,'cp'],['OTP','Bükreş','Romanya',44.572,26.102,'p'],
+    ['BEG','Belgrad','Sırbistan',44.818,20.309,'c'],['CPH','Kopenhag','Danimarka',55.618,12.656,'c'],
+    ['HEL','Helsinki','Finlandiya',60.317,24.963,'c'],['DUB','Dublin','İrlanda',53.421,-6.270,'cp'],
+    ['VNO','Vilnius','Litvanya',54.634,25.286,'c'],['OSL','Oslo','Norveç',60.194,11.100,'cp'],
+    ['ARN','Stockholm','İsveç',59.652,17.918,'p'],['LHR','Londra Heathrow','İngiltere',51.470,-0.454,'p'],
+    ['STN','Londra Stansted','İngiltere',51.885,0.235,'c'],['MAN','Manchester','İngiltere',53.365,-2.273,'p'],
+    ['EDI','Edinburgh','İngiltere',55.950,-3.373,'p'],['BRU','Brüksel','Belçika',50.901,4.484,'cp'],
+    ['LGG','Liège','Belçika',50.637,5.443,'c'],['CDG','Paris','Fransa',49.013,2.550,'cp'],
+    ['NCE','Nice','Fransa',43.665,7.215,'p'],['AMS','Amsterdam','Hollanda',52.309,4.764,'cp'],
+    ['MST','Maastricht','Hollanda',50.912,5.770,'c'],['LIS','Lizbon','Portekiz',38.774,-9.135,'p'],
+    ['BCN','Barselona','İspanya',41.297,2.078,'cp'],['MAD','Madrid','İspanya',40.472,-3.561,'cp'],
+    ['AGP','Malaga','İspanya',36.675,-4.499,'p'],['VLC','Valencia','İspanya',39.489,-0.482,'p'],
+  ];
+
   // Havadaki THY Uçakları Verisini Çek ve Göster (Kargo + Yolcu)
   let _cargoAllFlights = [];
   let _cargoFlights = [];
@@ -12917,38 +13011,34 @@ async function loadDashboard() {
 
   function renderCargoFlightList() {
     const listEl = document.getElementById('cargo-flight-list');
-    const emptyEl = document.getElementById('cargo-flights-empty');
-    const bodyEl = document.getElementById('cargo-flights-body');
     if (!listEl) return;
     listEl.innerHTML = '';
 
     if (!_cargoFlights.length) {
-      if (emptyEl) {
-        emptyEl.textContent = _cargoActiveFilter === 'cargo'
-          ? 'Şu anda havada THY kargo uçuşu tespit edilemedi.'
-          : 'Şu anda havada THY yolcu uçuşu tespit edilemedi.';
-        emptyEl.style.display = 'block';
-      }
-      if (bodyEl) bodyEl.style.display = 'none';
+      const msg = document.createElement('div');
+      msg.style.cssText = 'color:var(--text-3); font-size:12px; padding:8px 2px;';
+      msg.textContent = _cargoActiveFilter === 'cargo'
+        ? 'Şu anda havada THY kargo uçuşu tespit edilemedi.'
+        : 'Şu anda havada THY yolcu uçuşu tespit edilemedi.';
+      listEl.appendChild(msg);
       return;
     }
-    if (emptyEl) emptyEl.style.display = 'none';
-    if (bodyEl) bodyEl.style.display = 'flex';
 
     _cargoFlights.forEach((f, idx) => {
-      const depCity = f.dep?.city || f.dep?.icao || '?';
-      const arrCity = f.arr?.city || f.arr?.icao || 'Bilinmiyor';
       const item = document.createElement('div');
       item.className = 'cargo-flight-item';
       item.dataset.idx = idx;
       item.style.cssText = 'padding:8px 10px; border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:12px; transition:background 0.15s;';
+      const routeLine = (f.dep || f.arr)
+        ? `<div style="color:var(--text-3); margin-top:2px;">${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}</div>`
+        : '';
       item.innerHTML = `
         <div style="font-weight:600; display:flex; align-items:center; gap:5px;">
-          <span class="thy-dot" style="width:6px; height:6px; background:#C8102E; border-radius:50%; display:inline-block;"></span>
+          <span class="cargo-live-dot" style="width:6px; height:6px; background:#16A34A; border-radius:50%; display:inline-block; flex-shrink:0;"></span>
           ${f.callsign}
         </div>
-        <div style="color:var(--text-3); margin-top:2px;">${depCity} → ${arrCity}</div>
-        <div style="color:var(--text-3); font-size:11px; margin-top:2px;">${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt</div>
+        ${routeLine}
+        <div style="color:var(--text-3); font-size:11px; margin-top:2px;">${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°</div>
       `;
       item.addEventListener('click', () => focusCargoFlight(idx));
       listEl.appendChild(item);
@@ -12964,10 +13054,52 @@ async function loadDashboard() {
     });
   }
 
+  let _cargoShowNetwork = true;
+  const cargoNetworkIcon = L.divIcon({
+    className: 'cargo-network-icon',
+    html: `<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="#9CA3AF" fill-opacity="0.55" stroke="#6B7280" stroke-width="1"/></svg>`,
+    iconSize: [8, 8],
+    iconAnchor: [4, 4],
+  });
+
+  window.toggleCargoNetworkLayer = function(checked) {
+    _cargoShowNetwork = checked;
+    renderCargoFlightsModal();
+  };
+
+  // Canlı hareket: API verisi ~60sn'de bir gelir, ama uçaklar arada da
+  // havada ilerliyor. Her saniye, son bilinen konum + hız + yön (track)
+  // kullanılarak "dead reckoning" ile konum tahmin edilip marker güncellenir —
+  // gerçek bir flight tracker'daki gibi sürekli hareket hissi verir.
+  const _cargoPlaneMarkers = new Map(); // icao24 -> { marker, baseLat, baseLon, velocity, track, baseTime }
+  let _cargoAnimInterval = null;
+
+  function startCargoAnimation() {
+    if (_cargoAnimInterval) return;
+    _cargoAnimInterval = setInterval(() => {
+      const nowMs = Date.now();
+      _cargoPlaneMarkers.forEach(p => {
+        const elapsedSec = (nowMs - p.baseTime) / 1000;
+        if (!p.velocity || elapsedSec <= 0) return;
+        const trackRad = (p.track || 0) * Math.PI / 180;
+        const dx = p.velocity * elapsedSec * Math.sin(trackRad); // doğu (m)
+        const dy = p.velocity * elapsedSec * Math.cos(trackRad); // kuzey (m)
+        const metersPerDegLat = 111320;
+        const metersPerDegLon = 111320 * Math.cos(p.baseLat * Math.PI / 180);
+        const newLat = p.baseLat + dy / metersPerDegLat;
+        const newLon = p.baseLon + dx / metersPerDegLon;
+        p.marker.setLatLng([newLat, newLon]);
+      });
+    }, 1000);
+  }
+
+  function stopCargoAnimation() {
+    if (_cargoAnimInterval) { clearInterval(_cargoAnimInterval); _cargoAnimInterval = null; }
+    _cargoPlaneMarkers.clear();
+  }
+
   function renderCargoFlightsModal() {
     renderCargoFlightList();
-    if (!_cargoFlights.length) return;
-
     if (!_cargoMap) {
       _cargoMap = L.map('cargo-flights-map', { worldCopyJump: true, fadeAnimation: false }).setView([30, 30], 2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -12978,14 +13110,36 @@ async function loadDashboard() {
 
     _cargoMapLayers.forEach(l => _cargoMap.removeLayer(l));
     _cargoMapLayers = [];
+    _cargoPlaneMarkers.clear();
 
     const bounds = [];
+
+    if (_cargoShowNetwork) {
+      const typeChar = _cargoActiveFilter === 'cargo' ? 'c' : 'p';
+      THY_NETWORK.forEach(([code, city, country, lat, lon, types]) => {
+        if (!types.includes(typeChar)) return;
+        const dot = L.marker([lat, lon], { icon: cargoNetworkIcon })
+          .bindPopup(`<strong>${city}</strong> (${code})<br>${country}`);
+        dot.addTo(_cargoMap);
+        _cargoMapLayers.push(dot);
+        bounds.push([lat, lon]);
+      });
+    }
+
+    const baseTime = Date.now();
     _cargoFlights.forEach(f => {
+      const routeInfo = (f.dep || f.arr)
+        ? `${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}<br>`
+        : `<span style="font-size:11px;color:#9CA3AF">Rota bilgisi mevcut değil</span><br>`;
       const planeMarker = L.marker([f.lat, f.lon], { icon: cargoPlaneIcon(f.track, '#C8102E') })
-        .bindPopup(`<strong>${f.callsign}</strong><br>${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}<br>${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt`);
+        .bindPopup(`<strong>${f.callsign}</strong><br>${routeInfo}${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°`);
       planeMarker.addTo(_cargoMap);
       _cargoMapLayers.push(planeMarker);
       bounds.push([f.lat, f.lon]);
+      _cargoPlaneMarkers.set(f.icao24, {
+        marker: planeMarker, baseLat: f.lat, baseLon: f.lon,
+        velocity: f.velocity, track: f.track, baseTime,
+      });
 
       if (f.dep && f.dep.lat != null) {
         const depMarker = L.marker([f.dep.lat, f.dep.lon], { icon: cargoAirportIcon('#16A34A') })
@@ -12993,19 +13147,16 @@ async function loadDashboard() {
         depMarker.addTo(_cargoMap);
         _cargoMapLayers.push(depMarker);
         bounds.push([f.dep.lat, f.dep.lon]);
-
         const traveledLine = L.polyline([[f.dep.lat, f.dep.lon], [f.lat, f.lon]], { color: '#C8102E', weight: 2, opacity: 0.8 });
         traveledLine.addTo(_cargoMap);
         _cargoMapLayers.push(traveledLine);
       }
-
       if (f.arr && f.arr.lat != null) {
         const arrMarker = L.marker([f.arr.lat, f.arr.lon], { icon: cargoAirportIcon('#1D6FE8') })
           .bindPopup(`Varış: ${f.arr.name || f.arr.icao}`);
         arrMarker.addTo(_cargoMap);
         _cargoMapLayers.push(arrMarker);
         bounds.push([f.arr.lat, f.arr.lon]);
-
         const remainingLine = L.polyline([[f.lat, f.lon], [f.arr.lat, f.arr.lon]], { color: '#C8102E', weight: 2, opacity: 0.4, dashArray: '6,6' });
         remainingLine.addTo(_cargoMap);
         _cargoMapLayers.push(remainingLine);
@@ -13016,6 +13167,7 @@ async function loadDashboard() {
       _cargoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 5 });
     }
     setTimeout(() => _cargoMap.invalidateSize(), 50);
+    startCargoAnimation();
   }
 
   window.openCargoFlightsModal = function() {
@@ -13032,6 +13184,7 @@ async function loadDashboard() {
   window.closeCargoFlightsModal = function() {
     const m = document.getElementById('cargo-flights-modal');
     if (m) m.style.display = 'none';
+    stopCargoAnimation();
   };
 
   // Expose to window scope
@@ -22062,9 +22215,15 @@ window.resetIndicatorsConfig = function() {
           <div id="cargo-flights-title" class="rel-add-title">Havadaki THY Uçakları</div>
           <button class="rel-add-x" onclick="closeCargoFlightsModal()" aria-label="Kapat">×</button>
         </div>
-        <div class="forex-toggle-btns" id="cargo-type-toggle" style="margin-top:10px;">
-          <button class="forex-btn active" id="btn-cargo-type-cargo" data-type="cargo" onclick="setCargoFlightsFilter('cargo')">Kargo</button>
-          <button class="forex-btn" id="btn-cargo-type-pax" data-type="pax" onclick="setCargoFlightsFilter('pax')">Yolcu</button>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:10px; flex-wrap:wrap;">
+          <div class="forex-toggle-btns" id="cargo-type-toggle">
+            <button class="forex-btn active" id="btn-cargo-type-cargo" data-type="cargo" onclick="setCargoFlightsFilter('cargo')">Kargo</button>
+            <button class="forex-btn" id="btn-cargo-type-pax" data-type="pax" onclick="setCargoFlightsFilter('pax')">Yolcu</button>
+          </div>
+          <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-2); cursor:pointer;">
+            <input type="checkbox" id="cargo-network-toggle" checked onchange="toggleCargoNetworkLayer(this.checked)">
+            Ağ noktalarını göster
+          </label>
         </div>
         <div id="cargo-flights-body" style="display:flex; gap:14px; margin-top:10px; height:480px;">
           <div id="cargo-flight-list" style="width:280px; flex-shrink:0; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px;"></div>
@@ -22072,8 +22231,7 @@ window.resetIndicatorsConfig = function() {
             <div id="cargo-flights-map" style="position:absolute; inset:0;"></div>
           </div>
         </div>
-        <div id="cargo-flights-empty" style="display:none; text-align:center; color:var(--text-3); padding:24px; font-size:13px;">Şu anda havada THY kargo uçuşu tespit edilemedi.</div>
-        <div style="margin-top:10px; font-size:11px; color:var(--text-3);">Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network</a> · Konumlar canlı ADS-B verisidir; kalkış/varış havalimanları OpenSky'nin tahmini rota tespitine dayanır ve bazı uçuşlarda eksik/yanlış olabilir.</div>
+        <div style="margin-top:10px; font-size:11px; color:var(--text-3);">Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network</a> · Konumlar canlı ADS-B verisidir, her saniye son bilinen hız/yöne göre tahmini olarak ilerletilir. Kalkış/varış tahmini arka planda kademeli olarak yüklenir; bazı uçuşlarda hiç oluşmayabilir. Gri noktalar THY Kargo'nun Haziran 2026 ağ planındaki destinasyonlardır (statik referans).</div>
       </div>
     </div>
 

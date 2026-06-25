@@ -296,8 +296,48 @@ function parseFBX(html) {
   };
 }
 
+// OpenSky OAuth2 (client_credentials) token önbelleği — Worker isolate'ı yaşadığı
+// sürece bellekte kalır, süresi dolmadan tekrar token istemez.
+let _openSkyToken = null; // { accessToken, expiresAt (epoch ms) }
+
+async function getOpenSkyToken(env, doFetch, debug) {
+  if (!env.OPENSKY_CLIENT_ID || !env.OPENSKY_CLIENT_SECRET) return null;
+  if (_openSkyToken && _openSkyToken.expiresAt > Date.now() + 10000) {
+    return _openSkyToken.accessToken;
+  }
+  // Cloudflare datacenter'larından OpenSky'ye doğrudan bağlantı engelli (522);
+  // token isteği de ev funnel'ı üzerinden gönderilir.
+  const res = await doFetch('https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: env.OPENSKY_CLIENT_ID,
+      client_secret: env.OPENSKY_CLIENT_SECRET,
+    }).toString(),
+  }, false, 0);
+  if (res.status !== 200) {
+    if (debug) debug.tokenError = { status: res.status, body: res.body.slice(0, 300) };
+    return null;
+  }
+  let data;
+  try { data = JSON.parse(res.body); } catch (e) {
+    if (debug) debug.tokenError = { parseError: e.message, body: res.body.slice(0, 300) };
+    return null;
+  }
+  if (!data.access_token) {
+    if (debug) debug.tokenError = { noAccessToken: true, data };
+    return null;
+  }
+  _openSkyToken = {
+    accessToken: data.access_token,
+    expiresAt: Date.now() + (data.expires_in || 1800) * 1000,
+  };
+  return _openSkyToken.accessToken;
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const origin = request.headers.get('Origin') || '';
     const corsHeaders = {
       'Access-Control-Allow-Origin': ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0],
@@ -725,16 +765,56 @@ export default {
       }
     }
 
+    // ── GEÇICI: OpenSky OAuth2 teşhis rotası (debug, secret sızdırmaz) ──
+    if (urlObj.pathname === '/cargo-debug') {
+      try {
+        const debug = {};
+        const token = await getOpenSkyToken(env, doFetch, debug);
+        let flightsTest = null;
+        if (token) {
+          const now = Math.floor(Date.now() / 1000);
+          const testRes = await doFetch(
+            `https://opensky-network.org/api/flights/aircraft?icao24=4bb1c3&begin=${now - 14 * 3600}&end=${now}`,
+            { headers: { Authorization: `Bearer ${token}` } }, false, 0
+          );
+          flightsTest = { status: testRes.status, bodySnippet: testRes.body.slice(0, 200) };
+        }
+        return new Response(JSON.stringify({
+          hasClientId: !!env.OPENSKY_CLIENT_ID,
+          hasClientSecret: !!env.OPENSKY_CLIENT_SECRET,
+          tokenObtained: !!token,
+          tokenLength: token ? token.length : 0,
+          debug,
+          flightsTest,
+        }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      }
+    }
+
     // ── /cargo-flights Canlı THY Kargo Uçakları Rotası ──
+    // OpenSky'nin states/all uç noktası ev Tailscale funnel'ı üzerinden ~60sn
+    // sürebiliyor (büyük global ADS-B anlık görüntüsü). Bu yüzden stale-while-
+    // revalidate deseni kullanılır: önbellekte veri varsa anında o döndürülür,
+    // arka planda (ctx.waitUntil) tazesi çekilip önbellek güncellenir. Sadece
+    // worker'ın hiç çalışmadığı ilk istek gerçek gecikmeyi yaşar.
     if (urlObj.pathname === '/cargo-flights') {
       const forceDirect = urlObj.searchParams.get('direct') === '1';
-      try {
-        const statesRes = await doFetch('https://opensky-network.org/api/states/all', {}, forceDirect, 50);
+      const cache = caches.default;
+      const cacheKey = new Request('https://internal.cache/cargo-flights-v1');
+
+      // Hızlı yol: sadece states/all (anlık konum + sayım). Hiçbir koşulda
+      // kullanıcıyı bekletmez — kullanıcı her zaman bu fonksiyonun sonucunu görür.
+      async function computeBaseCargoFlights() {
+        const token = await getOpenSkyToken(env, doFetch);
+        const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+        // Cloudflare datacenter'larından OpenSky'ye doğrudan bağlantı engelli (522) —
+        // tüm istekler ev funnel'ı üzerinden gider. Funnel, Authorization header'ını
+        // upstream'e iletecek şekilde güncellendi (server.js'in ev sunucuda yeniden
+        // başlatılması gerekir).
+        const statesRes = await doFetch('https://opensky-network.org/api/states/all', { headers: authHeaders }, forceDirect, 50);
         if (statesRes.status !== 200) {
-          return new Response(JSON.stringify({ error: 'OpenSky states fetch failed', status: statesRes.status, proxy: statesRes.proxy }), {
-            status: 502,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
+          throw new Error(`OpenSky states fetch failed (status ${statesRes.status})`);
         }
         const statesData = JSON.parse(statesRes.body);
         const states = statesData.states || [];
@@ -759,20 +839,30 @@ export default {
           });
         }
 
-        const cargoFlights = allFlights.filter(f => f.type === 'cargo');
-        const paxFlights = allFlights.filter(f => f.type === 'pax');
+        return {
+          count: allFlights.filter(f => f.type === 'cargo').length,
+          paxCount: allFlights.filter(f => f.type === 'pax').length,
+          flights: allFlights,
+          updated: Math.floor(Date.now() / 1000),
+          token, authHeaders,
+        };
+      }
 
-        // Her uçuş için tahmini kalkış/varış havalimanını çek (kargoda en fazla 20,
-        // yolcuda en fazla 15 uçuş, paralel — OpenSky anonim kota sınırını korumak için)
+      // Yavaş yol: kalkış/varış tahmini. SADECE arka planda (ctx.waitUntil) çalışır,
+      // hiçbir HTTP yanıtı bunu beklemez. En fazla 20 kargo + 15 yolcu uçuşu
+      // zenginleştirilir — OpenSky kotasını ve ev funnel'ının yükünü korumak için.
+      async function enrichInBackground(data) {
+        const { token, authHeaders, flights } = data;
+        if (!token) return;
+        const cargoFlights = flights.filter(f => f.type === 'cargo').slice(0, 20);
+        const paxFlights = flights.filter(f => f.type === 'pax').slice(0, 15);
         const now = Math.floor(Date.now() / 1000);
         const begin = now - 14 * 3600;
-        const end = now;
-        const toEnrich = [...cargoFlights.slice(0, 20), ...paxFlights.slice(0, 15)];
-        await Promise.all(toEnrich.map(async (f) => {
+        await Promise.all([...cargoFlights, ...paxFlights].map(async (f) => {
           try {
             const flRes = await doFetch(
-              `https://opensky-network.org/api/flights/aircraft?icao24=${f.icao24}&begin=${begin}&end=${end}`,
-              {}, forceDirect, 300
+              `https://opensky-network.org/api/flights/aircraft?icao24=${f.icao24}&begin=${begin}&end=${now}`,
+              { headers: authHeaders }, false, 300
             );
             if (flRes.status !== 200) return;
             const flData = JSON.parse(flRes.body);
@@ -784,19 +874,41 @@ export default {
             f.arr = arrIcao ? { icao: arrIcao, ...(CARGO_AIRPORTS[arrIcao] || {}) } : null;
           } catch (_) { /* rota tahmini başarısız — konum verisi yine de gösterilir */ }
         }));
+        const { token: _t, authHeaders: _a, ...publicData } = data;
+        await cache.put(cacheKey, new Response(JSON.stringify(publicData), {
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=70' },
+        }));
+      }
 
-        return new Response(JSON.stringify({
-          count: cargoFlights.length,
-          paxCount: paxFlights.length,
-          flights: allFlights,
-          updated: now,
-        }), {
+      async function refreshAndCache() {
+        const fresh = await computeBaseCargoFlights();
+        const { token: _t, authHeaders: _a, ...publicData } = fresh;
+        await cache.put(cacheKey, new Response(JSON.stringify(publicData), {
+          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=70' },
+        }));
+        // Konum verisi hemen kullanılabilir; rota tahmini arka planda gelir.
+        ctx.waitUntil(enrichInBackground(fresh).catch(() => {}));
+        return publicData;
+      }
+
+      try {
+        const cached = await cache.match(cacheKey);
+        let data;
+        if (cached) {
+          data = await cached.json();
+          const age = Math.floor(Date.now() / 1000) - data.updated;
+          if (age > 55) {
+            // Bayat veri — kullanıcıyı bekletmeden hemen döndür, tazesini arka planda çek.
+            ctx.waitUntil(refreshAndCache().catch(() => {}));
+          }
+        } else {
+          // Önbellekte hiç veri yok (ilk istek/cold start) — sadece hızlı yol beklenir,
+          // rota zenginleştirmesi her zaman arka plandadır.
+          data = await refreshAndCache();
+        }
+        return new Response(JSON.stringify(data), {
           status: 200,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-            'Cache-Control': 'public, max-age=60',
-          },
+          headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=30' },
         });
       } catch (err) {
         return new Response(JSON.stringify({ error: err.message }), {
