@@ -13118,6 +13118,29 @@ async function loadDashboard() {
     iconAnchor: [18, 18],
   });
 
+  function getArcPoints(p1, p2, numPoints = 30) {
+    const points = [];
+    const lat1 = p1[0], lon1 = p1[1];
+    const lat2 = p2[0], lon2 = p2[1];
+    for (let i = 0; i <= numPoints; i++) {
+      const t = i / numPoints;
+      const lat = lat1 + (lat2 - lat1) * t;
+      const lon = lon1 + (lon2 - lon1) * t;
+      const dLat = lat2 - lat1;
+      const dLon = lon2 - lon1;
+      const dist = Math.sqrt(dLat*dLat + dLon*dLon);
+      const bulge = dist * 0.12 * Math.sin(t * Math.PI);
+      let offsetLat = lat;
+      let offsetLon = lon;
+      if (dist > 0) {
+        offsetLat += (-dLon / dist) * bulge;
+        offsetLon += (dLat / dist) * bulge;
+      }
+      points.push([offsetLat, offsetLon]);
+    }
+    return points;
+  }
+
   function selectCargoFlight(idx, pan) {
     const f = _cargoFlights[idx];
     if (!f) return;
@@ -13143,7 +13166,7 @@ async function loadDashboard() {
         _cargoRouteLayers.push(depMarker);
         bounds.push([f.dep.lat, f.dep.lon]);
 
-        _cargoTraveledLine = L.polyline([[f.dep.lat, f.dep.lon], [f.lat, f.lon]], { color: '#C8102E', weight: 2.5, opacity: 0.8 });
+        _cargoTraveledLine = L.polyline(getArcPoints([f.dep.lat, f.dep.lon], [f.lat, f.lon]), { color: '#C8102E', weight: 2.5, opacity: 0.8 });
         _cargoTraveledLine.addTo(_cargoMap);
         _cargoRouteLayers.push(_cargoTraveledLine);
       }
@@ -13156,7 +13179,7 @@ async function loadDashboard() {
         _cargoRouteLayers.push(arrMarker);
         bounds.push([f.arr.lat, f.arr.lon]);
 
-        _cargoRemainingLine = L.polyline([[f.lat, f.lon], [f.arr.lat, f.arr.lon]], { color: '#C8102E', weight: 2.5, opacity: 0.4, dashArray: '6,6' });
+        _cargoRemainingLine = L.polyline(getArcPoints([f.lat, f.lon], [f.arr.lat, f.arr.lon]), { color: '#C8102E', weight: 2.5, opacity: 0.4, dashArray: '6,6' });
         _cargoRemainingLine.addTo(_cargoMap);
         _cargoRouteLayers.push(_cargoRemainingLine);
       }
@@ -13272,10 +13295,10 @@ async function loadDashboard() {
           _cargoHighlightMarker.setLatLng([newLat, newLon]);
           // Rota çizgilerini canlı güncelle
           if (_cargoTraveledLine && selectedFlight.dep && selectedFlight.dep.lat != null) {
-            _cargoTraveledLine.setLatLngs([[selectedFlight.dep.lat, selectedFlight.dep.lon], [newLat, newLon]]);
+            _cargoTraveledLine.setLatLngs(getArcPoints([selectedFlight.dep.lat, selectedFlight.dep.lon], [newLat, newLon]));
           }
           if (_cargoRemainingLine && selectedFlight.arr && selectedFlight.arr.lat != null) {
-            _cargoRemainingLine.setLatLngs([[newLat, newLon], [selectedFlight.arr.lat, selectedFlight.arr.lon]]);
+            _cargoRemainingLine.setLatLngs(getArcPoints([newLat, newLon], [selectedFlight.arr.lat, selectedFlight.arr.lon]));
           }
         }
       });
