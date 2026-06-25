@@ -854,11 +854,12 @@ export default {
       async function enrichInBackground(data) {
         const { token, authHeaders, flights } = data;
         if (!token) return;
-        const cargoFlights = flights.filter(f => f.type === 'cargo').slice(0, 20);
-        const paxFlights = flights.filter(f => f.type === 'pax').slice(0, 15);
+        // Kota tasarrufu için rota tahmini sadece KARGO uçuşlarında denenir
+        // (yolcu seferleri havada aynı anda 100+ olabiliyor, günlük krediyi hızla tüketir).
+        const cargoFlights = flights.filter(f => f.type === 'cargo').slice(0, 30);
         const now = Math.floor(Date.now() / 1000);
         const begin = now - 14 * 3600;
-        await Promise.all([...cargoFlights, ...paxFlights].map(async (f) => {
+        await Promise.all(cargoFlights.map(async (f) => {
           try {
             const flRes = await doFetch(
               `https://opensky-network.org/api/flights/aircraft?icao24=${f.icao24}&begin=${begin}&end=${now}`,
