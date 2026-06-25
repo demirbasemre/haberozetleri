@@ -13046,8 +13046,20 @@ async function loadDashboard() {
         .then(r => r.ok ? r.json() : null).catch(() => null);
       let freshFlights = (data && Array.isArray(data.flights)) ? data.flights : [];
 
-      // Rota tutarlılık kontrolü (Sanity Check)
+      // Rota tutarlılık kontrolü (Sanity Check) ve şehir adı temizleme
       freshFlights.forEach(f => {
+        if (f.dep) {
+          if (f.dep.city && f.dep.city.includes(',')) {
+            const parts = f.dep.city.split(',');
+            f.dep.city = parts[parts.length - 1].trim();
+          }
+        }
+        if (f.arr) {
+          if (f.arr.city && f.arr.city.includes(',')) {
+            const parts = f.arr.city.split(',');
+            f.arr.city = parts[parts.length - 1].trim();
+          }
+        }
         if (f.dep && f.dep.lat != null && f.arr && f.arr.lat != null) {
           const dDep = getDistance(f.lat, f.lon, f.dep.lat, f.dep.lon);
           const dArr = getDistance(f.lat, f.lon, f.arr.lat, f.arr.lon);
@@ -13274,6 +13286,12 @@ async function loadDashboard() {
 
       if (pan) {
         _cargoMap.setView([f.lat, f.lon], 6, { animate: true });
+      }
+
+      // E.D. Değişiklik: Haritadaki popupları senkronize etmek için programlı popup açma
+      const pm = _cargoPlaneMarkers.get(f.icao24);
+      if (pm && pm.marker) {
+        pm.marker.openPopup();
       }
     }
     document.querySelectorAll('.cargo-flight-item').forEach(el => {
@@ -13508,7 +13526,14 @@ async function loadDashboard() {
       const markerColor = f.signalLost ? '#F59E0B' : '#C8102E';
       const planeMarker = L.marker([f.lat, f.lon], { icon: cargoPlaneIcon(f.track, markerColor) })
         .bindPopup(`<strong>${f.callsign}</strong><br>${routeInfo}${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°`);
-      planeMarker.on('click', () => selectCargoFlight(idx, true));
+      
+      // E.D. Değişiklik: Popup açıldığında seçimi senkronize et
+      planeMarker.on('popupopen', () => {
+        if (_cargoSelectedIdx !== idx) {
+          selectCargoFlight(idx, true);
+        }
+      });
+      
       planeMarker.addTo(_cargoMap);
       _cargoMapLayers.push(planeMarker);
       bounds.push([f.lat, f.lon]);
@@ -13518,29 +13543,42 @@ async function loadDashboard() {
       });
     });
 
-    if (fitBounds && bounds.length) {
-      _cargoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 5 });
-    }
-    setTimeout(() => _cargoMap.invalidateSize(), 50);
-    startCargoAnimation();
-
-    // Seçim durumunu koru veya ilk uçuşu seç
+    // Seçim durumunu koru (ilk açılışta varsayılan seçimi kaldırıyoruz)
     let prevSelectedCallsign = null;
     if (_cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx]) {
       prevSelectedCallsign = _cargoFlights[_cargoSelectedIdx].callsign;
     }
-    let newIdx = 0;
+    let newIdx = -1;
     if (prevSelectedCallsign) {
       const foundIdx = _cargoFlights.findIndex(f => f.callsign === prevSelectedCallsign);
       if (foundIdx !== -1) newIdx = foundIdx;
     }
 
-    if (_cargoFlights.length) {
+    if (newIdx !== -1) {
       selectCargoFlight(newIdx, false);
+      
+      // Eğer fitBounds true ise ve seçili uçuş varsa, haritayı bu uçuşun rotasına sığdır
+      if (fitBounds) {
+        const selectedFlight = _cargoFlights[newIdx];
+        const flightBounds = [[selectedFlight.lat, selectedFlight.lon]];
+        if (selectedFlight.dep && selectedFlight.dep.lat != null) {
+          flightBounds.push([selectedFlight.dep.lat, selectedFlight.dep.lon]);
+        }
+        if (selectedFlight.arr && selectedFlight.arr.lat != null) {
+          flightBounds.push([selectedFlight.arr.lat, selectedFlight.arr.lon]);
+        }
+        _cargoMap.fitBounds(flightBounds, { padding: [50, 50], maxZoom: 6 });
+      }
     } else {
       _cargoSelectedIdx = null;
       renderCargoDetailPanel(null);
+      if (fitBounds && bounds.length) {
+        _cargoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 5 });
+      }
     }
+
+    setTimeout(() => _cargoMap.invalidateSize(), 50);
+    startCargoAnimation();
   }
 
   window.openCargoFlightsModal = function() {

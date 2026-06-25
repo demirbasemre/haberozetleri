@@ -938,6 +938,32 @@ export default {
         return R * c;
       }
 
+      function cleanCityName(city, icaoCode, iataCode) {
+        if (!city) return 'Bilinmiyor';
+        const uIcao = icaoCode ? icaoCode.toUpperCase() : null;
+        const uIata = iataCode ? iataCode.toUpperCase() : null;
+        const localDb = (uIcao && AIRPORT_DB[uIcao]) || (uIata && AIRPORT_DB[uIata]);
+        if (localDb && localDb.city) {
+          return localDb.city;
+        }
+        if (city.includes(',')) {
+          const parts = city.split(',');
+          return parts[parts.length - 1].trim();
+        }
+        return city;
+      }
+
+      function cleanRouteCities(route) {
+        if (!route) return null;
+        if (route.dep) {
+          route.dep.city = cleanCityName(route.dep.city, route.dep.icao, route.dep.iata);
+        }
+        if (route.arr) {
+          route.arr.city = cleanCityName(route.arr.city, route.arr.icao, route.arr.iata);
+        }
+        return route;
+      }
+
       async function getLearnedRoute(callsign, lat, lon) {
         if (!env.FBX_ROUTES_KV) return null;
         const kvKey = `learned_routes_${callsign}`;
@@ -950,7 +976,7 @@ export default {
               const dTotal = getDistance(r.dep.lat, r.dep.lon, r.arr.lat, r.arr.lon);
               const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
               if (dDep + dArr <= maxAllowed) {
-                return r; // Rota eşleşti!
+                return cleanRouteCities(r); // Rota eşleşti ve şehirler temizlendi!
               }
             }
           }
@@ -1253,6 +1279,7 @@ export default {
               if (dDep + dArr <= maxAllowed) {
                 f.dep = prev.dep;
                 f.arr = prev.arr;
+                cleanRouteCities(f);
               }
             }
             if (prev.aircraftDetails) {
