@@ -22803,7 +22803,15 @@ window.resetIndicatorsConfig = function() {
           </div>
           <div id="cargo-flight-detail" style="width:280px; flex-shrink:0; overflow-y:auto; border:1px solid var(--border); border-radius:10px; padding:14px; background:var(--surface);"></div>
         </div>
-        <div style="margin-top:10px; font-size:11px; color:var(--text-3);">Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network</a> · Konumlar canlı ADS-B verisidir, her saniye son bilinen hız/yöne göre tahmini olarak ilerletilir. Kalkış/varış tahmini arka planda kademeli olarak yüklenir; bazı uçuşlarda hiç oluşmayabilir. Gri noktalar THY Kargo'nun Haziran 2026 ağ planındaki destinasyonlardır (statik referans).</div>
+        <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border-soft); display:flex; flex-wrap:wrap; gap:16px; align-items:center; font-size:11px; color:var(--text-3);">
+          <span>Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener" style="color:var(--text-2); font-weight:600;">OpenSky Network</a></span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span class="cargo-live-dot" style="margin:0;"></span><span style="color:#C8102E; font-weight:600;">Kırmızı Uçak / Yeşil Nokta</span>: Canlı Sinyal</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span class="cargo-signal-lost-dot" style="margin:0;"></span><span style="color:#D97706; font-weight:600;">Turuncu Uçak / Turuncu Nokta</span>: Sinyal Kaybı (Tahmini Konum)</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:7px; height:7px; background:#9CA3AF; border-radius:50%; display:inline-block;"></span><span>Gri Noktalar</span>: Ağ Destinasyonları</span>
+        </div>
+        <div style="margin-top:6px; font-size:11px; color:var(--text-3); line-height:1.4;">
+          * Konumlar canlı ADS-B verisidir. Sinyal kaybı (kapsama alanı dışı) durumunda son bilinen konum, hız ve yön bilgileri kullanılarak tahmini seyrüsefer (dead reckoning) ile seyahat simüle edilmeye devam eder. Kalkış/varış tahminleri arka planda kademeli yüklenir.
+        </div>
       </div>
     </div>
 
