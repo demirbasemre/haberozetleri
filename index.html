@@ -13189,7 +13189,14 @@ async function loadDashboard() {
         <div class="market-tooltip-refresh-wrap">
     `;
 
-    if (status.isStatic) {
+    if (status.isMonthly) {
+      tooltipHtml += `
+        <div class="market-refresh-status">
+          <span class="refresh-indicator open"></span>
+          <span>${status.autoLabel || 'Aylık otomatik güncellenir'}</span>
+        </div>
+      `;
+    } else if (status.isStatic) {
       tooltipHtml += `
         <div class="market-refresh-status">
           <span class="refresh-indicator static"></span>
@@ -13214,7 +13221,7 @@ async function loadDashboard() {
 
     tooltipHtml += `</div>`; // Close refresh-wrap
 
-    if (noteHtml && cardId !== 'dc-thy' && cardId !== 'dc-wci') {
+    if (noteHtml && cardId !== 'dc-thy') {
       tooltipHtml += `
         <div class="market-tooltip-source-divider"></div>
         <div class="market-tooltip-source">${noteHtml}</div>
