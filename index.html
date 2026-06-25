@@ -3092,19 +3092,16 @@
         </div>
 
         <!-- Multi-Metric Chart -->
-        <div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-            <span style="font-size:12px; font-weight:700; color:var(--text-2);">Metrik Seç</span>
-            <div style="display:flex; gap:5px; flex-wrap:wrap;" id="iata-metric-toggles">
-              <button class="iata-metric-toggle active" data-metric="demand" onclick="toggleIataMetric('demand',this)">CTK %</button>
-              <button class="iata-metric-toggle active" data-metric="capacity" onclick="toggleIataMetric('capacity',this)">ACTK %</button>
-              <button class="iata-metric-toggle" data-metric="loadFactor" onclick="toggleIataMetric('loadFactor',this)">Yük Faktörü</button>
-              <button class="iata-metric-toggle" data-metric="spotRate" onclick="toggleIataMetric('spotRate',this)">Spot Rate</button>
-              <button class="iata-metric-toggle" data-metric="cargoYield" onclick="toggleIataMetric('cargoYield',this)">Cargo Yield</button>
-              <button class="iata-metric-toggle" data-metric="pmi" onclick="toggleIataMetric('pmi',this)">PMI</button>
-            </div>
+        <div class="iata-metric-chart-row">
+          <div class="iata-metric-toggles-col" id="iata-metric-toggles">
+            <button class="iata-metric-toggle active" data-metric="demand" style="--metric-color:#7a64a8" onclick="toggleIataMetric('demand',this)">CTK %</button>
+            <button class="iata-metric-toggle active" data-metric="capacity" style="--metric-color:#22c55e" onclick="toggleIataMetric('capacity',this)">ACTK %</button>
+            <button class="iata-metric-toggle" data-metric="loadFactor" style="--metric-color:#3b82f6" onclick="toggleIataMetric('loadFactor',this)">Yük Faktörü</button>
+            <button class="iata-metric-toggle" data-metric="spotRate" style="--metric-color:#f59e0b" onclick="toggleIataMetric('spotRate',this)">Spot Rate</button>
+            <button class="iata-metric-toggle" data-metric="cargoYield" style="--metric-color:#ef4444" onclick="toggleIataMetric('cargoYield',this)">Cargo Yield</button>
+            <button class="iata-metric-toggle" data-metric="pmi" style="--metric-color:#64748b" onclick="toggleIataMetric('pmi',this)">PMI</button>
           </div>
-          <div style="position:relative; width:100%; height:320px;">
+          <div class="iata-multi-chart-wrap">
             <canvas id="iata-multi-chart"></canvas>
           </div>
         </div>
@@ -19334,29 +19331,56 @@ function initControls(allArticles) {
   }
 
   const IATA_METRIC_CFG = {
-    demand:     { label: 'CTK YoY (%)',          color: '#7a64a8', yAxis: 'y1' },
-    capacity:   { label: 'ACTK YoY (%)',         color: '#22c55e', yAxis: 'y1' },
-    loadFactor: { label: 'Yük Faktörü (%)',      color: '#3b82f6', yAxis: 'y2' },
-    spotRate:   { label: 'Spot Rate ($/kg)',     color: '#f59e0b', yAxis: 'y2' },
-    cargoYield: { label: 'Cargo Yield YoY (%)', color: '#ef4444', yAxis: 'y1' },
-    pmi:        { label: 'PMI',                  color: '#64748b', yAxis: 'y2' }
+    demand:     { label: 'CTK YoY (%)',         color: '#7a64a8', unit: '%' },
+    capacity:   { label: 'ACTK YoY (%)',        color: '#22c55e', unit: '%' },
+    loadFactor: { label: 'Yük Faktörü',         color: '#3b82f6', unit: '%' },
+    spotRate:   { label: 'Spot Rate ($/kg)',    color: '#f59e0b', unit: '$' },
+    cargoYield: { label: 'Cargo Yield YoY (%)', color: '#ef4444', unit: '%' },
+    pmi:        { label: 'PMI',                 color: '#64748b', unit: '' }
   };
+  const IATA_MAX_METRICS = 2;
 
+  function formatIataTick(v, unit) {
+    if (unit === '%') return (v > 0 ? '+' : '') + v.toFixed(1) + '%';
+    if (unit === '$') return '$' + v.toFixed(2);
+    return v.toFixed(1);
+  }
+
+  // Tek metrik seçiliyken tek eksen, iki metrik seçiliyken otomatik çift eksen kullanılır.
   function renderIataMultiChart(reports) {
     const canvas = document.getElementById('iata-multi-chart');
     if (!canvas) return;
     if (_iataMultiChartInstance) { _iataMultiChartInstance.destroy(); _iataMultiChartInstance = null; }
+    updateIataMetricButtonStates();
     if (!reports || !reports.length) return;
     const sorted = [...reports].sort((a, b) => (a._iso||iataDateToISO(a.date)).localeCompare(b._iso||iataDateToISO(b.date)));
     const labels = sorted.map(r => r.date);
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
     const textColor = isDark ? '#8aa0bf' : '#64748b';
-    const datasets = [..._iataActiveMetrics].map(metric => {
+
+    const activeMetrics = [..._iataActiveMetrics];
+    const isSingleAxis = activeMetrics.length <= 1;
+
+    const datasets = activeMetrics.map((metric, idx) => {
       const cfg = IATA_METRIC_CFG[metric];
       if (!cfg) return null;
-      return { label: cfg.label, _metricKey: metric, data: sorted.map(r => parseIataNum(r[metric])), borderColor: cfg.color, backgroundColor: cfg.color + '1a', borderWidth: 2, tension: 0.3, pointRadius: 3.5, pointBackgroundColor: cfg.color, yAxisID: cfg.yAxis, fill: false };
+      return { label: cfg.label, _metricKey: metric, data: sorted.map(r => parseIataNum(r[metric])), borderColor: cfg.color, backgroundColor: cfg.color + '1a', borderWidth: 2, tension: 0.3, pointRadius: 3.5, pointBackgroundColor: cfg.color, yAxisID: isSingleAxis ? 'y' : (idx === 0 ? 'y1' : 'y2'), fill: false };
     }).filter(Boolean);
+
+    const scales = {
+      x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9 }, maxRotation: 40 } }
+    };
+    if (isSingleAxis) {
+      const cfg = IATA_METRIC_CFG[activeMetrics[0]] || {};
+      scales.y = { type: 'linear', position: 'left', grid: { color: gridColor }, ticks: { color: cfg.color || textColor, font: { size: 9 }, callback: v => formatIataTick(v, cfg.unit) } };
+    } else {
+      const cfg1 = IATA_METRIC_CFG[activeMetrics[0]] || {};
+      const cfg2 = IATA_METRIC_CFG[activeMetrics[1]] || {};
+      scales.y1 = { type: 'linear', position: 'left', grid: { color: gridColor }, ticks: { color: cfg1.color || textColor, font: { size: 9 }, callback: v => formatIataTick(v, cfg1.unit) } };
+      scales.y2 = { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, ticks: { color: cfg2.color || textColor, font: { size: 9 }, callback: v => formatIataTick(v, cfg2.unit) } };
+    }
+
     _iataMultiChartInstance = new Chart(canvas.getContext('2d'), {
       type: 'line',
       data: { labels, datasets },
@@ -19371,20 +19395,24 @@ function initControls(allArticles) {
             callbacks: { label: function(ctx) {
               const v = ctx.parsed.y;
               if (v === null || v === undefined) return ctx.dataset.label + ': —';
-              const cfg = IATA_METRIC_CFG[ctx.dataset._metricKey];
-              const suffix = cfg && cfg.yAxis === 'y1' ? '%' : '';
-              return `${ctx.dataset.label}: ${v > 0 && suffix ? '+' : ''}${v.toFixed(1)}${suffix}`;
+              const cfg = IATA_METRIC_CFG[ctx.dataset._metricKey] || {};
+              return `${ctx.dataset.label}: ${formatIataTick(v, cfg.unit)}`;
             }}
           }
         },
-        scales: {
-          x: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9 }, maxRotation: 40 } },
-          y1: { type: 'linear', position: 'left', grid: { color: gridColor }, ticks: { color: '#7a64a8', font: { size: 9 }, callback: v => (v > 0 ? '+' : '') + v.toFixed(1) + '%' } },
-          y2: { type: 'linear', position: 'right', grid: { drawOnChartArea: false }, ticks: { color: textColor, font: { size: 9 } } }
-        }
+        scales
       }
     });
     window._iataMultiChartInstance = _iataMultiChartInstance;
+  }
+
+  // Aktif metrik sayısı sınırına ulaşıldığında pasif butonları görsel olarak soluklaştırır.
+  function updateIataMetricButtonStates() {
+    const limitReached = _iataActiveMetrics.size >= IATA_MAX_METRICS;
+    document.querySelectorAll('#iata-metric-toggles .iata-metric-toggle').forEach(btn => {
+      const isActive = _iataActiveMetrics.has(btn.dataset.metric);
+      btn.classList.toggle('maxed', limitReached && !isActive);
+    });
   }
 
   function toggleIataMetric(metric, btnEl) {
@@ -19393,6 +19421,12 @@ function initControls(allArticles) {
       _iataActiveMetrics.delete(metric);
       if (btnEl) btnEl.classList.remove('active');
     } else {
+      if (_iataActiveMetrics.size >= IATA_MAX_METRICS) {
+        if (typeof window.__showToast === 'function') {
+          window.__showToast('En fazla 2 metrik birlikte gösterilebilir. Önce bir metriği kaldırın.', 'warn');
+        }
+        return;
+      }
       _iataActiveMetrics.add(metric);
       if (btnEl) btnEl.classList.add('active');
     }
