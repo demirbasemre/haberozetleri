@@ -13019,6 +13019,17 @@ async function loadDashboard() {
     ['AGP','Malaga','İspanya',36.675,-4.499,'p'],['VLC','Valencia','İspanya',39.489,-0.482,'p'],
   ];
 
+  function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
   // Havadaki THY Uçakları Verisini Çek ve Göster (Kargo + Yolcu)
   let _cargoAllFlights = [];
   let _cargoFlights = [];
@@ -13028,6 +13039,22 @@ async function loadDashboard() {
       const data = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/cargo-flights')
         .then(r => r.ok ? r.json() : null).catch(() => null);
       _cargoAllFlights = (data && Array.isArray(data.flights)) ? data.flights : [];
+
+      // Rota tutarlılık kontrolü (Sanity Check)
+      _cargoAllFlights.forEach(f => {
+        if (f.dep && f.dep.lat != null && f.arr && f.arr.lat != null) {
+          const dDep = getDistance(f.lat, f.lon, f.dep.lat, f.dep.lon);
+          const dArr = getDistance(f.lat, f.lon, f.arr.lat, f.arr.lon);
+          const dTotal = getDistance(f.dep.lat, f.dep.lon, f.arr.lat, f.arr.lon);
+          const maxAllowed = Math.max(dTotal * 1.35, dTotal + 800); // %35 veya +800km tolerans
+          if (dDep + dArr > maxAllowed) {
+            // Uçağın konumu rotayla uyuşmuyor (büyük ihtimalle callsign eşleşmesi hatalı)
+            f.dep = null;
+            f.arr = null;
+          }
+        }
+      });
+
       const count = data && typeof data.count === 'number' ? data.count : _cargoAllFlights.filter(f => f.type === 'cargo').length;
       _cargoFlights = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter);
       setCard('dc-cargo', String(count), null, 'THY Kargo · şu anda uçuşta',
