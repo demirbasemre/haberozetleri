@@ -28,69 +28,6 @@ const PROXY_ALLOWED_HOSTS = new Set([
   'www.freightos.com',
 ]);
 
-// THY Kargo'nun tipik destinasyon ağındaki havalimanları (yaklaşık koordinatlar)
-const CARGO_AIRPORTS = {
-  LTFM: { name: 'İstanbul Havalimanı', city: 'İstanbul', lat: 41.262, lon: 28.727 },
-  LTBA: { name: 'Atatürk Havalimanı', city: 'İstanbul', lat: 40.977, lon: 28.815 },
-  KORD: { name: "O'Hare", city: 'Chicago', lat: 41.978, lon: -87.904 },
-  KJFK: { name: 'JFK', city: 'New York', lat: 40.640, lon: -73.779 },
-  KMIA: { name: 'Miami Intl', city: 'Miami', lat: 25.793, lon: -80.291 },
-  KLAX: { name: 'Los Angeles Intl', city: 'Los Angeles', lat: 33.943, lon: -118.408 },
-  KATL: { name: 'Hartsfield–Jackson', city: 'Atlanta', lat: 33.640, lon: -84.427 },
-  KIAH: { name: 'George Bush Intercontinental', city: 'Houston', lat: 29.984, lon: -95.341 },
-  KEWR: { name: 'Newark Liberty', city: 'Newark', lat: 40.692, lon: -74.169 },
-  EHAM: { name: 'Schiphol', city: 'Amsterdam', lat: 52.309, lon: 4.764 },
-  EDDF: { name: 'Frankfurt Havalimanı', city: 'Frankfurt', lat: 50.033, lon: 8.570 },
-  EDDP: { name: 'Leipzig/Halle', city: 'Leipzig', lat: 51.424, lon: 12.236 },
-  LIMC: { name: 'Malpensa', city: 'Milano', lat: 45.630, lon: 8.728 },
-  LEMD: { name: 'Barajas', city: 'Madrid', lat: 40.472, lon: -3.561 },
-  LOWW: { name: 'Schwechat', city: 'Viyana', lat: 48.110, lon: 16.570 },
-  EBLG: { name: 'Liège Havalimanı', city: 'Liège', lat: 50.637, lon: 5.443 },
-  EBBR: { name: 'Zaventem', city: 'Brüksel', lat: 50.901, lon: 4.484 },
-  LFPG: { name: 'Charles de Gaulle', city: 'Paris', lat: 49.013, lon: 2.550 },
-  EGLL: { name: 'Heathrow', city: 'Londra', lat: 51.470, lon: -0.454 },
-  VHHH: { name: 'Hong Kong Intl', city: 'Hong Kong', lat: 22.308, lon: 113.918 },
-  RKSI: { name: 'Incheon', city: 'Seul', lat: 37.469, lon: 126.451 },
-  RJAA: { name: 'Narita', city: 'Tokyo', lat: 35.764, lon: 140.386 },
-  RJBB: { name: 'Kansai', city: 'Osaka', lat: 34.434, lon: 135.244 },
-  RJGG: { name: 'Chubu Centrair', city: 'Nagoya', lat: 34.858, lon: 136.805 },
-  ZSPD: { name: 'Pudong', city: 'Şanghay', lat: 31.143, lon: 121.805 },
-  ZBAA: { name: 'Pekin Başkent', city: 'Pekin', lat: 40.080, lon: 116.584 },
-  RCTP: { name: 'Taoyuan', city: 'Taipei', lat: 25.077, lon: 121.233 },
-  WSSS: { name: 'Changi', city: 'Singapur', lat: 1.350, lon: 103.994 },
-  VIDP: { name: 'Indira Gandhi Intl', city: 'Delhi', lat: 28.556, lon: 77.100 },
-  VABB: { name: 'Chhatrapati Shivaji', city: 'Mumbai', lat: 19.089, lon: 72.868 },
-  VOMM: { name: 'Chennai Intl', city: 'Chennai', lat: 12.990, lon: 80.169 },
-  VGHS: { name: 'Hazrat Shahjalal', city: 'Dakka', lat: 23.843, lon: 90.398 },
-  OPKC: { name: 'Jinnah Intl', city: 'Karaçi', lat: 24.907, lon: 67.160 },
-  OMDB: { name: 'Dubai Intl', city: 'Dubai', lat: 25.253, lon: 55.365 },
-  OTHH: { name: 'Hamad Intl', city: 'Doha', lat: 25.273, lon: 51.608 },
-  OERK: { name: 'King Khalid Intl', city: 'Riyad', lat: 24.957, lon: 46.699 },
-  OEJN: { name: 'King Abdulaziz Intl', city: 'Cidde', lat: 21.680, lon: 39.157 },
-  OEDF: { name: 'King Fahd Intl', city: 'Dammam', lat: 26.471, lon: 49.798 },
-  OJAI: { name: 'Kraliçe Alia', city: 'Amman', lat: 31.722, lon: 35.993 },
-  OLBA: { name: 'Rafic Hariri', city: 'Beyrut', lat: 33.821, lon: 35.488 },
-  FAJS: { name: 'OR Tambo', city: 'Johannesburg', lat: -26.139, lon: 28.246 },
-  HKJK: { name: 'Jomo Kenyatta', city: 'Nairobi', lat: -1.319, lon: 36.928 },
-  DNMM: { name: 'Murtala Muhammed', city: 'Lagos', lat: 6.577, lon: 3.321 },
-  DGAA: { name: 'Kotoka Intl', city: 'Akra', lat: 5.605, lon: -0.167 },
-  HAAB: { name: 'Bole Intl', city: 'Addis Ababa', lat: 8.978, lon: 38.799 },
-  HECA: { name: 'Kahire Intl', city: 'Kahire', lat: 30.122, lon: 31.406 },
-  HLLT: { name: 'Trablus Intl', city: 'Trablus', lat: 32.663, lon: 13.158 },
-  DAAG: { name: 'Houari Boumediene', city: 'Cezayir', lat: 36.691, lon: 3.215 },
-  GMMN: { name: 'Mohammed V', city: 'Kazablanka', lat: 33.367, lon: -7.590 },
-  SBGR: { name: 'Guarulhos', city: 'São Paulo', lat: -23.435, lon: -46.473 },
-  SBKP: { name: 'Viracopos', city: 'Campinas', lat: -23.007, lon: -47.135 },
-  SKBO: { name: 'El Dorado', city: 'Bogotá', lat: 4.702, lon: -74.147 },
-  SAEZ: { name: 'Ezeiza', city: 'Buenos Aires', lat: -34.822, lon: -58.536 },
-  MMMX: { name: 'Benito Juárez', city: 'Mexico City', lat: 19.436, lon: -99.072 },
-  MPTO: { name: 'Tocumen Intl', city: 'Panama', lat: 9.071, lon: -79.383 },
-  UUEE: { name: 'Şeremetyevo', city: 'Moskova', lat: 55.973, lon: 37.414 },
-  UUWW: { name: 'Vnukovo', city: 'Moskova', lat: 55.599, lon: 37.268 },
-  UAAA: { name: 'Almatı Intl', city: 'Almatı', lat: 43.352, lon: 77.041 },
-  UTTT: { name: 'Taşkent Intl', city: 'Taşkent', lat: 41.258, lon: 69.282 },
-};
-
 function parseIATAFuelMonitor(html) {
   const PLATTS_CVT = 3.3173; // 1 cts/gal = 3.3173 $/MT
   const BBL_TO_MT = (100 * PLATTS_CVT) / 42; // $/bbl → $/MT (≈7.898)
@@ -768,24 +705,17 @@ export default {
     // ── GEÇICI: OpenSky OAuth2 teşhis rotası (debug, secret sızdırmaz) ──
     if (urlObj.pathname === '/cargo-debug') {
       try {
-        const debug = {};
-        const token = await getOpenSkyToken(env, doFetch, debug);
-        let flightsTest = null;
-        if (token) {
-          const now = Math.floor(Date.now() / 1000);
-          const testRes = await doFetch(
-            `https://opensky-network.org/api/flights/aircraft?icao24=4bb1c3&begin=${now - 14 * 3600}&end=${now}`,
-            { headers: { Authorization: `Bearer ${token}` } }, false, 0
-          );
-          flightsTest = { status: testRes.status, bodySnippet: testRes.body.slice(0, 200) };
-        }
+        const cs = urlObj.searchParams.get('callsign') || 'THY6354';
+        const adsbRes = await doFetch(`https://api.adsbdb.com/v0/callsign/${cs}`, {}, true, 0);
+        let parsed = null, parseError = null;
+        try { parsed = JSON.parse(adsbRes.body); } catch (e) { parseError = e.message; }
         return new Response(JSON.stringify({
-          hasClientId: !!env.OPENSKY_CLIENT_ID,
-          hasClientSecret: !!env.OPENSKY_CLIENT_SECRET,
-          tokenObtained: !!token,
-          tokenLength: token ? token.length : 0,
-          debug,
-          flightsTest,
+          callsign: cs,
+          adsbStatus: adsbRes.status,
+          adsbProxy: adsbRes.proxy,
+          bodySnippet: adsbRes.body.slice(0, 400),
+          parsed,
+          parseError,
         }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
       } catch (err) {
         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
@@ -853,30 +783,42 @@ export default {
       // Yavaş yol: kalkış/varış tahmini. SADECE arka planda (ctx.waitUntil) çalışır,
       // hiçbir HTTP yanıtı bunu beklemez. En fazla 20 kargo + 15 yolcu uçuşu
       // zenginleştirilir — OpenSky kotasını ve ev funnel'ının yükünü korumak için.
+      // adsbdb.com: açık kaynak, ücretsiz, kimlik doğrulama gerektirmeyen
+      // callsign → gerçek rota (kalkış/varış) veritabanı. OpenSky'nin ADS-B
+      // izinden tahmin ettiği (ve anonim erişimde tamamen kapalı olan)
+      // /flights/aircraft yerine bunu kullanıyoruz — kota sınırı yok, cruise
+      // aşamasındaki uçuşlarda da çalışıyor (tahmine değil gerçek callsign
+      // eşlemesine dayanıyor). Cloudflare'den doğrudan erişilebiliyor (funnel
+      // gerekmiyor).
+      async function fetchRouteFromAdsbdb(callsign) {
+        const res = await doFetch(`https://api.adsbdb.com/v0/callsign/${callsign}`, {}, true, 21600);
+        if (res.status !== 200) return null;
+        let data;
+        try { data = JSON.parse(res.body); } catch { return null; }
+        const route = data?.response?.flightroute;
+        if (!route) return null;
+        const toAirport = (a) => a ? {
+          icao: a.icao_code, iata: a.iata_code, name: a.name,
+          city: a.municipality, lat: a.latitude, lon: a.longitude,
+        } : null;
+        return { dep: toAirport(route.origin), arr: toAirport(route.destination) };
+      }
+
       async function enrichInBackground(data) {
-        const { token, authHeaders, flights } = data;
-        if (!token) return;
-        // Kota tasarrufu için rota tahmini sadece KARGO uçuşlarında denenir
-        // (yolcu seferleri havada aynı anda 100+ olabiliyor, günlük krediyi hızla tüketir).
-        const cargoFlights = flights.filter(f => f.type === 'cargo').slice(0, 30);
-        const now = Math.floor(Date.now() / 1000);
-        const begin = now - 14 * 3600;
-        await Promise.all(cargoFlights.map(async (f) => {
+        const { flights } = data;
+        // adsbdb paralel patlamada IP'yi 300sn engelliyor (429). Bu yüzden
+        // istekler SIRALI ve aralıklı yapılır — sadece kargo uçuşları, en fazla 15.
+        const cargoFlights = flights.filter(f => f.type === 'cargo').slice(0, 15);
+        for (const f of cargoFlights) {
           try {
-            const flRes = await doFetch(
-              `https://opensky-network.org/api/flights/aircraft?icao24=${f.icao24}&begin=${begin}&end=${now}`,
-              { headers: authHeaders }, false, 300
-            );
-            if (flRes.status !== 200) return;
-            const flData = JSON.parse(flRes.body);
-            if (!Array.isArray(flData) || !flData.length) return;
-            const latest = flData[flData.length - 1];
-            const depIcao = latest.estDepartureAirport || null;
-            const arrIcao = latest.estArrivalAirport || null;
-            f.dep = depIcao ? { icao: depIcao, ...(CARGO_AIRPORTS[depIcao] || {}) } : null;
-            f.arr = arrIcao ? { icao: arrIcao, ...(CARGO_AIRPORTS[arrIcao] || {}) } : null;
-          } catch (_) { /* rota tahmini başarısız — konum verisi yine de gösterilir */ }
-        }));
+            const route = await fetchRouteFromAdsbdb(f.callsign);
+            if (route) {
+              f.dep = route.dep;
+              f.arr = route.arr;
+            }
+          } catch (_) { /* rota bulunamadı — konum verisi yine de gösterilir */ }
+          await new Promise(r => setTimeout(r, 1200));
+        }
         const { token: _t, authHeaders: _a, ...publicData } = data;
         await cache.put(cacheKey, new Response(JSON.stringify(publicData), {
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=70' },
