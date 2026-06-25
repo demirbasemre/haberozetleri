@@ -142,7 +142,9 @@ const AIRPORT_DB = {
   "RCTP": { icao: "RCTP", iata: "TPE", name: "Taiwan Taoyuan International Airport", city: "Taipei", lat: 25.080, lon: 121.234 },
   "TPE": { icao: "RCTP", iata: "TPE", name: "Taiwan Taoyuan International Airport", city: "Taipei", lat: 25.080, lon: 121.234 },
   "LFSB": { icao: "LFSB", iata: "BSL", name: "EuroAirport Basel Mulhouse Freiburg", city: "Basel", lat: 47.590, lon: 7.529 },
-  "BSL": { icao: "LFSB", iata: "BSL", name: "EuroAirport Basel Mulhouse Freiburg", city: "Basel", lat: 47.590, lon: 7.529 }
+  "BSL": { icao: "LFSB", iata: "BSL", name: "EuroAirport Basel Mulhouse Freiburg", city: "Basel", lat: 47.590, lon: 7.529 },
+  "UAII": { icao: "UAII", iata: "CIT", name: "Shymkent International Airport", city: "Shymkent", lat: 42.364, lon: 69.479 },
+  "CIT": { icao: "UAII", iata: "CIT", name: "Shymkent International Airport", city: "Shymkent", lat: 42.364, lon: 69.479 }
 };
 
 const CARGO_STATIC_ROUTES = {
@@ -170,7 +172,20 @@ const CARGO_STATIC_ROUTES = {
     { dep: "RCTP", arr: "LTFM" }  // Taipei -> Istanbul
   ],
   "THY6261": [
-    { dep: "VVNB", arr: "VIDP" }  // Hanoi -> Delhi
+    { dep: "VVNB", arr: "VIDP" }, // Hanoi -> Delhi
+    { dep: "VIDP", arr: "VVNB" }, // Delhi -> Hanoi
+    { dep: "VIDP", arr: "LTFM" }, // Delhi -> Istanbul
+    { dep: "LTFM", arr: "VIDP" }, // Istanbul -> Delhi
+    { dep: "LTFM", arr: "VVNB" }, // Istanbul -> Hanoi
+    { dep: "VVNB", arr: "LTFM" }  // Hanoi -> Istanbul
+  ],
+  "THY6215": [
+    { dep: "LTFM", arr: "ZGSZ" }, // Istanbul -> Shenzhen
+    { dep: "ZGSZ", arr: "UAII" }, // Shenzhen -> Shymkent
+    { dep: "UAII", arr: "LTFM" }, // Shymkent -> Istanbul
+    { dep: "UAII", arr: "ZGSZ" }, // Shymkent -> Shenzhen
+    { dep: "ZGSZ", arr: "LTFM" }, // Shenzhen -> Istanbul
+    { dep: "LTFM", arr: "UAII" }  // Istanbul -> Shymkent
   ]
 };
 
