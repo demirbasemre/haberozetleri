@@ -6547,6 +6547,22 @@ function navigateToMetric(item) {
   }, 120);
 }
 
+// Arama kutusunun genişliğini alttaki sekme grubuyla (Haberler/Raporlar/Dashboard) hizalar
+(function syncSearchWidthToTabs() {
+  const tabs = document.querySelector('.main-tabs');
+  if (!tabs) return;
+  const sync = () => {
+    const w = tabs.getBoundingClientRect().width;
+    if (w > 0) document.documentElement.style.setProperty('--tabs-width', w + 'px');
+  };
+  sync();
+  if (window.ResizeObserver) {
+    new ResizeObserver(sync).observe(tabs);
+  } else {
+    window.addEventListener('resize', sync);
+  }
+})();
+
 // Search input event handlers
 document.getElementById('search').addEventListener('input', e => {
   const query = e.target.value.toLowerCase().trim();
@@ -22012,7 +22028,7 @@ window.resetIndicatorsConfig = function() {
     <div id="indicators-customize-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="indicators-customize-title">
       <div class="rel-add-card" style="max-width: 440px;">
         <div class="rel-add-head" style="margin-bottom: 12px;">
-          <div id="indicators-customize-title" class="rel-add-title" style="font-size: 15px;">Anlık Göstergeleri Özelleştir</div>
+          <div id="indicators-customize-title" class="rel-add-title" style="font-size: 15px;">Göstergeleri Özelleştir</div>
           <button class="rel-add-x" onclick="closeIndicatorsCustomizeModal()" aria-label="Kapat">×</button>
         </div>
         <div style="font-size: 12px; color: var(--text-3); margin-bottom: 12px; line-height: 1.5;">
