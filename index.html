@@ -13177,7 +13177,9 @@ async function loadDashboard() {
     const status = checkMarketStatus(cardId);
     const cardEl = document.getElementById(cardId);
     const noteEl = cardEl ? cardEl.querySelector('.dash-card-note') : null;
-    const noteHtml = noteEl ? noteEl.innerHTML : '';
+    // "Son veri: ..." ifadesi sadece kartın altındaki tarih rozetinde gösterilir;
+    // tooltip içinde tekrar edip (farklı önbellek zamanlamasıyla) tutarsız görünmesin diye kaldırılır.
+    const noteHtml = noteEl ? noteEl.innerHTML.replace(/^\s*Son veri:[^<]*<br\s*\/?>\s*/i, '') : '';
     const cfg = _marketStatusConfig[cardId];
 
     let tooltipHtml = `
