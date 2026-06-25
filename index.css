@@ -73,26 +73,27 @@
     margin: 0 auto;
     padding: 0 24px;
     height: 60px;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    display: flex;
     align-items: center;
     gap: 20px;
+    position: relative;
   }
 
   .header-left {
     display: flex;
     align-items: center;
     gap: 20px;
-    justify-self: start;
     min-width: 0;
+    flex-shrink: 0;
   }
 
   .header-right {
     display: flex;
     align-items: center;
     gap: 20px;
-    justify-self: end;
     min-width: 0;
+    flex-shrink: 0;
+    margin-left: auto;
   }
 
   .site-name {
@@ -134,16 +135,17 @@
   }
 
   .search-wrap {
-    width: 100%;
-    max-width: 760px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(160px, calc(100vw - 760px), 760px);
     min-width: 0;
-    justify-self: center;
     display: flex;
     align-items: center;
     background: rgba(255,255,255,0.10);
     border: 1px solid rgba(255,255,255,0.18);
     border-radius: 8px;
-    position: relative;
     overflow: visible;
     transition: background 0.2s, border-color 0.2s;
   }
