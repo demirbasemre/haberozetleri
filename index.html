@@ -10959,13 +10959,18 @@ async function loadDashboard() {
   window._jetfuelCustomRange = false;
 
   function renderWciChart(period) {
-    if (period) _wciCurrentPeriod = period;
+    if (period) {
+      _wciCurrentPeriod = period;
+      window._wciCustomRange = false;
+    }
 
     document.querySelectorAll('#wci-chart-modal .wci-period-btn').forEach(btn => {
       btn.classList.remove('active');
     });
-    const activePeriodBtn = document.getElementById(`btn-wci-${_wciCurrentPeriod}`);
-    if (activePeriodBtn) activePeriodBtn.classList.add('active');
+    if (!window._wciCustomRange) {
+      const activePeriodBtn = document.getElementById(`btn-wci-${_wciCurrentPeriod}`);
+      if (activePeriodBtn) activePeriodBtn.classList.add('active');
+    }
 
     console.log("renderWciChart tetiklendi. _wciHistory:", _wciHistory, "_wciLatest:", _wciLatest);
     const titleEl = document.getElementById('wci-chart-title');
@@ -10997,6 +11002,12 @@ async function loadDashboard() {
           allData.push({ date: latestIso, value: _wciLatest.price });
           console.log("Canlı veri grafiğe eklendi:", latestIso, _wciLatest.price);
         }
+      }
+
+      if (!window._wciCustomRange) {
+        const minDate = allData[0]?.date || '';
+        const maxDate = allData[allData.length - 1]?.date || '';
+        setDateInputsForPeriod('wci', _wciCurrentPeriod, minDate, maxDate);
       }
 
       // Date filtering
