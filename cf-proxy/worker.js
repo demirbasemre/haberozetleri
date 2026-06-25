@@ -971,7 +971,7 @@ export default {
         try {
           let routes = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' }) || [];
           if (uppercaseCallsign === 'THY6058') {
-            const filtered = routes.filter(r => r.dep && r.dep.icao !== 'KCMH');
+            const filtered = routes.filter(r => r.dep && r.dep.icao === 'GOBD');
             if (filtered.length !== routes.length) {
               routes = filtered;
               await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(routes));
@@ -1279,7 +1279,7 @@ export default {
           const prev = cachedFlights.find(p => p.callsign === f.callsign);
           if (prev) {
             // E.D. Düzeltme: THY6058 için önbellekteki eski hatalı Columbus (KCMH) rotasını yok say
-            if (f.callsign.toUpperCase() === 'THY6058' && prev.dep && prev.dep.icao === 'KCMH') {
+            if (f.callsign.toUpperCase() === 'THY6058' && prev.dep && prev.dep.icao !== 'GOBD') {
               prev.dep = null;
               prev.arr = null;
             }
