@@ -13162,11 +13162,7 @@ async function loadDashboard() {
       }
 
       if (pan) {
-        if (bounds.length > 1) {
-          _cargoMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 6, animate: true });
-        } else {
-          _cargoMap.setView([f.lat, f.lon], 6, { animate: true });
-        }
+        _cargoMap.setView([f.lat, f.lon], 6, { animate: true });
       }
     }
     document.querySelectorAll('.cargo-flight-item').forEach(el => {

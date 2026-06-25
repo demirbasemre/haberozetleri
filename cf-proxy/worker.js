@@ -804,35 +804,55 @@ export default {
         return { dep: toAirport(route.origin), arr: toAirport(route.destination) };
       }
 
-      async function enrichInBackground(data) {
+      async function enrichInBackground(data, cachedFlights) {
         const { flights } = data;
         // adsbdb paralel patlamada IP'yi 300sn engelliyor (429). Bu yüzden
-        // istekler SIRALI ve aralıklı yapılır — sadece kargo uçuşları, en fazla 15.
-        const cargoFlights = flights.filter(f => f.type === 'cargo').slice(0, 15);
-        for (const f of cargoFlights) {
-          try {
-            const route = await fetchRouteFromAdsbdb(f.callsign);
-            if (route) {
-              f.dep = route.dep;
-              f.arr = route.arr;
-            }
-          } catch (_) { /* rota bulunamadı — konum verisi yine de gösterilir */ }
-          await new Promise(r => setTimeout(r, 1200));
+        // istekler SIRALI ve aralıklı yapılır — sadece rota bilgisi eksik olan kargo uçuşları, en fazla 15.
+        const cargoFlightsToFetch = flights.filter(f => f.type === 'cargo' && !f.dep).slice(0, 15);
+        if (cargoFlightsToFetch.length > 0) {
+          for (const f of cargoFlightsToFetch) {
+            try {
+              const route = await fetchRouteFromAdsbdb(f.callsign);
+              if (route) {
+                f.dep = route.dep;
+                f.arr = route.arr;
+              }
+            } catch (_) { /* rota bulunamadı — konum verisi yine de gösterilir */ }
+            await new Promise(r => setTimeout(r, 1200));
+          }
+          const { token: _t, authHeaders: _a, ...publicData } = data;
+          await cache.put(cacheKey, new Response(JSON.stringify(publicData), {
+            headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=70' },
+          }));
         }
-        const { token: _t, authHeaders: _a, ...publicData } = data;
-        await cache.put(cacheKey, new Response(JSON.stringify(publicData), {
-          headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=70' },
-        }));
       }
 
       async function refreshAndCache() {
         const fresh = await computeBaseCargoFlights();
+        
+        // Önbellekteki mevcut rotaları korumak ve API limitlerini korumak için eşleşen rotaları kopyala
+        let cachedFlights = [];
+        try {
+          const cachedRes = await cache.match(cacheKey);
+          if (cachedRes) {
+            const cachedData = await cachedRes.json();
+            cachedFlights = cachedData.flights || [];
+            for (const f of fresh.flights) {
+              const prev = cachedFlights.find(p => p.callsign === f.callsign);
+              if (prev && prev.dep) {
+                f.dep = prev.dep;
+                f.arr = prev.arr;
+              }
+            }
+          }
+        } catch (_) {}
+
         const { token: _t, authHeaders: _a, ...publicData } = fresh;
         await cache.put(cacheKey, new Response(JSON.stringify(publicData), {
           headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=70' },
         }));
         // Konum verisi hemen kullanılabilir; rota tahmini arka planda gelir.
-        ctx.waitUntil(enrichInBackground(fresh).catch(() => {}));
+        ctx.waitUntil(enrichInBackground(fresh, cachedFlights).catch(() => {}));
         return publicData;
       }
 
