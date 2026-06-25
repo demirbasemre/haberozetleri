@@ -783,13 +783,83 @@ export default {
           });
         }
 
-        return {
-          count: allFlights.filter(f => f.type === 'cargo').length,
-          paxCount: allFlights.filter(f => f.type === 'pax').length,
-          flights: allFlights,
-          updated: Math.floor(Date.now() / 1000),
-          token, authHeaders,
+        function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+      }
+
+      async function getLearnedRoute(callsign, lat, lon) {
+        if (!env.FBX_ROUTES_KV) return null;
+        const kvKey = `learned_routes_${callsign}`;
+        try {
+          const routes = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' }) || [];
+          for (const r of routes) {
+            if (r.dep && r.dep.lat != null && r.arr && r.arr.lat != null) {
+              const dDep = getDistance(lat, lon, r.dep.lat, r.dep.lon);
+              const dArr = getDistance(lat, lon, r.arr.lat, r.arr.lon);
+              const dTotal = getDistance(r.dep.lat, r.dep.lon, r.arr.lat, r.arr.lon);
+              const maxAllowed = Math.max(dTotal * 1.35, dTotal + 800);
+              if (dDep + dArr <= maxAllowed) {
+                return r; // Rota eşleşti!
+              }
+            }
+          }
+        } catch (_) {}
+        return null;
+      }
+
+      async function saveLearnedRoute(callsign, route) {
+        if (!env.FBX_ROUTES_KV || !route || !route.dep || !route.arr) return;
+        const kvKey = `learned_routes_${callsign}`;
+        try {
+          const routes = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' }) || [];
+          const exists = routes.some(r => r.dep.icao === route.dep.icao && r.arr.icao === route.arr.icao);
+          if (!exists) {
+            routes.push(route);
+            if (routes.length > 5) routes.shift(); // En son 5 rotayı tut
+            await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(routes));
+          }
+        } catch (_) {}
+      }
+
+      async function fetchAircraftDetailsFromAdsbdb(icao24) {
+        const uppercaseIcao = icao24.toUpperCase();
+        const kvKey = `aircraft_details_${uppercaseIcao}`;
+        if (env.FBX_ROUTES_KV) {
+          try {
+            const cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+            if (cached) return cached;
+          } catch (_) {}
+        }
+        
+        const res = await doFetch(`https://api.adsbdb.com/v0/aircraft/${uppercaseIcao}`, {}, false, 86400);
+        if (res.status !== 200) return null;
+        let data;
+        try { data = JSON.parse(res.body); } catch { return null; }
+        const ac = data?.response?.aircraft;
+        if (!ac) return null;
+        
+        const details = {
+          registration: ac.registration || null,
+          type: ac.type || null,
+          icaoType: ac.icao_type || null,
+          manufacturer: ac.manufacturer || null,
+          photoUrl: ac.url_photo || null,
+          photoThumb: ac.url_photo_thumbnail || null,
         };
+        
+        if (env.FBX_ROUTES_KV && details.registration) {
+          try {
+            await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(details));
+          } catch (_) {}
+        }
+        return details;
       }
 
       async function fetchRouteFromAdsbdb(callsign) {
@@ -808,18 +878,55 @@ export default {
 
       async function enrichInBackground(data, cachedFlights) {
         const { flights } = data;
-        const cargoFlightsToFetch = flights.filter(f => f.type === 'cargo' && !f.dep).slice(0, 15);
-        if (cargoFlightsToFetch.length > 0) {
-          for (const f of cargoFlightsToFetch) {
+        const cargoFlights = flights.filter(f => f.type === 'cargo');
+        let cacheUpdated = false;
+        
+        for (const f of cargoFlights) {
+          // 1. Rota tespiti (Hafızadan/API'den teyitli)
+          if (!f.dep) {
+            // Önce kendi KV'mizden öğrenilmiş rotaları kontrol et
+            const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon);
+            if (learnedRoute) {
+              f.dep = learnedRoute.dep;
+              f.arr = learnedRoute.arr;
+              cacheUpdated = true;
+            } else {
+              // KV'de yoksa API'den çek ve teyit et
+              try {
+                const apiRoute = await fetchRouteFromAdsbdb(f.callsign);
+                if (apiRoute && apiRoute.dep && apiRoute.arr) {
+                  const dDep = getDistance(f.lat, f.lon, apiRoute.dep.lat, apiRoute.dep.lon);
+                  const dArr = getDistance(f.lat, f.lon, apiRoute.arr.lat, apiRoute.arr.lon);
+                  const dTotal = getDistance(apiRoute.dep.lat, apiRoute.dep.lon, apiRoute.arr.lat, apiRoute.arr.lon);
+                  const maxAllowed = Math.max(dTotal * 1.35, dTotal + 800);
+                  
+                  if (dDep + dArr <= maxAllowed) {
+                    f.dep = apiRoute.dep;
+                    f.arr = apiRoute.arr;
+                    cacheUpdated = true;
+                    // Başarılıysa KV'ye öğrenilmiş rota olarak kaydet
+                    await saveLearnedRoute(f.callsign, apiRoute);
+                  }
+                }
+              } catch (_) {}
+              await new Promise(r => setTimeout(r, 1200));
+            }
+          }
+
+          // 2. Uçak detaylarını (Tescil, Model, Fotoğraf) çek
+          if (!f.aircraftDetails) {
             try {
-              const route = await fetchRouteFromAdsbdb(f.callsign);
-              if (route) {
-                f.dep = route.dep;
-                f.arr = route.arr;
+              const acDetails = await fetchAircraftDetailsFromAdsbdb(f.icao24);
+              if (acDetails) {
+                f.aircraftDetails = acDetails;
+                cacheUpdated = true;
               }
-            } catch (_) { }
+            } catch (_) {}
             await new Promise(r => setTimeout(r, 1200));
           }
+        }
+        
+        if (cacheUpdated) {
           const { token: _t, authHeaders: _a, ...publicData } = data;
           await setCachedFlights(publicData);
         }
@@ -835,9 +942,14 @@ export default {
             cachedFlights = cachedData.flights || [];
             for (const f of fresh.flights) {
               const prev = cachedFlights.find(p => p.callsign === f.callsign);
-              if (prev && prev.dep) {
-                f.dep = prev.dep;
-                f.arr = prev.arr;
+              if (prev) {
+                if (prev.dep) {
+                  f.dep = prev.dep;
+                  f.arr = prev.arr;
+                }
+                if (prev.aircraftDetails) {
+                  f.aircraftDetails = prev.aircraftDetails;
+                }
               }
             }
           }

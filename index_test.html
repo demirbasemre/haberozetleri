@@ -13117,18 +13117,28 @@ async function loadDashboard() {
 
     _cargoFlights.forEach((f, idx) => {
       const item = document.createElement('div');
-      item.className = 'cargo-flight-item';
+      item.className = 'cargo-flight-item' + (_cargoSelectedIdx === idx ? ' selected' : '');
       item.dataset.idx = idx;
-      item.style.cssText = 'padding:8px 10px; border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:12px; transition:background 0.15s;';
       const routeLine = (f.dep || f.arr)
-        ? `<div style="color:var(--text-3); margin-top:2px;">${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}</div>`
+        ? `<div style="color:var(--text-2); margin-top:2px; font-weight:500;">${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}</div>`
         : '';
+      const regBadge = f.aircraftDetails?.registration
+        ? `<span style="font-family:monospace; font-size:10px; color:var(--text-3); background:var(--surface-3, rgba(0,0,0,0.06)); padding:1px 4px; border-radius:3px; font-weight:normal;">${f.aircraftDetails.registration}</span>`
+        : '';
+      const modelText = f.aircraftDetails?.type || f.aircraftDetails?.icaoType
+        ? `<div style="color:var(--text-3); font-size:11px; margin-top:1px;">${f.aircraftDetails.manufacturer || ''} ${f.aircraftDetails.type || f.aircraftDetails.icaoType}</div>`
+        : '';
+      
       item.innerHTML = `
-        <div style="font-weight:600; display:flex; align-items:center; gap:5px;">
-          <span class="cargo-live-dot" style="width:6px; height:6px; background:#16A34A; border-radius:50%; display:inline-block; flex-shrink:0;"></span>
-          ${f.callsign}
+        <div style="font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:5px;">
+          <div style="display:flex; align-items:center; gap:5px;">
+            <span class="cargo-live-dot"></span>
+            ${f.callsign}
+          </div>
+          ${regBadge}
         </div>
         ${routeLine}
+        ${modelText}
         <div style="color:var(--text-3); font-size:11px; margin-top:2px;">${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°</div>
       `;
       item.addEventListener('click', () => focusCargoFlight(idx));
@@ -13216,7 +13226,7 @@ async function loadDashboard() {
       }
     }
     document.querySelectorAll('.cargo-flight-item').forEach(el => {
-      el.style.background = (Number(el.dataset.idx) === idx) ? 'var(--surface-2, rgba(0,0,0,0.05))' : '';
+      el.classList.toggle('selected', Number(el.dataset.idx) === idx);
     });
     renderCargoDetailPanel(f);
   }
@@ -13256,27 +13266,95 @@ async function loadDashboard() {
     }
     const vrate = f.verticalRate || 0;
     const vIcon = vrate > 0.5 ? _cargoDetailIcons.vrateUp : vrate < -0.5 ? _cargoDetailIcons.vrateDown : _cargoDetailIcons.vrateLevel;
-    const vColor = vrate > 0.5 ? '#16A34A' : vrate < -0.5 ? '#DC2626' : 'var(--text-3)';
-    const vLabel = vrate > 0.5 ? 'Tırmanıyor' : vrate < -0.5 ? 'Alçalıyor' : 'Sabit irtifa';
+    const vColor = vrate > 0.5 ? '#10B981' : vrate < -0.5 ? '#EF4444' : 'var(--text-3)';
+    const vLabel = vrate > 0.5 ? 'Tırmanıyor' : vrate < -0.5 ? 'Alçalıyor' : 'Düz Uçuş';
     const secsAgo = Math.max(0, Math.floor(Date.now() / 1000) - (f.lastContact || 0));
     const typeLabel = f.type === 'cargo' ? 'Kargo' : 'Yolcu';
-    const typeColor = f.type === 'cargo' ? '#C8102E' : '#1D6FE8';
+    const typeColor = f.type === 'cargo' ? '#E30613' : '#1D6FE8';
+
+    // 1. Uçak Fotoğrafı
+    let photoHtml = '';
+    if (f.aircraftDetails && f.aircraftDetails.photoUrl) {
+      photoHtml = `
+        <div style="position:relative; width:100%; height:140px; border-radius:12px; overflow:hidden; margin-bottom:12px; border:1px solid var(--border-soft); background:var(--bg); box-shadow:var(--shadow-sm);">
+          <img src="${f.aircraftDetails.photoUrl}" alt="${f.aircraftDetails.registration || f.callsign}" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.parentNode.style.display='none';">
+          <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0,0,0,0.75)); padding:12px 10px 6px; display:flex; justify-content:space-between; align-items:flex-end;">
+            <div style="color:#fff; font-size:10px; font-weight:600; text-shadow:0 1px 2px rgba(0,0,0,0.6); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px;">
+              ${f.aircraftDetails.manufacturer || ''} ${f.aircraftDetails.type || f.aircraftDetails.icaoType || ''}
+            </div>
+            <div style="color:#fff; font-size:9px; font-family:monospace; background:rgba(0,0,0,0.5); padding:1px 4px; border-radius:3px; border:1px solid rgba(255,255,255,0.2); text-shadow:0 1px 1px rgba(0,0,0,0.4);">
+              ${f.aircraftDetails.registration || ''}
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      photoHtml = `
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:80px; border-radius:12px; margin-bottom:12px; border:1px dashed var(--border-soft); background:var(--bg); color:var(--text-3); font-size:11px; gap:6px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5; transform:rotate(90deg);"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
+          <span style="font-weight:500;">Uçak fotoğrafı bulunamadı</span>
+        </div>
+      `;
+    }
+
+    // 2. Bilet Tasarımı
+    const ticketHtml = `
+      <div class="ticket-container">
+        <div class="ticket-cutout-left"></div>
+        <div class="ticket-cutout-right"></div>
+        
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px; padding:0 4px;">
+          <div style="text-align:left; min-width:70px;">
+            <div class="ticket-airport-code">${f.dep?.iata || f.dep?.icao || '???'}</div>
+            <div class="ticket-airport-city" title="${f.dep?.city || f.dep?.name || ''}">${f.dep?.city || 'Bilinmiyor'}</div>
+          </div>
+          
+          <div class="ticket-plane-path">
+            <div class="ticket-line"></div>
+            <svg class="ticket-plane-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
+          </div>
+          
+          <div style="text-align:right; min-width:70px;">
+            <div class="ticket-airport-code">${f.arr?.iata || f.arr?.icao || '???'}</div>
+            <div class="ticket-airport-city" title="${f.arr?.city || f.arr?.name || ''}">${f.arr?.city || 'Bilinmiyor'}</div>
+          </div>
+        </div>
+        
+        <div class="ticket-divider"></div>
+        
+        <div class="ticket-row">
+          <div>
+            <div class="ticket-label">Çağrı Kodu</div>
+            <div class="ticket-value">${f.callsign}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="ticket-label">Kuyruk Tescil</div>
+            <div class="ticket-value" style="font-family:monospace; font-size:11px;">${f.aircraftDetails?.registration || '—'}</div>
+          </div>
+          <div>
+            <div class="ticket-label">Uçak Tipi</div>
+            <div class="ticket-value" style="font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}">${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="ticket-label">Uçuş Tipi</div>
+            <div style="margin-top:2px;"><span style="display:inline-block; font-size:9px; font-weight:700; color:${typeColor}; background:${typeColor}15; border-radius:4px; padding:1px 5px; text-transform:uppercase;">${typeLabel}</span></div>
+          </div>
+        </div>
+      </div>
+    `;
 
     panel.innerHTML = `
-      <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
-        <span style="font-size:15px; font-weight:700; color:var(--text);">${f.callsign}</span>
-      </div>
-      <span style="display:inline-block; font-size:10px; font-weight:600; color:${typeColor}; background:${typeColor}1A; border-radius:4px; padding:2px 6px; margin-bottom:8px;">${typeLabel} seferi</span>
-      ${(f.dep || f.arr) ? `<div style="font-size:12px; color:var(--text-2); margin-bottom:6px;">${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}</div>` : ''}
-      <div style="margin-top:4px;">
-        ${cargoDetailRow(_cargoDetailIcons.altitude, 'İrtifa (barometrik)', Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR') + ' ft')}
+      ${photoHtml}
+      ${ticketHtml}
+      <div style="margin-top:6px; background:var(--bg); border:1px solid var(--border-soft); border-radius:12px; padding:6px 12px 10px;">
+        ${cargoDetailRow(_cargoDetailIcons.altitude, 'İrtifa (Barometrik)', Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR') + ' ft')}
         ${cargoDetailRow(_cargoDetailIcons.altitude, 'İrtifa (GPS)', f.geoAltitude != null ? Math.round(f.geoAltitude * 3.281).toLocaleString('tr-TR') + ' ft' : '—')}
         ${cargoDetailRow(_cargoDetailIcons.speed, 'Yer Hızı', Math.round((f.velocity || 0) * 1.944) + ' kt')}
         ${cargoDetailRow(vIcon, 'Dikey Hız', `${vLabel}${f.verticalRate ? ' · ' + Math.round(f.verticalRate * 196.85).toLocaleString('tr-TR') + ' ft/dk' : ''}`, vColor)}
-        ${cargoDetailRow(_cargoDetailIcons.transponder, 'Transponder (ICAO24)', f.icao24.toUpperCase())}
+        ${cargoDetailRow(_cargoDetailIcons.transponder, 'Transponder (ICAO)', f.icao24.toUpperCase())}
         ${cargoDetailRow(_cargoDetailIcons.squawk, 'Squawk Kodu', f.squawk || '—')}
-        ${cargoDetailRow(_cargoDetailIcons.country, 'Kayıt Ülkesi', f.originCountry || '—')}
-        ${cargoDetailRow(_cargoDetailIcons.clock, 'Son Sinyal', `<span id="cargo-detail-lastcontact">${secsAgo}s önce</span>`)}
+        ${cargoDetailRow(_cargoDetailIcons.country, 'Tescil Ülkesi', f.originCountry || '—')}
+        ${cargoDetailRow(_cargoDetailIcons.clock, 'Son İletişim', `<span id="cargo-detail-lastcontact">${secsAgo}s önce</span>`)}
       </div>
     `;
   }
@@ -22488,6 +22566,137 @@ window.resetIndicatorsConfig = function() {
         70% { transform: scale(1.35); opacity: 0; }
         100% { transform: scale(1.35); opacity: 0; }
       }
+      .cargo-flight-item {
+        padding: 10px 12px;
+        border: 1px solid var(--border-soft);
+        background: var(--surface);
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        border-left: 3px solid transparent;
+      }
+      .cargo-flight-item:hover {
+        border-color: var(--border);
+        background: var(--bg);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+      .cargo-flight-item.selected {
+        background: var(--bg);
+        border-color: var(--border);
+        border-left-color: var(--accent);
+        box-shadow: var(--shadow-sm);
+      }
+      .cargo-live-dot {
+        width: 7px;
+        height: 7px;
+        background: #10B981;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        animation: cargoLivePulse 2s infinite;
+      }
+      @keyframes cargoLivePulse {
+        0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.4); }
+        70% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+        100% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0); }
+      }
+      
+      /* Ticket Styles */
+      .ticket-container {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 12px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+      }
+      .ticket-cutout-left, .ticket-cutout-right {
+        position: absolute;
+        top: 50px;
+        width: 10px;
+        height: 10px;
+        background: var(--surface);
+        border-radius: 50%;
+        z-index: 2;
+      }
+      .ticket-cutout-left {
+        left: -6px;
+        border-right: 1px solid var(--border);
+      }
+      .ticket-cutout-right {
+        right: -6px;
+        border-left: 1px solid var(--border);
+      }
+      .ticket-airport-code {
+        font-family: 'Inter Tight', 'Inter', sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.01em;
+        line-height: 1.1;
+      }
+      .ticket-airport-city {
+        font-size: 10px;
+        color: var(--text-2);
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 80px;
+      }
+      .ticket-plane-path {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        padding: 0 6px;
+        margin-top: -2px;
+      }
+      .ticket-line {
+        width: 100%;
+        border-top: 2px dashed var(--border-soft);
+        position: absolute;
+        top: 12px;
+        left: 0;
+      }
+      .ticket-plane-icon {
+        position: relative;
+        z-index: 1;
+        transform: rotate(90deg);
+        color: var(--accent);
+        margin-top: 5px;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+      }
+      .ticket-divider {
+        border-top: 1px dashed var(--border-soft);
+        margin: 10px 0;
+      }
+      .ticket-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 12px;
+      }
+      .ticket-label {
+        font-size: 9px;
+        color: var(--text-3);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 600;
+      }
+      .ticket-value {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--text);
+        margin-top: 1px;
+      }
     </style>
     <div id="cargo-flights-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="cargo-flights-title">
       <div class="chart-modal-card" style="max-width: 1340px; width: 97vw; max-height: 92vh;">
@@ -22505,12 +22714,12 @@ window.resetIndicatorsConfig = function() {
             Ağ noktalarını göster
           </label>
         </div>
-        <div id="cargo-flights-body" style="display:flex; gap:14px; margin-top:10px; height:480px;">
+        <div id="cargo-flights-body" style="display:flex; gap:14px; margin-top:10px; height:540px;">
           <div id="cargo-flight-list" style="width:260px; flex-shrink:0; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px;"></div>
           <div style="flex:1; position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--border); min-width:0;">
             <div id="cargo-flights-map" style="position:absolute; inset:0;"></div>
           </div>
-          <div id="cargo-flight-detail" style="width:240px; flex-shrink:0; overflow-y:auto; border:1px solid var(--border); border-radius:10px; padding:14px;"></div>
+          <div id="cargo-flight-detail" style="width:280px; flex-shrink:0; overflow-y:auto; border:1px solid var(--border); border-radius:10px; padding:14px; background:var(--surface);"></div>
         </div>
         <div style="margin-top:10px; font-size:11px; color:var(--text-3);">Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network</a> · Konumlar canlı ADS-B verisidir, her saniye son bilinen hız/yöne göre tahmini olarak ilerletilir. Kalkış/varış tahmini arka planda kademeli olarak yüklenir; bazı uçuşlarda hiç oluşmayabilir. Gri noktalar THY Kargo'nun Haziran 2026 ağ planındaki destinasyonlardır (statik referans).</div>
       </div>
