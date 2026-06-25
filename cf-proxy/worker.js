@@ -28,6 +28,109 @@ const PROXY_ALLOWED_HOSTS = new Set([
   'www.freightos.com',
 ]);
 
+const AIRPORT_DB = {
+  "LTFM": { icao: "LTFM", iata: "IST", name: "Istanbul Airport", city: "Istanbul", lat: 41.262, lon: 28.727 },
+  "IST": { icao: "LTFM", iata: "IST", name: "Istanbul Airport", city: "Istanbul", lat: 41.262, lon: 28.727 },
+  "LTBA": { icao: "LTBA", iata: "ISL", name: "Atatürk Airport", city: "Istanbul", lat: 40.976, lon: 28.814 },
+  "ISL": { icao: "LTBA", iata: "ISL", name: "Atatürk Airport", city: "Istanbul", lat: 40.976, lon: 28.814 },
+  "KJFK": { icao: "KJFK", iata: "JFK", name: "John F. Kennedy International Airport", city: "New York", lat: 40.640, lon: -73.779 },
+  "JFK": { icao: "KJFK", iata: "JFK", name: "John F. Kennedy International Airport", city: "New York", lat: 40.640, lon: -73.779 },
+  "KORD": { icao: "KORD", iata: "ORD", name: "O'Hare International Airport", city: "Chicago", lat: 41.974, lon: -87.907 },
+  "ORD": { icao: "KORD", iata: "ORD", name: "O'Hare International Airport", city: "Chicago", lat: 41.974, lon: -87.907 },
+  "EGLL": { icao: "EGLL", iata: "LHR", name: "London Heathrow Airport", city: "London", lat: 51.470, lon: -0.454 },
+  "LHR": { icao: "EGLL", iata: "LHR", name: "London Heathrow Airport", city: "London", lat: 51.470, lon: -0.454 },
+  "EDDF": { icao: "EDDF", iata: "FRA", name: "Frankfurt Airport", city: "Frankfurt", lat: 50.038, lon: 8.562 },
+  "FRA": { icao: "EDDF", iata: "FRA", name: "Frankfurt Airport", city: "Frankfurt", lat: 50.038, lon: 8.562 },
+  "LFPG": { icao: "LFPG", iata: "CDG", name: "Charles de Gaulle Airport", city: "Paris", lat: 49.009, lon: 2.547 },
+  "CDG": { icao: "LFPG", iata: "CDG", name: "Charles de Gaulle Airport", city: "Paris", lat: 49.009, lon: 2.547 },
+  "EHAM": { icao: "EHAM", iata: "AMS", name: "Amsterdam Airport Schiphol", city: "Amsterdam", lat: 52.308, lon: 4.768 },
+  "AMS": { icao: "EHAM", iata: "AMS", name: "Amsterdam Airport Schiphol", city: "Amsterdam", lat: 52.308, lon: 4.768 },
+  "LIMC": { icao: "LIMC", iata: "MXP", name: "Malpensa Airport", city: "Milan", lat: 45.630, lon: 8.723 },
+  "MXP": { icao: "LIMC", iata: "MXP", name: "Malpensa Airport", city: "Milan", lat: 45.630, lon: 8.723 },
+  "ESSA": { icao: "ESSA", iata: "ARN", name: "Stockholm Arlanda Airport", city: "Stockholm", lat: 59.651, lon: 17.918 },
+  "ARN": { icao: "ESSA", iata: "ARN", name: "Stockholm Arlanda Airport", city: "Stockholm", lat: 59.651, lon: 17.918 },
+  "OMDB": { icao: "OMDB", iata: "DXB", name: "Dubai International Airport", city: "Dubai", lat: 25.253, lon: 55.364 },
+  "DXB": { icao: "OMDB", iata: "DXB", name: "Dubai International Airport", city: "Dubai", lat: 25.253, lon: 55.364 },
+  "OMDW": { icao: "OMDW", iata: "DWC", name: "Al Maktoum International Airport", city: "Dubai", lat: 24.897, lon: 55.161 },
+  "DWC": { icao: "OMDW", iata: "DWC", name: "Al Maktoum International Airport", city: "Dubai", lat: 24.897, lon: 55.161 },
+  "RJAA": { icao: "RJAA", iata: "NRT", name: "Narita International Airport", city: "Tokyo", lat: 35.776, lon: 140.386 },
+  "NRT": { icao: "RJAA", iata: "NRT", name: "Narita International Airport", city: "Tokyo", lat: 35.776, lon: 140.386 },
+  "ZSPD": { icao: "ZSPD", iata: "PVG", name: "Shanghai Pudong International Airport", city: "Shanghai", lat: 31.143, lon: 121.805 },
+  "PVG": { icao: "ZSPD", iata: "PVG", name: "Shanghai Pudong International Airport", city: "Shanghai", lat: 31.143, lon: 121.805 },
+  "VHHH": { icao: "VHHH", iata: "HKG", name: "Hong Kong International Airport", city: "Hong Kong", lat: 22.308, lon: 113.918 },
+  "HKG": { icao: "VHHH", iata: "HKG", name: "Hong Kong International Airport", city: "Hong Kong", lat: 22.308, lon: 113.918 },
+  "VVTS": { icao: "VVTS", iata: "SGN", name: "Tan Son Nhat International Airport", city: "Ho Chi Minh City", lat: 10.819, lon: 106.652 },
+  "SGN": { icao: "VVTS", iata: "SGN", name: "Tan Son Nhat International Airport", city: "Ho Chi Minh City", lat: 10.819, lon: 106.652 },
+  "VVNB": { icao: "VVNB", iata: "HAN", name: "Noi Bai International Airport", city: "Hanoi", lat: 21.221, lon: 105.807 },
+  "HAN": { icao: "VVNB", iata: "HAN", name: "Noi Bai International Airport", city: "Hanoi", lat: 21.221, lon: 105.807 },
+  "VIDP": { icao: "VIDP", iata: "DEL", name: "Indira Gandhi International Airport", city: "Delhi", lat: 28.566, lon: 77.103 },
+  "DEL": { icao: "VIDP", iata: "DEL", name: "Indira Gandhi International Airport", city: "Delhi", lat: 28.566, lon: 77.103 },
+  "VABB": { icao: "VABB", iata: "BOM", name: "Chhatrapati Shivaji Maharaj International Airport", city: "Mumbai", lat: 19.088, lon: 72.868 },
+  "BOM": { icao: "VABB", iata: "BOM", name: "Chhatrapati Shivaji Maharaj International Airport", city: "Mumbai", lat: 19.088, lon: 72.868 },
+  "WSSS": { icao: "WSSS", iata: "SIN", name: "Singapore Changi Airport", city: "Singapore", lat: 1.350, lon: 103.994 },
+  "SIN": { icao: "WSSS", iata: "SIN", name: "Singapore Changi Airport", city: "Singapore", lat: 1.350, lon: 103.994 },
+  "RKSI": { icao: "RKSI", iata: "ICN", name: "Incheon International Airport", city: "Seoul", lat: 37.469, lon: 126.451 },
+  "ICN": { icao: "RKSI", iata: "ICN", name: "Incheon International Airport", city: "Seoul", lat: 37.469, lon: 126.451 },
+  "ZGGG": { icao: "ZGGG", iata: "CAN", name: "Guangzhou Baiyun International Airport", city: "Guangzhou", lat: 23.392, lon: 113.299 },
+  "CAN": { icao: "ZGGG", iata: "CAN", name: "Guangzhou Baiyun International Airport", city: "Guangzhou", lat: 23.392, lon: 113.299 },
+  "ZGSZ": { icao: "ZGSZ", iata: "SZX", name: "Shenzhen Bao'an International Airport", city: "Shenzhen", lat: 22.639, lon: 113.811 },
+  "SZX": { icao: "ZGSZ", iata: "SZX", name: "Shenzhen Bao'an International Airport", city: "Shenzhen", lat: 22.639, lon: 113.811 },
+  "ZHCC": { icao: "ZHCC", iata: "CGO", name: "Zhengzhou Xinzheng International Airport", city: "Zhengzhou", lat: 34.520, lon: 113.841 },
+  "CGO": { icao: "ZHCC", iata: "CGO", name: "Zhengzhou Xinzheng International Airport", city: "Zhengzhou", lat: 34.520, lon: 113.841 },
+  "ZWWW": { icao: "ZWWW", iata: "URC", name: "Diwopu International Airport", city: "Urumqi", lat: 43.907, lon: 87.474 },
+  "URC": { icao: "ZWWW", iata: "URC", name: "Diwopu International Airport", city: "Urumqi", lat: 43.907, lon: 87.474 },
+  "UAAA": { icao: "UAAA", iata: "ALA", name: "Almaty International Airport", city: "Almaty", lat: 43.352, lon: 77.041 },
+  "ALA": { icao: "UAAA", iata: "ALA", name: "Almaty International Airport", city: "Almaty", lat: 43.352, lon: 77.041 },
+  "UTTT": { icao: "UTTT", iata: "TAS", name: "Tashkent International Airport", city: "Tashkent", lat: 41.258, lon: 69.282 },
+  "TAS": { icao: "UTTT", iata: "TAS", name: "Tashkent International Airport", city: "Tashkent", lat: 41.258, lon: 69.282 },
+  "UBBB": { icao: "UBBB", iata: "GYD", name: "Heydar Aliyev International Airport", city: "Baku", lat: 40.467, lon: 50.047 },
+  "GYD": { icao: "UBBB", iata: "GYD", name: "Heydar Aliyev International Airport", city: "Baku", lat: 40.467, lon: 50.047 },
+  "OOMS": { icao: "OOMS", iata: "MCT", name: "Muscat International Airport", city: "Muscat", lat: 23.593, lon: 58.284 },
+  "MCT": { icao: "OOMS", iata: "MCT", name: "Muscat International Airport", city: "Muscat", lat: 23.593, lon: 58.284 },
+  "OTHH": { icao: "OTHH", iata: "DOH", name: "Hamad International Airport", city: "Doha", lat: 25.273, lon: 51.608 },
+  "DOH": { icao: "OTHH", iata: "DOH", name: "Hamad International Airport", city: "Doha", lat: 25.273, lon: 51.608 },
+  "OERK": { icao: "OERK", iata: "RUH", name: "King Khalid International Airport", city: "Riyadh", lat: 24.957, lon: 46.699 },
+  "RUH": { icao: "OERK", iata: "RUH", name: "King Khalid International Airport", city: "Riyadh", lat: 24.957, lon: 46.699 },
+  "OEJN": { icao: "OEJN", iata: "JED", name: "King Abdulaziz International Airport", city: "Jeddah", lat: 21.680, lon: 39.157 },
+  "JED": { icao: "OEJN", iata: "JED", name: "King Abdulaziz International Airport", city: "Jeddah", lat: 21.680, lon: 39.157 },
+  "OKBK": { icao: "OKBK", iata: "KWI", name: "Kuwait International Airport", city: "Kuwait", lat: 29.227, lon: 47.969 },
+  "KWI": { icao: "OKBK", iata: "KWI", name: "Kuwait International Airport", city: "Kuwait", lat: 29.227, lon: 47.969 },
+  "OBBI": { icao: "OBBI", iata: "BAH", name: "Bahrain International Airport", city: "Bahrain", lat: 26.271, lon: 50.633 },
+  "BAH": { icao: "OBBI", iata: "BAH", name: "Bahrain International Airport", city: "Bahrain", lat: 26.271, lon: 50.633 },
+  "ORER": { icao: "ORER", iata: "EBL", name: "Erbil International Airport", city: "Erbil", lat: 36.238, lon: 43.963 },
+  "EBL": { icao: "ORER", iata: "EBL", name: "Erbil International Airport", city: "Erbil", lat: 36.238, lon: 43.963 },
+  "ORBI": { icao: "ORBI", iata: "BGW", name: "Baghdad International Airport", city: "Baghdad", lat: 33.262, lon: 44.235 },
+  "BGW": { icao: "ORBI", iata: "BGW", name: "Baghdad International Airport", city: "Baghdad", lat: 33.262, lon: 44.235 },
+  "HECA": { icao: "HECA", iata: "CAI", name: "Cairo International Airport", city: "Cairo", lat: 30.122, lon: 31.406 },
+  "CAI": { icao: "HECA", iata: "CAI", name: "Cairo International Airport", city: "Cairo", lat: 30.122, lon: 31.406 },
+  "DNMM": { icao: "DNMM", iata: "LOS", name: "Murtala Muhammed International Airport", city: "Lagos", lat: 6.577, lon: 3.321 },
+  "LOS": { icao: "DNMM", iata: "LOS", name: "Murtala Muhammed International Airport", city: "Lagos", lat: 6.577, lon: 3.321 },
+  "HKJK": { icao: "HKJK", iata: "NBO", name: "Jomo Kenyatta International Airport", city: "Nairobi", lat: -1.319, lon: 36.928 },
+  "NBO": { icao: "HKJK", iata: "NBO", name: "Jomo Kenyatta International Airport", city: "Nairobi", lat: -1.319, lon: 36.928 },
+  "GOBD": { icao: "GOBD", iata: "DSS", name: "Blaise Diagne International Airport", city: "Dakar", lat: 14.740, lon: -17.490 },
+  "DSS": { icao: "GOBD", iata: "DSS", name: "Blaise Diagne International Airport", city: "Dakar", lat: 14.740, lon: -17.490 },
+  "DTTA": { icao: "DTTA", iata: "TUN", name: "Tunis-Carthage International Airport", city: "Tunis", lat: 36.851, lon: 10.227 },
+  "TUN": { icao: "DTTA", iata: "TUN", name: "Tunis-Carthage International Airport", city: "Tunis", lat: 36.851, lon: 10.227 },
+  "DAAG": { icao: "DAAG", iata: "ALG", name: "Houari Boumediene Airport", city: "Algiers", lat: 36.691, lon: 3.215 },
+  "ALG": { icao: "DAAG", iata: "ALG", name: "Houari Boumediene Airport", city: "Algiers", lat: 36.691, lon: 3.215 },
+  "GMMN": { icao: "GMMN", iata: "CMN", name: "Mohammed V International Airport", city: "Casablanca", lat: 33.367, lon: -7.590 },
+  "CMN": { icao: "GMMN", iata: "CMN", name: "Mohammed V International Airport", city: "Casablanca", lat: 33.367, lon: -7.590 },
+  "FAOR": { icao: "FAOR", iata: "JNB", name: "O. R. Tambo International Airport", city: "Johannesburg", lat: -26.139, lon: 28.246 },
+  "JNB": { icao: "FAOR", iata: "JNB", name: "O. R. Tambo International Airport", city: "Johannesburg", lat: -26.139, lon: 28.246 },
+  "KMIA": { icao: "KMIA", iata: "MIA", name: "Miami International Airport", city: "Miami", lat: 25.795, lon: -80.290 },
+  "MIA": { icao: "KMIA", iata: "MIA", name: "Miami International Airport", city: "Miami", lat: 25.795, lon: -80.290 },
+  "KIAD": { icao: "KIAD", iata: "IAD", name: "Washington Dulles International Airport", city: "Washington", lat: 38.948, lon: -77.456 },
+  "IAD": { icao: "KIAD", iata: "IAD", name: "Washington Dulles International Airport", city: "Washington", lat: 38.948, lon: -77.456 },
+  "KATL": { icao: "KATL", iata: "ATL", name: "Hartsfield-Jackson Atlanta International Airport", city: "Atlanta", lat: 33.640, lon: -84.427 },
+  "ATL": { icao: "KATL", iata: "ATL", name: "Hartsfield-Jackson Atlanta International Airport", city: "Atlanta", lat: 33.640, lon: -84.427 },
+  "CYYZ": { icao: "CYYZ", iata: "YYZ", name: "Toronto Pearson International Airport", city: "Toronto", lat: 43.677, lon: -79.624 },
+  "YYZ": { icao: "CYYZ", iata: "YYZ", name: "Toronto Pearson International Airport", city: "Toronto", lat: 43.677, lon: -79.624 },
+  "SBGR": { icao: "SBGR", iata: "GRU", name: "Guarulhos International Airport", city: "São Paulo", lat: -23.435, lon: -46.473 },
+  "GRU": { icao: "SBGR", iata: "GRU", name: "Guarulhos International Airport", city: "São Paulo", lat: -23.435, lon: -46.473 },
+  "MMMX": { icao: "MMMX", iata: "MEX", name: "Mexico City International Airport", city: "Mexico City", lat: 19.436, lon: -99.072 },
+  "MEX": { icao: "MMMX", iata: "MEX", name: "Mexico City International Airport", city: "Mexico City", lat: 19.436, lon: -99.072 }
+};
+
 function parseIATAFuelMonitor(html) {
   const PLATTS_CVT = 3.3173; // 1 cts/gal = 3.3173 $/MT
   const BBL_TO_MT = (100 * PLATTS_CVT) / 42; // $/bbl → $/MT (≈7.898)
@@ -876,6 +979,97 @@ export default {
         return { dep: toAirport(route.origin), arr: toAirport(route.destination) };
       }
 
+      function parseAeroAPIAirport(a) {
+        if (!a) return null;
+        const icao = a.code_icao || a.code || null;
+        const iata = a.code_iata || null;
+        const name = a.name || null;
+        const city = a.city || null;
+        
+        const localDb = (icao && AIRPORT_DB[icao.toUpperCase()]) || (iata && AIRPORT_DB[iata.toUpperCase()]);
+        if (localDb) {
+          return {
+            icao: icao || localDb.icao,
+            iata: iata || localDb.iata,
+            name: name || localDb.name,
+            city: city || localDb.city,
+            lat: localDb.lat,
+            lon: localDb.lon
+          };
+        }
+        
+        return { icao, iata, name, city, lat: null, lon: null };
+      }
+
+      async function fetchAirportCoordsFromAeroAPI(icao) {
+        if (!icao || !env.AEROAPI_KEY) return null;
+        const kvKey = `aeroapi_airport_${icao.toUpperCase()}`;
+        if (env.FBX_ROUTES_KV) {
+          try {
+            const cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+            if (cached) return cached;
+          } catch (_) {}
+        }
+        
+        const res = await doFetch(`https://aeroapi.flightaware.com/aeroapi/airports/${icao.toUpperCase()}`, {
+          headers: { 'x-apikey': env.AEROAPI_KEY }
+        }, true, 604800);
+        
+        if (res.status !== 200) return null;
+        let data;
+        try { data = JSON.parse(res.body); } catch { return null; }
+        
+        const lat = data?.latitude || null;
+        const lon = data?.longitude || null;
+        const details = { lat, lon };
+        
+        if (env.FBX_ROUTES_KV && lat !== null) {
+          try {
+            await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(details));
+          } catch (_) {}
+        }
+        return details;
+      }
+
+      async function fetchRouteFromAeroAPI(callsign) {
+        if (!env.AEROAPI_KEY) return null;
+        const uppercaseCallsign = callsign.trim().toUpperCase();
+        
+        const res = await doFetch(`https://aeroapi.flightaware.com/aeroapi/flights/${uppercaseCallsign}`, {
+          headers: { 'x-apikey': env.AEROAPI_KEY }
+        }, true, 21600);
+        
+        if (res.status !== 200) return null;
+        let data;
+        try { data = JSON.parse(res.body); } catch { return null; }
+        
+        const flightsList = data?.flights;
+        if (!Array.isArray(flightsList) || flightsList.length === 0) return null;
+        
+        const flight = flightsList[0];
+        if (!flight || !flight.origin || !flight.destination) return null;
+        
+        const dep = parseAeroAPIAirport(flight.origin);
+        const arr = parseAeroAPIAirport(flight.destination);
+        
+        if (dep && (dep.lat === null || dep.lon === null) && dep.icao) {
+          const coords = await fetchAirportCoordsFromAeroAPI(dep.icao);
+          if (coords) {
+            dep.lat = coords.lat;
+            dep.lon = coords.lon;
+          }
+        }
+        if (arr && (arr.lat === null || arr.lon === null) && arr.icao) {
+          const coords = await fetchAirportCoordsFromAeroAPI(arr.icao);
+          if (coords) {
+            arr.lat = coords.lat;
+            arr.lon = coords.lon;
+          }
+        }
+        
+        return { dep, arr };
+      }
+
       async function enrichInBackground(data, cachedFlights) {
         const { flights } = data;
         const cargoFlights = flights.filter(f => f.type === 'cargo');
@@ -893,7 +1087,10 @@ export default {
             } else {
               // KV'de yoksa API'den çek ve teyit et
               try {
-                const apiRoute = await fetchRouteFromAdsbdb(f.callsign);
+                let apiRoute = await fetchRouteFromAdsbdb(f.callsign);
+                if (!apiRoute && env.AEROAPI_KEY) {
+                  apiRoute = await fetchRouteFromAeroAPI(f.callsign);
+                }
                 if (apiRoute && apiRoute.dep && apiRoute.arr) {
                   const dDep = getDistance(f.lat, f.lon, apiRoute.dep.lat, apiRoute.dep.lon);
                   const dArr = getDistance(f.lat, f.lon, apiRoute.arr.lat, apiRoute.arr.lon);
