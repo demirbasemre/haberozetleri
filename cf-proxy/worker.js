@@ -147,7 +147,7 @@ const CARGO_STATIC_ROUTES = {
     { dep: "LEMD", arr: "LTFM" }  // Madrid -> Istanbul
   ],
   "THY6058": [
-    { dep: "KCMH", arr: "LTFM" }  // Columbus -> Istanbul
+    { dep: "GOBD", arr: "LTFM" }  // Dakar -> Istanbul
   ],
   "THY6112": [
     { dep: "LTFM", arr: "VABB" }  // Istanbul -> Mumbai
@@ -966,9 +966,17 @@ export default {
 
       async function getLearnedRoute(callsign, lat, lon) {
         if (!env.FBX_ROUTES_KV) return null;
-        const kvKey = `learned_routes_${callsign}`;
+        const uppercaseCallsign = callsign.toUpperCase();
+        const kvKey = `learned_routes_${uppercaseCallsign}`;
         try {
-          const routes = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' }) || [];
+          let routes = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' }) || [];
+          if (uppercaseCallsign === 'THY6058') {
+            const filtered = routes.filter(r => r.dep && r.dep.icao !== 'KCMH');
+            if (filtered.length !== routes.length) {
+              routes = filtered;
+              await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(routes));
+            }
+          }
           for (const r of routes) {
             if (r.dep && r.dep.lat != null && r.arr && r.arr.lat != null) {
               const dDep = getDistance(lat, lon, r.dep.lat, r.dep.lon);
