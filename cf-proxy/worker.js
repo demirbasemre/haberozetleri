@@ -830,11 +830,13 @@ export default {
           const flightNumMatch = callsign.match(/^THY(\d+)/);
           if (!flightNumMatch) continue;
           const flightNum = parseInt(flightNumMatch[1], 10);
-          const [icao24, , , , last_contact, longitude, latitude, baro_altitude, on_ground, velocity, true_track] = s;
+          const [icao24, , origin_country, , last_contact, longitude, latitude, baro_altitude, on_ground, velocity, true_track, vertical_rate, , geo_altitude, squawk] = s;
           if (on_ground || latitude == null || longitude == null) continue;
           allFlights.push({
             icao24, callsign, lat: latitude, lon: longitude,
-            altitude: baro_altitude, velocity, track: true_track, lastContact: last_contact,
+            altitude: baro_altitude, geoAltitude: geo_altitude, velocity, track: true_track,
+            verticalRate: vertical_rate, squawk: squawk || null, originCountry: origin_country || null,
+            lastContact: last_contact,
             type: flightNum >= 6000 ? 'cargo' : 'pax',
           });
         }

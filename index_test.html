@@ -13053,9 +13053,11 @@ async function loadDashboard() {
 
   let _cargoMap = null;
   let _cargoMapLayers = [];
+  // SVG'nin varsayılan duruşu kuzeye (yukarı) bakar — true_track pusula yönü de
+  // 0°=Kuzey'den saat yönünde ölçüldüğü için doğrudan track derecesiyle döndürülür.
   const cargoPlaneIcon = (track, color) => L.divIcon({
     className: 'cargo-plane-icon',
-    html: `<svg width="22" height="22" viewBox="0 0 24 24" style="transform:rotate(${(track || 0) - 90}deg)"><path fill="${color}" d="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`,
+    html: `<svg width="22" height="22" viewBox="0 0 24 24" style="transform:rotate(${track || 0}deg)"><path fill="${color}" d="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`,
     iconSize: [22, 22],
     iconAnchor: [11, 11],
   });
@@ -13102,13 +13104,89 @@ async function loadDashboard() {
     });
   }
 
-  function focusCargoFlight(idx) {
+  let _cargoSelectedIdx = null;
+  let _cargoHighlightMarker = null;
+  const cargoHighlightIcon = L.divIcon({
+    className: 'cargo-highlight-icon',
+    html: `<div style="width:36px; height:36px; border-radius:50%; border:2.5px solid #1D6FE8; box-shadow:0 0 0 4px rgba(29,111,232,0.18); animation:cargoHighlightPulse 1.6s ease-out infinite;"></div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+  });
+
+  function selectCargoFlight(idx, pan) {
     const f = _cargoFlights[idx];
-    if (!f || !_cargoMap) return;
-    _cargoMap.setView([f.lat, f.lon], 5, { animate: true });
+    if (!f) return;
+    _cargoSelectedIdx = idx;
+    if (_cargoMap) {
+      if (_cargoHighlightMarker) _cargoMap.removeLayer(_cargoHighlightMarker);
+      _cargoHighlightMarker = L.marker([f.lat, f.lon], { icon: cargoHighlightIcon, interactive: false, zIndexOffset: -100 });
+      _cargoHighlightMarker.addTo(_cargoMap);
+      if (pan) _cargoMap.setView([f.lat, f.lon], 6, { animate: true });
+    }
     document.querySelectorAll('.cargo-flight-item').forEach(el => {
       el.style.background = (Number(el.dataset.idx) === idx) ? 'var(--surface-2, rgba(0,0,0,0.05))' : '';
     });
+    renderCargoDetailPanel(f);
+  }
+
+  function focusCargoFlight(idx) {
+    selectCargoFlight(idx, true);
+  }
+
+  const _cargoDetailIcons = {
+    altitude: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`,
+    speed: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 12 8 12 11 19 14 5 17 12 21 12"/></svg>`,
+    vrateUp: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>`,
+    vrateDown: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="7" x2="17" y2="17"/><polyline points="17 7 17 17 7 17"/></svg>`,
+    vrateLevel: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+    squawk: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 7.76a6 6 0 0 0 0 8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>`,
+    country: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/></svg>`,
+    clock: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>`,
+    transponder: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="11" rx="2"/><line x1="7" y1="11" x2="7" y2="11"/><line x1="12" y1="3" x2="12" y2="7"/></svg>`,
+  };
+
+  function cargoDetailRow(icon, label, value, color) {
+    return `<div style="display:flex; align-items:flex-start; gap:8px; padding:7px 0; border-bottom:1px solid var(--border-soft, var(--border));">
+      <span style="color:${color || 'var(--text-3)'}; flex-shrink:0; margin-top:1px;">${icon}</span>
+      <div style="min-width:0;">
+        <div style="font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.03em;">${label}</div>
+        <div style="font-size:13px; font-weight:600; color:var(--text); margin-top:1px;">${value}</div>
+      </div>
+    </div>`;
+  }
+
+  function renderCargoDetailPanel(f) {
+    const panel = document.getElementById('cargo-flight-detail');
+    if (!panel) return;
+    if (!f) {
+      panel.innerHTML = `<div style="color:var(--text-3); font-size:12px; padding:8px 2px;">Detayları görmek için bir uçuş seçin.</div>`;
+      return;
+    }
+    const vrate = f.verticalRate || 0;
+    const vIcon = vrate > 0.5 ? _cargoDetailIcons.vrateUp : vrate < -0.5 ? _cargoDetailIcons.vrateDown : _cargoDetailIcons.vrateLevel;
+    const vColor = vrate > 0.5 ? '#16A34A' : vrate < -0.5 ? '#DC2626' : 'var(--text-3)';
+    const vLabel = vrate > 0.5 ? 'Tırmanıyor' : vrate < -0.5 ? 'Alçalıyor' : 'Sabit irtifa';
+    const secsAgo = Math.max(0, Math.floor(Date.now() / 1000) - (f.lastContact || 0));
+    const typeLabel = f.type === 'cargo' ? 'Kargo' : 'Yolcu';
+    const typeColor = f.type === 'cargo' ? '#C8102E' : '#1D6FE8';
+
+    panel.innerHTML = `
+      <div style="display:flex; align-items:center; gap:6px; margin-bottom:2px;">
+        <span style="font-size:15px; font-weight:700; color:var(--text);">${f.callsign}</span>
+      </div>
+      <span style="display:inline-block; font-size:10px; font-weight:600; color:${typeColor}; background:${typeColor}1A; border-radius:4px; padding:2px 6px; margin-bottom:8px;">${typeLabel} seferi</span>
+      ${(f.dep || f.arr) ? `<div style="font-size:12px; color:var(--text-2); margin-bottom:6px;">${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}</div>` : ''}
+      <div style="margin-top:4px;">
+        ${cargoDetailRow(_cargoDetailIcons.altitude, 'İrtifa (barometrik)', Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR') + ' ft')}
+        ${cargoDetailRow(_cargoDetailIcons.altitude, 'İrtifa (GPS)', f.geoAltitude != null ? Math.round(f.geoAltitude * 3.281).toLocaleString('tr-TR') + ' ft' : '—')}
+        ${cargoDetailRow(_cargoDetailIcons.speed, 'Yer Hızı', Math.round((f.velocity || 0) * 1.944) + ' kt')}
+        ${cargoDetailRow(vIcon, 'Dikey Hız', `${vLabel}${f.verticalRate ? ' · ' + Math.round(f.verticalRate * 196.85).toLocaleString('tr-TR') + ' ft/dk' : ''}`, vColor)}
+        ${cargoDetailRow(_cargoDetailIcons.transponder, 'Transponder (ICAO24)', f.icao24.toUpperCase())}
+        ${cargoDetailRow(_cargoDetailIcons.squawk, 'Squawk Kodu', f.squawk || '—')}
+        ${cargoDetailRow(_cargoDetailIcons.country, 'Kayıt Ülkesi', f.originCountry || '—')}
+        ${cargoDetailRow(_cargoDetailIcons.clock, 'Son Sinyal', `<span id="cargo-detail-lastcontact">${secsAgo}s önce</span>`)}
+      </div>
+    `;
   }
 
   let _cargoShowNetwork = true;
@@ -13135,7 +13213,8 @@ async function loadDashboard() {
     if (_cargoAnimInterval) return;
     _cargoAnimInterval = setInterval(() => {
       const nowMs = Date.now();
-      _cargoPlaneMarkers.forEach(p => {
+      const selectedFlight = _cargoSelectedIdx != null ? _cargoFlights[_cargoSelectedIdx] : null;
+      _cargoPlaneMarkers.forEach((p, icao24) => {
         const elapsedSec = (nowMs - p.baseTime) / 1000;
         if (!p.velocity || elapsedSec <= 0) return;
         const trackRad = (p.track || 0) * Math.PI / 180;
@@ -13146,13 +13225,27 @@ async function loadDashboard() {
         const newLat = p.baseLat + dy / metersPerDegLat;
         const newLon = p.baseLon + dx / metersPerDegLon;
         p.marker.setLatLng([newLat, newLon]);
+        // Vurgu işareti seçili uçağı takip etsin
+        if (_cargoHighlightMarker && selectedFlight && selectedFlight.icao24 === icao24) {
+          _cargoHighlightMarker.setLatLng([newLat, newLon]);
+        }
       });
+      if (selectedFlight) {
+        const lcEl = document.getElementById('cargo-detail-lastcontact');
+        if (lcEl) {
+          const secsAgo = Math.max(0, Math.floor(nowMs / 1000) - (selectedFlight.lastContact || 0));
+          lcEl.textContent = secsAgo + 's önce';
+        }
+      }
     }, 1000);
   }
 
   function stopCargoAnimation() {
     if (_cargoAnimInterval) { clearInterval(_cargoAnimInterval); _cargoAnimInterval = null; }
     _cargoPlaneMarkers.clear();
+    _cargoSelectedIdx = null;
+    if (_cargoHighlightMarker && _cargoMap) { _cargoMap.removeLayer(_cargoHighlightMarker); }
+    _cargoHighlightMarker = null;
   }
 
   function renderCargoFlightsModal() {
@@ -13184,12 +13277,13 @@ async function loadDashboard() {
     }
 
     const baseTime = Date.now();
-    _cargoFlights.forEach(f => {
+    _cargoFlights.forEach((f, idx) => {
       const routeInfo = (f.dep || f.arr)
         ? `${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}<br>`
         : `<span style="font-size:11px;color:#9CA3AF">Rota bilgisi mevcut değil</span><br>`;
       const planeMarker = L.marker([f.lat, f.lon], { icon: cargoPlaneIcon(f.track, '#C8102E') })
         .bindPopup(`<strong>${f.callsign}</strong><br>${routeInfo}${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°`);
+      planeMarker.on('click', () => selectCargoFlight(idx, false));
       planeMarker.addTo(_cargoMap);
       _cargoMapLayers.push(planeMarker);
       bounds.push([f.lat, f.lon]);
@@ -13225,6 +13319,13 @@ async function loadDashboard() {
     }
     setTimeout(() => _cargoMap.invalidateSize(), 50);
     startCargoAnimation();
+
+    if (_cargoFlights.length) {
+      selectCargoFlight(0, false);
+    } else {
+      _cargoSelectedIdx = null;
+      renderCargoDetailPanel(null);
+    }
   }
 
   window.openCargoFlightsModal = function() {
@@ -22266,8 +22367,15 @@ window.resetIndicatorsConfig = function() {
     </div>
 
     <!-- Kargo Uçakları Harita Modali -->
+    <style>
+      @keyframes cargoHighlightPulse {
+        0% { transform: scale(0.8); opacity: 0.9; }
+        70% { transform: scale(1.35); opacity: 0; }
+        100% { transform: scale(1.35); opacity: 0; }
+      }
+    </style>
     <div id="cargo-flights-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="cargo-flights-title">
-      <div class="chart-modal-card" style="max-width: 1100px; width: 96vw; max-height: 92vh;">
+      <div class="chart-modal-card" style="max-width: 1340px; width: 97vw; max-height: 92vh;">
         <div class="rel-add-head">
           <div id="cargo-flights-title" class="rel-add-title">Havadaki THY Uçakları</div>
           <button class="rel-add-x" onclick="closeCargoFlightsModal()" aria-label="Kapat">×</button>
@@ -22283,10 +22391,11 @@ window.resetIndicatorsConfig = function() {
           </label>
         </div>
         <div id="cargo-flights-body" style="display:flex; gap:14px; margin-top:10px; height:480px;">
-          <div id="cargo-flight-list" style="width:280px; flex-shrink:0; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px;"></div>
-          <div style="flex:1; position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
+          <div id="cargo-flight-list" style="width:260px; flex-shrink:0; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px;"></div>
+          <div style="flex:1; position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--border); min-width:0;">
             <div id="cargo-flights-map" style="position:absolute; inset:0;"></div>
           </div>
+          <div id="cargo-flight-detail" style="width:240px; flex-shrink:0; overflow-y:auto; border:1px solid var(--border); border-radius:10px; padding:14px;"></div>
         </div>
         <div style="margin-top:10px; font-size:11px; color:var(--text-3);">Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network</a> · Konumlar canlı ADS-B verisidir, her saniye son bilinen hız/yöne göre tahmini olarak ilerletilir. Kalkış/varış tahmini arka planda kademeli olarak yüklenir; bazı uçuşlarda hiç oluşmayabilir. Gri noktalar THY Kargo'nun Haziran 2026 ağ planındaki destinasyonlardır (statik referans).</div>
       </div>
