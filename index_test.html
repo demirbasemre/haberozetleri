@@ -13054,6 +13054,10 @@ async function loadDashboard() {
 
   let _cargoMap = null;
   let _cargoMapLayers = [];
+  let _cargoRouteLayers = [];
+  let _cargoTraveledLine = null;
+  let _cargoRemainingLine = null;
+
   // SVG'nin varsayılan duruşu kuzeye (yukarı) bakar — true_track pusula yönü de
   // 0°=Kuzey'den saat yönünde ölçüldüğü için doğrudan track derecesiyle döndürülür.
   const cargoPlaneIcon = (track, color) => L.divIcon({
@@ -13119,10 +13123,51 @@ async function loadDashboard() {
     if (!f) return;
     _cargoSelectedIdx = idx;
     if (_cargoMap) {
+      // Önceki rotaya ait tüm katmanları temizle
+      _cargoRouteLayers.forEach(l => _cargoMap.removeLayer(l));
+      _cargoRouteLayers = [];
+      _cargoTraveledLine = null;
+      _cargoRemainingLine = null;
+
       if (_cargoHighlightMarker) _cargoMap.removeLayer(_cargoHighlightMarker);
       _cargoHighlightMarker = L.marker([f.lat, f.lon], { icon: cargoHighlightIcon, interactive: false, zIndexOffset: -100 });
       _cargoHighlightMarker.addTo(_cargoMap);
-      if (pan) _cargoMap.setView([f.lat, f.lon], 6, { animate: true });
+
+      const bounds = [[f.lat, f.lon]];
+
+      // Kalkış havalimanı ve rota çizgisi (kat edilen)
+      if (f.dep && f.dep.lat != null) {
+        const depMarker = L.marker([f.dep.lat, f.dep.lon], { icon: cargoAirportIcon('#16A34A') })
+          .bindPopup(`<strong>Kalkış (DEP):</strong> ${f.dep.name || f.dep.icao} (${f.dep.iata || ''})<br>${f.dep.city || ''}`);
+        depMarker.addTo(_cargoMap);
+        _cargoRouteLayers.push(depMarker);
+        bounds.push([f.dep.lat, f.dep.lon]);
+
+        _cargoTraveledLine = L.polyline([[f.dep.lat, f.dep.lon], [f.lat, f.lon]], { color: '#C8102E', weight: 2.5, opacity: 0.8 });
+        _cargoTraveledLine.addTo(_cargoMap);
+        _cargoRouteLayers.push(_cargoTraveledLine);
+      }
+
+      // Varış havalimanı ve rota çizgisi (kalan)
+      if (f.arr && f.arr.lat != null) {
+        const arrMarker = L.marker([f.arr.lat, f.arr.lon], { icon: cargoAirportIcon('#1D6FE8') })
+          .bindPopup(`<strong>Varış (ARR):</strong> ${f.arr.name || f.arr.icao} (${f.arr.iata || ''})<br>${f.arr.city || ''}`);
+        arrMarker.addTo(_cargoMap);
+        _cargoRouteLayers.push(arrMarker);
+        bounds.push([f.arr.lat, f.arr.lon]);
+
+        _cargoRemainingLine = L.polyline([[f.lat, f.lon], [f.arr.lat, f.arr.lon]], { color: '#C8102E', weight: 2.5, opacity: 0.4, dashArray: '6,6' });
+        _cargoRemainingLine.addTo(_cargoMap);
+        _cargoRouteLayers.push(_cargoRemainingLine);
+      }
+
+      if (pan) {
+        if (bounds.length > 1) {
+          _cargoMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 6, animate: true });
+        } else {
+          _cargoMap.setView([f.lat, f.lon], 6, { animate: true });
+        }
+      }
     }
     document.querySelectorAll('.cargo-flight-item').forEach(el => {
       el.style.background = (Number(el.dataset.idx) === idx) ? 'var(--surface-2, rgba(0,0,0,0.05))' : '';
@@ -13229,6 +13274,13 @@ async function loadDashboard() {
         // Vurgu işareti seçili uçağı takip etsin
         if (_cargoHighlightMarker && selectedFlight && selectedFlight.icao24 === icao24) {
           _cargoHighlightMarker.setLatLng([newLat, newLon]);
+          // Rota çizgilerini canlı güncelle
+          if (_cargoTraveledLine && selectedFlight.dep && selectedFlight.dep.lat != null) {
+            _cargoTraveledLine.setLatLngs([[selectedFlight.dep.lat, selectedFlight.dep.lon], [newLat, newLon]]);
+          }
+          if (_cargoRemainingLine && selectedFlight.arr && selectedFlight.arr.lat != null) {
+            _cargoRemainingLine.setLatLngs([[newLat, newLon], [selectedFlight.arr.lat, selectedFlight.arr.lon]]);
+          }
         }
       });
       if (selectedFlight) {
@@ -13247,6 +13299,12 @@ async function loadDashboard() {
     _cargoSelectedIdx = null;
     if (_cargoHighlightMarker && _cargoMap) { _cargoMap.removeLayer(_cargoHighlightMarker); }
     _cargoHighlightMarker = null;
+    if (_cargoMap) {
+      _cargoRouteLayers.forEach(l => _cargoMap.removeLayer(l));
+    }
+    _cargoRouteLayers = [];
+    _cargoTraveledLine = null;
+    _cargoRemainingLine = null;
   }
 
   function renderCargoFlightsModal() {
@@ -13292,27 +13350,6 @@ async function loadDashboard() {
         marker: planeMarker, baseLat: f.lat, baseLon: f.lon,
         velocity: f.velocity, track: f.track, baseTime,
       });
-
-      if (f.dep && f.dep.lat != null) {
-        const depMarker = L.marker([f.dep.lat, f.dep.lon], { icon: cargoAirportIcon('#16A34A') })
-          .bindPopup(`Kalkış: ${f.dep.name || f.dep.icao}`);
-        depMarker.addTo(_cargoMap);
-        _cargoMapLayers.push(depMarker);
-        bounds.push([f.dep.lat, f.dep.lon]);
-        const traveledLine = L.polyline([[f.dep.lat, f.dep.lon], [f.lat, f.lon]], { color: '#C8102E', weight: 2, opacity: 0.8 });
-        traveledLine.addTo(_cargoMap);
-        _cargoMapLayers.push(traveledLine);
-      }
-      if (f.arr && f.arr.lat != null) {
-        const arrMarker = L.marker([f.arr.lat, f.arr.lon], { icon: cargoAirportIcon('#1D6FE8') })
-          .bindPopup(`Varış: ${f.arr.name || f.arr.icao}`);
-        arrMarker.addTo(_cargoMap);
-        _cargoMapLayers.push(arrMarker);
-        bounds.push([f.arr.lat, f.arr.lon]);
-        const remainingLine = L.polyline([[f.lat, f.lon], [f.arr.lat, f.arr.lon]], { color: '#C8102E', weight: 2, opacity: 0.4, dashArray: '6,6' });
-        remainingLine.addTo(_cargoMap);
-        _cargoMapLayers.push(remainingLine);
-      }
     });
 
     if (bounds.length) {
@@ -13321,8 +13358,19 @@ async function loadDashboard() {
     setTimeout(() => _cargoMap.invalidateSize(), 50);
     startCargoAnimation();
 
+    // Seçim durumunu koru veya ilk uçuşu seç
+    let prevSelectedCallsign = null;
+    if (_cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx]) {
+      prevSelectedCallsign = _cargoFlights[_cargoSelectedIdx].callsign;
+    }
+    let newIdx = 0;
+    if (prevSelectedCallsign) {
+      const foundIdx = _cargoFlights.findIndex(f => f.callsign === prevSelectedCallsign);
+      if (foundIdx !== -1) newIdx = foundIdx;
+    }
+
     if (_cargoFlights.length) {
-      selectCargoFlight(0, false);
+      selectCargoFlight(newIdx, false);
     } else {
       _cargoSelectedIdx = null;
       renderCargoDetailPanel(null);
