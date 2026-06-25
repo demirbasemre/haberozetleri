@@ -73,9 +73,26 @@
     margin: 0 auto;
     padding: 0 24px;
     height: 60px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .header-left {
     display: flex;
     align-items: center;
     gap: 20px;
+    justify-self: start;
+    min-width: 0;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-self: end;
+    min-width: 0;
   }
 
   .site-name {
@@ -117,8 +134,10 @@
   }
 
   .search-wrap {
-    flex: 1;
-    max-width: 520px;
+    width: 100%;
+    max-width: 760px;
+    min-width: 0;
+    justify-self: center;
     display: flex;
     align-items: center;
     background: rgba(255,255,255,0.10);
