@@ -140,7 +140,9 @@ const AIRPORT_DB = {
   "VOMM": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 },
   "MAA": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 },
   "RCTP": { icao: "RCTP", iata: "TPE", name: "Taiwan Taoyuan International Airport", city: "Taipei", lat: 25.080, lon: 121.234 },
-  "TPE": { icao: "RCTP", iata: "TPE", name: "Taiwan Taoyuan International Airport", city: "Taipei", lat: 25.080, lon: 121.234 }
+  "TPE": { icao: "RCTP", iata: "TPE", name: "Taiwan Taoyuan International Airport", city: "Taipei", lat: 25.080, lon: 121.234 },
+  "LFSB": { icao: "LFSB", iata: "BSL", name: "EuroAirport Basel Mulhouse Freiburg", city: "Basel", lat: 47.590, lon: 7.529 },
+  "BSL": { icao: "LFSB", iata: "BSL", name: "EuroAirport Basel Mulhouse Freiburg", city: "Basel", lat: 47.590, lon: 7.529 }
 };
 
 const CARGO_STATIC_ROUTES = {
@@ -155,7 +157,8 @@ const CARGO_STATIC_ROUTES = {
     { dep: "LTFM", arr: "VABB" }  // Istanbul -> Mumbai
   ],
   "THY6421": [
-    { dep: "LTFM", arr: "LFPG" }  // Istanbul -> Paris
+    { dep: "LTFM", arr: "LFPG" }, // Istanbul -> Paris
+    { dep: "LFSB", arr: "LTFM" }  // Basel -> Istanbul
   ],
   "THY6091": [
     { dep: "LTFM", arr: "EBLG" }  // Istanbul -> Liège
@@ -972,7 +975,34 @@ export default {
         return route;
       }
 
-      async function getLearnedRoute(callsign, lat, lon) {
+      function getBearing(lat1, lon1, lat2, lon2) {
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const lat1Rad = lat1 * Math.PI / 180;
+        const lat2Rad = lat2 * Math.PI / 180;
+        const y = Math.sin(dLon) * Math.cos(lat2Rad);
+        const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) -
+                  Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
+        const brng = Math.atan2(y, x) * 180 / Math.PI;
+        return (brng + 360) % 360;
+      }
+
+      function isRouteConsistent(f, dep, arr) {
+        if (!dep || !arr || dep.lat == null || arr.lat == null) return false;
+        const dDep = getDistance(f.lat, f.lon, dep.lat, dep.lon);
+        const dArr = getDistance(f.lat, f.lon, arr.lat, arr.lon);
+        const dTotal = getDistance(dep.lat, dep.lon, arr.lat, arr.lon);
+        const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
+        if (dDep + dArr > maxAllowed) return false;
+        if (f.track != null) {
+          const bearing = getBearing(f.lat, f.lon, arr.lat, arr.lon);
+          let diff = Math.abs(f.track - bearing);
+          if (diff > 180) diff = 360 - diff;
+          if (diff > 90) return false;
+        }
+        return true;
+      }
+
+      async function getLearnedRoute(callsign, lat, lon, track) {
         if (!env.FBX_ROUTES_KV) return null;
         const uppercaseCallsign = callsign.toUpperCase();
         const kvKey = `learned_routes_${uppercaseCallsign}`;
@@ -987,11 +1017,7 @@ export default {
           }
           for (const r of routes) {
             if (r.dep && r.dep.lat != null && r.arr && r.arr.lat != null) {
-              const dDep = getDistance(lat, lon, r.dep.lat, r.dep.lon);
-              const dArr = getDistance(lat, lon, r.arr.lat, r.arr.lon);
-              const dTotal = getDistance(r.dep.lat, r.dep.lon, r.arr.lat, r.arr.lon);
-              const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
-              if (dDep + dArr <= maxAllowed) {
+              if (isRouteConsistent({ lat, lon, track }, r.dep, r.arr)) {
                 return cleanRouteCities(r); // Rota eşleşti ve şehirler temizlendi!
               }
             }
@@ -1185,7 +1211,7 @@ export default {
           // 1. Rota tespiti (Hafızadan/API'den teyitli)
           if (!f.dep) {
             // Önce kendi KV'mizden öğrenilmiş rotaları kontrol et
-            const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon);
+            const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon, f.track);
             if (learnedRoute) {
               f.dep = learnedRoute.dep;
               f.arr = learnedRoute.arr;
@@ -1196,11 +1222,7 @@ export default {
                 let apiRoute = await fetchRouteFromAdsbdb(f.callsign);
                 let valid = false;
                 if (apiRoute && apiRoute.dep && apiRoute.arr) {
-                  const dDep = getDistance(f.lat, f.lon, apiRoute.dep.lat, apiRoute.dep.lon);
-                  const dArr = getDistance(f.lat, f.lon, apiRoute.arr.lat, apiRoute.arr.lon);
-                  const dTotal = getDistance(apiRoute.dep.lat, apiRoute.dep.lon, apiRoute.arr.lat, apiRoute.arr.lon);
-                  const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
-                  if (dDep + dArr <= maxAllowed) {
+                  if (isRouteConsistent(f, apiRoute.dep, apiRoute.arr)) {
                     valid = true;
                   }
                 }
@@ -1213,11 +1235,7 @@ export default {
                       const depDb = AIRPORT_DB[c.dep.toUpperCase()];
                       const arrDb = AIRPORT_DB[c.arr.toUpperCase()];
                       if (depDb && arrDb) {
-                        const dDep = getDistance(f.lat, f.lon, depDb.lat, depDb.lon);
-                        const dArr = getDistance(f.lat, f.lon, arrDb.lat, arrDb.lon);
-                        const dTotal = getDistance(depDb.lat, depDb.lon, arrDb.lat, arrDb.lon);
-                        const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
-                        if (dDep + dArr <= maxAllowed) {
+                        if (isRouteConsistent(f, depDb, arrDb)) {
                           apiRoute = { dep: depDb, arr: arrDb };
                           valid = true;
                           break;
@@ -1230,11 +1248,7 @@ export default {
                 if (!valid && env.AEROAPI_KEY) {
                   const aeroRoute = await fetchRouteFromAeroAPI(f.callsign);
                   if (aeroRoute && aeroRoute.dep && aeroRoute.arr) {
-                    const dDep = getDistance(f.lat, f.lon, aeroRoute.dep.lat, aeroRoute.dep.lon);
-                    const dArr = getDistance(f.lat, f.lon, aeroRoute.arr.lat, aeroRoute.arr.lon);
-                    const dTotal = getDistance(aeroRoute.dep.lat, aeroRoute.dep.lon, aeroRoute.arr.lat, aeroRoute.arr.lon);
-                    const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
-                    if (dDep + dArr <= maxAllowed) {
+                    if (isRouteConsistent(f, aeroRoute.dep, aeroRoute.arr)) {
                       apiRoute = aeroRoute;
                       valid = true;
                     }
@@ -1293,11 +1307,7 @@ export default {
             }
             if (prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null) {
               // Verify that the aircraft is still flying along the cached route
-              const dDep = getDistance(f.lat, f.lon, prev.dep.lat, prev.dep.lon);
-              const dArr = getDistance(f.lat, f.lon, prev.arr.lat, prev.arr.lon);
-              const dTotal = getDistance(prev.dep.lat, prev.dep.lon, prev.arr.lat, prev.arr.lon);
-              const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
-              if (dDep + dArr <= maxAllowed) {
+              if (isRouteConsistent(f, prev.dep, prev.arr)) {
                 f.dep = prev.dep;
                 f.arr = prev.arr;
                 cleanRouteCities(f);
@@ -1310,7 +1320,7 @@ export default {
 
           // Quick synchronous KV lookup fallback to prevent blank data on cache misses
           if (!f.dep && env.FBX_ROUTES_KV) {
-            const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon);
+            const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon, f.track);
             if (learnedRoute) {
               f.dep = learnedRoute.dep;
               f.arr = learnedRoute.arr;
@@ -1324,11 +1334,7 @@ export default {
                 const depDb = AIRPORT_DB[c.dep.toUpperCase()];
                 const arrDb = AIRPORT_DB[c.arr.toUpperCase()];
                 if (depDb && arrDb) {
-                  const dDep = getDistance(f.lat, f.lon, depDb.lat, depDb.lon);
-                  const dArr = getDistance(f.lat, f.lon, arrDb.lat, arrDb.lon);
-                  const dTotal = getDistance(depDb.lat, depDb.lon, arrDb.lat, arrDb.lon);
-                  const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
-                  if (dDep + dArr <= maxAllowed) {
+                  if (isRouteConsistent(f, depDb, arrDb)) {
                     f.dep = depDb;
                     f.arr = arrDb;
                     break;
