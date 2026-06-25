@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Lato:wght@400;700;900&family=DM+Sans:wght@400;500;700&family=Manrope:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <!-- FOUC prevention — apply saved prefs to <html> before render -->
 <script>
 (function() {
@@ -2861,6 +2863,24 @@
           </div>
           <div class="dc-date-footer">
             <div id="dc-fbx-date" class="dash-card-date-badge"></div>
+          </div>
+        </div>
+        <div class="dash-card dash-card-clickable" id="dc-cargo" title="Canlı kargo uçak haritasını göster" onclick="openCargoFlightsModal()">
+          <div class="dash-card-timer" id="dc-cargo-timer">
+            <span class="timer-dot"></span>
+            <span class="timer-secs">60s</span>
+          </div>
+          <div class="dash-card-header-row">
+            <div class="dash-card-label dash-card-label--wrap">Havadaki Kargo Uçağı Sayısı</div>
+          </div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">THY Kargo · şu anda uçuşta</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">OpenSky Network · <a href="https://opensky-network.org" target="_blank" rel="noopener">opensky-network.org →</a></div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-cargo-date" class="dash-card-date-badge"></div>
           </div>
         </div>
       </div>
@@ -12904,15 +12924,184 @@ async function loadDashboard() {
     });
   }
 
+  // Havadaki THY Uçakları Verisini Çek ve Göster (Kargo + Yolcu)
+  let _cargoAllFlights = [];
+  let _cargoFlights = [];
+  let _cargoActiveFilter = 'cargo';
+  async function initCargoCard() {
+    try {
+      const data = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/cargo-flights')
+        .then(r => r.ok ? r.json() : null).catch(() => null);
+      _cargoAllFlights = (data && Array.isArray(data.flights)) ? data.flights : [];
+      const count = data && typeof data.count === 'number' ? data.count : _cargoAllFlights.filter(f => f.type === 'cargo').length;
+      _cargoFlights = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter);
+      setCard('dc-cargo', String(count), null, 'THY Kargo · şu anda uçuşta',
+        `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
+      const dateEl = document.getElementById('dc-cargo-date');
+      if (dateEl) dateEl.textContent = 'Canlı veri';
+      if (document.getElementById('cargo-flights-modal')?.style.display === 'flex') {
+        renderCargoFlightsModal();
+      }
+    } catch (_) {
+      setCard('dc-cargo', '—', null, '', 'Veri alınamadı');
+    }
+  }
+
+  window.setCargoFlightsFilter = function(type) {
+    if (type === _cargoActiveFilter) return;
+    _cargoActiveFilter = type;
+    _cargoFlights = _cargoAllFlights.filter(f => f.type === type);
+    document.querySelectorAll('#cargo-type-toggle .forex-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.type === type);
+    });
+    renderCargoFlightsModal();
+  };
+
+  let _cargoMap = null;
+  let _cargoMapLayers = [];
+  const cargoPlaneIcon = (track, color) => L.divIcon({
+    className: 'cargo-plane-icon',
+    html: `<svg width="22" height="22" viewBox="0 0 24 24" style="transform:rotate(${(track || 0) - 90}deg)"><path fill="${color}" d="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+  });
+  const cargoAirportIcon = (color) => L.divIcon({
+    className: 'cargo-airport-icon',
+    html: `<svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="${color}" fill-opacity="0.18" stroke="${color}" stroke-width="2.5"/></svg>`,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+  });
+
+  function renderCargoFlightList() {
+    const listEl = document.getElementById('cargo-flight-list');
+    const emptyEl = document.getElementById('cargo-flights-empty');
+    const bodyEl = document.getElementById('cargo-flights-body');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    if (!_cargoFlights.length) {
+      if (emptyEl) {
+        emptyEl.textContent = _cargoActiveFilter === 'cargo'
+          ? 'Şu anda havada THY kargo uçuşu tespit edilemedi.'
+          : 'Şu anda havada THY yolcu uçuşu tespit edilemedi.';
+        emptyEl.style.display = 'block';
+      }
+      if (bodyEl) bodyEl.style.display = 'none';
+      return;
+    }
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (bodyEl) bodyEl.style.display = 'flex';
+
+    _cargoFlights.forEach((f, idx) => {
+      const depCity = f.dep?.city || f.dep?.icao || '?';
+      const arrCity = f.arr?.city || f.arr?.icao || 'Bilinmiyor';
+      const item = document.createElement('div');
+      item.className = 'cargo-flight-item';
+      item.dataset.idx = idx;
+      item.style.cssText = 'padding:8px 10px; border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:12px; transition:background 0.15s;';
+      item.innerHTML = `
+        <div style="font-weight:600; display:flex; align-items:center; gap:5px;">
+          <span class="thy-dot" style="width:6px; height:6px; background:#C8102E; border-radius:50%; display:inline-block;"></span>
+          ${f.callsign}
+        </div>
+        <div style="color:var(--text-3); margin-top:2px;">${depCity} → ${arrCity}</div>
+        <div style="color:var(--text-3); font-size:11px; margin-top:2px;">${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt</div>
+      `;
+      item.addEventListener('click', () => focusCargoFlight(idx));
+      listEl.appendChild(item);
+    });
+  }
+
+  function focusCargoFlight(idx) {
+    const f = _cargoFlights[idx];
+    if (!f || !_cargoMap) return;
+    _cargoMap.setView([f.lat, f.lon], 5, { animate: true });
+    document.querySelectorAll('.cargo-flight-item').forEach(el => {
+      el.style.background = (Number(el.dataset.idx) === idx) ? 'var(--surface-2, rgba(0,0,0,0.05))' : '';
+    });
+  }
+
+  function renderCargoFlightsModal() {
+    renderCargoFlightList();
+    if (!_cargoFlights.length) return;
+
+    if (!_cargoMap) {
+      _cargoMap = L.map('cargo-flights-map', { worldCopyJump: true, fadeAnimation: false }).setView([30, 30], 2);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 18,
+      }).addTo(_cargoMap);
+    }
+
+    _cargoMapLayers.forEach(l => _cargoMap.removeLayer(l));
+    _cargoMapLayers = [];
+
+    const bounds = [];
+    _cargoFlights.forEach(f => {
+      const planeMarker = L.marker([f.lat, f.lon], { icon: cargoPlaneIcon(f.track, '#C8102E') })
+        .bindPopup(`<strong>${f.callsign}</strong><br>${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}<br>${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt`);
+      planeMarker.addTo(_cargoMap);
+      _cargoMapLayers.push(planeMarker);
+      bounds.push([f.lat, f.lon]);
+
+      if (f.dep && f.dep.lat != null) {
+        const depMarker = L.marker([f.dep.lat, f.dep.lon], { icon: cargoAirportIcon('#16A34A') })
+          .bindPopup(`Kalkış: ${f.dep.name || f.dep.icao}`);
+        depMarker.addTo(_cargoMap);
+        _cargoMapLayers.push(depMarker);
+        bounds.push([f.dep.lat, f.dep.lon]);
+
+        const traveledLine = L.polyline([[f.dep.lat, f.dep.lon], [f.lat, f.lon]], { color: '#C8102E', weight: 2, opacity: 0.8 });
+        traveledLine.addTo(_cargoMap);
+        _cargoMapLayers.push(traveledLine);
+      }
+
+      if (f.arr && f.arr.lat != null) {
+        const arrMarker = L.marker([f.arr.lat, f.arr.lon], { icon: cargoAirportIcon('#1D6FE8') })
+          .bindPopup(`Varış: ${f.arr.name || f.arr.icao}`);
+        arrMarker.addTo(_cargoMap);
+        _cargoMapLayers.push(arrMarker);
+        bounds.push([f.arr.lat, f.arr.lon]);
+
+        const remainingLine = L.polyline([[f.lat, f.lon], [f.arr.lat, f.arr.lon]], { color: '#C8102E', weight: 2, opacity: 0.4, dashArray: '6,6' });
+        remainingLine.addTo(_cargoMap);
+        _cargoMapLayers.push(remainingLine);
+      }
+    });
+
+    if (bounds.length) {
+      _cargoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 5 });
+    }
+    setTimeout(() => _cargoMap.invalidateSize(), 50);
+  }
+
+  window.openCargoFlightsModal = function() {
+    const m = document.getElementById('cargo-flights-modal');
+    if (!m) return;
+    _cargoActiveFilter = 'cargo';
+    _cargoFlights = _cargoAllFlights.filter(f => f.type === 'cargo');
+    document.querySelectorAll('#cargo-type-toggle .forex-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.type === 'cargo');
+    });
+    m.style.display = 'flex';
+    setTimeout(() => renderCargoFlightsModal(), 50);
+  };
+  window.closeCargoFlightsModal = function() {
+    const m = document.getElementById('cargo-flights-modal');
+    if (m) m.style.display = 'none';
+  };
+
   // Expose to window scope
   window.initBafiCard = initBafiCard;
   window.initFbxCard = initFbxCard;
   window.initIataCard = initIataCard;
+  window.initCargoCard = initCargoCard;
 
   // Run initializations
   initBafiCard();
   initFbxCard();
   initIataCard();
+  initCargoCard();
 
   // ── THY Hisse Verisini Çek ve Göster ──────────────────────────────
   let _thy1yRaw = null;
@@ -13424,6 +13613,14 @@ async function loadDashboard() {
       };
     }
 
+    if (cardId === 'dc-cargo') {
+      // Uçuşlar 7/24 devam eder, piyasa kapanışı yoktur
+      return {
+        isOpen: true,
+        tooltipMessage: 'Havadaki THY Kargo uçaklarının sayısı. Konumlar OpenSky Network ADS-B verisinden 60 saniyede bir otomatik güncellenir.'
+      };
+    }
+
     if (cardId === 'dc-bafi') {
       return {
         isOpen: false,
@@ -13588,7 +13785,8 @@ async function loadDashboard() {
     'dc-fbx': { countdown: null, interval: null, initFn: () => typeof initFbxCard === 'function' ? initFbxCard() : Promise.resolve() },
     'dc-bafi': { countdown: null, interval: null, initFn: () => typeof initBafiCard === 'function' ? initBafiCard() : Promise.resolve() },
     'dc-iata': { countdown: null, interval: null, initFn: () => typeof initIataCard === 'function' ? initIataCard() : Promise.resolve() },
-    'dc-wci': { countdown: null, interval: null, initFn: null }
+    'dc-wci': { countdown: null, interval: null, initFn: null },
+    'dc-cargo': { countdown: 60, interval: 60, initFn: () => typeof initCargoCard === 'function' ? initCargoCard() : Promise.resolve() }
   };
 
   let _dashboardPollInterval = null;
@@ -21911,6 +22109,28 @@ window.resetIndicatorsConfig = function() {
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-thy"></canvas>
         </div>
+      </div>
+    </div>
+
+    <!-- Kargo Uçakları Harita Modali -->
+    <div id="cargo-flights-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="cargo-flights-title">
+      <div class="chart-modal-card" style="max-width: 1100px; width: 96vw; max-height: 92vh;">
+        <div class="rel-add-head">
+          <div id="cargo-flights-title" class="rel-add-title">Havadaki THY Uçakları</div>
+          <button class="rel-add-x" onclick="closeCargoFlightsModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="forex-toggle-btns" id="cargo-type-toggle" style="margin-top:10px;">
+          <button class="forex-btn active" id="btn-cargo-type-cargo" data-type="cargo" onclick="setCargoFlightsFilter('cargo')">Kargo</button>
+          <button class="forex-btn" id="btn-cargo-type-pax" data-type="pax" onclick="setCargoFlightsFilter('pax')">Yolcu</button>
+        </div>
+        <div id="cargo-flights-body" style="display:flex; gap:14px; margin-top:10px; height:480px;">
+          <div id="cargo-flight-list" style="width:280px; flex-shrink:0; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px;"></div>
+          <div style="flex:1; position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
+            <div id="cargo-flights-map" style="position:absolute; inset:0;"></div>
+          </div>
+        </div>
+        <div id="cargo-flights-empty" style="display:none; text-align:center; color:var(--text-3); padding:24px; font-size:13px;">Şu anda havada THY kargo uçuşu tespit edilemedi.</div>
+        <div style="margin-top:10px; font-size:11px; color:var(--text-3);">Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network</a> · Konumlar canlı ADS-B verisidir; kalkış/varış havalimanları OpenSky'nin tahmini rota tespitine dayanır ve bazı uçuşlarda eksik/yanlış olabilir.</div>
       </div>
     </div>
 
