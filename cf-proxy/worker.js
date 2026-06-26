@@ -1148,8 +1148,13 @@ export default {
         '4bb14c', '4bb14d', '4bb14e', '4bb14f', '4bb150', '4bb152', '4bb153', '4bb154', '4bb155', '4bb156', '4bb159', '4bb15a',
         // Airbus A330F
         '4ba88f', '4ba890', '4ba891', '4ba892', '4ba893', '4ba9ef', '4ba9f4', '4ba9f6', '4ba9f9', '4ba9fa',
-        // Wet-leased freighters (ACT, ULS, etc. regularly flying under THY callsigns)
-        '4ba875', '4ba879', '4ba87b', '4ba87d', '4bae23', '4baa96'
+        // Wet-leased freighters (ACT, ULS, BBN, Atlas Air, etc. regularly flying under THY callsigns)
+        '4ba875', '4ba879', '4ba87b', '4ba87d', '4bae23', '4baa96',
+        '4bb0b2', // TC-LER (A310-300F - ULS Cargo)
+        '4b9c63', // TC-GCC (A321-200 P2F - BBN Airlines)
+        '4b9df5', // TC-GOU (A330-300 P2F - ULS Cargo)
+        '4b9dec', // TC-GOL (A330-300 P2F - ULS Cargo)
+        'a54535'  // N439GT (B747-400F - Atlas Air)
       ]);
 
       function determineFlightType(icao24, flightNum, details) {
