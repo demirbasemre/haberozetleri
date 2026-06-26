@@ -1,5 +1,503 @@
 [
   {
+    "title": "FedEx Ekspres Hacimlerinde Artış Açıkladı",
+    "summary": "FedEx, <strong>31 Mayıs 2026</strong>'da sona eren dördüncü çeyrekte gelirini geçen yıla kıyasla <strong>%12,5</strong> artışla <strong>25 milyar dolara</strong> çıkardığını duyurdu. Şirketin faaliyet geliri <strong>%13,3</strong> düşüşle <strong>1,55 milyar dolara</strong> gerilerken, düzeltilmiş faaliyet geliri <strong>%3,5</strong> artarak <strong>2,09 milyar dolar</strong> oldu. FedEx Express biriminin faaliyet geliri ise yıllık <strong>%14</strong> artışla <strong>1,7 milyar dolara</strong> ulaştı. Kârlılık, ABD içi ve uluslararası öncelikli paket verimlerindeki artış ve maliyet tasarrufları ile desteklendi. Ayrıca, FedEx Freight biriminin şirketten ayrılma süreci <strong>1 Haziran 2026</strong> itibarıyla tamamlandı.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/business/2026/06/fedex-reports-rise-in-express-volumes/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "FedEx'in finansal sonuçları ve operasyonel performansı ağırlıklı olarak Kuzey Amerika pazarını etkilemektedir.",
+    "date": "2026-06-24"
+  },
+  {
+    "title": "Emirates SkyCargo Doğu ve Güneydoğu Asya Kargo Uçağı Ağını Genişletiyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo; Doğu ve Güneydoğu Asya genelindeki kargo uçağı uçuş sıklıklarını artırdığını açıkladı. Bu kapsamda Tokyo Narita uçuşları haftalık <strong>ikiye</strong>, Taipei uçuşları ise haftalık <strong>ikiye</strong> çıkarılırken, Hong Kong kargo uçuşları haftada <strong>37</strong> sefere ulaştı. Zhengzhou'dan Dubai'ye haftada <strong>üç</strong> uçuş başlatılırken, Singapur uçuşları Mumbai aktarmalı olarak haftada <strong>bir</strong> kez yeniden devreye alındı. Taşıyıcı, <strong>2025/2026</strong> mali yılında bölgedeki <strong>12</strong> pazardan kargo ve yolcu uçuşlarıyla yıllık <strong>%5</strong> artışla <strong>439.000 tondan fazla</strong> kargo taşıdı.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/airlines/2026/06/emirates-skycargo-expands-freighter-network-across-east-and-southeast-asia/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Emirates SkyCargo Asya Pazarlarındaki Kargo Uçağı Ağını Genişletiyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo'nun Narita (F), Taipei (F), Hong Kong (F), Zhengzhou (F) ve Hanoi (F) gibi <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun da doğrudan kargo uçağıyla hizmet verdiği kilit noktalarda frekans artırması rekabeti yoğunlaştırmaktadır. Özellikle e-ticaret ve yüksek teknoloji kargolarında, rakibin Dubai hub'ı üzerinden sunduğu yüksek kapasite, IST aktarmalı transit trafik üzerinde marj baskısı yaratabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Western Europe",
+        "Central Europe",
+        "Northern America"
+      ]
+    },
+    "etkiAlaniGerekce": "Emirates'in Doğu Asya'daki kargo uçağı kapasite artışları, Turkish Cargo'nun doğrudan uçtuğu Tokyo, Hong Kong, Taipei ve Zhengzhou hatlarında rekabeti artırmaktadır.",
+    "date": "2026-06-24"
+  },
+  {
+    "title": "Geodis İlaç Sevkiyatları İçin Sürdürülebilir Kağıt Termal Örtüleri Test Ediyor",
+    "summary": "Geodis, ilaç hava kargoları için geleneksel alüminyum ve folyo kaplamalara alternatif olarak geri dönüştürülebilir kağıt bazlı termal örtüleri (\"Solaris 5\" ve \"Solaris 10\") başarıyla test etti. Geçen yılın <strong>Eylül</strong> ayından bu yana Hindistan, Suudi Arabistan, Güney Kore, Avustralya ve Yeni Zelanda genelinde <strong>86</strong> deneme sevkiyatı gerçekleştirildi. Güney Kore'deki <strong>-15°C</strong> ile Hindistan'daki <strong>40°C</strong>'yi aşan zorlu hava koşullarına rağmen sıcaklık bütünlüğü <strong>+2°C</strong> ila <strong>+25°C</strong> aralığında başarıyla korundu. Taşıma sürecinde sıcaklık kontrollü araçlar, havayolu ilaç hizmetleri ve soğuk hava depolarından oluşan entegre bir soğuk zincir yaklaşımı uygulandı.",
+    "category": "Özel Kargo",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/sustainability/2026/06/geodis-tests-sustainable-paper-thermal-covers-for-pharma-shipments/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "GEODIS İlaç Hava Kargoları İçin Sürdürülebilir Kağıt Termal Örtüleri Test Ediyor",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Geodis'in deneme yaptığı Hindistan (F), Suudi Arabistan (P/F) ve Güney Kore (F) pazarlarında ilaç (pharma) taşımacılığına yönelik yeni sürdürülebilir ambalaj çözümleri geliştirmesi, bu destinasyonlarda güçlü altyapıya sahip <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için ek hacim fırsatları sunabilir. İstanbul (IST) merkezli GDP sertifikalı soğuk zincir koridorları, bu tip kağıt termal örtülerle taşınan hassas kargoların transit geçişlerinde yüksek operasyonel güvenilirlik sağlayacaktır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL",
+        "Western Europe",
+        "Central Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Denemelerin yapıldığı Hindistan, Suudi Arabistan ve Güney Kore pazarlarındaki ilaç sevkiyatları, Turkish Cargo'nun IST aktarmalı soğuk zincir ağını doğrudan etkilemektedir.",
+    "date": "2026-06-24"
+  },
+  {
+    "title": "CEVA Asya Pasifik-ABD Hava Kargo Talebini Charter Seferleriyle Destekliyor",
+    "summary": "CEVA Logistics, transpasifik ticaret yollarındaki hava kargo kapasitesini güçlendirmek amacıyla yeni charter programları başlattı. Vietnam'ın sanayi merkezlerini destekleyen Hanoi-Chicago hattında Boeing 777 kargo uçağıyla haftada <strong>üç</strong> kez doğrudan seferler düzenlenecek. Çin'in Wuxi kentinden Chicago'ya düzenlenen charter seferleri ise CMA CGM Air Cargo ortaklığıyla haftada <strong>iki</strong> sefere çıkarılarak yenilendi ve her uçuşta <strong>100 tona</strong> kadar kapasite sunuldu. Sevkiyatlar, Chicago O'Hare yakınlarındaki <strong>700.000 fit karelik</strong> çok fonksiyonlu lojistik merkezinde gümrükleme, soğuk depolama ve güvenlik taramaları dahil entegre hizmetlerle işlenecek.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/charter-company/2026/06/ceva-supports-asia-pacific-us-air-cargo-demand-with-charters/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "CEVA, Vietnam ve Çin’den Chicago Kargo Merkezine Olan Bağlantılarını Genişletiyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "CEVA'nın Hanoi (F) ve Wuxi üzerinden Chicago (F) hattında başlattığı doğrudan kargo charter uçuşları, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun Asya-Kuzey Amerika transpasifik transit kargo pazarındaki pazar payı üzerinde risk oluşturmaktadır. Üreticilerin doğrudan ve blok kapasite anlaşmalı (BSA) charter çözümlerine yönelmesi, IST aktarmalı uzun mesafeli e-ticaret ve yüksek teknoloji kargo akışlarında hacim kaybına yol açabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "Vietnam ve Çin'den ABD'ye yönlendirilen doğrudan kargo kapasitesi, Turkish Cargo'nun transpasifik transit akışlarını doğrudan etkilemektedir.",
+    "date": "2026-06-24"
+  },
+  {
+    "title": "Awery’nin CargoBooking Platformuna İlk Çinli GSSA Katıldı",
+    "summary": "GSSA şirketi Oriental Sky Aviation, Awery’nin çevrim içi CargoBooking platformuna katılarak sistemdeki ilk Çinli genel satış acentesi oldu. Entegrasyon sayesinde acentenin <strong>21</strong> lokasyondaki havayolu kapasitesi ve kargo hizmetleri yük ileticilerine tek bir dijital arayüz üzerinden sunulacak. Oriental Sky Aviation, kargo temsilciliği, charter operasyonları ve ara hat (interline) hizmetlerini yönetmek için <strong>2022</strong> yılından bu yana Awery’nin ERP sistemini kullanıyordu. Anlaşma, hava kargo pazarının en büyük dijitalleşme merkezlerinden biri olan Çin'deki teklif ve rezervasyon süreçlerini hızlandırmayı amaçlıyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/technology/2026/06/first-chinese-gssa-joins-awerys-cargobooking-platform/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Awery, CargoBooking Platformuna İlk Çinli GSSA Olarak Oriental Sky Aviation'ı Ekledi",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Çin merkezli genel satış acentesinin dijital platform entegrasyonu, bölgedeki rezervasyon ve teklif süreçlerini etkilemektedir.",
+    "date": "2026-06-24"
+  },
+  {
+    "title": "Air Logistics Group Yeni Marka Kimliğini Duyurdu",
+    "summary": "Küresel kargo satış acentesi (GSSA) Air Logistics Group, insan odaklı hizmeti ve ilişkileri vurgulayan \"People-Powered Excellence\" temalı yeni marka kimliğini tanıttı. <strong>1994</strong> yılında kurulan şirket, günümüzde <strong>6</strong> kıtadaki <strong>60</strong>'tan fazla ülkede yer alan <strong>100</strong> ofisiyle faaliyet gösteriyor. Yılda <strong>135</strong>'ten fazla havayolu ortağını destekleyen ve <strong>3,2 milyondan fazla</strong> kargo teklifi üreten şirket, otomasyon ve yapay zeka yatırımlarına devam ederken insan uzmanlığını korumayı taahhüt ediyor. Yeni marka konumlandırmasıyla, karmaşıklaşan küresel ticarette ilişkilerin ve yerel bilginin önemi vurgulanıyor.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/editorial/2026/06/air-logistics-group-unveils-new-branding/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Air Logistics Group Yeni Küresel Marka Kimliğini Duyurdu",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Küresel GSSA şirketinin yeni kurumsal marka kimliği havacılık pazarındaki genel imajını etkilemektedir.",
+    "date": "2026-06-24"
+  },
+  {
+    "title": "Jettainer ve Hangyi Çin Ana Karasında ULD Yönetimi İçin Stratejik Ortaklık Kuruyor",
+    "summary": "ULD yönetim uzmanı Jettainer ve Çinli ULD üreticisi Hangyi, Çin ana karasında ULD yönetimi süreçlerini birleştirmek amacıyla stratejik bir Mutabakat Zaptı (MoU) imzaladı. Anlaşma kapsamında Hangyi'nin üretim ve bölgesel bakım-onarım (MRO) gücü ile <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo'nun iştiraki Jettainer'ın küresel filo yönetim uzmanlığı bir araya getirilecek. ULD filoları, nesnelerin interneti (IoT) takip çözümlerini barındıran JettWareNG platformu üzerinden dijital olarak yönetilecek. Çin ve Kuala Lumpur'da MRO tesisleri işleten Hangyi, yakında Suudi Arabistan, Avrupa ve Kanada'da da yeni tesisler kurmayı planlıyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/jettainer-and-hangyi-to-establish-strategic-partnership-for-uld-management-in-mainland-china/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Jettainer'ın (<span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo) Çinli dev ULD üreticisi Hangyi ile Çin ana karasında başlattığı ortaklık, Avrupalı rakiplerin Çin çıkışlı e-commerce ve kargo operasyonlarında ekipman tedarik verimliliğini artırmaktadır. Hangyi'nin Çin (F) ve Kuala Lumpur (F/P) gibi kritik noktalardaki MRO ve depolama altyapısı, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun aynı pazarlardaki fiziksel ekipman konumlandırma avantajına karşı operasyonel bir risk oluşturabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "Çin ana karası ve Kuala Lumpur'da kurulacak entegre kargo ekipmanı (ULD) bakım ve yönetim ağı, Turkish Cargo'nun bölgedeki operasyonel verimliliğini etkilemektedir.",
+    "date": "2026-06-25",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/jettainer-hangyi-partner-to-expand-uld-management-across-china-1359607"
+      }
+    ]
+  },
+  {
+    "title": "Saudia Cargo Satış Operasyonları İçin Yapay Zeka Altyapısını cargo.one ile Güçlendiriyor",
+    "summary": "Saudia Cargo, ticari operasyonlarında teklif süreçlerini hızlandırmak amacıyla cargo.one ile iş birliği yaparak hava kargo sektörünün ilk yapay zeka çalışanlarını (AI workers) devreye alacağını duyurdu. Yapay zeka sistemi, e-posta üzerinden gelen fiyat taleplerini (RFQ) saniyeler içinde analiz ederek <strong>7/24</strong> otomatik ve optimize edilmiş teklifler üretecek. Sistem sayesinde teklif geri dönüş sürelerinde <strong>%68</strong> oranında bir azalma sağlanırken, ilk üretilen tekliflerin doğruluk oranının <strong>%89</strong> seviyesinde gerçekleşmesi bekleniyor. Bu dijital dönüşüm adımı, Saudia Cargo'nun satış ekiplerinin daha katma değerli ve özel kargo projelerine odaklanmasına imkan tanıyacak.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/saudia-cargo-selects-cargo-one-to-deliver-the-industrys-first-ai-worker-for-sales-operations/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Bölgesel en güçlü rakiplerden biri olan Saudia Cargo'nun cargo.one platformu üzerinden yapay zeka tabanlı anlık teklif sistemine geçmesi, özellikle Orta Doğu (F) ve Avrupa (F) transit pazarlarında dijital teklif hızında <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> aleyhine bir dezavantaj yaratabilir. Hızlı ve hatasız fiyatlandırma (RFQ), kargo acentelerinin rezervasyon tercihlerini doğrudan etkilediği için spot piyasa üzerinde marj baskısı oluşturabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Western Europe",
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "Suudi Arabistan merkezli rakibin dijital teklif süreçlerini yapay zeka ile otomatikleştirmesi, Orta Doğu-Avrupa transit hatlarındaki rekabet hızını etkilemektedir.",
+    "date": "2026-06-25",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/cargoone-powers-ai-sales-automation-for-saudia-cargo-1359604"
+      },
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/saudia-cargo-selects-cargo-one-to-deliver-the-industrys-first-ai-worker-for-sales-operations/"
+      }
+    ]
+  },
+  {
+    "title": "Lufthansa Cargo Frankfurt Havalimanı’ndaki 600 Milyon Avroluk Kargo Merkezi Yenilemesinin İlk Aşamasını Tamamladı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo, Frankfurt Havalimanı'ndaki <strong>600 milyon avro</strong> bütçeli \"LCCevo\" altyapı projesinin ilk ve en önemli aşaması olan \"ALPHA\" inşaat fazını tamamlayarak operasyonlara başladı. Yaklaşık <strong>80.000 metrekarelik</strong> alana yayılan yenileme kapsamında inşa edilen <strong>42 metre</strong> yüksekliğindeki tam otomatik yüksek raflı depo, saatte <strong>300</strong>'den fazla depolama işlemi gerçekleştirerek kapasiteyi ikiye katlıyor. Ayrıca, sıcaklığa duyarlı özel kargolar için yeni bir otomatik palet deposu da devreye alındı. <strong>2030</strong> yılına kadar sürecek olan projenin sonraki aşamalarında BRAVO ve CHARLIE fazları hayata geçirilecek ve <strong>19.000 metrekarelik</strong> çatı alanına güneş panelleri kurulacak.",
+    "category": "Altyapı",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/lufthansa-cargo-launches-operations-at-first-phase-of-state-of-the-art-air-cargo-hub-as-scheduled/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Lufthansa</span>'nın ana hub'ı Frankfurt'ta (FRA) yaptığı bu devasa otomasyon yatırımı, özellikle yüksek değerli ilaç ve soğuk zincir gibi zaman hassasiyetli özel kargo segmentlerinde operasyonel hızını artırarak <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için rekabet riskini büyütmektedir. Ancak Frankfurt Havalimanı'ndaki gece uçuş yasağı (curfew), havalimanının 24 saat kesintisiz operasyon kabiliyetini sınırlamaya devam etmektedir. İstanbul Havalimanı'nın (IST) curfew kısıtlaması olmaksızın sunduğu 24/7 kesintisiz operasyon ve SMARTIST altyapısı, transit kargo akışlarında bu kapasite artışına karşı en güçlü koz olarak kalacaktır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "China",
+        "Southern Asia",
+        "Middle East"
+      ]
+    },
+    "etkiAlaniGerekce": "Lufthansa Cargo'nun Frankfurt'taki ana merkezinde gerçekleştirdiği teknolojik kargo terminali yatırımı, Avrupa çıkışlı ve aktarmalı kargo akışlarında rekabeti doğrudan etkilemektedir.",
+    "date": "2026-06-25",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/lufthansa-cargo-opens-first-phase-of-600m-frankfurt-hub-upgrade-1359614"
+      }
+    ]
+  },
+  {
+    "title": "2026 Dünya Hava Kargo Ödülleri Şanghay’da Sahiplerini Buldu",
+    "summary": "Şanghay'da düzenlenen <strong>2026</strong> Dünya Hava Kargo Ödülleri'nde hava kargo sektörünün en iyileri ödüllendirildi. Sektör temsilcilerinin oyları ve bağımsız jüri değerlendirmesiyle belirlenen ödüllerde <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, \"Yılın Küresel Havayolu\" (Global Airline of the Year 2026) ve \"Hava Kargo Sektörü İlaç Ödülü\" (Air Cargo Industry Pharmaceutical Award 2026) kategorilerinde birincilik elde etti. Diğer kazananlar arasında <span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo (Orta Doğu), LATAM Cargo (Amerika), MSC Air Cargo (Avrupa) ve Hong Kong Uluslararası Havalimanı (Yılın Havalimanı) yer aldı. Gecede ayrıca ECS Group \"Yılın Küresel GSSA'sı\" ödülüne layık görüldü.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/world-air-cargo-awards-2026-winners-honoured-in-shanghai/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun hem \"Yılın Küresel Havayolu\" hem de \"İlaç Taşımacılığı\" dalında ödüller kazanması, markanın küresel pazardaki güvenilirliğini ve operasyonel kalitesini teyit ederek yeni müşteri kazanımlarını destekleyecektir. Özellikle katma değeri yüksek soğuk zincir (pharma) taşımacılığında alınan bu tescil, küresel ilaç devleri ve lojistik entegratörleri (3PL) nezdinde tercih edilme oranını artırabilir. Güçlü marka imajı, daralan piyasa koşullarında navlun fiyatlarının ve doluluk oranlarının rakiplere kıyasla daha dirençli kalmasını sağlayacaktır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Turkish Cargo'nun aldığı küresel ödüller, şirketin tüm uçuş ağı ve kilit pazarlardaki ticari prestijini doğrudan güçlendirmektedir.",
+    "date": "2026-06-25"
+  },
+  {
+    "title": "Chicago Rockford Havalimanı DSV ile Lüksemburg’dan Yeni Kargo Seferi Başlatıyor",
+    "summary": "Chicago Rockford Uluslararası Havalimanı (RFD), DSV ile olan iş birliğini Lüksemburg'dan (LUX) düzenlenecek yeni bir haftalık kargo uçağı seferiyle genişlettiğini duyurdu. Yeni rota, DSV'nin Şanghay Pudong (PVG) ile Rockford arasında <strong>Kasım 2025</strong>'ten beri yürüttüğü mevcut haftalık kargo uçuşlarını destekleyerek Avrupa, Asya ve Amerika kıtalarını birbirine bağlayacak. Şanghay Star Hava Kargo Charter programı kapsamında yürütülen bu operasyonlara ek olarak DSV, bu yılın sonlarında Güney Kore'deki Seul Incheon (ICN) ile Rockford arasında yeni bir hat açmayı da planlıyor. RFD, <strong>7/24</strong> kargo operasyonları ve yoğun olmayan altyapısıyla lojistik sağlayıcılarına hızlı transit süreleri sunuyor.",
+    "category": "Filo & Network",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/chicago-rockford-international-airport-expands-dsv-partnership-with-new-luxembourg-service/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "DSV'nin Lüksemburg (LUX) ve Seul Incheon (ICN) üzerinden Chicago Rockford (RFD) kargo havalimanına doğrudan kiralık kargo uçuşları (charter) düzenlemesi, transatlantik ve transpasifik kargo yollarında <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun transit hacimlerini etkileyebilir. Özellikle Rockford'ın 24/7 kısıtlamasız operasyon yapısı ve gümrükleme hızı, büyük hacimli genel kargo ve e-ticaret trafiğinin ana hat havayollarından charter operatörlerine kaymasına neden olabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Lüksemburg ve Şanghay'dan Chicago Rockford'a yapılan doğrudan kargo uçuşları, Turkish Cargo'nun transatlantik ve transpasifik hatlarındaki rekabetini etkilemektedir.",
+    "date": "2026-06-25",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/chicago-rockford-expands-dsv-cargo-network-with-luxembourg-service-1359609"
+      }
+    ]
+  },
+  {
+    "title": "everywoman 2026 Ulaşım ve Lojistik Ödülleri Kazananlarını Açıkladı",
+    "summary": "Londra'da düzenlenen törenle, ulaştırma ve lojistik sektöründe fark yaratan kadın liderleri ve girişimcileri ödüllendiren <strong>2026</strong> everywoman Ulaşım ve Lojistik Ödülleri sahiplerini buldu. Birleşik Krallık ekonomisine yaklaşık <strong>192,9 milyar sterlin</strong> katkı sağlayan bu sektörde, kadınların ulaştırma iş gücünün sadece <strong>%27</strong>'sini, lojistik ve depolama alanının ise <strong>%20</strong>'sini oluşturduğu belirtildi. Kazananlar arasında FedEx, GXO, Unipart, DSV, Royal Mail, Amazon ve Starship Technologies gibi küresel markaların temsilcileri yer aldı. Diamond Transport Audits'ten Lisa Hall ise sektöre uyumluluk ve mentorluk katkılarından dolayı \"Yılın Kadını\" seçildi.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/everywoman-announces-winners-of-2026-transport-logistics-awards/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Birleşik Krallık merkezli lojistik ve ulaştırma sektöründeki toplumsal cinsiyet eşitliği ve başarı ödülleri yerel iş gücü ekosistemini etkilemektedir.",
+    "date": "2026-06-25"
+  },
+  {
+    "title": "Lufthansa Cargo 600 Milyon Avroluk Frankfurt Hub Yenilemesinin İlk Aşamasını Hizmete Açtı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo, Frankfurt Havalimanı'nda gerçekleştirdiği <strong>600 milyon avro</strong> bütçeli \"LCCevo\" modernizasyon projesinin ilk aşaması olan \"ALPHA\" fazını tamamlayarak faaliyete geçirdi. Tesis bünyesinde yer alan <strong>42 metre</strong> yüksekliğindeki tam otomatik yüksek raflı depo, saatte <strong>300</strong>'den fazla yükleme işlemi gerçekleştirerek elleçleme kapasitesini iki katına çıkaracak. Sıcaklığa duyarlı özel ilaç kargoları için de yeni bir otomatik palet deposunun kurulduğu tesisin <strong>19.000 metrekarelik</strong> çatı alanına güneş enerjisi sistemleri entegre edilecek. Modernizasyonun BRAVO ve CHARLIE fazlarının <strong>2030</strong> yılına kadar tamamlanarak tesisi Avrupa'nın en modern hava kargo merkezine dönüştürmesi hedefleniyor.",
+    "category": "Altyapı",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/lufthansa-cargo-opens-first-phase-of-600m-frankfurt-hub-upgrade-1359614",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Lufthansa Cargo Frankfurt Havalimanı’ndaki 600 Milyon Avroluk Kargo Merkezi Yenilemesinin İlk Aşamasını Tamamladı",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Lufthansa</span>'nın ana hub'ı Frankfurt'ta (FRA) kargo terminalini modernize ederek operasyonel hızını artırması, özellikle soğuk zincir ve ilaç gibi yüksek marjlı kargo segmentlerinde rekabet gücünü artırmaktadır. Ancak Frankfurt Havalimanı'nda uygulanan 23:00-05:00 saatleri arasındaki katı gece uçuş yasağı, acil gönderilerde lojistik esnekliği kısıtlamaktadır. İstanbul Havalimanı'nın (IST) curfew kısıtlaması olmadan 24/7 çalışabilmesi, bu altyapı rekabetinde <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'ya yapısal bir transit hub avantajı sağlamaya devam edecektir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "China",
+        "Southern Asia",
+        "Middle East"
+      ]
+    },
+    "etkiAlaniGerekce": "Lufthansa Cargo'nun Frankfurt'taki ana merkezinde gerçekleştirdiği teknolojik kargo terminali yatırımı, Avrupa çıkışlı ve aktarmalı kargo akışlarında rekabeti doğrudan etkilemektedir.",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "GEODIS İlaç Hava Kargoları İçin Kağıt Termal Örtüleri Test Ediyor",
+    "summary": "GEODIS, sıcaklık kontrollü ilaç sevkiyatları için sürdürülebilir kağıt bazlı termal kaplamaları başarıyla test ettiğini duyurdu. Geleneksel alüminyum örtülere alternatif olarak geliştirilen \"Solaris 5\" ve \"Solaris 10\" modelleriyle <strong>Eylül 2025</strong>'ten bu yana Hindistan, Suudi Arabistan, Güney Kore, Avustralya ve Yeni Zelanda genelinde <strong>86</strong> deneme sevkiyatı yapıldı. Güney Kore'deki <strong>-15°C</strong> ve Hindistan'daki <strong>40°C</strong> üzerindeki aşırı sıcaklıklara rağmen kargo bütünlüğü <strong>+2°C</strong> ile <strong>+25°C</strong> aralığında başarıyla korundu. Taşıma sürecinde, soğuk zinciri desteklemek amacıyla sıcaklık kontrollü araçlar ve havayolu ilaç hizmetleri gibi entegre lojistik önlemleri uygulandı.",
+    "category": "Özel Kargo",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/geodis-tests-paper-thermal-covers-for-pharma-airfreight-1359612",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "GEODIS İlaç Hava Kargoları İçin Sürdürülebilir Kağıt Termal Örtüleri Test Ediyor",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Geodis'in deneme yaptığı Hindistan (F), Suudi Arabistan (P/F) ve Güney Kore (F) pazarlarında ilaç (pharma) taşımacılığına yönelik yeni sürdürülebilir ambalaj çözümleri geliştirmesi, bu destinasyonlarda güçlü altyapıya sahip <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için ek hacim fırsatları sunabilir. İstanbul (IST) merkezli GDP sertifikalı soğuk zincir koridorları, bu tip kağıt termal örtülerle taşınan hassas kargoların transit geçişlerinde yüksek operasyonel güvenilirlik sağlayacaktır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL",
+        "Western Europe",
+        "Central Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Denemelerin yapıldığı Hindistan, Suudi Arabistan ve Güney Kore pazarlarındaki ilaç sevkiyatları, Turkish Cargo'nun IST aktarmalı soğuk zincir ağını doğrudan etkilemektedir.",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "Chicago Rockford DSV Kargo Ağını Lüksemburg Seferi ile Genişletiyor",
+    "summary": "Chicago Rockford Uluslararası Havalimanı, DSV ile olan iş birliğini Lüksemburg'dan başlayacak yeni bir haftalık kargo seferiyle büyüttüğünü açıkladı. Bu yeni rota, DSV'nin <strong>Kasım 2025</strong>'ten bu yana Şanghay Pudong ile Rockford arasında yürüttüğü mevcut haftalık kargo uçuşlarını tamamlayarak Avrupa, Asya ve Amerika arasındaki transit bağlantıları güçlendirecek. DSV, operasyonel verimlilik ve hızlı transit süreleri doğrultusunda bu yılın sonlarında Güney Kore'deki Seul Incheon ile Rockford arasında yeni bir hat kurmayı da değerlendiriyor. Havalimanının <strong>7/24</strong> çalışan kesintisiz kargo altyapısı, lojistik şirketlerine büyük kolaylık sağlıyor.",
+    "category": "Filo & Network",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/chicago-rockford-expands-dsv-cargo-network-with-luxembourg-service-1359609",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Chicago Rockford Havalimanı DSV ile Lüksemburg’dan Yeni Kargo Seferi Başlatıyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "DSV'nin Lüksemburg (LUX) ve Seul Incheon (ICN) üzerinden Chicago Rockford (RFD) kargo havalimanına doğrudan kiralık kargo uçuşları (charter) düzenlemesi, transatlantik ve transpasifik kargo yollarında <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun transit hacimlerini etkileyebilir. Özellikle Rockford'ın 24/7 kısıtlamasız operasyon yapısı ve gümrükleme hızı, büyük hacimli genel kargo ve e-ticaret trafiğinin ana hat havayollarından charter operatörlerine kaymasına neden olabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Lüksemburg ve Şanghay'dan Chicago Rockford'a yapılan doğrudan kargo uçuşları, Turkish Cargo'nun transatlantik ve transpasifik hatlarındaki rekabetini etkilemektedir.",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "Jettainer ve Hangyi Çin’de ULD Yönetimini Genişletmek İçin Ortaklık Kuruyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo iştiraki Jettainer ve Çinli ULD üreticisi Hangyi, Çin ana karasında kargo konteynerleri (ULD) yönetimini entegre etmek üzere stratejik bir Mutabakat Zaptı (MoU) imzaladı. Ortaklık kapsamında Hangyi'nin Çin ve Kuala Lumpur'daki MRO tesisleri ile Jettainer'ın küresel yönetim uzmanlığı bir araya getirilecek. Filolar, nesnelerin interneti (IoT) takip çözümleri entegre edilmiş JettWareNG platformu üzerinden yönetilecek. Yakın zamanda Suudi Arabistan, Avrupa ve Kanada'da yeni tesisler kurmayı planlayan Hangyi, Çin içinde kara taşımacılığı ve depo desteği de sağlayacak.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/jettainer-hangyi-partner-to-expand-uld-management-across-china-1359607",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Jettainer ve Hangyi Çin Ana Karasında ULD Yönetimi İçin Stratejik Ortaklık Kuruyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "Jettainer'ın (<span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo) Çinli dev ULD üreticisi Hangyi ile Çin ana karasında başlattığı ortaklık, Avrupalı rakiplerin Çin çıkışlı e-commerce ve kargo operasyonlarında ekipman tedarik verimliliğini artırmaktadır. Hangyi'nin Çin (F) ve Kuala Lumpur (F/P) gibi kritik noktalardaki MRO ve depolama altyapısı, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun aynı pazarlardaki fiziksel ekipman konumlandırma avantajına karşı operasyonel bir risk oluşturabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "Çin ana karası ve Kuala Lumpur'da kurulacak entegre kargo ekipmanı (ULD) bakım ve yönetim ağı, Turkish Cargo'nun bölgedeki operasyonel verimliliğini etkilemektedir.",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "cargo.one Saudia Cargo İçin Yapay Zeka Tabanlı Satış Otomasyonunu Destekliyor",
+    "summary": "Saudia Cargo, ticari süreçlerinde teklif oluşturma sürelerini kısaltmak amacıyla cargo.one’ın yapay zeka tabanlı \"AI workers\" (yapay zeka çalışanları) sistemini entegre ettiğini duyurdu. Yapay zeka sistemi, e-posta ile gelen fiyat taleplerini (RFQ) saniyeler içinde analiz ederek <strong>7/24</strong> otomatik ve optimize teklifler hazırlayacak. cargo.one verilerine göre sistem, teklif hazırlama sürelerini ortalama <strong>%68</strong> oranında kısaltırken, ilk tekliflerde <strong>%89</strong> oranında doğruluk payı elde edilmesini sağlıyor. Bu otomasyon sayesinde havayolunun uzman satış ekipleri, daha hassas kargo projelerine ve müşteri ilişkilerini geliştirmeye odaklanabilecek.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/cargoone-powers-ai-sales-automation-for-saudia-cargo-1359604",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Saudia Cargo Satış Operasyonları İçin Yapay Zeka Altyapısını cargo.one ile Güçlendiriyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "Bölgesel en güçlü rakiplerden biri olan Saudia Cargo'nun cargo.one platformu üzerinden yapay zeka tabanlı anlık teklif sistemine geçmesi, özellikle Orta Doğu (F) ve Avrupa (F) transit pazarlarında dijital teklif hızında <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> aleyhine bir dezavantaj yaratabilir. Hızlı ve hatasız fiyatlandırma (RFQ), kargo acentelerinin rezervasyon tercihlerini doğrudan etkilediği için spot piyasa üzerinde marj baskısı oluşturabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Western Europe",
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "Suudi Arabistan merkezli rakibin dijital teklif süreçlerini yapay zeka ile otomatikleştirmesi, Orta Doğu-Avrupa transit hatlarındaki rekabet hızını etkilemektedir.",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "TIACA Raporu Sürdürülebilirliğin Artık Ticari Önceliklerle Yönlendirildiğini Gösteriyor",
+    "summary": "Uluslararası Hava Kargo Birliği (TIACA), 2026 yılı kargo sürdürülebilirlik raporunu yayımlayarak sektördeki yeşil dönüşümün dış baskılardan ziyade şirket içi önceliklerle şekillendiğini açıkladı. Araştırmaya katılan hava kargo yöneticilerinin <strong>%95</strong>'i sürdürülebilirliğin CEO düzeyinde desteklendiğini, <strong>%72</strong>'si ise resmi bir sürdürülebilirlik stratejisine sahip olduğunu doğruladı. Katılımcıların <strong>%40</strong>'ı Sürdürülebilir Havacılık Yakıtı (SAF) kullanımına yönelik yatırımlar yaparken, <strong>%68</strong>'i iklim uyumunu iş stratejilerine dahil etmeye başladı. Rapora göre, sürdürülebilirliği şirket kültürüne en çok entegre eden bölge <strong>%87</strong> ile Asya olurken, onu <strong>%80</strong> ile Orta Doğu ve Afrika, <strong>%73</strong> ile Avrupa izledi.",
+    "category": "Diğer",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/tiaca-report-finds-sustainability-now-driven-by-business-priorities-1359597",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "Payload Asia Ödülleri 13. Kez Geri Dönüyor",
+    "summary": "Hava kargo ve lojistik sektörünün prestijli etkinliklerinden Payload Asia Ödülleri, bu yıl <strong>13.</strong> kez adaylık başvurularını açtı. Sektördeki yenilikçi çalışmaları, hizmet kalitesini ve operasyonel mükemmelliği ödüllendiren programa bu yıl \"Yılın Sigorta Sağlayıcısı\" ve \"İlaç ve Sağlık Lojistiğinde Mükemmellik\" olmak üzere <strong>iki</strong> yeni kategori eklendi. Sektör temsilcileri adaylık başvurularını <strong>14 Ağustos 2026</strong> tarihine kadar tamamlayabilecek. Kazananların ödüllendirileceği tören ise <strong>2026</strong> yılının dördüncü çeyreğinde gerçekleştirilecek.",
+    "category": "Diğer",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/payload-asia-awards-returns-13th-edition/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "Cathay Cargo’nun Mayıs Ayı Hava Kargo Hacmi %11 Arttı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span>'in kargo kolu Cathay Cargo, <strong>Mayıs 2026</strong>'da bir önceki yılın aynı dönemine göre <strong>%11</strong> artışla <strong>150.000 tondan fazla</strong> kargo taşıdı. Yılın ilk <strong>beş</strong> ayında toplam taşınan yük miktarı yıllık <strong>%8</strong> artarken, kapasiteyi gösteren arz edilen ton-kilometre (AFTK) değeri <strong>%6</strong> yükseldi. Büyümeyi, Çin Ana Karası ve Güneydoğu Asya arasındaki güçlü yarı iletken ve sunucu sevkiyatları ile Avrupa'dan yapılan ilaç ihracatı destekledi. Şirket, kargo filosunu büyütmek amacıyla Airbus A350F sipariş sayısını <strong>sekize</strong> çıkardığını ve filosuna kiralık bir A330P2F kargo uçağı ekleyeceğini duyurdu.",
+    "category": "Diğer",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/cathay-cargo-tonnage-climbs-may-trade-demand-remains-strong/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Cathay Cargo'nun Hava Kargo Hacmi Mayıs Ayında %11 Arttı",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span>'in kargo kapasitesini artırması ve Asya-Avrupa yollarındaki e-ticaret/yarı iletken taşıma talebini domine etmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun Uzak Doğu transit koridorlarındaki pazar payı üzerinde doğrudan bir baskı oluşturmaktadır. Çin ana karası çıkışlı bu hacimler, IST aktarmalı rotalarda doluluk oranlarını ve birim gelirleri (yield) aşağı yönlü etkileyebilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "ISTANBUL",
+        "Western Europe"
+      ]
+    },
+    "etkiAlaniGerekce": "Cathay Cargo'nun Uzak Doğu çıkışlı kargo hacimlerindeki artış ve filo genişletme adımları, Turkish Cargo'nun IST aktarmalı Asya-Avrupa transit koridorundaki pazar payını etkilemektedir.",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "TIACA İkinci Air Cargo Forum Etkinliğini Kasım 2027’de Abu Dabi’de Düzenleyecek",
+    "summary": "Uluslararası Hava Kargo Birliği (TIACA), Air Cargo Forum (ACF) etkinliğinin ikinci Orta Doğu edisyonunun <strong>9-11 Kasım 2027</strong> tarihlerinde Birleşik Arap Emirlikleri'nin Abu Dabi kentinde düzenleneceğini duyurdu. Yas Adası'ndaki Etihad Arena'da gerçekleştirilecek olan etkinlik, Abu Dabi'nin kalıcı bir küresel hava kargo merkezi olma rolünü pekiştirecek. Forum, küresel erişilebilirliği artırmak amacıyla her yıl Miami ile Abu Dabi arasında dönüşümlü olarak düzenleniyor. MGME ortaklığı ve <span style='color:#C8102E;font-weight:700;'>Etihad</span> Cargo'nun ev sahipliğinde organize edilecek forum, küresel tedarik zinciri yöneticilerini ve politika yapıcıları bir araya getirecek.",
+    "category": "Diğer",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/tiaca-second-air-cargo-forum-abu-dhabi-november-2027/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Abu Dabi'de düzenlenecek olan uluslararası havacılık forumu, Orta Doğu bölgesindeki kargo sektörü ilişkilerini ve tanıtım faaliyetlerini etkilemektedir.",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "Locatory.com Uçak Parçaları Pazaryeri ile Sevkiyat Hizmetlerini Birleştiriyor",
+    "summary": "Havacılık pazaryeri Locatory.com, uçak yedek parçası tedariki ile satın alma sonrası lojistik süreçlerini entegre eden yeni bir sevkiyat modülü sundu. Kullanıcılar, parça satın aldıktan sonra başka bir sisteme geçmeden doğrudan platform içinden DHL ve FedEx gibi büyük taşıyıcıların anlık kargo fiyat tekliflerini karşılaştırıp satın alabilecek. Bu entegre sistemin havacılık yedek parça lojistiğinde ortalama <strong>%40</strong>, bazı yüksek değerli sevkiyatlarda ise <strong>%80</strong>'e varan maliyet avantajı sağladığı açıklandı. Platform ayrıca uçak yerde (AOG), sonraki ilk uçuş (NFO), kurye (OBC) ve tehlikeli maddelerin (DG) taşınması gibi karmaşık havacılık lojistik süreçlerini de destekliyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/locatory-com-integrates-aircraft-parts-marketplace-shipping-services/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "Aero NextGen Havacılık Yazılımı Sektörüne Yönelik Çözüm Bulucu Merkezini Ücretsiz Erişime Açtı",
+    "summary": "Havacılık teknolojileri platformu Aero NextGen, operatörleri onaylanmış havacılık yazılımları ve danışmanlık firmalarıyla eşleştiren \"Solution Finder Hub\" platformunu tüm sektöre ücretsiz olarak açtığını duyurdu. Havacılık endüstrisinde yanlış yazılım seçimi riskini azaltmayı amaçlayan sistem, bugüne kadar <strong>175</strong>'ten fazla şirket tarafından kullanıldı. Platform bünyesinde uçuş operasyonları, MRO yazılımları ve ERP entegrasyonu dahil <strong>60</strong>'tan fazla kategoride <strong>60</strong>'ın üzerinde onaylanmış teknoloji sağlayıcısı yer alıyor. Kullanıcılar, kısa bir anket doldurarak kendi operasyon modellerine en uygun yazılım çözümlerini listeleyip karşılaştırabiliyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/06/aero-nextgen-opens-its-solution-finder-hub-to-the-entire-aviation-industry-free-after-matching-175-companies-to-the-right-software/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-26"
+  },
+  {
+    "title": "Saudia Cargo Satış Operasyonları İçin Yapay Zeka Altyapısını cargo.one ile Güçlendiriyor",
+    "summary": "Saudia Cargo, ticari operasyonlarında teklif süreçlerini hızlandırmak amacıyla cargo.one ile iş birliği yaparak hava kargo sektörünün ilk yapay zeka çalışanlarını (AI workers) devreye alacağını duyurdu. Yapay zeka sistemi, e-posta üzerinden gelen fiyat taleplerini (RFQ) saniyeler içinde analiz ederek <strong>7/24</strong> otomatik ve optimize edilmiş teklifler üretecek. Sistem sayesinde teklif geri dönüş sürelerinde <strong>%68</strong> oranında bir azalma sağlanırken, ilk üretilen tekliflerin doğruluk oranının <strong>%89</strong> seviyesinde gerçekleşmesi bekleniyor. Bu dijital dönüşüm adımı, Saudia Cargo'nun satış ekiplerinin daha katma değerli ve özel kargo projelerine odaklanmasına imkan tanıyacak.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/saudia-cargo-selects-cargo-one-to-deliver-the-industrys-first-ai-worker-for-sales-operations/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Saudia Cargo Satış Operasyonları İçin Yapay Zeka Altyapısını cargo.one ile Güçlendiriyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "Bölgesel en güçlü rakiplerden biri olan Saudia Cargo'nun cargo.one platformu üzerinden yapay zeka tabanlı anlık teklif sistemine geçmesi, özellikle Orta Doğu (F) ve Avrupa (F) transit pazarlarında dijital teklif hızında <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> aleyhine bir dejavantaj yaratabilir. Hızlı ve hatasız fiyatlandırma (RFQ), kargo acentelerinin rezervasyon tercihlerini doğrudan etkilediği için spot piyasa üzerinde marj baskısı oluşturabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Western Europe",
+        "ISTANBUL"
+      ]
+    },
+    "etkiAlaniGerekce": "Suudi Arabistan merkezli rakibin dijital teklif süreçlerini yapay zeka ile otomatikleştirmesi, Orta Doğu-Avrupa transit hatlarındaki rekabet hızını etkilemektedir.",
+    "date": "2026-06-26"
+  },
+  {
     "title": "Cathay Cargo'nun Hava Kargo Hacmi Mayıs Ayında Tekrar Yükseldi",
     "summary": "<span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span>'in kargo birimi, <strong>Mayıs 2026</strong>'da yıllık <strong>%11</strong> artışla <strong>150.000 tondan fazla</strong> kargo taşıdı. Arz edilen ton-kilometre (AFTK) değeri <strong>%6</strong> artarken, yılın ilk <strong>beş</strong> ayındaki toplam hacim <strong>%8</strong> büyüme kaydetti. Çin Ana Karası ile Güneydoğu Asya arasındaki güçlü talep bu büyümeyi destekledi. Şirket ayrıca sipariş ettiği Airbus A350F kargo uçağı sayısını <strong>sekize</strong> çıkardığını ve Air Hong Kong tarafından işletilecek kiralık bir A330P2F kargo uçağı ekleyeceğini duyurdu.",
     "category": "Diğer",
@@ -163,6 +661,10 @@
       {
         "source": "stattimes",
         "link": "https://www.stattimes.com/air-cargo/awery-brings-oriental-sky-capacity-to-cargobooking-platform-1359591"
+      },
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/technology/2026/06/first-chinese-gssa-joins-awerys-cargobooking-platform/"
       }
     ]
   },
@@ -185,7 +687,17 @@
       ]
     },
     "etkiAlaniGerekce": "Asya ve Avrupa arasındaki sıcaklığa duyarlı ilaç sevkiyatları, Turkish Cargo'nun İstanbul aktarmalı en önemli transit akışlarından biridir.",
-    "date": "2026-06-24"
+    "date": "2026-06-24",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/sustainability/2026/06/geodis-tests-sustainable-paper-thermal-covers-for-pharma-shipments/"
+      },
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/geodis-tests-paper-thermal-covers-for-pharma-airfreight-1359612"
+      }
+    ]
   },
   {
     "title": "Gümrük Müşavirleri Brexit Döneminde İngiltere-AB Ticaretini Yönetilebilir Kıldı",
@@ -350,6 +862,10 @@
       {
         "source": "payloadasia",
         "link": "https://payloadasia.com/2026/06/air-logistics-group-unveils-new-branding-people-powered-excellence/"
+      },
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/editorial/2026/06/air-logistics-group-unveils-new-branding/"
       }
     ]
   },
@@ -425,7 +941,13 @@
       ]
     },
     "etkiAlaniGerekce": "Vietnam ve Çin çıkışlı kargo kapasitelerinin doğrudan ABD'ye yönlendirilmesi, küresel doğu-batı tedarik zincirini ve İstanbul üzerindeki transit kargo dengelerini doğrudan etkilemektedir.",
-    "date": "2026-06-25"
+    "date": "2026-06-25",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/charter-company/2026/06/ceva-supports-asia-pacific-us-air-cargo-demand-with-charters/"
+      }
+    ]
   },
   {
     "title": "Kalé Logistics, Avrupa Gümrük Uyum Ağını Genişletmek İçin Portel'i Satın Aldı",
@@ -481,7 +1003,13 @@
       ]
     },
     "etkiAlaniGerekce": "Emirates'in Asya genelindeki kargo uçuşlarını artırması, Dubai ve İstanbul hub'ları arasında doğu-batı transit kargo taşımacılığı rekabetini doğrudan etkilemektedir.",
-    "date": "2026-06-25"
+    "date": "2026-06-25",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/airlines/2026/06/emirates-skycargo-expands-freighter-network-across-east-and-southeast-asia/"
+      }
+    ]
   },
   {
     "title": "Cathay Cargo'nun Hava Kargo Hacmi Mayıs Ayında %11 Arttı",
@@ -502,7 +1030,13 @@
       ]
     },
     "etkiAlaniGerekce": "Çin ana karası ve Güneydoğu Asya çıkışlı teknoloji ve e-ticaret hacimlerinin Hong Kong üzerinden taşınması, Turkish Cargo'nun İstanbul aktarmalı transit koridorunu doğrudan etkilemektedir.",
-    "date": "2026-06-25"
+    "date": "2026-06-25",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/06/cathay-cargo-tonnage-climbs-may-trade-demand-remains-strong/"
+      }
+    ]
   },
   {
     "title": "Hellmann Japonya’daki Operasyonlarının 20. Yılını Kutluyor",
