@@ -1831,108 +1831,92 @@
     .rhome-card, .rhome-cta svg { transition: none; }
     .rhome-card:hover { transform: none; }
   }
-  .iata-bell-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+
+  .iata-bell-badge, .arz-bell-badge, .fin-bell-badge {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
     position: absolute;
-    bottom: 12px; right: 12px;
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    color: #7a64a8;
-    opacity: 0.18;
+    top: 0; right: 0;
+    width: 38px; height: 38px;
+    border-top-right-radius: var(--radius, 12px);
+    border-bottom-left-radius: 100%;
+    opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.25s;
+    transition: opacity 0.25s, visibility 0.25s, background-color 0.25s;
+    z-index: 5;
+    padding-top: 6px;
+    padding-right: 6px;
   }
-  .iata-bell-badge.has-notif {
+  .iata-bell-badge.has-notif, .arz-bell-badge.has-notif, .fin-bell-badge.has-notif {
     opacity: 1;
-    background: rgba(122,100,168,0.12);
+    visibility: visible;
     pointer-events: auto;
     cursor: pointer;
   }
-  .iata-bell-dot {
-    display: none;
-    position: absolute;
-    top: 4px; right: 4px;
-    width: 8px; height: 8px;
-    background: #ef4444;
-    border-radius: 50%;
-    border: 1.5px solid var(--bg-card, #fff);
-    animation: bell-pulse 2s ease-in-out infinite;
+
+  .iata-bell-badge {
+    color: #7a64a8;
+    background: rgba(122, 100, 168, 0.08);
+    border-left: 1.5px solid rgba(122, 100, 168, 0.22);
+    border-bottom: 1.5px solid rgba(122, 100, 168, 0.22);
   }
-  .iata-bell-badge.has-notif .iata-bell-dot { display: block; }
-  @keyframes bell-pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.3); opacity: 0.7; }
+  [data-theme="dark"] .iata-bell-badge {
+    background: rgba(122, 100, 168, 0.15);
+    border-left-color: rgba(122, 100, 168, 0.35);
+    border-bottom-color: rgba(122, 100, 168, 0.35);
   }
-  [data-theme="dark"] .iata-bell-badge.has-notif { background: rgba(122,100,168,0.18); }
-  [data-theme="dark"] .iata-bell-dot { border-color: var(--bg-card, #1a1a2e); }
 
   .arz-bell-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    bottom: 12px; right: 12px;
-    width: 26px; height: 26px;
-    border-radius: 50%;
     color: var(--accent);
-    opacity: 0.18;
-    pointer-events: none;
-    transition: opacity 0.25s;
+    background: rgba(29, 111, 232, 0.08);
+    border-left: 1.5px solid rgba(29, 111, 232, 0.22);
+    border-bottom: 1.5px solid rgba(29, 111, 232, 0.22);
   }
-  .arz-bell-badge.has-notif {
-    opacity: 1;
-    background: rgba(29, 111, 232, 0.12);
-    pointer-events: auto;
-    cursor: pointer;
+  [data-theme="dark"] .arz-bell-badge {
+    background: rgba(77, 142, 245, 0.15);
+    border-left-color: rgba(77, 142, 245, 0.35);
+    border-bottom-color: rgba(77, 142, 245, 0.35);
   }
-  .arz-bell-dot {
-    display: none;
-    position: absolute;
-    top: 4px; right: 4px;
-    width: 8px; height: 8px;
-    background: #ef4444;
-    border-radius: 50%;
-    border: 1.5px solid var(--bg-card, #fff);
-    animation: bell-pulse 2s ease-in-out infinite;
-  }
-  .arz-bell-badge.has-notif .arz-bell-dot { display: block; }
-  [data-theme="dark"] .arz-bell-badge.has-notif { background: rgba(77, 142, 245, 0.18); }
-  [data-theme="dark"] .arz-bell-dot { border-color: var(--bg-card, #1a1a2e); }
 
   .fin-bell-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    bottom: 12px; right: 12px;
-    width: 26px; height: 26px;
-    border-radius: 50%;
     color: #059669;
-    opacity: 0.18;
-    pointer-events: none;
-    transition: opacity 0.25s;
+    background: rgba(5, 150, 105, 0.08);
+    border-left: 1.5px solid rgba(5, 150, 105, 0.22);
+    border-bottom: 1.5px solid rgba(5, 150, 105, 0.22);
   }
-  .fin-bell-badge.has-notif {
-    opacity: 1;
-    background: rgba(5, 150, 105, 0.12);
-    pointer-events: auto;
-    cursor: pointer;
+  [data-theme="dark"] .fin-bell-badge {
+    background: rgba(16, 185, 129, 0.15);
+    border-left-color: rgba(16, 185, 129, 0.35);
+    border-bottom-color: rgba(16, 185, 129, 0.35);
   }
-  .fin-bell-dot {
+
+  .iata-bell-dot, .arz-bell-dot, .fin-bell-dot {
     display: none;
     position: absolute;
-    top: 4px; right: 4px;
-    width: 8px; height: 8px;
+    top: 5px; right: 5px;
+    width: 6px; height: 6px;
     background: #ef4444;
     border-radius: 50%;
-    border: 1.5px solid var(--bg-card, #fff);
+    border: 1px solid var(--bg-card, #fff);
     animation: bell-pulse 2s ease-in-out infinite;
   }
-  .fin-bell-badge.has-notif .fin-bell-dot { display: block; }
-  [data-theme="dark"] .fin-bell-badge.has-notif { background: rgba(16, 185, 129, 0.18); }
-  [data-theme="dark"] .fin-bell-dot { border-color: var(--bg-card, #1a1a2e); }
+  .iata-bell-badge.has-notif .iata-bell-dot,
+  .arz-bell-badge.has-notif .arz-bell-dot,
+  .fin-bell-badge.has-notif .fin-bell-dot {
+    display: block;
+  }
+  [data-theme="dark"] .iata-bell-dot,
+  [data-theme="dark"] .arz-bell-dot,
+  [data-theme="dark"] .fin-bell-dot {
+    border-color: var(--bg-card, #1a1a2e);
+  }
+
+  @keyframes bell-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.8; }
+  }
 
   /* Reports Main Flex Layout */
   .reports-main-layout {

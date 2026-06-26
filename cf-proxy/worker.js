@@ -413,6 +413,36 @@ const CARGO_STATIC_ROUTES = {
     { dep: "UAII", arr: "ZGSZ" }, // Shymkent -> Shenzhen
     { dep: "ZGSZ", arr: "LTFM" }, // Shenzhen -> Istanbul
     { dep: "LTFM", arr: "UAII" }  // Istanbul -> Shymkent
+  ],
+  "THY6455": [
+    { dep: "LTFM", arr: "EBBR" }, // Istanbul -> Brussels
+    { dep: "EBBR", arr: "LTFM" }  // Brussels -> Istanbul
+  ],
+  "THY6212": [
+    { dep: "VVTS", arr: "LTFM" }, // Ho Chi Minh -> Istanbul
+    { dep: "WSSS", arr: "LTFM" }, // Singapore -> Istanbul
+    { dep: "VVTS", arr: "WSSS" }, // Ho Chi Minh -> Singapore
+    { dep: "WSSS", arr: "VVTS" }, // Singapore -> Ho Chi Minh
+    { dep: "LTFM", arr: "VVTS" }, // Istanbul -> Ho Chi Minh
+    { dep: "LTFM", arr: "WSSS" }  // Istanbul -> Singapore
+  ],
+  "THY6509": [
+    { dep: "LTFM", arr: "LKPR" }, // Istanbul -> Prague
+    { dep: "LKPR", arr: "LTFM" }, // Prague -> Istanbul
+    { dep: "VIDP", arr: "LTFM" }, // Delhi -> Istanbul
+    { dep: "VABB", arr: "LTFM" }, // Mumbai -> Istanbul
+    { dep: "ZGGG", arr: "LTFM" }, // Guangzhou -> Istanbul
+    { dep: "OTHH", arr: "LTFM" }, // Doha -> Istanbul
+    { dep: "OMDB", arr: "LTFM" }, // Dubai -> Istanbul
+    { dep: "OIII", arr: "LTFM" }  // Tehran -> Istanbul
+  ],
+  "THY6577": [
+    { dep: "ZGGG", arr: "LTFM" }, // Guangzhou -> Istanbul
+    { dep: "LTFM", arr: "ZGGG" }  // Istanbul -> Guangzhou
+  ],
+  "THY6690": [
+    { dep: "LTFM", arr: "LEMD" }, // Istanbul -> Madrid
+    { dep: "LEMD", arr: "LTFM" }  // Madrid -> Istanbul
   ]
 };
 
