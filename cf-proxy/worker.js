@@ -1419,6 +1419,36 @@ export default {
         return { dep: toAirport(route.origin), arr: toAirport(route.destination) };
       }
 
+      async function fetchRouteFromOpenSky(callsign) {
+        const uppercaseCallsign = callsign.toUpperCase();
+        const res = await doFetch(`https://opensky-network.org/api/routes?callsign=${uppercaseCallsign}`, {}, false, 86400);
+        if (res.status !== 200) return null;
+        let data;
+        try { data = JSON.parse(res.body); } catch { return null; }
+        if (!data || !Array.isArray(data.route) || data.route.length < 2) return null;
+        const depIcao = data.route[0].toUpperCase();
+        const arrIcao = data.route[data.route.length - 1].toUpperCase();
+        
+        let depDb = AIRPORT_DB[depIcao] ? { ...AIRPORT_DB[depIcao] } : { icao: depIcao, iata: null, name: depIcao, city: "Bilinmiyor", lat: null, lon: null };
+        let arrDb = AIRPORT_DB[arrIcao] ? { ...AIRPORT_DB[arrIcao] } : { icao: arrIcao, iata: null, name: arrIcao, city: "Bilinmiyor", lat: null, lon: null };
+        
+        if (depDb.lat == null && env.AEROAPI_KEY) {
+          const coords = await fetchAirportCoordsFromAeroAPI(depIcao);
+          if (coords) {
+            depDb.lat = coords.lat;
+            depDb.lon = coords.lon;
+          }
+        }
+        if (arrDb.lat == null && env.AEROAPI_KEY) {
+          const coords = await fetchAirportCoordsFromAeroAPI(arrIcao);
+          if (coords) {
+            arrDb.lat = coords.lat;
+            arrDb.lon = coords.lon;
+          }
+        }
+        return { dep: depDb, arr: arrDb };
+      }
+
       const parseAeroAPIAirport = (a) => {
         if (!a) return null;
         const icao = a.code_icao || a.code || null;
@@ -1539,7 +1569,18 @@ export default {
                   }
                 }
                 
-                // Fallback to static routes list if adsbdb is invalid or missing
+                // Fallback to OpenSky Route API if adsbdb failed or rate-limited
+                if (!valid) {
+                  const osRoute = await fetchRouteFromOpenSky(f.callsign);
+                  if (osRoute && osRoute.dep && osRoute.arr) {
+                    if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
+                      apiRoute = osRoute;
+                      valid = true;
+                    }
+                  }
+                }
+                
+                // Fallback to static routes list if adsbdb/opensky are invalid or missing
                 if (!valid) {
                   const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
                   if (candidates) {
