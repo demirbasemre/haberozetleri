@@ -1841,28 +1841,34 @@
     width: 38px; height: 38px;
     border-top-right-radius: var(--radius, 12px);
     border-bottom-left-radius: 100%;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.25s, visibility 0.25s, background-color 0.25s;
+    opacity: 0.18;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: opacity 0.25s, background-color 0.25s, border-color 0.25s;
     z-index: 5;
     padding-top: 6px;
     padding-right: 6px;
+    background: transparent;
   }
   .iata-bell-badge.has-notif, .arz-bell-badge.has-notif, .fin-bell-badge.has-notif {
     opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    cursor: pointer;
   }
 
   .iata-bell-badge {
     color: #7a64a8;
+    border-left: 1.2px solid rgba(122, 100, 168, 0.15);
+    border-bottom: 1.2px solid rgba(122, 100, 168, 0.15);
+  }
+  .iata-bell-badge.has-notif {
     background: rgba(122, 100, 168, 0.08);
-    border-left: 1.5px solid rgba(122, 100, 168, 0.22);
-    border-bottom: 1.5px solid rgba(122, 100, 168, 0.22);
+    border-left-color: rgba(122, 100, 168, 0.22);
+    border-bottom-color: rgba(122, 100, 168, 0.22);
   }
   [data-theme="dark"] .iata-bell-badge {
+    border-left-color: rgba(122, 100, 168, 0.22);
+    border-bottom-color: rgba(122, 100, 168, 0.22);
+  }
+  [data-theme="dark"] .iata-bell-badge.has-notif {
     background: rgba(122, 100, 168, 0.15);
     border-left-color: rgba(122, 100, 168, 0.35);
     border-bottom-color: rgba(122, 100, 168, 0.35);
@@ -1870,11 +1876,19 @@
 
   .arz-bell-badge {
     color: var(--accent);
+    border-left: 1.2px solid rgba(29, 111, 232, 0.15);
+    border-bottom: 1.2px solid rgba(29, 111, 232, 0.15);
+  }
+  .arz-bell-badge.has-notif {
     background: rgba(29, 111, 232, 0.08);
-    border-left: 1.5px solid rgba(29, 111, 232, 0.22);
-    border-bottom: 1.5px solid rgba(29, 111, 232, 0.22);
+    border-left-color: rgba(29, 111, 232, 0.22);
+    border-bottom-color: rgba(29, 111, 232, 0.22);
   }
   [data-theme="dark"] .arz-bell-badge {
+    border-left-color: rgba(77, 142, 245, 0.22);
+    border-bottom-color: rgba(77, 142, 245, 0.22);
+  }
+  [data-theme="dark"] .arz-bell-badge.has-notif {
     background: rgba(77, 142, 245, 0.15);
     border-left-color: rgba(77, 142, 245, 0.35);
     border-bottom-color: rgba(77, 142, 245, 0.35);
@@ -1882,11 +1896,19 @@
 
   .fin-bell-badge {
     color: #059669;
+    border-left: 1.2px solid rgba(5, 150, 105, 0.15);
+    border-bottom: 1.2px solid rgba(5, 150, 105, 0.15);
+  }
+  .fin-bell-badge.has-notif {
     background: rgba(5, 150, 105, 0.08);
-    border-left: 1.5px solid rgba(5, 150, 105, 0.22);
-    border-bottom: 1.5px solid rgba(5, 150, 105, 0.22);
+    border-left-color: rgba(5, 150, 105, 0.22);
+    border-bottom-color: rgba(5, 150, 105, 0.22);
   }
   [data-theme="dark"] .fin-bell-badge {
+    border-left-color: rgba(16, 185, 129, 0.22);
+    border-bottom-color: rgba(16, 185, 129, 0.22);
+  }
+  [data-theme="dark"] .fin-bell-badge.has-notif {
     background: rgba(16, 185, 129, 0.15);
     border-left-color: rgba(16, 185, 129, 0.35);
     border-bottom-color: rgba(16, 185, 129, 0.35);
