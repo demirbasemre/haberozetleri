@@ -1723,7 +1723,7 @@ export default {
                   await saveLearnedRoute(f.callsign, apiRoute);
                 }
               } catch (_) {}
-              await new Promise(r => setTimeout(r, 1200));
+              await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
             }
           }
 
@@ -1739,7 +1739,7 @@ export default {
                 cacheUpdated = true;
               }
             } catch (_) {}
-            await new Promise(r => setTimeout(r, 1200));
+            await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
           }
         }
         
