@@ -1838,7 +1838,8 @@ export default {
       }
 
       try {
-        const cachedData = await getCachedFlights();
+        const isCron = urlObj.searchParams.get('cron') === '1';
+        const cachedData = isCron ? null : await getCachedFlights();
         let data;
         if (cachedData) {
           data = cachedData;
@@ -1934,4 +1935,15 @@ export default {
       });
     }
   },
+
+  async scheduled(event, env, ctx) {
+    const url = 'http://localhost/cargo-flights?cron=1';
+    const request = new Request(url);
+    ctx.waitUntil(
+      this.fetch(request, env, ctx)
+        .then(res => res.text())
+        .then(() => console.log("Cron cache refresh completed successfully"))
+        .catch(err => console.error("Cron cache refresh failed:", err))
+    );
+  }
 };
