@@ -496,6 +496,18 @@ const CARGO_STATIC_ROUTES = {
     { dep: "OERK", arr: "LTFM" }, // Riyadh -> Istanbul
     { dep: "OERK", arr: "VVNB" }, // Riyadh -> Hanoi
     { dep: "VVNB", arr: "OERK" }  // Hanoi -> Riyadh
+  ],
+  "THY6228": [
+    { dep: "LTFM", arr: "VVTS" }, // Istanbul -> Ho Chi Minh City (SGN)
+    { dep: "VVTS", arr: "LTFM" }, // Ho Chi Minh City -> Istanbul
+    { dep: "LTFM", arr: "VTBS" }, // Istanbul -> Bangkok (BKK)
+    { dep: "VTBS", arr: "LTFM" }, // Bangkok -> Istanbul
+    { dep: "VTBS", arr: "VVTS" }, // Bangkok -> Ho Chi Minh City
+    { dep: "VVTS", arr: "VTBS" }  // Ho Chi Minh City -> Bangkok
+  ],
+  "THY6111": [
+    { dep: "LTFM", arr: "VABB" }, // Istanbul -> Mumbai (BOM)
+    { dep: "VABB", arr: "LTFM" }  // Mumbai -> Istanbul
   ]
 };
 
