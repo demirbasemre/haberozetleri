@@ -2871,12 +2871,11 @@
             <span class="timer-secs">60s</span>
           </div>
           <div class="dash-card-header-row">
-            <div class="dash-card-label dash-card-label--wrap">Havadaki Kargo Uçağı Sayısı</div>
-            <span class="dash-card-test-badge">Test</span>
+            <div class="dash-card-label dash-card-label--wrap">Havadaki Kargo Uçağı Sayısı <span class="dash-card-test-badge">Test</span></div>
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">THY Kargo · şu anda uçuşta</div>
+          <div class="dash-card-sub">Turkish Cargo · şu anda uçuşta</div>
           <div class="dash-card-footer">
             <div class="dash-card-note">OpenSky Network · <a href="https://opensky-network.org" target="_blank" rel="noopener">opensky-network.org →</a></div>
           </div>
@@ -13094,10 +13093,14 @@ async function loadDashboard() {
 
       const count = data && typeof data.count === 'number' ? data.count : _cargoAllFlights.filter(f => f.type === 'cargo').length;
       _cargoFlights = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter);
-      setCard('dc-cargo', String(count), null, 'THY Kargo · şu anda uçuşta',
+      setCard('dc-cargo', String(count), null, 'Turkish Cargo · şu anda uçuşta',
         `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
-      const dateEl = document.getElementById('dc-cargo-date');
-      if (dateEl) dateEl.textContent = 'Canlı veri';
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      const dateStr = `${dd}.${mm}.${yyyy}`;
+      setDateBadge('dc-cargo-date', dateStr);
       if (document.getElementById('cargo-flights-modal')?.style.display === 'flex') {
         renderCargoFlightsModal(false);
       }
@@ -13299,10 +13302,7 @@ async function loadDashboard() {
         _cargoMap.setView([targetLat, targetLon], 6, { animate: true });
       }
 
-      // E.D. Değişiklik: Haritadaki popupları senkronize etmek için programlı popup açma (eğer açık değilse)
-      if (pm && pm.marker && !pm.marker.isPopupOpen()) {
-        pm.marker.openPopup();
-      }
+      // E.D. Değişiklik: Haritadaki popup balonunu kaldırdığımız için programlı açmaya gerek yok
     }
     document.querySelectorAll('.cargo-flight-item').forEach(el => {
       el.classList.toggle('selected', Number(el.dataset.idx) === idx);
@@ -13344,6 +13344,36 @@ async function loadDashboard() {
       panel.innerHTML = `<div style="color:var(--text-3); font-size:12px; padding:8px 2px;">Detayları görmek için bir uçuş seçin.</div>`;
       return;
     }
+    
+    let progress = 0;
+    let depTimeStr = '—';
+    let arrTimeStr = '—';
+    if (f.dep && f.dep.lat != null && f.arr && f.arr.lat != null) {
+      const dDep = getDistance(f.lat, f.lon, f.dep.lat, f.dep.lon);
+      const dArr = getDistance(f.lat, f.lon, f.arr.lat, f.arr.lon);
+      const totalDist = dDep + dArr;
+      if (totalDist > 0) {
+        progress = Math.max(0, Math.min(1, dDep / totalDist));
+      }
+      
+      const velocity = (f.velocity && f.velocity > 0) ? f.velocity : 220; // m/s
+      const secondsElapsed = (dDep * 1000) / velocity;
+      const secondsRemaining = (dArr * 1000) / velocity;
+      
+      const nowMs = Date.now();
+      const depTime = new Date(nowMs - secondsElapsed * 1000);
+      const arrTime = new Date(nowMs + secondsRemaining * 1000);
+      
+      const formatTime = (date) => {
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+        return `${hh}:${mm}`;
+      };
+      
+      depTimeStr = formatTime(depTime);
+      arrTimeStr = formatTime(arrTime);
+    }
+
     const vrate = f.verticalRate || 0;
     const vIcon = vrate > 0.5 ? _cargoDetailIcons.vrateUp : vrate < -0.5 ? _cargoDetailIcons.vrateDown : _cargoDetailIcons.vrateLevel;
     const vColor = vrate > 0.5 ? '#10B981' : vrate < -0.5 ? '#EF4444' : 'var(--text-3)';
@@ -13367,6 +13397,7 @@ async function loadDashboard() {
     }
 
     // 2. Bilet Tasarımı
+    const pct = progress * 100;
     const ticketHtml = `
       <div class="ticket-container">
         <div class="ticket-cutout-left"></div>
@@ -13375,16 +13406,19 @@ async function loadDashboard() {
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px; padding:0 4px;">
           <div style="text-align:left; min-width:70px;">
             <div class="ticket-airport-code">${f.dep?.iata || f.dep?.icao || '???'}</div>
+            <div style="font-size:12px; font-weight:600; color:var(--text-1); margin-top:2px;">${depTimeStr}</div>
             <div class="ticket-airport-city" title="${f.dep?.city || f.dep?.name || ''}">${f.dep?.city || 'Bilinmiyor'}</div>
           </div>
           
           <div class="ticket-plane-path">
-            <div class="ticket-line"></div>
-            <svg class="ticket-plane-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
+            <div class="ticket-line-traveled" style="width: ${pct}%;"></div>
+            <div class="ticket-line-remaining" style="left: ${pct}%; width: ${100 - pct}%;"></div>
+            <svg class="ticket-plane-icon" style="left: ${pct}%;" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
           </div>
           
           <div style="text-align:right; min-width:70px;">
             <div class="ticket-airport-code">${f.arr?.iata || f.arr?.icao || '???'}</div>
+            <div style="font-size:12px; font-weight:600; color:var(--text-1); margin-top:2px;">${arrTimeStr}</div>
             <div class="ticket-airport-city" title="${f.arr?.city || f.arr?.name || ''}">${f.arr?.city || 'Bilinmiyor'}</div>
           </div>
         </div>
@@ -13536,14 +13570,11 @@ async function loadDashboard() {
         ? `${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}<br>`
         : `<span style="font-size:11px;color:#9CA3AF">Rota bilgisi mevcut değil</span><br>`;
       const markerColor = f.signalLost ? '#F59E0B' : '#C8102E';
-      const planeMarker = L.marker([f.lat, f.lon], { icon: cargoPlaneIcon(f.track, markerColor) })
-        .bindPopup(`<strong>${f.callsign}</strong><br>${routeInfo}${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°`, { autoPan: false });
+      const planeMarker = L.marker([f.lat, f.lon], { icon: cargoPlaneIcon(f.track, markerColor) });
       
-      // E.D. Değişiklik: Popup açıldığında seçimi senkronize et
-      planeMarker.on('popupopen', () => {
-        if (_cargoSelectedIdx !== idx) {
-          selectCargoFlight(idx, true);
-        }
+      // E.D. Değişiklik: Popup yerine doğrudan marker tıklamasıyla uçuşu seçip haritayı merkezliyoruz
+      planeMarker.on('click', () => {
+        selectCargoFlight(idx, true);
       });
       
       planeMarker.addTo(_cargoMap);
@@ -14149,7 +14180,7 @@ async function loadDashboard() {
       // Uçuşlar 7/24 devam eder, piyasa kapanışı yoktur
       return {
         isOpen: true,
-        tooltipMessage: 'Havadaki THY Kargo uçaklarının sayısı. Konumlar OpenSky Network ADS-B verisinden 60 saniyede bir otomatik güncellenir.'
+        tooltipMessage: 'Havadaki Turkish Cargo uçaklarının sayısı. Konumlar OpenSky Network ADS-B verisinden 60 saniyede bir otomatik güncellenir.'
       };
     }
 
@@ -22759,27 +22790,33 @@ window.resetIndicatorsConfig = function() {
       }
       .ticket-plane-path {
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         position: relative;
-        padding: 0 6px;
-        margin-top: -2px;
+        height: 24px;
+        margin: 0 10px;
       }
-      .ticket-line {
-        width: 100%;
-        border-top: 2px dashed var(--border-soft);
+      .ticket-line-traveled {
         position: absolute;
         top: 12px;
         left: 0;
+        height: 2px;
+        background-color: #C8102E;
+        z-index: 1;
+      }
+      .ticket-line-remaining {
+        position: absolute;
+        top: 12px;
+        height: 0;
+        border-top: 2px dashed var(--border-soft);
+        z-index: 1;
       }
       .ticket-plane-icon {
-        position: relative;
-        z-index: 1;
-        transform: rotate(90deg);
-        color: var(--accent);
-        margin-top: 5px;
-        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+        position: absolute;
+        top: 5px;
+        z-index: 2;
+        transform: translate(-50%, 0) rotate(90deg);
+        color: #C8102E;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+        transition: left 0.3s ease;
       }
       .ticket-divider {
         border-top: 1px dashed var(--border-soft);
