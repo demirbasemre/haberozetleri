@@ -367,6 +367,33 @@ const AIRPORT_DB = {
   "ZRH": { icao: "LSZH", iata: "ZRH", name: "Zurich Airport", city: "Zurich", lat: 47.465, lon: 8.549 },
 };
 
+const CARGO_FLEET_DETAILS = {
+  // Boeing 777F
+  "4bb14c": { registration: "TC-LJL", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb14d": { registration: "TC-LJM", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb14e": { registration: "TC-LJN", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb14f": { registration: "TC-LJO", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb150": { registration: "TC-LJP", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb152": { registration: "TC-LJR", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb153": { registration: "TC-LJS", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb154": { registration: "TC-LJT", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb155": { registration: "TC-LJU", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb156": { registration: "TC-LJV", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb159": { registration: "TC-LJY", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  "4bb15a": { registration: "TC-LJZ", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
+  // Airbus A330F
+  "4ba88f": { registration: "TC-JDO", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9fa": { registration: "TC-JOZ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba890": { registration: "TC-JDP", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba891": { registration: "TC-JDQ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba892": { registration: "TC-JDR", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba893": { registration: "TC-JDS", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9ef": { registration: "TC-JOU", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9f4": { registration: "TC-JOV", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9f6": { registration: "TC-JOW", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9f9": { registration: "TC-JOY", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" }
+};
+
 const CARGO_STATIC_ROUTES = {
   "THY6116": [
     { dep: "HLLM", arr: "HECA" }, // Tripoli (Mitiga) -> Cairo
@@ -447,6 +474,28 @@ const CARGO_STATIC_ROUTES = {
   "THY6148": [
     { dep: "LTFM", arr: "VGHS" }, // Istanbul -> Dhaka
     { dep: "VGHS", arr: "LTFM" }  // Dhaka -> Istanbul
+  ],
+  "THY6413": [
+    { dep: "LTFM", arr: "GOBD" }, // Istanbul -> Dakar
+    { dep: "GOBD", arr: "LTFM" }, // Dakar -> Istanbul
+    { dep: "LTFM", arr: "KJFK" }, // Istanbul -> New York
+    { dep: "KJFK", arr: "LTFM" }  // New York -> Istanbul
+  ],
+  "THY6663": [
+    { dep: "OPKC", arr: "LTFM" }, // Karachi -> Istanbul
+    { dep: "LTFM", arr: "OPKC" }, // Istanbul -> Karachi
+    { dep: "KORD", arr: "LTFM" }, // Chicago -> Istanbul
+    { dep: "LTFM", arr: "KORD" }  // Istanbul -> Chicago
+  ],
+  "THY6691": [
+    { dep: "OMDW", arr: "LTFM" }, // Dubai -> Istanbul
+    { dep: "LTFM", arr: "OMDW" }  // Istanbul -> Dubai
+  ],
+  "THY6202": [
+    { dep: "LTFM", arr: "OERK" }, // Istanbul -> Riyadh
+    { dep: "OERK", arr: "LTFM" }, // Riyadh -> Istanbul
+    { dep: "OERK", arr: "VVNB" }, // Riyadh -> Hanoi
+    { dep: "VVNB", arr: "OERK" }  // Hanoi -> Riyadh
   ]
 };
 
@@ -1352,17 +1401,33 @@ export default {
       function isRouteConsistent(f, dep, arr) {
         if (!dep || !arr || dep.lat == null || arr.lat == null) return false;
         if (!isValidRouteForCallsign(f.callsign, dep.icao, arr.icao)) return false;
+        
         const dDep = getDistance(f.lat, f.lon, dep.lat, dep.lon);
         const dArr = getDistance(f.lat, f.lon, arr.lat, arr.lon);
         const dTotal = getDistance(dep.lat, dep.lon, arr.lat, arr.lon);
-        const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400);
+        
+        // 1. Tighter distance limit (Allows up to 15% or +300km of routing detours/airspace closures)
+        const maxAllowed = Math.max(dTotal * 1.15, dTotal + 300);
         if (dDep + dArr > maxAllowed) return false;
+        
+        // 2. Heading to destination check
         if (f.track != null) {
           const bearing = getBearing(f.lat, f.lon, arr.lat, arr.lon);
           let diff = Math.abs(f.track - bearing);
           if (diff > 180) diff = 360 - diff;
           if (diff > 90) return false;
         }
+        
+        // 3. Sector check: Plane must approach from the origin side of the destination.
+        // We disable this when close to the destination (dArr <= 50) to allow landing patterns.
+        if (dArr > 50) {
+          const bearingToPlane = getBearing(arr.lat, arr.lon, f.lat, f.lon);
+          const bearingToOrigin = getBearing(arr.lat, arr.lon, dep.lat, dep.lon);
+          let diffSector = Math.abs(bearingToPlane - bearingToOrigin);
+          if (diffSector > 180) diffSector = 360 - diffSector;
+          if (diffSector > 60) return false;
+        }
+        
         return true;
       }
 
@@ -1413,6 +1478,13 @@ export default {
 
       async function fetchAircraftDetailsFromAdsbdb(icao24) {
         const uppercaseIcao = icao24.toUpperCase();
+        const lowercaseIcao = icao24.toLowerCase();
+        
+        // Fleet details check first to bypass external API for our own cargo planes
+        if (CARGO_FLEET_DETAILS[lowercaseIcao]) {
+          return CARGO_FLEET_DETAILS[lowercaseIcao];
+        }
+        
         const kvKey = `aircraft_details_${uppercaseIcao}`;
         if (env.FBX_ROUTES_KV) {
           try {
@@ -1604,6 +1676,59 @@ export default {
         return { dep, arr };
       };
 
+      async function fetchRouteFromFlightRadar24(callsign) {
+        const uppercaseCallsign = callsign.toUpperCase();
+        try {
+          // Flightradar24'ün web geçmişi sayfasına istek atalım
+          const res = await doFetch(`https://www.flightradar24.com/data/flights/${uppercaseCallsign.toLowerCase()}`, {}, false, 86400);
+          if (res.status !== 200) {
+            if (res.status === 403) {
+              console.error(`[FlightRadar24] CAPTCHA / Cloudflare Challenge (403) detected on home IP for ${uppercaseCallsign}!`);
+            } else {
+              console.warn(`[FlightRadar24] HTTP status ${res.status} returned for ${uppercaseCallsign}`);
+            }
+            return null;
+          }
+          const html = res.body;
+          if (!html) return null;
+          
+          if (html.includes("cf-challenge") || html.includes("hCaptcha") || html.includes("g-recaptcha") || html.includes("Attention Required! | Cloudflare")) {
+            console.error(`[FlightRadar24] CAPTCHA / Cloudflare Challenge detected on home IP for ${uppercaseCallsign}!`);
+            return null;
+          }
+          
+          // HTML içindeki havalimanı ICAO kodlarını barındıran linkleri arayalım (/data/airports/ltfm vb.)
+          const links = [...html.matchAll(/href="\/data\/airports\/([a-z]{4})"/g)].map(m => m[1].toUpperCase());
+          if (links.length >= 2) {
+            const depIcao = links[0];
+            const arrIcao = links[1];
+            const depDb = AIRPORT_DB[depIcao];
+            const arrDb = AIRPORT_DB[arrIcao];
+            if (depDb && arrDb) {
+              console.log(`[FlightRadar24] Successfully resolved route for ${uppercaseCallsign}: ${depIcao} -> ${arrIcao}`);
+              return { dep: depDb, arr: arrDb };
+            }
+          }
+          
+          const linksIata = [...html.matchAll(/href="\/data\/airports\/([a-z]{3})"/g)].map(m => m[1].toUpperCase());
+          if (linksIata.length >= 2) {
+            const depIata = linksIata[0];
+            const arrIata = linksIata[1];
+            const depDb = AIRPORT_DB[depIata];
+            const arrDb = AIRPORT_DB[arrIata];
+            if (depDb && arrDb) {
+              console.log(`[FlightRadar24] Successfully resolved route for ${uppercaseCallsign}: ${depIata} -> ${arrIata}`);
+              return { dep: depDb, arr: arrDb };
+            }
+          }
+          
+          console.warn(`[FlightRadar24] HTML parsing failed. Route links not found in history for ${uppercaseCallsign}.`);
+        } catch (err) {
+          console.error(`[FlightRadar24] Request error for ${uppercaseCallsign}: ${err.message || err}`);
+        }
+        return null;
+      }
+
       async function fetchRouteFromFlightAware(callsign) {
         const uppercaseCallsign = callsign.toUpperCase();
         try {
@@ -1702,7 +1827,18 @@ export default {
                 let apiRoute = null;
                 let valid = false;
 
-                // 1. Try FlightAware HTML scraping via Funnel (highly accurate for active flights, uses home IP)
+                // 1. Try FlightRadar24 HTML scraping via Funnel (will log CAPTCHA warning if blocked by Cloudflare)
+                if (!valid) {
+                  const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
+                  if (frRoute && frRoute.dep && frRoute.arr) {
+                    if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
+                      apiRoute = frRoute;
+                      valid = true;
+                    }
+                  }
+                }
+
+                // 2. Try FlightAware HTML scraping via Funnel (highly accurate for active flights, uses home IP)
                 if (!valid) {
                   const faRoute = await fetchRouteFromFlightAware(f.callsign);
                   if (faRoute && faRoute.dep && faRoute.arr) {
