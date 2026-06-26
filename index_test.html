@@ -2875,7 +2875,7 @@
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Turkish Cargo · şu anda uçuşta</div>
+          <div class="dash-card-sub">Turkish Cargo</div>
           <div class="dash-card-footer">
             <div class="dash-card-note">OpenSky Network · <a href="https://opensky-network.org" target="_blank" rel="noopener">opensky-network.org →</a></div>
           </div>
@@ -13093,13 +13093,15 @@ async function loadDashboard() {
 
       const count = data && typeof data.count === 'number' ? data.count : _cargoAllFlights.filter(f => f.type === 'cargo').length;
       _cargoFlights = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter);
-      setCard('dc-cargo', String(count), null, 'Turkish Cargo · şu anda uçuşta',
+      setCard('dc-cargo', String(count), null, 'Turkish Cargo',
         `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
       const today = new Date();
       const dd = String(today.getDate()).padStart(2, '0');
       const mm = String(today.getMonth() + 1).padStart(2, '0');
       const yyyy = today.getFullYear();
-      const dateStr = `${dd}.${mm}.${yyyy}`;
+      const hh = String(today.getHours()).padStart(2, '0');
+      const min = String(today.getMinutes()).padStart(2, '0');
+      const dateStr = `${dd}.${mm}.${yyyy} ${hh}:${min}`;
       setDateBadge('dc-cargo-date', dateStr);
       if (document.getElementById('cargo-flights-modal')?.style.display === 'flex') {
         renderCargoFlightsModal(false);
