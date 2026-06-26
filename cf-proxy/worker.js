@@ -742,8 +742,12 @@ export default {
               status: funnelResp.status,
               contentType: funnelResp.headers.get('content-type') || 'text/html'
             };
+          } else {
+            console.warn(`[Funnel] Proxy request failed with status: ${funnelResp.status} for URL: ${url}`);
           }
-        } catch (_) { /* funnel erişilemez veya hata verdi — doğrudan dene */ }
+        } catch (err) {
+          console.error(`[Funnel] Connection error: ${err.message || err} for URL: ${url}`);
+        }
       }
 
       // Fallback: CF datacenter'ından doğrudan çek
@@ -1604,12 +1608,24 @@ export default {
         const uppercaseCallsign = callsign.toUpperCase();
         try {
           const res = await doFetch(`https://www.flightaware.com/live/flight/${uppercaseCallsign}`, {}, false, 86400);
-          if (res.status !== 200) return null;
+          if (res.status !== 200) {
+            console.warn(`[FlightAware] HTTP status ${res.status} returned for ${uppercaseCallsign}`);
+            return null;
+          }
           const html = res.body;
           if (!html) return null;
           
           const match = html.match(/var\s+trackpollBootstrap\s*=\s*(\{.+?\});<\/script>/);
-          if (!match) return null;
+          if (!match) {
+            if (html.includes("cf-challenge") || html.includes("hCaptcha") || html.includes("g-recaptcha") || html.includes("Attention Required! | Cloudflare")) {
+              console.error(`[FlightAware] CAPTCHA / Cloudflare Challenge detected on home IP for ${uppercaseCallsign}!`);
+            } else if (html.includes("Access Denied") || html.includes("Access to this page has been denied") || html.includes("403 Forbidden")) {
+              console.error(`[FlightAware] Access Denied / Blocked on home IP for ${uppercaseCallsign}!`);
+            } else {
+              console.warn(`[FlightAware] HTML parsing failed. trackpollBootstrap not found for ${uppercaseCallsign}.`);
+            }
+            return null;
+          }
           
           const data = JSON.parse(match[1]);
           const flights = data.flights;
