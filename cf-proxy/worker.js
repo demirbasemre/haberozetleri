@@ -1327,8 +1327,27 @@ export default {
         return (brng + 360) % 360;
       }
 
+      function isValidRouteForCallsign(callsign, depIcao, arrIcao) {
+        if (!callsign) return true;
+        const uCallsign = callsign.toUpperCase();
+        const uDep = depIcao ? depIcao.toUpperCase() : '';
+        const uArr = arrIcao ? arrIcao.toUpperCase() : '';
+
+        if (uCallsign === 'THY6058' && uDep !== 'GOBD') {
+          return false;
+        }
+        if (uCallsign === 'THY6261' && uDep === 'VIDP' && uArr === 'VVNB') {
+          return false;
+        }
+        if (uCallsign === 'THY6259' && uDep !== 'VHHH') {
+          return false;
+        }
+        return true;
+      }
+
       function isRouteConsistent(f, dep, arr) {
         if (!dep || !arr || dep.lat == null || arr.lat == null) return false;
+        if (!isValidRouteForCallsign(f.callsign, dep.icao, arr.icao)) return false;
         const dDep = getDistance(f.lat, f.lon, dep.lat, dep.lon);
         const dArr = getDistance(f.lat, f.lon, arr.lat, arr.lon);
         const dTotal = getDistance(dep.lat, dep.lon, arr.lat, arr.lon);
@@ -1356,9 +1375,16 @@ export default {
               await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(routes));
             }
           }
+          if (uppercaseCallsign === 'THY6259') {
+            const filtered = routes.filter(r => r.dep && r.dep.icao === 'VHHH');
+            if (filtered.length !== routes.length) {
+              routes = filtered;
+              await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(routes));
+            }
+          }
           for (const r of routes) {
             if (r.dep && r.dep.lat != null && r.arr && r.arr.lat != null) {
-              if (isRouteConsistent({ lat, lon, track }, r.dep, r.arr)) {
+              if (isRouteConsistent({ callsign: uppercaseCallsign, lat, lon, track }, r.dep, r.arr)) {
                 return cleanRouteCities(r); // Rota eşleşti ve şehirler temizlendi!
               }
             }
@@ -1657,31 +1683,37 @@ export default {
             } else {
               // KV'de yoksa API'den çek ve teyit et
               try {
-                let apiRoute = await fetchRouteFromAdsbdb(f.callsign);
+                let apiRoute = null;
                 let valid = false;
-                if (apiRoute && apiRoute.dep && apiRoute.arr) {
-                  if (isRouteConsistent(f, apiRoute.dep, apiRoute.arr)) {
-                    valid = true;
-                  }
-                }
-                
-                // Fallback to OpenSky Route API if adsbdb failed or rate-limited
-                if (!valid) {
-                  const osRoute = await fetchRouteFromOpenSky(f.callsign);
-                  if (osRoute && osRoute.dep && osRoute.arr) {
-                    if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
-                      apiRoute = osRoute;
-                      valid = true;
-                    }
-                  }
-                }
-                
-                // Fallback to FlightAware HTML scraping via Funnel if adsbdb/opensky failed
+
+                // 1. Try FlightAware HTML scraping via Funnel (highly accurate for active flights, uses home IP)
                 if (!valid) {
                   const faRoute = await fetchRouteFromFlightAware(f.callsign);
                   if (faRoute && faRoute.dep && faRoute.arr) {
                     if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
                       apiRoute = faRoute;
+                      valid = true;
+                    }
+                  }
+                }
+                
+                // 2. Fallback to Adsbdb API
+                if (!valid) {
+                  const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
+                  if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
+                    if (isRouteConsistent(f, adsbRoute.dep, adsbRoute.arr)) {
+                      apiRoute = adsbRoute;
+                      valid = true;
+                    }
+                  }
+                }
+                
+                // 3. Fallback to OpenSky Route API
+                if (!valid) {
+                  const osRoute = await fetchRouteFromOpenSky(f.callsign);
+                  if (osRoute && osRoute.dep && osRoute.arr) {
+                    if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
+                      apiRoute = osRoute;
                       valid = true;
                     }
                   }
@@ -1763,13 +1795,8 @@ export default {
         for (const f of fresh.flights) {
           const prev = cachedFlights.find(p => p.callsign === f.callsign);
           if (prev) {
-            // E.D. Düzeltme: THY6058 için önbellekteki eski hatalı Columbus (KCMH) rotasını yok say
-            if (f.callsign.toUpperCase() === 'THY6058' && prev.dep && prev.dep.icao !== 'GOBD') {
-              prev.dep = null;
-              prev.arr = null;
-            }
-            // E.D. Düzeltme: THY6261 için önbellekteki eski hatalı Delhi -> Hanoi (VIDP -> VVNB) rotasını yok say
-            if (f.callsign.toUpperCase() === 'THY6261' && prev.dep && prev.dep.icao === 'VIDP' && prev.arr && prev.arr.icao === 'VVNB') {
+            // Callsign bazlı rota filtrelerini uygula ve hatalı eski önbellek verilerini temizle
+            if (prev.dep && !isValidRouteForCallsign(f.callsign, prev.dep.icao, prev.arr ? prev.arr.icao : null)) {
               prev.dep = null;
               prev.arr = null;
             }
