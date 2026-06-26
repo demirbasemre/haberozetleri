@@ -1868,6 +1868,72 @@
   [data-theme="dark"] .iata-bell-badge.has-notif { background: rgba(122,100,168,0.18); }
   [data-theme="dark"] .iata-bell-dot { border-color: var(--bg-card, #1a1a2e); }
 
+  .arz-bell-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 12px; right: 12px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    color: var(--accent);
+    opacity: 0.18;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .arz-bell-badge.has-notif {
+    opacity: 1;
+    background: rgba(29, 111, 232, 0.12);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .arz-bell-dot {
+    display: none;
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 8px; height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 1.5px solid var(--bg-card, #fff);
+    animation: bell-pulse 2s ease-in-out infinite;
+  }
+  .arz-bell-badge.has-notif .arz-bell-dot { display: block; }
+  [data-theme="dark"] .arz-bell-badge.has-notif { background: rgba(77, 142, 245, 0.18); }
+  [data-theme="dark"] .arz-bell-dot { border-color: var(--bg-card, #1a1a2e); }
+
+  .fin-bell-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 12px; right: 12px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    color: #059669;
+    opacity: 0.18;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .fin-bell-badge.has-notif {
+    opacity: 1;
+    background: rgba(5, 150, 105, 0.12);
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .fin-bell-dot {
+    display: none;
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 8px; height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+    border: 1.5px solid var(--bg-card, #fff);
+    animation: bell-pulse 2s ease-in-out infinite;
+  }
+  .fin-bell-badge.has-notif .fin-bell-dot { display: block; }
+  [data-theme="dark"] .fin-bell-badge.has-notif { background: rgba(16, 185, 129, 0.18); }
+  [data-theme="dark"] .fin-bell-dot { border-color: var(--bg-card, #1a1a2e); }
+
   /* Reports Main Flex Layout */
   .reports-main-layout {
     display: flex;
@@ -3537,6 +3603,10 @@
           </div>
           <p class="rhome-desc">Konteyner navlun, hava kargo fiyatları, yakıt maliyetleri, kapasite ve arz/talep dengesindeki gelişmeleri ele alan haftalık piyasa analizi bültenleri.</p>
           <span class="rhome-meta" id="rhome-arz-meta">Günlük bülten arşivi</span>
+          <span id="arz-bell-badge" class="arz-bell-badge" title="Yeni bülten yayınlandı">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="arz-bell-dot"></span>
+          </span>
         </button>
         <button class="rhome-card" onclick="switchReportType('iata_market_analizi')">
           <span class="rhome-visual" style="color:#7a64a8" aria-hidden="true">
@@ -3583,6 +3653,10 @@
           </div>
           <p class="rhome-desc">20 havayolunun gelir, kârlılık, çalışan ve yolcu metriklerinin yıllara göre karşılaştırılması.</p>
           <span class="rhome-meta">20 havayolu · 21 metrik · grafik + tablo</span>
+          <span id="fin-bell-badge" class="fin-bell-badge" title="Yeni finansal veriler yayınlandı">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="fin-bell-dot"></span>
+          </span>
         </button>
         <button class="rhome-card" onclick="switchReportType('filo')">
           <span class="rhome-visual" style="color:#D97706" aria-hidden="true">
@@ -18825,6 +18899,14 @@ function initControls(allArticles) {
       renderReport();
       // Giriş kartındaki canlı önizlemeyi doldur (son bülten tarihi + özet)
       updateReportsHomeCard();
+      // Bildirim sistemi: yeni raporları kaydet, sekme açıksa okundu say
+      initArzNotifStore(_reports);
+      if (_activeReportType === 'arz_talep_navlun' && !_reportsHomeActive) {
+        window.markAllArzNotifsRead();
+      } else {
+        updateNotifBell();
+      }
+
       // Derin link (#reports/finansal vb.) ile başka sekmeye geçilmiş olabilir;
       // asenkron yükleme bitince navlun görünümünü yalnız hâlâ o sekmedeyken aç.
       if (_activeReportType === 'arz_talep_navlun' && !_reportsHomeActive) viewEl.style.display = 'block';
@@ -19369,6 +19451,20 @@ function initControls(allArticles) {
     const leftSidebar = document.getElementById('reports-sidebar');
     if (rightSidebar) rightSidebar.style.display = (isFilo || isIata) ? 'none' : '';
     if (leftSidebar) leftSidebar.style.display = (isFilo || isIata) ? 'none' : '';
+
+    if (isRapor) {
+      if (typeof window.markAllArzNotifsRead === 'function') {
+        window.markAllArzNotifsRead();
+      }
+    } else if (isIata) {
+      if (typeof window.markAllIataNotifsRead === 'function') {
+        window.markAllIataNotifsRead();
+      }
+    } else if (isFinansal) {
+      if (typeof window.markAllFinNotifsRead === 'function') {
+        window.markAllFinNotifsRead();
+      }
+    }
   }
 
   // Pill tıklaması
@@ -19494,13 +19590,25 @@ function initControls(allArticles) {
   window._iataReportsList = [];
   let _iataChartInstance = null;
 
-  // ── IATA Bildirim Sistemi ────────────────────────────────────────────────
+  // ── Raporlar Bildirim Sistemi (Local Storage Tabanlı) ────────────────────
   const IATA_NOTIF_KEY = 'iata_notifs';
+  const ARZ_NOTIF_KEY = 'arz_notifs';
+  const FIN_NOTIF_KEY = 'fin_notifs';
 
-  function getNotifStore() {
+  function getIataNotifStore() {
     try { return JSON.parse(localStorage.getItem(IATA_NOTIF_KEY) || '{}'); } catch(e) { return {}; }
   }
-  function saveNotifStore(s) { localStorage.setItem(IATA_NOTIF_KEY, JSON.stringify(s)); }
+  function saveIataNotifStore(s) { localStorage.setItem(IATA_NOTIF_KEY, JSON.stringify(s)); }
+
+  function getArzNotifStore() {
+    try { return JSON.parse(localStorage.getItem(ARZ_NOTIF_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveArzNotifStore(s) { localStorage.setItem(ARZ_NOTIF_KEY, JSON.stringify(s)); }
+
+  function getFinNotifStore() {
+    try { return JSON.parse(localStorage.getItem(FIN_NOTIF_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveFinNotifStore(s) { localStorage.setItem(FIN_NOTIF_KEY, JSON.stringify(s)); }
 
   function formatNotifDate(ts) {
     const d = new Date(ts);
@@ -19508,8 +19616,8 @@ function initControls(allArticles) {
     return `${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()} · ${p(d.getHours())}:${p(d.getMinutes())}'de eklendi`;
   }
 
-  function initNotifStore(reports) {
-    const store = getNotifStore();
+  function initIataNotifStore(reports) {
+    const store = getIataNotifStore();
     const isFirst = Object.keys(store).length === 0;
     let changed = false;
     reports.forEach(r => {
@@ -19518,49 +19626,130 @@ function initControls(allArticles) {
         changed = true;
       }
     });
-    if (changed) saveNotifStore(store);
+    if (changed) saveIataNotifStore(store);
+  }
+
+  function initArzNotifStore(reports) {
+    const store = getArzNotifStore();
+    const isFirst = Object.keys(store).length === 0;
+    let changed = false;
+    reports.forEach(r => {
+      if (!r.date) return;
+      const key = r.date;
+      if (!store[key]) {
+        const displayDate = new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+        store[key] = {
+          detectedAt: Date.now(),
+          read: isFirst,
+          displayDate: displayDate
+        };
+        changed = true;
+      }
+    });
+    if (changed) saveArzNotifStore(store);
+  }
+
+  function initFinNotifStore(reports) {
+    const store = getFinNotifStore();
+    const isFirst = Object.keys(store).length === 0;
+    let changed = false;
+    reports.forEach(r => {
+      const key = r.key;
+      if (!store[key]) {
+        store[key] = {
+          detectedAt: Date.now(),
+          read: isFirst,
+          name: r.name,
+          year: r.year,
+          airline: r.airline
+        };
+        changed = true;
+      }
+    });
+    if (changed) saveFinNotifStore(store);
   }
 
   function updateNotifBell() {
-    const store = getNotifStore();
-    const entries = Object.entries(store).sort((a, b) => b[1].detectedAt - a[1].detectedAt);
-    const unread = entries.filter(([, v]) => !v.read).length;
+    const iataStore = getIataNotifStore();
+    const arzStore = getArzNotifStore();
+    const finStore = getFinNotifStore();
+
+    const iataEntries = Object.entries(iataStore).map(([date, info]) => ({
+      key: date,
+      type: 'iata',
+      date: date,
+      detectedAt: info.detectedAt,
+      read: info.read,
+      title: `${date} raporu yayınlandı`,
+      tag: 'IATA Market Analizi'
+    }));
+
+    const arzEntries = Object.entries(arzStore).map(([date, info]) => ({
+      key: date,
+      type: 'arz',
+      date: date,
+      detectedAt: info.detectedAt,
+      read: info.read,
+      title: `${info.displayDate || 'Yeni'} bülteni yayınlandı`,
+      tag: 'Arz & Talep Analizi'
+    }));
+
+    const finEntries = Object.entries(finStore).map(([key, info]) => ({
+      key: key,
+      type: 'fin',
+      detectedAt: info.detectedAt,
+      read: info.read,
+      title: `${info.name} ${info.year} verileri eklendi`,
+      tag: 'Finansal Tablolar'
+    }));
+
+    const allEntries = [...iataEntries, ...arzEntries, ...finEntries].sort((a, b) => b.detectedAt - a.detectedAt);
+    const unreadCount = allEntries.filter(e => !e.read).length;
 
     const dot = document.getElementById('hdr-bell-dot');
-    if (dot) dot.style.display = unread > 0 ? 'block' : 'none';
+    if (dot) dot.style.display = unreadCount > 0 ? 'block' : 'none';
 
     const clearBtn = document.getElementById('hdr-bell-clear-btn');
-    if (clearBtn) clearBtn.style.display = entries.length > 0 ? 'block' : 'none';
+    if (clearBtn) clearBtn.style.display = allEntries.length > 0 ? 'block' : 'none';
 
     const emptyEl = document.getElementById('hdr-bell-empty');
     const itemsEl = document.getElementById('hdr-bell-items');
 
-    if (entries.length === 0) {
+    if (allEntries.length === 0) {
       if (emptyEl) emptyEl.style.display = 'flex';
       if (itemsEl) itemsEl.innerHTML = '';
     } else {
       if (emptyEl) emptyEl.style.display = 'none';
       if (itemsEl) {
-        itemsEl.innerHTML = entries.map(([date, info]) => `
-          <div class="hdr-notif-item" onclick="openIataNotif('${date}')">
-            <span class="hdr-notif-dot${info.read ? ' read' : ''}"></span>
+        itemsEl.innerHTML = allEntries.map(e => `
+          <div class="hdr-notif-item" onclick="${e.type === 'iata' ? 'openIataNotif' : (e.type === 'arz' ? 'openArzNotif' : 'openFinNotif')}('${e.key}')">
+            <span class="hdr-notif-dot${e.read ? ' read' : ''}"></span>
             <div class="hdr-notif-body">
-              <div class="hdr-notif-tag">IATA Market Analizi</div>
-              <div class="hdr-notif-title">${date} raporu yayınlandı</div>
-              <div class="hdr-notif-date">${formatNotifDate(info.detectedAt)}</div>
+              <div class="hdr-notif-tag">${e.tag}</div>
+              <div class="hdr-notif-title">${e.title}</div>
+              <div class="hdr-notif-date">${formatNotifDate(e.detectedAt)}</div>
             </div>
           </div>
         `).join('');
       }
     }
 
-    const cardBell = document.getElementById('iata-bell-badge');
-    if (cardBell) cardBell.classList.toggle('has-notif', unread > 0);
+    const cardIataBell = document.getElementById('iata-bell-badge');
+    const iataUnread = iataEntries.filter(e => !e.read).length;
+    if (cardIataBell) cardIataBell.classList.toggle('has-notif', iataUnread > 0);
+
+    const cardArzBell = document.getElementById('arz-bell-badge');
+    const arzUnread = arzEntries.filter(e => !e.read).length;
+    if (cardArzBell) cardArzBell.classList.toggle('has-notif', arzUnread > 0);
+
+    const cardFinBell = document.getElementById('fin-bell-badge');
+    const finUnread = finEntries.filter(e => !e.read).length;
+    if (cardFinBell) cardFinBell.classList.toggle('has-notif', finUnread > 0);
   }
 
   window.openIataNotif = function(date) {
-    const store = getNotifStore();
-    if (store[date]) { store[date].read = true; saveNotifStore(store); }
+    const store = getIataNotifStore();
+    if (store[date]) { store[date].read = true; saveIataNotifStore(store); }
     updateNotifBell();
     document.getElementById('hdr-bell-panel')?.classList.remove('open');
     document.getElementById('hdr-bell')?.setAttribute('aria-expanded', 'false');
@@ -19568,12 +19757,157 @@ function initControls(allArticles) {
     setTimeout(() => { if (typeof switchReportType === 'function') switchReportType('iata_market_analizi'); }, 80);
   };
 
-  window.markAllNotifsRead = function() {
-    const store = getNotifStore();
+  window.openArzNotif = function(date) {
+    const store = getArzNotifStore();
+    if (store[date]) { store[date].read = true; saveArzNotifStore(store); }
+    updateNotifBell();
+    document.getElementById('hdr-bell-panel')?.classList.remove('open');
+    document.getElementById('hdr-bell')?.setAttribute('aria-expanded', 'false');
+    window.location.hash = '#reports';
+    setTimeout(() => {
+      if (typeof switchReportType === 'function') {
+        switchReportType('arz_talep_navlun');
+        if (typeof _reports !== 'undefined') {
+          const idx = _reports.findIndex(r => r.date === date);
+          if (idx !== -1 && typeof selectReport === 'function') {
+            selectReport(idx);
+          }
+        }
+      }
+    }, 80);
+  };
+
+  window.openFinNotif = function(key) {
+    const store = getFinNotifStore();
+    if (store[key]) { store[key].read = true; saveFinNotifStore(store); }
+    updateNotifBell();
+    document.getElementById('hdr-bell-panel')?.classList.remove('open');
+    document.getElementById('hdr-bell')?.setAttribute('aria-expanded', 'false');
+    window.location.hash = '#reports';
+    
+    const parts = key.split('_');
+    const airline = parts[0];
+    
+    setTimeout(() => {
+      if (typeof switchReportType === 'function') {
+        switchReportType('finansal');
+        if (typeof _finHidden !== 'undefined') {
+          _finHidden.delete(airline);
+          if (typeof renderFinChart === 'function') renderFinChart();
+          if (typeof renderFinTable === 'function') renderFinTable();
+          if (typeof buildFinToggles === 'function') buildFinToggles();
+          
+          const el = document.getElementById('finansal-report-container');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }, 80);
+  };
+
+  window.markAllIataNotifsRead = function() {
+    const store = getIataNotifStore();
     Object.keys(store).forEach(k => store[k].read = true);
-    saveNotifStore(store);
+    saveIataNotifStore(store);
     updateNotifBell();
   };
+
+  window.markAllArzNotifsRead = function() {
+    const store = getArzNotifStore();
+    Object.keys(store).forEach(k => store[k].read = true);
+    saveArzNotifStore(store);
+    updateNotifBell();
+  };
+
+  window.markAllFinNotifsRead = function() {
+    const store = getFinNotifStore();
+    Object.keys(store).forEach(k => store[k].read = true);
+    saveFinNotifStore(store);
+    updateNotifBell();
+  };
+
+  window.markAllNotifsRead = function() {
+    const iataStore = getIataNotifStore();
+    Object.keys(iataStore).forEach(k => iataStore[k].read = true);
+    saveIataNotifStore(iataStore);
+
+    const arzStore = getArzNotifStore();
+    Object.keys(arzStore).forEach(k => arzStore[k].read = true);
+    saveArzNotifStore(arzStore);
+
+    const finStore = getFinNotifStore();
+    Object.keys(finStore).forEach(k => finStore[k].read = true);
+    saveFinNotifStore(finStore);
+
+    updateNotifBell();
+  };
+
+  // Background Check for new reports on page load
+  async function checkNewReportsBackground() {
+    try {
+      // 1. Fetch Arz & Talep reports in the background
+      const arzPromise = fetch(RAPORLAR_URL + '?type=arz_talep_navlun')
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data && data.reports) {
+            const seenDates = new Set();
+            const reports = data.reports.filter(r => {
+              if (!r.date) return true;
+              const dateStr = new Date(r.date).toDateString();
+              if (seenDates.has(dateStr)) return false;
+              seenDates.add(dateStr);
+              return true;
+            });
+            initArzNotifStore(reports);
+          }
+        }).catch(err => console.warn('Background check Arz reports error:', err));
+
+      // 2. Fetch IATA reports in the background
+      const iataStaticPromise = fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
+      const iataLatestPromise = fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null);
+
+      const iataPromise = Promise.all([iataStaticPromise, iataLatestPromise]).then(([staticReports, latest]) => {
+        let mergedReports = [...staticReports];
+        if (latest && latest.demand) {
+          const exists = staticReports.some(r => r.date === latest.date);
+          if (!exists) {
+            mergedReports.unshift({
+              date: latest.date,
+              demand: latest.demand,
+              capacity: latest.capacity,
+              loadFactor: latest.loadFactor,
+              spotRate: latest.spotRate,
+              link: latest.pdfLink,
+              summary: latest.summary
+            });
+          }
+        }
+        initIataNotifStore(mergedReports);
+      }).catch(err => console.warn('Background check IATA reports error:', err));
+
+      // 3. Scan local financials data if available
+      if (typeof FIN_DATA !== 'undefined' && FIN_DATA) {
+        const finReports = [];
+        Object.entries(FIN_DATA).forEach(([airline, data]) => {
+          if (data.financial && data.financial.total_revenue_musd) {
+            Object.keys(data.financial.total_revenue_musd).forEach(year => {
+              finReports.push({
+                key: `${airline}_${year}`,
+                airline: airline,
+                name: data.name,
+                year: year
+              });
+            });
+          }
+        });
+        initFinNotifStore(finReports);
+      }
+
+      await Promise.all([arzPromise, iataPromise]);
+      updateNotifBell();
+    } catch (e) {
+      console.warn('Background reports check failed:', e);
+    }
+  }
   // ────────────────────────────────────────────────────────────────────────
 
   async function initIataReportsTab() {
@@ -19627,9 +19961,8 @@ function initControls(allArticles) {
       _iataReportsList = mergedReports;
 
       // Bildirim sistemi: yeni raporları kaydet, IATA sekmesi açıksa okundu say
-      initNotifStore(mergedReports);
-      window.markAllNotifsRead();
-      updateNotifBell();
+      initIataNotifStore(mergedReports);
+      window.markAllIataNotifsRead();
 
       // Update home card meta
       const homeMetaEl = document.getElementById('rhome-iata-meta');
@@ -20490,6 +20823,7 @@ function initControls(allArticles) {
   window.renderIataTrendChart = renderIataTrendChart;
   window.updateIataTrendChartData = updateIataTrendChartData;
   window.switchIataYear = switchIataYear;
+  window.checkNewReportsBackground = checkNewReportsBackground;
 
   // ── IATA Modal: Period Filter + Multi-Metric Chart ──────────────────────
   window._iataAllData = [];
@@ -20934,6 +21268,9 @@ window.initFinansalTab = function() {
   if (!FIN_DATA) {
     setTimeout(initFinansalTab, 200);
     return;
+  }
+  if (typeof window.markAllFinNotifsRead === 'function') {
+    window.markAllFinNotifsRead();
   }
   if (_finBuilt) { renderFinChart(); return; }
   _finBuilt = true;
@@ -21832,7 +22169,16 @@ async function loadAppData() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadAppData().catch(e => console.warn('Data load error:', e));
+  loadAppData().then(() => {
+    if (typeof checkNewReportsBackground === 'function') {
+      checkNewReportsBackground();
+    }
+  }).catch(e => {
+    console.warn('Data load error:', e);
+    if (typeof checkNewReportsBackground === 'function') {
+      checkNewReportsBackground();
+    }
+  });
 
   // Custom date inputs event binding
   ['wci', 'bafi', 'iata', 'fbx', 'thy', 'forex', 'brent', 'jetfuel'].forEach(prefix => {
