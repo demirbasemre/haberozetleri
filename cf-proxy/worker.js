@@ -1163,7 +1163,7 @@ export default {
       async function setCachedFlights(publicData) {
         if (env.FBX_ROUTES_KV) {
           try {
-            await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(publicData), { expirationTtl: 120 });
+            await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(publicData), { expirationTtl: 86400 });
           } catch (_) {}
         }
         try {
