@@ -1143,6 +1143,40 @@ export default {
         } catch (_) {}
       }
 
+      const TURKISH_CARGO_HEX = new Set([
+        // Boeing 777F
+        '4bb14c', '4bb14d', '4bb14e', '4bb14f', '4bb150', '4bb152', '4bb153', '4bb154', '4bb155', '4bb156', '4bb159', '4bb15a',
+        // Airbus A330F
+        '4ba88f', '4ba890', '4ba891', '4ba892', '4ba893', '4ba9ef', '4ba9f4', '4ba9f6', '4ba9f9', '4ba9fa',
+        // Wet-leased freighters (ACT, ULS, etc. regularly flying under THY callsigns)
+        '4ba875', '4ba879', '4ba87b', '4ba87d', '4bae23', '4baa96'
+      ]);
+
+      function determineFlightType(icao24, flightNum, details) {
+        const hex = icao24.toLowerCase();
+        
+        // 1. If it's a known dedicated or wet-leased freighter hex code, it's cargo.
+        if (TURKISH_CARGO_HEX.has(hex)) {
+          return 'cargo';
+        }
+        
+        // 2. If it has aircraft details, we can check if it's explicitly a freighter/cargo aircraft
+        if (details) {
+          const type = (details.icaoType || details.type || '').toUpperCase();
+          if (type.endsWith('F') && type !== 'B38M' && type !== 'B39M') {
+            return 'cargo';
+          }
+          const desc = (details.type || '').toLowerCase();
+          if (desc.includes('freighter') || desc.includes('cargo')) {
+            return 'cargo';
+          }
+        }
+        
+        // 3. Fallback to Turkish Cargo flight number block range (6000 - 6499)
+        const isCargoRange = (flightNum >= 6000 && flightNum <= 6499);
+        return isCargoRange ? 'cargo' : 'pax';
+      }
+
       async function computeBaseCargoFlights() {
         const token = await getOpenSkyToken(env, doFetch);
         const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
@@ -1167,7 +1201,7 @@ export default {
             altitude: baro_altitude, geoAltitude: geo_altitude, velocity, track: true_track,
             verticalRate: vertical_rate, squawk: squawk || null, originCountry: origin_country || null,
             lastContact: last_contact,
-            type: flightNum >= 6000 ? 'cargo' : 'pax',
+            type: determineFlightType(icao24, flightNum, null),
           });
         }
 
@@ -1516,6 +1550,9 @@ export default {
               const acDetails = await fetchAircraftDetailsFromAdsbdb(f.icao24);
               if (acDetails) {
                 f.aircraftDetails = acDetails;
+                const flightNumMatch = f.callsign.match(/^THY(\d+)/);
+                const flightNum = flightNumMatch ? parseInt(flightNumMatch[1], 10) : 0;
+                f.type = determineFlightType(f.icao24, flightNum, acDetails);
                 cacheUpdated = true;
               }
             } catch (_) {}
@@ -1600,7 +1637,16 @@ export default {
               }
             } catch (_) {}
           }
+          
+          // Re-evaluate type now that details may have been populated from cache/KV
+          const flightNumMatch = f.callsign.match(/^THY(\d+)/);
+          const flightNum = flightNumMatch ? parseInt(flightNumMatch[1], 10) : 0;
+          f.type = determineFlightType(f.icao24, flightNum, f.aircraftDetails);
         }
+
+        // Re-calculate counts in case types were corrected
+        fresh.count = fresh.flights.filter(f => f.type === 'cargo').length;
+        fresh.paxCount = fresh.flights.filter(f => f.type === 'pax').length;
 
         const { token: _t, authHeaders: _a, ...publicData } = fresh;
         await setCachedFlights(publicData);
