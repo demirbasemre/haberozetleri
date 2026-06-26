@@ -443,6 +443,10 @@ const CARGO_STATIC_ROUTES = {
   "THY6690": [
     { dep: "LTFM", arr: "LEMD" }, // Istanbul -> Madrid
     { dep: "LEMD", arr: "LTFM" }  // Madrid -> Istanbul
+  ],
+  "THY6148": [
+    { dep: "LTFM", arr: "VGHS" }, // Istanbul -> Dhaka
+    { dep: "VGHS", arr: "LTFM" }  // Dhaka -> Istanbul
   ]
 };
 
@@ -473,9 +477,12 @@ function parseIATAFuelMonitor(html) {
 
   let price = null, change = 0, direction = 'flat';
 
+  // Strip HTML tags and normalize whitespace to avoid issues with inline tags breaking matches
+  const cleanText = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+
   // Primary: "fell/rose X.X% compared to the week before to $X.XX/bbl"
   const primaryRe = /global average jet fuel price last week\s+(fell|dropped|declined|decreased|rose|increased|surged|remained\s+unchanged|was\s+unchanged)\s+(?:by\s+)?(\d+\.?\d*)?%?\s*compared to the week before to\s+\$(\d+\.?\d+)\/bbl/i;
-  let match = html.match(primaryRe);
+  let match = cleanText.match(primaryRe);
   if (match) {
     const dir = match[1].toLowerCase();
     const changeVal = match[2] ? parseFloat(match[2]) : 0;
@@ -489,13 +496,13 @@ function parseIATAFuelMonitor(html) {
 
   // Fallback: any $X.XX/bbl value
   if (price === null) {
-    const bblMatch = html.match(/\$(\d+\.?\d+)\/bbl/i);
+    const bblMatch = cleanText.match(/\$(\d+\.?\d+)\/bbl/i);
     if (bblMatch) price = parseFloat((parseFloat(bblMatch[1]) * BBL_TO_MT).toFixed(1));
   }
 
   // Fallback: cts/gal value
   if (price === null) {
-    const ctsMatch = html.match(/(\d+\.?\d+)\s*(?:cts|cents?)\/gal/i);
+    const ctsMatch = cleanText.match(/(\d+\.?\d+)\s*(?:cts|cents?)\/gal/i);
     if (ctsMatch) price = parseFloat((parseFloat(ctsMatch[1]) * PLATTS_CVT).toFixed(1));
   }
 
@@ -512,7 +519,7 @@ function parseIATAFuelMonitor(html) {
     /(?:as\s+of|dated?)\s+([\d]+\s+[A-Za-z]+\s+\d{4})/i,
   ];
   for (const p of datePatterns) {
-    const dm = html.match(p);
+    const dm = cleanText.match(p);
     if (dm) {
       dateISO = parseISODate(dm[1]);
       if (dateISO) break;
@@ -1103,6 +1110,29 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
+
+        // Prevent date advancing when the scraped data hasn't changed (IATA website not updated yet)
+        if (env.FBX_ROUTES_KV) {
+          try {
+            const cacheKey = 'last_jetfuel_data';
+            let cachedData = await env.FBX_ROUTES_KV.get(cacheKey, { type: 'json' });
+            if (!cachedData) {
+              // Seed with the last known static report data (June 19)
+              cachedData = { price: 941.2, change: -14.2, date: '2026-06-19' };
+              await env.FBX_ROUTES_KV.put(cacheKey, JSON.stringify(cachedData));
+            }
+            if (parsed.price === cachedData.price && parsed.change === cachedData.change) {
+              parsed.date = cachedData.date;
+            } else {
+              // New data detected! Update the date to the parsed date and save
+              cachedData = { price: parsed.price, change: parsed.change, date: parsed.date };
+              await env.FBX_ROUTES_KV.put(cacheKey, JSON.stringify(cachedData));
+            }
+          } catch (e) {
+            // Fail silently
+          }
+        }
+
         return new Response(JSON.stringify(parsed), {
           status: 200,
           headers: {
@@ -1544,6 +1574,72 @@ export default {
         return { dep, arr };
       };
 
+      async function fetchRouteFromFlightAware(callsign) {
+        const uppercaseCallsign = callsign.toUpperCase();
+        try {
+          const res = await doFetch(`https://www.flightaware.com/live/flight/${uppercaseCallsign}`, {}, false, 86400);
+          if (res.status !== 200) return null;
+          const html = res.body;
+          if (!html) return null;
+          
+          const match = html.match(/var\s+trackpollBootstrap\s*=\s*(\{.+?\});<\/script>/);
+          if (!match) return null;
+          
+          const data = JSON.parse(match[1]);
+          const flights = data.flights;
+          if (!flights) return null;
+          const flightIds = Object.keys(flights);
+          if (flightIds.length === 0) return null;
+          
+          for (const fid of flightIds) {
+            const fobj = flights[fid];
+            const actFlights = fobj?.activityLog?.flights;
+            if (actFlights && actFlights.length > 0) {
+              const f = actFlights[0];
+              const orig = f.origin;
+              const dest = f.destination;
+              if (orig && dest && (orig.icao || orig.iata) && (dest.icao || dest.iata)) {
+                const depLat = orig.coord ? orig.coord[1] : null;
+                const depLon = orig.coord ? orig.coord[0] : null;
+                const arrLat = dest.coord ? dest.coord[1] : null;
+                const arrLon = dest.coord ? dest.coord[0] : null;
+                
+                let depCity = orig.friendlyLocation || 'Bilinmiyor';
+                if (depCity.includes(',')) depCity = depCity.split(',')[0].trim();
+                let arrCity = dest.friendlyLocation || 'Bilinmiyor';
+                if (arrCity.includes(',')) arrCity = arrCity.split(',')[0].trim();
+                
+                const depIcao = orig.icao ? orig.icao.toUpperCase() : null;
+                const arrIcao = dest.icao ? dest.icao.toUpperCase() : null;
+                
+                const depDb = (depIcao && AIRPORT_DB[depIcao]) || {};
+                const arrDb = (arrIcao && AIRPORT_DB[arrIcao]) || {};
+                
+                return {
+                  dep: {
+                    icao: depIcao || depDb.icao || null,
+                    iata: orig.iata ? orig.iata.toUpperCase() : depDb.iata || null,
+                    name: orig.friendlyName || depDb.name || null,
+                    city: depCity || depDb.city || 'Bilinmiyor',
+                    lat: depLat || depDb.lat || null,
+                    lon: depLon || depDb.lon || null
+                  },
+                  arr: {
+                    icao: arrIcao || arrDb.icao || null,
+                    iata: dest.iata ? dest.iata.toUpperCase() : arrDb.iata || null,
+                    name: dest.friendlyName || arrDb.name || null,
+                    city: arrCity || arrDb.city || 'Bilinmiyor',
+                    lat: arrLat || arrDb.lat || null,
+                    lon: arrLon || arrDb.lon || null
+                  }
+                };
+              }
+            }
+          }
+        } catch (_) {}
+        return null;
+      }
+
       async function enrichInBackground(data, cachedFlights) {
         const { flights } = data;
         const cargoFlights = flights.filter(f => f.type === 'cargo');
@@ -1580,7 +1676,18 @@ export default {
                   }
                 }
                 
-                // Fallback to static routes list if adsbdb/opensky are invalid or missing
+                // Fallback to FlightAware HTML scraping via Funnel if adsbdb/opensky failed
+                if (!valid) {
+                  const faRoute = await fetchRouteFromFlightAware(f.callsign);
+                  if (faRoute && faRoute.dep && faRoute.arr) {
+                    if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
+                      apiRoute = faRoute;
+                      valid = true;
+                    }
+                  }
+                }
+                
+                // Fallback to static routes list if adsbdb/opensky/flightaware are invalid or missing
                 if (!valid) {
                   const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
                   if (candidates) {
