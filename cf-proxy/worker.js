@@ -1593,6 +1593,63 @@ export default {
         return { dep: depDb, arr: arrDb };
       }
 
+      // ADS-B Exchange re-API — callsign bazlı uçuş bilgisi
+      // Belgelenmemiş ama kararlı olan globe.adsbexchange.com/re-api endpoint'ini kullanır.
+      // Cloudflare koruması yoktur, JSON döner ve anlık konum + squawk içerir.
+      async function fetchRouteFromADSBX(callsign) {
+        const uppercaseCallsign = callsign.toUpperCase();
+        try {
+          // İlk endpoint: callsign ile uçuşu bul, ICAO24 kodunu al
+          const searchRes = await doFetch(
+            `https://globe.adsbexchange.com/re-api/?find=${encodeURIComponent(uppercaseCallsign)}`,
+            { headers: { 'Referer': 'https://globe.adsbexchange.com/', 'Accept': 'application/json' } },
+            false, 300
+          );
+          if (searchRes.status !== 200) {
+            console.warn(`[ADSBX] Search failed (${searchRes.status}) for ${uppercaseCallsign}`);
+            return null;
+          }
+          let searchData;
+          try { searchData = JSON.parse(searchRes.body); } catch { return null; }
+
+          // ac: array of matching aircraft
+          const acList = searchData?.ac || searchData?.aircraft || [];
+          const ac = acList.find(a => (a.flight || '').trim().toUpperCase() === uppercaseCallsign) || acList[0];
+          if (!ac) {
+            console.warn(`[ADSBX] No aircraft found for callsign ${uppercaseCallsign}`);
+            return null;
+          }
+
+          // from/to alanları bazı kayıtlarda mevcut
+          const fromRaw = ac.from || null;
+          const toRaw   = ac.to   || null;
+
+          // ADSBX bazen "LTFM Istanbul" formatında döner — ICAO kodunu çek
+          const extractIcao = (raw) => {
+            if (!raw) return null;
+            const m = raw.match(/^([A-Z]{4})/);
+            return m ? m[1] : null;
+          };
+
+          const depIcao = extractIcao(fromRaw);
+          const arrIcao = extractIcao(toRaw);
+
+          if (!depIcao || !arrIcao) {
+            console.warn(`[ADSBX] from/to fields missing or unparseable for ${uppercaseCallsign}: from=${fromRaw} to=${toRaw}`);
+            return null;
+          }
+
+          const depDb = AIRPORT_DB[depIcao] || { icao: depIcao, iata: null, name: depIcao, city: 'Bilinmiyor', lat: null, lon: null };
+          const arrDb = AIRPORT_DB[arrIcao] || { icao: arrIcao, iata: null, name: arrIcao, city: 'Bilinmiyor', lat: null, lon: null };
+
+          console.log(`[ADSBX] Resolved route for ${uppercaseCallsign}: ${depIcao} -> ${arrIcao}`);
+          return { dep: depDb, arr: arrDb };
+        } catch (err) {
+          console.error(`[ADSBX] Error for ${uppercaseCallsign}: ${err.message || err}`);
+          return null;
+        }
+      }
+
       const parseAeroAPIAirport = (a) => {
         if (!a) return null;
         const icao = a.code_icao || a.code || null;
@@ -1839,18 +1896,7 @@ export default {
                 let apiRoute = null;
                 let valid = false;
 
-                // 1. Try FlightRadar24 HTML scraping via Funnel (will log CAPTCHA warning if blocked by Cloudflare)
-                if (!valid) {
-                  const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
-                  if (frRoute && frRoute.dep && frRoute.arr) {
-                    if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
-                      apiRoute = frRoute;
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 2. Try FlightAware HTML scraping via Funnel (highly accurate for active flights, uses home IP)
+                // 1. FlightAware (Browserless üzerinden, genellikle başarılı)
                 if (!valid) {
                   const faRoute = await fetchRouteFromFlightAware(f.callsign);
                   if (faRoute && faRoute.dep && faRoute.arr) {
@@ -1860,8 +1906,19 @@ export default {
                     }
                   }
                 }
-                
-                // 2. Fallback to Adsbdb API
+
+                // 2. ADS-B Exchange (Cloudflare yok, ücretsiz, from/to alanları varsa hızlı)
+                if (!valid) {
+                  const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
+                  if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
+                    if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
+                      apiRoute = adsbxRoute;
+                      valid = true;
+                    }
+                  }
+                }
+
+                // 3. Adsbdb API
                 if (!valid) {
                   const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
                   if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
@@ -1872,7 +1929,7 @@ export default {
                   }
                 }
                 
-                // 3. Fallback to OpenSky Route API
+                // 4. OpenSky Route API
                 if (!valid) {
                   const osRoute = await fetchRouteFromOpenSky(f.callsign);
                   if (osRoute && osRoute.dep && osRoute.arr) {
@@ -1883,7 +1940,7 @@ export default {
                   }
                 }
                 
-                // Fallback to static routes list if adsbdb/opensky/flightaware are invalid or missing
+                // 5. Statik rota tablosu
                 if (!valid) {
                   const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
                   if (candidates) {
@@ -1901,11 +1958,23 @@ export default {
                   }
                 }
 
+                // 6. AeroAPI (ücretli, son çare)
                 if (!valid && env.AEROAPI_KEY) {
                   const aeroRoute = await fetchRouteFromAeroAPI(f.callsign);
                   if (aeroRoute && aeroRoute.dep && aeroRoute.arr) {
                     if (isRouteConsistent(f, aeroRoute.dep, aeroRoute.arr)) {
                       apiRoute = aeroRoute;
+                      valid = true;
+                    }
+                  }
+                }
+
+                // 7. FlightRadar24 (Cloudflare engelliyor, genellikle başarısız, en son denenir)
+                if (!valid) {
+                  const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
+                  if (frRoute && frRoute.dep && frRoute.arr) {
+                    if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
+                      apiRoute = frRoute;
                       valid = true;
                     }
                   }
