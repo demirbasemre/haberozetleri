@@ -24,6 +24,16 @@
     --cat-atama: #0891B2;
     --cat-diger: #6B7280;
     --calendar-icon-filter: invert(0.25);
+    /* Bildirim zili / çark menüsü popover'ları — sayfa temasını takip eder
+       (header çubuğu her zaman koyu kalır, bu tokenlar sadece açılan panellere ait) */
+    --pop-bg: var(--surface);
+    --pop-border: var(--border);
+    --pop-text: var(--text);
+    --pop-text-soft: var(--text-2);
+    --pop-text-muted: var(--text-3);
+    --pop-hover: rgba(17,24,39,0.05);
+    --pop-hover-strong: rgba(17,24,39,0.09);
+    --pop-divider: var(--border-soft);
   }
 
   [data-theme="dark"] {
@@ -43,6 +53,14 @@
     --shadow-md: 0 4px 16px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
     --shadow-hover: 0 12px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
     --calendar-icon-filter: invert(0.85);
+    --pop-bg: var(--navy-soft);
+    --pop-border: rgba(255,255,255,0.12);
+    --pop-text: rgba(255,255,255,0.88);
+    --pop-text-soft: rgba(255,255,255,0.82);
+    --pop-text-muted: rgba(255,255,255,0.45);
+    --pop-hover: rgba(255,255,255,0.08);
+    --pop-hover-strong: rgba(255,255,255,0.18);
+    --pop-divider: rgba(255,255,255,0.08);
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -5968,11 +5986,15 @@
   }
   .hdr-bell-panel {
     display: none; position: absolute; top: calc(100% + 10px); right: 0;
-    width: 244px; background: var(--navy-soft);
-    border: 1px solid rgba(255,255,255,0.12); border-radius: 14px;
-    padding: 10px; z-index: 200; box-shadow: 0 18px 44px rgba(0,0,0,0.45);
+    width: 244px; background: var(--pop-bg);
+    border: 1px solid var(--pop-border); border-radius: 14px;
+    padding: 10px; z-index: 200; box-shadow: var(--shadow-hover);
+    /* Bildirim sayısı arttıkça panel sayfanın altına taşmasın — başlık sabit,
+       liste kendi içinde kaydırılır. */
+    max-height: min(70vh, 420px);
+    flex-direction: column;
   }
-  .hdr-bell-panel.open { display: block; }
+  .hdr-bell-panel.open { display: flex; }
   .hdr-bell-dot {
     display: none; position: absolute; top: 6px; right: 6px;
     width: 8px; height: 8px; border-radius: 50%; background: #ef4444;
@@ -5986,25 +6008,31 @@
   .hdr-bell-head {
     display: flex; align-items: center; justify-content: space-between;
     font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
-    color: rgba(255,255,255,0.42); padding: 2px 4px 8px;
+    color: var(--pop-text-muted); padding: 2px 4px 8px;
+    flex-shrink: 0;
   }
   .hdr-bell-clear-btn {
     font-size: 10px; font-weight: 600; text-transform: none; letter-spacing: 0;
-    color: rgba(122,100,168,0.9); cursor: pointer; display: none;
+    color: #7a64a8; cursor: pointer; display: none;
     background: none; border: none; padding: 0; font-family: inherit;
   }
-  .hdr-bell-clear-btn:hover { color: #7a64a8; }
+  [data-theme="dark"] .hdr-bell-clear-btn { color: rgba(122,100,168,0.9); }
+  .hdr-bell-clear-btn:hover { color: #9b85cc; }
   .hdr-bell-empty {
     display: flex; align-items: center; gap: 9px;
-    font-size: 12.5px; color: rgba(255,255,255,0.72); padding: 8px 6px 6px;
+    font-size: 12.5px; color: var(--pop-text-soft); padding: 8px 6px 6px;
   }
   .hdr-bell-empty svg { flex-shrink: 0; opacity: 0.6; }
+  #hdr-bell-items {
+    overflow-y: auto;
+    min-height: 0;
+  }
   .hdr-notif-item {
     display: flex; align-items: flex-start; gap: 9px;
     padding: 9px 6px; border-radius: 8px; cursor: pointer;
     transition: background .12s;
   }
-  .hdr-notif-item:hover { background: rgba(255,255,255,0.06); }
+  .hdr-notif-item:hover { background: var(--pop-hover); }
   .hdr-notif-dot {
     width: 7px; height: 7px; border-radius: 50%; background: #ef4444;
     flex-shrink: 0; margin-top: 5px;
@@ -6016,10 +6044,10 @@
     letter-spacing: .06em; color: #9b85cc; margin-bottom: 2px;
   }
   .hdr-notif-title {
-    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.88);
+    font-size: 12px; font-weight: 600; color: var(--pop-text);
     line-height: 1.35; margin-bottom: 3px;
   }
-  .hdr-notif-date { font-size: 10.5px; color: rgba(255,255,255,0.38); }
+  .hdr-notif-date { font-size: 10.5px; color: var(--pop-text-muted); }
 
   /* Çark menüsü artık TÜM genişliklerde (masaüstü dahil) — eski satır-içi
      ikon dizilimi yerine mobil tasarım dilindeki popover kullanılır. */
@@ -6040,12 +6068,12 @@
       flex-direction: column;
       align-items: stretch;
       width: 248px;
-      background: var(--navy-soft);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--pop-bg);
+      border: 1px solid var(--pop-border);
       border-radius: 16px;
       padding: 7px;
       gap: 2px;
-      box-shadow: 0 18px 44px rgba(0,0,0,0.45);
+      box-shadow: var(--shadow-hover);
       z-index: 200;
       overflow: hidden;
       transition: height 0.28s cubic-bezier(.4,0,.2,1);
@@ -6068,7 +6096,7 @@
       border-radius: 11px;
       border: 0;
       background: transparent;
-      color: rgba(255,255,255,0.82);
+      color: var(--pop-text-soft);
       justify-content: flex-start;
       text-decoration: none;
     }
@@ -6076,8 +6104,8 @@
     .hdr-tools-group .theme-toggle:hover,
     .hdr-tools-group .hdr-tools-link:hover,
     .hdr-tools-group .hdr-pref-btn[aria-expanded="true"] {
-      background: rgba(255,255,255,0.08);
-      color: #fff;
+      background: var(--pop-hover);
+      color: var(--pop-text);
     }
     .hdr-tools-group .hdr-pref-btn svg,
     .hdr-tools-group .theme-toggle svg,
@@ -6105,7 +6133,7 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       min-width: 0;
-      background: var(--navy-soft);
+      background: var(--pop-bg);
       border: 0;
       border-radius: 16px;
       box-shadow: none;
@@ -6131,37 +6159,37 @@
       gap: 8px;
       padding: 2px 4px 9px;
       margin-bottom: 4px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid var(--pop-divider);
     }
     .hpp-back {
       width: 34px; height: 34px; flex-shrink: 0;
       border: 0; border-radius: 10px; cursor: pointer;
-      background: rgba(255,255,255,0.08); color: #fff;
+      background: var(--pop-hover); color: var(--pop-text);
       display: inline-flex; align-items: center; justify-content: center;
       transition: background 0.16s, transform 0.14s;
     }
-    .hpp-back:hover { background: rgba(255,255,255,0.18); }
+    .hpp-back:hover { background: var(--pop-hover-strong); }
     .hpp-back:active { transform: scale(0.9); }
     .hpp-title {
       font-family: 'Inter', sans-serif; font-weight: 700; font-size: 14px;
-      color: #fff; letter-spacing: 0.01em;
+      color: var(--pop-text); letter-spacing: 0.01em;
     }
     .hpp-list { display: flex; flex-direction: column; gap: 2px; }
 
-    /* koyu seçenek satırları */
+    /* seçenek satırları — tema tonuna göre aydınlık/koyu */
     .hdr-tools-group .hdr-pref-opt {
-      color: rgba(255,255,255,0.85);
+      color: var(--pop-text-soft);
       border-radius: 9px;
       padding: 11px;
       font-size: 14.5px;
     }
-    .hdr-tools-group .hdr-pref-opt:hover { background: rgba(255,255,255,0.08); }
+    .hdr-tools-group .hdr-pref-opt:hover { background: var(--pop-hover); }
     .hdr-tools-group .hdr-pref-opt.on {
-      background: rgba(227,6,19,0.18); color: #ff5b62; font-weight: 600;
+      background: var(--red-muted); color: var(--red); font-weight: 600;
     }
-    .hdr-tools-group .hdr-pref-opt.on .opt-check { color: #ff5b62; }
-    .hdr-tools-group .hdr-pref-opt .opt-sub { color: rgba(255,255,255,0.45); }
-    .hdr-tools-group .hdr-pref-opt.on .opt-sub { color: #ff5b62; opacity: 0.75; }
+    .hdr-tools-group .hdr-pref-opt.on .opt-check { color: var(--red); }
+    .hdr-tools-group .hdr-pref-opt .opt-sub { color: var(--pop-text-muted); }
+    .hdr-tools-group .hdr-pref-opt.on .opt-sub { color: var(--red); opacity: 0.75; }
   }
 
   /* ── Header eylem butonları: mercek + zil + dişli çemberli, tutarlı ── */
@@ -7321,35 +7349,35 @@
     .gm-sec { margin-bottom: 5px; }
     .gm-lbl {
       font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
-      color: rgba(255,255,255,0.42); padding: 7px 4px 6px;
+      color: var(--pop-text-muted); padding: 7px 4px 6px;
     }
     .gm-seg { display: flex; gap: 4px; }
     .gm-seg button {
       flex: 1; appearance: none; cursor: pointer; font: inherit; font-size: 12px; font-weight: 600;
-      padding: 8px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.72);
+      padding: 8px 6px; border-radius: 8px; border: 1px solid var(--pop-border);
+      background: var(--pop-hover); color: var(--pop-text-soft);
       transition: background .14s, color .14s, border-color .14s;
     }
-    .gm-seg button.on { background: #fff; color: var(--navy); border-color: #fff; }
+    .gm-seg button.on { background: var(--pop-text); color: var(--pop-bg); border-color: var(--pop-text); }
 
     .gm-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
     .gm-chips button {
       appearance: none; cursor: pointer; font-size: 12.5px; font-weight: 600;
-      padding: 8px 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.82);
+      padding: 8px 9px; border-radius: 8px; border: 1px solid var(--pop-border);
+      background: var(--pop-hover); color: var(--pop-text-soft);
       text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       transition: background .14s, color .14s, border-color .14s;
     }
     .gm-chips button.on { background: var(--red); color: #fff; border-color: var(--red); }
 
-    .gm-div { height: 1px; background: rgba(255,255,255,0.1); margin: 9px 2px 5px; }
+    .gm-div { height: 1px; background: var(--pop-divider); margin: 9px 2px 5px; }
     .gm-row {
       display: flex; align-items: center; gap: 10px; width: 100%; appearance: none; border: 0; cursor: pointer;
-      background: transparent; color: rgba(255,255,255,0.82); font: inherit; font-size: 12.5px; font-weight: 500;
+      background: transparent; color: var(--pop-text-soft); font: inherit; font-size: 12.5px; font-weight: 500;
       padding: 9px 6px; border-radius: 8px; text-align: left; text-decoration: none;
     }
     .gm-row svg { stroke: currentColor; flex-shrink: 0; }
-    .gm-row:hover, .gm-row:active { background: rgba(255,255,255,0.08); color: #fff; }
+    .gm-row:hover, .gm-row:active { background: var(--pop-hover-strong); color: var(--pop-text); }
   }
 
   /* ════════════════════════════════════════════════════════════

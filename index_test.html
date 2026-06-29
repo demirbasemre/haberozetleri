@@ -9384,14 +9384,19 @@ async function loadDashboard() {
       applyDateBadgeFreshness(jfDateEl);
     }
 
-    // 2. CF Worker'dan canlı veri çek (arka planda, 6 saat önbellekli)
+    // 2. CF Worker'dan canlı veri çek. IATA verisi her pazartesi güncellenir,
+    // o gün 1 saatlik önbellek (yeni veriyi hızlı yakalamak için), diğer günler
+    // 24 saatlik önbellek (zaten değişmeyecek veri için worker'ı boşuna yormamak).
     // Sadece IATA verisi statik veriden daha yeniyse kartı güncelle
     const staticLastDate = PLATTS_JET_DATA.dates[n - 1]; // "YYYY-MM-DD"
+    const jetfuelTtl = new Date().getUTCDay() === 1 /* Pazartesi */
+      ? 1 * 60 * 60 * 1000
+      : 24 * 60 * 60 * 1000;
     fetchCached('jetfuel_live', () =>
       fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/jetfuel')
         .then(r => r.ok ? r.json() : null)
         .catch(() => null),
-      6 * 60 * 60 * 1000
+      jetfuelTtl
     ).then(live => {
       if (!live || !live.success || !live.price) return;
       // IATA tarihi statik veriden eskiyse kart güncellenmez
@@ -18349,6 +18354,7 @@ function initControls(allArticles) {
           const resize = () => { frame.style.height = (doc.body.scrollHeight + 48) + 'px'; };
           resize();
           buildReportsTOC(doc);
+          wireReportKpiCards(doc);
           // İçerik (yazı tipi, görsel, geç render olan grafikler) yüklenmeye devam edebilir;
           // ilk ölçümden sonra birkaç kez tekrar ölçerek "kesilmiş" görünümü önle.
           [50, 200, 500, 1000].forEach(t => setTimeout(resize, t));
@@ -18361,6 +18367,45 @@ function initControls(allArticles) {
   }
 
   let _isScrollingToSection = false;
+
+  // Arz/Talep & Navlun bülteninin üst KPI kartlarını (Drewry WCI, Brent Petrol vb.)
+  // dashboard'daki ilgili kartın tıklanması gibi davranacak şekilde bağlar.
+  function wireReportKpiCards(doc) {
+    const actions = {
+      'Drewry WCI': () => { if (typeof openWciChartModal === 'function') openWciChartModal(); },
+      'Hava Kargo Talebi': () => { if (typeof openIataChartModal === 'function') openIataChartModal(); },
+      'Hava Kargo Kapasitesi': () => { if (typeof openIataChartModal === 'function') openIataChartModal(); },
+      'IATA Jet Yakıtı': () => { if (typeof openJetfuelChartModal === 'function') openJetfuelChartModal(); },
+      'Brent Petrol': () => { if (typeof openBrentChartModal === 'function') openBrentChartModal(); },
+      'Crack Spread': () => {
+        switchTab('dashboard');
+        setTimeout(() => {
+          const el = document.getElementById('dc-energy-chart');
+          if (el) {
+            document.querySelectorAll('.metric-highlight-active').forEach(o => o.classList.remove('metric-highlight-active'));
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('metric-highlight-active');
+            setTimeout(() => el.classList.remove('metric-highlight-active'), 2000);
+          }
+        }, 120);
+      },
+      // Air Freight Index ve Global Spot Rates için dashboard'da karşılığı yok; tıklama etkisiz.
+      'Air Freight Index': null,
+      'Global Spot Rates': null
+    };
+
+    doc.querySelectorAll('a.kpi').forEach(card => {
+      const label = card.querySelector('.kpi-label');
+      if (!label) return;
+      const text = label.textContent.trim();
+      if (!Object.prototype.hasOwnProperty.call(actions, text)) return;
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        const action = actions[text];
+        if (action) action();
+      });
+    });
+  }
 
   function buildReportsTOC(doc) {
     const tocList = document.getElementById('reports-toc-list');
