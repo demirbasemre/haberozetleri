@@ -8326,7 +8326,11 @@ function buildReleaseCalendar() {
     if (data && data.date) {
       const parsed = parseTrMonthYearIata(data.date);
       if (parsed) {
-        _iataLatestParsed = { y: parsed.y, m: parsed.m, pdfLink: data.pdfLink };
+        const publishedDate = data.publishedDate ? new Date(data.publishedDate) : null;
+        _iataLatestParsed = {
+          y: parsed.y, m: parsed.m, pdfLink: data.pdfLink,
+          publishedDate: (publishedDate && !isNaN(publishedDate)) ? publishedDate : null
+        };
         if (typeof _relRender === 'function') _relRender();
       }
     }
@@ -8791,15 +8795,19 @@ function buildReleaseCalendar() {
       if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
       let released = false;
       let link = item.link;
+      let actualDate = null;
       if (_iataLatestParsed) {
         const latestComparable = _iataLatestParsed.y * 12 + _iataLatestParsed.m;
         const targetComparable = targetYear * 12 + (targetMonth0 + 1);
         released = latestComparable >= targetComparable;
         if (released && _iataLatestParsed.pdfLink) link = _iataLatestParsed.pdfLink;
+        if (released && latestComparable === targetComparable && _iataLatestParsed.publishedDate) {
+          actualDate = _iataLatestParsed.publishedDate;
+        }
       }
-      // IATA'nın tam yayın günü scrape edilemiyor; onaylanınca takvimdeki tahmini
-      // günü (~4. hafta) gösteriyoruz, onaylanana kadar "-" kalır.
-      const day = released ? item.date.getDate() : null;
+      // Worker'dan gerçek yayın günü gelmişse onu kullan; gelmemişse takvimdeki
+      // tahmini günü (~4. hafta) gösteriyoruz, onaylanana kadar "-" kalır.
+      const day = released ? (actualDate ? actualDate.getDate() : item.date.getDate()) : null;
       return { released, link, day };
     }
     items.forEach(it => { it._iata = iataStatus(it); });
