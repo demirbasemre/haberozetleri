@@ -1010,7 +1010,7 @@
     flex-direction: column;
     justify-content: center;
     gap: 6px;
-    min-height: 0;
+    min-height: min-content;
   }
   .kpi-extra-section-label {
     font-size: 9.5px;
@@ -1065,7 +1065,7 @@
     justify-content: center;
     gap: 6px;
     padding-bottom: 12px;
-    min-height: 0;
+    min-height: min-content;
   }
 
   /* ── KPI card with watermark logo (En Aktif Kaynak / Havayolu) ── */
@@ -2995,7 +2995,7 @@
     <div id="bafi-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="bafi-chart-title">
       <div class="chart-modal-card">
         <div class="rel-add-head">
-          <div id="bafi-chart-title" class="rel-add-title">Baltic Air 
+          <div id="bafi-chart-title" class="rel-add-title">Baltık Hava Kargo Endeksi (BAFI)</div>
           <button class="rel-add-x" onclick="closeBafiChartModal()" aria-label="Kapat">×</button>
         </div>
         <div class="chart-modal-controls">
@@ -8326,7 +8326,11 @@ function buildReleaseCalendar() {
     if (data && data.date) {
       const parsed = parseTrMonthYearIata(data.date);
       if (parsed) {
-        _iataLatestParsed = { y: parsed.y, m: parsed.m, pdfLink: data.pdfLink };
+        const publishedDate = data.publishedDate ? new Date(data.publishedDate) : null;
+        _iataLatestParsed = {
+          y: parsed.y, m: parsed.m, pdfLink: data.pdfLink,
+          publishedDate: (publishedDate && !isNaN(publishedDate)) ? publishedDate : null
+        };
         if (typeof _relRender === 'function') _relRender();
       }
     }
@@ -8791,15 +8795,19 @@ function buildReleaseCalendar() {
       if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
       let released = false;
       let link = item.link;
+      let actualDate = null;
       if (_iataLatestParsed) {
         const latestComparable = _iataLatestParsed.y * 12 + _iataLatestParsed.m;
         const targetComparable = targetYear * 12 + (targetMonth0 + 1);
         released = latestComparable >= targetComparable;
         if (released && _iataLatestParsed.pdfLink) link = _iataLatestParsed.pdfLink;
+        if (released && latestComparable === targetComparable && _iataLatestParsed.publishedDate) {
+          actualDate = _iataLatestParsed.publishedDate;
+        }
       }
-      // IATA'nın tam yayın günü scrape edilemiyor; onaylanınca takvimdeki tahmini
-      // günü (~4. hafta) gösteriyoruz, onaylanana kadar "-" kalır.
-      const day = released ? item.date.getDate() : null;
+      // Worker'dan gerçek yayın günü gelmişse onu kullan; gelmemişse takvimdeki
+      // tahmini günü (~4. hafta) gösteriyoruz, onaylanana kadar "-" kalır.
+      const day = released ? (actualDate ? actualDate.getDate() : item.date.getDate()) : null;
       return { released, link, day };
     }
     items.forEach(it => { it._iata = iataStatus(it); });
@@ -15958,8 +15966,14 @@ function updateKPIs(articles, allArticles) {
   const analyzed = articles.filter(hasAnalysis).length;
   const analyzedPct = total > 0 ? Math.round(analyzed / total * 100) : 0;
 
-  document.getElementById('stats-kpi-total').textContent            = total.toLocaleString('tr-TR');
-  document.getElementById('stats-kpi-analyzed').textContent         = analyzed.toLocaleString('tr-TR');
+  // Tekil Haber / Analizli Haber kartları tarih filtresinden bağımsız —
+  // her zaman tüm zamanların toplamını gösterir (sadece bu iki kart).
+  const allTimeArticles = _statsAllArticles.length > 0 ? _statsAllArticles : articles;
+  const totalAllTime    = allTimeArticles.length;
+  const analyzedAllTime = allTimeArticles.filter(hasAnalysis).length;
+
+  document.getElementById('stats-kpi-total').textContent            = totalAllTime.toLocaleString('tr-TR');
+  document.getElementById('stats-kpi-analyzed').textContent         = analyzedAllTime.toLocaleString('tr-TR');
   document.getElementById('stats-kpi-sources').textContent          = sources.size;
   // Populate the "Eklenecek kaynak" footer inside the Aktif Kaynak card
   const extraEl = document.getElementById('stats-kpi-extra-sources');

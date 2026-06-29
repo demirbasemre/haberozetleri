@@ -1831,42 +1831,114 @@
     .rhome-card, .rhome-cta svg { transition: none; }
     .rhome-card:hover { transform: none; }
   }
-  .iata-bell-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+
+  .iata-bell-badge, .arz-bell-badge, .fin-bell-badge {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
     position: absolute;
-    bottom: 12px; right: 12px;
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    color: #7a64a8;
+    top: 0; right: 0;
+    width: 38px; height: 38px;
+    border-top-right-radius: var(--radius, 12px);
+    border-bottom-left-radius: 100%;
     opacity: 0.18;
-    pointer-events: none;
-    transition: opacity 0.25s;
-  }
-  .iata-bell-badge.has-notif {
-    opacity: 1;
-    background: rgba(122,100,168,0.12);
     pointer-events: auto;
     cursor: pointer;
+    transition: opacity 0.25s, background-color 0.25s, border-color 0.25s;
+    z-index: 5;
+    padding-top: 6px;
+    padding-right: 6px;
+    background: transparent;
   }
-  .iata-bell-dot {
+  .iata-bell-badge.has-notif, .arz-bell-badge.has-notif, .fin-bell-badge.has-notif {
+    opacity: 1;
+  }
+
+  .iata-bell-badge {
+    color: #7a64a8;
+    border-left: 1.2px solid rgba(122, 100, 168, 0.15);
+    border-bottom: 1.2px solid rgba(122, 100, 168, 0.15);
+  }
+  .iata-bell-badge.has-notif {
+    background: rgba(122, 100, 168, 0.08);
+    border-left-color: rgba(122, 100, 168, 0.22);
+    border-bottom-color: rgba(122, 100, 168, 0.22);
+  }
+  [data-theme="dark"] .iata-bell-badge {
+    border-left-color: rgba(122, 100, 168, 0.22);
+    border-bottom-color: rgba(122, 100, 168, 0.22);
+  }
+  [data-theme="dark"] .iata-bell-badge.has-notif {
+    background: rgba(122, 100, 168, 0.15);
+    border-left-color: rgba(122, 100, 168, 0.35);
+    border-bottom-color: rgba(122, 100, 168, 0.35);
+  }
+
+  .arz-bell-badge {
+    color: var(--accent);
+    border-left: 1.2px solid rgba(29, 111, 232, 0.15);
+    border-bottom: 1.2px solid rgba(29, 111, 232, 0.15);
+  }
+  .arz-bell-badge.has-notif {
+    background: rgba(29, 111, 232, 0.08);
+    border-left-color: rgba(29, 111, 232, 0.22);
+    border-bottom-color: rgba(29, 111, 232, 0.22);
+  }
+  [data-theme="dark"] .arz-bell-badge {
+    border-left-color: rgba(77, 142, 245, 0.22);
+    border-bottom-color: rgba(77, 142, 245, 0.22);
+  }
+  [data-theme="dark"] .arz-bell-badge.has-notif {
+    background: rgba(77, 142, 245, 0.15);
+    border-left-color: rgba(77, 142, 245, 0.35);
+    border-bottom-color: rgba(77, 142, 245, 0.35);
+  }
+
+  .fin-bell-badge {
+    color: #059669;
+    border-left: 1.2px solid rgba(5, 150, 105, 0.15);
+    border-bottom: 1.2px solid rgba(5, 150, 105, 0.15);
+  }
+  .fin-bell-badge.has-notif {
+    background: rgba(5, 150, 105, 0.08);
+    border-left-color: rgba(5, 150, 105, 0.22);
+    border-bottom-color: rgba(5, 150, 105, 0.22);
+  }
+  [data-theme="dark"] .fin-bell-badge {
+    border-left-color: rgba(16, 185, 129, 0.22);
+    border-bottom-color: rgba(16, 185, 129, 0.22);
+  }
+  [data-theme="dark"] .fin-bell-badge.has-notif {
+    background: rgba(16, 185, 129, 0.15);
+    border-left-color: rgba(16, 185, 129, 0.35);
+    border-bottom-color: rgba(16, 185, 129, 0.35);
+  }
+
+  .iata-bell-dot, .arz-bell-dot, .fin-bell-dot {
     display: none;
     position: absolute;
-    top: 4px; right: 4px;
-    width: 8px; height: 8px;
+    top: 5px; right: 5px;
+    width: 6px; height: 6px;
     background: #ef4444;
     border-radius: 50%;
-    border: 1.5px solid var(--bg-card, #fff);
+    border: 1px solid var(--bg-card, #fff);
     animation: bell-pulse 2s ease-in-out infinite;
   }
-  .iata-bell-badge.has-notif .iata-bell-dot { display: block; }
+  .iata-bell-badge.has-notif .iata-bell-dot,
+  .arz-bell-badge.has-notif .arz-bell-dot,
+  .fin-bell-badge.has-notif .fin-bell-dot {
+    display: block;
+  }
+  [data-theme="dark"] .iata-bell-dot,
+  [data-theme="dark"] .arz-bell-dot,
+  [data-theme="dark"] .fin-bell-dot {
+    border-color: var(--bg-card, #1a1a2e);
+  }
+
   @keyframes bell-pulse {
     0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.3); opacity: 0.7; }
+    50% { transform: scale(1.3); opacity: 0.8; }
   }
-  [data-theme="dark"] .iata-bell-badge.has-notif { background: rgba(122,100,168,0.18); }
-  [data-theme="dark"] .iata-bell-dot { border-color: var(--bg-card, #1a1a2e); }
 
   /* Reports Main Flex Layout */
   .reports-main-layout {
@@ -2871,11 +2943,11 @@
             <span class="timer-secs">60s</span>
           </div>
           <div class="dash-card-header-row">
-            <div class="dash-card-label dash-card-label--wrap">Havadaki Kargo Uçağı Sayısı</div>
+            <div class="dash-card-label dash-card-label--wrap">Havadaki Kargo Uçağı Sayısı <span class="dash-card-test-badge">Test</span></div>
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">THY Kargo · şu anda uçuşta</div>
+          <div class="dash-card-sub">Turkish Cargo</div>
           <div class="dash-card-footer">
             <div class="dash-card-note">OpenSky Network · <a href="https://opensky-network.org" target="_blank" rel="noopener">opensky-network.org →</a></div>
           </div>
@@ -3537,6 +3609,10 @@
           </div>
           <p class="rhome-desc">Konteyner navlun, hava kargo fiyatları, yakıt maliyetleri, kapasite ve arz/talep dengesindeki gelişmeleri ele alan haftalık piyasa analizi bültenleri.</p>
           <span class="rhome-meta" id="rhome-arz-meta">Günlük bülten arşivi</span>
+          <span id="arz-bell-badge" class="arz-bell-badge" title="Yeni bülten yayınlandı">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="arz-bell-dot"></span>
+          </span>
         </button>
         <button class="rhome-card" onclick="switchReportType('iata_market_analizi')">
           <span class="rhome-visual" style="color:#7a64a8" aria-hidden="true">
@@ -3583,6 +3659,10 @@
           </div>
           <p class="rhome-desc">20 havayolunun gelir, kârlılık, çalışan ve yolcu metriklerinin yıllara göre karşılaştırılması.</p>
           <span class="rhome-meta">20 havayolu · 21 metrik · grafik + tablo</span>
+          <span id="fin-bell-badge" class="fin-bell-badge" title="Yeni finansal veriler yayınlandı">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="fin-bell-dot"></span>
+          </span>
         </button>
         <button class="rhome-card" onclick="switchReportType('filo')">
           <span class="rhome-visual" style="color:#D97706" aria-hidden="true">
@@ -12929,23 +13009,187 @@ async function loadDashboard() {
     });
   }
 
+  // THY Kargo Network haftalık uçuş takvimi (Haziran 2026, hafta 23-27) kaynaklı
+  // statik destinasyon listesi. Format: [IATA, şehir, ülke, lat, lon, tipler]
+  // tipler: 'c'=kargo, 'p'=yolcu, 'cp'=her ikisi de o havalimanına uçuyor.
+  // Koordinatlar yaklaşıktır, bazı az bilinen kodlarda (KTI, BSZ, COV) düşük güvenle tahmin edilmiştir.
+  const THY_NETWORK = [
+    ['IST','İstanbul','Türkiye',41.262,28.727,'cp'],['ESB','Ankara','Türkiye',40.128,32.995,'p'],
+    ['AYT','Antalya','Türkiye',36.899,30.800,'p'],['ADB','İzmir','Türkiye',38.292,27.157,'p'],
+    ['BJV','Bodrum-Milas','Türkiye',37.251,28.085,'p'],['DLM','Dalaman','Türkiye',36.713,28.792,'p'],
+    ['GZT','Gaziantep','Türkiye',37.115,37.479,'p'],['ASR','Kayseri','Türkiye',38.770,35.495,'p'],
+    ['COV','Çukurova/Adana','Türkiye',37.0,35.3,'p'],
+    ['PEK','Pekin','Çin',40.080,116.584,'p'],['CAN','Guangzhou','Çin',23.392,113.299,'cp'],
+    ['PVG','Şanghay','Çin',31.143,121.805,'cp'],['SZX','Shenzhen','Çin',22.639,113.811,'c'],
+    ['CGO','Zhengzhou','Çin',34.520,113.841,'c'],['URC','Urumçi','Çin',43.907,87.474,'c'],
+    ['CTU','Chengdu','Çin',30.578,103.947,'c'],['TPE','Taipei','Çin Taipei',25.077,121.233,'cp'],
+    ['HKG','Hong Kong','Hong Kong',22.308,113.918,'cp'],['HND','Tokyo Haneda','Japonya',35.549,139.779,'p'],
+    ['NRT','Tokyo Narita','Japonya',35.764,140.386,'p'],['KIX','Osaka','Japonya',34.434,135.244,'p'],
+    ['ICN','Seul','Güney Kore',37.469,126.451,'cp'],['MEL','Melbourne','Avustralya',-37.673,144.844,'p'],
+    ['SYD','Sidney','Avustralya',-33.946,151.177,'p'],['KTI','Kratie','Kamboçya',12.488,106.018,'p'],
+    ['CGK','Cakarta','Endonezya',-6.126,106.656,'p'],['DPS','Denpasar','Endonezya',-8.748,115.167,'p'],
+    ['KUL','Kuala Lumpur','Malezya',2.745,101.710,'p'],['MNL','Manila','Filipinler',14.509,121.020,'p'],
+    ['SIN','Singapur','Singapur',1.350,103.994,'cp'],['BKK','Bangkok','Tayland',13.690,100.750,'cp'],
+    ['HKT','Phuket','Tayland',8.113,98.317,'p'],['HAN','Hanoi','Vietnam',21.221,105.807,'cp'],
+    ['SGN','Ho Chi Minh','Vietnam',10.819,106.652,'cp'],['GYD','Bakü','Azerbaycan',40.467,50.047,'cp'],
+    ['TBS','Tiflis','Gürcistan',41.669,44.951,'cp'],['ALA','Almatı','Kazakistan',43.352,77.041,'cp'],
+    ['CIT','Şimkent','Kazakistan',42.365,69.479,'c'],['NQZ','Astana','Kazakistan',51.022,71.467,'p'],
+    ['BSZ','Bişkek','Kırgızistan',43.061,74.477,'p'],['UBN','Ulan Batur','Moğolistan',47.843,106.766,'p'],
+    ['VKO','Moskova','Rusya',55.599,37.268,'p'],['LED','St. Petersburg','Rusya',59.800,30.263,'p'],
+    ['KZN','Kazan','Rusya',55.606,49.279,'p'],['ASB','Aşkabat','Türkmenistan',37.987,58.361,'p'],
+    ['TAS','Taşkent','Özbekistan',41.258,69.282,'cp'],
+    ['KBL','Kabil','Afganistan',34.566,69.212,'p'],['BAH','Bahreyn','Bahreyn',26.271,50.633,'c'],
+    ['BGW','Bağdat','Irak',33.262,44.235,'c'],['EBL','Erbil','Irak',36.238,43.963,'c'],
+    ['AMM','Amman','Ürdün',31.722,35.993,'c'],['KWI','Kuveyt','Kuveyt',29.227,47.969,'c'],
+    ['BEY','Beyrut','Lübnan',33.821,35.488,'cp'],['MCT','Maskat','Oman',23.593,58.284,'c'],
+    ['KHI','Karaçi','Pakistan',24.907,67.160,'cp'],['LHE','Lahor','Pakistan',31.521,74.404,'p'],
+    ['ISB','İslamabad','Pakistan',33.562,72.835,'p'],['DOH','Doha','Katar',25.273,51.608,'c'],
+    ['RUH','Riyad','Suudi Arabistan',24.957,46.699,'cp'],['JED','Cidde','Suudi Arabistan',21.680,39.157,'p'],
+    ['MED','Medine','Suudi Arabistan',24.553,39.705,'p'],['DAM','Şam','Suriye',33.411,36.516,'p'],
+    ['DWC','Dubai (DWC)','BAE',24.897,55.161,'c'],['ALG','Cezayir','Cezayir',36.691,3.215,'c'],
+    ['OUA','Ouagadougou','Burkina Faso',12.353,-1.512,'p'],['NSI','Yaounde','Kamerun',3.722,11.553,'p'],
+    ['DLA','Douala','Kamerun',4.006,9.719,'p'],['ABJ','Abidjan','Fildişi Sahili',5.261,-3.926,'p'],
+    ['CAI','Kahire','Mısır',30.122,31.406,'cp'],['ASM','Asmara','Eritre',15.292,38.910,'p'],
+    ['BJL','Banjul','Gambiya',13.338,-16.652,'p'],['ACC','Akra','Gana',5.605,-0.167,'p'],
+    ['CKY','Conakry','Gine',9.577,-13.612,'p'],['MJI','Mitiga','Libya',32.894,13.276,'c'],
+    ['NKC','Nuakşot','Moritanya',18.098,-15.945,'p'],['CMN','Kazablanka','Fas',33.367,-7.590,'cp'],
+    ['NIM','Niamey','Nijer',13.481,2.183,'p'],['LOS','Lagos','Nijerya',6.577,3.321,'cp'],
+    ['ABV','Abuja','Nijerya',9.007,7.263,'p'],['DSS','Dakar','Senegal',14.740,-17.490,'cp'],
+    ['TUN','Tunus','Tunus',36.851,10.227,'c'],['FIH','Kinşasa','Kongo Dem. Cum.',-4.386,15.444,'c'],
+    ['ADD','Addis Ababa','Etiyopya',8.978,38.799,'p'],['NBO','Nairobi','Kenya',-1.319,36.928,'cp'],
+    ['TNR','Antananarivo','Madagaskar',-18.797,47.479,'p'],['MRU','Mauritius','Mauritius',-20.430,57.674,'p'],
+    ['MPM','Maputo','Mozambik',-25.921,32.573,'p'],['KGL','Kigali','Ruanda',-1.968,30.139,'p'],
+    ['SEZ','Seyşeller','Seyşeller',-4.674,55.522,'p'],['JNB','Johannesburg','Güney Afrika',-26.139,28.246,'cp'],
+    ['CPT','Cape Town','Güney Afrika',-33.965,18.602,'p'],['DUR','Durban','Güney Afrika',-29.614,31.119,'p'],
+    ['DAR','Dar es Salaam','Tanzanya',-6.878,39.203,'p'],['EBB','Entebbe','Uganda',0.042,32.443,'p'],
+    ['DAC','Dakka','Bangladeş',23.843,90.398,'cp'],['MAA','Chennai','Hindistan',12.990,80.169,'c'],
+    ['DEL','Delhi','Hindistan',28.556,77.100,'cp'],['HYD','Haydarabad','Hindistan',17.231,78.430,'c'],
+    ['BOM','Mumbai','Hindistan',19.089,72.868,'cp'],['BLR','Bangalore','Hindistan',13.198,77.706,'c'],
+    ['MLE','Male','Maldivler',4.192,73.529,'p'],['KTM','Katmandu','Nepal',27.697,85.359,'p'],
+    ['CMB','Kolombo','Sri Lanka',7.181,79.884,'cp'],
+    ['EZE','Buenos Aires','Arjantin',-34.822,-58.536,'p'],['GRU','Sao Paulo','Brezilya',-23.435,-46.473,'cp'],
+    ['SCL','Santiago','Şili',-33.393,-70.786,'p'],['BOG','Bogota','Kolombiya',4.702,-74.147,'p'],
+    ['UIO','Quito','Ekvador',-0.129,-78.358,'c'],['MEX','Mexico City','Meksika',19.436,-99.072,'p'],
+    ['NLU','Felipe Angeles','Meksika',19.745,-99.015,'c'],['CUN','Cancun','Meksika',21.036,-86.877,'p'],
+    ['PTY','Panama','Panama',9.071,-79.383,'p'],['ATL','Atlanta','ABD',33.640,-84.427,'cp'],
+    ['IAH','Houston','ABD',29.984,-95.341,'cp'],['MIA','Miami','ABD',25.793,-80.291,'cp'],
+    ['DFW','Dallas','ABD',32.897,-97.038,'p'],['DEN','Denver','ABD',39.856,-104.674,'p'],
+    ['CCS','Caracas','Venezuela',10.601,-66.991,'p'],['YYZ','Toronto','Kanada',43.677,-79.624,'cp'],
+    ['YUL','Montreal','Kanada',45.470,-73.741,'p'],['YVR','Vancouver','Kanada',49.194,-123.179,'p'],
+    ['ORD','Chicago','ABD',41.978,-87.904,'cp'],['EWR','Newark','ABD',40.692,-74.169,'p'],
+    ['JFK','New York','ABD',40.640,-73.779,'cp'],['LAX','Los Angeles','ABD',33.943,-118.408,'p'],
+    ['SFO','San Francisco','ABD',37.621,-122.379,'p'],['BOS','Boston','ABD',42.365,-71.010,'p'],
+    ['IAD','Washington','ABD',38.953,-77.448,'p'],['SEA','Seattle','ABD',47.450,-122.309,'p'],
+    ['DTW','Detroit','ABD',42.212,-83.353,'p'],
+    ['FRA','Frankfurt','Almanya',50.033,8.570,'cp'],['MUC','Münih','Almanya',48.354,11.786,'p'],
+    ['BER','Berlin','Almanya',52.366,13.503,'p'],['HAM','Hamburg','Almanya',53.630,9.988,'p'],
+    ['DUS','Düsseldorf','Almanya',51.289,6.767,'p'],['STR','Stuttgart','Almanya',48.690,9.222,'p'],
+    ['MXP','Milano','İtalya',45.630,8.728,'cp'],['FCO','Roma','İtalya',41.800,12.239,'p'],
+    ['VCE','Venedik','İtalya',45.505,12.352,'p'],['MLA','Malta','Malta',35.857,14.477,'p'],
+    ['ZRH','Zürih','İsviçre',47.464,8.549,'cp'],['GVA','Cenevre','İsviçre',46.238,6.109,'p'],
+    ['BSL','Basel','İsviçre',47.590,7.529,'c'],['VIE','Viyana','Avusturya',48.110,16.570,'cp'],
+    ['PRG','Prag','Çekya',50.101,14.260,'cp'],['ATH','Atina','Yunanistan',37.936,23.946,'p'],
+    ['BUD','Budapeşte','Macaristan',47.439,19.262,'cp'],['OTP','Bükreş','Romanya',44.572,26.102,'p'],
+    ['BEG','Belgrad','Sırbistan',44.818,20.309,'c'],['CPH','Kopenhag','Danimarka',55.618,12.656,'c'],
+    ['HEL','Helsinki','Finlandiya',60.317,24.963,'c'],['DUB','Dublin','İrlanda',53.421,-6.270,'cp'],
+    ['VNO','Vilnius','Litvanya',54.634,25.286,'c'],['OSL','Oslo','Norveç',60.194,11.100,'cp'],
+    ['ARN','Stockholm','İsveç',59.652,17.918,'p'],['LHR','Londra Heathrow','İngiltere',51.470,-0.454,'p'],
+    ['STN','Londra Stansted','İngiltere',51.885,0.235,'c'],['MAN','Manchester','İngiltere',53.365,-2.273,'p'],
+    ['EDI','Edinburgh','İngiltere',55.950,-3.373,'p'],['BRU','Brüksel','Belçika',50.901,4.484,'cp'],
+    ['LGG','Liège','Belçika',50.637,5.443,'c'],['CDG','Paris','Fransa',49.013,2.550,'cp'],
+    ['NCE','Nice','Fransa',43.665,7.215,'p'],['AMS','Amsterdam','Hollanda',52.309,4.764,'cp'],
+    ['MST','Maastricht','Hollanda',50.912,5.770,'c'],['LIS','Lizbon','Portekiz',38.774,-9.135,'p'],
+    ['BCN','Barselona','İspanya',41.297,2.078,'cp'],['MAD','Madrid','İspanya',40.472,-3.561,'cp'],
+    ['AGP','Malaga','İspanya',36.675,-4.499,'p'],['VLC','Valencia','İspanya',39.489,-0.482,'p'],
+  ];
+
+  function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  }
+
   // Havadaki THY Uçakları Verisini Çek ve Göster (Kargo + Yolcu)
   let _cargoAllFlights = [];
   let _cargoFlights = [];
   let _cargoActiveFilter = 'cargo';
   async function initCargoCard() {
     try {
+      // Önceki seçili uçağı bulalım
+      let prevSelected = null;
+      if (_cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx]) {
+        prevSelected = _cargoFlights[_cargoSelectedIdx];
+      }
+
       const data = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/cargo-flights')
         .then(r => r.ok ? r.json() : null).catch(() => null);
-      _cargoAllFlights = (data && Array.isArray(data.flights)) ? data.flights : [];
+      let freshFlights = (data && Array.isArray(data.flights)) ? data.flights : [];
+
+      // Rota tutarlılık kontrolü (Sanity Check) ve şehir adı temizleme
+      freshFlights.forEach(f => {
+        if (f.dep) {
+          if (f.dep.city && f.dep.city.includes(',')) {
+            const parts = f.dep.city.split(',');
+            f.dep.city = parts[parts.length - 1].trim();
+          }
+        }
+        if (f.arr) {
+          if (f.arr.city && f.arr.city.includes(',')) {
+            const parts = f.arr.city.split(',');
+            f.arr.city = parts[parts.length - 1].trim();
+          }
+        }
+        if (f.dep && f.dep.lat != null && f.arr && f.arr.lat != null) {
+          const dDep = getDistance(f.lat, f.lon, f.dep.lat, f.dep.lon);
+          const dArr = getDistance(f.lat, f.lon, f.arr.lat, f.arr.lon);
+          const dTotal = getDistance(f.dep.lat, f.dep.lon, f.arr.lat, f.arr.lon);
+          const maxAllowed = Math.max(dTotal * 1.20, dTotal + 400); // %20 veya +400km tolerans
+          if (dDep + dArr > maxAllowed) {
+            f.dep = null;
+            f.arr = null;
+          }
+        }
+      });
+
+      // Seçili uçuş yeni veride yoksa onu koruyalım (Sinyal Kaybı durumunda)
+      if (prevSelected) {
+        const found = freshFlights.find(f => f.callsign === prevSelected.callsign);
+        if (!found) {
+          prevSelected.signalLost = true;
+          // Dead reckoning ile güncellenmiş en son konumu marker'dan alalım
+          const p = _cargoPlaneMarkers.get(prevSelected.icao24);
+          if (p) {
+            const markerLatLng = p.marker.getLatLng();
+            prevSelected.lat = markerLatLng.lat;
+            prevSelected.lon = markerLatLng.lon;
+          }
+          freshFlights.push(prevSelected);
+        } else {
+          found.signalLost = false;
+        }
+      }
+
+      _cargoAllFlights = freshFlights;
+
       const count = data && typeof data.count === 'number' ? data.count : _cargoAllFlights.filter(f => f.type === 'cargo').length;
       _cargoFlights = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter);
-      setCard('dc-cargo', String(count), null, 'THY Kargo · şu anda uçuşta',
+      setCard('dc-cargo', String(count), null, 'Turkish Cargo',
         `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
-      const dateEl = document.getElementById('dc-cargo-date');
-      if (dateEl) dateEl.textContent = 'Canlı veri';
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      const hh = String(today.getHours()).padStart(2, '0');
+      const min = String(today.getMinutes()).padStart(2, '0');
+      const dateStr = `${dd}.${mm}.${yyyy} ${hh}:${min}`;
+      setDateBadge('dc-cargo-date', dateStr);
       if (document.getElementById('cargo-flights-modal')?.style.display === 'flex') {
-        renderCargoFlightsModal();
+        renderCargoFlightsModal(false);
       }
     } catch (_) {
       setCard('dc-cargo', '—', null, '', 'Veri alınamadı');
@@ -12959,14 +13203,20 @@ async function loadDashboard() {
     document.querySelectorAll('#cargo-type-toggle .forex-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.type === type);
     });
-    renderCargoFlightsModal();
+    renderCargoFlightsModal(true);
   };
 
   let _cargoMap = null;
   let _cargoMapLayers = [];
+  let _cargoRouteLayers = [];
+  let _cargoTraveledLine = null;
+  let _cargoRemainingLine = null;
+
+  // SVG'nin varsayılan duruşu kuzeye (yukarı) bakar — true_track pusula yönü de
+  // 0°=Kuzey'den saat yönünde ölçüldüğü için doğrudan track derecesiyle döndürülür.
   const cargoPlaneIcon = (track, color) => L.divIcon({
     className: 'cargo-plane-icon',
-    html: `<svg width="22" height="22" viewBox="0 0 24 24" style="transform:rotate(${(track || 0) - 90}deg)"><path fill="${color}" d="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`,
+    html: `<svg width="22" height="22" viewBox="0 0 24 24" style="transform:rotate(${track || 0}deg)"><path fill="${color}" d="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`,
     iconSize: [22, 22],
     iconAnchor: [11, 11],
   });
@@ -12979,105 +13229,486 @@ async function loadDashboard() {
 
   function renderCargoFlightList() {
     const listEl = document.getElementById('cargo-flight-list');
-    const emptyEl = document.getElementById('cargo-flights-empty');
-    const bodyEl = document.getElementById('cargo-flights-body');
     if (!listEl) return;
     listEl.innerHTML = '';
 
     if (!_cargoFlights.length) {
-      if (emptyEl) {
-        emptyEl.textContent = _cargoActiveFilter === 'cargo'
-          ? 'Şu anda havada THY kargo uçuşu tespit edilemedi.'
-          : 'Şu anda havada THY yolcu uçuşu tespit edilemedi.';
-        emptyEl.style.display = 'block';
-      }
-      if (bodyEl) bodyEl.style.display = 'none';
+      const msg = document.createElement('div');
+      msg.style.cssText = 'color:var(--text-3); font-size:12px; padding:8px 2px;';
+      msg.textContent = _cargoActiveFilter === 'cargo'
+        ? 'Şu anda havada THY kargo uçuşu tespit edilemedi.'
+        : 'Şu anda havada THY yolcu uçuşu tespit edilemedi.';
+      listEl.appendChild(msg);
       return;
     }
-    if (emptyEl) emptyEl.style.display = 'none';
-    if (bodyEl) bodyEl.style.display = 'flex';
 
     _cargoFlights.forEach((f, idx) => {
-      const depCity = f.dep?.city || f.dep?.icao || '?';
-      const arrCity = f.arr?.city || f.arr?.icao || 'Bilinmiyor';
       const item = document.createElement('div');
-      item.className = 'cargo-flight-item';
+      item.className = 'cargo-flight-item' + (_cargoSelectedIdx === idx ? ' selected' : '');
       item.dataset.idx = idx;
-      item.style.cssText = 'padding:8px 10px; border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:12px; transition:background 0.15s;';
+      const routeLine = (f.dep || f.arr)
+        ? `<div style="color:var(--text-2); margin-top:2px; font-weight:500;">${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}</div>`
+        : '';
+      const regBadge = f.aircraftDetails?.registration
+        ? `<span style="font-family:monospace; font-size:10px; color:var(--text-3); background:var(--surface-3, rgba(0,0,0,0.06)); padding:1px 4px; border-radius:3px; font-weight:normal;">${f.aircraftDetails.registration}</span>`
+        : '';
+      const modelText = f.aircraftDetails?.type || f.aircraftDetails?.icaoType
+        ? `<div style="color:var(--text-3); font-size:11px; margin-top:1px;">${f.aircraftDetails.manufacturer || ''} ${f.aircraftDetails.type || f.aircraftDetails.icaoType}</div>`
+        : '';
+      
+      const dotHtml = f.signalLost 
+        ? `<span class="cargo-signal-lost-dot" title="Sinyal Kaybı (Tahmini Konum)"></span>`
+        : `<span class="cargo-live-dot"></span>`;
+      const signalLostLabel = f.signalLost ? `<span style="font-size:10px; color:#F59E0B; font-weight:700; margin-left:3px;">(Sinyal Kaybı)</span>` : '';
+      
       item.innerHTML = `
-        <div style="font-weight:600; display:flex; align-items:center; gap:5px;">
-          <span class="thy-dot" style="width:6px; height:6px; background:#C8102E; border-radius:50%; display:inline-block;"></span>
-          ${f.callsign}
+        <div style="font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:5px;">
+          <div style="display:flex; align-items:center; gap:5px;">
+            ${dotHtml}
+            ${f.callsign}
+            ${signalLostLabel}
+          </div>
+          ${regBadge}
         </div>
-        <div style="color:var(--text-3); margin-top:2px;">${depCity} → ${arrCity}</div>
-        <div style="color:var(--text-3); font-size:11px; margin-top:2px;">${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt</div>
+        ${routeLine}
+        ${modelText}
+        <div style="color:var(--text-3); font-size:11px; margin-top:2px;">${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°</div>
       `;
       item.addEventListener('click', () => focusCargoFlight(idx));
       listEl.appendChild(item);
     });
   }
 
-  function focusCargoFlight(idx) {
-    const f = _cargoFlights[idx];
-    if (!f || !_cargoMap) return;
-    _cargoMap.setView([f.lat, f.lon], 5, { animate: true });
-    document.querySelectorAll('.cargo-flight-item').forEach(el => {
-      el.style.background = (Number(el.dataset.idx) === idx) ? 'var(--surface-2, rgba(0,0,0,0.05))' : '';
-    });
+  let _cargoSelectedIdx = null;
+  let _cargoHighlightMarker = null;
+  const cargoHighlightIcon = L.divIcon({
+    className: 'cargo-highlight-icon',
+    html: `<div style="width:36px; height:36px; border-radius:50%; border:2.5px solid #1D6FE8; box-shadow:0 0 0 4px rgba(29,111,232,0.18); animation:cargoHighlightPulse 1.6s ease-out infinite;"></div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+  });
+
+  function getArcPoints(p1, p2, numPoints = 40) {
+    const lat1 = p1[0] * Math.PI / 180;
+    const lon1 = p1[1] * Math.PI / 180;
+    const lat2 = p2[0] * Math.PI / 180;
+    const lon2 = p2[1] * Math.PI / 180;
+
+    const x1 = Math.cos(lat1) * Math.cos(lon1);
+    const y1 = Math.cos(lat1) * Math.sin(lon1);
+    const z1 = Math.sin(lat1);
+
+    const x2 = Math.cos(lat2) * Math.cos(lon2);
+    const y2 = Math.cos(lat2) * Math.sin(lon2);
+    const z2 = Math.sin(lat2);
+
+    const dot = x1*x2 + y1*y2 + z1*z2;
+    const omega = Math.acos(Math.min(1.0, Math.max(-1.0, dot)));
+
+    const points = [];
+    if (omega < 0.001) {
+      for (let i = 0; i <= numPoints; i++) {
+        const t = i / numPoints;
+        points.push([p1[0] + (p2[0] - p1[0]) * t, p1[1] + (p2[1] - p1[1]) * t]);
+      }
+      return points;
+    }
+
+    const sinOmega = Math.sin(omega);
+    for (let i = 0; i <= numPoints; i++) {
+      const t = i / numPoints;
+      const w1 = Math.sin((1 - t) * omega) / sinOmega;
+      const w2 = Math.sin(t * omega) / sinOmega;
+
+      const x = w1 * x1 + w2 * x2;
+      const y = w1 * y1 + w2 * y2;
+      const z = w1 * z1 + w2 * z2;
+
+      const lat = Math.atan2(z, Math.sqrt(x*x + y*y)) * 180 / Math.PI;
+      const lon = Math.atan2(y, x) * 180 / Math.PI;
+      points.push([lat, lon]);
+    }
+    return points;
   }
 
-  function renderCargoFlightsModal() {
-    renderCargoFlightList();
-    if (!_cargoFlights.length) return;
+  function selectCargoFlight(idx, pan) {
+    const f = _cargoFlights[idx];
+    if (!f) return;
+    _cargoSelectedIdx = idx;
+    
+    // E.D. Değişiklik: Stale API koordinatları yerine uçağın güncel animasyon koordinatlarını kullanalım
+    const pm = _cargoPlaneMarkers.get(f.icao24);
+    let targetLat = f.lat;
+    let targetLon = f.lon;
+    if (pm && pm.marker) {
+      const currentLatLng = pm.marker.getLatLng();
+      targetLat = currentLatLng.lat;
+      targetLon = currentLatLng.lng;
+    }
 
+    if (_cargoMap) {
+      // Önceki rotaya ait tüm katmanları temizle
+      _cargoRouteLayers.forEach(l => _cargoMap.removeLayer(l));
+      _cargoRouteLayers = [];
+      _cargoTraveledLine = null;
+      _cargoRemainingLine = null;
+
+      if (_cargoHighlightMarker) _cargoMap.removeLayer(_cargoHighlightMarker);
+      _cargoHighlightMarker = L.marker([targetLat, targetLon], { icon: cargoHighlightIcon, interactive: false, zIndexOffset: -100 });
+      _cargoHighlightMarker.addTo(_cargoMap);
+
+      const bounds = [[targetLat, targetLon]];
+
+      // Kalkış havalimanı ve rota çizgisi (kat edilen)
+      if (f.dep && f.dep.lat != null) {
+        const depMarker = L.marker([f.dep.lat, f.dep.lon], { icon: cargoAirportIcon('#16A34A') })
+          .bindPopup(`<strong>Kalkış (DEP):</strong> ${f.dep.name || f.dep.icao} (${f.dep.iata || ''})<br>${f.dep.city || ''}`);
+        depMarker.addTo(_cargoMap);
+        _cargoRouteLayers.push(depMarker);
+        bounds.push([f.dep.lat, f.dep.lon]);
+
+        _cargoTraveledLine = L.polyline(getArcPoints([f.dep.lat, f.dep.lon], [targetLat, targetLon]), { color: '#C8102E', weight: 2.5, opacity: 0.8 });
+        _cargoTraveledLine.addTo(_cargoMap);
+        _cargoRouteLayers.push(_cargoTraveledLine);
+      }
+
+      // Varış havalimanı ve rota çizgisi (kalan)
+      if (f.arr && f.arr.lat != null) {
+        const arrMarker = L.marker([f.arr.lat, f.arr.lon], { icon: cargoAirportIcon('#1D6FE8') })
+          .bindPopup(`<strong>Varış (ARR):</strong> ${f.arr.name || f.arr.icao} (${f.arr.iata || ''})<br>${f.arr.city || ''}`);
+        arrMarker.addTo(_cargoMap);
+        _cargoRouteLayers.push(arrMarker);
+        bounds.push([f.arr.lat, f.arr.lon]);
+
+        _cargoRemainingLine = L.polyline(getArcPoints([targetLat, targetLon], [f.arr.lat, f.arr.lon]), { color: '#C8102E', weight: 2.5, opacity: 0.4, dashArray: '6,6' });
+        _cargoRemainingLine.addTo(_cargoMap);
+        _cargoRouteLayers.push(_cargoRemainingLine);
+      }
+
+      if (pan) {
+        _cargoMap.setView([targetLat, targetLon], 6, { animate: true });
+      }
+
+      // E.D. Değişiklik: Haritadaki popup balonunu kaldırdığımız için programlı açmaya gerek yok
+    }
+    document.querySelectorAll('.cargo-flight-item').forEach(el => {
+      el.classList.toggle('selected', Number(el.dataset.idx) === idx);
+    });
+    renderCargoDetailPanel(f);
+  }
+
+  function focusCargoFlight(idx) {
+    selectCargoFlight(idx, true);
+  }
+
+  const _cargoDetailIcons = {
+    altitude: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`,
+    speed: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 12 8 12 11 19 14 5 17 12 21 12"/></svg>`,
+    vrateUp: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>`,
+    vrateDown: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="7" x2="17" y2="17"/><polyline points="17 7 17 17 7 17"/></svg>`,
+    vrateLevel: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+    squawk: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 7.76a6 6 0 0 0 0 8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>`,
+    country: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18"/></svg>`,
+    clock: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>`,
+    transponder: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="11" rx="2"/><line x1="7" y1="11" x2="7" y2="11"/><line x1="12" y1="3" x2="12" y2="7"/></svg>`,
+    company: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20"/><path d="M4 22V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v18"/><path d="M9 18H7v-2h2v2zm0-4H7v-2h2v2zm0-4H7V8h2v2zm0-4H7V4h2v2zm5 12h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V8h2v2zm0-4h-2V4h2v2zm5 12h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V8h2v2zm0-4h-2V4h2v2z"/></svg>`,
+  };
+
+  function cargoDetailRow(icon, label, value, color) {
+    return `<div style="display:flex; align-items:flex-start; gap:8px; padding:7px 0; border-bottom:1px solid var(--border-soft, var(--border));">
+      <span style="color:${color || 'var(--text-3)'}; flex-shrink:0; margin-top:1px;">${icon}</span>
+      <div style="min-width:0;">
+        <div style="font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:0.03em;">${label}</div>
+        <div style="font-size:13px; font-weight:600; color:var(--text); margin-top:1px;">${value}</div>
+      </div>
+    </div>`;
+  }
+
+  function renderCargoDetailPanel(f) {
+    const panel = document.getElementById('cargo-flight-detail');
+    if (!panel) return;
+    if (!f) {
+      panel.innerHTML = `<div style="color:var(--text-3); font-size:12px; padding:8px 2px;">Detayları görmek için bir uçuş seçin.</div>`;
+      return;
+    }
+    
+    let progress = 0;
+    let depTimeStr = '—';
+    let arrTimeStr = '—';
+    if (f.dep && f.dep.lat != null && f.arr && f.arr.lat != null) {
+      const dDep = getDistance(f.lat, f.lon, f.dep.lat, f.dep.lon);
+      const dArr = getDistance(f.lat, f.lon, f.arr.lat, f.arr.lon);
+      const totalDist = dDep + dArr;
+      if (totalDist > 0) {
+        progress = Math.max(0, Math.min(1, dDep / totalDist));
+      }
+      
+      const velocity = (f.velocity && f.velocity > 0) ? f.velocity : 220; // m/s
+      const secondsElapsed = (dDep * 1000) / velocity;
+      const secondsRemaining = (dArr * 1000) / velocity;
+      
+      const nowMs = Date.now();
+      const depTime = new Date(nowMs - secondsElapsed * 1000);
+      const arrTime = new Date(nowMs + secondsRemaining * 1000);
+      
+      const formatTime = (date) => {
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+        return `${hh}:${mm}`;
+      };
+      
+      depTimeStr = formatTime(depTime);
+      arrTimeStr = formatTime(arrTime);
+    }
+
+    const vrate = f.verticalRate || 0;
+    const vIcon = vrate > 0.5 ? _cargoDetailIcons.vrateUp : vrate < -0.5 ? _cargoDetailIcons.vrateDown : _cargoDetailIcons.vrateLevel;
+    const vColor = vrate > 0.5 ? '#10B981' : vrate < -0.5 ? '#EF4444' : 'var(--text-3)';
+    const vLabel = vrate > 0.5 ? 'Tırmanıyor' : vrate < -0.5 ? 'Alçalıyor' : 'Düz Uçuş';
+    const secsAgo = Math.max(0, Math.floor(Date.now() / 1000) - (f.lastContact || 0));
+    const typeLabel = f.type === 'cargo' ? 'Kargo' : 'Yolcu';
+    const typeColor = f.type === 'cargo' ? '#E30613' : '#1D6FE8';
+
+    // 0. Sinyal Kaybı Bannerı
+    let signalLostBanner = '';
+    if (f.signalLost) {
+      signalLostBanner = `
+        <div style="background:rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.3); border-radius:8px; padding:8px 10px; margin-bottom:12px; display:flex; align-items:center; gap:8px; color:var(--text); font-size:11px; font-weight:500;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>
+            <strong style="color:#F59E0B;">Sinyal Kaybı (Kapsama Dışı)</strong><br>
+            Uçuş tahmini rota ve canlı dead-reckoning konumu ile takip ediliyor.
+          </div>
+        </div>
+      `;
+    }
+
+    // 2. Bilet Tasarımı
+    const pct = progress * 100;
+    const ticketHtml = `
+      <div class="ticket-container">
+        <div class="ticket-cutout-left"></div>
+        <div class="ticket-cutout-right"></div>
+        
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:2px; padding:0 4px;">
+          <div style="text-align:left; min-width:70px;">
+            <div class="ticket-airport-code">${f.dep?.iata || f.dep?.icao || '???'}</div>
+            <div style="font-size:12px; font-weight:600; color:var(--text-1); margin-top:2px;">${depTimeStr}</div>
+            <div class="ticket-airport-city" title="${f.dep?.city || f.dep?.name || ''}">${f.dep?.city || 'Bilinmiyor'}</div>
+          </div>
+          
+          <div class="ticket-plane-path">
+            <div class="ticket-line-traveled" style="width: ${pct}%;"></div>
+            <div class="ticket-line-remaining" style="left: ${pct}%; width: ${100 - pct}%;"></div>
+            <svg class="ticket-plane-icon" style="left: ${pct}%;" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
+          </div>
+          
+          <div style="text-align:right; min-width:70px;">
+            <div class="ticket-airport-code">${f.arr?.iata || f.arr?.icao || '???'}</div>
+            <div style="font-size:12px; font-weight:600; color:var(--text-1); margin-top:2px;">${arrTimeStr}</div>
+            <div class="ticket-airport-city" title="${f.arr?.city || f.arr?.name || ''}">${f.arr?.city || 'Bilinmiyor'}</div>
+          </div>
+        </div>
+        
+        <div class="ticket-divider"></div>
+        
+        <div class="ticket-row">
+          <div>
+            <div class="ticket-label">Çağrı Kodu</div>
+            <div class="ticket-value">${f.callsign}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="ticket-label">Kuyruk Tescil</div>
+            <div class="ticket-value" style="font-family:monospace; font-size:11px;">${f.aircraftDetails?.registration || '—'}</div>
+          </div>
+          <div>
+            <div class="ticket-label">Uçak Tipi</div>
+            <div class="ticket-value" style="font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}">${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="ticket-label">Uçuş Tipi</div>
+            <div style="margin-top:2px;"><span style="display:inline-block; font-size:9px; font-weight:700; color:${typeColor}; background:${typeColor}15; border-radius:4px; padding:1px 5px; text-transform:uppercase;">${typeLabel}</span></div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    panel.innerHTML = `
+      ${signalLostBanner}
+      ${ticketHtml}
+      <div style="margin-top:6px; background:var(--bg); border:1px solid var(--border-soft); border-radius:12px; padding:6px 12px 10px;">
+        ${cargoDetailRow(_cargoDetailIcons.altitude, 'İrtifa (Barometrik)', Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR') + ' ft')}
+        ${cargoDetailRow(_cargoDetailIcons.altitude, 'İrtifa (GPS)', f.geoAltitude != null ? Math.round(f.geoAltitude * 3.281).toLocaleString('tr-TR') + ' ft' : '—')}
+        ${cargoDetailRow(_cargoDetailIcons.speed, 'Yer Hızı', Math.round((f.velocity || 0) * 1.944) + ' kt')}
+        ${cargoDetailRow(vIcon, 'Dikey Hız', `${vLabel}${f.verticalRate ? ' · ' + Math.round(f.verticalRate * 196.85).toLocaleString('tr-TR') + ' ft/dk' : ''}`, vColor)}
+        ${cargoDetailRow(_cargoDetailIcons.transponder, 'Transponder (ICAO)', f.icao24.toUpperCase())}
+        ${cargoDetailRow(_cargoDetailIcons.squawk, 'Squawk Kodu', f.squawk || '—')}
+        ${cargoDetailRow(_cargoDetailIcons.country, 'Tescil Ülkesi', f.originCountry || '—')}
+        ${cargoDetailRow(_cargoDetailIcons.company, 'Operatör / Sahibi', f.aircraftDetails?.owner || '—')}
+        ${cargoDetailRow(_cargoDetailIcons.clock, 'Son İletişim', `<span id="cargo-detail-lastcontact">${secsAgo}s önce</span>`)}
+      </div>
+    `;
+  }
+
+  let _cargoShowNetwork = true;
+  const cargoNetworkIcon = L.divIcon({
+    className: 'cargo-network-icon',
+    html: `<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="#9CA3AF" fill-opacity="0.55" stroke="#6B7280" stroke-width="1"/></svg>`,
+    iconSize: [8, 8],
+    iconAnchor: [4, 4],
+  });
+
+  window.toggleCargoNetworkLayer = function(checked) {
+    _cargoShowNetwork = checked;
+    renderCargoFlightsModal();
+  };
+
+  // Canlı hareket: API verisi ~60sn'de bir gelir, ama uçaklar arada da
+  // havada ilerliyor. Her saniye, son bilinen konum + hız + yön (track)
+  // kullanılarak "dead reckoning" ile konum tahmin edilip marker güncellenir —
+  // gerçek bir flight tracker'daki gibi sürekli hareket hissi verir.
+  const _cargoPlaneMarkers = new Map(); // icao24 -> { marker, baseLat, baseLon, velocity, track, baseTime }
+  let _cargoAnimInterval = null;
+
+  function startCargoAnimation() {
+    if (_cargoAnimInterval) return;
+    _cargoAnimInterval = setInterval(() => {
+      const nowMs = Date.now();
+      const selectedFlight = _cargoSelectedIdx != null ? _cargoFlights[_cargoSelectedIdx] : null;
+      _cargoPlaneMarkers.forEach((p, icao24) => {
+        const elapsedSec = (nowMs - p.baseTime) / 1000;
+        if (!p.velocity || elapsedSec <= 0) return;
+        const trackRad = (p.track || 0) * Math.PI / 180;
+        const dx = p.velocity * elapsedSec * Math.sin(trackRad); // doğu (m)
+        const dy = p.velocity * elapsedSec * Math.cos(trackRad); // kuzey (m)
+        const metersPerDegLat = 111320;
+        const metersPerDegLon = 111320 * Math.cos(p.baseLat * Math.PI / 180);
+        const newLat = p.baseLat + dy / metersPerDegLat;
+        const newLon = p.baseLon + dx / metersPerDegLon;
+        p.marker.setLatLng([newLat, newLon]);
+        // Vurgu işareti seçili uçağı takip etsin
+        if (_cargoHighlightMarker && selectedFlight && selectedFlight.icao24 === icao24) {
+          _cargoHighlightMarker.setLatLng([newLat, newLon]);
+          // Rota çizgilerini canlı güncelle
+          if (_cargoTraveledLine && selectedFlight.dep && selectedFlight.dep.lat != null) {
+            _cargoTraveledLine.setLatLngs(getArcPoints([selectedFlight.dep.lat, selectedFlight.dep.lon], [newLat, newLon]));
+          }
+          if (_cargoRemainingLine && selectedFlight.arr && selectedFlight.arr.lat != null) {
+            _cargoRemainingLine.setLatLngs(getArcPoints([newLat, newLon], [selectedFlight.arr.lat, selectedFlight.arr.lon]));
+          }
+        }
+      });
+      if (selectedFlight) {
+        const lcEl = document.getElementById('cargo-detail-lastcontact');
+        if (lcEl) {
+          const secsAgo = Math.max(0, Math.floor(nowMs / 1000) - (selectedFlight.lastContact || 0));
+          lcEl.textContent = secsAgo + 's önce';
+        }
+      }
+    }, 1000);
+  }
+
+  function stopCargoAnimation() {
+    if (_cargoAnimInterval) { clearInterval(_cargoAnimInterval); _cargoAnimInterval = null; }
+    _cargoPlaneMarkers.clear();
+    _cargoSelectedIdx = null;
+    if (_cargoHighlightMarker && _cargoMap) { _cargoMap.removeLayer(_cargoHighlightMarker); }
+    _cargoHighlightMarker = null;
+    if (_cargoMap) {
+      _cargoRouteLayers.forEach(l => _cargoMap.removeLayer(l));
+    }
+    _cargoRouteLayers = [];
+    _cargoTraveledLine = null;
+    _cargoRemainingLine = null;
+  }
+
+  function renderCargoFlightsModal(fitBounds = false) {
+    renderCargoFlightList();
     if (!_cargoMap) {
       _cargoMap = L.map('cargo-flights-map', { worldCopyJump: true, fadeAnimation: false }).setView([30, 30], 2);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
         maxZoom: 18,
       }).addTo(_cargoMap);
+      fitBounds = true;
     }
 
     _cargoMapLayers.forEach(l => _cargoMap.removeLayer(l));
     _cargoMapLayers = [];
+    _cargoPlaneMarkers.clear();
 
     const bounds = [];
-    _cargoFlights.forEach(f => {
-      const planeMarker = L.marker([f.lat, f.lon], { icon: cargoPlaneIcon(f.track, '#C8102E') })
-        .bindPopup(`<strong>${f.callsign}</strong><br>${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}<br>${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt`);
+
+    if (_cargoShowNetwork) {
+      const typeChar = _cargoActiveFilter === 'cargo' ? 'c' : 'p';
+      THY_NETWORK.forEach(([code, city, country, lat, lon, types]) => {
+        if (!types.includes(typeChar)) return;
+        const dot = L.marker([lat, lon], { icon: cargoNetworkIcon })
+          .bindPopup(`<strong>${city}</strong> (${code})<br>${country}`);
+        dot.addTo(_cargoMap);
+        _cargoMapLayers.push(dot);
+        bounds.push([lat, lon]);
+      });
+    }
+
+    const baseTime = Date.now();
+    _cargoFlights.forEach((f, idx) => {
+      const routeInfo = (f.dep || f.arr)
+        ? `${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}<br>`
+        : `<span style="font-size:11px;color:#9CA3AF">Rota bilgisi mevcut değil</span><br>`;
+      const markerColor = f.signalLost ? '#F59E0B' : '#C8102E';
+      const planeMarker = L.marker([f.lat, f.lon], { icon: cargoPlaneIcon(f.track, markerColor) });
+      
+      // E.D. Değişiklik: Popup yerine doğrudan marker tıklamasıyla uçuşu seçip haritayı merkezliyoruz
+      planeMarker.on('click', () => {
+        selectCargoFlight(idx, true);
+      });
+      
       planeMarker.addTo(_cargoMap);
       _cargoMapLayers.push(planeMarker);
       bounds.push([f.lat, f.lon]);
-
-      if (f.dep && f.dep.lat != null) {
-        const depMarker = L.marker([f.dep.lat, f.dep.lon], { icon: cargoAirportIcon('#16A34A') })
-          .bindPopup(`Kalkış: ${f.dep.name || f.dep.icao}`);
-        depMarker.addTo(_cargoMap);
-        _cargoMapLayers.push(depMarker);
-        bounds.push([f.dep.lat, f.dep.lon]);
-
-        const traveledLine = L.polyline([[f.dep.lat, f.dep.lon], [f.lat, f.lon]], { color: '#C8102E', weight: 2, opacity: 0.8 });
-        traveledLine.addTo(_cargoMap);
-        _cargoMapLayers.push(traveledLine);
-      }
-
-      if (f.arr && f.arr.lat != null) {
-        const arrMarker = L.marker([f.arr.lat, f.arr.lon], { icon: cargoAirportIcon('#1D6FE8') })
-          .bindPopup(`Varış: ${f.arr.name || f.arr.icao}`);
-        arrMarker.addTo(_cargoMap);
-        _cargoMapLayers.push(arrMarker);
-        bounds.push([f.arr.lat, f.arr.lon]);
-
-        const remainingLine = L.polyline([[f.lat, f.lon], [f.arr.lat, f.arr.lon]], { color: '#C8102E', weight: 2, opacity: 0.4, dashArray: '6,6' });
-        remainingLine.addTo(_cargoMap);
-        _cargoMapLayers.push(remainingLine);
-      }
+      _cargoPlaneMarkers.set(f.icao24, {
+        marker: planeMarker, baseLat: f.lat, baseLon: f.lon,
+        velocity: f.velocity, track: f.track, baseTime,
+      });
     });
 
-    if (bounds.length) {
-      _cargoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 5 });
+    // Seçim durumunu koru (ilk açılışta varsayılan seçimi kaldırıyoruz)
+    let prevSelectedCallsign = null;
+    if (_cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx]) {
+      prevSelectedCallsign = _cargoFlights[_cargoSelectedIdx].callsign;
     }
+    let newIdx = -1;
+    if (prevSelectedCallsign) {
+      const foundIdx = _cargoFlights.findIndex(f => f.callsign === prevSelectedCallsign);
+      if (foundIdx !== -1) newIdx = foundIdx;
+    }
+
+    if (newIdx !== -1) {
+      selectCargoFlight(newIdx, false);
+      
+      // Eğer fitBounds true ise ve seçili uçuş varsa, haritayı bu uçuşun rotasına sığdır
+      if (fitBounds) {
+        const selectedFlight = _cargoFlights[newIdx];
+        const flightBounds = [[selectedFlight.lat, selectedFlight.lon]];
+        if (selectedFlight.dep && selectedFlight.dep.lat != null) {
+          flightBounds.push([selectedFlight.dep.lat, selectedFlight.dep.lon]);
+        }
+        if (selectedFlight.arr && selectedFlight.arr.lat != null) {
+          flightBounds.push([selectedFlight.arr.lat, selectedFlight.arr.lon]);
+        }
+        _cargoMap.fitBounds(flightBounds, { padding: [50, 50], maxZoom: 6 });
+      }
+    } else {
+      _cargoSelectedIdx = null;
+      renderCargoDetailPanel(null);
+      if (fitBounds && bounds.length) {
+        _cargoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 5 });
+      }
+    }
+
     setTimeout(() => _cargoMap.invalidateSize(), 50);
+    startCargoAnimation();
   }
 
   window.openCargoFlightsModal = function() {
@@ -13089,11 +13720,12 @@ async function loadDashboard() {
       btn.classList.toggle('active', btn.dataset.type === 'cargo');
     });
     m.style.display = 'flex';
-    setTimeout(() => renderCargoFlightsModal(), 50);
+    setTimeout(() => renderCargoFlightsModal(true), 50);
   };
   window.closeCargoFlightsModal = function() {
     const m = document.getElementById('cargo-flights-modal');
     if (m) m.style.display = 'none';
+    stopCargoAnimation();
   };
 
   // Expose to window scope
@@ -13107,6 +13739,19 @@ async function loadDashboard() {
   initFbxCard();
   initIataCard();
   initCargoCard();
+
+  // "Havadaki Kargo Uçağı Sayısı" kartı ALL_INDICATOR_CARDS/applyIndicatorsConfig
+  // döngüsünün dışında olduğundan "Yeni" rozetini kendi başına uygular.
+  (function applyCargoNewBadge() {
+    const el = document.getElementById('dc-cargo');
+    if (!el || typeof isNewBadgeVisible !== 'function') return;
+    if (isNewBadgeVisible('dc-cargo') && !el.querySelector('.dash-card-new-badge')) {
+      const badge = document.createElement('span');
+      badge.className = 'dash-card-new-badge';
+      badge.textContent = 'Yeni';
+      el.prepend(badge);
+    }
+  })();
 
   // ── THY Hisse Verisini Çek ve Göster ──────────────────────────────
   let _thy1yRaw = null;
@@ -13622,7 +14267,7 @@ async function loadDashboard() {
       // Uçuşlar 7/24 devam eder, piyasa kapanışı yoktur
       return {
         isOpen: true,
-        tooltipMessage: 'Havadaki THY Kargo uçaklarının sayısı. Konumlar OpenSky Network ADS-B verisinden 60 saniyede bir otomatik güncellenir.'
+        tooltipMessage: 'Havadaki Turkish Cargo uçaklarının sayısı. Konumlar OpenSky Network ADS-B verisinden 60 saniyede bir otomatik güncellenir.'
       };
     }
 
@@ -18265,6 +18910,14 @@ function initControls(allArticles) {
       renderReport();
       // Giriş kartındaki canlı önizlemeyi doldur (son bülten tarihi + özet)
       updateReportsHomeCard();
+      // Bildirim sistemi: yeni raporları kaydet, sekme açıksa okundu say
+      initArzNotifStore(_reports);
+      if (_activeReportType === 'arz_talep_navlun' && !_reportsHomeActive) {
+        window.markAllArzNotifsRead();
+      } else {
+        updateNotifBell();
+      }
+
       // Derin link (#reports/finansal vb.) ile başka sekmeye geçilmiş olabilir;
       // asenkron yükleme bitince navlun görünümünü yalnız hâlâ o sekmedeyken aç.
       if (_activeReportType === 'arz_talep_navlun' && !_reportsHomeActive) viewEl.style.display = 'block';
@@ -18849,6 +19502,20 @@ function initControls(allArticles) {
     const leftSidebar = document.getElementById('reports-sidebar');
     if (rightSidebar) rightSidebar.style.display = (isFilo || isIata) ? 'none' : '';
     if (leftSidebar) leftSidebar.style.display = (isFilo || isIata) ? 'none' : '';
+
+    if (isRapor) {
+      if (typeof window.markAllArzNotifsRead === 'function') {
+        window.markAllArzNotifsRead();
+      }
+    } else if (isIata) {
+      if (typeof window.markAllIataNotifsRead === 'function') {
+        window.markAllIataNotifsRead();
+      }
+    } else if (isFinansal) {
+      if (typeof window.markAllFinNotifsRead === 'function') {
+        window.markAllFinNotifsRead();
+      }
+    }
   }
 
   // Pill tıklaması
@@ -18974,13 +19641,25 @@ function initControls(allArticles) {
   window._iataReportsList = [];
   let _iataChartInstance = null;
 
-  // ── IATA Bildirim Sistemi ────────────────────────────────────────────────
+  // ── Raporlar Bildirim Sistemi (Local Storage Tabanlı) ────────────────────
   const IATA_NOTIF_KEY = 'iata_notifs';
+  const ARZ_NOTIF_KEY = 'arz_notifs';
+  const FIN_NOTIF_KEY = 'fin_notifs';
 
-  function getNotifStore() {
+  function getIataNotifStore() {
     try { return JSON.parse(localStorage.getItem(IATA_NOTIF_KEY) || '{}'); } catch(e) { return {}; }
   }
-  function saveNotifStore(s) { localStorage.setItem(IATA_NOTIF_KEY, JSON.stringify(s)); }
+  function saveIataNotifStore(s) { localStorage.setItem(IATA_NOTIF_KEY, JSON.stringify(s)); }
+
+  function getArzNotifStore() {
+    try { return JSON.parse(localStorage.getItem(ARZ_NOTIF_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveArzNotifStore(s) { localStorage.setItem(ARZ_NOTIF_KEY, JSON.stringify(s)); }
+
+  function getFinNotifStore() {
+    try { return JSON.parse(localStorage.getItem(FIN_NOTIF_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveFinNotifStore(s) { localStorage.setItem(FIN_NOTIF_KEY, JSON.stringify(s)); }
 
   function formatNotifDate(ts) {
     const d = new Date(ts);
@@ -18988,8 +19667,8 @@ function initControls(allArticles) {
     return `${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()} · ${p(d.getHours())}:${p(d.getMinutes())}'de eklendi`;
   }
 
-  function initNotifStore(reports) {
-    const store = getNotifStore();
+  function initIataNotifStore(reports) {
+    const store = getIataNotifStore();
     const isFirst = Object.keys(store).length === 0;
     let changed = false;
     reports.forEach(r => {
@@ -18998,49 +19677,130 @@ function initControls(allArticles) {
         changed = true;
       }
     });
-    if (changed) saveNotifStore(store);
+    if (changed) saveIataNotifStore(store);
+  }
+
+  function initArzNotifStore(reports) {
+    const store = getArzNotifStore();
+    const isFirst = Object.keys(store).length === 0;
+    let changed = false;
+    reports.forEach(r => {
+      if (!r.date) return;
+      const key = r.date;
+      if (!store[key]) {
+        const displayDate = new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+        store[key] = {
+          detectedAt: Date.now(),
+          read: isFirst,
+          displayDate: displayDate
+        };
+        changed = true;
+      }
+    });
+    if (changed) saveArzNotifStore(store);
+  }
+
+  function initFinNotifStore(reports) {
+    const store = getFinNotifStore();
+    const isFirst = Object.keys(store).length === 0;
+    let changed = false;
+    reports.forEach(r => {
+      const key = r.key;
+      if (!store[key]) {
+        store[key] = {
+          detectedAt: Date.now(),
+          read: isFirst,
+          name: r.name,
+          year: r.year,
+          airline: r.airline
+        };
+        changed = true;
+      }
+    });
+    if (changed) saveFinNotifStore(store);
   }
 
   function updateNotifBell() {
-    const store = getNotifStore();
-    const entries = Object.entries(store).sort((a, b) => b[1].detectedAt - a[1].detectedAt);
-    const unread = entries.filter(([, v]) => !v.read).length;
+    const iataStore = getIataNotifStore();
+    const arzStore = getArzNotifStore();
+    const finStore = getFinNotifStore();
+
+    const iataEntries = Object.entries(iataStore).map(([date, info]) => ({
+      key: date,
+      type: 'iata',
+      date: date,
+      detectedAt: info.detectedAt,
+      read: info.read,
+      title: `${date} raporu yayınlandı`,
+      tag: 'IATA Market Analizi'
+    }));
+
+    const arzEntries = Object.entries(arzStore).map(([date, info]) => ({
+      key: date,
+      type: 'arz',
+      date: date,
+      detectedAt: info.detectedAt,
+      read: info.read,
+      title: `${info.displayDate || 'Yeni'} bülteni yayınlandı`,
+      tag: 'Arz & Talep Analizi'
+    }));
+
+    const finEntries = Object.entries(finStore).map(([key, info]) => ({
+      key: key,
+      type: 'fin',
+      detectedAt: info.detectedAt,
+      read: info.read,
+      title: `${info.name} ${info.year} verileri eklendi`,
+      tag: 'Finansal Tablolar'
+    }));
+
+    const allEntries = [...iataEntries, ...arzEntries, ...finEntries].sort((a, b) => b.detectedAt - a.detectedAt);
+    const unreadCount = allEntries.filter(e => !e.read).length;
 
     const dot = document.getElementById('hdr-bell-dot');
-    if (dot) dot.style.display = unread > 0 ? 'block' : 'none';
+    if (dot) dot.style.display = unreadCount > 0 ? 'block' : 'none';
 
     const clearBtn = document.getElementById('hdr-bell-clear-btn');
-    if (clearBtn) clearBtn.style.display = entries.length > 0 ? 'block' : 'none';
+    if (clearBtn) clearBtn.style.display = allEntries.length > 0 ? 'block' : 'none';
 
     const emptyEl = document.getElementById('hdr-bell-empty');
     const itemsEl = document.getElementById('hdr-bell-items');
 
-    if (entries.length === 0) {
+    if (allEntries.length === 0) {
       if (emptyEl) emptyEl.style.display = 'flex';
       if (itemsEl) itemsEl.innerHTML = '';
     } else {
       if (emptyEl) emptyEl.style.display = 'none';
       if (itemsEl) {
-        itemsEl.innerHTML = entries.map(([date, info]) => `
-          <div class="hdr-notif-item" onclick="openIataNotif('${date}')">
-            <span class="hdr-notif-dot${info.read ? ' read' : ''}"></span>
+        itemsEl.innerHTML = allEntries.map(e => `
+          <div class="hdr-notif-item" onclick="${e.type === 'iata' ? 'openIataNotif' : (e.type === 'arz' ? 'openArzNotif' : 'openFinNotif')}('${e.key}')">
+            <span class="hdr-notif-dot${e.read ? ' read' : ''}"></span>
             <div class="hdr-notif-body">
-              <div class="hdr-notif-tag">IATA Market Analizi</div>
-              <div class="hdr-notif-title">${date} raporu yayınlandı</div>
-              <div class="hdr-notif-date">${formatNotifDate(info.detectedAt)}</div>
+              <div class="hdr-notif-tag">${e.tag}</div>
+              <div class="hdr-notif-title">${e.title}</div>
+              <div class="hdr-notif-date">${formatNotifDate(e.detectedAt)}</div>
             </div>
           </div>
         `).join('');
       }
     }
 
-    const cardBell = document.getElementById('iata-bell-badge');
-    if (cardBell) cardBell.classList.toggle('has-notif', unread > 0);
+    const cardIataBell = document.getElementById('iata-bell-badge');
+    const iataUnread = iataEntries.filter(e => !e.read).length;
+    if (cardIataBell) cardIataBell.classList.toggle('has-notif', iataUnread > 0);
+
+    const cardArzBell = document.getElementById('arz-bell-badge');
+    const arzUnread = arzEntries.filter(e => !e.read).length;
+    if (cardArzBell) cardArzBell.classList.toggle('has-notif', arzUnread > 0);
+
+    const cardFinBell = document.getElementById('fin-bell-badge');
+    const finUnread = finEntries.filter(e => !e.read).length;
+    if (cardFinBell) cardFinBell.classList.toggle('has-notif', finUnread > 0);
   }
 
   window.openIataNotif = function(date) {
-    const store = getNotifStore();
-    if (store[date]) { store[date].read = true; saveNotifStore(store); }
+    const store = getIataNotifStore();
+    if (store[date]) { store[date].read = true; saveIataNotifStore(store); }
     updateNotifBell();
     document.getElementById('hdr-bell-panel')?.classList.remove('open');
     document.getElementById('hdr-bell')?.setAttribute('aria-expanded', 'false');
@@ -19048,12 +19808,157 @@ function initControls(allArticles) {
     setTimeout(() => { if (typeof switchReportType === 'function') switchReportType('iata_market_analizi'); }, 80);
   };
 
-  window.markAllNotifsRead = function() {
-    const store = getNotifStore();
+  window.openArzNotif = function(date) {
+    const store = getArzNotifStore();
+    if (store[date]) { store[date].read = true; saveArzNotifStore(store); }
+    updateNotifBell();
+    document.getElementById('hdr-bell-panel')?.classList.remove('open');
+    document.getElementById('hdr-bell')?.setAttribute('aria-expanded', 'false');
+    window.location.hash = '#reports';
+    setTimeout(() => {
+      if (typeof switchReportType === 'function') {
+        switchReportType('arz_talep_navlun');
+        if (typeof _reports !== 'undefined') {
+          const idx = _reports.findIndex(r => r.date === date);
+          if (idx !== -1 && typeof selectReport === 'function') {
+            selectReport(idx);
+          }
+        }
+      }
+    }, 80);
+  };
+
+  window.openFinNotif = function(key) {
+    const store = getFinNotifStore();
+    if (store[key]) { store[key].read = true; saveFinNotifStore(store); }
+    updateNotifBell();
+    document.getElementById('hdr-bell-panel')?.classList.remove('open');
+    document.getElementById('hdr-bell')?.setAttribute('aria-expanded', 'false');
+    window.location.hash = '#reports';
+    
+    const parts = key.split('_');
+    const airline = parts[0];
+    
+    setTimeout(() => {
+      if (typeof switchReportType === 'function') {
+        switchReportType('finansal');
+        if (typeof _finHidden !== 'undefined') {
+          _finHidden.delete(airline);
+          if (typeof renderFinChart === 'function') renderFinChart();
+          if (typeof renderFinTable === 'function') renderFinTable();
+          if (typeof buildFinToggles === 'function') buildFinToggles();
+          
+          const el = document.getElementById('finansal-report-container');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }, 80);
+  };
+
+  window.markAllIataNotifsRead = function() {
+    const store = getIataNotifStore();
     Object.keys(store).forEach(k => store[k].read = true);
-    saveNotifStore(store);
+    saveIataNotifStore(store);
     updateNotifBell();
   };
+
+  window.markAllArzNotifsRead = function() {
+    const store = getArzNotifStore();
+    Object.keys(store).forEach(k => store[k].read = true);
+    saveArzNotifStore(store);
+    updateNotifBell();
+  };
+
+  window.markAllFinNotifsRead = function() {
+    const store = getFinNotifStore();
+    Object.keys(store).forEach(k => store[k].read = true);
+    saveFinNotifStore(store);
+    updateNotifBell();
+  };
+
+  window.markAllNotifsRead = function() {
+    const iataStore = getIataNotifStore();
+    Object.keys(iataStore).forEach(k => iataStore[k].read = true);
+    saveIataNotifStore(iataStore);
+
+    const arzStore = getArzNotifStore();
+    Object.keys(arzStore).forEach(k => arzStore[k].read = true);
+    saveArzNotifStore(arzStore);
+
+    const finStore = getFinNotifStore();
+    Object.keys(finStore).forEach(k => finStore[k].read = true);
+    saveFinNotifStore(finStore);
+
+    updateNotifBell();
+  };
+
+  // Background Check for new reports on page load
+  async function checkNewReportsBackground() {
+    try {
+      // 1. Fetch Arz & Talep reports in the background
+      const arzPromise = fetch(RAPORLAR_URL + '?type=arz_talep_navlun')
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data && data.reports) {
+            const seenDates = new Set();
+            const reports = data.reports.filter(r => {
+              if (!r.date) return true;
+              const dateStr = new Date(r.date).toDateString();
+              if (seenDates.has(dateStr)) return false;
+              seenDates.add(dateStr);
+              return true;
+            });
+            initArzNotifStore(reports);
+          }
+        }).catch(err => console.warn('Background check Arz reports error:', err));
+
+      // 2. Fetch IATA reports in the background
+      const iataStaticPromise = fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
+      const iataLatestPromise = fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null);
+
+      const iataPromise = Promise.all([iataStaticPromise, iataLatestPromise]).then(([staticReports, latest]) => {
+        let mergedReports = [...staticReports];
+        if (latest && latest.demand) {
+          const exists = staticReports.some(r => r.date === latest.date);
+          if (!exists) {
+            mergedReports.unshift({
+              date: latest.date,
+              demand: latest.demand,
+              capacity: latest.capacity,
+              loadFactor: latest.loadFactor,
+              spotRate: latest.spotRate,
+              link: latest.pdfLink,
+              summary: latest.summary
+            });
+          }
+        }
+        initIataNotifStore(mergedReports);
+      }).catch(err => console.warn('Background check IATA reports error:', err));
+
+      // 3. Scan local financials data if available
+      if (typeof FIN_DATA !== 'undefined' && FIN_DATA) {
+        const finReports = [];
+        Object.entries(FIN_DATA).forEach(([airline, data]) => {
+          if (data.financial && data.financial.total_revenue_musd) {
+            Object.keys(data.financial.total_revenue_musd).forEach(year => {
+              finReports.push({
+                key: `${airline}_${year}`,
+                airline: airline,
+                name: data.name,
+                year: year
+              });
+            });
+          }
+        });
+        initFinNotifStore(finReports);
+      }
+
+      await Promise.all([arzPromise, iataPromise]);
+      updateNotifBell();
+    } catch (e) {
+      console.warn('Background reports check failed:', e);
+    }
+  }
   // ────────────────────────────────────────────────────────────────────────
 
   async function initIataReportsTab() {
@@ -19107,9 +20012,8 @@ function initControls(allArticles) {
       _iataReportsList = mergedReports;
 
       // Bildirim sistemi: yeni raporları kaydet, IATA sekmesi açıksa okundu say
-      initNotifStore(mergedReports);
-      window.markAllNotifsRead();
-      updateNotifBell();
+      initIataNotifStore(mergedReports);
+      window.markAllIataNotifsRead();
 
       // Update home card meta
       const homeMetaEl = document.getElementById('rhome-iata-meta');
@@ -19970,6 +20874,7 @@ function initControls(allArticles) {
   window.renderIataTrendChart = renderIataTrendChart;
   window.updateIataTrendChartData = updateIataTrendChartData;
   window.switchIataYear = switchIataYear;
+  window.checkNewReportsBackground = checkNewReportsBackground;
 
   // ── IATA Modal: Period Filter + Multi-Metric Chart ──────────────────────
   window._iataAllData = [];
@@ -20414,6 +21319,9 @@ window.initFinansalTab = function() {
   if (!FIN_DATA) {
     setTimeout(initFinansalTab, 200);
     return;
+  }
+  if (typeof window.markAllFinNotifsRead === 'function') {
+    window.markAllFinNotifsRead();
   }
   if (_finBuilt) { renderFinChart(); return; }
   _finBuilt = true;
@@ -21312,7 +22220,16 @@ async function loadAppData() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  loadAppData().catch(e => console.warn('Data load error:', e));
+  loadAppData().then(() => {
+    if (typeof checkNewReportsBackground === 'function') {
+      checkNewReportsBackground();
+    }
+  }).catch(e => {
+    console.warn('Data load error:', e);
+    if (typeof checkNewReportsBackground === 'function') {
+      checkNewReportsBackground();
+    }
+  });
 
   // Custom date inputs event binding
   ['wci', 'bafi', 'iata', 'fbx', 'thy', 'forex', 'brent', 'jetfuel'].forEach(prefix => {
@@ -21832,7 +22749,8 @@ const ALL_INDICATOR_CARDS = [
 
 // Yeni eklenen kartlar: { addedAt: ISO tarih, badgeDays: kaç gün "YENİ" etiketi görünsün }
 const NEW_CARDS = {
-  'dc-bafi': { addedAt: '2026-06-18', badgeDays: 3 }
+  'dc-bafi': { addedAt: '2026-06-18', badgeDays: 3 },
+  'dc-cargo': { addedAt: '2026-06-25', badgeDays: 7 }
 };
 
 function isNewBadgeVisible(cardId) {
@@ -21891,6 +22809,12 @@ window.applyIndicatorsConfig = function() {
       el.style.display = 'none';
     }
   });
+
+  // dc-cargo özelleştirme/sıralama sistemine dahil değil (ALL_INDICATOR_CARDS'ta
+  // yok) — yukarıdaki döngü onu yerinden oynatmadan diğer kartları sonuna taşıdığı
+  // için en sona sabitlenmesi gerekiyor, yoksa listenin başına kayar.
+  const cargoEl = document.getElementById('dc-cargo');
+  if (cargoEl) mainContainer.appendChild(cargoEl);
 
   // "YENİ" badge ekle / kaldır
   ALL_INDICATOR_CARDS.forEach(card => {
@@ -22158,24 +23082,196 @@ window.resetIndicatorsConfig = function() {
     </div>
 
     <!-- Kargo Uçakları Harita Modali -->
+    <style>
+      @keyframes cargoHighlightPulse {
+        0% { transform: scale(0.8); opacity: 0.9; }
+        70% { transform: scale(1.35); opacity: 0; }
+        100% { transform: scale(1.35); opacity: 0; }
+      }
+      .cargo-flight-item {
+        padding: 10px 12px;
+        border: 1px solid var(--border-soft);
+        background: var(--surface);
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        border-left: 3px solid transparent;
+      }
+      .cargo-flight-item:hover {
+        border-color: var(--border);
+        background: var(--bg);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+      .cargo-flight-item.selected {
+        background: var(--bg);
+        border-color: var(--border);
+        border-left-color: var(--accent);
+        box-shadow: var(--shadow-sm);
+      }
+      .cargo-live-dot {
+        width: 7px;
+        height: 7px;
+        background: #10B981;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        animation: cargoLivePulse 2s infinite;
+      }
+      @keyframes cargoLivePulse {
+        0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.4); }
+        70% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+        100% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0); }
+      }
+      .cargo-signal-lost-dot {
+        width: 7px;
+        height: 7px;
+        background: #F59E0B;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25);
+        animation: cargoSignalLostPulse 2s infinite;
+      }
+      @keyframes cargoSignalLostPulse {
+        0% { box-shadow: 0 0 0 0px rgba(245, 158, 11, 0.4); }
+        70% { box-shadow: 0 0 0 5px rgba(245, 158, 11, 0); }
+        100% { box-shadow: 0 0 0 0px rgba(245, 158, 11, 0); }
+      }
+      
+      /* Ticket Styles */
+      .ticket-container {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 12px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+      }
+      .ticket-cutout-left, .ticket-cutout-right {
+        position: absolute;
+        top: 50px;
+        width: 10px;
+        height: 10px;
+        background: var(--surface);
+        border-radius: 50%;
+        z-index: 2;
+      }
+      .ticket-cutout-left {
+        left: -6px;
+        border-right: 1px solid var(--border);
+      }
+      .ticket-cutout-right {
+        right: -6px;
+        border-left: 1px solid var(--border);
+      }
+      .ticket-airport-code {
+        font-family: 'Inter Tight', 'Inter', sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.01em;
+        line-height: 1.1;
+      }
+      .ticket-airport-city {
+        font-size: 10px;
+        color: var(--text-2);
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 80px;
+      }
+      .ticket-plane-path {
+        flex: 1;
+        position: relative;
+        height: 24px;
+        margin: 0 10px;
+      }
+      .ticket-line-traveled {
+        position: absolute;
+        top: 12px;
+        left: 0;
+        height: 2px;
+        background-color: #C8102E;
+        z-index: 1;
+      }
+      .ticket-line-remaining {
+        position: absolute;
+        top: 12px;
+        height: 0;
+        border-top: 2px dashed var(--border-soft);
+        z-index: 1;
+      }
+      .ticket-plane-icon {
+        position: absolute;
+        top: 5px;
+        z-index: 2;
+        transform: translate(-50%, 0) rotate(90deg);
+        color: #C8102E;
+        filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+        transition: left 0.3s ease;
+      }
+      .ticket-divider {
+        border-top: 1px dashed var(--border-soft);
+        margin: 10px 0;
+      }
+      .ticket-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 12px;
+      }
+      .ticket-label {
+        font-size: 9px;
+        color: var(--text-3);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 600;
+      }
+      .ticket-value {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--text);
+        margin-top: 1px;
+      }
+    </style>
     <div id="cargo-flights-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="cargo-flights-title">
-      <div class="chart-modal-card" style="max-width: 1100px; width: 96vw; max-height: 92vh;">
+      <div class="chart-modal-card" style="max-width: 1340px; width: 97vw; max-height: 92vh;">
         <div class="rel-add-head">
           <div id="cargo-flights-title" class="rel-add-title">Havadaki THY Uçakları</div>
           <button class="rel-add-x" onclick="closeCargoFlightsModal()" aria-label="Kapat">×</button>
         </div>
-        <div class="forex-toggle-btns" id="cargo-type-toggle" style="margin-top:10px;">
-          <button class="forex-btn active" id="btn-cargo-type-cargo" data-type="cargo" onclick="setCargoFlightsFilter('cargo')">Kargo</button>
-          <button class="forex-btn" id="btn-cargo-type-pax" data-type="pax" onclick="setCargoFlightsFilter('pax')">Yolcu</button>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:10px; flex-wrap:wrap;">
+          <div class="forex-toggle-btns" id="cargo-type-toggle">
+            <button class="forex-btn active" id="btn-cargo-type-cargo" data-type="cargo" onclick="setCargoFlightsFilter('cargo')">Kargo</button>
+            <button class="forex-btn" id="btn-cargo-type-pax" data-type="pax" onclick="setCargoFlightsFilter('pax')">Yolcu</button>
+          </div>
+          <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-2); cursor:pointer;">
+            <input type="checkbox" id="cargo-network-toggle" checked onchange="toggleCargoNetworkLayer(this.checked)">
+            Ağ noktalarını göster
+          </label>
         </div>
-        <div id="cargo-flights-body" style="display:flex; gap:14px; margin-top:10px; height:480px;">
-          <div id="cargo-flight-list" style="width:280px; flex-shrink:0; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px;"></div>
-          <div style="flex:1; position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--border);">
+        <div id="cargo-flights-body" style="display:flex; gap:14px; margin-top:10px; height:540px;">
+          <div id="cargo-flight-list" style="width:260px; flex-shrink:0; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px;"></div>
+          <div style="flex:1; position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--border); min-width:0;">
             <div id="cargo-flights-map" style="position:absolute; inset:0;"></div>
           </div>
+          <div id="cargo-flight-detail" style="width:280px; flex-shrink:0; overflow-y:auto; border:1px solid var(--border); border-radius:10px; padding:14px; background:var(--surface);"></div>
         </div>
-        <div id="cargo-flights-empty" style="display:none; text-align:center; color:var(--text-3); padding:24px; font-size:13px;">Şu anda havada THY kargo uçuşu tespit edilemedi.</div>
-        <div style="margin-top:10px; font-size:11px; color:var(--text-3);">Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network</a> · Konumlar canlı ADS-B verisidir; kalkış/varış havalimanları OpenSky'nin tahmini rota tespitine dayanır ve bazı uçuşlarda eksik/yanlış olabilir.</div>
+        <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border-soft); display:flex; flex-wrap:wrap; gap:16px; align-items:center; font-size:11px; color:var(--text-3);">
+          <span>Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener" style="color:var(--text-2); font-weight:600;">OpenSky Network</a></span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span class="cargo-live-dot" style="margin:0;"></span><span style="color:#C8102E; font-weight:600;">Kırmızı Uçak / Yeşil Nokta</span>: Canlı Sinyal</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span class="cargo-signal-lost-dot" style="margin:0;"></span><span style="color:#D97706; font-weight:600;">Turuncu Uçak / Turuncu Nokta</span>: Sinyal Kaybı (Kapsama dışı uçuş olduğunda belirir)</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:7px; height:7px; background:#9CA3AF; border-radius:50%; display:inline-block;"></span><span>Gri Noktalar</span>: Ağ Destinasyonları</span>
+        </div>
+        <div style="margin-top:6px; font-size:11px; color:var(--text-3); line-height:1.4;">
+          * Konumlar canlı ADS-B verisidir. Sinyal kaybı (kapsama alanı dışı) durumunda son bilinen konum, hız ve yön bilgileri kullanılarak tahmini seyrüsefer (dead reckoning) ile seyahat simüle edilmeye devam eder. Kalkış/varış tahminleri arka planda kademeli yüklenir.
+        </div>
       </div>
     </div>
 

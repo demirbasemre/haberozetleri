@@ -8,3 +8,6 @@ compatibility_date = "2024-01-01"
 [[kv_namespaces]]
 binding = "FBX_ROUTES_KV"
 id = "a2c120b335444937a037b916734f4150"
+
+[triggers]
+crons = ["* * * * *"]
