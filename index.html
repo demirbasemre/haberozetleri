@@ -3953,12 +3953,14 @@
 </footer>
 
 <script>
-async function fetchCached(key, fetchFn, ttlMs) {
+async function fetchCached(key, fetchFn, ttlMs, shouldCacheFn) {
   try {
     const cached = localStorage.getItem(key);
     if (cached) {
       const { timestamp, data } = JSON.parse(cached);
-      if (Date.now() - timestamp < ttlMs) {
+      const isFresh = Date.now() - timestamp < ttlMs;
+      const isValid = typeof shouldCacheFn !== 'function' || shouldCacheFn(data);
+      if (isFresh && isValid) {
         return data;
       }
     }
@@ -3966,10 +3968,12 @@ async function fetchCached(key, fetchFn, ttlMs) {
     console.warn('Cache read error for ' + key + ':', e);
   }
   const data = await fetchFn();
-  try {
-    localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data }));
-  } catch (e) {
-    console.warn('Cache write error for ' + key + ':', e);
+  if (typeof shouldCacheFn !== 'function' || shouldCacheFn(data)) {
+    try {
+      localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data }));
+    } catch (e) {
+      console.warn('Cache write error for ' + key + ':', e);
+    }
   }
   return data;
 }
@@ -12661,7 +12665,7 @@ async function loadDashboard() {
         fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
       return { history, latest };
-    }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
+    }, 24 * 60 * 60 * 1000, (d) => !!(d && d.latest && d.latest.demand)).then(({ history, latest }) => {
       _iataHistory = history;
       _iataLatest = latest;
 
