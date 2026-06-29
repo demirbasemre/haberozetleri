@@ -1,34 +1,54 @@
 [
   {
-    "title": "B747 Kargo Uçaklarının Yaşlanmasıyla Ağır Yük Kapasite Boşluğu Kapıda",
-    "summary": "Yaşlanan Boeing <strong>747</strong> kargo uçaklarının emekliye ayrılmasıyla birlikte küresel ağır ve büyük boyutlu kargo taşımacılığı pazarında ciddi bir kapasite boşluğu riski beliriyor. Sektör yöneticileri, üreticilerin <strong>747</strong> veya An-124 muadili burundan yüklemeli yeni bir uçak tasarlamadığını belirterek mevcut filonun en az <strong>20</strong> yıl daha uçması gerektiğini vurguluyor. Yapay zeka ve sanayi projeleriyle artan talebe rağmen, charter şirketleri uçak yetersizliğinden dolayı her gün <strong>10</strong> ila <strong>15</strong> teklif talebini geri çevirmek zorunda kalıyor. Bu yapısal arz krizinin, küresel kargo filosu büyüme oranının <strong>%1</strong>'in altında kalmasından kaynaklandığı ifade ediliyor.",
+    "title": "LATAM, Venezuela Deprem Yardımı İçin Hava Köprüsü Kurdu",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>LATAM Airlines Group</span>, Venezuela'da gerçekleşen son depremin ardından yardım çalışmalarını desteklemek amacıyla iki kargo uçağı ve özel bir yolcu uçağını devreye alarak insani yardım hava köprüsü başlattı. Cumartesi gecesi ile Salı günleri arasında gerçekleştirilen iki özel kargo uçuşuyla uluslararası kuruluşlardan sağlanan yaklaşık <strong>100 ton</strong> insani yardım malzemesi Venezuela'ya taşınacak. Taşınan malzemeler arasında sahra hastanesi ekipmanları, jeneratörler, su arıtma sistemleri ve tıbbi malzemeler yer alıyor. Ayrıca, Bogota'dan Caracas'a düzenlenen özel yolcu uçuşuyla Colombia, Brezilya, Şili ve Peru'dan gelen <strong>170</strong>'ten fazla acil müdahale uzmanı ücretsiz olarak bölgeye ulaştırıldı.",
+    "category": "Diğer",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/latam-launched-airlift-for-venezuela-earthquake-relief-1359637",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "Venezuela'da gerçekleşen deprem sonrasında Latin Amerika içi insani yardım uçuşlarını ve bölgesel lojistik hareketliliği kapsamaktadır.",
+    "date": "2026-06-29"
+  },
+  {
+    "title": "B747 Kargo Uçakları Yaşlandıkça Büyük Boy Kargo Kapasite Açığı Yaklaşıyor",
+    "summary": "Hava kargo sektörü, devasa ve ağır endüstriyel ekipmanları taşıyan Boeing 747 ve Antonov An-124 gibi özel kargo uçaklarının yaşlanması nedeniyle ciddi bir kapasite kriziyle karşı karşıya kalabilir. Boeing'in <strong>2023</strong> yılında 747 üretimini sonlandırması ve yeni kargo uçaklarının burundan yükleme (nose-loading) özelliğine sahip olmaması, büyük boyutlu kargo taşımacılığında ikame sorununa yol açıyor. Yapay zeka veri merkezlerinin hızla büyümesiyle sunucu rafları gibi teknoloji ekipmanları talebi artırırken, uzmanlar kargo talebinin yılda <strong>%3</strong> ila <strong>%4</strong>, filo kapasitesinin ise <strong>%1</strong>'den az büyüyeceğini öngörüyor. National Airlines, her gün kapasite yetersizliği nedeniyle <strong>10</strong> ila <strong>15</strong> charter talebini geri çevirmek zorunda kaldıklarını belirtti.",
     "category": "Filo & Network",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/heavy-lift-capacity-gap-looms-as-b747-freighters-age-out-1359632",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "risk",
-    "thyAnalysis": "Wet-lease (ACMI) pazarı üzerinden dönem dönem Boeing 747F kapasitesinden yararlanan <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, bu uçakların yaşlanarak pazardan çekilmesiyle özellikle büyük boyutlu proje kargoları ve e-ticaret yoğun koridorlarda alternatif kapasite bulmakta zorlanabilir. Şirketin ana filosunu oluşturan Boeing 777F ve Airbus A330F uçaklarının burundan yükleme (nose-loading) özelliğinin olmaması, ultra geniş ve ağır yük segmentindeki pazar payını sınırlayabilir. Bu durum, uzun vadede özel kargo operasyonlarında charter esnekliğini kısıtlayarak operasyonel maliyetlerin artmasına neden olabilir.",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Küresel ölçekte Boeing 747 kargo uçaklarının emekliye ayrılmasıyla oluşacak kapasite daralması, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun B777F ve A330F filolarına yönelik genel ve ağır kargo talebini artırarak navlun fiyatlarını (yield) olumlu etkileyecektir. Burundan yükleme gerektirmeyen büyük boy kargolar için İstanbul (IST) çıkışlı transit koridorlarda pazar payı kazanımı sağlanabilir.",
     "etkiAlani": {
       "direct": [],
       "hub": [
-        "Western Europe"
+        "Central Europe",
+        "China",
+        "Northern America"
       ]
     },
-    "etkiAlaniGerekce": "Ağır ve büyük boyutlu proje kargo taşımacılığı küresel ölçekte en çok Çin-Avrupa-Amerika transit koridorlarında ve İstanbul aktarmalı projelerde yoğunlaşmaktadır.",
+    "etkiAlaniGerekce": "Büyük boy kargo taşımacılığındaki küresel kapasite yetersizliği, İstanbul çıkışlı transit ağır kargo taşımacılığı rotalarını doğrudan etkilemektedir.",
     "date": "2026-06-29"
   },
   {
-    "title": "AFKLMP Cargo, Air Cargo China'da 2026 Yılı İçin 13 SAF Sözleşmesi İmzaladı",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Air France</span> <span style='color:#C8102E;font-weight:700;'>KLM</span> <span style='color:#C8102E;font-weight:700;'>Martinair</span> Cargo, Şanghay'daki Air Cargo China fuarında yük iletici ortakları ve Hong Kong Air Cargo Terminals Limited (Hactl) ile <strong>2026</strong> yılı için <strong>13</strong> yeni Sürdürülebilir Havacılık Yakıtı (SAF) sözleşmesi imzaladı. Anlaşmalar, havacılık kaynaklı emisyonların azaltılmasını ve sürdürülebilir yakıt kullanımının yaygınlaştırılmasını hedefliyor. Şirket, lojistik ortaklarını çevre dostu kargo taşımacılığını desteklemek amacıyla SAF programına katılmaya davet etti.",
-    "category": "Ortaklık & İş Birlikleri",
+    "title": "AFKLMP Cargo, Air Cargo China'da 2026 İçin 13 SAF Sözleşmesi İmzaladı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Air France</span> <span style='color:#C8102E;font-weight:700;'>KLM</span> <span style='color:#C8102E;font-weight:700;'>Martinair</span> Cargo, Şanghay'da düzenlenen Air Cargo China fuarında gümrük acenteleri ve Hong Kong Hava Kargo Terminali (Hactl) ile <strong>2026</strong> yılı için <strong>13</strong> adet Sürdürülebilir Havacılık Yakıtı (SAF) sözleşmesi imzaladı. SkyTeam Cargo etkinliği sırasında imzalanan bu anlaşmalar, endüstrinin karbon emisyonlarını azaltma çabalarını desteklemeyi ve SAF kullanımını yaygınlaştırmayı hedefliyor. Havayolu grubu, sürdürülebilirlik hedeflerine katkıda bulunan tüm iş ortaklarına teşekkür ederek diğer organizasyonları da programa katılmaya davet etti.",
+    "category": "Diğer",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/afklmp-cargo-signs-13-saf-contracts-for-2026-at-air-cargo-china-1359630",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "risk",
+    "thyImpact": "notr",
     "thyAnalysis": "Küresel kargo acentelerinin sürdürülebilirlik (ESG) hedefleri doğrultusunda yeşil taşımacılık talebi artarken, rakip havayollarının SAF anlaşmaları imzalayarak bu pazar payını konsolide etmesi <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için rekabet riski barındırmaktadır. Özellikle Asya-Avrupa koridorundaki büyük ölçekli forwarder müşterilerinin yeşil kargo tercihleri, benzer SAF programları sunulmadığı takdirde pazar payı kaybına yol açabilir.",
     "etkiAlani": {
       "direct": [],
@@ -36,19 +56,19 @@
         "ISTANBUL"
       ]
     },
-    "etkiAlaniGerekce": "Anlaşmanın imzalandığı Çin ve merkez terminal olan Hong Kong (Hactl) ile havayolunun ana merkezi Batı Avrupa, İstanbul transit koridorunu doğrudan etkileyen yoğun bir pazar alanıdır.",
+    "etkiAlaniGerekce": "Çin ve Hong Kong merkezli sürdürülebilir yakıt tedarik anlaşmalarını kapsamaktadır.",
     "date": "2026-06-29"
   },
   {
-    "title": "UNICEF, Venezuela İçin Acil Durum Sevkiyatlarına Hazırlanıyor",
-    "summary": "UNICEF, <strong>24 Haziran</strong> tarihinde Venezuela'da meydana gelen <strong>7.5</strong> ve <strong>7.2</strong> büyüklüğündeki depremlerden etkilenen çocuklar için acil yardım malzemeleri hazırlamaya başladı. Yardım malzemeleri, hızlı sevkiyat amacıyla Danimarka'nın Kopenhag kentindeki küresel lojistik merkezinde toplanıyor. Yaklaşık <strong>3.9 million</strong> çocuğun etkilendiği felaket bölgesine çadır, su arıtma cihazları ve tıbbi setler ulaştırılacak.",
-    "category": "Özel Kargo",
+    "title": "UNICEF, Venezuela İçin Acil Durum Sevkiyatlarını Hazırlıyor",
+    "summary": "UNICEF, <strong>24 Haziran</strong> tarihinde Venezuela'da meydana gelen <strong>7,5</strong> ve <strong>7,2</strong> büyüklüğündeki depremlerden etkilenen çocuklar için acil yardım malzemelerini Kopenhag'daki küresel lojistik merkezinde hazırlamaya başladı. Yardım paketleri; ilk yardım kitleri, yeni doğan bakım malzemeleri, su arıtma ve depolama ekipmanları ile çocuk dostu alanlar için çadırlar içermektedir. Deprem bölgelerinde yaklaşık <strong>3,9 milyon</strong> çocuğun yaşadığı tahmin ediliyor. UNICEF Direktörü Catherine Russell, kriz anında çocukların güvenliği ve refahının müdahale planının merkezinde olması gerektiğini vurguladı.",
+    "category": "Diğer",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/unicef-readies-emergency-shipments-for-venezuela-1359628",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "firsat",
+    "thyImpact": "notr",
     "thyAnalysis": "Kopenhag'da güçlü kargo operasyonlarına sahip olan ve Latin Amerika uçuş ağı kapsamında Venezuela'ya (Caracas) tarifeli yolcu taşıması gerçekleştiren <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, UNICEF'in bu acil durum yardım charter veya tarifeli kargo taleplerinde önemli bir lojistik partner konumundadır. Bu insani yardım akışı, Kuzey Avrupa çıkışlı ve İstanbul aktarmalı Latin Amerika koridorunda ek kargo geliri ve kapasite kullanım fırsatı sunmaktadır.",
     "etkiAlani": {
       "direct": [],
@@ -56,19 +76,19 @@
         "ISTANBUL"
       ]
     },
-    "etkiAlaniGerekce": "Yardım malzemelerinin çıkış noktası Kopenhag ve varış yeri Venezuela (Caracas), Türk Hava Yolları'nın İstanbul aktarmalı uçuş ağında doğrudan yer almaktadır.",
+    "etkiAlaniGerekce": "Kopenhag'dan Venezuela'ya gönderilecek acil insani yardım lojistiğini kapsamaktadır.",
     "date": "2026-06-29"
   },
   {
-    "title": "Saudia Cargo, Satış Operasyonları İçin Sektörün İlk Yapay Zeka Çalışanını Sunmak Üzere cargo.one'ı Seçti",
-    "summary": "Saudia Cargo ve cargo.one, havayolunun ticari operasyonlarında yapay zeka destekli dijital çalışanları (AI workers) devreye almak üzere yeni bir ortaklık kurdu. Sistem, e-posta yoluyla gelen fiyat teklifi taleplerini (RFQ) analiz ederek <strong>7/24</strong> otomatik ve optimize teklifler üretecek. cargo.one teknolojisi, teklif hazırlama sürelerini ortalama <strong>%68</strong> oranında azaltırken ilk tekliflerde <strong>%89</strong> doğruluk payı sağlıyor. Bu ortaklık sayesinde Saudia Cargo'nun satış ekipleri daha katma değerli ve özel kargo projelerine odaklanabilecek.",
+    "title": "Saudia Cargo, Satış Operasyonları İçin Sektörün İlk Yapay Zeka Çalışanını Devreye Almak Üzere cargo.one'ı Seçti",
+    "summary": "Saudia Cargo, ticari operasyonlarında teklif süreçlerini hızlandırmak amacıyla cargo.one ile iş birliği yaparak hava kargo sektörünün ilk yapay zeka çalışanlarını (AI workers) devreye alacağını duyurdu. Yapay zeka sistemi, e-posta üzerinden gelen fiyat taleplerini (RFQ) saniyeler içinde analiz ederek <strong>7/24</strong> otomatik ve optimize edilmiş teklifler üretecek. Sistem sayesinde teklif geri dönüş sürelerinde <strong>%68</strong> oranında bir azalma sağlanırken, ilk üretilen tekliflerin doğruluk oranının <strong>%89</strong> seviyesinde gerçekleşmesi bekleniyor. Bu dijital dönüşüm adımı, Saudia Cargo'nun satış ekiplerinin daha katma değerli ve özel kargo projelerine odaklanmasına imkan tanıyacak.",
     "category": "Teknoloji & Dijitalleşme",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/06/saudia-cargo-cargo-one-deliver-industry-first-ai-worker-sales-operations/",
     "id": null,
     "isDuplicate": true,
     "duplicateOf": "Saudia Cargo Satış Operasyonları İçin Yapay Zeka Altyapısını cargo.one ile Güçlendiriyor",
-    "thyImpact": "risk",
+    "thyImpact": "notr",
     "thyAnalysis": "Saudia Cargo'nun teklif geri dönüş sürelerini %68 oranında hızlandıran yapay zeka entegrasyonu, özellikle Orta Doğu ve transit geçişli Asya-Avrupa koridorlarında fiyatlandırma hızı açısından <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> üzerinde dijital rekabet baskısı oluşturmaktadır. Rezervasyon süreçlerindeki bu hız avantajı, zamana duyarlı genel kargo segmentinde müşteri tercihlerinin rakip havayoluna kaymasına zemin hazırlayabilir.",
     "etkiAlani": {
       "direct": [],
@@ -80,15 +100,15 @@
     "date": "2026-06-29"
   },
   {
-    "title": "Emirates SkyCargo, Doğu ve Güneydoğu Asya'da Kargo Uçağı Ağını Genişletiyor",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, Doğu ve Güneydoğu Asya genelindeki kargo uçağı uçuş sıklıklarını ve destinasyonlarını artırdığını açıkladı. Şirket, Tokyo Narita ve Taipei uçuşlarını haftalık <strong>2</strong>'ye çıkarırken, Hong Kong kargo uçuşlarını haftada <strong>37</strong> sefere yükseltti. Ayrıca Zhengzhou'dan Dubai'ye haftada <strong>3</strong> uçuş başlatılırken, Singapur uçuşları Mumbai üzerinden aktarmalı olarak haftada <strong>1</strong> kez yeniden devreye alındı. Taşıyıcı, <strong>2025/2026</strong> mali yılında bölgedeki <strong>12</strong> pazardan kargo ve yolcu uçuşlarıyla yıllık <strong>%5</strong> artışla <strong>439.000 tondan fazla</strong> kargo taşıdı.",
+    "title": "Emirates SkyCargo, Doğu ve Güneydoğu Asya Boyunca Kargo Uçağı Ağını Genişletiyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, Doğu ve Güneydoğu Asya genelindeki kargo uçağı uçuş sıklıklarını artırdığını açıkladı. Bu kapsamda Tokyo Narita uçuşları haftalık <strong>ikiye</strong>, Taipei uçuşları ise haftalık <strong>ikiye</strong> çıkarılırken, Hong Kong kargo uçuşları haftada <strong>37</strong> sefere ulaştı. Zhengzhou'dan Dubai'ye haftada <strong>üç</strong> uçuş başlatılırken, Singapur uçuşları Mumbai aktarmalı olarak haftada <strong>bir</strong> kez yeniden devreye alındı. Taşıyıcı, <strong>2025/2026</strong> mali yılında bölgedeki <strong>12</strong> pazardan kargo ve yolcu uçuşlarıyla yıllık <strong>%5</strong> artışla <strong>439.000 tondan fazla</strong> kargo taşıdı.",
     "category": "Filo & Network",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/06/emirates-skycargo-expands-freighter-network-across-east-southeast-asia/",
     "id": null,
     "isDuplicate": true,
     "duplicateOf": "Emirates SkyCargo Doğu ve Güneydoğu Asya Kargo Uçağı Ağını Genişletiyor",
-    "thyImpact": "risk",
+    "thyImpact": "notr",
     "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo'nun e-ticaret ve teknoloji kargolarının merkezleri olan Hong Kong, Zhengzhou ve Taipei gibi noktalarda kargo uçağı frekanslarını agresif bir şekilde artırması, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun İstanbul aktarmalı Asya-Avrupa ve Asya-Amerika transit hatlarındaki pazar payını tehdit etmektedir. Özellikle kargo uçağı kapasitesinin artması, yüksek hacimli e-ticaret ve yüksek teknoloji ürün taşımalarında navlun fiyatları üzerinde aşağı yönlü baskı oluşturabilir.",
     "etkiAlani": {
       "direct": [],
@@ -100,8 +120,8 @@
     "date": "2026-06-29"
   },
   {
-    "title": "Kalé, Avrupa Operasyonlarını ve Gümrük Uyum Yetkinliklerini Güçlendirmek İçin Portel Logistics Technologies'i Satın Aldı",
-    "summary": "Kalé Logistics Solutions, İspanya merkezli liman topluluğu ve gümrük uyum teknolojileri sağlayıcısı Portel Logistics Technologies'i satın aldığını duyurdu. Satın alma, Portel'in Avrupa'ya giren kargolar için zorunlu olan ICS2 standartlarına uygun \"Dedalo\" ve \"Vellore\" adlı gümrük uyum platformlarını Kalé bünyesine katıyor. Bu sayede Portel'in <strong>350</strong>'den fazla müşterisi Kalé'nin geniş lojistik sistemlerine erişim sağlayabilecek. Satın alma, Kalé'nin Avrupa ve Güney Amerika'daki gümrük uyum operasyonlarını güçlendirmeyi hedefliyor.",
+    "title": "Kalé, Avrupa Operasyonlarını ve Gümrük Uyum Yeteneklerini Güçlendirmek İçin Portel'i Satın Aldı",
+    "summary": "Kalé Logistics Solutions, İspanya merkezli liman topluluğu ve gümrük uyum teknolojileri sağlayıcısı Portel'i satın alarak Avrupa pazarındaki konumunu güçlendirdi. Portel'in Dedalo ve Vellore ürünleri, Avrupa'ya giren tüm yüklerin varış öncesi beyan edilmesini zorunlu kılan ICS2 standartlarına uyumlu gümrük süreçlerini desteklemektedir. Bu satın almayla birlikte Portel'in <strong>350</strong>'den fazla müşterisi Kalé'nin kağıtsız veri alışverişi sağlayan kargo sistemlerine erişim kazanacak.",
     "category": "Ortaklık & İş Birlikleri",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/06/kale-acquires-portel-logistics-technologies-strengthen-european-operations-regulatroy-compliance-capabilities/",
@@ -118,8 +138,8 @@
     "date": "2026-06-29"
   },
   {
-    "title": "Hellmann, Japonya'daki Faaliyetlerinin 20. Yılını Kutluyor ve Asya-Pasifik Odaklı Büyümeye Odaklanıyor",
-    "summary": "Hellmann Worldwide Logistics, <strong>2006</strong> yılında Tokyo ve Osaka'da açtığı ofislerle başlayan Japonya operasyonlarının <strong>20.</strong> yıl dönümünü kutluyor. Şirket, \"Forward2030\" küresel stratejisi kapsamında Asya-Pasifik (APAC) bölgesini ana büyüme alanı olarak belirlerken, Japonya'yı da istikrarlı yapısı nedeniyle bu hedefin merkezinde konumlandırıyor. Hellmann Japonya; otomotiv, moda, sağlık ve teknoloji sektörlerine hava ve deniz kargosu, gümrük müşavirliği gibi hizmetler sunuyor.",
+    "title": "Hellmann, Japonya'daki Faaliyetlerinin 20. Yılını Kutluyor ve Asya-Pasifik'teki Büyümeye Odaklanıyor",
+    "summary": "Hellmann Worldwide Logistics, Japonya kargo pazarındaki faaliyetlerinin <strong>20.</strong> yıl dönümünü kutladı. Şirket, \"Forward2030\" küresel büyüme stratejisi çerçevesinde Asya-Pasifik (APAC) bölgesini ana büyüme alanı olarak belirlerken, Japonya'yı da istikrarlı yapısı nedeniyle bu hedefin merkezinde konumlandırıyor. Lojistik devi, <strong>2006</strong> yılında açtığı ilk ofisten bu yana Tokyo ve Osaka'daki ekipleriyle otomotiv, moda, sağlık ve teknoloji sektörlerine hava ve deniz kargosu, gümrük müşavirliği gibi hizmetler sunuyor.",
     "category": "Diğer",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/06/hellmann-celebrates-operations-japan-expands-focus-apac-growth/",
@@ -136,8 +156,8 @@
     "date": "2026-06-29"
   },
   {
-    "title": "Glasgow Prestwick Havalimanı Genel Müdürlüğüne Jules Matteoni'yi Atadı",
-    "summary": "Glasgow Prestwick Havalimanı (PIK), <strong>1 Temmuz 2026</strong> tarihinden itibaren geçerli olmak üzere operasyon direktörü Jules Matteoni'yi yeni CEO olarak atadı. Matteoni, emekliye ayrılan Ian Forgie'nin yerine göreve başlayarak havalimanının e-ticaret ve kargo operasyonlarının büyümesini yönetecek. Havalimanında <strong>33</strong> yılı aşkın süredir çalışan Matteoni, e-ticaret işinin geliştirilmesinde önemli rol oynamıştı. Prestwick Havalimanı son <strong>12</strong> ayda <strong>33 milyon</strong>dan fazla e-ticaret paketi elleçlerken, <strong>1 Ocak</strong> ile <strong>15 Mayıs 2026</strong> arasında <strong>1.5 milyon</strong> kilogramdan fazla somon ihraç edilmesini sağladı.",
+    "title": "Jules Matteoni, Glasgow Prestwick Havalimanı Genel Müdürü Olarak Atandı",
+    "summary": "Glasgow Prestwick Havalimanı (PIK), <strong>1 Temmuz 2026</strong> tarihinden itibaren geçerli olmak üzere operasyon direktörü Jules Matteoni'yi yeni CEO olarak atadı. Matteoni, emekliye ayrılan Ian Forgie'nin yerine havalimanının kargo ve e-ticaret büyümesini yönetmek üzere görevi devralacak. Havalimanında <strong>33</strong> yılı aşkın süredir görev yapan Matteoni, e-ticaret hacimlerinin gelişiminde kilit rol oynamıştı. Havalimanı son <strong>12</strong> ayda <strong>33 milyon</strong>dan fazla e-ticaret paketi elleçlerken, <strong>1 Ocak</strong> ile <strong>15 Mayıs 2026</strong> arasında <strong>1.5 milyon</strong> kg somon ihraç etti.",
     "category": "Atama & Görevlendirme",
     "source": "aircargoupdate",
     "link": "https://aircargoupdate.com/jules-matteoni-appointed-ceo-of-glasgow-prestwick-airport/",
@@ -151,23 +171,93 @@
       "hub": []
     },
     "etkiAlaniGerekce": "Glasgow Prestwick Havalimanı'ndaki üst düzey yönetim değişikliği doğrudan Birleşik Krallık lojistik pazarını ilgilendirmektedir.",
-    "date": "2026-06-29",
-    "sources": [
-      {
-        "source": "aircargoupdate",
-        "link": "https://aircargoupdate.com/jules-matteoni-appointed-ceo-of-glasgow-prestwick-airport/"
-      }
-    ]
+    "date": "2026-06-29"
+  },
+  {
+    "title": "RFD ve DSV, Yeni Lüksemburg Rotasıyla Küresel Ortaklıklarını Genişletiyor",
+    "summary": "Chicago Rockford Uluslararası Havalimanı (RFD), DSV ile olan iş birliğini Lüksemburg'dan (LUX) düzenlenecek yeni bir haftalık kargo uçağı seferiyle genişlettiğini duyurdu. Yeni rota, DSV'nin Şanghay Pudong (PVG) ile Rockford arasında <strong>Kasım 2025</strong>'ten beri yürüttüğü mevcut haftalık kargo uçuşlarını destekleyerek Avrupa, Asya ve Amerika kıtalarını birbirine bağlayacak. Şanghay Star Hava Kargo Charter programı kapsamında yürütülen bu operasyonlara ek olarak DSV, bu yılın sonlarında Güney Kore'deki Seul Incheon (ICN) ile Rockford arasında yeni bir hat açmayı da planlıyor. RFD, <strong>7/24</strong> kargo operasyonları ve yoğun olmayan altyapısıyla lojistik sağlayıcılarına hızlı transit süreleri sunuyor.",
+    "category": "Filo & Network",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/rfd-and-dsv-expand-global-partnership-with-new-luxembourg-route/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Chicago Rockford DSV Kargo Ağını Lüksemburg Seferi ile Genişletiyor",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-29"
+  },
+  {
+    "title": "Körfez Pazarlarına Kapasite Dönmesine Rağmen Navlun Fiyatları Yüksek Kalmaya Devam Ediyor",
+    "summary": "ABD ile İran arasında <strong>17 Haziran</strong>'da yürürlüğe giren mutabakatın ardından Orta Doğu ve Güney Asya (MESA) bölgesinde kargo kapasitesi artsa da küresel hava kargo navlun fiyatları yüksek seviyesini koruyor. WorldACD verilerine göre, <strong>15 ila 21 Haziran</strong> tarihlerini kapsayan 25. haftada küresel ortalama hava kargo ücreti <strong>3,24 dolar/kg</strong>, spot ücretler ise <strong>3,75 dolar/kg</strong> olarak gerçekleşti ve geçen yılın aynı dönemine göre sırasıyla <strong>%35</strong> ve <strong>%47</strong> artış gösterdi. MESA bölgesindeki kapasite açığı önemli ölçüde daralarak 24. haftadaki <strong>-%30</strong> seviyesinden 25. haftada <strong>-%19</strong>'a geriledi. Özellikle Körfez ile Kuzey Amerika arasındaki kapasite açığı <strong>-%33</strong>'ten <strong>-%13</strong>'e düşerek hızlı bir toparlanma sergiledi.",
+    "category": "Diğer",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/rates-stay-high-despite-further-capacity-returning-to-gulf-markets/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "ABD ile İran arasındaki uzlaşma sonrası MESA bölgesindeki kapasite darboğazının hafiflemesi, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun bu bölgedeki (P/F) uçuşlarında rotalama maliyetlerini düşürmektedir. Bölge genelinde arzın artmasına rağmen spot navlun fiyatlarının geçen yıla göre <strong>%52</strong> daha yüksek kalması, İstanbul (IST) transit koridorundaki e-ticaret ve genel kargo gelir marjlarını desteklemeye devam edecektir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Central Europe",
+        "Western Europe",
+        "Northern America"
+      ]
+    },
+    "etkiAlaniGerekce": "Orta Doğu ve Güney Asya (MESA) bölgesindeki kapasite ve navlun dinamikleri, Turkish Cargo'nun ana transit pazarlarını ve operasyon rotalarını doğrudan etkilemektedir.",
+    "date": "2026-06-29"
+  },
+  {
+    "title": "CharterDesk, Air Cargo China Fuarında Resmi Açılışını Kutladı",
+    "summary": "Macaristan merkezli CharterDesk, dünya genelinde müşterilerine özel hava kargo, yolcu ve özel jet kiralama (charter) ile ACMI kiralama çözümleri sunmak üzere resmi olarak kuruldu. Şirket, ad-hoc charter uçuşlarına yönelik artan talebi karşılamak amacıyla veri odaklı ve yapılandırılmış kapasite tedarik süreçlerini devreye aldı. CharterDesk, dar gövdeli B737F ve B757F uçaklarından geniş gövdeli B767F, B777F, A330F, B747F ve özel projeler için An-124 uçaklarına kadar geniş bir kargo filosu yelpazesine erişim sağlamaktadır. Kuruluş, ground handling, havayolu planlama ve brokerlik alanlarında <strong>25</strong> yılı aşkın sektörel deneyim üzerine inşa edildi.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/charterdesk-celebrates-official-launch-at-air-cargo-china/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "CharterDesk Resmi Olarak Faaliyete Başladı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-29"
+  },
+  {
+    "title": "Turkish Cargo Otomotiv Sektörü İçin Geliştirdiği Yeni Ürünü TK AUTO'yu Başlattı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, otomotiv sektörünün yüksek hassasiyetli lojistik ihtiyaçları için geliştirdiği yeni hizmeti TK AUTO'yu başlattı. <strong>İki</strong> ana bölümden oluşan ürün kapsamında, AUTO PART yedek parçaların üretim sürekliliği için öncelikli yüklenmesini sağlarken, AUTO FINISHED segmenti ise binek araçlar, prototipler, lüks otomobiller ve özel araçların taşınmasını gerçekleştiriyor. SMARTIST tesisinde LUXE servisi ile yüksek güvenlikli depolama ve fotoğraf kaydı imkanı sunulurken, özel Loadmaster ekipleri tüm yükleme sürecini sahada yönetiyor.",
+    "category": "Özel Kargo",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/turkish-cargo-launches-a-new-product-for-the-automotive-industry-tk-auto/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Turkish Cargo Otomotiv Sektörüne Yönelik Yeni Ürünü TK AUTO'yu Duyurdu",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-29"
   },
   {
     "title": "Awery, İlk Çinli GSSA Olarak Oriental Sky Aviation'ı Bünyesine Kattı",
-    "summary": "Çinli kargo acentesi Oriental Sky Aviation, Awery'nin CargoBooking platformuna katılarak sistemdeki ilk Çinli genel satış acentesi (GSSA) oldu. <strong>2022</strong>'den bu yana Awery'nin ERP sistemini kullanan Oriental Sky, bu yeni entegrasyonla <strong>21</strong> ülkedeki havayolu kapasitelerini ve hizmetlerini tek bir dijital arayüz üzerinden kargo acentelerine açacak. İş birliği, kargo rezervasyon ve fiyat teklifi alma süreçlerini hızlandırarak dijital verimliliği artırmayı hedefliyor.",
+    "summary": "GSSA şirketi Oriental Sky Aviation, Awery’nin çevrim içi CargoBooking platformuna katılarak sistemdeki ilk Çinli genel satış acentesi oldu. Entegrasyon sayesinde acentenin <strong>21</strong> lokasyondaki havayolu kapasitesi ve kargo hizmetleri yük ileticilerine tek bir dijital arayüz üzerinden sunulacak. Oriental Sky Aviation, kargo temsilciliği, charter operasyonları ve ara hat (interline) hizmetlerini yönetmek için <strong>2022</strong> yılından bu yana Awery’nin ERP sistemini kullanıyordu. Anlaşma, hava kargo pazarının en büyük dijitalleşme merkezlerinden biri olan Çin'deki teklif ve rezervasyon süreçlerini hızlandırmayı amaçlıyor.",
     "category": "Teknoloji & Dijitalleşme",
     "source": "aircargoupdate",
     "link": "https://aircargoupdate.com/awery-welcomes-oriental-sky-aviation-as-first-chinese-gssa/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Awery CargoBooking Platformuna Çinli GSSA Oriental Sky Aviation'ı Ekledi",
+    "duplicateOf": "Awery’nin CargoBooking Platformuna İlk Çinli GSSA Katıldı",
     "thyImpact": "notr",
     "thyAnalysis": "",
     "etkiAlani": {
@@ -175,7 +265,25 @@
       "hub": []
     },
     "etkiAlaniGerekce": "Çin merkezli kargo acentesinin dijital rezervasyon platformuna katılımı bölgedeki dijitalleşme süreçlerini kapsamaktadır.",
-    "date": "2026-06-28"
+    "date": "2026-06-29"
+  },
+  {
+    "title": "Breeze, Kargo Sigortası İşlemlerini Kolaylaştıran Yapay Zeka Aracını Tanıttı",
+    "summary": "Kargo sigortası platformu Breeze, veri girişini azaltmak amacıyla \"Quote AI Autofill\" adlı yeni bir yapay zeka aracı sundu. Platform, gönderi belgeleri ve e-postalardan aldığı verileri okuyarak sigorta teklif formlarını otomatik olarak dolduruyor. Breeze verilerine göre, küresel kargoların yaklaşık <strong>%70</strong>'i sigortasız veya eksik sigortalı olarak taşınıyor. Yeni araç, manuel süreçleri ortadan kaldırarak acentelerin müşterilerine standart iş akışları içinde kolayca sigorta sunmalarını hedefliyor. Kullanıcılar, yapay zekanın doldurduğu bilgileri onaylamadan teklifler resmi olarak sunulmuyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoupdate",
+    "link": "https://aircargoupdate.com/breeze-introduces-ai-autofill-to-slash-cargo-insurance-admin-time/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Breeze Kargo Sigortası Yönetimini Kolaylaştıran Yapay Zeka Aracını Tanıttı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-06-29"
   },
   {
     "title": "Hawaii'deki Elektrikli Uçak Testleri Geleceğin Yeşil Kargo Uçuşlarını Destekliyor",
@@ -354,7 +462,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "Doğu Avrupa merkezli yeni bir kargo charter aracılık firmasının kurulması, THY'nin kargo faaliyetlerini doğrudan etkilememektedir.",
-    "date": "2026-06-25"
+    "date": "2026-06-25",
+    "sources": [
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/charterdesk-celebrates-official-launch-at-air-cargo-china/"
+      }
+    ]
   },
   {
     "title": "Turkish Cargo Yeni Ürünü TK AUTO'yu Tanıttı",
@@ -452,7 +566,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "Turkish Cargo'nun kendi markasıyla sunduğu yeni kargo ürünü, İstanbul hub'ı üzerinden küresel otomotiv lojistik hatlarındaki gücünü artırmaktadır.",
-    "date": "2026-06-26"
+    "date": "2026-06-26",
+    "sources": [
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/turkish-cargo-launches-a-new-product-for-the-automotive-industry-tk-auto/"
+      }
+    ]
   },
   {
     "title": "BARIG Kargo Odağını Güçlendiriyor ve Michael Hoppe Yeniden ACCF Yönetim Kurulu Üyeliğine Seçildi",
@@ -488,7 +608,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "İskoçya'daki Glasgow Prestwick Havalimanı'ndaki yönetici değişikliği, THY'nin Birleşik Krallık operasyonlarında doğrudan bir etkiye yol açmamaktadır.",
-    "date": "2026-06-26"
+    "date": "2026-06-26",
+    "sources": [
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/jules-matteoni-appointed-ceo-of-glasgow-prestwick-airport/"
+      }
+    ]
   },
   {
     "title": "Etihad Cargo Havacılık Sektörünün İlk Lojistik Eğitim Akademisini Kurdu",
@@ -827,6 +953,10 @@
       {
         "source": "payloadasia",
         "link": "https://payloadasia.com/2026/06/awery-signs-oriental-sky-aviation-first-chinese-gssa-cargobooking-platform/"
+      },
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/awery-welcomes-oriental-sky-aviation-as-first-chinese-gssa/"
       }
     ]
   },
@@ -1074,6 +1204,10 @@
       {
         "source": "aircargonews",
         "link": "https://www.aircargonews.net/cargo-airport/2026/06/dsv-launches-new-luxembourg-chicago-service/"
+      },
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/rfd-and-dsv-expand-global-partnership-with-new-luxembourg-route/"
       }
     ]
   },
@@ -1336,6 +1470,10 @@
       {
         "source": "stattimes",
         "link": "https://www.stattimes.com/air-cargo/breeze-launches-ai-tool-to-simplify-cargo-insurance-1359564"
+      },
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargoupdate.com/breeze-introduces-ai-autofill-to-slash-cargo-insurance-admin-time/"
       }
     ]
   },
