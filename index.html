@@ -15706,6 +15706,11 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   if (!trigger || !group) return;
   trigger.addEventListener('click', function(e) {
     e.stopPropagation();
+    // Bildirim paneli açıksa, çark menüsü açılırken kapansın (iki popover üst üste binmesin)
+    const bellPanel = document.getElementById('hdr-bell-panel');
+    const bell = document.getElementById('hdr-bell');
+    if (bellPanel) bellPanel.classList.remove('open');
+    if (bell) bell.setAttribute('aria-expanded', 'false');
     const open = group.classList.toggle('open');
     trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (!open && window.__hdrResetSub) window.__hdrResetSub();
@@ -15734,6 +15739,12 @@ if (new URLSearchParams(window.location.search).has('todo')) { switchTab('todo')
   function close() { panel.classList.remove('open'); bell.setAttribute('aria-expanded', 'false'); }
   bell.addEventListener('click', function(e) {
     e.stopPropagation();
+    // Çark menüsü açıksa, bildirim paneli açılırken kapansın (iki popover üst üste binmesin)
+    const toolsGroup = document.getElementById('hdr-tools-group');
+    const toolsTrigger = document.getElementById('hdr-tools-trigger');
+    if (toolsGroup) toolsGroup.classList.remove('open');
+    if (toolsTrigger) toolsTrigger.setAttribute('aria-expanded', 'false');
+    if (window.__hdrResetSub) window.__hdrResetSub();
     const open = panel.classList.toggle('open');
     bell.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
