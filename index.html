@@ -8413,7 +8413,7 @@ function buildReleaseCalendar() {
     if (idx === -1) return null;
     return { y: parseInt(m[2], 10), m: idx + 1 };
   }
-  fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).then(data => {
+  fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
     if (data && data.date) {
       const parsed = parseTrMonthYearIata(data.date);
       if (parsed) {
@@ -8887,18 +8887,20 @@ function buildReleaseCalendar() {
       let released = false;
       let link = item.link;
       let actualDate = null;
+      let isLatestReport = false;
       if (_iataLatestParsed) {
         const latestComparable = _iataLatestParsed.y * 12 + _iataLatestParsed.m;
         const targetComparable = targetYear * 12 + (targetMonth0 + 1);
         released = latestComparable >= targetComparable;
+        isLatestReport = latestComparable === targetComparable;
         if (released && _iataLatestParsed.pdfLink) link = _iataLatestParsed.pdfLink;
-        if (released && latestComparable === targetComparable && _iataLatestParsed.publishedDate) {
+        if (released && isLatestReport && _iataLatestParsed.publishedDate) {
           actualDate = _iataLatestParsed.publishedDate;
         }
       }
-      // Worker'dan gerçek yayın günü gelmişse onu kullan; gelmemişse takvimdeki
-      // tahmini günü (~4. hafta) gösteriyoruz, onaylanana kadar "-" kalır.
-      const day = released ? (actualDate ? actualDate.getDate() : item.date.getDate()) : null;
+      // Worker'dan gerçek yayın günü gelmişse onu kullan; gelmemişse veya henüz
+      // yüklenmemişse/hata varsa ve bu güncel rapor ise "-" gösteriyoruz, eski aylar için tahmini günü gösteriyoruz.
+      const day = released ? (actualDate ? actualDate.getDate() : (isLatestReport ? null : item.date.getDate())) : null;
       return { released, link, day };
     }
     items.forEach(it => { it._iata = iataStatus(it); });

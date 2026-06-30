@@ -8570,11 +8570,15 @@ function buildReleaseCalendar() {
     if (idx === -1) return null;
     return { y: parseInt(m[2], 10), m: idx + 1 };
   }
-  fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).then(data => {
+  fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
     if (data && data.date) {
       const parsed = parseTrMonthYearIata(data.date);
       if (parsed) {
-        _iataLatestParsed = { y: parsed.y, m: parsed.m, pdfLink: data.pdfLink };
+        const publishedDate = data.publishedDate ? new Date(data.publishedDate) : null;
+        _iataLatestParsed = {
+          y: parsed.y, m: parsed.m, pdfLink: data.pdfLink,
+          publishedDate: (publishedDate && !isNaN(publishedDate)) ? publishedDate : null
+        };
         if (typeof _relRender === 'function') _relRender();
       }
     }
@@ -9039,15 +9043,21 @@ function buildReleaseCalendar() {
       if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
       let released = false;
       let link = item.link;
+      let actualDate = null;
+      let isLatestReport = false;
       if (_iataLatestParsed) {
         const latestComparable = _iataLatestParsed.y * 12 + _iataLatestParsed.m;
         const targetComparable = targetYear * 12 + (targetMonth0 + 1);
         released = latestComparable >= targetComparable;
+        isLatestReport = latestComparable === targetComparable;
         if (released && _iataLatestParsed.pdfLink) link = _iataLatestParsed.pdfLink;
+        if (released && isLatestReport && _iataLatestParsed.publishedDate) {
+          actualDate = _iataLatestParsed.publishedDate;
+        }
       }
-      // IATA'nın tam yayın günü scrape edilemiyor; onaylanınca takvimdeki tahmini
-      // günü (~4. hafta) gösteriyoruz, onaylanana kadar "-" kalır.
-      const day = released ? item.date.getDate() : null;
+      // Worker'dan gerçek yayın günü gelmişse onu kullan; gelmemişse veya henüz
+      // yüklenmemişse/hata varsa ve bu güncel rapor ise "-" gösteriyoruz, eski aylar için tahmini günü gösteriyoruz.
+      const day = released ? (actualDate ? actualDate.getDate() : (isLatestReport ? null : item.date.getDate())) : null;
       return { released, link, day };
     }
     items.forEach(it => { it._iata = iataStatus(it); });
