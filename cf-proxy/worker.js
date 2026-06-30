@@ -600,34 +600,173 @@ function parseIATAFuelMonitor(html) {
   return { success: true, price, change, direction, date: dateISO };
 }
 
+function decodeHtmlEntities(str) {
+  if (!str) return '';
+  return str.replace(/&#x([0-9a-fA-F]+);/g, (match, hex) => String.fromCharCode(parseInt(hex, 16)))
+            .replace(/&#([0-9]+);/g, (match, dec) => String.fromCharCode(parseInt(dec, 10)))
+            .replace(/&rsquo;/g, "'")
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"');
+}
+
+function parseFriendlyPrice(str) {
+  if (!str) return null;
+  const m = str.match(/([\d.,]+)/);
+  if (!m) return null;
+  let numStr = m[1];
+  
+  if (numStr.includes('.') && numStr.includes(',')) {
+    const dotIdx = numStr.indexOf('.');
+    const commaIdx = numStr.indexOf(',');
+    if (dotIdx < commaIdx) {
+      // Turkish format: 4.166,50 -> remove dots, replace comma with dot
+      numStr = numStr.replace(/\./g, '').replace(/,/g, '.');
+    } else {
+      // English format: 4,166.50 -> remove commas
+      numStr = numStr.replace(/,/g, '');
+    }
+  } else if (numStr.includes('.')) {
+    const parts = numStr.split('.');
+    if (parts.length === 2 && parts[1].length === 3) {
+      numStr = numStr.replace(/\./g, '');
+    } else if (parts.length > 2) {
+      numStr = numStr.replace(/\./g, '');
+    }
+  } else if (numStr.includes(',')) {
+    const parts = numStr.split(',');
+    if (parts.length === 2 && parts[1].length === 3) {
+      numStr = numStr.replace(/,/g, '');
+    } else if (parts.length > 2) {
+      numStr = numStr.replace(/,/g, '');
+    } else {
+      numStr = numStr.replace(/,/g, '.');
+    }
+  }
+  
+  return parseFloat(numStr);
+}
+
 function parseWCI(html) {
-  // Raporun yayınlanma tarihini bul
-  const dateMatch = html.match(/Our detailed assessment for [A-Za-z]+,\s+([\d]+\s+[A-Za-z]+\s+[\d]{4})/i);
+  // HTML entity'lerini temizle
+  const cleanHtml = decodeHtmlEntities(html);
+
+  // 1. Raporun yayınlanma tarihini bul
+  const dateMatch = cleanHtml.match(/Our detailed assessment for [A-Za-z]+,\s+([\d]+\s+[A-Za-z]+\s+[\d]{4})/i);
   const dateStr = dateMatch ? dateMatch[1] : null;
 
-  // Birincil regex eşleşmesi ("WCI"den sonraki ilk cümleyle sınırlı tutmak için aralık {0,120} ile sınırlandırıldı,
-  // aksi halde sonraki rota cümleleri (ör. "Shanghai-Genoa ... remained unchanged at $X") yanlışlıkla composite sanılıyordu)
+  // 2. Metinden (body) fiyatı bul (Regex Yöntemi)
   const directionWords = 'increased|decreased|remained(?:\\s+(?:steady|unchanged))?|dropped|declined|surged|jumped|climbed|gained|soared|slipped|eased|rose|fell|changed|edged\\s+(?:up|down)';
   const wciRegex = new RegExp(`The Drewry World Container Index \\(WCI\\)[^.]{0,120}?(${directionWords})(?:\\s+by)?\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i');
-  let match = html.match(wciRegex);
+  let bodyMatch = cleanHtml.match(wciRegex);
 
-  // Alternatif regex 1: "composite index" ifadeleri için
-  if (!match) {
+  if (!bodyMatch) {
     const fallbackRegex = new RegExp(`composite index[^.]{0,120}?(${directionWords})(?:\\s+by)?\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i');
-    match = html.match(fallbackRegex);
+    bodyMatch = cleanHtml.match(fallbackRegex);
   }
 
-  if (!match) {
+  let priceBodyRegex = null;
+  let directionStr = 'flat';
+  let changePercentVal = 0;
+  
+  if (bodyMatch) {
+    directionStr = bodyMatch[1].toLowerCase();
+    changePercentVal = bodyMatch[2] ? parseFloat(bodyMatch[2]) : 0;
+    priceBodyRegex = parseFriendlyPrice(bodyMatch[3]);
+  }
+
+  // 3. Meta açıklamadan (description) fiyatı bul
+  const metaRegex = /World Container Index\s*\(WCI\)[^]*?\$([\d,]+)/i;
+  const descMatch = cleanHtml.match(/<meta[^>]*?name="description"[^>]*?content="([^"]*?)"/i) ||
+                    cleanHtml.match(/<meta[^>]*?content="([^"]*?)"[^>]*?name="description"/i) ||
+                    cleanHtml.match(/<meta[^>]*?property="og:description"[^>]*?content="([^"]*?)"/i);
+  
+  let priceMeta = null;
+  if (descMatch) {
+    const metaText = descMatch[1];
+    const metaPriceMatch = metaText.match(metaRegex);
+    if (metaPriceMatch) {
+      priceMeta = parseFriendlyPrice(metaPriceMatch[1]);
+    }
+  }
+
+  // 4. "Our detailed assessment" altındaki ilk maddeden fiyatı bul (DOM/HTML Yapı Yöntemi)
+  let priceFirstBullet = null;
+  const headingIndex = cleanHtml.search(/Our detailed assessment/i);
+  if (headingIndex !== -1) {
+    const subHtml = cleanHtml.slice(headingIndex);
+    const liMatch = subHtml.match(/<li[^>]*>([\s\S]*?)<\/li>/i);
+    if (liMatch) {
+      const liText = liMatch[1];
+      // İlk geçen fiyatı al
+      const priceMatch = liText.match(/\$([\d,]+)/);
+      if (priceMatch) {
+        priceFirstBullet = parseFriendlyPrice(priceMatch[1]);
+      }
+    }
+  }
+
+  // 5. Alt rotaların fiyatlarını çıkar (çakışma kontrolü için)
+  const routePrices = [];
+  const routeRegex = /(?:Shanghai|Rotterdam|Genoa|New York|Los Angeles)\s+(?:to|-[A-Za-z]+)\s+(?:Shanghai|Rotterdam|Genoa|New York|Los Angeles)[^.]{0,100}?(?:increased|decreased|remained|unchanged|steady|dropped|declined|surged|jumped|climbed|gained|soared|slipped|eased|rose|fell|changed|edged|at|to)\s*(?:[\d.]+(?:%)?)?\s*(?:to|at)?\s*\$([\d,]+)/gi;
+  let routeMatch;
+  while ((routeMatch = routeRegex.exec(cleanHtml)) !== null) {
+    const val = parseFriendlyPrice(routeMatch[1]);
+    if (val && !routePrices.includes(val)) {
+      routePrices.push(val);
+    }
+  }
+
+  // 6. Çoklu Kanal Doğrulama ve Karar Mekanizması (Triple-Channel Consensus)
+  const candidates = [priceBodyRegex, priceMeta, priceFirstBullet].filter(p => p !== null);
+  
+  // Aday fiyatların frekansını sayalım
+  const counts = {};
+  for (const p of candidates) {
+    counts[p] = (counts[p] || 0) + 1;
+  }
+
+  let finalPrice = null;
+  
+  // En çok tekrarlanan (çoğunluk oyu alan) fiyatı seçelim
+  let maxCount = 0;
+  for (const p in counts) {
+    if (counts[p] > maxCount) {
+      maxCount = counts[p];
+      finalPrice = parseFloat(p);
+    }
+  }
+
+  // Eğer güvenilir bir çoğunluk yoksa (ör. tüm adaylar farklıysa veya aday yoksa) hata ver
+  if (!finalPrice || maxCount < 2) {
     return {
       success: false,
-      error: 'Could not find WCI match'
+      error: `Verification mismatch: Candidates was [BodyRegex: ${priceBodyRegex}, Meta: ${priceMeta}, FirstBullet: ${priceFirstBullet}]`
     };
   }
 
-  const directionStr = match[1].toLowerCase();
-  const changePercentVal = match[2] ? parseFloat(match[2]) : 0;
-  const priceStr = match[3].replace(/,/g, '');
-  const price = parseFloat(priceStr);
+  // Çoğunluk oyu alan fiyatın alt rotalardan biriyle çakışıp çakışmadığını denetle
+  if (routePrices.includes(finalPrice)) {
+    // Eğer kazara alt rotalardan biri çoğunluk oyu aldıysa, çakışmayan temiz diğer adaya bak
+    const safeCandidate = candidates.find(p => p !== finalPrice && !routePrices.includes(p));
+    if (safeCandidate) {
+      finalPrice = safeCandidate;
+    } else {
+      return {
+        success: false,
+        error: `Price verification failed: Detected price $${finalPrice} is a trade route rate, and no safe fallback found.`
+      };
+    }
+  }
+
+  // Makul Değer Kontrolü (Sanity Check)
+  if (finalPrice < 500 || finalPrice > 15000) {
+    return {
+      success: false,
+      error: `Sanity check failed: Price $${finalPrice} is out of expected range ($500 - $15,000)`
+    };
+  }
 
   const downWords = ['decreased', 'dropped', 'declined', 'fell', 'slipped', 'eased'];
   const upWords = ['increased', 'surged', 'rose', 'jumped', 'climbed', 'gained', 'soared'];
@@ -648,11 +787,88 @@ function parseWCI(html) {
 
   return {
     success: true,
-    price,
+    price: finalPrice,
     change: changePercent,
     date: dateStr,
     direction
   };
+}
+
+function parseWciRoutes(html) {
+  const cleanHtml = decodeHtmlEntities(html);
+  const routes = {};
+  
+  const directionWords = 'increased|decreased|remained(?:\\s+(?:steady|unchanged))?|dropped|declined|surged|jumped|climbed|gained|soared|slipped|eased|rose|fell|changed|edged\\s+(?:up|down)|rising|increasing|holding|steady|unchanged|dropping|falling|climbing';
+  const routeConfigs = [
+    { key: 'Shanghai - Rotterdam', pattern: new RegExp(`(?:Shanghai\\s+to\\s+Rotterdam|Shanghai-Rotterdam)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+    { key: 'Rotterdam - Shanghai', pattern: new RegExp(`(?:Rotterdam\\s+to\\s+Shanghai|Rotterdam-Shanghai)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+    { key: 'Shanghai - Genoa', pattern: new RegExp(`(?:Shanghai\\s+to\\s+Genoa|Shanghai-Genoa)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+    { key: 'Genoa - Shanghai', pattern: new RegExp(`(?:Genoa\\s+to\\s+Shanghai|Genoa-Shanghai)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+    { key: 'Shanghai - Los Angeles', pattern: new RegExp(`(?:Shanghai\\s+to\\s+Los\\s+Angeles|Shanghai-Los\\s+Angeles)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+    { key: 'Los Angeles - Shanghai', pattern: new RegExp(`(?:Los\\s+Angeles\\s+to\\s+Shanghai|Los\\s+Angeles-Shanghai)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+    { key: 'Shanghai - New York', pattern: new RegExp(`(?:Shanghai\\s+to\\s+New\\s+York|Shanghai-New\\s+York)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+    { key: 'New York - Rotterdam', pattern: new RegExp(`(?:New\\s+York\\s+to\\s+Rotterdam|New\\s+York-Rotterdam)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+    { key: 'Rotterdam - New York', pattern: new RegExp(`(?:Rotterdam\\s+to\\s+New\\s+York|Rotterdam-New\\s+New)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+  ];
+
+  const downWords = ['decreased', 'dropped', 'declined', 'fell', 'slipped', 'eased', 'dropping', 'falling'];
+  const upWords = ['increased', 'surged', 'rose', 'jumped', 'climbed', 'gained', 'soared', 'rising', 'increasing', 'climbing'];
+
+  for (const cfg of routeConfigs) {
+    const match = cleanHtml.match(cfg.pattern);
+    if (match) {
+      const directionStr = match[1].toLowerCase();
+      const changeVal = match[2] ? parseFloat(match[2]) : 0;
+      const price = parseFriendlyPrice(match[3]);
+      
+      let change = changeVal;
+      if (downWords.includes(directionStr) || directionStr.startsWith('edged down')) {
+        change = -changeVal;
+      }
+      
+      let direction = 'flat';
+      if (upWords.includes(directionStr) || directionStr.startsWith('edged up')) {
+        direction = 'up';
+      } else if (downWords.includes(directionStr) || directionStr.startsWith('edged down')) {
+        direction = 'down';
+      }
+
+      routes[cfg.key] = { price, change, direction };
+    }
+  }
+
+  return routes;
+}
+
+function parseWciRoutesFromFallback(html) {
+  const cleanHtml = decodeHtmlEntities(html);
+  const routes = {};
+  
+  const metricRegex = /<div class="metric-card"[^>]*>[\s\S]*?<div class="metric-label">([^<]+)<\/div>[\s\S]*?<div class="metric-value">([^<]+)<\/div>[\s\S]*?(?:<div class="metric-change"[^>]*>([^<]+)<\/div>)?/gi;
+  let match;
+  while ((match = metricRegex.exec(cleanHtml)) !== null) {
+    const label = match[1].trim();
+    if (label.includes('Şanghay') || label.includes('New York') || label.includes('Rotterdam') || label.includes('Cenova') || label.includes('Los Angeles')) {
+      let key = label.replace(/Şanghay/g, 'Shanghai').replace(/Cenova/g, 'Genoa');
+      const price = parseFriendlyPrice(match[2]);
+      if (price) {
+        let change = 0;
+        let direction = 'flat';
+        if (match[3]) {
+          const changeStr = match[3].replace(/[^\d.-]/g, '');
+          change = parseFloat(changeStr) || 0;
+          if (match[3].includes('▲')) {
+            direction = 'up';
+          } else if (match[3].includes('▼')) {
+            direction = 'down';
+            change = -change;
+          }
+        }
+        routes[key] = { price, change, direction };
+      }
+    }
+  }
+  return routes;
 }
 
 function parseBAFI(html) {
@@ -852,38 +1068,181 @@ export default {
     if (urlObj.pathname === '/wci' || urlObj.searchParams.get('wci') === '1') {
       const drewryUrl = 'https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry';
       const forceDirect = urlObj.searchParams.get('direct') === '1';
+      let parsed = null;
+      let fetchFailed = false;
+      let proxyUsed = 'none';
+      let liveRoutes = {};
+
       try {
         const res = await doFetch(drewryUrl, {}, forceDirect);
-        if (res.status !== 200) {
-          return new Response(JSON.stringify({ error: 'Drewry page fetch failed', status: res.status }), {
-            status: 502,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
+        proxyUsed = res.proxy;
+        if (res.status === 200) {
+          parsed = parseWCI(res.body);
+          if (parsed && parsed.success) {
+            liveRoutes = parseWciRoutes(res.body);
+          }
+        } else {
+          fetchFailed = true;
+          console.warn(`Drewry canlı sayfa isteği başarısız oldu (Status: ${res.status}). B planına geçiliyor...`);
         }
-
-        const parsed = parseWCI(res.body);
-        if (!parsed || !parsed.success) {
-          return new Response(JSON.stringify({ error: 'Could not parse WCI data', detail: parsed ? parsed.error : 'unknown' }), {
-            status: 500,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
-        }
-
-        return new Response(JSON.stringify(parsed), {
-          status: 200,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json',
-            'X-Proxy': res.proxy,
-            'Cache-Control': 'public, max-age=3600', // 1 saat önbelleğe al (Drewry haftalık güncellenir)
-          },
-        });
       } catch (err) {
-        return new Response(JSON.stringify({ error: err.message }), {
-          status: 502,
+        fetchFailed = true;
+        console.error(`Drewry canlı istek hatası: ${err.message}. B planına geçiliyor...`);
+      }
+
+      // n8n Rapor Havuzundan Yedek Verileri Çek (Teyit ve yedekleme amacıyla her durumda çekiyoruz)
+      let fallbackRoutes = {};
+      let fallbackReport = null;
+      try {
+        const fallbackRes = await doFetch('https://n8n.emredemirbas.com/webhook/raporlar', {}, forceDirect);
+        if (fallbackRes.status === 200) {
+          const reportsJson = JSON.parse(fallbackRes.body);
+          if (reportsJson.reports && reportsJson.reports.length > 0) {
+            fallbackReport = reportsJson.reports[0];
+            fallbackRoutes = parseWciRoutesFromFallback(fallbackReport.html_content);
+          }
+        }
+      } catch (fallbackErr) {
+        console.error("WCI B Planı n8n raporları çekilemedi:", fallbackErr.message);
+      }
+
+      // B Planı: Eğer canlı Drewry sitesi çekilemediyse veya doğrulama/parse başarısız olduysa n8n raporlarından çek
+      if (fetchFailed || !parsed || !parsed.success) {
+        if (fallbackReport) {
+          const wciValM = fallbackReport.html_content.match(/WCI Bileşik Endeks<\/div>\s*<div[^>]*>([^<]+)<\/div>/i) ||
+                          fallbackReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Drewry WCI<\/span><span class="kpi-value">([^<]+)<\/span>/i);
+
+          if (wciValM) {
+            const parsedPrice = parseFriendlyPrice(wciValM[1]);
+            if (parsedPrice) {
+              parsed = {
+                success: true,
+                price: parsedPrice,
+                change: 0,
+                direction: 'flat',
+                date: new Date(fallbackReport.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }),
+                isFallback: true
+              };
+            }
+          }
+        }
+      }
+
+      if (!parsed || !parsed.success) {
+        return new Response(JSON.stringify({ error: 'Could not parse WCI data from live or fallback', detail: parsed ? parsed.error : 'unknown' }), {
+          status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
+
+      // Rotaları Birleştir ve Teyit Et (Consensus & Verification)
+      const finalRoutes = {};
+      const allRouteKeys = new Set([...Object.keys(liveRoutes), ...Object.keys(fallbackRoutes)]);
+
+      for (const key of allRouteKeys) {
+        const liveVal = liveRoutes[key];
+        const fallbackVal = fallbackRoutes[key];
+
+        if (liveVal && fallbackVal) {
+          if (liveVal.price === fallbackVal.price) {
+            finalRoutes[key] = {
+              price: liveVal.price,
+              change: liveVal.change !== 0 ? liveVal.change : fallbackVal.change,
+              direction: liveVal.direction !== 'flat' ? liveVal.direction : fallbackVal.direction,
+              verified: true
+            };
+          } else {
+            // Uyuşmazlık durumunda teyit edilmiş (insan kontrolünden geçmiş) n8n verisini seçiyoruz
+            console.warn(`WCI Rota Uyuşmazlığı (${key}): Live ($${liveVal.price}) != Fallback ($${fallbackVal.price}). Fallback değeri seçildi.`);
+            finalRoutes[key] = {
+              price: fallbackVal.price,
+              change: fallbackVal.change,
+              direction: fallbackVal.direction,
+              verified: true,
+              mismatch: true
+            };
+          }
+        } else if (liveVal) {
+          // Sadece canlıda varsa: Sınır kontrolü uygulayarak kabul et
+          if (liveVal.price >= 300 && liveVal.price <= 15000) {
+            finalRoutes[key] = {
+              price: liveVal.price,
+              change: liveVal.change,
+              direction: liveVal.direction,
+              verified: false
+            };
+          }
+        } else if (fallbackVal) {
+          // Sadece n8n raporunda varsa: Direkt kabul et
+          finalRoutes[key] = {
+            price: fallbackVal.price,
+            change: fallbackVal.change,
+            direction: fallbackVal.direction,
+            verified: true
+          };
+        }
+      }
+
+      parsed.routes = finalRoutes;
+
+      // Cloudflare KV ile rota bazlı geçmişi kalıcı olarak biriktir
+      if (env.FBX_ROUTES_KV) {
+        try {
+          const stored = await env.FBX_ROUTES_KV.get('wci_routes_history', { type: 'json' }) || {};
+          let changed = false;
+          const todayIso = new Date().toISOString().slice(0, 10);
+
+          Object.entries(finalRoutes).forEach(([code, r]) => {
+            const prevValue = r.change !== 0 ? r.price / (1 + r.change / 100) : r.price;
+            const prevDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+            if (!stored[code] || !stored[code].length) {
+              stored[code] = [
+                { date: prevDate, value: Math.round(prevValue * 100) / 100 },
+                { date: todayIso, value: r.price }
+              ];
+              changed = true;
+            } else {
+              const last = stored[code][stored[code].length - 1];
+              if (last.date !== todayIso) {
+                stored[code].push({ date: todayIso, value: r.price });
+                changed = true;
+              } else if (last.value !== r.price) {
+                last.value = r.price;
+                changed = true;
+              }
+            }
+          });
+
+          if (changed) {
+            await env.FBX_ROUTES_KV.put('wci_routes_history', JSON.stringify(stored));
+          }
+          parsed.routesHistory = stored;
+        } catch (kvErr) {
+          console.warn('WCI routes KV yazma hatası:', kvErr.message);
+        }
+      }
+
+      parsed.routeNames = {
+        'Shanghai - Rotterdam': 'Şanghay → Rotterdam',
+        'Rotterdam - Shanghai': 'Rotterdam → Şanghay',
+        'Shanghai - Genoa': 'Şanghay → Cenova',
+        'Genoa - Shanghai': 'Cenova → Şanghay',
+        'Shanghai - Los Angeles': 'Şanghay → Los Angeles',
+        'Los Angeles - Shanghai': 'Los Angeles → Şanghay',
+        'Shanghai - New York': 'Şanghay → New York',
+        'New York - Rotterdam': 'New York → Rotterdam',
+        'Rotterdam - New York': 'Rotterdam → New York'
+      };
+
+      return new Response(JSON.stringify(parsed), {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+          'X-Proxy': proxyUsed,
+          'Cache-Control': 'public, max-age=3600',
+        },
+      });
     }
 
     // ── /bafi Canlı Rotası ──
@@ -1041,17 +1400,20 @@ export default {
           const latestReport = reportsJson.reports[0];
 
           // Try to match WCI as a fallback container index
-          const wciValM = latestReport.html_content.match(/WCI Bileşik Endeks<\/div>\s*<div[^>]*>([\d.,\s$%-]+)<\/div>/i) ||
-                          latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Drewry WCI<\/span><span class="kpi-value">([\d.,\s$/kg—]+)<\/span>/i);
+          const wciValM = latestReport.html_content.match(/WCI Bileşik Endeks<\/div>\s*<div[^>]*>([^<]+)<\/div>/i) ||
+                          latestReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Drewry WCI<\/span><span class="kpi-value">([^<]+)<\/span>/i);
 
           if (wciValM) {
-            parsed = {
-              success: true,
-              price: parseFloat(wciValM[1].trim().replace(/[^\d.]/g, '')),
-              change: 0,
-              direction: 'flat',
-              date: new Date(latestReport.date).toLocaleDateString('tr-TR', { month: 'short', year: 'numeric' })
-            };
+            const parsedPrice = parseFriendlyPrice(wciValM[1]);
+            if (parsedPrice) {
+              parsed = {
+                success: true,
+                price: parsedPrice,
+                change: 0,
+                direction: 'flat',
+                date: new Date(latestReport.date).toLocaleDateString('tr-TR', { month: 'short', year: 'numeric' })
+              };
+            }
           }
         }
 

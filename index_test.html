@@ -3089,16 +3089,35 @@
           <div id="wci-chart-title" class="rel-add-title">Drewry Dünya Konteyner Endeksi (WCI)</div>
           <button class="rel-add-x" onclick="closeWciChartModal()" aria-label="Kapat">×</button>
         </div>
+        <div class="wci-route-map" id="wci-route-map" role="group" aria-label="WCI rota haritası — bir rotanın üzerine gelin veya tıklayın">
+          <div class="wci-map-zoom-ctrl" role="group" aria-label="Harita yakınlaştırma">
+            <button type="button" class="wci-map-zoom-btn" id="wci-map-zoom-in" onclick="wciZoomMapIn()" aria-label="Yakınlaştır">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <button type="button" class="wci-map-zoom-btn" id="wci-map-zoom-out" onclick="wciZoomMapOut()" aria-label="Uzaklaştır">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+          </div>
+        </div>
         <div class="chart-modal-controls">
           <div class="modal-controls-left">
-            <div class="wci-period-btns">
+            <div class="wci-route-dd" id="wci-route-dd">
+              <button type="button" class="wci-route-dd-trigger" id="wci-route-dd-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="wci-route-dd-panel" onclick="toggleWciRouteDropdown()">
+                <span class="wci-route-dd-trigger-code" id="wci-route-dd-code">WCI</span>
+                <span class="wci-route-dd-trigger-name" id="wci-route-dd-name">Global Endeks</span>
+                <span class="wci-route-dd-trigger-badge" id="wci-route-dd-badge"></span>
+                <svg class="wci-route-dd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+              <div class="wci-route-dd-panel" id="wci-route-dd-panel" role="listbox" aria-label="WCI Rota Seçimi" tabindex="-1"></div>
+            </div>
+            <div class="wci-period-btns" id="wci-period-btns-wrap">
               <button class="wci-period-btn forex-btn" id="btn-wci-1m" data-period="1m">1A</button>
               <button class="wci-period-btn forex-btn" id="btn-wci-6m" data-period="6m">6A</button>
               <button class="wci-period-btn forex-btn active" id="btn-wci-ytd" data-period="ytd">YTD</button>
               <button class="wci-period-btn forex-btn" id="btn-wci-1y" data-period="1y">1Y</button>
               <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
             </div>
-            <div class="modal-date-picker">
+            <div class="modal-date-picker" id="wci-date-picker-wrap">
               <input type="date" lang="tr" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi">
               <span class="modal-date-separator">→</span>
               <input type="date" lang="tr" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi">
@@ -8261,10 +8280,16 @@ function openWciChartModal() {
   if (m) {
     m.style.display = 'flex';
     setTimeout(() => {
-      if (typeof window.renderWciChart === 'function') {
+      if (typeof window.renderWciRouteMap === 'function') {
+        window.renderWciRouteMap();
+      }
+      if (typeof window.renderWciRouteOptions === 'function') {
+        window.renderWciRouteOptions();
+      }
+      if (typeof window.selectWciRoute === 'function') {
+        window.selectWciRoute('WCI');
+      } else if (typeof window.renderWciChart === 'function') {
         window.renderWciChart();
-      } else {
-        console.warn("window.renderWciChart henüz hazır değil.");
       }
     }, 150);
   }
@@ -11344,6 +11369,540 @@ async function loadDashboard() {
   let _iataCurrentPeriod = 'ytd';
 
   window._wciCustomRange = false;
+  window._wciSelectedRoute = 'WCI';
+  window._wciLatest = null;
+  let _wciCurrentPeriod = 'ytd';
+
+  const WCI_MAP_NODES = {
+    CEA: { x: 837, y: 163, label: 'Çin/D.Asya (Şanghay)' },
+    NAW: { x: 172, y: 155, label: 'K.Amerika B.Kıyısı (LA)' },
+    NAE: { x: 294, y: 137, label: 'K.Amerika D.Kıyısı (NY)' },
+    EU:  { x: 512, y: 106, label: 'K.Avrupa (Rotterdam)' },
+    MED: { x: 485, y: 150, label: 'Akdeniz (Cenova)' }
+  };
+
+  const WCI_MAP_ROUTES = [
+    { code: 'Shanghai - Rotterdam', from: 'CEA', to: 'EU' },
+    { code: 'Rotterdam - Shanghai', from: 'EU', to: 'CEA' },
+    { code: 'Shanghai - Genoa', from: 'CEA', to: 'MED' },
+    { code: 'Genoa - Shanghai', from: 'MED', to: 'CEA' },
+    { code: 'Shanghai - Los Angeles', from: 'CEA', to: 'NAW' },
+    { code: 'Los Angeles - Shanghai', from: 'NAW', to: 'CEA' },
+    { code: 'Shanghai - New York', from: 'CEA', to: 'NAE' },
+    { code: 'New York - Rotterdam', from: 'NAE', to: 'EU' },
+    { code: 'Rotterdam - New York', from: 'EU', to: 'NAE' }
+  ];
+
+  function drawWciRouteChart(code) {
+    const titleEl = document.getElementById('wci-chart-title');
+    try {
+      const routeHist = (_wciLatest && _wciLatest.routesHistory && _wciLatest.routesHistory[code]) || [];
+      const routeName = (_wciLatest && _wciLatest.routeNames && _wciLatest.routeNames[code]) || code;
+      if (!routeHist.length) {
+        if (titleEl) titleEl.textContent = `${code} (Veri yok)`;
+        return;
+      }
+      const labels = routeHist.map(d => {
+        const dateObj = new Date(d.date + 'T12:00:00Z');
+        if (isNaN(dateObj)) return d.date;
+        return dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+      });
+      const values = routeHist.map(d => d.value);
+      lineChart('chart-wci', labels,
+        [
+          {
+            label: `${code} — ${routeName}`,
+            data: values,
+            borderColor: '#38bdf8',
+            backgroundColor: 'rgba(56,189,248,0.07)',
+            fill: true,
+            tension: 0,
+            pointRadius: 4,
+            borderWidth: 2
+          }
+        ],
+        v => v != null ? Number(v).toLocaleString('en-US') + ' $' : '',
+        {
+          forceRecreate: true,
+          rawDates: routeHist.map(d => d.date)
+        }
+      );
+      if (titleEl) titleEl.textContent = `${code} — ${Math.round(values[values.length - 1]).toLocaleString('tr-TR')} $/FEU`;
+    } catch (err) {
+      console.error("WCI rota grafiği çizim hatası:", err);
+      if (titleEl) titleEl.textContent = "Hata: " + err.message;
+    }
+  }
+
+  window.previewWciRoute = function(code) {
+    if (window._wciSelectedRoute && window._wciSelectedRoute !== 'WCI') return;
+    if (typeof window.highlightWciMapRoute === 'function') window.highlightWciMapRoute(code, true);
+    drawWciRouteChart(code);
+  };
+  window.endWciRoutePreview = function() {
+    if (typeof window.highlightWciMapRoute === 'function') window.highlightWciMapRoute(window._wciSelectedRoute, true);
+    renderWciChart();
+  };
+
+  window.selectWciRoute = function(code) {
+    window._wciSelectedRoute = code;
+    const isComposite = code === 'WCI';
+    const periodWrap = document.getElementById('wci-period-btns-wrap');
+    const dateWrap = document.getElementById('wci-date-picker-wrap');
+    if (periodWrap) periodWrap.style.display = isComposite ? '' : 'none';
+    if (dateWrap) dateWrap.style.display = isComposite ? '' : 'none';
+    window._wciCustomRange = false;
+    updateWciRouteDropdownUI(code);
+    window.toggleWciRouteDropdown(false);
+    if (typeof window.highlightWciMapRoute === 'function') window.highlightWciMapRoute(code, false);
+    renderWciChart();
+  };
+
+  window.toggleWciRouteDropdown = function(open) {
+    const dd = document.getElementById('wci-route-dd');
+    if (!dd) return;
+    if (open === undefined) open = !dd.classList.contains('is-open');
+    if (open) {
+      dd.classList.add('is-open');
+      document.getElementById('wci-route-dd-trigger').setAttribute('aria-expanded', 'true');
+      const panel = document.getElementById('wci-route-dd-panel');
+      if (panel) panel.focus();
+    } else {
+      dd.classList.remove('is-open');
+      document.getElementById('wci-route-dd-trigger').setAttribute('aria-expanded', 'false');
+    }
+  };
+
+  function wciCorridorLabel(route) {
+    const a = WCI_MAP_NODES[route.from], b = WCI_MAP_NODES[route.to];
+    if (!a || !b) return 'Diğer Rotalar';
+    const shortName = label => label.split('(')[0].trim();
+    return [shortName(a.label), shortName(b.label)].sort().join(' ↔ ');
+  }
+
+  function wciRouteOptionRow(code, name, live) {
+    let badge = '';
+    if (live && typeof live.change === 'number') {
+      const dir = live.direction || (live.change > 0 ? 'up' : live.change < 0 ? 'down' : 'flat');
+      const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '–';
+      badge = `<span class="wci-route-dd-badge is-${dir}">${arrow} %${Math.abs(live.change).toFixed(2)}</span>`;
+    }
+    return `<div class="wci-route-dd-option" role="option" aria-selected="false" tabindex="-1" data-code="${code}" onclick="selectWciRoute('${code}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectWciRoute('${code}');}">
+      <span class="wci-route-dd-option-code">${code}</span>
+      <span class="wci-route-dd-option-name">${name}</span>
+      ${badge}
+    </div>`;
+  }
+
+  function renderWciRouteOptions() {
+    const panel = document.getElementById('wci-route-dd-panel');
+    if (!panel) return;
+    const liveRoutes = (window._wciLatest && window._wciLatest.routes) || {};
+    const names = (window._wciLatest && window._wciLatest.routeNames) || {};
+
+    const groups = new Map();
+    WCI_MAP_ROUTES.forEach(r => {
+      if (!liveRoutes[r.code]) return;
+      const label = wciCorridorLabel(r);
+      if (!groups.has(label)) groups.set(label, []);
+      groups.get(label).push(r);
+    });
+
+    let html = `<div class="wci-route-dd-group-label">Genel</div>` + wciRouteOptionRow('WCI', 'Global Endeks', null);
+    groups.forEach((routes, label) => {
+      html += `<div class="wci-route-dd-group-label">${label}</div>`;
+      routes.forEach(r => { html += wciRouteOptionRow(r.code, names[r.code] || r.code, liveRoutes[r.code]); });
+    });
+    panel.innerHTML = html;
+    updateWciRouteDropdownUI(window._wciSelectedRoute || 'WCI');
+  }
+  window.renderWciRouteOptions = renderWciRouteOptions;
+
+  function updateWciRouteDropdownUI(code) {
+    const panel = document.getElementById('wci-route-dd-panel');
+    const codeEl = document.getElementById('wci-route-dd-code');
+    const nameEl = document.getElementById('wci-route-dd-name');
+    if (panel) {
+      panel.querySelectorAll('.wci-route-dd-option').forEach(el => {
+        const isSel = el.dataset.code === code;
+        el.classList.toggle('is-selected', isSel);
+        el.setAttribute('aria-selected', isSel ? 'true' : 'false');
+      });
+    }
+    if (codeEl && nameEl) {
+      if (code === 'WCI') {
+        codeEl.textContent = 'WCI';
+        nameEl.textContent = 'Global Endeks';
+      } else {
+        codeEl.textContent = code;
+        nameEl.textContent = (window._wciLatest && window._wciLatest.routeNames && window._wciLatest.routeNames[code]) || code;
+      }
+    }
+    const badgeEl = document.getElementById('wci-route-dd-badge');
+    if (badgeEl) {
+      const liveRoutes = (window._wciLatest && window._wciLatest.routes) || {};
+      const live = code === 'WCI' ? window._wciLatest : liveRoutes[code];
+      if (live && typeof live.change === 'number') {
+        const dir = live.direction || (live.change > 0 ? 'up' : live.change < 0 ? 'down' : 'flat');
+        const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '–';
+        badgeEl.textContent = `${arrow} %${Math.abs(live.change).toFixed(2)}`;
+        badgeEl.className = `wci-route-dd-trigger-badge is-${dir}`;
+      } else {
+        badgeEl.textContent = '';
+        badgeEl.className = 'wci-route-dd-trigger-badge';
+      }
+    }
+  }
+
+  function renderWciRouteMap() {
+    const container = document.getElementById('wci-route-map');
+    if (!container || container.dataset.rendered === '1') return;
+    container.dataset.rendered = '1';
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 70 1000 270');
+    svg.setAttribute('aria-hidden', 'false');
+
+    const defs = document.createElementNS(NS, 'defs');
+    [['wciEdgeL',0,80,true],['wciEdgeR',920,1000,false]].forEach(([id,x1,x2,isLeft]) => {
+      const lg = document.createElementNS(NS,'linearGradient');
+      lg.id=id; lg.setAttribute('gradientUnits','userSpaceOnUse');
+      lg.setAttribute('x1',x1); lg.setAttribute('x2',x2); lg.setAttribute('y1',0); lg.setAttribute('y2',0);
+      [[0,isLeft?1:0],[1,isLeft?0:1]].forEach(([p,op]) => {
+        const s=document.createElementNS(NS,'stop');
+        s.setAttribute('offset',p*100+'%'); s.setAttribute('stop-color','#0b1e3d'); s.setAttribute('stop-opacity',op);
+        lg.appendChild(s);
+      });
+      defs.appendChild(lg);
+    });
+    svg.appendChild(defs);
+
+    const landPath = document.createElementNS(NS,'path');
+    landPath.setAttribute('d', FBX_LAND_PATH);
+    landPath.setAttribute('class','wci-map-land');
+    svg.appendChild(landPath);
+
+    function pathFromPoints(pts) {
+      return pts.map((p,i) => (i===0?'M':'L')+p[0]+','+p[1]).join(' ');
+    }
+    function catmullRomPath(pts) {
+      if (pts.length<2) return '';
+      if (pts.length===2) return 'M'+pts[0][0]+','+pts[0][1]+' L'+pts[1][0]+','+pts[1][1];
+      let d='M'+pts[0][0]+','+pts[0][1];
+      for (let i=0;i<pts.length-1;i++) {
+        const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];
+        d+=' C'+(p1[0]+(p2[0]-p0[0])/6).toFixed(1)+','+(p1[1]+(p2[1]-p0[1])/6).toFixed(1)
+          +' '+(p2[0]-(p3[0]-p1[0])/6).toFixed(1)+','+(p2[1]-(p3[1]-p1[1])/6).toFixed(1)
+          +' '+p2[0]+','+p2[1];
+      }
+      return d;
+    }
+    function interpAlong(pts,fidx) {
+      const i=Math.max(0,Math.min(pts.length-1,Math.floor(fidx))), j=Math.min(pts.length-1,i+1), t=fidx-i;
+      return [pts[i][0]+(pts[j][0]-pts[i][0])*t, pts[i][1]+(pts[j][1]-pts[i][1])*t];
+    }
+
+    const corridors = {};
+    WCI_MAP_ROUTES.forEach(r => {
+      const key = [r.from,r.to].sort().join('-');
+      if (!corridors[key]) corridors[key]=[];
+      corridors[key].push(r);
+    });
+
+    const _corridorDir={}, _shipState={}, _pillPos={};
+    const _pillGs=[], _nodeCircles=[], _nodeTexts=[];
+
+    Object.entries(corridors).forEach(([key,group]) => {
+      const [keyA] = key.split('-');
+      const routeDef = ROUTE_GROUPS[key];
+      if (!routeDef) return;
+      _corridorDir[key] = true;
+
+      const g = document.createElementNS(NS,'g');
+      g.setAttribute('class','wci-map-route-group');
+      g.setAttribute('data-corridor',key);
+      g.setAttribute('tabindex','0');
+      g.setAttribute('role','button');
+      g.setAttribute('aria-label',key);
+
+      let fullPts, pillBase;
+      const skipPaths = !!routeDef.noDraw;
+      const mkPath = pts => {
+        const p=document.createElementNS(NS,'path');
+        p.setAttribute('d',catmullRomPath(pts));
+        p.setAttribute('class','wci-map-route-path');
+        p.setAttribute('data-corridor',key);
+        p.setAttribute('vector-effect','non-scaling-stroke');
+        if (!skipPaths) g.appendChild(p); return pts;
+      };
+      if (routeDef.wrap) {
+        mkPath(routeDef.leg1); mkPath(routeDef.leg2);
+        fullPts=[...routeDef.leg1,...routeDef.leg2];
+        pillBase=routeDef.leg1[1];
+      } else {
+        mkPath(routeDef.points);
+        fullPts=routeDef.points.slice();
+        pillBase=interpAlong(fullPts, routeDef.pillAt!=null?routeDef.pillAt:(fullPts.length-1)/2);
+      }
+      _pillPos[key]=pillBase;
+
+      const route0=group[0];
+      const fwdPts=route0.from===keyA?fullPts:[...fullPts].reverse();
+      const bwdPts=[...fwdPts].reverse();
+
+      if (!skipPaths) {
+        const shipG=document.createElementNS(NS,'g');
+        shipG.setAttribute('class','wci-ship-group');
+        const shipMo=document.createElementNS(NS,'animateMotion');
+        shipMo.setAttribute('dur',Math.max(10,fwdPts.length*3.5).toFixed(1)+'s');
+        shipMo.setAttribute('repeatCount','indefinite');
+        shipMo.setAttribute('rotate','auto');
+        shipMo.setAttribute('path',pathFromPoints(fwdPts));
+        shipG.appendChild(shipMo);
+        const shipPth=document.createElementNS(NS,'path');
+        shipPth.setAttribute('class','wci-ship-icon');
+        shipPth.setAttribute('d','M 13,0 C 10,-4 0,-5 -13,-2.5 L -13,2.5 C 0,5 10,4 13,0 Z');
+        shipG.appendChild(shipPth);
+        g.appendChild(shipG);
+        _shipState[key]={shipPth,motionEl:shipMo,fwdPts,bwdPts};
+      }
+
+      const [px,py]=pillBase;
+      const pillG=document.createElementNS(NS,'g');
+      pillG.setAttribute('class','wci-pill-scale-g');
+      pillG.dataset.px=px; pillG.dataset.py=py;
+      _pillGs.push({g:pillG,px,py});
+
+      if (group.length>=2) {
+        const [r1,r2]=group;
+        const displayLabel1 = r1.code.includes('Rotterdam') ? 'Rot' : r1.code.includes('Genoa') ? 'Gen' : r1.code.includes('Angeles') ? 'LA' : r1.code.includes('York') ? 'NY' : 'W';
+        const displayLabel2 = r2.code.includes('Rotterdam') ? 'Rot' : r2.code.includes('Genoa') ? 'Gen' : r2.code.includes('Angeles') ? 'LA' : r2.code.includes('York') ? 'NY' : 'W';
+
+        const hw=26, hh=11;
+        const bg=document.createElementNS(NS,'rect');
+        bg.setAttribute('x',-hw); bg.setAttribute('y',-hh);
+        bg.setAttribute('width',hw*2); bg.setAttribute('height',hh*2); bg.setAttribute('rx',hh);
+        bg.setAttribute('class','wci-dual-pill-bg'); bg.setAttribute('data-corridor',key);
+        bg.setAttribute('vector-effect','non-scaling-stroke');
+        pillG.appendChild(bg);
+
+        const dv=document.createElementNS(NS,'line');
+        dv.setAttribute('x1','0'); dv.setAttribute('y1',-(hh-2));
+        dv.setAttribute('x2','0'); dv.setAttribute('y2',(hh-2));
+        dv.setAttribute('class','wci-dual-pill-divider'); dv.setAttribute('pointer-events','none');
+        pillG.appendChild(dv);
+
+        const lh=document.createElementNS(NS,'rect');
+        lh.setAttribute('x',-hw); lh.setAttribute('y',-hh);
+        lh.setAttribute('width',hw); lh.setAttribute('height',hh*2);
+        lh.setAttribute('fill','transparent'); lh.setAttribute('cursor','pointer');
+        lh.setAttribute('pointer-events','all');
+        lh.setAttribute('data-code',r1.code); lh.setAttribute('data-corridor',key);
+        lh.setAttribute('class','wci-dual-pill-half');
+        pillG.appendChild(lh);
+
+        const t1=document.createElementNS(NS,'text');
+        t1.setAttribute('x',-(hw/2)); t1.setAttribute('y','1');
+        t1.setAttribute('class','wci-map-route-pill-text');
+        t1.setAttribute('data-code',r1.code); t1.setAttribute('data-corridor',key);
+        t1.setAttribute('pointer-events','none'); t1.textContent=displayLabel1;
+        pillG.appendChild(t1);
+
+        const rh=document.createElementNS(NS,'rect');
+        rh.setAttribute('x','0'); rh.setAttribute('y',-hh);
+        rh.setAttribute('width',hw); rh.setAttribute('height',hh*2);
+        rh.setAttribute('fill','transparent'); rh.setAttribute('cursor','pointer');
+        rh.setAttribute('pointer-events','all');
+        rh.setAttribute('data-code',r2.code); rh.setAttribute('data-corridor',key);
+        rh.setAttribute('class','wci-dual-pill-half');
+        pillG.appendChild(rh);
+
+        const t2=document.createElementNS(NS,'text');
+        t2.setAttribute('x',(hw/2)); t2.setAttribute('y','1');
+        t2.setAttribute('class','wci-map-route-pill-text');
+        t2.setAttribute('data-code',r2.code); t2.setAttribute('data-corridor',key);
+        t2.setAttribute('pointer-events','none'); t2.textContent=displayLabel2;
+        pillG.appendChild(t2);
+
+        lh.addEventListener('click',e=>{e.stopPropagation();window.selectWciRoute(r1.code);});
+        rh.addEventListener('click',e=>{e.stopPropagation();window.selectWciRoute(r2.code);});
+      } else {
+        const route=group[0];
+        const displayLabel = route.code.includes('Rotterdam') ? 'Rot' : route.code.includes('Genoa') ? 'Gen' : route.code.includes('Angeles') ? 'LA' : route.code.includes('York') ? 'NY' : 'W';
+
+        const sbg=document.createElementNS(NS,'circle');
+        sbg.setAttribute('cx','0'); sbg.setAttribute('cy','0'); sbg.setAttribute('r','13');
+        sbg.setAttribute('class','wci-map-route-pill-bg');
+        sbg.setAttribute('data-code',route.code); sbg.setAttribute('data-corridor',key);
+        sbg.setAttribute('vector-effect','non-scaling-stroke');
+        pillG.appendChild(sbg);
+        const st=document.createElementNS(NS,'text');
+        st.setAttribute('x','0'); st.setAttribute('y','1');
+        st.setAttribute('class','wci-map-route-pill-text');
+        st.setAttribute('data-code',route.code); st.setAttribute('data-corridor',key);
+        st.textContent=displayLabel;
+        pillG.appendChild(st);
+        sbg.addEventListener('click',e=>{e.stopPropagation();window.selectWciRoute(route.code);});
+        st.addEventListener('click',e=>{e.stopPropagation();window.selectWciRoute(route.code);});
+      }
+      g.appendChild(pillG);
+
+      const firstCode=group[0].code;
+      g.addEventListener('mouseenter',()=>window.previewWciRoute(firstCode));
+      g.addEventListener('mouseleave',()=>window.endWciRoutePreview());
+      g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.selectWciRoute(firstCode);}});
+      g.addEventListener('focus',()=>window.previewWciRoute(firstCode));
+      g.addEventListener('blur',()=>window.endWciRoutePreview());
+      svg.appendChild(g);
+    });
+
+    Object.entries(WCI_MAP_NODES).forEach(([key,node]) => {
+      const ring=document.createElementNS(NS,'circle');
+      ring.setAttribute('cx',node.x); ring.setAttribute('cy',node.y); ring.setAttribute('r','9');
+      ring.setAttribute('class','wci-map-node-ring'); ring.setAttribute('data-node',key);
+      ring.setAttribute('vector-effect','non-scaling-stroke');
+      svg.appendChild(ring); _nodeCircles.push({el:ring,baseR:9});
+
+      const dot=document.createElementNS(NS,'circle');
+      dot.setAttribute('cx',node.x); dot.setAttribute('cy',node.y); dot.setAttribute('r','5');
+      dot.setAttribute('class','wci-map-node-dot'); dot.setAttribute('data-node',key);
+      dot.setAttribute('vector-effect','non-scaling-stroke');
+      svg.appendChild(dot); _nodeCircles.push({el:dot,baseR:5});
+
+      const lbl=document.createElementNS(NS,'text');
+      lbl.setAttribute('x',node.x); lbl.setAttribute('y',node.y-11);
+      lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('class','wci-map-node-label');
+      lbl.setAttribute('data-node',key);
+      lbl.textContent=node.label.split('(')[0].trim();
+      lbl.dataset.baseDy='11'; lbl.dataset.baseLabel=node.label.split('(')[0].trim();
+      svg.appendChild(lbl);
+      _nodeTexts.push({el:lbl,baseFont:11,anchorY:node.y,baseDy:11});
+    });
+
+    [['wciEdgeL',0],['wciEdgeR',920]].forEach(([id,x]) => {
+      const r=document.createElementNS(NS,'rect');
+      r.setAttribute('x',x); r.setAttribute('y',0); r.setAttribute('width',80); r.setAttribute('height',500);
+      r.setAttribute('fill','url(#'+id+')'); r.setAttribute('pointer-events','none');
+      svg.appendChild(r);
+    });
+
+    svg.addEventListener('click',e=>{
+      if(e.target===svg||e.target===landPath){
+        if(window._wciSelectedRoute&&window._wciSelectedRoute!=='WCI') window.selectWciRoute('WCI');
+      }
+    });
+
+    const WCI_MAP_BASE_VIEW={x:0,y:0,w:1000,h:400};
+    const WCI_MAP_ZOOM_MAX=6;
+    let wciMapView={...WCI_MAP_BASE_VIEW};
+    let _panOn=false,_panStart=null,_panSnap=null;
+
+    svg.addEventListener('mousedown',e=>{
+      if(e.button!==0) return;
+      if(e.target&&e.target.closest&&e.target.closest('.wci-map-route-group,.wci-dir-btn-g')) return;
+      _panOn=true; _panStart={x:e.clientX,y:e.clientY}; _panSnap={...wciMapView};
+      svg.style.cursor='grabbing'; e.preventDefault();
+    });
+    const _mvPan=e=>{
+      if(!_panOn) return;
+      const rect=svg.getBoundingClientRect();
+      if(!rect.width) return;
+      const sx=wciMapView.w/rect.width, sy=wciMapView.h/rect.height;
+      let nx=_panSnap.x-(e.clientX-_panStart.x)*sx;
+      let ny=_panSnap.y-(e.clientY-_panStart.y)*sy;
+      nx=Math.min(WCI_MAP_BASE_VIEW.w-wciMapView.w,Math.max(0,nx));
+      ny=Math.min(WCI_MAP_BASE_VIEW.y+WCI_MAP_BASE_VIEW.h-wciMapView.h,Math.max(WCI_MAP_BASE_VIEW.y,ny));
+      wciMapView={...wciMapView,x:nx,y:ny};
+      applyWciMapView();
+    };
+    const _upPan=()=>{if(!_panOn)return;_panOn=false;svg.style.cursor='grab';};
+    window.addEventListener('mousemove',_mvPan);
+    window.addEventListener('mouseup',_upPan);
+
+    function rescaleWciMapMarkers(){
+      const inv=wciMapView.w/WCI_MAP_BASE_VIEW.w;
+      _nodeCircles.forEach(({el,baseR})=>el.setAttribute('r',(baseR*inv).toFixed(2)));
+      _nodeTexts.forEach(({el,baseFont,anchorY,baseDy})=>{
+        el.style.fontSize=(baseFont*inv).toFixed(2)+'px';
+        if(anchorY!=null&&baseDy!=null) el.setAttribute('y',(anchorY-baseDy*inv).toFixed(2));
+      });
+      _pillGs.forEach(({g,px,py})=>{
+        g.setAttribute('transform','translate('+px+','+py+') scale('+inv.toFixed(4)+')');
+      });
+      Object.values(_shipState).forEach(({shipPth})=>{
+        shipPth.setAttribute('transform','scale('+inv.toFixed(4)+')');
+      });
+    }
+    function applyWciMapView(){
+      svg.setAttribute('viewBox',wciMapView.x+' '+wciMapView.y+' '+wciMapView.w+' '+wciMapView.h);
+      rescaleWciMapMarkers();
+      const ziBtn=document.getElementById('wci-map-zoom-in');
+      const zoBtn=document.getElementById('wci-map-zoom-out');
+      if(ziBtn) ziBtn.disabled=wciMapView.w<=WCI_MAP_BASE_VIEW.w/WCI_MAP_ZOOM_MAX+0.01;
+      if(zoBtn) zoBtn.disabled=wciMapView.w>=WCI_MAP_BASE_VIEW.w-0.01;
+    }
+    function zoomWciMap(factor,originX,originY){
+      const cx=originX!=null?originX:wciMapView.x+wciMapView.w/2;
+      const cy=originY!=null?originY:wciMapView.y+wciMapView.h/2;
+      const minW=WCI_MAP_BASE_VIEW.w/WCI_MAP_ZOOM_MAX;
+      let nw=Math.min(WCI_MAP_BASE_VIEW.w,Math.max(minW,wciMapView.w/factor));
+      let nh=nw*(WCI_MAP_BASE_VIEW.h/WCI_MAP_BASE_VIEW.w);
+      const rx=(cx-wciMapView.x)/wciMapView.w, ry=(cy-wciMapView.y)/wciMapView.h;
+      let nx=cx-rx*nw, ny=cy-ry*nh;
+      nx=Math.min(WCI_MAP_BASE_VIEW.x+WCI_MAP_BASE_VIEW.w-nw,Math.max(WCI_MAP_BASE_VIEW.x,nx));
+      ny=Math.min(WCI_MAP_BASE_VIEW.y+WCI_MAP_BASE_VIEW.h-nh,Math.max(WCI_MAP_BASE_VIEW.y,ny));
+      wciMapView={x:nx,y:ny,w:nw,h:nh};
+      applyWciMapView();
+    }
+    window.wciZoomMapIn=()=>zoomWciMap(1.4);
+    window.wciZoomMapOut=()=>zoomWciMap(1/1.4);
+    container.addEventListener('wheel',e=>{
+      e.preventDefault();
+      const rect=svg.getBoundingClientRect();
+      const rx=(e.clientX-rect.left)/rect.width, ry=(e.clientY-rect.top)/rect.height;
+      zoomWciMap(e.deltaY<0?1.15:1/1.15,wciMapView.x+rx*wciMapView.w,wciMapView.y+ry*wciMapView.h);
+    },{passive:false});
+
+    window._wciMapInt={
+      corridors,_corridorDir,_shipState,_pillPos,
+      pathFromPoints,
+      WCI_MAP_BASE_VIEW,getView:()=>wciMapView,rescale:rescaleWciMapMarkers
+    };
+    applyWciMapView();
+    container.appendChild(svg);
+  }
+
+  window.highlightWciMapRoute = function(code, isPreview) {
+    document.querySelectorAll('#wci-route-map .is-active, #wci-route-map .is-route-active').forEach(el=>{
+      el.classList.remove('is-active','is-route-active');
+    });
+    document.querySelectorAll('#wci-route-map .wci-map-node-ring').forEach(el=>el.classList.remove('is-origin','is-destination'));
+    document.querySelectorAll('#wci-route-map .wci-map-node-label').forEach(el=>{if(el.dataset.baseLabel) el.textContent=el.dataset.baseLabel;});
+    const m=window._wciMapInt;
+    if(!code||code==='WCI') return;
+    const route=WCI_MAP_ROUTES.find(r=>r.code===code);
+    if(!route) return;
+    const corridorKey=[route.from,route.to].sort().join('-');
+    document.querySelectorAll('#wci-route-map [data-corridor="'+corridorKey+'"]').forEach(el=>el.classList.add('is-active'));
+    document.querySelectorAll('#wci-route-map [data-code="'+code+'"]').forEach(el=>el.classList.add('is-route-active'));
+    const oRing=document.querySelector('#wci-route-map .wci-map-node-ring[data-node="'+route.from+'"]');
+    const dRing=document.querySelector('#wci-route-map .wci-map-node-ring[data-node="'+route.to+'"]');
+    if(oRing) oRing.classList.add('is-origin');
+    if(dRing) dRing.classList.add('is-destination');
+  };
+
+  window.addEventListener('click', e => {
+    const dd = document.getElementById('wci-route-dd');
+    if (dd && !dd.contains(e.target)) {
+      toggleWciRouteDropdown(false);
+    }
+  });
+
+  window._wciHistory = [];
+  window._bafiHistory = [];
+  window._bafiLatest = null;
+  let _bafiCurrentPeriod = 'ytd';
   window._bafiCustomRange = false;
   window._fbxCustomRange = false;
   window._iataCustomRange = false;
@@ -11353,6 +11912,11 @@ async function loadDashboard() {
   window._jetfuelCustomRange = false;
 
   function renderWciChart(period) {
+    if (window._wciSelectedRoute && window._wciSelectedRoute !== 'WCI') {
+      drawWciRouteChart(window._wciSelectedRoute);
+      return;
+    }
+
     if (period) {
       _wciCurrentPeriod = period;
       window._wciCustomRange = false;
@@ -11611,36 +12175,50 @@ async function loadDashboard() {
   });
 
   function exportWciToCSV() {
-    let allData = [..._wciHistory];
-    if (_wciLatest && _wciLatest.price) {
-      const latestIso = convertDrewryDate(_wciLatest.date);
-      const lastHist = allData[allData.length - 1];
-      if (latestIso && (!lastHist || lastHist.date < latestIso)) {
-        allData.push({ date: latestIso, value: _wciLatest.price });
+    let allData = [];
+    let title = 'WCI (USD)';
+    let prefix = 'WCI';
+    
+    if (window._wciSelectedRoute && window._wciSelectedRoute !== 'WCI') {
+      const code = window._wciSelectedRoute;
+      const routeHist = (_wciLatest && _wciLatest.routesHistory && _wciLatest.routesHistory[code]) || [];
+      allData = [...routeHist];
+      const routeName = (_wciLatest && _wciLatest.routeNames && _wciLatest.routeNames[code]) || code;
+      title = `${code} - ${routeName} (USD)`;
+      prefix = `WCI_${code.replace(/\s+/g, '_')}`;
+    } else {
+      allData = [..._wciHistory];
+      if (_wciLatest && _wciLatest.price) {
+        const latestIso = convertDrewryDate(_wciLatest.date);
+        const lastHist = allData[allData.length - 1];
+        if (latestIso && (!lastHist || lastHist.date < latestIso)) {
+          allData.push({ date: latestIso, value: _wciLatest.price });
+        }
+      }
+      if (_wciCurrentPeriod === '1m') {
+        const cutoff = new Date();
+        cutoff.setMonth(cutoff.getMonth() - 1);
+        allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
+      } else if (_wciCurrentPeriod === '6m') {
+        const cutoff = new Date();
+        cutoff.setMonth(cutoff.getMonth() - 6);
+        allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
+      } else if (_wciCurrentPeriod === 'ytd') {
+        allData = allData.filter(d => d.date >= `${new Date().getFullYear()}-01-01`);
+      } else if (_wciCurrentPeriod === '1y') {
+        const cutoff = new Date();
+        cutoff.setFullYear(cutoff.getFullYear() - 1);
+        allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
       }
     }
-    if (_wciCurrentPeriod === '1m') {
-      const cutoff = new Date();
-      cutoff.setMonth(cutoff.getMonth() - 1);
-      allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
-    } else if (_wciCurrentPeriod === '6m') {
-      const cutoff = new Date();
-      cutoff.setMonth(cutoff.getMonth() - 6);
-      allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
-    } else if (_wciCurrentPeriod === 'ytd') {
-      allData = allData.filter(d => d.date >= `${new Date().getFullYear()}-01-01`);
-    } else if (_wciCurrentPeriod === '1y') {
-      const cutoff = new Date();
-      cutoff.setFullYear(cutoff.getFullYear() - 1);
-      allData = allData.filter(d => d.date >= cutoff.toISOString().slice(0, 10));
-    }
+
     const isoToTR = iso => { const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
-    const csv = '﻿' + 'Tarih;WCI (USD)\n' + allData.map(d => `${isoToTR(d.date)};${d.value}`).join('\n');
+    const csv = '﻿' + `Tarih;${title}\n` + allData.map(d => `${isoToTR(d.date)};${d.value}`).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `WCI_${_wciCurrentPeriod}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `${prefix}_${_wciCurrentPeriod}_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

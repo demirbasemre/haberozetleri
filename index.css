@@ -7962,6 +7962,275 @@
   .fbx-route-dd-badge.is-down { background: var(--red-muted); color: var(--red); }
   .fbx-route-dd-badge.is-flat { background: rgba(156,163,175,0.15); color: var(--text-3); }
 
+  /* WCI Rota Haritası */
+  .wci-route-map {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #0b1e3d 0%, #102a52 100%);
+  }
+  .wci-route-map svg { display: block; width: 100%; height: auto; }
+  .wci-map-land { fill: rgba(255,255,255,0.16); }
+  .wci-map-node-dot { fill: #38bdf8; stroke: #0b1e3d; stroke-width: 1.5; }
+  .wci-map-node-label { fill: rgba(255,255,255,0.85); font: 600 11px Inter, sans-serif; }
+  .wci-map-route-group { outline: none; }
+  .wci-map-route-path {
+    fill: none;
+    stroke: rgba(56,189,248,0.45);
+    stroke-width: 1.5;
+    cursor: pointer;
+    transition: stroke 0.2s, stroke-width 0.2s;
+  }
+  .wci-map-route-path:hover { stroke: #38bdf8; stroke-width: 2.5; }
+  .wci-map-route-path.is-active {
+    stroke: #38bdf8;
+    stroke-width: 4;
+    filter: drop-shadow(0 0 5px rgba(56,189,248,0.55));
+  }
+  .wci-map-route-pill-bg {
+    fill: rgba(11,30,61,0.92);
+    stroke: rgba(56,189,248,0.5);
+    stroke-width: 1;
+    cursor: pointer;
+  }
+  .wci-map-route-pill-bg:hover, .wci-map-route-pill-bg.is-active {
+    fill: #38bdf8;
+    stroke: #38bdf8;
+  }
+  .wci-map-route-pill-text {
+    fill: #38bdf8;
+    font: 700 10px Inter, sans-serif;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+  }
+  .wci-map-route-pill-bg.is-active + .wci-map-route-pill-text,
+  .wci-map-route-pill-bg:hover + .wci-map-route-pill-text {
+    fill: #0b1e3d;
+  }
+  .wci-map-route-group:focus-visible .wci-map-route-pill-bg {
+    fill: #38bdf8;
+    stroke: #fff;
+    stroke-width: 2;
+  }
+  .wci-route-map svg { touch-action: none; cursor: grab; }
+  .wci-map-route-group, .wci-map-route-group * { cursor: pointer; }
+
+  .wci-map-node-ring {
+    fill: none;
+    stroke-width: 2;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .wci-map-node-ring.is-origin {
+    opacity: 1;
+    stroke: #34d399;
+    stroke-dasharray: 3 2.4;
+    animation: wciRingPulseOrigin 1.6s linear infinite;
+  }
+  .wci-map-node-ring.is-destination {
+    opacity: 1;
+    stroke: #fbbf24;
+    animation: wciRingPulseDest 1.4s ease-in-out infinite;
+  }
+  @keyframes wciRingPulseOrigin {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -12; }
+  }
+  @keyframes wciRingPulseDest {
+    0%, 100% { stroke-opacity: 1; }
+    50% { stroke-opacity: 0.35; }
+  }
+  .wci-map-node-label { transition: fill 0.2s; }
+
+  .wci-ship-icon {
+    fill: #38bdf8;
+    stroke: #0b1e3d;
+    stroke-width: 0.6;
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 0 3px rgba(56,189,248,0.85));
+    transition: opacity 0.2s;
+  }
+  .wci-map-route-group.is-active .wci-ship-icon { opacity: 1; }
+
+  .wci-map-node-ring.is-origin  { stroke: #f59e0b; stroke-width: 2.5; }
+  .wci-map-node-ring.is-destination { stroke: #34d399; stroke-width: 2.5; }
+
+  .wci-dual-pill-bg {
+    fill: rgba(11,30,61,0.92);
+    stroke: rgba(56,189,248,0.5);
+    stroke-width: 1;
+    cursor: pointer;
+  }
+  .wci-dual-pill-bg.is-active {
+    stroke: #38bdf8;
+    stroke-width: 2;
+    filter: drop-shadow(0 0 6px rgba(56,189,248,0.55));
+  }
+  .wci-dual-pill-divider { stroke: rgba(56,189,248,0.35); stroke-width: 0.8; }
+  .wci-dual-pill-half { cursor: pointer; pointer-events: all; }
+  .wci-dual-pill-half:hover + text.wci-map-route-pill-text { fill: #fff; }
+  .wci-dual-pill-bg ~ .wci-map-route-pill-text.is-route-active { fill: #fff; font-weight: 900; }
+  .wci-map-route-group.is-active .wci-dual-pill-bg ~ .wci-map-route-pill-text:not(.is-route-active) { fill: rgba(56,189,248,0.45); }
+
+  /* WCI Harita Yakınlaştırma Kontrolleri */
+  .wci-map-zoom-ctrl {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 5;
+  }
+  .wci-map-zoom-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(11,30,61,0.78);
+    color: #38bdf8;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .wci-map-zoom-btn:hover { background: rgba(56,189,248,0.22); border-color: #38bdf8; }
+  .wci-map-zoom-btn:active { background: rgba(56,189,248,0.32); }
+  .wci-map-zoom-btn:disabled { opacity: 0.35; cursor: default; }
+  .wci-map-zoom-btn:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }
+
+  /* WCI Rota Seçici Menüsü */
+  .wci-route-dd {
+    position: relative;
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 11px;
+  }
+  .wci-route-dd-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    min-height: 30px;
+    width: max-content;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .wci-route-dd-trigger:hover { border-color: var(--accent); }
+  .wci-route-dd.is-open .wci-route-dd-trigger,
+  .wci-route-dd-trigger:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.18);
+  }
+  .wci-route-dd-trigger-code {
+    font-weight: 800;
+    color: #0284c7;
+    letter-spacing: 0.02em;
+  }
+  [data-theme="dark"] .wci-route-dd-trigger-code { color: #38bdf8; }
+  .wci-route-dd-trigger-name {
+    color: var(--text-2);
+    white-space: nowrap;
+  }
+  .wci-route-dd-trigger-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .wci-route-dd-trigger-badge.is-up { background: rgba(16,185,129,0.12); color: #059669; }
+  [data-theme="dark"] .wci-route-dd-trigger-badge.is-up { color: #34d399; }
+  .wci-route-dd-trigger-badge.is-down { background: var(--red-muted); color: var(--red); }
+  .wci-route-dd-trigger-badge.is-flat { background: rgba(156,163,175,0.15); color: var(--text-3); }
+  .wci-route-dd-chevron {
+    color: var(--text-3);
+    flex-shrink: 0;
+    transition: transform 0.18s ease;
+  }
+  .wci-route-dd.is-open .wci-route-dd-chevron { transform: rotate(180deg); }
+  .wci-route-dd-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 40;
+    width: 280px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 6px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+  }
+  .wci-route-dd.is-open .wci-route-dd-panel { display: block; }
+  .wci-route-dd-group-label {
+    padding: 7px 8px 3px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-3);
+  }
+  .wci-route-dd-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 7px;
+    cursor: pointer;
+    outline: none;
+  }
+  .wci-route-dd-option:hover,
+  .wci-route-dd-option:focus-visible {
+    background: rgba(56,189,248,0.12);
+  }
+  .wci-route-dd-option.is-selected {
+    background: rgba(2,132,199,0.12);
+  }
+  .wci-route-dd-option-code {
+    font-weight: 800;
+    font-size: 10.5px;
+    color: #0284c7;
+    flex-shrink: 0;
+    min-width: 38px;
+  }
+  [data-theme="dark"] .wci-route-dd-option-code { color: #38bdf8; }
+  .wci-route-dd-option-name {
+    flex: 1;
+    color: var(--text-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wci-route-dd-option.is-selected .wci-route-dd-option-name { color: var(--text); font-weight: 600; }
+  .wci-route-dd-badge {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 20px;
+  }
+  .wci-route-dd-badge.is-up { background: rgba(16,185,129,0.12); color: #059669; }
+  [data-theme="dark"] .wci-route-dd-badge.is-up { color: #34d399; }
+  .wci-route-dd-badge.is-down { background: var(--red-muted); color: var(--red); }
+  .wci-route-dd-badge.is-flat { background: rgba(156,163,175,0.15); color: var(--text-3); }
+
+
   /* Chart modal controls layout */
   .chart-modal-controls {
     display: flex;
