@@ -808,7 +808,7 @@ function parseWciRoutes(html) {
     { key: 'Los Angeles - Shanghai', pattern: new RegExp(`(?:Los\\s+Angeles\\s+to\\s+Shanghai|Los\\s+Angeles-Shanghai)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
     { key: 'Shanghai - New York', pattern: new RegExp(`(?:Shanghai\\s+to\\s+New\\s+York|Shanghai-New\\s+York)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
     { key: 'New York - Rotterdam', pattern: new RegExp(`(?:New\\s+York\\s+to\\s+Rotterdam|New\\s+York-Rotterdam)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
-    { key: 'Rotterdam - New York', pattern: new RegExp(`(?:Rotterdam\\s+to\\s+New\\s+York|Rotterdam-New\\s+New)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
+    { key: 'Rotterdam - New York', pattern: new RegExp(`(?:Rotterdam\\s+to\\s+New\\s+York|Rotterdam-New\\s+York)[^.]{0,100}?(${directionWords})\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i') },
   ];
 
   const downWords = ['decreased', 'dropped', 'declined', 'fell', 'slipped', 'eased', 'dropping', 'falling'];
@@ -840,34 +840,39 @@ function parseWciRoutes(html) {
   return routes;
 }
 
-function parseWciRoutesFromFallback(html) {
+// Scorizons.com'un statik HTML tablosu — Drewry WCI'nin tüm 8 alt rotasını
+// (Drewry'nin kendi sayfasındaki gibi JS widget'a gömülü değil, düz HTML olarak)
+// yayınlıyor. Bu yüzden hem teyit kaynağı hem de eksik rotaları (ters yön
+// bacaklar dahil) tamamlayan asıl kaynak olarak kullanılıyor.
+const SCORIZONS_ROUTE_CODE_MAP = {
+  'WCI-SHA-RTM': 'Shanghai - Rotterdam',
+  'WCI-RTM-SHA': 'Rotterdam - Shanghai',
+  'WCI-SHA-GOA': 'Shanghai - Genoa',
+  'WCI-SHA-LAX': 'Shanghai - Los Angeles',
+  'WCI-LAX-SHA': 'Los Angeles - Shanghai',
+  'WCI-SHA-NYC': 'Shanghai - New York',
+  'WCI-NYC-RTM': 'New York - Rotterdam',
+  'WCI-RTM-NYC': 'Rotterdam - New York'
+};
+
+function parseWciRoutesFromScorizons(html) {
   const cleanHtml = decodeHtmlEntities(html);
   const routes = {};
-  
-  const metricRegex = /<div class="metric-card"[^>]*>[\s\S]*?<div class="metric-label">([^<]+)<\/div>[\s\S]*?<div class="metric-value">([^<]+)<\/div>[\s\S]*?(?:<div class="metric-change"[^>]*>([^<]+)<\/div>)?/gi;
+
+  const rowRegex = /<td class="pill code">(WCI-[A-Z-]+)<\/td>\s*<td class="pill">\$([\d,]+)<\/td>\s*<td class="pill">\$([\d,]+)<\/td>\s*<td class="pill">\$([\d,]+)<\/td>[\s\S]*?<td class="delta (up|down|flat)">\s*([\d.]+)%\s*<\/td>/gi;
+
   let match;
-  while ((match = metricRegex.exec(cleanHtml)) !== null) {
-    const label = match[1].trim();
-    if (label.includes('Şanghay') || label.includes('New York') || label.includes('Rotterdam') || label.includes('Cenova') || label.includes('Los Angeles')) {
-      let key = label.replace(/Şanghay/g, 'Shanghai').replace(/Cenova/g, 'Genoa');
-      const price = parseFriendlyPrice(match[2]);
-      if (price) {
-        let change = 0;
-        let direction = 'flat';
-        if (match[3]) {
-          const changeStr = match[3].replace(/[^\d.-]/g, '');
-          change = parseFloat(changeStr) || 0;
-          if (match[3].includes('▲')) {
-            direction = 'up';
-          } else if (match[3].includes('▼')) {
-            direction = 'down';
-            change = -change;
-          }
-        }
-        routes[key] = { price, change, direction };
-      }
-    }
+  while ((match = rowRegex.exec(cleanHtml)) !== null) {
+    const key = SCORIZONS_ROUTE_CODE_MAP[match[1]];
+    if (!key) continue; // WCI-COMPOSITE burada işlenmiyor, composite zaten Drewry canlısından geliyor
+    const price = parseFriendlyPrice(match[4]);
+    if (!price) continue;
+    const direction = match[5];
+    const changeVal = parseFloat(match[6]) || 0;
+    const change = direction === 'down' ? -changeVal : changeVal;
+    routes[key] = { price, change, direction };
   }
+
   return routes;
 }
 
@@ -1090,8 +1095,9 @@ export default {
         console.error(`Drewry canlı istek hatası: ${err.message}. B planına geçiliyor...`);
       }
 
-      // n8n Rapor Havuzundan Yedek Verileri Çek (Teyit ve yedekleme amacıyla her durumda çekiyoruz)
-      let fallbackRoutes = {};
+      // n8n Rapor Havuzu: sadece Drewry canlı sayfası tamamen çekilemezse Composite
+      // Index için B Planı olarak kullanılıyor (zaten asıl kaynaktan okuduğu için
+      // rota bazlı teyit/tamamlama burada yapılmıyor — onun yerine Scorizons kullanılıyor).
       let fallbackReport = null;
       try {
         const fallbackRes = await doFetch('https://n8n.emredemirbas.com/webhook/raporlar', {}, forceDirect);
@@ -1099,11 +1105,23 @@ export default {
           const reportsJson = JSON.parse(fallbackRes.body);
           if (reportsJson.reports && reportsJson.reports.length > 0) {
             fallbackReport = reportsJson.reports[0];
-            fallbackRoutes = parseWciRoutesFromFallback(fallbackReport.html_content);
           }
         }
       } catch (fallbackErr) {
         console.error("WCI B Planı n8n raporları çekilemedi:", fallbackErr.message);
+      }
+
+      // Scorizons.com'un statik WCI tablosu: tüm 8 alt rotayı (ters yön bacaklar
+      // dahil) düz HTML olarak yayınladığı için hem teyit kaynağı hem de eksik
+      // rotaları tamamlayan asıl kaynak olarak kullanılıyor.
+      let scorizonsRoutes = {};
+      try {
+        const scorizonsRes = await doFetch('https://scorizons.com/dashboard-drewry/', {}, forceDirect);
+        if (scorizonsRes.status === 200) {
+          scorizonsRoutes = parseWciRoutesFromScorizons(scorizonsRes.body);
+        }
+      } catch (scorizonsErr) {
+        console.error("WCI Scorizons rota verisi çekilemedi:", scorizonsErr.message);
       }
 
       // B Planı: Eğer canlı Drewry sitesi çekilemediyse veya doğrulama/parse başarısız olduysa n8n raporlarından çek
@@ -1136,32 +1154,43 @@ export default {
       }
 
       // Rotaları Birleştir ve Teyit Et (Consensus & Verification)
+      // Scorizons her hafta 8 rotanın tamamını yapılandırılmış HTML tablo olarak
+      // verdiği için asıl kaynak; Drewry'nin canlı sayfasındaki düz yazı (genelde
+      // sadece 2 rotayı anlatır) sadece çakıştığı rotalarda ek teyit sağlıyor.
       const finalRoutes = {};
-      const allRouteKeys = new Set([...Object.keys(liveRoutes), ...Object.keys(fallbackRoutes)]);
+      const allRouteKeys = new Set([...Object.keys(liveRoutes), ...Object.keys(scorizonsRoutes)]);
 
       for (const key of allRouteKeys) {
         const liveVal = liveRoutes[key];
-        const fallbackVal = fallbackRoutes[key];
+        const scoVal = scorizonsRoutes[key];
 
-        if (liveVal && fallbackVal) {
-          if (liveVal.price === fallbackVal.price) {
+        if (liveVal && scoVal) {
+          if (liveVal.price === scoVal.price) {
             finalRoutes[key] = {
-              price: liveVal.price,
-              change: liveVal.change !== 0 ? liveVal.change : fallbackVal.change,
-              direction: liveVal.direction !== 'flat' ? liveVal.direction : fallbackVal.direction,
+              price: scoVal.price,
+              change: scoVal.change,
+              direction: scoVal.direction,
               verified: true
             };
           } else {
-            // Uyuşmazlık durumunda teyit edilmiş (insan kontrolünden geçmiş) n8n verisini seçiyoruz
-            console.warn(`WCI Rota Uyuşmazlığı (${key}): Live ($${liveVal.price}) != Fallback ($${fallbackVal.price}). Fallback değeri seçildi.`);
+            // Uyuşmazlık durumunda yapılandırılmış Scorizons tablosunu seçiyoruz
+            console.warn(`WCI Rota Uyuşmazlığı (${key}): Live ($${liveVal.price}) != Scorizons ($${scoVal.price}). Scorizons değeri seçildi.`);
             finalRoutes[key] = {
-              price: fallbackVal.price,
-              change: fallbackVal.change,
-              direction: fallbackVal.direction,
+              price: scoVal.price,
+              change: scoVal.change,
+              direction: scoVal.direction,
               verified: true,
               mismatch: true
             };
           }
+        } else if (scoVal) {
+          // Sadece Scorizons'ta varsa: Direkt kabul et (ters yön rotalar dahil tek kaynak)
+          finalRoutes[key] = {
+            price: scoVal.price,
+            change: scoVal.change,
+            direction: scoVal.direction,
+            verified: true
+          };
         } else if (liveVal) {
           // Sadece canlıda varsa: Sınır kontrolü uygulayarak kabul et
           if (liveVal.price >= 300 && liveVal.price <= 15000) {
@@ -1172,14 +1201,6 @@ export default {
               verified: false
             };
           }
-        } else if (fallbackVal) {
-          // Sadece n8n raporunda varsa: Direkt kabul et
-          finalRoutes[key] = {
-            price: fallbackVal.price,
-            change: fallbackVal.change,
-            direction: fallbackVal.direction,
-            verified: true
-          };
         }
       }
 
