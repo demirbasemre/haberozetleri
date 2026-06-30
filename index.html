@@ -18624,7 +18624,10 @@ function initControls(allArticles) {
         } catch (e) { /* sessizce yok say, statik raporlarla devam et */ }
       }
 
-      // 2. Merge with live latest report from worker if available
+      // 2. Merge with live latest report from worker if available.
+      // Statik kayıt (gerçek PDF'den elle/otomatik girilmiş) zaten varsa worker'ın
+      // otomatik kazıdığı kaba KPI'larla ÜZERİNE YAZMIYORUZ — sadece o ay için
+      // henüz statik kayıt yokken geçici bir "ön izleme" kartı olarak ekliyoruz.
       let mergedReports = [...staticReports];
       if (window._iataLatest && window._iataLatest.demand) {
         const exists = staticReports.some(r => r.date === window._iataLatest.date);
@@ -18638,19 +18641,6 @@ function initControls(allArticles) {
             link: window._iataLatest.pdfLink,
             summary: window._iataLatest.summary
           });
-        } else {
-          const idx = mergedReports.findIndex(r => r.date === window._iataLatest.date);
-          if (idx !== -1) {
-            mergedReports[idx] = {
-              ...mergedReports[idx],
-              demand: window._iataLatest.demand,
-              capacity: window._iataLatest.capacity,
-              loadFactor: window._iataLatest.loadFactor,
-              spotRate: window._iataLatest.spotRate,
-              link: window._iataLatest.pdfLink,
-              summary: window._iataLatest.summary
-            };
-          }
         }
       }
 
