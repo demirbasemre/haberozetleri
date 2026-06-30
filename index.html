@@ -9348,6 +9348,10 @@ async function loadDashboard() {
     });
   }
   initJetfuelCard();
+  // Sekme açık kalsa, kullanıcı hiçbir şey yapmasa bile saatte bir taze veriyi otomatik çek
+  setInterval(() => {
+    if (document.visibilityState === 'visible') initJetfuelCard();
+  }, 60 * 60 * 1000);
 
   // ── Forex Verisini Çek ve Göster ──────────────────────────────
   let _latestUsdPrice = null;
@@ -12730,6 +12734,15 @@ async function loadDashboard() {
   initBafiCard();
   initFbxCard();
   initIataCard();
+
+  // Sekme açık kalsa, kullanıcı hiçbir şey yapmasa bile saatte bir taze veriyi otomatik çek
+  // (fetchCached zaten kendi TTL'ine göre gereksiz ağ isteğini engelliyor)
+  setInterval(() => {
+    if (document.visibilityState !== 'visible') return;
+    initBafiCard();
+    initFbxCard();
+    initIataCard();
+  }, 60 * 60 * 1000);
 
   // ── THY Hisse Verisini Çek ve Göster ──────────────────────────────
   let _thy1yRaw = null;

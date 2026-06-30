@@ -9503,6 +9503,10 @@ async function loadDashboard() {
     });
   }
   initJetfuelCard();
+  // Sekme açık kalsa, kullanıcı hiçbir şey yapmasa bile saatte bir taze veriyi otomatik çek
+  setInterval(() => {
+    if (document.visibilityState === 'visible') initJetfuelCard();
+  }, 60 * 60 * 1000);
 
   // ── Forex Verisini Çek ve Göster ──────────────────────────────
   let _latestUsdPrice = null;
@@ -13749,6 +13753,15 @@ async function loadDashboard() {
   initFbxCard();
   initIataCard();
   initCargoCard();
+
+  // Sekme açık kalsa, kullanıcı hiçbir şey yapmasa bile saatte bir taze veriyi otomatik çek
+  // (fetchCached zaten kendi TTL'ine göre gereksiz ağ isteğini engelliyor)
+  setInterval(() => {
+    if (document.visibilityState !== 'visible') return;
+    initBafiCard();
+    initFbxCard();
+    initIataCard();
+  }, 60 * 60 * 1000);
 
   // "Havadaki Kargo Uçağı Sayısı" kartı ALL_INDICATOR_CARDS/applyIndicatorsConfig
   // döngüsünün dışında olduğundan "Yeni" rozetini kendi başına uygular.
