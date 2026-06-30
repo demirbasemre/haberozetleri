@@ -13402,7 +13402,7 @@ async function loadDashboard() {
   }
 
   function initWciCard() {
-    return fetchCached('wci_full_data_v2', async () => {
+    return fetchCached('wci_full_data_v4', async () => {
       const [history, latest] = await Promise.all([
         fetch('wci-history.json').then(r => r.ok ? r.json() : WCI_DEFAULT_HISTORY).catch(() => WCI_DEFAULT_HISTORY),
         fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci').then(r => r.ok ? r.json() : null).catch(() => null)
