@@ -18599,7 +18599,21 @@ function initControls(allArticles) {
       if (!staticReports || staticReports.length === 0) {
         staticReports = [...IATA_DEFAULT_2026_REPORTS];
       }
-      
+
+      // 1b. window._iataLatest yalnızca Dashboard sekmesi açıldığında (loadDashboard
+      // içindeki initIataCard ile) doluyor. Kullanıcı doğrudan Raporlar > IATA
+      // sekmesine gelirse bu hiç set edilmemiş olabilir; bağımsız olarak çek.
+      if (!window._iataLatest) {
+        try {
+          window._iataLatest = await fetchCached(
+            'iata_latest_only',
+            () => fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null),
+            24 * 60 * 60 * 1000,
+            (d) => !!(d && d.demand)
+          );
+        } catch (e) { /* sessizce yok say, statik raporlarla devam et */ }
+      }
+
       // 2. Merge with live latest report from worker if available
       let mergedReports = [...staticReports];
       if (window._iataLatest && window._iataLatest.demand) {
