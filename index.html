@@ -8403,6 +8403,11 @@ function buildReleaseCalendar() {
 
   // IATA aylık raporu ~1 ay gecikmeli yayınlanır (örn. Haziran sonunda Mayıs raporu çıkar).
   // Worker üzerinden gerçek yayın durumunu kontrol edip takvim kartını buna göre güncelliyoruz.
+  let iataConfirmed = {};
+  try {
+    iataConfirmed = JSON.parse(localStorage.getItem('iata_confirmed_releases') || '{}');
+  } catch(e) {}
+
   let _iataLatestParsed = null;
   function parseTrMonthYearIata(str) {
     if (!str) return null;
@@ -8413,19 +8418,32 @@ function buildReleaseCalendar() {
     if (idx === -1) return null;
     return { y: parseInt(m[2], 10), m: idx + 1 };
   }
-  fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
-    if (data && data.date) {
-      const parsed = parseTrMonthYearIata(data.date);
-      if (parsed) {
-        const publishedDate = data.publishedDate ? new Date(data.publishedDate) : null;
-        _iataLatestParsed = {
-          y: parsed.y, m: parsed.m, pdfLink: data.pdfLink,
-          publishedDate: (publishedDate && !isNaN(publishedDate)) ? publishedDate : null
-        };
-        if (typeof _relRender === 'function') _relRender();
+
+  const needsIataFetch = dataItems.some(it => {
+    if (it.verify !== 'iata-monthly') return false;
+    let targetMonth0 = it.date.getMonth() - 1;
+    let targetYear = it.date.getFullYear();
+    if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
+    const key = `${targetYear}-${targetMonth0 + 1}`;
+    const isPastOrCurrent = it.date <= now || (it.date.getFullYear() === now.getFullYear() && it.date.getMonth() === now.getMonth());
+    return isPastOrCurrent && !iataConfirmed[key];
+  });
+
+  if (needsIataFetch) {
+    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
+      if (data && data.date) {
+        const parsed = parseTrMonthYearIata(data.date);
+        if (parsed) {
+          const publishedDate = data.publishedDate ? new Date(data.publishedDate) : null;
+          _iataLatestParsed = {
+            y: parsed.y, m: parsed.m, pdfLink: data.pdfLink,
+            publishedDate: (publishedDate && !isNaN(publishedDate)) ? publishedDate : null
+          };
+          if (typeof _relRender === 'function') _relRender();
+        }
       }
-    }
-  }).catch(() => {});
+    }).catch(() => {});
+  }
 
   // Sonraki 4 Çarşambayı üret (EIA haftalık raporu için)
   function nextWednesdays(n) {
@@ -8884,6 +8902,12 @@ function buildReleaseCalendar() {
       let targetMonth0 = item.date.getMonth() - 1; // 0-indeksli hedef ay (rapor kapsadığı ay)
       let targetYear = item.date.getFullYear();
       if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
+      
+      const key = `${targetYear}-${targetMonth0 + 1}`;
+      if (iataConfirmed[key]) {
+        return { released: true, link: iataConfirmed[key].link, day: iataConfirmed[key].day };
+      }
+
       let released = false;
       let link = item.link;
       let actualDate = null;
@@ -8901,6 +8925,14 @@ function buildReleaseCalendar() {
       // Worker'dan gerçek yayın günü gelmişse onu kullan; gelmemişse veya henüz
       // yüklenmemişse/hata varsa ve bu güncel rapor ise "-" gösteriyoruz, eski aylar için tahmini günü gösteriyoruz.
       const day = released ? (actualDate ? actualDate.getDate() : (isLatestReport ? null : item.date.getDate())) : null;
+      
+      if (released && day != null) {
+        iataConfirmed[key] = { link, day };
+        try {
+          localStorage.setItem('iata_confirmed_releases', JSON.stringify(iataConfirmed));
+        } catch(e) {}
+      }
+
       return { released, link, day };
     }
     items.forEach(it => { it._iata = iataStatus(it); });
