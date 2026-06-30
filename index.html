@@ -11600,6 +11600,13 @@ async function loadDashboard() {
   });
 
   window._wciHistory = [];
+  window._bafiCustomRange = false;
+  window._fbxCustomRange = false;
+  window._iataCustomRange = false;
+  window._thyCustomRange = false;
+  window._forexCustomRange = false;
+  window._brentCustomRange = false;
+  window._jetfuelCustomRange = false;
 
   function renderWciChart(period) {
     if (window._wciSelectedRoute && window._wciSelectedRoute !== 'WCI') {
