@@ -11856,6 +11856,7 @@ async function loadDashboard() {
     applyWciMapView();
     container.appendChild(svg);
   }
+  window.renderWciRouteMap = renderWciRouteMap;
 
   window.highlightWciMapRoute = function(code, isPreview) {
     document.querySelectorAll('#wci-route-map .is-active, #wci-route-map .is-route-active').forEach(el=>{
