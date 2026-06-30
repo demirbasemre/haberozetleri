@@ -53,6 +53,11 @@
     display: flex; align-items: center; justify-content: center;
     font-weight: 800; font-size: 11px; color: #fff; flex-shrink: 0;
   }
+  .fleet-k2-logo-img {
+    width: 36px; height: 36px; border-radius: 8px;
+    flex-shrink: 0; object-fit: contain; background: #fff;
+    border: 1px solid var(--border); padding: 4px;
+  }
   .fleet-k2-name { font-weight: 600; font-size: 13.5px; color: var(--text); }
   .fleet-k2-iata { font-size: 11px; color: var(--text-3); margin-top: 1px; }
   .fleet-k2-stats {
@@ -105,6 +110,63 @@
     transition: all 0.15s;
   }
   .flt-cat-btn--active { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+  /* ── Mevcut Filo: Kart / Tablo görünüm anahtarı ── */
+  .flt-view-toggle { display: flex; gap: 6px; margin: 4px 0 14px; }
+  .flt-view-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 8px; cursor: pointer;
+    font-size: 12px; font-weight: 600; border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text-2);
+    transition: all 0.15s;
+  }
+  .flt-view-btn:hover { color: var(--text); border-color: var(--text-3); }
+  .flt-view-btn--active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .flt-view-btn--active:hover { color: #fff; border-color: var(--navy); background: color-mix(in srgb, var(--navy) 80%, white 20%); }
+  .flt-view-btn svg { flex-shrink: 0; }
+
+  /* ── Mevcut Filo Tablosu ── */
+  .flt-table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+  .flt-table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .flt-table th {
+    background: var(--navy); color: rgba(255,255,255,0.85);
+    padding: 8px 10px; text-align: right; font-size: 10.5px; font-weight: 600;
+    white-space: nowrap; border-bottom: 2px solid rgba(255,255,255,0.1);
+  }
+  .flt-table th:first-child { text-align: left; min-width: 150px; }
+  .flt-table th.flt-th-clickable {
+    cursor: pointer; user-select: none; transition: background 0.15s;
+  }
+  .flt-th-clickable:hover { background: color-mix(in srgb, var(--navy) 80%, white 20%); }
+  .flt-th-chevron { display: inline-block; margin-left: 3px; font-size: 8px; transition: transform 0.2s; opacity: 0.7; }
+  .flt-th-chevron--open { transform: rotate(180deg); }
+  .flt-th-cat-wb { background: color-mix(in srgb, var(--navy) 75%, #7c3aed 25%); }
+  .flt-th-cat-nb { background: color-mix(in srgb, var(--navy) 75%, #2563eb 25%); }
+  .flt-th-cat-cargo { background: color-mix(in srgb, var(--navy) 75%, #b45309 25%); }
+  .flt-table td {
+    padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--border-soft);
+    color: var(--text); white-space: nowrap;
+  }
+  .flt-table td:first-child { text-align: left; font-weight: 600; }
+  .flt-table th:first-child, .flt-table td:first-child {
+    position: sticky; left: 0; z-index: 2; background: var(--surface);
+  }
+  .flt-table th:first-child { background: var(--navy); z-index: 3; }
+  .flt-table tr:hover td { background: var(--bg); }
+  .flt-table tr:hover td:first-child { background: var(--bg); }
+  .flt-table td.flt-td-sub { color: var(--text-3); font-weight: 400; }
+  .flt-table td.flt-td-cat-total { font-weight: 700; color: var(--text); background: rgba(99,102,241,0.05); }
+  [data-theme="dark"] .flt-table td.flt-td-cat-total { background: rgba(99,102,241,0.10); }
+  .flt-table td.flt-td-grand { font-weight: 800; color: var(--accent); }
+  .flt-table tfoot td {
+    padding: 8px 10px; text-align: right; font-weight: 800;
+    background: var(--bg); border-top: 2px solid var(--border);
+    color: var(--text);
+  }
+  .flt-table tfoot td:first-child { text-align: left; position: sticky; left: 0; background: var(--bg); z-index: 2; }
+  .flt-table-airline-cell { display: inline-flex; align-items: center; gap: 7px; }
+  .flt-table-airline-cell img { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .flt-table-airline-cell span.flt-tac-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; display: inline-block; }
   .flt-cat-btn:hover:not(.flt-cat-btn--active) { border-color: var(--accent); color: var(--accent); }
   .fleet-type-mini { display:flex; gap:12px; flex-wrap:wrap; padding:6px 14px 8px; font-size:11px; border-top:1px solid var(--border-soft); }
   .fleet-type-mini-item { display:flex; align-items:center; gap:4px; color:var(--text-2); }
@@ -3638,29 +3700,43 @@
         <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Mevcut Filo (Güncelleme Tarihi: 30 Haz 2026)</span>
       </div>
 
-      <!-- Global filtre chips: WB / NB / Kargo -->
-      <div id="fleet-cat-bar" class="fleet-cat-bar" style="display:none">
-        <button class="flt-cat-btn flt-cat-btn--active" data-cat="all">Tümü</button>
-        <button class="flt-cat-btn" data-cat="wb">
-          <span style="color:#7c3aed">■</span> Geniş Gövde
-        </button>
-        <button class="flt-cat-btn" data-cat="nb">
-          <span style="color:#2563eb">■</span> Dar Gövde
-        </button>
-        <button class="flt-cat-btn" data-cat="cargo">
-          <span style="color:#b45309">■</span> Kargo
-        </button>
-      </div>
 
       <!-- Kaynak 1 içerik wrapper -->
       <div id="fleet-k1-content">
 
 
+      <!-- Kart / Tablo görünüm anahtarı -->
+      <div class="flt-view-toggle">
+        <button class="flt-view-btn flt-view-btn--active" id="flt-view-cards-btn" onclick="switchFleetView('cards')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Kart Görünümü
+        </button>
+        <button class="flt-view-btn" id="flt-view-table-btn" onclick="switchFleetView('table')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+          Tablo Görünümü
+        </button>
+      </div>
+
       <!-- Kaynak 1 kart grid — buildK1Cards() ile dinamik doldurulur -->
       <div class="fleet-k2-grid" id="fleet-k1-cards"></div>
 
+      <!-- Kaynak 1 tablo görünümü — buildFleetTable() ile dinamik doldurulur -->
+      <div class="flt-table-wrap" id="fleet-k1-table-wrap" style="display:none">
+        <table class="flt-table" id="fleet-k1-table">
+          <thead id="fleet-k1-table-thead"></thead>
+          <tbody id="fleet-k1-table-tbody"></tbody>
+          <tfoot id="fleet-k1-table-tfoot"></tfoot>
+        </table>
+      </div>
+
       <div class="fleet-update-note">
         Veriler <strong>Planespotters.net</strong> kaynağından alınmıştır (Güncelleme Tarihi: 30 Haziran 2026).
+      </div>
+      <div class="fin-table-footnotes" style="display:flex;margin-top:8px">
+        <div class="fin-footnote-item">
+          <span class="fin-footnote-symbol">†</span>
+          <span><strong>Sipariş (Yakın Vade):</strong> Yalnızca teslimatı yakın olan yeni üretim uçakları ve beklenen ikinci el teslimatlarını kapsar; üreticilerin raporladığı bekleyen tüm siparişleri içermez.</span>
+        </div>
       </div>
       </div><!-- /fleet-k1-content -->
 
@@ -21378,6 +21454,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: 30 Haz 2026)';
       if (catBar) catBar.style.display = '';
       buildK1Cards();
+      if (_fleetView === 'table') buildFleetTable();
     } else if (src === 'kaynak2') {
       if (k1)  k1.style.display  = 'none';
       if (k2)  k2.style.display = '';
@@ -21434,34 +21511,36 @@ document.addEventListener('DOMContentLoaded', () => {
     grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
       const total = d.pt != null ? d.pt : '—';
       const order = d.po != null ? '+'+d.po : '—';
-      const age   = d.k1age ? d.k1age+'y' : '—';
+      const age   = d.k1age ? d.k1age : '—';
       const note  = d.k1note ? ` <span style="font-size:10px;color:var(--text-3)">(${d.k1note})</span>` : '';
       const miniItems = [];
       if (d.types && d.types.length) {
         const wbCount = k2Breakdown(d.types, 'wb').active;
         const nbCount = k2Breakdown(d.types, 'nb').active;
         const cargoCount = k2Breakdown(d.types, 'cargo').active;
-        if (wbCount > 0) miniItems.push({ cat: 'wb', val: Math.round(wbCount/10)*10, color: '#7c3aed', label: 'WB' });
-        if (nbCount > 0) miniItems.push({ cat: 'nb', val: Math.round(nbCount/10)*10, color: '#2563eb', label: 'NB' });
-        if (cargoCount > 0) miniItems.push({ cat: 'cargo', val: Math.round(cargoCount/10)*10, color: '#b45309', label: 'Kargo' });
+        if (wbCount > 0) miniItems.push({ cat: 'wb', val: wbCount, color: '#7c3aed', label: 'Geniş Gövde' });
+        if (nbCount > 0) miniItems.push({ cat: 'nb', val: nbCount, color: '#2563eb', label: 'Dar Gövde' });
+        if (cargoCount > 0) miniItems.push({ cat: 'cargo', val: cargoCount, color: '#b45309', label: 'Kargo' });
       }
       return `
       <div class="fleet-k2-card">
         <div class="fleet-k2-card-hdr">
-          <div class="fleet-k2-logo" style="background:${d.color}">${iata}</div>
+          <img class="fleet-k2-logo-img" src="https://www.gstatic.com/flights/airline_logos/70px/${iata}.png" alt="${iata}" loading="lazy"
+            data-init="${iata}" data-color="${d.color}"
+            onerror="var b=document.createElement('div');b.className='fleet-k2-logo';b.style.background=this.dataset.color;b.textContent=this.dataset.init;this.parentNode.replaceChild(b,this)">
           <div>
             <div class="fleet-k2-name">${d.name}${note}</div>
-            <div class="fleet-k2-iata">IATA: ${iata} · Kaynak 1</div>
+            <div class="fleet-k2-iata">IATA: ${iata} · Mevcut Filo</div>
           </div>
         </div>
         <div class="fleet-k2-stats">
           <div class="fleet-k2-stat">
             <div class="fleet-k2-stat-val">${total}</div>
-            <div class="fleet-k2-stat-lbl">Kaynak 1 Filo</div>
+            <div class="fleet-k2-stat-lbl">Toplam Filo</div>
           </div>
           <div class="fleet-k2-stat">
             <div class="fleet-k2-stat-val">${order}</div>
-            <div class="fleet-k2-stat-lbl">Kaynak 1 Sipariş</div>
+            <div class="fleet-k2-stat-lbl" title="Yalnızca teslimatı yakın olan yeni üretim uçakları ve beklenen ikinci el teslimatlarını kapsar; üreticilerin raporladığı bekleyen tüm siparişleri içermez.">Sipariş (Yakın Vade) <sup style="color:var(--accent);font-weight:700">†</sup></div>
           </div>
           <div class="fleet-k2-stat">
             <div class="fleet-k2-stat-val">${age}</div>
@@ -21470,16 +21549,113 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         ${miniItems.length ? `
         <div class="fleet-type-mini">
-          ${miniItems.map(m => `<div class="fleet-type-mini-item"><div class="fleet-type-mini-dot" style="background:${m.color}"></div>${m.label}: ~${m.val}</div>`).join('')}
-          <div style="font-size:10px;color:var(--text-3);margin-left:auto;white-space:nowrap">(Kaynak 2 verisi)</div>
+          ${miniItems.map(m => `<div class="fleet-type-mini-item"><div class="fleet-type-mini-dot" style="background:${m.color}"></div>${m.label}: ${m.val}</div>`).join('')}
         </div>` : ''}
-        <div style="padding:4px 14px 10px;font-size:11px;color:var(--text-3)">
-          Kaynak 2 aktif: ${d.ca} vs Kaynak 1 toplam: ${total}
-        </div>
       </div>`}).join('');
     // Grafik Kaynak 1'e geçince yeniden çiz (genişlik için)
     _fleetChartInit = false;
     setTimeout(renderFleetChart, 80);
+  }
+
+
+  // ── Mevcut Filo: Kart / Tablo görünüm anahtarı ──
+  let _fleetView = 'cards';
+  let _fleetTableCatOpen = { wb: false, nb: false, cargo: false };
+  window.switchFleetView = function(view) {
+    _fleetView = view;
+    const cardsBtn = document.getElementById('flt-view-cards-btn');
+    const tableBtn = document.getElementById('flt-view-table-btn');
+    const cardsGrid = document.getElementById('fleet-k1-cards');
+    const tableWrap = document.getElementById('fleet-k1-table-wrap');
+    if (cardsBtn) cardsBtn.classList.toggle('flt-view-btn--active', view === 'cards');
+    if (tableBtn) tableBtn.classList.toggle('flt-view-btn--active', view === 'table');
+    if (cardsGrid) cardsGrid.style.display = view === 'cards' ? '' : 'none';
+    if (tableWrap) tableWrap.style.display = view === 'table' ? '' : 'none';
+    if (view === 'cards' && FLEET_CMP_DATA) buildK1Cards();
+    if (view === 'table') buildFleetTable();
+  };
+  window.toggleFleetTableCat = function(cat) {
+    _fleetTableCatOpen[cat] = !_fleetTableCatOpen[cat];
+    buildFleetTable();
+  };
+
+  const FLEET_CAT_DEFS = [
+    { key: 'wb',    label: 'Geniş Gövde', cls: 'flt-th-cat-wb' },
+    { key: 'nb',    label: 'Dar Gövde',   cls: 'flt-th-cat-nb' },
+    { key: 'cargo', label: 'Kargo',       cls: 'flt-th-cat-cargo' },
+  ];
+
+  function fleetCatSums(types, cat) {
+    const filtered = (types || []).filter(t => classifyVariant(t.v) === cat);
+    return {
+      a: filtered.reduce((s,t) => s+(parseInt(t.a)||0), 0),
+      p: filtered.reduce((s,t) => s+(parseInt(t.i)||0), 0),
+      t: filtered.reduce((s,t) => s+(parseInt(t.t)||0), 0),
+    };
+  }
+
+  function buildFleetTable() {
+    const thead = document.getElementById('fleet-k1-table-thead');
+    const tbody = document.getElementById('fleet-k1-table-tbody');
+    const tfoot = document.getElementById('fleet-k1-table-tfoot');
+    if (!thead || !tbody || !tfoot) return;
+
+    // ── Başlık: kategori grupları (tıklayınca Aktif/Park/Toplam detayı açılır) ──
+    const groupRow = `<tr>
+      <th rowspan="2">Havayolu</th>
+      ${FLEET_CAT_DEFS.map(c => {
+        const open = _fleetTableCatOpen[c.key];
+        return `<th class="${c.cls} flt-th-clickable" colspan="${open ? 3 : 1}" onclick="toggleFleetTableCat('${c.key}')" title="Aktif / Park / Toplam detayını aç-kapat">
+          ${c.label} <span class="flt-th-chevron${open ? ' flt-th-chevron--open' : ''}">▼</span>
+        </th>`;
+      }).join('')}
+      <th rowspan="2">Toplam Filo</th>
+      <th rowspan="2" title="Yalnızca teslimatı yakın olan yeni üretim uçakları ve beklenen ikinci el teslimatlarını kapsar; üreticilerin raporladığı bekleyen tüm siparişleri içermez.">Sipariş <sup>†</sup></th>
+      <th rowspan="2">Ort. Yaş</th>
+    </tr>`;
+    const subRow = `<tr>
+      ${FLEET_CAT_DEFS.map(c => _fleetTableCatOpen[c.key]
+        ? `<th>Aktif</th><th>Park</th><th>Toplam</th>`
+        : `<th></th>`
+      ).join('')}
+    </tr>`;
+    thead.innerHTML = groupRow + subRow;
+
+    // ── Gövde satırları ──
+    const totals = { wb:{a:0,p:0,t:0}, nb:{a:0,p:0,t:0}, cargo:{a:0,p:0,t:0}, pt:0, po:0 };
+    const rows = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
+      const logoEl = `<img src="https://www.gstatic.com/flights/airline_logos/70px/${iata}.png" alt="" width="16" height="16" loading="lazy" onerror="this.style.display='none'">`;
+      const catCells = FLEET_CAT_DEFS.map(c => {
+        const sums = fleetCatSums(d.types, c.key);
+        totals[c.key].a += sums.a; totals[c.key].p += sums.p; totals[c.key].t += sums.t;
+        if (!_fleetTableCatOpen[c.key]) {
+          return `<td class="flt-td-cat-total">${sums.t || '—'}</td>`;
+        }
+        return `<td class="flt-td-sub">${sums.a || '—'}</td><td class="flt-td-sub">${sums.p || '—'}</td><td class="flt-td-cat-total">${sums.t || '—'}</td>`;
+      }).join('');
+      totals.pt += (d.pt || 0); totals.po += (d.po || 0);
+      return `<tr>
+        <td><span class="flt-table-airline-cell">${logoEl}<span style="font-weight:700;color:${d.color}">${d.name}</span></span></td>
+        ${catCells}
+        <td class="flt-td-grand">${d.pt ?? '—'}</td>
+        <td>${d.po != null ? '+'+d.po : '—'}</td>
+        <td>${d.k1age ?? '—'}</td>
+      </tr>`;
+    });
+    tbody.innerHTML = rows.join('');
+
+    // ── Dip toplam satırı (sütun aç/kapat durumuna göre otomatik güncellenir) ──
+    const footCatCells = FLEET_CAT_DEFS.map(c => {
+      if (!_fleetTableCatOpen[c.key]) return `<td>${totals[c.key].t || '—'}</td>`;
+      return `<td>${totals[c.key].a || '—'}</td><td>${totals[c.key].p || '—'}</td><td>${totals[c.key].t || '—'}</td>`;
+    }).join('');
+    tfoot.innerHTML = `<tr>
+      <td>Toplam (${Object.keys(FLEET_CMP_DATA).length} havayolu)</td>
+      ${footCatCells}
+      <td>${totals.pt}</td>
+      <td>+${totals.po}</td>
+      <td>—</td>
+    </tr>`;
   }
 
   // ── Kaynak 2 kartları ────────────────────────────────
@@ -21503,7 +21679,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
       <div class="fleet-k2-card">
         <div class="fleet-k2-card-hdr">
-          <div class="fleet-k2-logo" style="background:${d.color}">${iata}</div>
+          <img class="fleet-k2-logo-img" src="https://www.gstatic.com/flights/airline_logos/70px/${iata}.png" alt="${iata}" loading="lazy"
+            data-init="${iata}" data-color="${d.color}"
+            onerror="var b=document.createElement('div');b.className='fleet-k2-logo';b.style.background=this.dataset.color;b.textContent=this.dataset.init;this.parentNode.replaceChild(b,this)">
           <div>
             <div class="fleet-k2-name">${d.name}</div>
             <div class="fleet-k2-iata">IATA: ${iata} · Kaynak 2${catNote}</div>

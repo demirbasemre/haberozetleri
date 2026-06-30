@@ -1,5 +1,6 @@
 {
+  "cleanUrls": false,
   "rewrites": [
-    { "source": "/", "destination": "/_preview.html" }
+    { "source": "/", "destination": "/index_test.html" }
   ]
 }
