@@ -605,13 +605,15 @@ function parseWCI(html) {
   const dateMatch = html.match(/Our detailed assessment for [A-Za-z]+,\s+([\d]+\s+[A-Za-z]+\s+[\d]{4})/i);
   const dateStr = dateMatch ? dateMatch[1] : null;
 
-  // Birincil regex eşleşmesi (aradaki açıklama veya virgülleri tolere etmek için [^]*? kullanıldı)
-  const wciRegex = /The Drewry World Container Index \(WCI\)[^]*?(increased|decreased|remained(?:\s+(?:steady|unchanged))?|dropped|declined|surged|fell|rose|changed)(?:\s+by)?\s*(?:([\d.]+)(?:%)?)?\s*(?:to|at)?\s*\$([\d,]+)/i;
+  // Birincil regex eşleşmesi ("WCI"den sonraki ilk cümleyle sınırlı tutmak için aralık {0,120} ile sınırlandırıldı,
+  // aksi halde sonraki rota cümleleri (ör. "Shanghai-Genoa ... remained unchanged at $X") yanlışlıkla composite sanılıyordu)
+  const directionWords = 'increased|decreased|remained(?:\\s+(?:steady|unchanged))?|dropped|declined|surged|jumped|climbed|gained|soared|slipped|eased|rose|fell|changed|edged\\s+(?:up|down)';
+  const wciRegex = new RegExp(`The Drewry World Container Index \\(WCI\\)[^.]{0,120}?(${directionWords})(?:\\s+by)?\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i');
   let match = html.match(wciRegex);
 
   // Alternatif regex 1: "composite index" ifadeleri için
   if (!match) {
-    const fallbackRegex = /composite index\s+(increased|decreased|remained(?:\s+(?:steady|unchanged))?|dropped|declined|surged|fell|rose|changed)(?:\s+by)?\s*(?:([\d.]+)(?:%)?)?\s*(?:to|at)?\s*\$([\d,]+)/i;
+    const fallbackRegex = new RegExp(`composite index[^.]{0,120}?(${directionWords})(?:\\s+by)?\\s*(?:([\\d.]+)(?:%)?)?\\s*(?:to|at)?\\s*\\$([\\d,]+)`, 'i');
     match = html.match(fallbackRegex);
   }
 
@@ -627,9 +629,21 @@ function parseWCI(html) {
   const priceStr = match[3].replace(/,/g, '');
   const price = parseFloat(priceStr);
 
+  const downWords = ['decreased', 'dropped', 'declined', 'fell', 'slipped', 'eased'];
+  const upWords = ['increased', 'surged', 'rose', 'jumped', 'climbed', 'gained', 'soared'];
+
   let changePercent = changePercentVal;
-  if (['decreased', 'dropped', 'declined', 'fell'].includes(directionStr)) {
+  if (downWords.includes(directionStr)) {
     changePercent = -changePercentVal;
+  } else if (directionStr.startsWith('edged down')) {
+    changePercent = -changePercentVal;
+  }
+
+  let direction = 'flat';
+  if (upWords.includes(directionStr) || directionStr.startsWith('edged up')) {
+    direction = 'up';
+  } else if (downWords.includes(directionStr) || directionStr.startsWith('edged down')) {
+    direction = 'down';
   }
 
   return {
@@ -637,7 +651,7 @@ function parseWCI(html) {
     price,
     change: changePercent,
     date: dateStr,
-    direction: ['increased', 'surged', 'rose'].includes(directionStr) ? 'up' : ['decreased', 'dropped', 'declined', 'fell'].includes(directionStr) ? 'down' : 'flat'
+    direction
   };
 }
 
