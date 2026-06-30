@@ -22,7 +22,7 @@
   } catch(e) {}
 })();
 </script>
-<link rel="stylesheet" href="index.css?v=1.0.5">
+<link rel="stylesheet" href="index.css?v=1.0.6">
 <style>
   /* ══════════════════════════════════════
      FLEET COMPARISON & Kaynak 2 STYLES
@@ -3039,10 +3039,12 @@
               <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
             </div>
             <div class="modal-date-picker" id="wci-date-picker-wrap">
-              <input type="date" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi">
+              <input type="date" readonly class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('start', this)">
               <span class="modal-date-separator">→</span>
-              <input type="date" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi">
+              <input type="date" readonly class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('end', this)">
             </div>
+            <span class="wci-route-dd-trigger-badge" id="wci-range-change-badge" style="display:none"></span>
+            <div class="wci-cal-popup" id="wci-cal-popup" style="display:none"></div>
           </div>
           <div class="modal-controls-right">
             <div class="modal-chart-type-group">
@@ -11176,6 +11178,10 @@ async function loadDashboard() {
     EU:  { x: 512, y: 106, label: 'K.Avrupa (Rotterdam)' },
     MED: { x: 485, y: 150, label: 'Akdeniz (Cenova)' }
   };
+  // Pill kısaltmaları, varış limanına göre belirlenir (route code metnine göre
+  // değil) — aksi halde "X - Rotterdam" / "Rotterdam - X" gibi iki yönlü kodların
+  // ikisi de "Rot" içerdiğinden çift yönlü pillerde aynı etiket tekrarlanıyordu.
+  const WCI_PORT_ABBR = { CEA: 'Şan', NAW: 'LA', NAE: 'NY', EU: 'Rot', MED: 'Gen' };
 
   const WCI_MAP_ROUTES = [
     { code: 'Shanghai - Rotterdam', from: 'CEA', to: 'EU' },
@@ -11224,9 +11230,11 @@ async function loadDashboard() {
         }
       );
       if (titleEl) titleEl.textContent = `${code} — ${Math.round(values[values.length - 1]).toLocaleString('tr-TR')} $/FEU`;
+      updateWciRangeChangeBadge(values);
     } catch (err) {
       console.error("WCI rota grafiği çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
+      updateWciRangeChangeBadge(null);
     }
   }
 
@@ -11314,6 +11322,154 @@ async function loadDashboard() {
   }
   window.renderWciRouteOptions = renderWciRouteOptions;
 
+  // "Shanghai - New York" gibi WCI rota kodu ile routeNames'ten gelen
+  // "Şanghay → New York" görünen adı aynı rotayı iki farklı dilde tekrar
+  // yazıyordu (başlıkta "Shanghai - New York Şanghay → New York" gibi
+  // görünüyordu). Bunun yerine başlıkta kısa liman kısaltması (Şan→NY) +
+  // tek bir okunur ad gösteriyoruz.
+  function wciRouteShortCode(code) {
+    const r = WCI_MAP_ROUTES.find(x => x.code === code);
+    if (!r) return code;
+    return (WCI_PORT_ABBR[r.from] || r.from) + '→' + (WCI_PORT_ABBR[r.to] || r.to);
+  }
+
+  // Seçilen tarih aralığının ilk ve son değeri arasındaki yüzde değişimi
+  // başlığın yanında gösterir (yöneticinin istediği "seçilen aralıkta % kaç değişti" göstergesi).
+  function updateWciRangeChangeBadge(prices) {
+    const badgeEl = document.getElementById('wci-range-change-badge');
+    if (!badgeEl) return;
+    if (!prices || prices.length < 2 || prices[0] == null || prices[prices.length - 1] == null || prices[0] === 0) {
+      badgeEl.style.display = 'none';
+      return;
+    }
+    const first = prices[0];
+    const last = prices[prices.length - 1];
+    const pct = ((last - first) / Math.abs(first)) * 100;
+    const dir = pct > 0.005 ? 'up' : pct < -0.005 ? 'down' : 'flat';
+    const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '–';
+    badgeEl.textContent = `${arrow} %${Math.abs(pct).toFixed(2)}`;
+    badgeEl.className = `wci-route-dd-trigger-badge is-${dir}`;
+    badgeEl.style.display = '';
+  }
+
+  // WCI verisi haftada bir yayınlanıyor ama her zaman tam 7 günde bir değil
+  // (bazı haftalarda 6-14 gün kayma var). Bu yüzden native <input type="date">'in
+  // step özelliğiyle günleri pasifleştirmek güvenilir değil — gerçek veri
+  // tarihlerini kullanan özel bir takvim açılır penceresi gösteriyoruz.
+  let _wciCalState = null; // { which: 'start'|'end', viewYear, viewMonth }
+
+  function wciGetValidDates() {
+    const set = new Set();
+    (_wciHistory || []).forEach(d => { if (d && d.date) set.add(d.date); });
+    if (_wciLatest && _wciLatest.date) {
+      const iso = convertDrewryDate(_wciLatest.date);
+      if (iso) set.add(iso);
+    }
+    return set;
+  }
+
+  function wciCloseCalendar() {
+    const pop = document.getElementById('wci-cal-popup');
+    if (pop) { pop.style.display = 'none'; pop.innerHTML = ''; }
+    _wciCalState = null;
+    document.removeEventListener('mousedown', wciCalOutsideClick, true);
+  }
+
+  function wciCalOutsideClick(e) {
+    const pop = document.getElementById('wci-cal-popup');
+    if (!pop) return;
+    if (pop.contains(e.target) || e.target.closest('#wci-date-picker-wrap')) return;
+    wciCloseCalendar();
+  }
+
+  function wciOpenCalendar(which, anchorEl) {
+    const validDates = wciGetValidDates();
+    if (!validDates.size) return;
+    const sorted = Array.from(validDates).sort();
+    const inputEl = document.getElementById(`wci-date-${which}`);
+    const currentVal = inputEl && inputEl.value && validDates.has(inputEl.value) ? inputEl.value : sorted[sorted.length - 1];
+    const [y, m] = currentVal.split('-').map(Number);
+    _wciCalState = { which, viewYear: y, viewMonth: m - 1, validDates, sorted };
+    wciRenderCalendar();
+
+    const pop = document.getElementById('wci-cal-popup');
+    const wrap = document.getElementById('wci-date-picker-wrap');
+    if (pop && wrap) {
+      pop.style.display = 'block';
+      const r = wrap.getBoundingClientRect();
+      const popW = 244;
+      let left = r.left;
+      // Viewport sağından taşmaması için sola kaydır
+      if (left + popW > window.innerWidth - 8) left = window.innerWidth - popW - 8;
+      if (left < 8) left = 8;
+      pop.style.top = (r.bottom + 6) + 'px';
+      pop.style.left = left + 'px';
+    }
+    setTimeout(() => document.addEventListener('mousedown', wciCalOutsideClick, true), 0);
+  }
+
+  function wciRenderCalendar() {
+    const pop = document.getElementById('wci-cal-popup');
+    if (!pop || !_wciCalState) return;
+    const { viewYear, viewMonth, validDates } = _wciCalState;
+    const monthNames = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    const firstOfMonth = new Date(viewYear, viewMonth, 1);
+    const startOffset = (firstOfMonth.getDay() + 6) % 7; // Pazartesi başlangıçlı
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    let cells = '';
+    for (let i = 0; i < startOffset; i++) cells += `<span class="wci-cal-day is-empty"></span>`;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const iso = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const isValid = validDates.has(iso);
+      cells += `<button type="button" class="wci-cal-day${isValid ? ' is-valid' : ' is-disabled'}" ${isValid ? `onclick="wciPickCalendarDate('${iso}')"` : 'disabled'} aria-label="${iso}">${d}</button>`;
+    }
+
+    pop.innerHTML = `
+      <div class="wci-cal-head">
+        <button type="button" class="wci-cal-nav" onclick="wciCalShiftMonth(-1)" aria-label="Önceki ay">‹</button>
+        <span class="wci-cal-title">${monthNames[viewMonth]} ${viewYear}</span>
+        <button type="button" class="wci-cal-nav" onclick="wciCalShiftMonth(1)" aria-label="Sonraki ay">›</button>
+      </div>
+      <div class="wci-cal-weekdays">
+        <span>Pt</span><span>Sa</span><span>Ça</span><span>Pe</span><span>Cu</span><span>Ct</span><span>Pz</span>
+      </div>
+      <div class="wci-cal-grid">${cells}</div>
+      <div class="wci-cal-hint">Sadece WCI'nin yayınlandığı haftalar seçilebilir</div>
+    `;
+  }
+
+  window.wciCalShiftMonth = function(delta) {
+    if (!_wciCalState) return;
+    let { viewYear, viewMonth } = _wciCalState;
+    viewMonth += delta;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    _wciCalState.viewYear = viewYear;
+    _wciCalState.viewMonth = viewMonth;
+    wciRenderCalendar();
+  };
+
+  window.wciPickCalendarDate = function(iso) {
+    if (!_wciCalState) return;
+    const { which, sorted } = _wciCalState;
+    const inputEl = document.getElementById(`wci-date-${which}`);
+    if (!inputEl) { wciCloseCalendar(); return; }
+    inputEl.value = iso;
+    // Başlangıç bitişten sonraya, ya da bitiş başlangıçtan önceye kaymasın —
+    // diğer ucu en yakın geçerli tarihe çekiyoruz.
+    const otherWhich = which === 'start' ? 'end' : 'start';
+    const otherEl = document.getElementById(`wci-date-${otherWhich}`);
+    if (otherEl && otherEl.value) {
+      if (which === 'start' && otherEl.value < iso) otherEl.value = iso;
+      if (which === 'end' && otherEl.value > iso) otherEl.value = iso;
+    }
+    wciCloseCalendar();
+    inputEl.dispatchEvent(new Event('change'));
+  };
+
+  window.wciOpenCalendar = wciOpenCalendar;
+
   function updateWciRouteDropdownUI(code) {
     const panel = document.getElementById('wci-route-dd-panel');
     const codeEl = document.getElementById('wci-route-dd-code');
@@ -11327,11 +11483,15 @@ async function loadDashboard() {
     }
     if (codeEl && nameEl) {
       if (code === 'WCI') {
+        codeEl.style.display = '';
         codeEl.textContent = 'WCI';
         nameEl.textContent = 'Global Endeks';
       } else {
-        codeEl.textContent = code;
-        nameEl.textContent = (window._wciLatest && window._wciLatest.routeNames && window._wciLatest.routeNames[code]) || code;
+        // Kısa kod (Şan→NY) + uzun ad (Şanghay → New York) aynı anda
+        // gösterilince tek bir bilgiyi iki kez yazmış gibi görünüyordu.
+        // Artık sadece tam, okunaklı rota adını gösteriyoruz.
+        codeEl.style.display = 'none';
+        nameEl.textContent = (window._wciLatest && window._wciLatest.routeNames && window._wciLatest.routeNames[code]) || wciRouteShortCode(code);
       }
     }
     const badgeEl = document.getElementById('wci-route-dd-badge');
@@ -11379,8 +11539,11 @@ async function loadDashboard() {
     landPath.setAttribute('class','wci-map-land');
     svg.appendChild(landPath);
 
-    function pathFromPoints(pts) {
-      return pts.map((p,i) => (i===0?'M':'L')+p[0]+','+p[1]).join(' ');
+    function pathFromPoints(pts, breakIdx) {
+      // breakIdx: kenar (wrap) rotalarda leg1/leg2 dikiş noktasında 'M' (moveto)
+      // başlatır, böylece gemi sağ kenardan sol kenara haritayı çapraz kesen düz
+      // bir çizgiyle değil, anında ışınlanarak geçer (FBX haritasındaki aynı düzeltme).
+      return pts.map((p,i) => (i===0||i===breakIdx?'M':'L')+p[0]+','+p[1]).join(' ');
     }
     function catmullRomPath(pts) {
       if (pts.length<2) return '';
@@ -11397,6 +11560,13 @@ async function loadDashboard() {
     function interpAlong(pts,fidx) {
       const i=Math.max(0,Math.min(pts.length-1,Math.floor(fidx))), j=Math.min(pts.length-1,i+1), t=fidx-i;
       return [pts[i][0]+(pts[j][0]-pts[i][0])*t, pts[i][1]+(pts[j][1]-pts[i][1])*t];
+    }
+
+    // Pil etiketinin yanına, gerçek coğrafi konuma göre sağ/sol ok ekler.
+    function wciDirArrow(route) {
+      const a=WCI_MAP_NODES[route.from], b=WCI_MAP_NODES[route.to];
+      if (!a||!b) return '';
+      return b.x>=a.x ? '→' : '←';
     }
 
     const corridors = {};
@@ -11432,10 +11602,12 @@ async function loadDashboard() {
         p.setAttribute('vector-effect','non-scaling-stroke');
         if (!skipPaths) g.appendChild(p); return pts;
       };
+      let leg1Len=0;
       if (routeDef.wrap) {
         mkPath(routeDef.leg1); mkPath(routeDef.leg2);
         fullPts=[...routeDef.leg1,...routeDef.leg2];
         pillBase=routeDef.leg1[1];
+        leg1Len=routeDef.leg1.length;
       } else {
         mkPath(routeDef.points);
         fullPts=routeDef.points.slice();
@@ -11443,9 +11615,16 @@ async function loadDashboard() {
       }
       _pillPos[key]=pillBase;
 
-      const route0=group[0];
-      const fwdPts=route0.from===keyA?fullPts:[...fullPts].reverse();
+      // ROUTE_GROUPS noktaları her zaman corridor anahtarının alfabetik ilk
+      // düğümünden (keyA) başlar — bu yüzden fwdPts'i her zaman fullPts olarak
+      // sabitliyoruz. Önceki haliyle route0.from!==keyA olduğunda fullPts ters
+      // çevriliyordu; bu da highlightWciMapRoute'taki shouldFwd=(route.from===keyA)
+      // mantığıyla çelişip gemi yönünün kenar rotalarda (örn. EU-NAE) ters
+      // gitmesine yol açıyordu.
+      const fwdPts=fullPts;
       const bwdPts=[...fwdPts].reverse();
+      const fwdBreak=routeDef.wrap?leg1Len:-1;
+      const bwdBreak=routeDef.wrap?(fullPts.length-leg1Len):-1;
 
       if (!skipPaths) {
         const shipG=document.createElementNS(NS,'g');
@@ -11454,14 +11633,14 @@ async function loadDashboard() {
         shipMo.setAttribute('dur',Math.max(10,fwdPts.length*3.5).toFixed(1)+'s');
         shipMo.setAttribute('repeatCount','indefinite');
         shipMo.setAttribute('rotate','auto');
-        shipMo.setAttribute('path',pathFromPoints(fwdPts));
+        shipMo.setAttribute('path',pathFromPoints(fwdPts,fwdBreak));
         shipG.appendChild(shipMo);
         const shipPth=document.createElementNS(NS,'path');
         shipPth.setAttribute('class','wci-ship-icon');
         shipPth.setAttribute('d','M 13,0 C 10,-4 0,-5 -13,-2.5 L -13,2.5 C 0,5 10,4 13,0 Z');
         shipG.appendChild(shipPth);
         g.appendChild(shipG);
-        _shipState[key]={shipPth,motionEl:shipMo,fwdPts,bwdPts};
+        _shipState[key]={shipPth,motionEl:shipMo,fwdPts,bwdPts,fwdBreak,bwdBreak};
       }
 
       const [px,py]=pillBase;
@@ -11472,8 +11651,17 @@ async function loadDashboard() {
 
       if (group.length>=2) {
         const [r1,r2]=group;
-        const displayLabel1 = r1.code.includes('Rotterdam') ? 'Rot' : r1.code.includes('Genoa') ? 'Gen' : r1.code.includes('Angeles') ? 'LA' : r1.code.includes('York') ? 'NY' : 'W';
-        const displayLabel2 = r2.code.includes('Rotterdam') ? 'Rot' : r2.code.includes('Genoa') ? 'Gen' : r2.code.includes('Angeles') ? 'LA' : r2.code.includes('York') ? 'NY' : 'W';
+        // Pil yarılarının hangi rotayı taşıdığını grup sırası yerine gerçek
+        // ekran yönüne göre belirle, böylece ◀/▶ okları her zaman geminin
+        // gittiği görsel yönle eşleşir. Önceki tasarımda her iki yarı da
+        // varış limanı kısaltmasını gösteriyordu ("Rot | Rot" gibi) ve
+        // anlaşılması zordu; artık sade yön okları + hover'da rota adı var.
+        const r1IsLeft = (WCI_MAP_NODES[r1.to]?.x ?? 0) < (WCI_MAP_NODES[r1.from]?.x ?? 0);
+        const leftRoute = r1IsLeft ? r1 : r2;
+        const rightRoute = r1IsLeft ? r2 : r1;
+        const wciRouteNames = (window._wciLatest && window._wciLatest.routeNames) || {};
+        const leftName = wciRouteNames[leftRoute.code] || leftRoute.code;
+        const rightName = wciRouteNames[rightRoute.code] || rightRoute.code;
 
         const hw=26, hh=11;
         const bg=document.createElementNS(NS,'rect');
@@ -11494,15 +11682,16 @@ async function loadDashboard() {
         lh.setAttribute('width',hw); lh.setAttribute('height',hh*2);
         lh.setAttribute('fill','transparent'); lh.setAttribute('cursor','pointer');
         lh.setAttribute('pointer-events','all');
-        lh.setAttribute('data-code',r1.code); lh.setAttribute('data-corridor',key);
+        lh.setAttribute('data-code',leftRoute.code); lh.setAttribute('data-corridor',key);
         lh.setAttribute('class','wci-dual-pill-half');
+        const lhTitle=document.createElementNS(NS,'title'); lhTitle.textContent=leftName; lh.appendChild(lhTitle);
         pillG.appendChild(lh);
 
         const t1=document.createElementNS(NS,'text');
         t1.setAttribute('x',-(hw/2)); t1.setAttribute('y','1');
-        t1.setAttribute('class','wci-map-route-pill-text');
-        t1.setAttribute('data-code',r1.code); t1.setAttribute('data-corridor',key);
-        t1.setAttribute('pointer-events','none'); t1.textContent=displayLabel1;
+        t1.setAttribute('class','wci-map-route-pill-text wci-dir-arrow-text');
+        t1.setAttribute('data-code',leftRoute.code); t1.setAttribute('data-corridor',key);
+        t1.setAttribute('pointer-events','none'); t1.textContent='◀';
         pillG.appendChild(t1);
 
         const rh=document.createElementNS(NS,'rect');
@@ -11510,22 +11699,23 @@ async function loadDashboard() {
         rh.setAttribute('width',hw); rh.setAttribute('height',hh*2);
         rh.setAttribute('fill','transparent'); rh.setAttribute('cursor','pointer');
         rh.setAttribute('pointer-events','all');
-        rh.setAttribute('data-code',r2.code); rh.setAttribute('data-corridor',key);
+        rh.setAttribute('data-code',rightRoute.code); rh.setAttribute('data-corridor',key);
         rh.setAttribute('class','wci-dual-pill-half');
+        const rhTitle=document.createElementNS(NS,'title'); rhTitle.textContent=rightName; rh.appendChild(rhTitle);
         pillG.appendChild(rh);
 
         const t2=document.createElementNS(NS,'text');
         t2.setAttribute('x',(hw/2)); t2.setAttribute('y','1');
-        t2.setAttribute('class','wci-map-route-pill-text');
-        t2.setAttribute('data-code',r2.code); t2.setAttribute('data-corridor',key);
-        t2.setAttribute('pointer-events','none'); t2.textContent=displayLabel2;
+        t2.setAttribute('class','wci-map-route-pill-text wci-dir-arrow-text');
+        t2.setAttribute('data-code',rightRoute.code); t2.setAttribute('data-corridor',key);
+        t2.setAttribute('pointer-events','none'); t2.textContent='▶';
         pillG.appendChild(t2);
 
-        lh.addEventListener('click',e=>{e.stopPropagation();window.selectWciRoute(r1.code);});
-        rh.addEventListener('click',e=>{e.stopPropagation();window.selectWciRoute(r2.code);});
+        lh.addEventListener('click',e=>{e.stopPropagation();window.selectWciRoute(leftRoute.code);});
+        rh.addEventListener('click',e=>{e.stopPropagation();window.selectWciRoute(rightRoute.code);});
       } else {
         const route=group[0];
-        const displayLabel = route.code.includes('Rotterdam') ? 'Rot' : route.code.includes('Genoa') ? 'Gen' : route.code.includes('Angeles') ? 'LA' : route.code.includes('York') ? 'NY' : 'W';
+        const displayLabel = wciDirArrow(route)+(WCI_PORT_ABBR[route.to] || route.to);
 
         const sbg=document.createElementNS(NS,'circle');
         sbg.setAttribute('cx','0'); sbg.setAttribute('cy','0'); sbg.setAttribute('r','13');
@@ -11687,6 +11877,18 @@ async function loadDashboard() {
     const dRing=document.querySelector('#wci-route-map .wci-map-node-ring[data-node="'+route.to+'"]');
     if(oRing) oRing.classList.add('is-origin');
     if(dRing) dRing.classList.add('is-destination');
+    if(m){
+      const {_corridorDir,_shipState,pathFromPoints:pfp}=m;
+      if(_shipState[corridorKey]){
+        const [ckA]=corridorKey.split('-');
+        const shouldFwd=(route.from===ckA);
+        if(!isPreview&&_corridorDir[corridorKey]!==shouldFwd){
+          _corridorDir[corridorKey]=shouldFwd;
+          const st=_shipState[corridorKey];
+          st.motionEl.setAttribute('path',pfp(shouldFwd?st.fwdPts:st.bwdPts,shouldFwd?st.fwdBreak:st.bwdBreak));
+        }
+      }
+    }
   };
 
   window.addEventListener('click', e => {
@@ -11955,9 +12157,11 @@ async function loadDashboard() {
         }
       );
       if (titleEl) titleEl.textContent = `WCI — ${Math.round(prices[prices.length-1]).toLocaleString('tr-TR')} $/FEU`;
+      updateWciRangeChangeBadge(prices);
     } catch (err) {
       console.error("WCI Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
+      updateWciRangeChangeBadge(null);
     }
   }
   window.renderWciChart = renderWciChart;
@@ -12664,8 +12868,12 @@ async function loadDashboard() {
     svg.appendChild(landPath);
 
 
-    function pathFromPoints(pts) {
-      return pts.map((p,i) => (i===0?'M':'L')+p[0]+','+p[1]).join(' ');
+    function pathFromPoints(pts, breakIdx) {
+      // breakIdx: index where a new 'M' (moveto) starts a disconnected subpath.
+      // Used for wrap routes (CEA-NAW, CEA-NAE) so the ship's animateMotion jumps
+      // instantly from the right map edge to the left edge instead of sliding
+      // across the whole map in a straight line (which looked like it was off-route).
+      return pts.map((p,i) => (i===0||i===breakIdx?'M':'L')+p[0]+','+p[1]).join(' ');
     }
     function catmullRomPath(pts) {
       if (pts.length<2) return '';
@@ -12717,10 +12925,12 @@ async function loadDashboard() {
         p.setAttribute('vector-effect','non-scaling-stroke');
         if (!skipPaths) g.appendChild(p); return pts;
       };
+      let leg1Len=0;
       if (routeDef.wrap) {
         mkPath(routeDef.leg1); mkPath(routeDef.leg2);
         fullPts=[...routeDef.leg1,...routeDef.leg2];
         pillBase=routeDef.leg1[1];
+        leg1Len=routeDef.leg1.length;
       } else {
         mkPath(routeDef.points);
         fullPts=routeDef.points.slice();
@@ -12728,9 +12938,20 @@ async function loadDashboard() {
       }
       _pillPos[key]=pillBase;
 
-      const route0=group[0];
-      const fwdPts=route0.from===keyA?fullPts:[...fullPts].reverse();
+      // ROUTE_GROUPS noktaları her zaman corridor anahtarının alfabetik ilk
+      // düğümünden (keyA) başlar — bu yüzden fwdPts'i her zaman fullPts olarak
+      // sabitliyoruz. Önceki haliyle route0.from!==keyA olduğunda fullPts ters
+      // çevriliyordu; bu da highlightFbxMapRoute'taki shouldFwd=(route.from===keyA)
+      // mantığıyla çelişip gemi yönünün kenar rotalarda (örn. EU-NAE) ters
+      // gitmesine yol açıyordu.
+      const fwdPts=fullPts;
       const bwdPts=[...fwdPts].reverse();
+      // For wrap routes the seam between leg1 (ends at the right map edge) and
+      // leg2 (starts at the left map edge) must NOT be drawn as a straight line —
+      // that's the "rotada olmayan" jump across the whole map. Mark it as a break
+      // so pathFromPoints starts a new disconnected subpath there instead.
+      const fwdBreak=routeDef.wrap?leg1Len:-1;
+      const bwdBreak=routeDef.wrap?(fullPts.length-leg1Len):-1;
 
       if (!skipPaths) {
       const shipG=document.createElementNS(NS,'g');
@@ -12739,14 +12960,14 @@ async function loadDashboard() {
       shipMo.setAttribute('dur',Math.max(10,fwdPts.length*3.5).toFixed(1)+'s');
       shipMo.setAttribute('repeatCount','indefinite');
       shipMo.setAttribute('rotate','auto');
-      shipMo.setAttribute('path',pathFromPoints(fwdPts));
+      shipMo.setAttribute('path',pathFromPoints(fwdPts,fwdBreak));
       shipG.appendChild(shipMo);
       const shipPth=document.createElementNS(NS,'path');
       shipPth.setAttribute('class','fbx-ship-icon');
       shipPth.setAttribute('d','M 13,0 C 10,-4 0,-5 -13,-2.5 L -13,2.5 C 0,5 10,4 13,0 Z');
       shipG.appendChild(shipPth);
       g.appendChild(shipG);
-      _shipState[key]={shipPth,motionEl:shipMo,fwdPts,bwdPts};
+      _shipState[key]={shipPth,motionEl:shipMo,fwdPts,bwdPts,fwdBreak,bwdBreak};
       }
 
       const [px,py]=pillBase;
@@ -12979,7 +13200,7 @@ async function loadDashboard() {
         if(!isPreview&&_corridorDir[corridorKey]!==shouldFwd){
           _corridorDir[corridorKey]=shouldFwd;
           const st=_shipState[corridorKey];
-          st.motionEl.setAttribute('path',pfp(shouldFwd?st.fwdPts:st.bwdPts));
+          st.motionEl.setAttribute('path',pfp(shouldFwd?st.fwdPts:st.bwdPts,shouldFwd?st.fwdBreak:st.bwdBreak));
         }
       }
     }
@@ -19434,17 +19655,18 @@ function initControls(allArticles) {
       const kpiCapacity = document.getElementById('kpi-capacity');
       const kpiLF = document.getElementById('kpi-lf');
       const kpiYield = document.getElementById('kpi-yield');
+      const stripPlus = v => (v || '—').replace(/^\+/, '');
       if (kpiDemand) {
-        kpiDemand.textContent = latest.demand || '—';
+        kpiDemand.textContent = stripPlus(latest.demand);
         kpiDemand.style.color = (latest.demand || '').startsWith('+') ? '#22c55e' : (latest.demand || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
       }
       if (kpiCapacity) {
-        kpiCapacity.textContent = latest.capacity || '—';
+        kpiCapacity.textContent = stripPlus(latest.capacity);
         kpiCapacity.style.color = (latest.capacity || '').startsWith('+') ? '#22c55e' : (latest.capacity || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
       }
-      if (kpiLF) kpiLF.textContent = latest.loadFactor || '—';
+      if (kpiLF) kpiLF.textContent = stripPlus(latest.loadFactor);
       if (kpiYield) {
-        kpiYield.textContent = latest.cargoYield || '—';
+        kpiYield.textContent = stripPlus(latest.cargoYield);
         kpiYield.style.color = '#f59e0b';
       }
 
@@ -20214,10 +20436,11 @@ function initControls(allArticles) {
       const kpiCapacity = document.getElementById('kpi-capacity');
       const kpiLF       = document.getElementById('kpi-lf');
       const kpiYield    = document.getElementById('kpi-yield');
-      if (kpiDemand) { kpiDemand.textContent = latest.demand || '—'; kpiDemand.style.color = (latest.demand||'').startsWith('+') ? '#22c55e' : (latest.demand||'').startsWith('-') ? 'var(--red)' : 'var(--text)'; }
-      if (kpiCapacity) { kpiCapacity.textContent = latest.capacity || '—'; kpiCapacity.style.color = (latest.capacity||'').startsWith('+') ? '#22c55e' : (latest.capacity||'').startsWith('-') ? 'var(--red)' : 'var(--text)'; }
-      if (kpiLF) kpiLF.textContent = latest.loadFactor || '—';
-      if (kpiYield) { kpiYield.textContent = latest.cargoYield || '—'; kpiYield.style.color = '#f59e0b'; }
+      const stripPlus2 = v => (v || '—').replace(/^\+/, '');
+      if (kpiDemand) { kpiDemand.textContent = stripPlus2(latest.demand); kpiDemand.style.color = (latest.demand||'').startsWith('+') ? '#22c55e' : (latest.demand||'').startsWith('-') ? 'var(--red)' : 'var(--text)'; }
+      if (kpiCapacity) { kpiCapacity.textContent = stripPlus2(latest.capacity); kpiCapacity.style.color = (latest.capacity||'').startsWith('+') ? '#22c55e' : (latest.capacity||'').startsWith('-') ? 'var(--red)' : 'var(--text)'; }
+      if (kpiLF) kpiLF.textContent = stripPlus2(latest.loadFactor);
+      if (kpiYield) { kpiYield.textContent = stripPlus2(latest.cargoYield); kpiYield.style.color = '#f59e0b'; }
     }
     if (typeof window.renderIataTrendChart === 'function') window.renderIataTrendChart(reports);
     renderIataMultiChart(reports);

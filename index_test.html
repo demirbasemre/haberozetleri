@@ -24,7 +24,7 @@
   } catch(e) {}
 })();
 </script>
-<link rel="stylesheet" href="index.css?v=1.0.5">
+<link rel="stylesheet" href="index.css?v=1.0.6">
 <style>
   /* ══════════════════════════════════════
      FLEET COMPARISON & Kaynak 2 STYLES
@@ -3180,10 +3180,12 @@
               <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
             </div>
             <div class="modal-date-picker" id="wci-date-picker-wrap">
-              <input type="date" lang="tr" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi">
+              <input type="date" lang="tr" readonly class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('start', this)">
               <span class="modal-date-separator">→</span>
-              <input type="date" lang="tr" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi">
+              <input type="date" lang="tr" readonly class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('end', this)">
             </div>
+            <span class="wci-route-dd-trigger-badge" id="wci-range-change-badge" style="display:none"></span>
+            <div class="wci-cal-popup" id="wci-cal-popup" style="display:none"></div>
           </div>
           <div class="modal-controls-right">
             <div class="modal-chart-type-group">
@@ -11532,9 +11534,11 @@ async function loadDashboard() {
         }
       );
       if (titleEl) titleEl.textContent = `${code} — ${Math.round(values[values.length - 1]).toLocaleString('tr-TR')} $/FEU`;
+      updateWciRangeChangeBadge(values);
     } catch (err) {
       console.error("WCI rota grafiği çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
+      updateWciRangeChangeBadge(null);
     }
   }
 
@@ -11621,6 +11625,142 @@ async function loadDashboard() {
     updateWciRouteDropdownUI(window._wciSelectedRoute || 'WCI');
   }
   window.renderWciRouteOptions = renderWciRouteOptions;
+
+  // Seçilen tarih aralığının ilk ve son değeri arasındaki yüzde değişimi
+  // başlığın yanında gösterir (yöneticinin istediği "seçilen aralıkta % kaç değişti" göstergesi).
+  function updateWciRangeChangeBadge(prices) {
+    const badgeEl = document.getElementById('wci-range-change-badge');
+    if (!badgeEl) return;
+    if (!prices || prices.length < 2 || prices[0] == null || prices[prices.length - 1] == null || prices[0] === 0) {
+      badgeEl.style.display = 'none';
+      return;
+    }
+    const first = prices[0];
+    const last = prices[prices.length - 1];
+    const pct = ((last - first) / Math.abs(first)) * 100;
+    const dir = pct > 0.005 ? 'up' : pct < -0.005 ? 'down' : 'flat';
+    const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '–';
+    badgeEl.textContent = `${arrow} %${Math.abs(pct).toFixed(2)}`;
+    badgeEl.className = `wci-route-dd-trigger-badge is-${dir}`;
+    badgeEl.style.display = '';
+  }
+
+  // WCI verisi haftada bir yayınlanıyor ama her zaman tam 7 günde bir değil
+  // (bazı haftalarda 6-14 gün kayma var). Bu yüzden native <input type="date">'in
+  // step özelliğiyle günleri pasifleştirmek güvenilir değil — gerçek veri
+  // tarihlerini kullanan özel bir takvim açılır penceresi gösteriyoruz.
+  let _wciCalState = null; // { which: 'start'|'end', viewYear, viewMonth }
+
+  function wciGetValidDates() {
+    const set = new Set();
+    (_wciHistory || []).forEach(d => { if (d && d.date) set.add(d.date); });
+    if (_wciLatest && _wciLatest.date) {
+      const iso = convertDrewryDate(_wciLatest.date);
+      if (iso) set.add(iso);
+    }
+    return set;
+  }
+
+  function wciCloseCalendar() {
+    const pop = document.getElementById('wci-cal-popup');
+    if (pop) { pop.style.display = 'none'; pop.innerHTML = ''; }
+    _wciCalState = null;
+    document.removeEventListener('mousedown', wciCalOutsideClick, true);
+  }
+
+  function wciCalOutsideClick(e) {
+    const pop = document.getElementById('wci-cal-popup');
+    if (!pop) return;
+    if (pop.contains(e.target) || e.target.closest('#wci-date-picker-wrap')) return;
+    wciCloseCalendar();
+  }
+
+  function wciOpenCalendar(which, anchorEl) {
+    const validDates = wciGetValidDates();
+    if (!validDates.size) return;
+    const sorted = Array.from(validDates).sort();
+    const inputEl = document.getElementById(`wci-date-${which}`);
+    const currentVal = inputEl && inputEl.value && validDates.has(inputEl.value) ? inputEl.value : sorted[sorted.length - 1];
+    const [y, m] = currentVal.split('-').map(Number);
+    _wciCalState = { which, viewYear: y, viewMonth: m - 1, validDates, sorted };
+    wciRenderCalendar();
+
+    const pop = document.getElementById('wci-cal-popup');
+    const wrap = document.getElementById('wci-date-picker-wrap');
+    if (pop && wrap) {
+      pop.style.display = 'block';
+      const r = wrap.getBoundingClientRect();
+      const popW = 244;
+      let left = r.left;
+      if (left + popW > window.innerWidth - 8) left = window.innerWidth - popW - 8;
+      if (left < 8) left = 8;
+      pop.style.top = (r.bottom + 6) + 'px';
+      pop.style.left = left + 'px';
+    }
+    setTimeout(() => document.addEventListener('mousedown', wciCalOutsideClick, true), 0);
+  }
+
+  function wciRenderCalendar() {
+    const pop = document.getElementById('wci-cal-popup');
+    if (!pop || !_wciCalState) return;
+    const { viewYear, viewMonth, validDates } = _wciCalState;
+    const monthNames = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    const firstOfMonth = new Date(viewYear, viewMonth, 1);
+    const startOffset = (firstOfMonth.getDay() + 6) % 7; // Pazartesi başlangıçlı
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+    let cells = '';
+    for (let i = 0; i < startOffset; i++) cells += `<span class="wci-cal-day is-empty"></span>`;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const iso = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      const isValid = validDates.has(iso);
+      cells += `<button type="button" class="wci-cal-day${isValid ? ' is-valid' : ' is-disabled'}" ${isValid ? `onclick="wciPickCalendarDate('${iso}')"` : 'disabled'} aria-label="${iso}">${d}</button>`;
+    }
+
+    pop.innerHTML = `
+      <div class="wci-cal-head">
+        <button type="button" class="wci-cal-nav" onclick="wciCalShiftMonth(-1)" aria-label="Önceki ay">‹</button>
+        <span class="wci-cal-title">${monthNames[viewMonth]} ${viewYear}</span>
+        <button type="button" class="wci-cal-nav" onclick="wciCalShiftMonth(1)" aria-label="Sonraki ay">›</button>
+      </div>
+      <div class="wci-cal-weekdays">
+        <span>Pt</span><span>Sa</span><span>Ça</span><span>Pe</span><span>Cu</span><span>Ct</span><span>Pz</span>
+      </div>
+      <div class="wci-cal-grid">${cells}</div>
+      <div class="wci-cal-hint">Sadece WCI'nin yayınlandığı haftalar seçilebilir</div>
+    `;
+  }
+
+  window.wciCalShiftMonth = function(delta) {
+    if (!_wciCalState) return;
+    let { viewYear, viewMonth } = _wciCalState;
+    viewMonth += delta;
+    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+    _wciCalState.viewYear = viewYear;
+    _wciCalState.viewMonth = viewMonth;
+    wciRenderCalendar();
+  };
+
+  window.wciPickCalendarDate = function(iso) {
+    if (!_wciCalState) return;
+    const { which, sorted } = _wciCalState;
+    const inputEl = document.getElementById(`wci-date-${which}`);
+    if (!inputEl) { wciCloseCalendar(); return; }
+    inputEl.value = iso;
+    // Başlangıç bitişten sonraya, ya da bitiş başlangıçtan önceye kaymasın —
+    // diğer ucu en yakın geçerli tarihe çekiyoruz.
+    const otherWhich = which === 'start' ? 'end' : 'start';
+    const otherEl = document.getElementById(`wci-date-${otherWhich}`);
+    if (otherEl && otherEl.value) {
+      if (which === 'start' && otherEl.value < iso) otherEl.value = iso;
+      if (which === 'end' && otherEl.value > iso) otherEl.value = iso;
+    }
+    wciCloseCalendar();
+    inputEl.dispatchEvent(new Event('change'));
+  };
+
+  window.wciOpenCalendar = wciOpenCalendar;
 
   function updateWciRouteDropdownUI(code) {
     const panel = document.getElementById('wci-route-dd-panel');
@@ -12263,9 +12403,11 @@ async function loadDashboard() {
         }
       );
       if (titleEl) titleEl.textContent = `WCI — ${Math.round(prices[prices.length-1]).toLocaleString('tr-TR')} $/FEU`;
+      updateWciRangeChangeBadge(prices);
     } catch (err) {
       console.error("WCI Grafik çizim hatası:", err);
       if (titleEl) titleEl.textContent = "Hata: " + err.message;
+      updateWciRangeChangeBadge(null);
     }
   }
   window.renderWciChart = renderWciChart;
