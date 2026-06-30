@@ -8558,49 +8558,7 @@ function buildReleaseCalendar() {
 
   function abs(y, m, day) { return new Date(y, m - 1, day); } // m: 1–12 (gerçek ay)
 
-  // IATA aylık raporu ~1 ay gecikmeli yayınlanır (örn. Haziran sonunda Mayıs raporu çıkar).
-  // Worker üzerinden gerçek yayın durumunu kontrol edip takvim kartını buna göre güncelliyoruz.
-  let iataConfirmed = {};
-  try {
-    iataConfirmed = JSON.parse(localStorage.getItem('iata_confirmed_releases') || '{}');
-  } catch(e) {}
 
-  let _iataLatestParsed = null;
-  function parseTrMonthYearIata(str) {
-    if (!str) return null;
-    const monthNames = ['ocak','şubat','mart','nisan','mayıs','haziran','temmuz','ağustos','eylül','ekim','kasım','aralık'];
-    const m = String(str).toLowerCase().match(/([a-zçğıöşü]+)\s+(\d{4})/);
-    if (!m) return null;
-    const idx = monthNames.indexOf(m[1]);
-    if (idx === -1) return null;
-    return { y: parseInt(m[2], 10), m: idx + 1 };
-  }
-
-  const needsIataFetch = dataItems.some(it => {
-    if (it.verify !== 'iata-monthly') return false;
-    let targetMonth0 = it.date.getMonth() - 1;
-    let targetYear = it.date.getFullYear();
-    if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
-    const key = `${targetYear}-${targetMonth0 + 1}`;
-    const isPastOrCurrent = it.date <= now || (it.date.getFullYear() === now.getFullYear() && it.date.getMonth() === now.getMonth());
-    return isPastOrCurrent && !iataConfirmed[key];
-  });
-
-  if (needsIataFetch) {
-    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
-      if (data && data.date) {
-        const parsed = parseTrMonthYearIata(data.date);
-        if (parsed) {
-          const publishedDate = data.publishedDate ? new Date(data.publishedDate) : null;
-          _iataLatestParsed = {
-            y: parsed.y, m: parsed.m, pdfLink: data.pdfLink,
-            publishedDate: (publishedDate && !isNaN(publishedDate)) ? publishedDate : null
-          };
-          if (typeof _relRender === 'function') _relRender();
-        }
-      }
-    }).catch(() => {});
-  }
 
   // Sonraki 4 Çarşambayı üret (EIA haftalık raporu için)
   function nextWednesdays(n) {
@@ -8872,6 +8830,50 @@ function buildReleaseCalendar() {
   ];
 
   let activeHolidayCountries = new Set(['TR']);
+
+  // IATA aylık raporu ~1 ay gecikmeli yayınlanır (örn. Haziran sonunda Mayıs raporu çıkar).
+  // Worker üzerinden gerçek yayın durumunu kontrol edip takvim kartını buna göre güncelliyoruz.
+  let iataConfirmed = {};
+  try {
+    iataConfirmed = JSON.parse(localStorage.getItem('iata_confirmed_releases') || '{}');
+  } catch(e) {}
+
+  let _iataLatestParsed = null;
+  function parseTrMonthYearIata(str) {
+    if (!str) return null;
+    const monthNames = ['ocak','şubat','mart','nisan','mayıs','haziran','temmuz','ağustos','eylül','ekim','kasım','aralık'];
+    const m = String(str).toLowerCase().match(/([a-zçğıöşü]+)\s+(\d{4})/);
+    if (!m) return null;
+    const idx = monthNames.indexOf(m[1]);
+    if (idx === -1) return null;
+    return { y: parseInt(m[2], 10), m: idx + 1 };
+  }
+
+  const needsIataFetch = dataItems.some(it => {
+    if (it.verify !== 'iata-monthly') return false;
+    let targetMonth0 = it.date.getMonth() - 1;
+    let targetYear = it.date.getFullYear();
+    if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
+    const key = `${targetYear}-${targetMonth0 + 1}`;
+    const isPastOrCurrent = it.date <= now || (it.date.getFullYear() === now.getFullYear() && it.date.getMonth() === now.getMonth());
+    return isPastOrCurrent && !iataConfirmed[key];
+  });
+
+  if (needsIataFetch) {
+    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
+      if (data && data.date) {
+        const parsed = parseTrMonthYearIata(data.date);
+        if (parsed) {
+          const publishedDate = data.publishedDate ? new Date(data.publishedDate) : null;
+          _iataLatestParsed = {
+            y: parsed.y, m: parsed.m, pdfLink: data.pdfLink,
+            publishedDate: (publishedDate && !isNaN(publishedDate)) ? publishedDate : null
+          };
+          if (typeof _relRender === 'function') _relRender();
+        }
+      }
+    }).catch(() => {});
+  }
 
   function combinedItems() {
     const user = loadUserReleaseItems().map(u => ({
