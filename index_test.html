@@ -9464,15 +9464,12 @@ async function loadDashboard() {
       applyDateBadgeFreshness(jfDateEl);
     }
 
-    // 2. CF Worker'dan canlı veri çek. IATA verisi her pazartesi güncellenir,
-    // o gün 1 saatlik önbellek (yeni veriyi hızlı yakalamak için), diğer günler
-    // 24 saatlik önbellek (zaten değişmeyecek veri için worker'ı boşuna yormamak).
+    // 2. CF Worker'dan canlı veri çek. Saatlik otomatik yenileme ile
+    // tutarlı olması için 1 saatlik önbellek kullanılıyor.
     // Sadece IATA verisi statik veriden daha yeniyse kartı güncelle
     const staticLastDate = PLATTS_JET_DATA.dates[n - 1]; // "YYYY-MM-DD"
-    const jetfuelTtl = new Date().getUTCDay() === 1 /* Pazartesi */
-      ? 1 * 60 * 60 * 1000
-      : 24 * 60 * 60 * 1000;
-    fetchCached('jetfuel_live', () =>
+    const jetfuelTtl = 1 * 60 * 60 * 1000;
+    fetchCached('jetfuel_live_v2', () =>
       fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/jetfuel')
         .then(r => r.ok ? r.json() : null)
         .catch(() => null),
@@ -12865,14 +12862,14 @@ async function loadDashboard() {
 
   // BAFI Verisini Çek ve Göster
   async function initBafiCard() {
-    return fetchCached('bafi_v4', async () => {
+    return fetchCached('bafi_v5', async () => {
       const [historyArr, latest] = await Promise.all([
         fetch('bafi-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
         fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi')
           .then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
       return { historyArr, latest };
-    }, 6 * 60 * 60 * 1000).then(({ historyArr, latest }) => {
+    }, 1 * 60 * 60 * 1000).then(({ historyArr, latest }) => {
       _bafiLatest = latest;
 
       // Geçmiş veriyi ayarla: önce proxy'den, yoksa local JSON'dan
@@ -12912,13 +12909,13 @@ async function loadDashboard() {
 
   // FBX Verisini Çek ve Göster
   async function initFbxCard() {
-    return fetchCached('fbx_v2', async () => {
+    return fetchCached('fbx_v3', async () => {
       const [historyArr, latest] = await Promise.all([
         fetch('fbx-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
         fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
       return { historyArr, latest };
-    }, 24 * 60 * 60 * 1000).then(({ historyArr, latest }) => {
+    }, 1 * 60 * 60 * 1000).then(({ historyArr, latest }) => {
       // Geçmiş veriyi ayarla: önce proxy'den, yoksa local JSON'dan
       if (latest && Array.isArray(latest.history)) {
         _fbxHistory = latest.history.slice().sort((a, b) => a.date.localeCompare(b.date));
@@ -12971,13 +12968,13 @@ async function loadDashboard() {
 
   // IATA Verisini Çek ve Göster
   async function initIataCard() {
-    return fetchCached('iata_full_data', async () => {
+    return fetchCached('iata_full_data_v2', async () => {
       const [history, latest] = await Promise.all([
         fetch('iata-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
         fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
       return { history, latest };
-    }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
+    }, 1 * 60 * 60 * 1000).then(({ history, latest }) => {
       _iataHistory = history;
       _iataLatest = latest;
 
