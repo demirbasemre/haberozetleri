@@ -12827,30 +12827,37 @@ async function loadDashboard() {
     return `${year}-${month}-${day}`;
   }
 
-  fetchCached('wci_full_data', async () => {
-    const [history, latest] = await Promise.all([
-      fetch('wci-history.json').then(r => r.ok ? r.json() : WCI_DEFAULT_HISTORY).catch(() => WCI_DEFAULT_HISTORY),
-      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci').then(r => r.ok ? r.json() : null).catch(() => null)
-    ]);
-    return { history, latest };
-  }, 24 * 60 * 60 * 1000).then(({ history, latest }) => {
-    _wciHistory = history && history.length ? history : WCI_DEFAULT_HISTORY;
-    _wciLatest = latest;
+  function initWciCard() {
+    return fetchCached('wci_full_data_v2', async () => {
+      const [history, latest] = await Promise.all([
+        fetch('wci-history.json').then(r => r.ok ? r.json() : WCI_DEFAULT_HISTORY).catch(() => WCI_DEFAULT_HISTORY),
+        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci').then(r => r.ok ? r.json() : null).catch(() => null)
+      ]);
+      return { history, latest };
+    }, 60 * 60 * 1000).then(({ history, latest }) => {
+      _wciHistory = history && history.length ? history : WCI_DEFAULT_HISTORY;
+      _wciLatest = latest;
 
-    if (latest && latest.price) {
-      const formattedPrice = latest.price.toLocaleString('en-US') + ' $';
-      setCard('dc-wci',
-        formattedPrice,
-        latest.change,
-        "40' konteyner ortalama spot fiyat",
-        `Son veri: ${latest.date}<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`
-      );
-      const wciIso = convertDrewryDate(latest.date);
-      if (wciIso) setDateBadge('dc-wci-date', isoToDisplay(wciIso));
-    } else {
-      setCard('dc-wci', '—', null, '', 'Veri alınamadı');
-    }
-  });
+      if (latest && latest.price) {
+        const formattedPrice = latest.price.toLocaleString('en-US') + ' $';
+        setCard('dc-wci',
+          formattedPrice,
+          latest.change,
+          "40' konteyner ortalama spot fiyat",
+          `Son veri: ${latest.date}<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`
+        );
+        const wciIso = convertDrewryDate(latest.date);
+        if (wciIso) setDateBadge('dc-wci-date', isoToDisplay(wciIso));
+      } else {
+        setCard('dc-wci', '—', null, '', 'Veri alınamadı');
+      }
+    });
+  }
+  initWciCard();
+  // Sekme açık kalsa bile (yenileme yapılmasa bile) her saat başı taze veriyi otomatik çek
+  setInterval(() => {
+    if (document.visibilityState === 'visible') initWciCard();
+  }, 60 * 60 * 1000);
 
   // BAFI Verisini Çek ve Göster
   async function initBafiCard() {
