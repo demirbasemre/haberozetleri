@@ -233,7 +233,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                 print(f"POST body okuma hatası: {e}")
 
             # Şifre Doğrulaması
-            expected_pwd = os.environ.get('FLEET_UPDATE_PASSWORD', 'antigravity123')
+            expected_pwd = os.environ.get('FLEET_UPDATE_PASSWORD', '[KALDIRILDI]')
             if req_password != expected_pwd:
                 self.send_response(401)
                 self.send_header('Content-Type', 'application/json')
