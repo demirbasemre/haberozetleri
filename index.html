@@ -3697,8 +3697,31 @@
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h3a2 2 0 0 0 2-2v-3"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
             Karşılaştır
           </button>
+          <button class="fdd-btn fleet-src-pill" data-src="history_diff" id="fleet-src-diff" style="font-size:11.5px;padding:4px 12px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M12 20V10M18 20V4M6 20v-6"/></svg>
+            Değişim Analizi
+          </button>
         </div>
-        <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Mevcut Filo (Güncelleme Tarihi: 1 Tem 2026)</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Mevcut Filo (Güncelleme Tarihi: 1 Tem 2026)</span>
+          <button class="fdd-btn" id="fleet-update-btn" onclick="triggerFleetUpdate()" style="font-size:11px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;display:flex;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;" title="Planespotters'tan canlı verileri çek ve güncelle">
+            <svg id="update-btn-spinner" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Canlı Güncelle
+          </button>
+          <button class="fdd-btn" id="cookie-panel-toggle-btn" onclick="toggleCookiePanel()" style="font-size:11px;padding:4px 6px;background:none;border:none;cursor:pointer;color:var(--text-3);" title="Manuel Çerez Girişi">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5Z"/><path d="M12 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/><path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/><path d="M16 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Çerez Giriş Paneli -->
+      <div id="fleet-cookie-panel" style="display:none;margin-top:8px;padding:12px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:6px;gap:8px;flex-direction:column;width:100%;">
+        <div style="font-size:11px;font-weight:600;color:var(--text-1);">Cloudflare Bypass Çerezleri (Gerekirse)</div>
+        <div style="font-size:10px;color:var(--text-3);margin-bottom:4px;">Tarayıcı F12 -> Network -> Request Headers altındaki 'cookie:' satırını kopyalayıp buraya yapıştırın.</div>
+        <textarea id="fleet-cookie-input" placeholder="__psuid=...; cf_clearance=...; ps_sessid=..." style="width:100%;height:60px;font-family:monospace;font-size:10px;padding:6px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);resize:vertical;"></textarea>
+        <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:6px;">
+          <button class="fdd-btn" onclick="saveFleetCookies()" style="font-size:10px;padding:4px 10px;background:#059669;color:white;border:none;border-radius:4px;cursor:pointer;">Çerezleri Kaydet</button>
+        </div>
       </div>
 
 
@@ -3811,7 +3834,40 @@
           </table>
         </div>
         <div class="fleet-update-note" style="margin-top:12px">
-          <strong>*</strong> Kaynak 1 Aktif verisi mevcut değil — Toplam Filo gösteriliyor · AFKLM = Air France-KLM Grup (AF, KLM, Transavia, KLM Cityhopper dahil) · LA = LATAM Brasil (Kaynak 1) · 1 Tem 2026 · Satıra tıkla: uçak tipi detayı
+          <strong>*</strong> Kaynak 1 Aktif verisi mevcut değil — Toplam Filo gösteriliyor · AFKLM = Air France-KLM Grup (AF, KLM, Transavia, KLM Cityhopper dahil) · LA = LATAM Brasil (Kaynak 1) · 1 Tem 2026 · Satıra tıkla: Uçak tipi detayı
+        </div>
+      </div>
+
+      <!-- ══════ DEĞİŞİM ANALİZİ GÖRÜNÜMÜ ══════ -->
+      <div id="fleet-diff-content" style="display:none">
+        <!-- Kontrol paneli -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;background:var(--bg-secondary);padding:12px;border-radius:8px;border:1px solid var(--border-color);">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Başlangıç Tarihi:</span>
+            <select id="fleet-diff-start-date" onchange="calculateFleetDiff()" style="font-size:11.5px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;cursor:pointer;"></select>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Bitiş Tarihi:</span>
+            <select id="fleet-diff-end-date" onchange="calculateFleetDiff()" style="font-size:11.5px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;cursor:pointer;"></select>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-3);margin-left:auto;font-weight:500;" id="fleet-diff-status">İki tarih arasındaki filo değişimleri listeleniyor.</div>
+        </div>
+
+        <!-- Değişim Analizi Tablosu -->
+        <div class="flt-table-wrap">
+          <table class="flt-table" id="fleet-diff-table">
+            <thead>
+              <tr>
+                <th style="text-align:left">Havayolu / Uçak Modeli</th>
+                <th style="text-align:left">Kategori</th>
+                <th style="text-align:right">Aktif Fark</th>
+                <th style="text-align:right">Park Fark</th>
+                <th style="text-align:right">Toplam Fark</th>
+                <th style="text-align:right">Sipariş Fark</th>
+              </tr>
+            </thead>
+            <tbody id="fleet-diff-tbody"></tbody>
+          </table>
         </div>
       </div>
 
@@ -21707,13 +21763,14 @@ document.addEventListener('DOMContentLoaded', () => {
 (function() {
   // ── Kaynak geçiş ──────────────────────────────────
   function switchFleetSrc(src) {
-    ['k1','k2','cmp'].forEach(s => {
+    ['k1','k2','cmp','diff'].forEach(s => {
       const btn = document.getElementById('fleet-src-' + s);
-      if (btn) btn.classList.toggle('fdd-btn--active', s === src.replace('kaynak1','k1').replace('kaynak2','k2').replace('compare','cmp'));
+      if (btn) btn.classList.toggle('fdd-btn--active', s === src.replace('kaynak1','k1').replace('kaynak2','k2').replace('compare','cmp').replace('history_diff','diff'));
     });
     const k1  = document.getElementById('fleet-k1-content');
     const k2  = document.getElementById('fleet-k2-content');
     const cmp = document.getElementById('fleet-cmp-content');
+    const diff = document.getElementById('fleet-diff-content');
     const dt  = document.getElementById('fleet-src-date');
     const catBar = document.getElementById('fleet-cat-bar');
     // Cache sıfırla filtre değişince yeniden build etmek için
@@ -21724,6 +21781,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (k1)  k1.style.display  = '';
       if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = 'none';
+      if (diff) diff.style.display = 'none';
       if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: 1 Tem 2026)';
       if (catBar) catBar.style.display = '';
       buildK1Cards();
@@ -21732,16 +21790,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (k1)  k1.style.display  = 'none';
       if (k2)  k2.style.display = '';
       if (cmp) cmp.style.display = 'none';
+      if (diff) diff.style.display = 'none';
       if (dt)  dt.textContent    = 'Kaynak 2 · 2 Haz 2026';
       if (catBar) catBar.style.display = '';
       buildK2Cards();
-    } else {
+    } else if (src === 'compare') {
       if (k1)  k1.style.display  = 'none';
       if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = '';
+      if (diff) diff.style.display = 'none';
       if (dt)  dt.textContent    = 'Kaynak 1 + Kaynak 2 · 2 Haz 2026';
       if (catBar) catBar.style.display = 'none';
       buildCmpTable();
+    } else if (src === 'history_diff') {
+      if (k1)  k1.style.display  = 'none';
+      if (k2)  k2.style.display = 'none';
+      if (cmp) cmp.style.display = 'none';
+      if (diff) diff.style.display = '';
+      if (dt)  dt.textContent    = 'Filo Değişim Analizi';
+      if (catBar) catBar.style.display = 'none';
+      loadHistoryIndex();
     }
   }
 
@@ -22161,6 +22229,285 @@ document.addEventListener('DOMContentLoaded', () => {
     row.style.display = open ? 'table-row' : 'none';
     const mainRow = document.querySelector(`[data-iata="${iata}"]`);
     if (mainRow) mainRow.classList.toggle('flt-row-open', open);
+  };
+
+  // ── DEĞİŞİM ANALİZİ VE CANLI GÜNCELLEME ────────────────
+  let _historyIndex = [];
+  let _historyCache = {};
+
+  async function loadHistoryIndex() {
+    try {
+      const res = await fetch('data/history_index.json');
+      if (!res.ok) throw new Error("İndeks yüklenemedi");
+      _historyIndex = await res.json();
+      
+      const startSelect = document.getElementById('fleet-diff-start-date');
+      const endSelect = document.getElementById('fleet-diff-end-date');
+      if (!startSelect || !endSelect) return;
+      
+      startSelect.innerHTML = '';
+      endSelect.innerHTML = '';
+      
+      _historyIndex.forEach((date) => {
+        const optStart = document.createElement('option');
+        optStart.value = date;
+        optStart.textContent = formatDateString(date);
+        startSelect.appendChild(optStart);
+        
+        const optEnd = document.createElement('option');
+        optEnd.value = date;
+        optEnd.textContent = formatDateString(date);
+        endSelect.appendChild(optEnd);
+      });
+      
+      if (_historyIndex.length >= 2) {
+        startSelect.value = _historyIndex[_historyIndex.length - 2];
+        endSelect.value = _historyIndex[_historyIndex.length - 1];
+      } else if (_historyIndex.length > 0) {
+        startSelect.value = _historyIndex[0];
+        endSelect.value = _historyIndex[0];
+      }
+      
+      calculateFleetDiff();
+    } catch (err) {
+      console.error("Geçmiş indeks yükleme hatası:", err);
+    }
+  }
+
+  function formatDateString(dateStr) {
+    const months = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const day = parseInt(parts[2], 10);
+      const monthIdx = parseInt(parts[1], 10) - 1;
+      const year = parts[0];
+      return `${day} ${months[monthIdx]} ${year}`;
+    }
+    return dateStr;
+  }
+
+  async function fetchHistoryData(date) {
+    if (_historyCache[date]) return _historyCache[date];
+    const res = await fetch(`data/history/${date}.json`);
+    if (!res.ok) throw new Error(`${date} verisi yüklenemedi`);
+    const data = await res.json();
+    _historyCache[date] = data;
+    return data;
+  }
+
+  window.calculateFleetDiff = async function() {
+    const startSelect = document.getElementById('fleet-diff-start-date');
+    const endSelect = document.getElementById('fleet-diff-end-date');
+    const tbody = document.getElementById('fleet-diff-tbody');
+    const statusText = document.getElementById('fleet-diff-status');
+    
+    if (!startSelect || !endSelect || !tbody) return;
+    
+    const startDate = startSelect.value;
+    const endDate = endSelect.value;
+    
+    if (!startDate || !endDate) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-3)">Lütfen geçerli tarihler seçin.</td></tr>';
+      return;
+    }
+    
+    statusText.textContent = "Hesaplanıyor...";
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-3)">Veriler yükleniyor...</td></tr>';
+    
+    try {
+      const startData = await fetchHistoryData(startDate);
+      const endData = await fetchHistoryData(endDate);
+      
+      let html = '';
+      
+      for (const iata in endData) {
+        const startAir = startData[iata] || { ca: 0, ci: 0, ct: 0, co: 0, types: [] };
+        const endAir = endData[iata];
+        
+        const d_ca = (endAir.ca || 0) - (startAir.ca || 0);
+        const d_ci = (endAir.ci || 0) - (startAir.ci || 0);
+        const d_ct = (endAir.ct || 0) - (startAir.ct || 0);
+        const d_co = (endAir.co || 0) - (startAir.co || 0);
+        
+        const color = endAir.color || '#94a3b8';
+        
+        html += `
+          <tr data-diff-iata="${iata}" onclick="toggleDiffRow('${iata}')" class="flt-row-clickable" style="cursor:pointer;font-weight:600;background:var(--bg-secondary)">
+            <td>
+              <span class="fdd-dot" style="background:${color};margin-right:8px;"></span>
+              ${endAir.name} (${iata})
+            </td>
+            <td style="color:var(--text-3)">Havayolu Toplamı</td>
+            <td style="text-align:right">${renderDiffVal(d_ca)}</td>
+            <td style="text-align:right">${renderDiffVal(d_ci)}</td>
+            <td style="text-align:right">${renderDiffVal(d_ct)}</td>
+            <td style="text-align:right">${renderDiffVal(d_co)}</td>
+          </tr>
+        `;
+        
+        const modelDiffs = [];
+        const startModels = {};
+        if (startAir.types) {
+          startAir.types.forEach(t => { startModels[t.v] = t; });
+        }
+        
+        const endModels = {};
+        if (endAir.types) {
+          endAir.types.forEach(t => { endModels[t.v] = t; });
+        }
+        
+        const allModels = new Set([...Object.keys(startModels), ...Object.keys(endModels)]);
+        
+        allModels.forEach(model => {
+          const sm = startModels[model] || { a: 0, i: 0, t: 0, o: 0 };
+          const em = endModels[model] || { a: 0, i: 0, t: 0, o: 0 };
+          
+          const m_d_ca = parseInt(em.a || 0) - parseInt(sm.a || 0);
+          const m_d_ci = parseInt(em.i || 0) - parseInt(sm.i || 0);
+          const m_d_ct = parseInt(em.t || 0) - parseInt(sm.t || 0);
+          const m_d_co = parseInt(em.o || 0) - parseInt(sm.o || 0);
+          
+          if (m_d_ca !== 0 || m_d_ci !== 0 || m_d_ct !== 0 || m_d_co !== 0) {
+            modelDiffs.push({
+              model: model,
+              cat: classifyVariant(model),
+              d_ca: m_d_ca,
+              d_ci: m_d_ci,
+              d_ct: m_d_ct,
+              d_co: m_d_co
+            });
+          }
+        });
+        
+        if (modelDiffs.length > 0) {
+          html += `
+            <tr id="flt-diff-detail-${iata}" style="display:none" class="flt-detail-row">
+              <td colspan="6" style="padding:0">
+                <div style="padding:8px 12px 12px 24px;border-left:3px solid ${color}">
+                  <table style="width:100%;font-size:11px;border-collapse:collapse;" class="flt-detail-table">
+                    <thead>
+                      <tr style="border-bottom:1px solid var(--border-color);color:var(--text-3)">
+                        <th style="text-align:left;padding:4px 0">Uçak Tipi</th>
+                        <th style="text-align:left;padding:4px 0">Kategori</th>
+                        <th style="text-align:right;padding:4px 0">Aktif Fark</th>
+                        <th style="text-align:right;padding:4px 0">Park Fark</th>
+                        <th style="text-align:right;padding:4px 0">Toplam Fark</th>
+                        <th style="text-align:right;padding:4px 0">Sipariş Fark</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${modelDiffs.map(md => `
+                        <tr style="border-bottom:1px dashed var(--border-soft);color:var(--text-1)">
+                          <td style="padding:6px 0;font-weight:500;">${md.model}</td>
+                          <td style="padding:6px 0;color:var(--text-3);">${md.cat}</td>
+                          <td style="text-align:right;padding:6px 0">${renderDiffVal(md.d_ca)}</td>
+                          <td style="text-align:right;padding:6px 0">${renderDiffVal(md.d_ci)}</td>
+                          <td style="text-align:right;padding:6px 0">${renderDiffVal(md.d_ct)}</td>
+                          <td style="text-align:right;padding:6px 0">${renderDiffVal(md.d_co)}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          `;
+        } else {
+          html += `
+            <tr id="flt-diff-detail-${iata}" style="display:none" class="flt-detail-row">
+              <td colspan="6" style="padding:10px;text-align:center;color:var(--text-3);font-size:11px;">
+                Bu iki tarih arasında filo bazında hiçbir değişiklik gerçekleşmemiştir.
+              </td>
+            </tr>
+          `;
+        }
+      }
+      
+      tbody.innerHTML = html;
+      statusText.textContent = `${formatDateString(startDate)} ile ${formatDateString(endDate)} tarihleri arası başarıyla karşılaştırıldı.`;
+      
+    } catch (err) {
+      console.error(err);
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#ef4444">Hata: Farklar hesaplanamadı (${err.message}).</td></tr>`;
+      statusText.textContent = "Hata oluştu.";
+    }
+  };
+
+  function renderDiffVal(val) {
+    if (val > 0) return `<span style="color:#059669;font-weight:bold;">+${val} ▲</span>`;
+    if (val < 0) return `<span style="color:#dc2626;font-weight:bold;">${val} ▼</span>`;
+    return `<span style="color:var(--text-3);opacity:0.5;">0</span>`;
+  }
+
+  window.toggleDiffRow = function(iata) {
+    const row = document.getElementById('flt-diff-detail-' + iata);
+    if (!row) return;
+    const open = row.style.display === 'none' || row.style.display === '';
+    row.style.display = open ? 'table-row' : 'none';
+    const mainRow = document.querySelector(`[data-diff-iata="${iata}"]`);
+    if (mainRow) mainRow.classList.toggle('flt-row-open', open);
+  };
+
+  // --- CANLI GÜNCELLEME İŞLEMLERİ ---
+  window.toggleCookiePanel = function() {
+    const panel = document.getElementById('fleet-cookie-panel');
+    if (!panel) return;
+    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+  };
+
+  window.saveFleetCookies = function() {
+    const input = document.getElementById('fleet-cookie-input');
+    if (!input || !input.value.trim()) {
+      alert("Lütfen geçerli bir çerez dizesi girin.");
+      return;
+    }
+    localStorage.setItem('fleet_cf_cookies', input.value.trim());
+    alert("Çerezler tarayıcı hafızasına kaydedildi. Güncelle butonuna bastığınızda kullanılacaktır.");
+    document.getElementById('fleet-cookie-panel').style.display = 'none';
+  };
+
+  window.triggerFleetUpdate = async function() {
+    const btn = document.getElementById('fleet-update-btn');
+    const spinner = document.getElementById('update-btn-spinner');
+    if (!btn) return;
+    
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.textContent = "Güncelleniyor...";
+    if (spinner) spinner.style.transform = 'rotate(360deg)';
+    
+    const savedCookies = localStorage.getItem('fleet_cf_cookies') || '';
+    
+    try {
+      const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'http://127.0.0.1:5005/api/update-fleet' 
+        : 'https://api-fleet.emredemirbas.com/api/update-fleet';
+      
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cookies: savedCookies })
+      });
+      
+      if (!res.ok) {
+        const errJson = await res.json();
+        throw new Error(errJson.error || "Sunucu güncelleme isteğini reddetti.");
+      }
+      
+      alert("Filo verilerini güncelleme işlemi başarıyla başlatıldı!\nÇekilen güncel veriler otomatik olarak GitHub'a gönderilecek ve 1-2 dakika içinde sayfa otomatik güncellenecektir.");
+      
+    } catch (err) {
+      alert("HATA: Güncelleme başlatılamadı.\n" + err.message + "\n\nNot: Eğer çerez hatası alıyorsanız, lütfen çerez butonuna tıklayarak güncel Planespotters çerezlerinizi yapıştırın.");
+    } finally {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.innerHTML = `
+        <svg id="update-btn-spinner" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        Canlı Güncelle
+      `;
+    }
   };
 })();
 </script>
