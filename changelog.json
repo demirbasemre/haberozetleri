@@ -1,5 +1,30 @@
 [
   {
+    "month": "Temmuz 2026",
+    "items": [
+      {
+        "text": "Veri Yayın Takvimi'nde henüz yayınlanmamış IATA Hava Kargo Aylık Analizi kartı her zaman mavi kartların en sonuna yerleştiriliyor.",
+        "major": false
+      },
+      {
+        "text": "AFKLM (Air France-KLM Grup) filo verisi planespotters.net Grup sayfasından güncellendi; toplam 548 uçak yansıtıldı.",
+        "major": false
+      },
+      {
+        "text": "Filo tablosunda ilk yüklemede kart görünümünün boş kalması sorunu giderildi; kaynak notları kaldırıldı.",
+        "major": false
+      },
+      {
+        "text": "IATA Hava Kargo takvim kartında ilk render'da Mayıs kartının yanlış görünmesi hatası düzeltildi.",
+        "major": false
+      },
+      {
+        "text": "WCI grafiğinde gemi adı metin taşması giderildi; tarih ve periyot alanları tüm rotalarda görüntüleniyor; takvim simgeleri native input yapısına dönüştürüldü.",
+        "major": false
+      }
+    ]
+  },
+  {
     "month": "Haziran 2026",
     "items": [
       {

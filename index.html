@@ -8932,9 +8932,9 @@ function buildReleaseCalendar() {
     }
     items.forEach(it => { it._iata = iataStatus(it); });
 
-    // Henüz yayınlanmamış IATA kartını bugünün sağına/sonrasına yerleştir
+    // Henüz yayınlanmamış IATA kartını her zaman mavi kartların en sonuna koy
     function sortKey(item) {
-      if (item._iata && !item._iata.released) return new Date(todayStart.getTime() + 1);
+      if (item._iata && !item._iata.released) return new Date(8640000000000000);
       return item.date;
     }
     const allWithToday = isCurrentMonth
