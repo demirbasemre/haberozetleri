@@ -448,15 +448,27 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             with open(history_index_path, "w", encoding="utf-8") as f:
                 json.dump(history_index, f, indent=1, ensure_ascii=False)
 
-        # 5. Git commit & push işlemlerini tetikle
-        print("Değişiklikler GitHub'a gönderiliyor...")
+        # 5. Cloudflare Workers KV'ye Gönder
+        print("Veriler Cloudflare Workers KV'ye gönderiliyor...")
+        cf_url = "https://api-fleet.emredemirbas.com/api/save-fleet"
+        payload = {
+            "password": expected_pwd,
+            "fleet": fleet_data,
+            "date": today_str
+        }
         try:
-            subprocess.run(["git", "add", "data/fleet.json", "data/history/", "data/history_index.json"], cwd=workspace_dir, check=True)
-            subprocess.run(["git", "commit", "-m", f"auto: fleet data updated to {today_str}"], cwd=workspace_dir, check=True)
-            subprocess.run(["git", "push", "origin", "main"], cwd=workspace_dir, check=True)
-            print("GitHub push başarıyla tamamlandı!")
-        except Exception as git_err:
-            print(f"Git push hatası: {git_err}")
+            import urllib.request
+            req = urllib.request.Request(
+                cf_url,
+                data=json.dumps(payload).encode('utf-8'),
+                headers={'Content-Type': 'application/json'},
+                method='POST'
+            )
+            with urllib.request.urlopen(req, timeout=15) as response:
+                res_body = response.read().decode('utf-8')
+                print(f"Cloudflare Workers yanıtı: {res_body}")
+        except Exception as cf_err:
+            print(f"Cloudflare KV güncelleme hatası: {cf_err}")
 
         return {"status": "success", "updated": updated_list, "skipped": skipped_list}
 
