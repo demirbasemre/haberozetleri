@@ -3698,7 +3698,7 @@
             Karşılaştır
           </button>
         </div>
-        <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Mevcut Filo (Güncelleme Tarihi: 30 Haz 2026)</span>
+        <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Mevcut Filo (Güncelleme Tarihi: 1 Tem 2026)</span>
       </div>
 
 
@@ -3811,7 +3811,7 @@
           </table>
         </div>
         <div class="fleet-update-note" style="margin-top:12px">
-          <strong>*</strong> Kaynak 1 Aktif verisi mevcut değil — Toplam Filo gösteriliyor · AFKLM = Air France + KLM birleşik · LA = LATAM Brasil (Kaynak 1) · 2 Haz 2026 · Satıra tıkla: uçak tipi detayı
+          <strong>*</strong> Kaynak 1 Aktif verisi mevcut değil — Toplam Filo gösteriliyor · AFKLM = Air France-KLM Grup (AF, KLM, Transavia, KLM Cityhopper dahil) · LA = LATAM Brasil (Kaynak 1) · 1 Tem 2026 · Satıra tıkla: uçak tipi detayı
         </div>
       </div>
 
@@ -8932,9 +8932,9 @@ function buildReleaseCalendar() {
     }
     items.forEach(it => { it._iata = iataStatus(it); });
 
-    // Henüz yayınlanmamış IATA kartını bugünün sağına/sonrasına yerleştir
+    // Henüz yayınlanmamış IATA kartını her zaman mavi kartların en sonuna koy
     function sortKey(item) {
-      if (item._iata && !item._iata.released) return new Date(todayStart.getTime() + 1);
+      if (item._iata && !item._iata.released) return new Date(8640000000000000);
       return item.date;
     }
     const allWithToday = isCurrentMonth
@@ -21724,7 +21724,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (k1)  k1.style.display  = '';
       if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = 'none';
-      if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: 30 Haz 2026)';
+      if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: 1 Tem 2026)';
       if (catBar) catBar.style.display = '';
       buildK1Cards();
       if (_fleetView === 'table') buildFleetTable();
