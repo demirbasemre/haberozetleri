@@ -8850,6 +8850,25 @@ function buildReleaseCalendar() {
     return { y: parseInt(m[2], 10), m: idx + 1 };
   }
 
+  // iata_full_data_v2 cache'inden ön doldurma: ilk render'dan önce _iataLatestParsed'ı doldur
+  // (aksi hâlde async fetch bitene kadar Mayıs kartı yanlış "yayınlanmamış" görünür)
+  try {
+    const _iataCache = localStorage.getItem('iata_full_data_v2');
+    if (_iataCache) {
+      const { timestamp: _iataTs, data: _iataData } = JSON.parse(_iataCache);
+      if (_iataData && _iataData.latest && _iataData.latest.date && (Date.now() - _iataTs < 60 * 60 * 1000)) {
+        const _parsedPre = parseTrMonthYearIata(_iataData.latest.date);
+        if (_parsedPre) {
+          const _pubDatePre = _iataData.latest.publishedDate ? new Date(_iataData.latest.publishedDate) : null;
+          _iataLatestParsed = {
+            y: _parsedPre.y, m: _parsedPre.m, pdfLink: _iataData.latest.pdfLink,
+            publishedDate: (_pubDatePre && !isNaN(_pubDatePre)) ? _pubDatePre : null
+          };
+        }
+      }
+    }
+  } catch(e) {}
+
   const needsIataFetch = dataItems.some(it => {
     if (it.verify !== 'iata-monthly') return false;
     let targetMonth0 = it.date.getMonth() - 1;
