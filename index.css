@@ -9486,3 +9486,46 @@
     left: 0px;
   }
 }
+
+/* ── FLEET DIFF & UPDATE CUSTOM STYLES ───────────────── */
+#fleet-update-btn:hover {
+  background: var(--bg-hover) !important;
+  border-color: var(--accent) !important;
+}
+
+#fleet-update-btn:disabled {
+  cursor: not-allowed;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+#update-btn-spinner.spinning {
+  animation: spin 1s linear infinite;
+}
+
+.flt-row-clickable:hover {
+  background: var(--bg-hover) !important;
+  transition: background-color 0.2s ease;
+}
+
+.flt-row-open {
+  border-bottom: none !important;
+}
+
+.flt-detail-row {
+  background: var(--bg-soft) !important;
+}
+
+.flt-detail-table th {
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 4px;
+}
+
+.flt-detail-table td {
+  padding: 6px 0;
+}
+
