@@ -3180,12 +3180,13 @@
               <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
             </div>
             <div class="modal-date-picker" id="wci-date-picker-wrap">
+              <svg class="modal-date-cal-icon" onclick="wciOpenCalendar('start', document.getElementById('wci-date-start'))" aria-hidden="true" width="11" height="11" viewBox="0 0 10 10" fill="none"><rect x="1" y="1.5" width="8" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="3.2" y1="0.5" x2="3.2" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="6.8" y1="0.5" x2="6.8" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="1.1"/></svg>
               <input type="date" lang="tr" readonly class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('start', this)">
               <span class="modal-date-separator">→</span>
+              <svg class="modal-date-cal-icon" onclick="wciOpenCalendar('end', document.getElementById('wci-date-end'))" aria-hidden="true" width="11" height="11" viewBox="0 0 10 10" fill="none"><rect x="1" y="1.5" width="8" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="3.2" y1="0.5" x2="3.2" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="6.8" y1="0.5" x2="6.8" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="1.1"/></svg>
               <input type="date" lang="tr" readonly class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('end', this)">
             </div>
             <span class="wci-route-dd-trigger-badge" id="wci-range-change-badge" style="display:none"></span>
-            <div class="wci-cal-popup" id="wci-cal-popup" style="display:none"></div>
           </div>
           <div class="modal-controls-right">
             <div class="modal-chart-type-group">
@@ -11498,6 +11499,17 @@ async function loadDashboard() {
     { code: 'New York - Rotterdam', from: 'NAE', to: 'EU' },
     { code: 'Rotterdam - New York', from: 'EU', to: 'NAE' }
   ];
+  const WCI_PORT_ABBR = { CEA: 'Şan', NAW: 'LA', NAE: 'NY', EU: 'Rot', MED: 'Gen' };
+  function wciRouteShortCode(code) {
+    const r = WCI_MAP_ROUTES.find(x => x.code === code);
+    if (!r) return code;
+    return (WCI_PORT_ABBR[r.from] || r.from) + '→' + (WCI_PORT_ABBR[r.to] || r.to);
+  }
+  function wciDirArrow(route) {
+    const a=WCI_MAP_NODES[route.from], b=WCI_MAP_NODES[route.to];
+    if (!a||!b) return '';
+    return b.x>=a.x ? '→' : '←';
+  }
 
   function drawWciRouteChart(code) {
     const titleEl = document.getElementById('wci-chart-title');
@@ -11505,7 +11517,7 @@ async function loadDashboard() {
       const routeHist = (_wciLatest && _wciLatest.routesHistory && _wciLatest.routesHistory[code]) || [];
       const routeName = (_wciLatest && _wciLatest.routeNames && _wciLatest.routeNames[code]) || code;
       if (!routeHist.length) {
-        if (titleEl) titleEl.textContent = `${code} (Veri yok)`;
+        if (titleEl) titleEl.textContent = `${routeName} (Veri yok)`;
         return;
       }
       const labels = routeHist.map(d => {
@@ -11517,7 +11529,7 @@ async function loadDashboard() {
       lineChart('chart-wci', labels,
         [
           {
-            label: `${code} — ${routeName}`,
+            label: routeName,
             data: values,
             borderColor: '#38bdf8',
             backgroundColor: 'rgba(56,189,248,0.07)',
@@ -11533,7 +11545,7 @@ async function loadDashboard() {
           rawDates: routeHist.map(d => d.date)
         }
       );
-      if (titleEl) titleEl.textContent = `${code} — ${Math.round(values[values.length - 1]).toLocaleString('tr-TR')} $/FEU`;
+      if (titleEl) titleEl.textContent = `${routeName} — ${Math.round(values[values.length - 1]).toLocaleString('tr-TR')} $/FEU`;
       updateWciRangeChangeBadge(values);
     } catch (err) {
       console.error("WCI rota grafiği çizim hatası:", err);
@@ -11595,8 +11607,9 @@ async function loadDashboard() {
       const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '–';
       badge = `<span class="wci-route-dd-badge is-${dir}">${arrow} %${Math.abs(live.change).toFixed(2)}</span>`;
     }
+    const shortCode = code === 'WCI' ? code : wciRouteShortCode(code);
     return `<div class="wci-route-dd-option" role="option" aria-selected="false" tabindex="-1" data-code="${code}" onclick="selectWciRoute('${code}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectWciRoute('${code}');}">
-      <span class="wci-route-dd-option-code">${code}</span>
+      <span class="wci-route-dd-option-code">${shortCode}</span>
       <span class="wci-route-dd-option-name">${name}</span>
       ${badge}
     </div>`;
@@ -11775,11 +11788,12 @@ async function loadDashboard() {
     }
     if (codeEl && nameEl) {
       if (code === 'WCI') {
+        codeEl.style.display = '';
         codeEl.textContent = 'WCI';
         nameEl.textContent = 'Global Endeks';
       } else {
-        codeEl.textContent = code;
-        nameEl.textContent = (window._wciLatest && window._wciLatest.routeNames && window._wciLatest.routeNames[code]) || code;
+        codeEl.style.display = 'none';
+        nameEl.textContent = (window._wciLatest && window._wciLatest.routeNames && window._wciLatest.routeNames[code]) || wciRouteShortCode(code);
       }
     }
     const badgeEl = document.getElementById('wci-route-dd-badge');
@@ -11920,8 +11934,8 @@ async function loadDashboard() {
 
       if (group.length>=2) {
         const [r1,r2]=group;
-        const displayLabel1 = r1.code.includes('Rotterdam') ? 'Rot' : r1.code.includes('Genoa') ? 'Gen' : r1.code.includes('Angeles') ? 'LA' : r1.code.includes('York') ? 'NY' : 'W';
-        const displayLabel2 = r2.code.includes('Rotterdam') ? 'Rot' : r2.code.includes('Genoa') ? 'Gen' : r2.code.includes('Angeles') ? 'LA' : r2.code.includes('York') ? 'NY' : 'W';
+        const displayLabel1 = wciDirArrow(r1)+(WCI_PORT_ABBR[r1.to] || r1.to);
+        const displayLabel2 = wciDirArrow(r2)+(WCI_PORT_ABBR[r2.to] || r2.to);
 
         const hw=26, hh=11;
         const bg=document.createElementNS(NS,'rect');
@@ -11973,7 +11987,7 @@ async function loadDashboard() {
         rh.addEventListener('click',e=>{e.stopPropagation();window.selectWciRoute(r2.code);});
       } else {
         const route=group[0];
-        const displayLabel = route.code.includes('Rotterdam') ? 'Rot' : route.code.includes('Genoa') ? 'Gen' : route.code.includes('Angeles') ? 'LA' : route.code.includes('York') ? 'NY' : 'W';
+        const displayLabel = wciDirArrow(route)+(WCI_PORT_ABBR[route.to] || route.to);
 
         const sbg=document.createElementNS(NS,'circle');
         sbg.setAttribute('cx','0'); sbg.setAttribute('cy','0'); sbg.setAttribute('r','13');
@@ -24423,6 +24437,9 @@ window.resetIndicatorsConfig = function() {
         </div>
       </div>
     </div>
+
+  <!-- WCI takvim popup — body altında: modal overflow'undan etkilenmiyor -->
+  <div class="wci-cal-popup" id="wci-cal-popup" style="display:none"></div>
 
   </body>
 </html>

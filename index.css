@@ -8496,6 +8496,20 @@
 [data-theme="dark"] .modal-date-input::-webkit-calendar-picker-indicator {
   filter: invert(0.85);
 }
+.modal-date-cal-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-3);
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 0 3px;
+  transition: opacity 0.15s, color 0.15s;
+}
+.modal-date-cal-icon:hover {
+  opacity: 1;
+  color: var(--text-2);
+}
 .modal-date-separator {
   font-size: 12px;
   font-weight: 600;
@@ -8886,6 +8900,8 @@
 .cargo-metric-item {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 2.5px;
   padding: 8px 10px;
 }
@@ -8900,10 +8916,8 @@
 }
 .cargo-metric-item:nth-child(odd) {
   border-right: 1px dashed var(--border-soft);
-  padding-right: 12px;
 }
 .cargo-metric-item:nth-child(even) {
-  padding-left: 12px;
 }
 .cargo-metric-lbl {
   font-size: 11px;
