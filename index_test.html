@@ -3180,11 +3180,9 @@
               <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
             </div>
             <div class="modal-date-picker" id="wci-date-picker-wrap">
-              <svg class="modal-date-cal-icon" onclick="wciOpenCalendar('start', document.getElementById('wci-date-start'))" aria-hidden="true" width="11" height="11" viewBox="0 0 10 10" fill="none"><rect x="1" y="1.5" width="8" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="3.2" y1="0.5" x2="3.2" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="6.8" y1="0.5" x2="6.8" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="1.1"/></svg>
-              <input type="date" lang="tr" readonly class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('start', this)">
+              <input type="date" lang="tr" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi (sadece yayınlanan haftalar seçilebilir)" onmousedown="event.preventDefault();wciOpenCalendar('start',this)" onkeydown="return false">
               <span class="modal-date-separator">→</span>
-              <svg class="modal-date-cal-icon" onclick="wciOpenCalendar('end', document.getElementById('wci-date-end'))" aria-hidden="true" width="11" height="11" viewBox="0 0 10 10" fill="none"><rect x="1" y="1.5" width="8" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="3.2" y1="0.5" x2="3.2" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="6.8" y1="0.5" x2="6.8" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="1.1"/></svg>
-              <input type="date" lang="tr" readonly class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('end', this)">
+              <input type="date" lang="tr" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi (sadece yayınlanan haftalar seçilebilir)" onmousedown="event.preventDefault();wciOpenCalendar('end',this)" onkeydown="return false">
             </div>
             <span class="wci-route-dd-trigger-badge" id="wci-range-change-badge" style="display:none"></span>
           </div>
@@ -8846,6 +8844,25 @@ function buildReleaseCalendar() {
     return { y: parseInt(m[2], 10), m: idx + 1 };
   }
 
+  // iata_full_data_v2 cache'inden ön doldurma: ilk render'dan önce _iataLatestParsed'ı doldur
+  // (aksi hâlde async fetch bitene kadar Mayıs kartı yanlış "yayınlanmamış" görünür)
+  try {
+    const _iataCache = localStorage.getItem('iata_full_data_v2');
+    if (_iataCache) {
+      const { timestamp: _iataTs, data: _iataData } = JSON.parse(_iataCache);
+      if (_iataData && _iataData.latest && _iataData.latest.date && (Date.now() - _iataTs < 60 * 60 * 1000)) {
+        const _parsedPre = parseTrMonthYearIata(_iataData.latest.date);
+        if (_parsedPre) {
+          const _pubDatePre = _iataData.latest.publishedDate ? new Date(_iataData.latest.publishedDate) : null;
+          _iataLatestParsed = {
+            y: _parsedPre.y, m: _parsedPre.m, pdfLink: _iataData.latest.pdfLink,
+            publishedDate: (_pubDatePre && !isNaN(_pubDatePre)) ? _pubDatePre : null
+          };
+        }
+      }
+    }
+  } catch(e) {}
+
   const needsIataFetch = dataItems.some(it => {
     if (it.verify !== 'iata-monthly') return false;
     let targetMonth0 = it.date.getMonth() - 1;
@@ -11563,8 +11580,8 @@ async function loadDashboard() {
     const isComposite = code === 'WCI';
     const periodWrap = document.getElementById('wci-period-btns-wrap');
     const dateWrap = document.getElementById('wci-date-picker-wrap');
-    if (periodWrap) periodWrap.style.display = isComposite ? '' : 'none';
-    if (dateWrap) dateWrap.style.display = isComposite ? '' : 'none';
+    if (periodWrap) periodWrap.style.display = '';
+    if (dateWrap) dateWrap.style.display = '';
     window._wciCustomRange = false;
     updateWciRouteDropdownUI(code);
     window.toggleWciRouteDropdown(false);
@@ -11835,8 +11852,8 @@ async function loadDashboard() {
     landPath.setAttribute('class','wci-map-land');
     svg.appendChild(landPath);
 
-    function pathFromPoints(pts) {
-      return pts.map((p,i) => (i===0?'M':'L')+p[0]+','+p[1]).join(' ');
+    function pathFromPoints(pts, breakIdx) {
+      return pts.map((p,i) => (i===0||i===breakIdx?'M':'L')+p[0]+','+p[1]).join(' ');
     }
     function catmullRomPath(pts) {
       if (pts.length<2) return '';
@@ -11888,10 +11905,12 @@ async function loadDashboard() {
         p.setAttribute('vector-effect','non-scaling-stroke');
         if (!skipPaths) g.appendChild(p); return pts;
       };
+      let leg1Len=0;
       if (routeDef.wrap) {
         mkPath(routeDef.leg1); mkPath(routeDef.leg2);
         fullPts=[...routeDef.leg1,...routeDef.leg2];
         pillBase=routeDef.leg1[1];
+        leg1Len=routeDef.leg1.length;
       } else {
         mkPath(routeDef.points);
         fullPts=routeDef.points.slice();
@@ -11899,9 +11918,10 @@ async function loadDashboard() {
       }
       _pillPos[key]=pillBase;
 
-      const route0=group[0];
-      const fwdPts=route0.from===keyA?fullPts:[...fullPts].reverse();
+      const fwdPts=fullPts;
       const bwdPts=[...fwdPts].reverse();
+      const fwdBreak=routeDef.wrap?leg1Len:-1;
+      const bwdBreak=routeDef.wrap?(fullPts.length-leg1Len):-1;
 
       if (!skipPaths) {
         const shipG=document.createElementNS(NS,'g');
@@ -11910,14 +11930,14 @@ async function loadDashboard() {
         shipMo.setAttribute('dur',Math.max(10,fwdPts.length*3.5).toFixed(1)+'s');
         shipMo.setAttribute('repeatCount','indefinite');
         shipMo.setAttribute('rotate','auto');
-        shipMo.setAttribute('path',pathFromPoints(fwdPts));
+        shipMo.setAttribute('path',pathFromPoints(fwdPts,fwdBreak));
         shipG.appendChild(shipMo);
         const shipPth=document.createElementNS(NS,'path');
         shipPth.setAttribute('class','wci-ship-icon');
         shipPth.setAttribute('d','M 13,0 C 10,-4 0,-5 -13,-2.5 L -13,2.5 C 0,5 10,4 13,0 Z');
         shipG.appendChild(shipPth);
         g.appendChild(shipG);
-        _shipState[key]={shipPth,motionEl:shipMo,fwdPts,bwdPts};
+        _shipState[key]={shipPth,motionEl:shipMo,fwdPts,bwdPts,fwdBreak,bwdBreak};
       }
 
       const [px,py]=pillBase;
@@ -12143,6 +12163,18 @@ async function loadDashboard() {
     const dRing=document.querySelector('#wci-route-map .wci-map-node-ring[data-node="'+route.to+'"]');
     if(oRing) oRing.classList.add('is-origin');
     if(dRing) dRing.classList.add('is-destination');
+    if(m){
+      const {_corridorDir,_shipState,pathFromPoints:pfp}=m;
+      if(_shipState[corridorKey]){
+        const [ckA]=corridorKey.split('-');
+        const shouldFwd=(route.from===ckA);
+        if(!isPreview&&_corridorDir[corridorKey]!==shouldFwd){
+          _corridorDir[corridorKey]=shouldFwd;
+          const st=_shipState[corridorKey];
+          st.motionEl.setAttribute('path',pfp(shouldFwd?st.fwdPts:st.bwdPts,shouldFwd?st.fwdBreak:st.bwdBreak));
+        }
+      }
+    }
   };
 
   window.addEventListener('click', e => {
@@ -12685,8 +12717,8 @@ async function loadDashboard() {
     const isComposite = code === 'FBX';
     const periodWrap = document.getElementById('fbx-period-btns-wrap');
     const dateWrap = document.getElementById('fbx-date-picker-wrap');
-    if (periodWrap) periodWrap.style.display = isComposite ? '' : 'none';
-    if (dateWrap) dateWrap.style.display = isComposite ? '' : 'none';
+    if (periodWrap) periodWrap.style.display = '';
+    if (dateWrap) dateWrap.style.display = '';
     window._fbxCustomRange = false;
     updateFbxRouteDropdownUI(code);
     window.toggleFbxRouteDropdown(false);
@@ -13122,8 +13154,8 @@ async function loadDashboard() {
     svg.appendChild(landPath);
 
 
-    function pathFromPoints(pts) {
-      return pts.map((p,i) => (i===0?'M':'L')+p[0]+','+p[1]).join(' ');
+    function pathFromPoints(pts, breakIdx) {
+      return pts.map((p,i) => (i===0||i===breakIdx?'M':'L')+p[0]+','+p[1]).join(' ');
     }
     function catmullRomPath(pts) {
       if (pts.length<2) return '';
@@ -13175,10 +13207,12 @@ async function loadDashboard() {
         p.setAttribute('vector-effect','non-scaling-stroke');
         if (!skipPaths) g.appendChild(p); return pts;
       };
+      let leg1Len=0;
       if (routeDef.wrap) {
         mkPath(routeDef.leg1); mkPath(routeDef.leg2);
         fullPts=[...routeDef.leg1,...routeDef.leg2];
         pillBase=routeDef.leg1[1];
+        leg1Len=routeDef.leg1.length;
       } else {
         mkPath(routeDef.points);
         fullPts=routeDef.points.slice();
@@ -13186,9 +13220,10 @@ async function loadDashboard() {
       }
       _pillPos[key]=pillBase;
 
-      const route0=group[0];
-      const fwdPts=route0.from===keyA?fullPts:[...fullPts].reverse();
+      const fwdPts=fullPts;
       const bwdPts=[...fwdPts].reverse();
+      const fwdBreak=routeDef.wrap?leg1Len:-1;
+      const bwdBreak=routeDef.wrap?(fullPts.length-leg1Len):-1;
 
       if (!skipPaths) {
       const shipG=document.createElementNS(NS,'g');
@@ -13197,14 +13232,14 @@ async function loadDashboard() {
       shipMo.setAttribute('dur',Math.max(10,fwdPts.length*3.5).toFixed(1)+'s');
       shipMo.setAttribute('repeatCount','indefinite');
       shipMo.setAttribute('rotate','auto');
-      shipMo.setAttribute('path',pathFromPoints(fwdPts));
+      shipMo.setAttribute('path',pathFromPoints(fwdPts,fwdBreak));
       shipG.appendChild(shipMo);
       const shipPth=document.createElementNS(NS,'path');
       shipPth.setAttribute('class','fbx-ship-icon');
       shipPth.setAttribute('d','M 13,0 C 10,-4 0,-5 -13,-2.5 L -13,2.5 C 0,5 10,4 13,0 Z');
       shipG.appendChild(shipPth);
       g.appendChild(shipG);
-      _shipState[key]={shipPth,motionEl:shipMo,fwdPts,bwdPts};
+      _shipState[key]={shipPth,motionEl:shipMo,fwdPts,bwdPts,fwdBreak,bwdBreak};
       }
 
       const [px,py]=pillBase;
@@ -13437,7 +13472,7 @@ async function loadDashboard() {
         if(!isPreview&&_corridorDir[corridorKey]!==shouldFwd){
           _corridorDir[corridorKey]=shouldFwd;
           const st=_shipState[corridorKey];
-          st.motionEl.setAttribute('path',pfp(shouldFwd?st.fwdPts:st.bwdPts));
+          st.motionEl.setAttribute('path',pfp(shouldFwd?st.fwdPts:st.bwdPts,shouldFwd?st.fwdBreak:st.bwdBreak));
         }
       }
     }
@@ -24355,6 +24390,17 @@ window.resetIndicatorsConfig = function() {
         <div class="rel-add-head">
           <div id="jetfuel-chart-title" class="rel-add-title">Jet Yakıtı Fiyatı</div>
           <button class="rel-add-x" onclick="closeJetfuelChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="jetfuel-conversion-info" style="font-size: 11.5px; color: var(--text-2); margin: 4px 0 12px 0; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; line-height: 1.5; display: flex; align-items: center; gap: 8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent, #0076ff)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>
+            <strong>Dönüşüm Formülü:</strong> IATA Fuel Monitor verileri ($/bbl veya cts/gal), havacılık sektörü yoğunluk standartlarına göre metrik tona ($/MT) çevrilmiştir: 
+            <code style="background: var(--surface); border: 1px solid var(--border); padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 11px; margin-left: 4px; font-weight: 600; color: var(--text);">Ton Fiyatı = Varil Fiyatı ($/bbl) × 7.8983</code>
+          </span>
         </div>
         <div class="chart-modal-controls">
           <div class="modal-controls-left">
