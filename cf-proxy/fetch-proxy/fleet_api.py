@@ -285,7 +285,13 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
         skipped_list = []
         
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            browserless_url = os.environ.get('BROWSERLESS_URL')
+            if browserless_url:
+                print(f"Browserless bağlantısı kuruluyor: {browserless_url}")
+                browser = p.chromium.connect_over_cdp(browserless_url)
+            else:
+                browser = p.chromium.launch(headless=True)
+                
             context = browser.new_context(
                 user_agent=user_agent,
                 viewport={"width": 1440, "height": 900},
