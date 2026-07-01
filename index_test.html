@@ -23154,7 +23154,7 @@ let FIN_INVESTOR_URLS_STATIC = null;
 
 async function loadAppData() {
   const [fleet, fin, finSrc, invUrls] = await Promise.all([
-    fetch('data/fleet.json').then(r=>r.json()),
+    fetch('https://api-fleet.emredemirbas.com/api/get-fleet').then(r=>r.json()),
     fetch('data/financials.json').then(r=>r.json()),
     fetch('data/fin_sources.json').then(r=>r.json()).catch(()=>({})),
     Promise.resolve({
@@ -23744,7 +23744,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadHistoryIndex() {
     try {
-      const res = await fetch('data/history_index.json');
+      const res = await fetch('https://api-fleet.emredemirbas.com/api/get-history-index');
       if (!res.ok) throw new Error("İndeks yüklenemedi");
       _historyIndex = await res.json();
       
@@ -23795,7 +23795,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchHistoryData(date) {
     if (_historyCache[date]) return _historyCache[date];
-    const res = await fetch(`data/history/${date}.json`);
+    const res = await fetch(`https://api-fleet.emredemirbas.com/api/get-history?date=${date}`);
     if (!res.ok) throw new Error(`${date} verisi yüklenemedi`);
     const data = await res.json();
     _historyCache[date] = data;
