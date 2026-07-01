@@ -13743,20 +13743,14 @@ async function loadDashboard() {
     });
   }
 
-  // FBX Verisini Çek ve Göster
+  // FBX Verisini Çek ve Göster (veri tümüyle worker/KV üzerinden gelir)
   async function initFbxCard() {
     return fetchCached('fbx_v3', async () => {
-      const [historyArr, latest] = await Promise.all([
-        fetch('fbx-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null)
-      ]);
-      return { historyArr, latest };
-    }, 1 * 60 * 60 * 1000).then(({ historyArr, latest }) => {
-      // Geçmiş veriyi ayarla: önce proxy'den, yoksa local JSON'dan
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null);
+      return { latest };
+    }, 1 * 60 * 60 * 1000).then(({ latest }) => {
       if (latest && Array.isArray(latest.history)) {
         _fbxHistory = latest.history.slice().sort((a, b) => a.date.localeCompare(b.date));
-      } else if (historyArr && historyArr.length) {
-        _fbxHistory = historyArr.slice().sort((a, b) => a.date.localeCompare(b.date));
       }
       _fbxLatest = latest;
 
@@ -13771,19 +13765,6 @@ async function loadDashboard() {
         const fbxRaw = latest.date || '';
         const fbxIso = fbxRaw.includes('-') ? fbxRaw : (fbxRaw ? new Date().toISOString().slice(0,10) : null);
         if (fbxIso) setDateBadge('dc-fbx-date', isoToDisplay(fbxIso));
-      } else if (historyArr && historyArr.length) {
-        // Proxy başarısız — local geçmişin son değerini göster
-        const sorted = historyArr.slice().sort((a, b) => a.date.localeCompare(b.date));
-        const last = sorted[sorted.length - 1];
-        const prev = sorted.length > 1 ? sorted[sorted.length - 2] : null;
-        const chg = prev && prev.value ? ((last.value - prev.value) / prev.value) * 100 : null;
-        setCard('dc-fbx',
-          last.value.toLocaleString('en-US') + ' $',
-          chg,
-          "Global konteyner spot fiyat endeksi",
-          `Son veri: ${isoToDisplay(last.date)}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`
-        );
-        if (last.date) setDateBadge('dc-fbx-date', isoToDisplay(last.date));
       } else {
         setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
       }

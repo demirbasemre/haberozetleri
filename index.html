@@ -8404,50 +8404,6 @@ function buildReleaseCalendar() {
 
   function abs(y, m, day) { return new Date(y, m - 1, day); } // m: 1–12 (gerçek ay)
 
-  // IATA aylık raporu ~1 ay gecikmeli yayınlanır (örn. Haziran sonunda Mayıs raporu çıkar).
-  // Worker üzerinden gerçek yayın durumunu kontrol edip takvim kartını buna göre güncelliyoruz.
-  let iataConfirmed = {};
-  try {
-    iataConfirmed = JSON.parse(localStorage.getItem('iata_confirmed_releases') || '{}');
-  } catch(e) {}
-
-  let _iataLatestParsed = null;
-  function parseTrMonthYearIata(str) {
-    if (!str) return null;
-    const monthNames = ['ocak','şubat','mart','nisan','mayıs','haziran','temmuz','ağustos','eylül','ekim','kasım','aralık'];
-    const m = String(str).toLowerCase().match(/([a-zçğıöşü]+)\s+(\d{4})/);
-    if (!m) return null;
-    const idx = monthNames.indexOf(m[1]);
-    if (idx === -1) return null;
-    return { y: parseInt(m[2], 10), m: idx + 1 };
-  }
-
-  const needsIataFetch = dataItems.some(it => {
-    if (it.verify !== 'iata-monthly') return false;
-    let targetMonth0 = it.date.getMonth() - 1;
-    let targetYear = it.date.getFullYear();
-    if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
-    const key = `${targetYear}-${targetMonth0 + 1}`;
-    const isPastOrCurrent = it.date <= now || (it.date.getFullYear() === now.getFullYear() && it.date.getMonth() === now.getMonth());
-    return isPastOrCurrent && !iataConfirmed[key];
-  });
-
-  if (needsIataFetch) {
-    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
-      if (data && data.date) {
-        const parsed = parseTrMonthYearIata(data.date);
-        if (parsed) {
-          const publishedDate = data.publishedDate ? new Date(data.publishedDate) : null;
-          _iataLatestParsed = {
-            y: parsed.y, m: parsed.m, pdfLink: data.pdfLink,
-            publishedDate: (publishedDate && !isNaN(publishedDate)) ? publishedDate : null
-          };
-          if (typeof _relRender === 'function') _relRender();
-        }
-      }
-    }).catch(() => {});
-  }
-
   // Sonraki 4 Çarşambayı üret (EIA haftalık raporu için)
   function nextWednesdays(n) {
     const out = [];
@@ -8716,6 +8672,50 @@ function buildReleaseCalendar() {
     h('BR','N.S. Aparecida Günü',10,12), h('BR','Azizler Günü',11,2),
     h('BR','Cumhuriyet İlanı',11,15), h('BR','Siyah Bilinç Günü',11,20), h('BR','Noel',12,25),
   ];
+
+  // IATA aylık raporu ~1 ay gecikmeli yayınlanır (örn. Haziran sonunda Mayıs raporu çıkar).
+  // Worker üzerinden gerçek yayın durumunu kontrol edip takvim kartını buna göre güncelliyoruz.
+  let iataConfirmed = {};
+  try {
+    iataConfirmed = JSON.parse(localStorage.getItem('iata_confirmed_releases') || '{}');
+  } catch(e) {}
+
+  let _iataLatestParsed = null;
+  function parseTrMonthYearIata(str) {
+    if (!str) return null;
+    const monthNames = ['ocak','şubat','mart','nisan','mayıs','haziran','temmuz','ağustos','eylül','ekim','kasım','aralık'];
+    const m = String(str).toLowerCase().match(/([a-zçğıöşü]+)\s+(\d{4})/);
+    if (!m) return null;
+    const idx = monthNames.indexOf(m[1]);
+    if (idx === -1) return null;
+    return { y: parseInt(m[2], 10), m: idx + 1 };
+  }
+
+  const needsIataFetch = dataItems.some(it => {
+    if (it.verify !== 'iata-monthly') return false;
+    let targetMonth0 = it.date.getMonth() - 1;
+    let targetYear = it.date.getFullYear();
+    if (targetMonth0 < 0) { targetMonth0 += 12; targetYear -= 1; }
+    const key = `${targetYear}-${targetMonth0 + 1}`;
+    const isPastOrCurrent = it.date <= now || (it.date.getFullYear() === now.getFullYear() && it.date.getMonth() === now.getMonth());
+    return isPastOrCurrent && !iataConfirmed[key];
+  });
+
+  if (needsIataFetch) {
+    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
+      if (data && data.date) {
+        const parsed = parseTrMonthYearIata(data.date);
+        if (parsed) {
+          const publishedDate = data.publishedDate ? new Date(data.publishedDate) : null;
+          _iataLatestParsed = {
+            y: parsed.y, m: parsed.m, pdfLink: data.pdfLink,
+            publishedDate: (publishedDate && !isNaN(publishedDate)) ? publishedDate : null
+          };
+          if (typeof _relRender === 'function') _relRender();
+        }
+      }
+    }).catch(() => {});
+  }
 
   let activeHolidayCountries = new Set(['TR']);
 
@@ -13539,20 +13539,14 @@ async function loadDashboard() {
     });
   }
 
-  // FBX Verisini Çek ve Göster
+  // FBX Verisini Çek ve Göster (veri tümüyle worker/KV üzerinden gelir)
   async function initFbxCard() {
     return fetchCached('fbx_v3', async () => {
-      const [historyArr, latest] = await Promise.all([
-        fetch('fbx-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null)
-      ]);
-      return { historyArr, latest };
-    }, 1 * 60 * 60 * 1000).then(({ historyArr, latest }) => {
-      // Geçmiş veriyi ayarla: önce proxy'den, yoksa local JSON'dan
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null);
+      return { latest };
+    }, 1 * 60 * 60 * 1000).then(({ latest }) => {
       if (latest && Array.isArray(latest.history)) {
         _fbxHistory = latest.history.slice().sort((a, b) => a.date.localeCompare(b.date));
-      } else if (historyArr && historyArr.length) {
-        _fbxHistory = historyArr.slice().sort((a, b) => a.date.localeCompare(b.date));
       }
       _fbxLatest = latest;
 
@@ -13567,19 +13561,6 @@ async function loadDashboard() {
         const fbxRaw = latest.date || '';
         const fbxIso = fbxRaw.includes('-') ? fbxRaw : (fbxRaw ? new Date().toISOString().slice(0,10) : null);
         if (fbxIso) setDateBadge('dc-fbx-date', isoToDisplay(fbxIso));
-      } else if (historyArr && historyArr.length) {
-        // Proxy başarısız — local geçmişin son değerini göster
-        const sorted = historyArr.slice().sort((a, b) => a.date.localeCompare(b.date));
-        const last = sorted[sorted.length - 1];
-        const prev = sorted.length > 1 ? sorted[sorted.length - 2] : null;
-        const chg = prev && prev.value ? ((last.value - prev.value) / prev.value) * 100 : null;
-        setCard('dc-fbx',
-          last.value.toLocaleString('en-US') + ' $',
-          chg,
-          "Global konteyner spot fiyat endeksi",
-          `Son veri: ${isoToDisplay(last.date)}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`
-        );
-        if (last.date) setDateBadge('dc-fbx-date', isoToDisplay(last.date));
       } else {
         setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
       }

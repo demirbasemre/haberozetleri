@@ -1345,6 +1345,34 @@ export default {
               }));
             }
 
+            // Cloudflare KV ile kompozit (ana) FBX endeksinin geçmişini kalıcı olarak biriktir.
+            // Freightos'un canlı sayfası sadece son birkaç haftalık pencereyi gösteriyor;
+            // bu birikim sayesinde daha eski noktalar da korunuyor ve canlı kazıma
+            // başarısız olduğunda son bilinen değer buradan dönebiliyor.
+            if (env.FBX_ROUTES_KV) {
+              try {
+                let compositeHist = await env.FBX_ROUTES_KV.get('fbx_composite_history', { type: 'json' }) || [];
+                const byDate = new Map(compositeHist.map(p => [p.date, p.value]));
+                (parsed.history || []).forEach(p => byDate.set(p.date, p.value));
+                byDate.set(todayIso, parsed.price);
+                compositeHist = Array.from(byDate.entries())
+                  .map(([date, value]) => ({ date, value }))
+                  .sort((a, b) => a.date.localeCompare(b.date));
+                await env.FBX_ROUTES_KV.put('fbx_composite_history', JSON.stringify(compositeHist));
+                parsed.history = compositeHist;
+
+                await env.FBX_ROUTES_KV.put('fbx_composite_last', JSON.stringify({
+                  success: true,
+                  price: parsed.price,
+                  change: parsed.change,
+                  direction: parsed.direction,
+                  date: parsed.date
+                }));
+              } catch (kvErr) {
+                console.warn('FBX composite KV hatası:', kvErr.message);
+              }
+            }
+
             // Rota bazlı (FBX01, FBX11, vb.) anlık değerleri çıkar
             routes = {};
             tickerData.forEach(item => {
@@ -1434,6 +1462,22 @@ export default {
                 direction: 'flat',
                 date: new Date(latestReport.date).toLocaleDateString('tr-TR', { month: 'short', year: 'numeric' })
               };
+            }
+          }
+        }
+
+        if (!parsed || !parsed.success) {
+          // Canlı kazıma ve n8n fallback'i de başarısız oldu — KV'deki son bilinen
+          // kompozit değeri ve geçmişi dön, kart boş ("—") kalmasın.
+          if (env.FBX_ROUTES_KV) {
+            try {
+              const lastKnown = await env.FBX_ROUTES_KV.get('fbx_composite_last', { type: 'json' });
+              const compositeHist = await env.FBX_ROUTES_KV.get('fbx_composite_history', { type: 'json' });
+              if (lastKnown && lastKnown.price) {
+                parsed = { ...lastKnown, history: compositeHist || [], stale: true };
+              }
+            } catch (kvErr) {
+              console.warn('FBX composite KV fallback hatası:', kvErr.message);
             }
           }
         }
