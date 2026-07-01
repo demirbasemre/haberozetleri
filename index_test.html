@@ -3885,9 +3885,6 @@
         </table>
       </div>
 
-      <div class="fleet-update-note">
-        Veriler <strong>Planespotters.net</strong> kaynağından alınmıştır (Güncelleme Tarihi: 30 Haziran 2026).
-      </div>
       <div class="fin-table-footnotes" style="display:flex;margin-top:8px">
         <div class="fin-footnote-item">
           <span class="fin-footnote-symbol">†</span>
@@ -3899,9 +3896,6 @@
       <!-- ══════ CH AVIATION GÖRÜNÜMÜ ══════ -->
       <div id="fleet-k2-content" style="display:none">
         <div class="fleet-k2-grid" id="fleet-k2-cards"></div>
-        <div class="fleet-update-note" style="margin-top:16px">
-          Veriler <strong>Kaynak 2</strong> kaynağından alınmıştır (2 Haziran 2026). Etihad için ETI kodu kullanılmıştır.
-        </div>
       </div>
 
       <!-- ══════ KARŞILAŞTIRMA GÖRÜNÜMÜ ══════ -->
@@ -20320,7 +20314,7 @@ function initControls(allArticles) {
     const isIata    = type === 'iata_market_analizi';
     const isRapor   = !isFilo && !isFinansal && !isIata;
 
-    if (fleetEl) { fleetEl.style.display = isFilo ? 'block' : 'none'; if (isFilo) setTimeout(initFleetChart, 30); }
+    if (fleetEl) { fleetEl.style.display = isFilo ? 'block' : 'none'; if (isFilo) { setTimeout(initFleetChart, 30); if (typeof window.ensureFleetK1Loaded === 'function') window.ensureFleetK1Loaded(); } }
     if (iataEl) { iataEl.style.display = isIata ? 'block' : 'none'; if (isIata) setTimeout(initIataReportsTab, 30); }
 
     const finEl = document.getElementById('finansal-report-container');
@@ -23072,6 +23066,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof checkNewReportsBackground === 'function') {
       checkNewReportsBackground();
     }
+    if (typeof window.ensureFleetK1Loaded === 'function') {
+      window.ensureFleetK1Loaded();
+    }
   }).catch(e => {
     console.warn('Data load error:', e);
     if (typeof checkNewReportsBackground === 'function') {
@@ -23287,6 +23284,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tableWrap) tableWrap.style.display = view === 'table' ? '' : 'none';
     if (view === 'cards' && FLEET_CMP_DATA) buildK1Cards();
     if (view === 'table') buildFleetTable();
+  };
+  window.ensureFleetK1Loaded = function() {
+    if (!FLEET_CMP_DATA) return;
+    if (_fleetView === 'table') buildFleetTable();
+    else buildK1Cards();
   };
   window.toggleFleetTableCat = function(cat) {
     _fleetTableCatOpen[cat] = !_fleetTableCatOpen[cat];
