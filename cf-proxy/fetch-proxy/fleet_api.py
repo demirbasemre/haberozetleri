@@ -213,10 +213,12 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             post_data = self.rfile.read(content_length)
             
             req_cookies = []
+            req_password = ""
             try:
                 if post_data:
                     req_json = json.loads(post_data.decode('utf-8'))
                     manual_cookie_str = req_json.get("cookies", "")
+                    req_password = req_json.get("password", "")
                     if manual_cookie_str:
                         # Manuel çerez dizesini parse et
                         for part in manual_cookie_str.split(";"):
@@ -230,6 +232,15 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             except Exception as e:
                 print(f"POST body okuma hatası: {e}")
 
+            # Şifre Doğrulaması
+            expected_pwd = os.environ.get('FLEET_UPDATE_PASSWORD', 'antigravity123')
+            if req_password != expected_pwd:
+                self.send_response(401)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": "Unauthorized", "message": "Geçersiz şifre girdiniz."}).encode('utf-8'))
+                return
+
             # Çerezleri birleştir (öncelik kullanıcının gönderdiğinde)
             cookies = req_cookies if req_cookies else get_chrome_cookies()
             
@@ -237,19 +248,22 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                 self.send_response(400)
                 self.send_header('Content-Type', 'application/json')
                 self.end_headers()
-                self.wfile.write(json.dumps({"error": "No valid cookies found. Please paste cookies from Chrome."}).encode('utf-8'))
+                self.wfile.write(json.dumps({"error": "No valid cookies", "message": "Geçerli çerez bulunamadı. Lütfen Chrome'dan kopyalayıp çerez paneline yapıştırın."}).encode('utf-8'))
                 return
 
-            self.send_response(202) # Kabul edildi, arka planda başlıyor
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({"status": "processing", "message": "Scraping process started in background."}).encode('utf-8'))
-
-            # Arka plan scraping işlemini başlat
+            # Scraping işlemini çalıştır
             try:
-                self.process_scraping(cookies)
+                result = self.process_scraping(cookies)
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps(result).encode('utf-8'))
             except Exception as e:
-                print(f"Scraping background error: {e}")
+                print(f"Scraping error: {e}")
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": "ServerError", "message": str(e)}).encode('utf-8'))
 
         else:
             self.send_response(404)
@@ -267,6 +281,8 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
 
         updated_count = 0
         all_results = {}
+        updated_list = []
+        skipped_list = []
         
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
@@ -291,6 +307,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                     
                     if types is None:
                         # Güncelleme tarihi değişmemiş, atla
+                        skipped_list.append({"code": code, "name": info["name"], "date": page_last_updated})
                         continue
                         
                     mode = info.get("cargo_mode")
@@ -362,14 +379,14 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                         "planespotters_last_updated": page_last_updated
                     }
                     updated_count += 1
+                    updated_list.append({"code": code, "name": info["name"], "date": page_last_updated})
                 except Exception as e:
                     print(f"[KRİTİK HATA] {code} çekilemedi: {e}")
             
             browser.close()
 
         if updated_count == 0:
-            print("Tüm havayolu filoları zaten güncel. Herhangi bir değişiklik yapılmadı.")
-            return
+            return {"status": "success", "updated": [], "skipped": skipped_list, "message": "Tüm havayolu filoları zaten güncel."}
 
         # fleet.json'ı güncelle
         for code, data in all_results.items():
@@ -434,6 +451,8 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             print("GitHub push başarıyla tamamlandı!")
         except Exception as git_err:
             print(f"Git push hatası: {git_err}")
+
+        return {"status": "success", "updated": updated_list, "skipped": skipped_list}
 
 def run_server():
     server_address = ('', PORT)

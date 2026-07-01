@@ -4024,6 +4024,22 @@
         </div>
       </div>
 
+      <!-- ══════ FİLO GÜNCELLEME ÖZET MODALİ ══════ -->
+      <div id="fleet-summary-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fleet-summary-title">
+        <div class="rel-add-card" style="max-width: 500px; width: 90vw;">
+          <div class="rel-add-head" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 12px;">
+            <div class="rel-add-title" id="fleet-summary-title" style="font-size: 13.5px; font-weight: 700; color: var(--text-1); display: flex; align-items: center; gap: 6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Filo Canlı Güncelleme Özeti
+            </div>
+            <button class="rel-add-x" onclick="closeFleetSummaryModal()" style="font-size: 18px;" aria-label="Kapat">×</button>
+          </div>
+          <div id="fleet-summary-body" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Dinamik doldurulacak -->
+          </div>
+        </div>
+      </div>
+
     </div><!-- /fleet-report-container -->
 
   <!-- ══════ FİNANSAL TABLOLAR ══════ -->
@@ -23939,10 +23955,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fleet-cookie-panel').style.display = 'none';
   };
 
+  window.closeFleetSummaryModal = function() {
+    const modal = document.getElementById('fleet-summary-modal');
+    if (modal) modal.style.display = 'none';
+  };
+
   window.triggerFleetUpdate = async function() {
     const btn = document.getElementById('fleet-update-btn');
     const spinner = document.getElementById('update-btn-spinner');
     if (!btn) return;
+    
+    let pwd = localStorage.getItem('fleet_update_password') || '';
+    if (!pwd) {
+      pwd = prompt("Lütfen Canlı Güncelleme şifresini girin:");
+      if (!pwd) return;
+    }
     
     btn.disabled = true;
     btn.style.opacity = '0.7';
@@ -23961,18 +23988,82 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ cookies: savedCookies })
+        body: JSON.stringify({ cookies: savedCookies, password: pwd })
       });
+      
+      if (res.status === 401) {
+        localStorage.removeItem('fleet_update_password');
+        throw new Error("Girdiğiniz şifre geçersizdir.");
+      }
       
       if (!res.ok) {
         const errJson = await res.json();
-        throw new Error(errJson.error || "Sunucu güncelleme isteğini reddetti.");
+        throw new Error(errJson.message || "Sunucu güncelleme isteğini reddetti.");
       }
       
-      alert("Filo verilerini güncelleme işlemi başarıyla başlatıldı!\nÇekilen güncel veriler otomatik olarak GitHub'a gönderilecek ve 1-2 dakika içinde sayfa otomatik güncellenecektir.");
+      localStorage.setItem('fleet_update_password', pwd);
+      const data = await res.json();
+      
+      // Popup özet tablosunu oluştur
+      const summaryBody = document.getElementById('fleet-summary-body');
+      if (summaryBody) {
+        let html = '';
+        
+        if (data.updated && data.updated.length > 0) {
+          html += `
+            <div style="font-weight: 600; color: #059669; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+              <span style="display:inline-block;width:6px;height:6px;background:#059669;border-radius:50%"></span>
+              Güncellenen Havayolları (${data.updated.length})
+            </div>
+            <table class="flt-detail-table" style="width:100%; font-size:11px; border-collapse:collapse; margin-bottom:8px;">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-3); text-align: left;">
+                  <th style="padding:4px 0;">Havayolu</th>
+                  <th style="padding:4px 0; text-align:right;">Yeni Güncelleme Tarihi</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${data.updated.map(a => `
+                  <tr style="border-bottom: 1px dashed var(--border-soft);">
+                    <td style="padding:5px 0; font-weight:600; color:var(--text-1);">${a.name} (${a.code})</td>
+                    <td style="padding:5px 0; text-align:right; color:var(--text-2);">${a.date || '—'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          `;
+        }
+        
+        if (data.skipped && data.skipped.length > 0) {
+          html += `
+            <div style="font-weight: 600; color: var(--text-3); font-size: 12px; display: flex; align-items: center; gap: 4px; margin-top: 6px;">
+              <span style="display:inline-block;width:6px;height:6px;background:var(--text-3);border-radius:50%"></span>
+              Değişiklik Olmayan Havayolları (${data.skipped.length})
+            </div>
+            <div style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 8px; background: var(--bg-soft);">
+              <table class="flt-detail-table" style="width:100%; font-size:10.5px; border-collapse:collapse;">
+                <tbody>
+                  ${data.skipped.map(a => `
+                    <tr style="border-bottom: 1px solid var(--border-soft);">
+                      <td style="padding:4px 0; color:var(--text-2);">${a.name} (${a.code})</td>
+                      <td style="padding:4px 0; text-align:right; color:var(--text-3); font-size:9.5px;">Güncel (${a.date || '—'})</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        }
+        
+        summaryBody.innerHTML = html;
+      }
+      
+      // Modali Göster
+      const modal = document.getElementById('fleet-summary-modal');
+      if (modal) modal.style.display = 'flex';
       
     } catch (err) {
-      alert("HATA: Güncelleme başlatılamadı.\n" + err.message + "\n\nNot: Eğer çerez hatası alıyorsanız, lütfen çerez butonuna tıklayarak güncel Planespotters çerezlerinizi yapıştırın.");
+      alert("HATA: Güncelleme gerçekleştirilemedi.\n" + err.message + "\n\nNot: Eğer çerez hatası alıyorsanız, lütfen çerez butonuna tıklayarak güncel Planespotters çerezlerinizi yapıştırın.");
     } finally {
       btn.disabled = false;
       btn.style.opacity = '1';
