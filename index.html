@@ -3039,11 +3039,9 @@
               <button class="wci-period-btn forex-btn" id="btn-wci-max" data-period="max">Tümü</button>
             </div>
             <div class="modal-date-picker" id="wci-date-picker-wrap">
-              <svg class="modal-date-cal-icon" onclick="wciOpenCalendar('start', document.getElementById('wci-date-start'))" aria-hidden="true" width="11" height="11" viewBox="0 0 10 10" fill="none"><rect x="1" y="1.5" width="8" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="3.2" y1="0.5" x2="3.2" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="6.8" y1="0.5" x2="6.8" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="1.1"/></svg>
-              <input type="date" readonly class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('start', this)">
+              <input type="date" class="modal-date-input" id="wci-date-start" aria-label="Başlangıç tarihi (sadece yayınlanan haftalar seçilebilir)" onmousedown="event.preventDefault();wciOpenCalendar('start',this)" onkeydown="return false">
               <span class="modal-date-separator">→</span>
-              <svg class="modal-date-cal-icon" onclick="wciOpenCalendar('end', document.getElementById('wci-date-end'))" aria-hidden="true" width="11" height="11" viewBox="0 0 10 10" fill="none"><rect x="1" y="1.5" width="8" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="3.2" y1="0.5" x2="3.2" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="6.8" y1="0.5" x2="6.8" y2="3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="1.1"/></svg>
-              <input type="date" readonly class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi (sadece yayınlanan haftalar seçilebilir)" onclick="wciOpenCalendar('end', this)">
+              <input type="date" class="modal-date-input" id="wci-date-end" aria-label="Bitiş tarihi (sadece yayınlanan haftalar seçilebilir)" onmousedown="event.preventDefault();wciOpenCalendar('end',this)" onkeydown="return false">
             </div>
             <span class="wci-route-dd-trigger-badge" id="wci-range-change-badge" style="display:none"></span>
           </div>
@@ -11254,8 +11252,8 @@ async function loadDashboard() {
     const isComposite = code === 'WCI';
     const periodWrap = document.getElementById('wci-period-btns-wrap');
     const dateWrap = document.getElementById('wci-date-picker-wrap');
-    if (periodWrap) periodWrap.style.display = isComposite ? '' : 'none';
-    if (dateWrap) dateWrap.style.display = isComposite ? '' : 'none';
+    if (periodWrap) periodWrap.style.display = '';
+    if (dateWrap) dateWrap.style.display = '';
     window._wciCustomRange = false;
     updateWciRouteDropdownUI(code);
     window.toggleWciRouteDropdown(false);
@@ -12433,8 +12431,8 @@ async function loadDashboard() {
     const isComposite = code === 'FBX';
     const periodWrap = document.getElementById('fbx-period-btns-wrap');
     const dateWrap = document.getElementById('fbx-date-picker-wrap');
-    if (periodWrap) periodWrap.style.display = isComposite ? '' : 'none';
-    if (dateWrap) dateWrap.style.display = isComposite ? '' : 'none';
+    if (periodWrap) periodWrap.style.display = '';
+    if (dateWrap) dateWrap.style.display = '';
     window._fbxCustomRange = false;
     updateFbxRouteDropdownUI(code);
     window.toggleFbxRouteDropdown(false);
