@@ -22735,6 +22735,17 @@ window.resetIndicatorsConfig = function() {
           <div id="jetfuel-chart-title" class="rel-add-title">Jet Yakıtı Fiyatı</div>
           <button class="rel-add-x" onclick="closeJetfuelChartModal()" aria-label="Kapat">×</button>
         </div>
+        <div class="jetfuel-conversion-info" style="font-size: 11.5px; color: var(--text-2); margin: 4px 0 12px 0; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; line-height: 1.5; display: flex; align-items: center; gap: 8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent, #0076ff)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>
+            <strong>Dönüşüm Formülü:</strong> IATA Fuel Monitor verileri ($/bbl veya cts/gal), havacılık sektörü yoğunluk standartlarına göre metrik tona ($/MT) çevrilmiştir: 
+            <code style="background: var(--surface); border: 1px solid var(--border); padding: 2px 5px; border-radius: 4px; font-family: monospace; font-size: 11px; margin-left: 4px; font-weight: 600; color: var(--text);">Ton Fiyatı = Varil Fiyatı ($/bbl) × 7.8983</code>
+          </span>
+        </div>
         <div class="chart-modal-controls">
           <div class="modal-controls-left">
             <div class="jetfuel-period-btns">
