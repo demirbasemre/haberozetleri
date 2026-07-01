@@ -3887,6 +3887,24 @@
         </div>
       </div>
 
+      <!-- ══════ FİLO ŞİFRE GİRİŞ MODALİ ══════ -->
+      <div id="fleet-password-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fleet-password-title">
+        <div class="rel-add-card" style="max-width: 340px; width: 90vw;">
+          <div class="rel-add-head" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 12px;">
+            <div class="rel-add-title" id="fleet-password-title" style="font-size: 13px; font-weight: 700; color: var(--text-1); display: flex; align-items: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              Güvenlik Doğrulaması
+            </div>
+            <button class="rel-add-x" onclick="closeFleetPasswordModal()" style="font-size: 18px;" aria-label="Kapat">×</button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 11px; color: var(--text-3); line-height: 1.4;">Canlı güncelleme işlemini başlatmak için şifreyi giriniz:</div>
+            <input type="password" id="fleet-update-password-input" placeholder="Şifre" style="width: 100%; padding: 7px 10px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-soft); color: var(--text-1); font-size: 11.5px; outline: none; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') submitFleetPassword()">
+            <button class="fdd-btn" onclick="submitFleetPassword()" style="width: 100%; justify-content: center; padding: 7px; background: var(--bg-primary); color: var(--text-1); font-size: 11px; font-weight: 600; border-radius: 4px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; box-sizing: border-box;">Onayla</button>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /fleet-report-container -->
 
   <!-- ══════ FİNANSAL TABLOLAR ══════ -->
@@ -4855,6 +4873,7 @@ function getAirlineLogo(airlineId) {
     'cargolux':        F('cargolux.com'),
     'wizz':            G('W6'),
     'klm':             G('KL'),
+    'afklm':           'https://assets.planespotters.net/files/airlines/1/air-france-klm_8e92ea.svg',
     'tap':             G('TP'),
     'ita':             G('AZ'),
     'skyup':           G('PQ'),
@@ -22487,16 +22506,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modal) modal.style.display = 'none';
   };
 
+  window.closeFleetPasswordModal = function() {
+    const modal = document.getElementById('fleet-password-modal');
+    if (modal) modal.style.display = 'none';
+  };
+
+  window.submitFleetPassword = function() {
+    const input = document.getElementById('fleet-update-password-input');
+    if (!input) return;
+    const pwd = input.value.trim();
+    if (!pwd) {
+      alert("Lütfen şifre giriniz.");
+      return;
+    }
+    closeFleetPasswordModal();
+    runUpdateWithPassword(pwd);
+  };
+
   window.triggerFleetUpdate = async function() {
+    let pwd = localStorage.getItem('fleet_update_password') || '';
+    if (!pwd) {
+      const input = document.getElementById('fleet-update-password-input');
+      if (input) input.value = '';
+      const modal = document.getElementById('fleet-password-modal');
+      if (modal) modal.style.display = 'flex';
+      setTimeout(() => input && input.focus(), 150);
+      return;
+    }
+    runUpdateWithPassword(pwd);
+  };
+
+  window.runUpdateWithPassword = async function(pwd) {
     const btn = document.getElementById('fleet-update-btn');
     const spinner = document.getElementById('update-btn-spinner');
     if (!btn) return;
-    
-    let pwd = localStorage.getItem('fleet_update_password') || '';
-    if (!pwd) {
-      pwd = prompt("Lütfen Canlı Güncelleme şifresini girin:");
-      if (!pwd) return;
-    }
     
     btn.disabled = true;
     btn.style.opacity = '0.7';
