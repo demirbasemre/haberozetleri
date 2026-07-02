@@ -249,6 +249,9 @@ def flaresolverr_get(url, cookies_list, timeout_ms=80000, retries=2):
                 resp = json.loads(r.read().decode('utf-8'))
             sol = resp.get("solution", {})
             html = sol.get("response", "") or ""
+            # Veri limiti sayfası 200 döner ama içerik yoktur — boş liste sanılmasın diye yakala
+            if "Data Limit Reached" in html or "data access limit" in html:
+                raise Exception("DATA_LIMIT: planespotters 24 saatlik veri erişim limiti dolu")
             if "Security Verification" in html or "Attention Required" in html or sol.get("status") != 200:
                 raise Exception(f"Cloudflare/Turnstile geçilemedi (http {sol.get('status')})")
             return html
@@ -671,12 +674,12 @@ def run_aircraft_scraping(cookies, pwd):
                     per_airline[code] = len(kept[code])
                     continue
 
-                if page_error and existing_by.get(code):
-                    # Bazı sayfalar çekilemedi (limit/hata) + eski tam veri var → eskiyi koru
+                if (page_error or len(ac_list) == 0) and existing_by.get(code):
+                    # Kısmi (bazı sayfalar düştü) VEYA boş sonuç + eski veri var → eskiyi koru
                     kept[code] = existing_by[code]
                     per_airline[code] = len(kept[code])
-                    errors.append(f"{code}: sayfa hatası, eski veri korundu")
-                    print(f"[AC] {code}: sayfa hatası → eski veri korundu ({len(kept[code])})", flush=True)
+                    errors.append(f"{code}: eksik/boş sonuç, eski veri korundu")
+                    print(f"[AC] {code}: eksik/boş sonuç → eski veri korundu ({len(kept[code])})", flush=True)
                     continue
 
                 for rec in ac_list:

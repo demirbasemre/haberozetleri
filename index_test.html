@@ -3943,7 +3943,7 @@
         </div>
       </div>
 
-      <div class="fin-table-footnotes" style="display:flex;margin-top:8px">
+      <div class="fin-table-footnotes" id="fleet-order-footnote" style="display:flex;margin-top:8px">
         <div class="fin-footnote-item">
           <span class="fin-footnote-symbol">†</span>
           <span><strong>Sipariş (Yakın Vade):</strong> Yalnızca teslimatı yakın olan yeni üretim uçakları ve beklenen ikinci el teslimatlarını kapsar; üreticilerin raporladığı bekleyen tüm siparişleri içermez.</span>
@@ -23772,6 +23772,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tableWrap) tableWrap.style.display = view === 'table' ? '' : 'none';
     if (acWrap) acWrap.style.display = view === 'aircrafts' ? '' : 'none';
     if (diffWrap) diffWrap.style.display = view === 'diff' ? '' : 'none';
+    const orderFn = document.getElementById('fleet-order-footnote');
+    if (orderFn) orderFn.style.display = view === 'aircrafts' ? 'none' : 'flex';
     
     if (view === 'cards' && FLEET_CMP_DATA) buildK1Cards();
     if (view === 'table') buildFleetTable();
@@ -23833,7 +23835,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Gövde satırları ──
     const totals = { wb:{a:0,p:0,t:0}, nb:{a:0,p:0,t:0}, cargo:{a:0,p:0,t:0}, pt:0, po:0 };
     const rows = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
-      const logoEl = `<img src="https://www.gstatic.com/flights/airline_logos/70px/${iata}.png" alt="" width="16" height="16" loading="lazy" onerror="this.style.display='none'">`;
+      const _logoSrc = iata === 'AFKLM' ? 'https://assets.planespotters.net/files/airlines/1/air-france-klm_8e92ea.svg' : `https://www.gstatic.com/flights/airline_logos/70px/${iata}.png`;
+      const logoEl = `<img src="${_logoSrc}" alt="" width="16" height="16" loading="lazy" onerror="this.style.display='none'">`;
       const catCells = FLEET_CAT_DEFS.map(c => {
         const sums = fleetCatSums(d.types, c.key);
         totals[c.key].a += sums.a; totals[c.key].p += sums.p; totals[c.key].t += sums.t;
