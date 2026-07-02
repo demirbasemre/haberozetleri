@@ -20906,6 +20906,14 @@ function fmtFinVal(v, fmt) {
     'AV':  F('avianca.com'),
     'CV':  F('cargolux.com'),
     'A4B': F('ajet.com'),
+    'MU':  F('ceair.com'),
+    'EY':  'https://www.gstatic.com/flights/airline_logos/70px/EY.png',
+    '3S':  F('aerologic.aero'),
+    'ZETA': F('airzeta.com'),
+    'N8':  F('nationalairlines.com'),
+    'CC':  F('cma-cgm.com'),
+    '3U':  F('sichuanair.com'),
+    'ABD': F('airatlanta.com'),
   };
   window.finLogoUrl = function(slug) { return _FIN_LOGO_MAP[slug] || ''; };
 })();
@@ -21803,6 +21811,14 @@ async function loadAppData() {
       "AV": {name:"Avianca",           url:"https://ir.avianca.com/"},
       "CV": {name:"Cargolux",          url:"https://www.cargolux.com/media/media-releases/"},
       "A4B":{name:"AJet",              url:"https://investor.turkishairlines.com/tr/hakkimizda/ortaklik-sirketleri"},
+      "MU": {name:"China Eastern",     url:"https://www.ceair.com/"},
+      "EY": {name:"Etihad Airways",    url:"https://www.etihad.com/en-ae/corporate-profile"},
+      "3S": {name:"AeroLogic",         url:"https://www.aerologic.aero/"},
+      "ZETA":{name:"AirZeta",          url:"https://www.airzeta.com/"},
+      "N8": {name:"National Airlines", url:"https://www.nationalairlines.com/"},
+      "CC": {name:"CMA CGM",           url:"https://www.cma-cgm.com/"},
+      "3U": {name:"Sichuan Airlines",  url:"https://www.sichuanair.com/"},
+      "ABD":{name:"Air Atlanta",       url:"https://www.airatlanta.com/"},
     }),
   ]);
   FLEET_CMP_DATA    = fleet;
