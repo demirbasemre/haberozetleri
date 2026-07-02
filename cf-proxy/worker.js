@@ -1078,37 +1078,33 @@ export default {
       let proxyUsed = 'none';
       let liveRoutes = {};
 
-      try {
-        const res = await doFetch(drewryUrl, {}, forceDirect);
-        proxyUsed = res.proxy;
-        if (res.status === 200) {
-          parsed = parseWCI(res.body);
-          if (parsed && parsed.success) {
-            liveRoutes = parseWciRoutes(res.body);
+      // Drewry canlı sayfası tek kaynak: başarısız olursa istek içinde kısa
+      // aralıklarla yeniden dene (3 deneme). Yine olmazsa 500 dönülür; istemci
+      // başarısız yanıtı önbelleklemediği için sonraki kontrollerde tekrar dener.
+      const WCI_MAX_ATTEMPTS = 3;
+      for (let attempt = 1; attempt <= WCI_MAX_ATTEMPTS; attempt++) {
+        try {
+          const res = await doFetch(drewryUrl, {}, forceDirect);
+          proxyUsed = res.proxy;
+          if (res.status === 200) {
+            parsed = parseWCI(res.body);
+            if (parsed && parsed.success) {
+              liveRoutes = parseWciRoutes(res.body);
+              fetchFailed = false;
+              break;
+            }
+            console.warn(`Drewry sayfası çekildi ama parse edilemedi (deneme ${attempt}/${WCI_MAX_ATTEMPTS}).`);
+          } else {
+            console.warn(`Drewry canlı sayfa isteği başarısız oldu (Status: ${res.status}, deneme ${attempt}/${WCI_MAX_ATTEMPTS}).`);
           }
-        } else {
           fetchFailed = true;
-          console.warn(`Drewry canlı sayfa isteği başarısız oldu (Status: ${res.status}). B planına geçiliyor...`);
+        } catch (err) {
+          fetchFailed = true;
+          console.error(`Drewry canlı istek hatası (deneme ${attempt}/${WCI_MAX_ATTEMPTS}): ${err.message}`);
         }
-      } catch (err) {
-        fetchFailed = true;
-        console.error(`Drewry canlı istek hatası: ${err.message}. B planına geçiliyor...`);
-      }
-
-      // n8n Rapor Havuzu: sadece Drewry canlı sayfası tamamen çekilemezse Composite
-      // Index için B Planı olarak kullanılıyor (zaten asıl kaynaktan okuduğu için
-      // rota bazlı teyit/tamamlama burada yapılmıyor — onun yerine Scorizons kullanılıyor).
-      let fallbackReport = null;
-      try {
-        const fallbackRes = await doFetch('https://n8n.emredemirbas.com/webhook/raporlar', {}, forceDirect);
-        if (fallbackRes.status === 200) {
-          const reportsJson = JSON.parse(fallbackRes.body);
-          if (reportsJson.reports && reportsJson.reports.length > 0) {
-            fallbackReport = reportsJson.reports[0];
-          }
+        if (attempt < WCI_MAX_ATTEMPTS) {
+          await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
         }
-      } catch (fallbackErr) {
-        console.error("WCI B Planı n8n raporları çekilemedi:", fallbackErr.message);
       }
 
       // Scorizons.com'un statik WCI tablosu: tüm 8 alt rotayı (ters yön bacaklar
@@ -1124,30 +1120,8 @@ export default {
         console.error("WCI Scorizons rota verisi çekilemedi:", scorizonsErr.message);
       }
 
-      // B Planı: Eğer canlı Drewry sitesi çekilemediyse veya doğrulama/parse başarısız olduysa n8n raporlarından çek
-      if (fetchFailed || !parsed || !parsed.success) {
-        if (fallbackReport) {
-          const wciValM = fallbackReport.html_content.match(/WCI Bileşik Endeks<\/div>\s*<div[^>]*>([^<]+)<\/div>/i) ||
-                          fallbackReport.html_content.match(/class="kpi"[^>]*>[\s\S]*?<span class="kpi-label">Drewry WCI<\/span><span class="kpi-value">([^<]+)<\/span>/i);
-
-          if (wciValM) {
-            const parsedPrice = parseFriendlyPrice(wciValM[1]);
-            if (parsedPrice) {
-              parsed = {
-                success: true,
-                price: parsedPrice,
-                change: 0,
-                direction: 'flat',
-                date: new Date(fallbackReport.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' }),
-                isFallback: true
-              };
-            }
-          }
-        }
-      }
-
       if (!parsed || !parsed.success) {
-        return new Response(JSON.stringify({ error: 'Could not parse WCI data from live or fallback', detail: parsed ? parsed.error : 'unknown' }), {
+        return new Response(JSON.stringify({ error: 'Could not parse WCI data from live source after retries', detail: parsed ? parsed.error : 'unknown' }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });

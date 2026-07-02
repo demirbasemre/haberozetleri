@@ -13618,7 +13618,8 @@ async function loadDashboard() {
           if (cached) {
             const parsed = JSON.parse(cached);
             if (parsed && parsed.data && parsed.data.latest && parsed.data.latest.price) {
-              finalLatest = parsed.data.latest;
+              // _stale işareti: bu sonuç önbelleğe yazılmaz, sonraki kontrolde canlı veri yeniden denenir
+              finalLatest = { ...parsed.data.latest, _stale: true };
             }
           }
         } catch (e) {
@@ -13627,7 +13628,7 @@ async function loadDashboard() {
       }
 
       return { history, latest: finalLatest };
-    }, wciTtl).then(({ history, latest }) => {
+    }, wciTtl, d => !!(d && d.latest && d.latest.price && !d.latest._stale)).then(({ history, latest }) => {
       _wciHistory = history && history.length ? history : WCI_DEFAULT_HISTORY;
       _wciLatest = latest;
 

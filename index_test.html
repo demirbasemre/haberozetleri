@@ -4369,12 +4369,14 @@
 </footer>
 
 <script>
-async function fetchCached(key, fetchFn, ttlMs) {
+async function fetchCached(key, fetchFn, ttlMs, shouldCacheFn) {
   try {
     const cached = localStorage.getItem(key);
     if (cached) {
       const { timestamp, data } = JSON.parse(cached);
-      if (Date.now() - timestamp < ttlMs) {
+      const isFresh = Date.now() - timestamp < ttlMs;
+      const isValid = typeof shouldCacheFn !== 'function' || shouldCacheFn(data);
+      if (isFresh && isValid) {
         return data;
       }
     }
@@ -4382,10 +4384,12 @@ async function fetchCached(key, fetchFn, ttlMs) {
     console.warn('Cache read error for ' + key + ':', e);
   }
   const data = await fetchFn();
-  try {
-    localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data }));
-  } catch (e) {
-    console.warn('Cache write error for ' + key + ':', e);
+  if (typeof shouldCacheFn !== 'function' || shouldCacheFn(data)) {
+    try {
+      localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data }));
+    } catch (e) {
+      console.warn('Cache write error for ' + key + ':', e);
+    }
   }
   return data;
 }
@@ -13875,13 +13879,37 @@ async function loadDashboard() {
   }
 
   function initWciCard() {
+    const now = new Date();
+    const day = now.getDay(); // 0: Sun, 1: Mon, 2: Tue, 3: Wed, 4: Thu, 5: Fri, 6: Sat
+    // WCI Perşembe günleri güncellenir. Çarşamba, Perşembe ve Cuma günleri saat başı (1 saat) kontrol edelim.
+    // Diğer günler (Cmt, Paz, Pzt, Sal) veri değişmeyeceğinden günde bir kez (24 saat) kontrol yeterlidir.
+    const wciTtl = (day === 3 || day === 4 || day === 5) ? (1 * 60 * 60 * 1000) : (24 * 60 * 60 * 1000);
+
     return fetchCached('wci_full_data_v7', async () => {
       const [history, latest] = await Promise.all([
         fetch('wci-history.json').then(r => r.ok ? r.json() : WCI_DEFAULT_HISTORY).catch(() => WCI_DEFAULT_HISTORY),
         fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci?t=' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
-      return { history, latest };
-    }, 60 * 60 * 1000).then(({ history, latest }) => {
+
+      // Eğer yeni çekilen veri başarısız (null veya fiyatsız) ise, localStorage'daki eski geçerli veriyi koruyup geri dönelim
+      let finalLatest = latest;
+      if (!latest || !latest.price) {
+        try {
+          const cached = localStorage.getItem('wci_full_data_v7');
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (parsed && parsed.data && parsed.data.latest && parsed.data.latest.price) {
+              // _stale işareti: bu sonuç önbelleğe yazılmaz, sonraki kontrolde canlı veri yeniden denenir
+              finalLatest = { ...parsed.data.latest, _stale: true };
+            }
+          }
+        } catch (e) {
+          console.warn('WCI fallback cache read error:', e);
+        }
+      }
+
+      return { history, latest: finalLatest };
+    }, wciTtl, d => !!(d && d.latest && d.latest.price && !d.latest._stale)).then(({ history, latest }) => {
       _wciHistory = history && history.length ? history : WCI_DEFAULT_HISTORY;
       _wciLatest = latest;
 
@@ -13894,6 +13922,20 @@ async function loadDashboard() {
           `Son veri: ${latest.date}<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`
         );
         const wciIso = convertDrewryDate(latest.date);
+        if (wciIso) setDateBadge('dc-wci-date', isoToDisplay(wciIso));
+      } else if (_wciHistory && _wciHistory.length) {
+        // Hem API hem de localStorage önbelleği başarısızsa yerel geçmişin son elemanını göster (Fallback)
+        const last = _wciHistory[_wciHistory.length - 1];
+        const prev = _wciHistory.length > 1 ? _wciHistory[_wciHistory.length - 2] : null;
+        const chg = prev && prev.value ? ((last.value - prev.value) / prev.value) * 100 : null;
+        const formattedPrice = last.value.toLocaleString('en-US') + ' $';
+        setCard('dc-wci',
+          formattedPrice,
+          chg,
+          "40' konteyner ortalama spot fiyat (Geçmiş Veri)",
+          `Son veri: ${last.date}<br><a href="https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry" target="_blank" rel="noopener">drewry.co.uk →</a>`
+        );
+        const wciIso = last.date;
         if (wciIso) setDateBadge('dc-wci-date', isoToDisplay(wciIso));
       } else {
         setCard('dc-wci', '—', null, '', 'Veri alınamadı');
