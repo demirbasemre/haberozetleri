@@ -3689,6 +3689,10 @@
             <span class="fdd-dot" style="background:#059669"></span>
             Mevcut Filo
           </button>
+          <button class="fdd-btn fleet-src-pill" data-src="aircrafts" id="fleet-src-ac" style="font-size:11.5px;padding:4px 12px">
+            <span class="fdd-dot" style="background:#7c3aed"></span>
+            Uçak Listesi
+          </button>
           <button class="fdd-btn fleet-src-pill" data-src="kaynak2" id="fleet-src-k2" disabled style="font-size:11.5px;padding:4px 12px;opacity:0.4;pointer-events:none;cursor:not-allowed;" title="Bu özellik şu an aktif değildir.">
             <span class="fdd-dot" style="background:#2563eb"></span>
             Kaynak 2
@@ -3699,7 +3703,10 @@
           </button>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:11px;color:var(--text-3)" id="fleet-src-date">Mevcut Filo (Güncelleme Tarihi: 1 Tem 2026)</span>
+          <div class="fleet-src-date-badge" id="fleet-src-date-container" style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-2);background:var(--bg-secondary);border:1px solid var(--border-color);padding:5px 12px;border-radius:20px;font-weight:500;box-shadow: 0 1px 2px rgba(0,0,0,0.05);transition: all 0.2s;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="color:var(--text-3);vertical-align: middle;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="fleet-src-date">Güncelleme Tarihi: 1 Tem 2026</span>
+          </div>
           <button class="fdd-btn" id="fleet-update-btn" onclick="triggerFleetUpdate()" style="font-size:11px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;display:flex;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;" title="Planespotters'tan canlı verileri çek ve güncelle">
             <svg id="update-btn-spinner" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
             Canlı Güncelle
@@ -3734,10 +3741,6 @@
         <button class="flt-view-btn" id="flt-view-table-btn" onclick="switchFleetView('table')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
           Tablo Görünümü
-        </button>
-        <button class="flt-view-btn" id="flt-view-ac-btn" onclick="switchFleetView('aircrafts')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-          Uçak Listesi
         </button>
         <button class="flt-view-btn" id="flt-view-diff-btn" onclick="switchFleetView('diff')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20V10M18 20V4M6 20v-6"/></svg>
@@ -3796,6 +3799,7 @@
           <span><strong>Sipariş (Yakın Vade):</strong> Yalnızca teslimatı yakın olan yeni üretim uçakları ve beklenen ikinci el teslimatlarını kapsar; üreticilerin raporladığı bekleyen tüm siparişleri içermez.</span>
         </div>
       </div>
+      </div><!-- /fleet-k1-content -->
 
       <!-- ══════ UÇAK LİSTESİ GÖRÜNÜMÜ ══════ -->
       <div id="fleet-ac-content" style="display:none">
@@ -3845,7 +3849,6 @@
         </div>
 
       </div>
-      </div><!-- /fleet-k1-content -->
 
       <!-- ══════ CH AVIATION GÖRÜNÜMÜ ══════ -->
       <div id="fleet-k2-content" style="display:none">
@@ -21902,6 +21905,96 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ── Uçak Listesi (tescil bazlı, KV'den) ─────────────────────
 (function() {
+  function formatPlanespottersDate(dateStr) {
+    if (!dateStr) return 'Bilinmiyor';
+    const months = {
+      Jan: 'Oca', Feb: 'Şub', Mar: 'Mar', Apr: 'Nis', May: 'May', Jun: 'Haz',
+      Jul: 'Tem', Aug: 'Ağu', Sep: 'Eyl', Oct: 'Eki', Nov: 'Kas', Dec: 'Ara'
+    };
+    const m = dateStr.match(/([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})/);
+    if (m) {
+      const month = months[m[1]] || m[1];
+      const day = parseInt(m[2]);
+      const year = m[3];
+      return `${day} ${month} ${year}`;
+    }
+    return dateStr;
+  }
+
+  window.getAircraftsLastUpdated = function() {
+    if (typeof _acData === 'undefined' || !_acData || !_acData.length) return 'Yükleniyor...';
+    let latest = '';
+    for (const a of _acData) {
+      if (a.updated && a.updated > latest) {
+        latest = a.updated;
+      }
+    }
+    if (!latest) {
+      const found = _acData.find(a => a.updated);
+      if (found) latest = found.updated;
+    }
+    return latest ? formatPlanespottersDate(latest) : 'Bilinmiyor';
+  };
+
+  // ── Kaynak geçiş ──────────────────────────────────
+  function switchFleetSrc(src) {
+    ['k1','k2','cmp','ac'].forEach(s => {
+      const btn = document.getElementById('fleet-src-' + s);
+      if (btn) btn.classList.toggle('fdd-btn--active', s === src.replace('kaynak1','k1').replace('kaynak2','k2').replace('compare','cmp').replace('aircrafts','ac'));
+    });
+    const k1  = document.getElementById('fleet-k1-content');
+    const k2  = document.getElementById('fleet-k2-content');
+    const cmp = document.getElementById('fleet-cmp-content');
+    const ac  = document.getElementById('fleet-ac-content');
+    const dt  = document.getElementById('fleet-src-date');
+    const catBar = document.getElementById('fleet-cat-bar');
+    // Cache sıfırla filtre değişince yeniden build etmek için
+    _k2Built = false;
+    _k1Built = false;
+    _cmpBuilt = false;
+    if (src === 'kaynak1') {
+      if (k1)  k1.style.display  = '';
+      if (k2)  k2.style.display = 'none';
+      if (cmp) cmp.style.display = 'none';
+      if (ac)  ac.style.display  = 'none';
+      
+      let latestDate = '1 Tem 2026';
+      if (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA) {
+        const dates = Object.values(FLEET_CMP_DATA).map(a => a.planespotters_last_updated).filter(Boolean);
+        if (dates.length) {
+          latestDate = formatPlanespottersDate(dates[0]);
+        }
+      }
+      if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: ' + latestDate + ')';
+      if (catBar) catBar.style.display = '';
+      switchFleetView(_fleetView);
+    } else if (src === 'kaynak2') {
+      if (k1)  k1.style.display  = 'none';
+      if (k2)  k2.style.display = '';
+      if (cmp) cmp.style.display = 'none';
+      if (ac)  ac.style.display  = 'none';
+      if (dt)  dt.textContent    = 'Kaynak 2 (Güncelleme Tarihi: 2 Haz 2026)';
+      if (catBar) catBar.style.display = '';
+      buildK2Cards();
+    } else if (src === 'compare') {
+      if (k1)  k1.style.display  = 'none';
+      if (k2)  k2.style.display = 'none';
+      if (cmp) cmp.style.display = '';
+      if (ac)  ac.style.display  = 'none';
+      if (dt)  dt.textContent    = 'Kaynak 1 + Kaynak 2 (Güncelleme Tarihi: 2 Haz 2026)';
+      if (catBar) catBar.style.display = 'none';
+      buildCmpTable();
+    } else if (src === 'aircrafts') {
+      if (k1)  k1.style.display  = 'none';
+      if (k2)  k2.style.display = 'none';
+      if (cmp) cmp.style.display = 'none';
+      if (ac)  ac.style.display  = '';
+      if (dt)  dt.textContent    = 'Uçak Listesi (Güncelleme Tarihi: ' + window.getAircraftsLastUpdated() + ')';
+      if (catBar) catBar.style.display = 'none';
+      loadAircraftList();
+    }
+  }
+
   let _acData = null;
   let _acAirline = null;  // seçili havayolu kodu (tek seçim)
   const _acApiBase = () => (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
@@ -21965,6 +22058,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     buildAcChips();
     filterAircraftList();
+
+    // Veri yüklendikten sonra tarih etiketini güncelle
+    const activePill = document.querySelector('.fleet-src-pill.fdd-btn--active');
+    if (activePill && activePill.dataset.src === 'aircrafts') {
+      const dt = document.getElementById('fleet-src-date');
+      if (dt && typeof window.getAircraftsLastUpdated === 'function') {
+        dt.textContent = 'Uçak Listesi (Güncelleme Tarihi: ' + window.getAircraftsLastUpdated() + ')';
+      }
+    }
   };
 
   window.filterAircraftList = function() {
@@ -22015,38 +22117,197 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     runAircraftUpdateWithPassword(pwd);
   };
+  function openAircraftProgressModal() {
+    let modal = document.getElementById('aircraft-progress-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'aircraft-progress-modal';
+      modal.style = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 10000; font-family: inherit;";
+      modal.innerHTML = `
+        <div style="background: var(--bg-primary, #ffffff); color: var(--text-1, #0f172a); border: 1px solid var(--border-color, #e2e8f0); width: 100%; max-width: 500px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); display: flex; flex-direction: column; max-height: 85vh; overflow: hidden; animation: acModalShow 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+          <!-- Header -->
+          <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color, #e2e8f0); display: flex; align-items: center; justify-content: space-between;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div id="ac-progress-spinner" class="ac-spinner" style="width: 14px; height: 14px; border: 2px solid var(--accent, #3b82f6); border-top-color: transparent; border-radius: 50%; animation: acSpinnerRotate 0.8s linear infinite;"></div>
+              <span style="font-weight: 600; font-size: 14px;" id="ac-progress-title">Uçak Listesi Güncelleniyor</span>
+            </div>
+            <button id="ac-progress-close-btn" style="background: none; border: none; cursor: pointer; color: var(--text-3, #64748b); font-size: 16px; padding: 4px; display: none;" onclick="document.getElementById('aircraft-progress-modal').style.display='none'">✕</button>
+          </div>
+          
+          <!-- Content -->
+          <div style="padding: 20px; display:flex; flex-direction:column; gap:16px; overflow-y:auto;" id="ac-progress-body">
+            <!-- Active Step -->
+            <div id="ac-progress-active-step" style="background: var(--bg-secondary, #f8fafc); border-radius: 10px; padding: 12px 16px; border: 1px dashed var(--border-color, #e2e8f0); display: flex; flex-direction: column; gap: 6px;">
+              <div style="font-size: 10px; color: var(--text-3, #64748b); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Şu An Taranan Havayolu</div>
+              <div id="ac-progress-airline-name" style="font-weight: 600; font-size: 13px; color: var(--text-1, #0f172a);">Bağlanıyor...</div>
+              
+              <!-- Progress Substeps / Pages -->
+              <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+                <div style="flex:1; height:6px; background:var(--border-color, #e2e8f0); border-radius:3px; overflow:hidden;">
+                  <div id="ac-progress-bar" style="width: 0%; height:100%; background: var(--accent, #3b82f6); border-radius:3px; transition: width 0.3s ease;"></div>
+                </div>
+                <span id="ac-progress-pages-label" style="font-size:11px; font-weight:600; color:var(--text-2, #475569); min-width:40px; text-align:right;">0 / 0</span>
+              </div>
+            </div>
+
+            <!-- Completed List -->
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="font-size: 10px; color: var(--text-3, #64748b); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Adım Geçmişi</div>
+              <div id="ac-progress-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 250px; overflow-y: auto; padding-right: 4px; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 8px; background: var(--bg-secondary, #f8fafc);">
+                <div style="font-size:12px; color:var(--text-3); text-align:center; padding:12px;">Henüz tamamlanan adım yok.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div id="ac-progress-footer" style="padding: 12px 20px; border-top: 1px solid var(--border-color, #e2e8f0); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary, #f8fafc);">
+            <span style="font-size: 11px; color:var(--text-3, #64748b);" id="ac-progress-timer">Geçen Süre: 0s</span>
+            <button id="ac-progress-ok-btn" class="fdd-btn" style="font-size: 11px; padding: 6px 16px; background: var(--accent, #3b82f6); color:#fff; border:none; border-radius:6px; cursor:pointer; display:none;" onclick="document.getElementById('aircraft-progress-modal').style.display='none'">Tamam</button>
+          </div>
+        </div>
+
+        <style>
+          @keyframes acModalShow {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+          }
+          @keyframes acSpinnerRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        </style>
+      `;
+      document.body.appendChild(modal);
+    } else {
+      modal.style.display = 'flex';
+      // Reset UI elements
+      document.getElementById('ac-progress-spinner').style.display = 'block';
+      document.getElementById('ac-progress-title').textContent = 'Uçak Listesi Güncelleniyor';
+      document.getElementById('ac-progress-active-step').style.display = 'flex';
+      document.getElementById('ac-progress-airline-name').textContent = 'Bağlanıyor...';
+      document.getElementById('ac-progress-bar').style.width = '0%';
+      document.getElementById('ac-progress-pages-label').textContent = '0 / 0';
+      document.getElementById('ac-progress-list').innerHTML = '<div style="font-size:12px; color:var(--text-3); text-align:center; padding:12px;">Henüz tamamlanan adım yok.</div>';
+      document.getElementById('ac-progress-close-btn').style.display = 'none';
+      document.getElementById('ac-progress-ok-btn').style.display = 'none';
+      document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: 0s';
+    }
+  }
+
   window.runAircraftUpdateWithPassword = async function(pwd) {
     const btn = document.getElementById('fleet-ac-update-btn');
     if (!btn || btn.disabled) return;
     const origHtml = btn.innerHTML;
     const setBusy = txt => { btn.disabled = true; btn.style.opacity = '0.7'; btn.textContent = txt; };
     const setIdle = () => { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = origHtml; };
+    
+    openAircraftProgressModal();
     setBusy('Başlatılıyor…');
+    
     try {
       const res = await fetch(_acApiBase() + '/api/update-aircrafts', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ cookies: localStorage.getItem('fleet_cf_cookies') || '', password: pwd, ua: navigator.userAgent })
       });
-      if (res.status === 401) { localStorage.removeItem('fleet_update_password'); throw new Error('Girdiğiniz şifre geçersizdir.'); }
+      if (res.status === 401) { 
+        document.getElementById('aircraft-progress-modal').style.display = 'none';
+        localStorage.removeItem('fleet_update_password'); 
+        throw new Error('Girdiğiniz şifre geçersizdir.'); 
+      }
       const data = await res.json();
-      if (res.status !== 202 && !res.ok) throw new Error(data.message || 'Sunucu isteği reddetti.');
+      if (res.status !== 202 && !res.ok) {
+        document.getElementById('aircraft-progress-modal').style.display = 'none';
+        throw new Error(data.message || 'Sunucu isteği reddetti.');
+      }
       localStorage.setItem('fleet_update_password', pwd);
+      
       const t0 = Date.now();
       const poll = async () => {
-        if (Date.now() - t0 > 30*60*1000) { setIdle(); alert('Uçak listesi taraması zaman aşımına uğradı (30 dk).'); return; }
+        if (Date.now() - t0 > 30*60*1000) { 
+          setIdle(); 
+          document.getElementById('ac-progress-spinner').style.display = 'none';
+          document.getElementById('ac-progress-active-step').style.display = 'none';
+          document.getElementById('ac-progress-title').textContent = 'Zaman Aşımı';
+          document.getElementById('ac-progress-close-btn').style.display = 'block';
+          document.getElementById('ac-progress-ok-btn').style.display = 'block';
+          alert('Uçak listesi taraması zaman aşımına uğradı (30 dk).'); 
+          return; 
+        }
+        
+        document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: ' + Math.round((Date.now()-t0)/1000) + 's';
         setBusy('Taranıyor… ' + Math.round((Date.now()-t0)/1000) + 's');
+        
         try {
           const sr = await fetch(_acApiBase() + '/api/aircraft-status');
           const st = await sr.json();
-          if (st.running) { setTimeout(poll, 10000); return; }
+          
+          // Güncel adımı ekrana bas
+          if (st.running) {
+            const name = st.current_airline_name || st.current_airline || 'Bağlanıyor...';
+            const code = st.current_airline ? ` (${st.current_airline})` : '';
+            document.getElementById('ac-progress-airline-name').innerHTML = `<b>${name}${code}</b>`;
+            
+            const current = st.current_page || 0;
+            const total = st.total_pages || 0;
+            const pct = total > 0 ? (current / total) * 100 : 0;
+            document.getElementById('ac-progress-bar').style.width = pct + '%';
+            document.getElementById('ac-progress-pages-label').textContent = total > 0 ? `${current} / ${total}` : '0 / 0';
+          }
+          
+          // Tamamlananları listele
+          const listDiv = document.getElementById('ac-progress-list');
+          if (listDiv && st.completed_airlines && st.completed_airlines.length) {
+            listDiv.innerHTML = '';
+            st.completed_airlines.forEach(item => {
+              let icon = '✅';
+              let statusText = '';
+              let itemColor = 'var(--text-1)';
+              if (item.status === 'skipped') {
+                icon = '⏭️';
+                statusText = ' (Zaten güncel, atlandı)';
+                itemColor = 'var(--text-3)';
+              } else if (item.status === 'error' || item.status === 'failed') {
+                icon = '❌';
+                statusText = ` (Hata: ${item.error || 'Çekilemedi'})`;
+                itemColor = '#ef4444';
+              } else {
+                statusText = ` (${item.count} uçak güncellendi)`;
+              }
+              const row = document.createElement('div');
+              row.style = "display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; padding: 4px 6px; border-bottom: 1px solid var(--border-color, #e2e8f0); color: " + itemColor + "; gap: 10px;";
+              row.innerHTML = "<div style=\"font-weight:500;\">" + icon + " " + item.name + "</div><div style=\"font-size:10px; opacity:0.85; text-align:right;\">" + statusText + "</div>";
+              listDiv.appendChild(row);
+            });
+            listDiv.scrollTop = listDiv.scrollHeight;
+          }
+          
+          if (st.running) { 
+            setTimeout(poll, 2000); 
+            return; 
+          }
+          
+          // Başarılı/Başarısız Bitiş
           setIdle();
-          if (st.error) { alert('Uçak listesi güncellenemedi: ' + st.error); return; }
+          document.getElementById('ac-progress-spinner').style.display = 'none';
+          document.getElementById('ac-progress-active-step').style.display = 'none';
+          document.getElementById('ac-progress-close-btn').style.display = 'block';
+          document.getElementById('ac-progress-ok-btn').style.display = 'block';
+          
+          if (st.error) { 
+            document.getElementById('ac-progress-title').textContent = 'Güncelleme Başarısız';
+            alert('Uçak listesi güncellenemedi: ' + st.error); 
+            return; 
+          }
+          
+          document.getElementById('ac-progress-title').textContent = 'Güncelleme Tamamlandı';
           _acData = null;
           await window.loadAircraftList();
-          alert('Uçak listesi güncellendi: ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt.');
-        } catch(e) { setTimeout(poll, 10000); }
+          alert('Uçak listesi başarıyla güncellendi: ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt.');
+        } catch(e) { 
+          setTimeout(poll, 2000); 
+        }
       };
-      setTimeout(poll, 5000);
+      setTimeout(poll, 1000);
     } catch(e) {
       setIdle();
       alert('Uçak listesi güncellenemedi: ' + e.message);
