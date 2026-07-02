@@ -308,13 +308,27 @@ def parse_last_updated(html):
     m = re.search(r"Last updated on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})", html)
     return m.group(1).strip() if m else None
 
-def extract_aircraft_list(slug, cookies_list, last_stored=None):
-    """Havayolunun tescil bazlı uçak listesini FlareSolverr ile çeker.
+def extract_aircraft_list(page, slug, last_stored=None):
+    """Havayolunun tescil bazlı uçak listesini Playwright ile çeker.
     Dönüş: (aircrafts | None, page_updated, page_error).
     - aircrafts None ise: sayfa 'Last updated' tarihi KV'dekiyle aynı → değişmemiş, atla.
     - page_error True ise: bazı sayfalar çekilemedi (liste eksik olabilir, tarihi yazma)."""
+    aircrafts = []
     base = f"https://www.planespotters.net/fleet/list/{slug}/current"
-    html = flaresolverr_get(base, cookies_list)
+    
+    page.goto(base, wait_until="networkidle", timeout=60000)
+    time.sleep(2)
+    
+    title = page.title()
+    if "Cloudflare" in title or "Attention Required" in title or "Blocked" in title or "Security Verification" in title:
+        raise Exception(f"Cloudflare Engeline Takıldı (fleet list): {title}")
+        
+    html = page.content()
+    
+    # Kota/limit uyarısı kontrolü
+    if "Data Limit Reached" in html or "data access limit" in html:
+        raise Exception("DATA_LIMIT: planespotters 24 saatlik veri erişim limiti dolu")
+        
     page_updated = parse_last_updated(html)
 
     # Bir önceki taramadan sonra güncellenmediyse hiç sayfa çekmeden atla (kota tasarrufu)
@@ -326,14 +340,24 @@ def extract_aircraft_list(slug, cookies_list, last_stored=None):
     if not [h for h in heads if h.lower() == 'reg']:
         print(f"[UYARI] {slug}: 'Reg' sütunu bulunamadı, yapı değişmiş olabilir. Başlıklar: {heads}", flush=True)
     print(f"{slug} uçak listesi: {[h for h in heads if h]} — {max_page} sayfa (Last updated {page_updated})", flush=True)
-    aircrafts = list(rows)
+    aircrafts.extend(rows)
 
     page_error = False
     for pno in range(2, max_page + 1):
         _nap(PAGE_DELAY)  # sayfalar arası nazik bekleme
         try:
-            html = flaresolverr_get(f"{base}?page={pno}", cookies_list)
-            _, rows, _ = parse_aircraft_page(html)
+            page.goto(f"{base}?page={pno}", wait_until="networkidle", timeout=60000)
+            time.sleep(1.5)
+            
+            title = page.title()
+            if "Cloudflare" in title or "Attention Required" in title or "Blocked" in title or "Security Verification" in title:
+                raise Exception(f"Cloudflare Engeline Takıldı sayfa {pno}: {title}")
+                
+            sub_html = page.content()
+            if "Data Limit Reached" in sub_html or "data access limit" in sub_html:
+                raise Exception("DATA_LIMIT: planespotters 24 saatlik veri erişim limiti dolu")
+                
+            _, rows, _ = parse_aircraft_page(sub_html)
             aircrafts.extend(rows)
         except Exception as e:
             page_error = True
@@ -449,7 +473,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             cookies, pwd, ua = auth
             AC_STATE.update({"running": True, "result": None, "error": None,
                              "started_at": datetime.now().isoformat(timespec='seconds')})
-            t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd), daemon=True)
+            t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd, ua), daemon=True)
             t.start()
             self._json_response(202, {"status": "started", "message": "Uçak listesi taraması arka planda başlatıldı."})
 
@@ -629,16 +653,14 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
 
         return {"status": "success", "updated": updated_list, "skipped": skipped_list}
 
-def run_aircraft_scraping(cookies, pwd):
-    """Tüm havayollarının tescil bazlı uçak listesini FlareSolverr ile tarar ve KV'ye yazar.
+def run_aircraft_scraping(cookies, pwd, ua=None):
+    """Tüm havayollarının tescil bazlı uçak listesini Playwright ile tarar ve KV'ye yazar.
     Arka plan thread'inde çalışır; durum AC_STATE üzerinden izlenir.
-    cookies: playwright formatı liste; FlareSolverr için name/value/domain'e indirgenir."""
+    cookies: playwright formatı liste; User-Agent ile birlikte Cloudflare geçişi sağlar."""
     try:
         per_airline = {}
         errors = []
         skipped = []
-        fs_cookies = [{"name": c["name"], "value": c["value"],
-                       "domain": c.get("domain", ".planespotters.net")} for c in cookies]
 
         # Mevcut KV verisini yükle: havayolu bazında kayıtlar + son 'Last updated' tarihi
         try:
@@ -659,48 +681,67 @@ def run_aircraft_scraping(cookies, pwd):
 
         kept = {}  # code -> uçak kayıtları listesi (yeni taranan, korunan veya atlanan)
 
-        for idx, (code, info) in enumerate(airlines.items()):
-            if idx > 0:
-                _nap(AIRLINE_DELAY)  # havayolları arası nazik bekleme
-            print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...", flush=True)
-            try:
-                ac_list, page_updated, page_error = extract_aircraft_list(
-                    info['slug'], fs_cookies, existing_updated.get(code))
+        with sync_playwright() as p:
+            browserless_url = os.environ.get('BROWSERLESS_URL')
+            if browserless_url:
+                print(f"[AC] Browserless bağlantısı kuruluyor: {browserless_url}", flush=True)
+                browser = p.chromium.connect_over_cdp(browserless_url)
+            else:
+                browser = p.chromium.launch(headless=True)
 
-                if ac_list is None:
-                    # 'Last updated' değişmemiş → mevcut KV verisini olduğu gibi koru
-                    kept[code] = existing_by.get(code, [])
-                    skipped.append(code)
-                    per_airline[code] = len(kept[code])
-                    continue
+            context = browser.new_context(
+                user_agent=ua or user_agent,
+                viewport={"width": 1440, "height": 900},
+                locale="en-US"
+            )
+            context.add_cookies(cookies)
+            page = context.new_page()
+            page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
-                if (page_error or len(ac_list) == 0) and existing_by.get(code):
-                    # Kısmi (bazı sayfalar düştü) VEYA boş sonuç + eski veri var → eskiyi koru
-                    kept[code] = existing_by[code]
-                    per_airline[code] = len(kept[code])
-                    errors.append(f"{code}: eksik/boş sonuç, eski veri korundu")
-                    print(f"[AC] {code}: eksik/boş sonuç → eski veri korundu ({len(kept[code])})", flush=True)
-                    continue
+            for idx, (code, info) in enumerate(airlines.items()):
+                if idx > 0:
+                    _nap(AIRLINE_DELAY)  # havayolları arası nazik bekleme
+                print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...", flush=True)
+                try:
+                    ac_list, page_updated, page_error = extract_aircraft_list(
+                        page, info['slug'], existing_updated.get(code))
 
-                for rec in ac_list:
-                    rec["airline"] = code
-                    rec["airlineName"] = info["name"]
-                    # Kısmi tarama olduysa tarihi yazma ki sonraki sefer yeniden denesin
-                    rec["updated"] = "" if page_error else (page_updated or "")
-                kept[code] = ac_list
-                per_airline[code] = len(ac_list)
-                print(f"[AC] {code}: {len(ac_list)} uçak", flush=True)
-            except Exception as e:
-                # Çekilemedi (limit/Cloudflare/çerez) → varsa eski veriyi koru (merge koruması)
-                if existing_by.get(code):
-                    kept[code] = existing_by[code]
-                    per_airline[code] = len(kept[code])
-                    errors.append(f"{code}: {e} (eski veri korundu)")
-                    print(f"[AC][HATA] {code} çekilemedi, eski veri korundu: {e}", flush=True)
-                else:
-                    per_airline[code] = 0
-                    errors.append(f"{code}: {e}")
-                    print(f"[AC][HATA] {code} çekilemedi ve eski veri yok: {e}", flush=True)
+                    if ac_list is None:
+                        # 'Last updated' değişmemiş → mevcut KV verisini olduğu gibi koru
+                        kept[code] = existing_by.get(code, [])
+                        skipped.append(code)
+                        per_airline[code] = len(kept[code])
+                        continue
+
+                    if (page_error or len(ac_list) == 0) and existing_by.get(code):
+                        # Kısmi (bazı sayfalar düştü) VEYA boş sonuç + eski veri var → eskiyi koru
+                        kept[code] = existing_by[code]
+                        per_airline[code] = len(kept[code])
+                        errors.append(f"{code}: eksik/boş sonuç, eski veri korundu")
+                        print(f"[AC] {code}: eksik/boş sonuç → eski veri korundu ({len(kept[code])})", flush=True)
+                        continue
+
+                    for rec in ac_list:
+                        rec["airline"] = code
+                        rec["airlineName"] = info["name"]
+                        # Kısmi tarama olduysa tarihi yazma ki sonraki sefer yeniden denesin
+                        rec["updated"] = "" if page_error else (page_updated or "")
+                    kept[code] = ac_list
+                    per_airline[code] = len(ac_list)
+                    print(f"[AC] {code}: {len(ac_list)} uçak", flush=True)
+                except Exception as e:
+                    # Çekilemedi (limit/Cloudflare/çerez) → varsa eski veriyi koru (merge koruması)
+                    if existing_by.get(code):
+                        kept[code] = existing_by[code]
+                        per_airline[code] = len(kept[code])
+                        errors.append(f"{code}: {e} (eski veri korundu)")
+                        print(f"[AC][HATA] {code} çekilemedi, eski veri korundu: {e}", flush=True)
+                    else:
+                        per_airline[code] = 0
+                        errors.append(f"{code}: {e}")
+                        print(f"[AC][HATA] {code} çekilemedi ve eski veri yok: {e}", flush=True)
+
+            browser.close()
 
         # Birleştir: yapılandırılmış havayolları + KV'de olup config'te olmayanlar (kaybetme)
         all_aircrafts = []
