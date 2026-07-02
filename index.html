@@ -3800,7 +3800,13 @@
       <!-- ══════ UÇAK LİSTESİ GÖRÜNÜMÜ ══════ -->
       <div id="fleet-ac-content" style="display:none">
         <!-- Havayolu çip şeridi (tek seçim; sayfayı kısa tutar) -->
-        <div id="fleet-ac-chips" class="fleet-ac-chips"></div>
+        <div class="fleet-ac-chips-panel">
+          <div class="fleet-ac-chips-header">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px;color:var(--accent,#2563eb)"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>Havayoluna Göre Filtrele</span>
+          </div>
+          <div id="fleet-ac-chips" class="fleet-ac-chips"></div>
+        </div>
         <!-- Arama + sayaç + güncelle + dışa aktar -->
         <div class="fleet-ac-toolbar">
           <div class="fleet-ac-search-wrap">
@@ -3813,7 +3819,7 @@
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Excel'e Aktar
             </button>
-            <button class="fdd-btn" id="fleet-ac-update-btn" onclick="triggerAircraftUpdate()" style="font-size:11px;padding:6px 10px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:6px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:all 0.2s;" title="Planespotters'tan tescil bazlı uçak listesini çek (yalnızca bu sekmeyi günceller)">
+          <button class="fdd-btn" id="fleet-ac-update-btn" onclick="triggerAircraftUpdate()" style="font-size:11px;padding:6px 10px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:6px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:all 0.2s;" title="Planespotters'tan tescil bazlı uçak listesini çek (yalnızca bu sekmeyi günceller)">
               <svg id="ac-update-spinner" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
               Listeyi Güncelle
             </button>
@@ -3837,6 +3843,7 @@
             <tbody id="fleet-ac-tbody"></tbody>
           </table>
         </div>
+
       </div>
       </div><!-- /fleet-k1-content -->
 
@@ -21884,8 +21891,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const _acApiBase = () => (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
     ? 'http://127.0.0.1:5005' : 'https://api-fleet.emredemirbas.com';
 
+  let _acNames = {};
   function _acAirName(code) {
-    return (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[code] && FLEET_CMP_DATA[code].name) || code;
+    return (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[code] && FLEET_CMP_DATA[code].name) || _acNames[code] || code;
   }
   function _acAirColor(code) {
     return (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[code] && FLEET_CMP_DATA[code].color) || '#64748b';
@@ -21936,6 +21944,8 @@ document.addEventListener('DOMContentLoaded', () => {
         _acData = await res.json();
         if (!Array.isArray(_acData)) _acData = [];
       } catch(e) { _acData = []; }
+      _acNames = {};
+      _acData.forEach(a => { if (a.airline && a.airlineName) _acNames[a.airline] = a.airlineName; });
     }
     buildAcChips();
     filterAircraftList();
