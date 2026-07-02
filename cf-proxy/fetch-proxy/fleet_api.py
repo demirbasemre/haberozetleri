@@ -319,17 +319,20 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(payload).encode('utf-8'))
 
     def _parse_auth_and_cookies(self):
-        """Body'den şifre + çerezleri okur; hata durumunda yanıtı yazar ve None döner."""
+        """Body'den şifre + çerez + UA okur; hata durumunda yanıtı yazar ve None döner."""
         content_length = int(self.headers['Content-Length'] or 0)
         post_data = self.rfile.read(content_length)
 
         req_cookies = []
         req_password = ""
+        req_ua = ""
         try:
             if post_data:
                 req_json = json.loads(post_data.decode('utf-8'))
                 manual_cookie_str = req_json.get("cookies", "")
                 req_password = req_json.get("password", "")
+                # cf_clearance UA'ya bağlıdır — çerezin geldiği tarayıcının UA'sı kullanılmalı
+                req_ua = (req_json.get("ua") or "").strip()
                 if manual_cookie_str:
                     # Manuel çerez dizesini parse et
                     for part in manual_cookie_str.split(";"):
@@ -357,16 +360,16 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
         if not cookies:
             self._json_response(400, {"error": "No valid cookies", "message": "Geçerli çerez bulunamadı. Lütfen Chrome'dan kopyalayıp çerez paneline yapıştırın."})
             return None
-        return cookies, expected_pwd
+        return cookies, expected_pwd, req_ua or user_agent
 
     def do_POST(self):
         if self.path == '/api/update-fleet':
             auth = self._parse_auth_and_cookies()
             if not auth:
                 return
-            cookies, pwd = auth
+            cookies, pwd, ua = auth
             try:
-                result = self.process_scraping(cookies, pwd)
+                result = self.process_scraping(cookies, pwd, ua)
                 self._json_response(200, result)
             except Exception as e:
                 print(f"Scraping error: {e}")
@@ -379,10 +382,10 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             auth = self._parse_auth_and_cookies()
             if not auth:
                 return
-            cookies, pwd = auth
+            cookies, pwd, ua = auth
             AC_STATE.update({"running": True, "result": None, "error": None,
                              "started_at": datetime.now().isoformat(timespec='seconds')})
-            t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd), daemon=True)
+            t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd, ua), daemon=True)
             t.start()
             self._json_response(202, {"status": "started", "message": "Uçak listesi taraması arka planda başlatıldı."})
 
@@ -390,7 +393,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-    def process_scraping(self, cookies, pwd):
+    def process_scraping(self, cookies, pwd, ua=None):
         # Mevcut veriyi KV'den yükle (yerel dosya bağımlılığı yok)
         fleet_data = api_get('/api/get-fleet')
         if not isinstance(fleet_data, dict) or not fleet_data or "airlines" in fleet_data:
@@ -410,7 +413,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                 browser = p.chromium.launch(headless=True)
 
             context = browser.new_context(
-                user_agent=user_agent,
+                user_agent=ua or user_agent,
                 viewport={"width": 1440, "height": 900},
                 locale="en-US"
             )
@@ -419,7 +422,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
             for code, info in airlines.items():
-                print(f"\nScraping {info['name']} ({code})...")
+                print(f"\nScraping {info['name']} ({code})...", flush=True)
                 url = f"https://www.planespotters.net/airline/{info['slug']}"
 
                 # Önceki taranan "last updated" tarihini al
@@ -557,22 +560,23 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
 
         return {"status": "success", "updated": updated_list, "skipped": skipped_list}
 
-def run_aircraft_scraping(cookies, pwd):
+def run_aircraft_scraping(cookies, pwd, ua=None):
     """Tüm havayollarının tescil bazlı uçak listesini tarar ve KV'ye yazar.
     Arka plan thread'inde çalışır; durum AC_STATE üzerinden izlenir."""
     try:
         all_aircrafts = []
         per_airline = {}
+        errors = []
         with sync_playwright() as p:
             browserless_url = os.environ.get('BROWSERLESS_URL')
             if browserless_url:
-                print(f"[AC] Browserless bağlantısı kuruluyor: {browserless_url}")
+                print(f"[AC] Browserless bağlantısı kuruluyor: {browserless_url}", flush=True)
                 browser = p.chromium.connect_over_cdp(browserless_url)
             else:
                 browser = p.chromium.launch(headless=True)
 
             context = browser.new_context(
-                user_agent=user_agent,
+                user_agent=ua or user_agent,
                 viewport={"width": 1440, "height": 900},
                 locale="en-US"
             )
@@ -581,7 +585,7 @@ def run_aircraft_scraping(cookies, pwd):
             page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
             for code, info in airlines.items():
-                print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...")
+                print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...", flush=True)
                 try:
                     ac_list = extract_aircraft_list(page, info['slug'])
                     for rec in ac_list:
@@ -590,13 +594,15 @@ def run_aircraft_scraping(cookies, pwd):
                     all_aircrafts.extend(ac_list)
                     per_airline[code] = len(ac_list)
                 except Exception as e:
-                    print(f"[AC][HATA] {code} uçak listesi çekilemedi: {e}")
+                    print(f"[AC][HATA] {code} uçak listesi çekilemedi: {e}", flush=True)
                     per_airline[code] = 0
+                    errors.append(f"{code}: {e}")
 
             browser.close()
 
         if not all_aircrafts:
-            raise Exception("Hiç uçak kaydı çekilemedi — çerezler geçersiz olabilir.")
+            detail = f" İlk hata: {errors[0]}" if errors else ""
+            raise Exception(f"Hiç uçak kaydı çekilemedi — çerezler geçersiz olabilir.{detail}")
 
         print(f"[AC] {len(all_aircrafts)} uçak kaydı KV'ye gönderiliyor...")
         cf_res = api_post('/api/save-aircrafts', {"password": pwd, "aircrafts": all_aircrafts})

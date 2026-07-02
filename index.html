@@ -21942,7 +21942,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await fetch(_acApiBase() + '/api/update-aircrafts', {
         method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ cookies: localStorage.getItem('fleet_cf_cookies') || '', password: pwd })
+        body: JSON.stringify({ cookies: localStorage.getItem('fleet_cf_cookies') || '', password: pwd, ua: navigator.userAgent })
       });
       if (res.status === 401) { localStorage.removeItem('fleet_update_password'); throw new Error('Girdiğiniz şifre geçersizdir.'); }
       const data = await res.json();
@@ -22740,7 +22740,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ cookies: savedCookies, password: pwd })
+        body: JSON.stringify({ cookies: savedCookies, password: pwd, ua: navigator.userAgent })
       });
       
       if (res.status === 401) {
