@@ -3846,13 +3846,13 @@
             <span class="fdd-dot" style="background:#2563eb"></span>
             Kaynak 2
           </button>
-          <button class="fdd-btn fleet-src-pill" data-src="compare" id="fleet-src-cmp" style="font-size:11.5px;padding:4px 12px">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h3a2 2 0 0 0 2-2v-3"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
-            Karşılaştır
-          </button>
           <button class="fdd-btn fleet-src-pill" data-src="aircrafts" id="fleet-src-ac" style="font-size:11.5px;padding:4px 12px">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
             Uçak Listesi
+          </button>
+          <button class="fdd-btn fleet-src-pill" data-src="compare" id="fleet-src-cmp" style="font-size:11.5px;padding:4px 12px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h3a2 2 0 0 0 2-2v-3"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+            Karşılaştır
           </button>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
@@ -3953,21 +3953,25 @@
 
       <!-- ══════ UÇAK LİSTESİ GÖRÜNÜMÜ ══════ -->
       <div id="fleet-ac-content" style="display:none">
-        <!-- Arama ve Filtreleme çubuğu -->
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;background:var(--bg-secondary);padding:12px;border-radius:8px;border:1px solid var(--border-color);">
-          <div style="display:flex;align-items:center;gap:6px;flex:1;min-width:200px;">
-            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Ara:</span>
-            <input type="text" id="fleet-ac-search" oninput="filterAircraftList()" placeholder="Tescil, tip, havayolu veya isim..." style="font-size:11.5px;padding:5px 10px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;width:100%;">
+        <!-- Havayolu çip şeridi (tek seçim; sayfayı kısa tutar) -->
+        <div id="fleet-ac-chips" class="fleet-ac-chips"></div>
+        <!-- Arama + sayaç + güncelle + dışa aktar -->
+        <div class="fleet-ac-toolbar">
+          <div class="fleet-ac-search-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="fleet-ac-search" oninput="filterAircraftList()" placeholder="Tescil, tip, koltuk veya açıklama ara…" aria-label="Uçak listesinde ara">
           </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Havayolu:</span>
-            <select id="fleet-ac-filter-airline" onchange="filterAircraftList()" style="font-size:11.5px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;cursor:pointer;"></select>
+          <div id="fleet-ac-count">Toplam 0 uçak listeleniyor.</div>
+          <div style="display:flex;gap:6px;">
+            <button class="fdd-btn" id="fleet-ac-export-btn" onclick="openAircraftExportModal()" style="font-size:11px;padding:6px 10px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:6px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:all 0.2s;" title="Seçilen havayollarının uçak listesini Excel/CSV olarak indir">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel'e Aktar
+            </button>
+            <button class="fdd-btn" id="fleet-ac-update-btn" onclick="triggerAircraftUpdate()" style="font-size:11px;padding:6px 10px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:6px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:all 0.2s;" title="Planespotters'tan tescil bazlı uçak listesini çek (yalnızca bu sekmeyi günceller)">
+              <svg id="ac-update-spinner" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Listeyi Güncelle
+            </button>
           </div>
-          <div style="font-size:11.5px;color:var(--text-3);font-weight:500;" id="fleet-ac-count">Toplam 0 uçak listeleniyor.</div>
-          <button class="fdd-btn" id="fleet-ac-update-btn" onclick="triggerAircraftUpdate()" style="margin-left:auto;font-size:11px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;display:flex;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;" title="Planespotters'tan tescil bazlı uçak listesini çek (yalnızca bu sekmeyi günceller)">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            Listeyi Güncelle
-          </button>
         </div>
 
         <!-- Uçak Listesi Tablosu -->
@@ -3975,11 +3979,12 @@
           <table class="flt-table" id="fleet-ac-table">
             <thead>
               <tr>
-                <th style="text-align:left">Havayolu</th>
                 <th style="text-align:left">Tescil (Reg)</th>
                 <th style="text-align:left">Uçak Tipi</th>
                 <th style="text-align:left">Koltuk (Config)</th>
-                <th style="text-align:left">Teslimat Tarihi</th>
+                <th style="text-align:left">Uçak Adı</th>
+                <th class="acx-age">Yaş</th>
+                <th style="text-align:left">Teslimat</th>
                 <th style="text-align:left">Açıklama (Remark)</th>
               </tr>
             </thead>
@@ -4097,6 +4102,39 @@
             <div style="font-size: 11px; color: var(--text-3); line-height: 1.4;">Canlı güncelleme işlemini başlatmak için şifreyi giriniz:</div>
             <input type="password" id="fleet-update-password-input" placeholder="Şifre" style="width: 100%; padding: 7px 10px; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-soft); color: var(--text-1); font-size: 11.5px; outline: none; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') submitFleetPassword()">
             <button class="fdd-btn" onclick="submitFleetPassword()" style="width: 100%; justify-content: center; padding: 7px; background: var(--bg-primary); color: var(--text-1); font-size: 11px; font-weight: 600; border-radius: 4px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; box-sizing: border-box;">Onayla</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════ UÇAK LİSTESİ DIŞA AKTAR MODALİ ══════ -->
+      <div id="fleet-ac-export-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fleet-ac-export-title">
+        <div class="rel-add-card" style="max-width: 420px; width: 90vw;">
+          <div class="rel-add-head" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 12px;">
+            <div class="rel-add-title" id="fleet-ac-export-title" style="font-size: 13px; font-weight: 700; color: var(--text-1); display: flex; align-items: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Uçak Listesini Dışa Aktar
+            </div>
+            <button class="rel-add-x" onclick="closeAircraftExportModal()" style="font-size: 18px;" aria-label="Kapat">×</button>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="font-size: 11px; color: var(--text-3); line-height: 1.4;">
+              Dışa aktarmak istediğiniz havayollarını seçin:
+            </div>
+            
+            <!-- Hızlı Kontroller -->
+            <div style="display: flex; gap: 8px;">
+              <button class="fdd-btn" onclick="selectExportAllAirlines(true)" style="font-size: 10px; padding: 4px 8px; cursor: pointer;">Tümünü Seç</button>
+              <button class="fdd-btn" onclick="selectExportAllAirlines(false)" style="font-size: 10px; padding: 4px 8px; cursor: pointer;">Seçimleri Kaldır</button>
+            </div>
+            
+            <!-- Checkbox Listesi -->
+            <div id="fleet-ac-export-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; background: var(--bg-soft); display: flex; flex-direction: column; gap: 6px;">
+              <!-- Dinamik doldurulacak -->
+            </div>
+            
+            <button class="fdd-btn" onclick="runAircraftExportToExcel()" style="width: 100%; justify-content: center; padding: 8px; background: #059669; color: white; font-size: 11.5px; font-weight: 600; border-radius: 4px; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; box-sizing: border-box;">
+              Dışa Aktar (Excel/CSV)
+            </button>
           </div>
         </div>
       </div>
@@ -23314,8 +23352,51 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── Uçak Listesi (tescil bazlı, KV'den) ─────────────────────
 (function() {
   let _acData = null;
+  let _acAirline = null;  // seçili havayolu kodu (tek seçim)
   const _acApiBase = () => (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
     ? 'http://127.0.0.1:5005' : 'https://api-fleet.emredemirbas.com';
+
+  function _acAirName(code) {
+    return (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[code] && FLEET_CMP_DATA[code].name) || code;
+  }
+  function _acAirColor(code) {
+    return (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[code] && FLEET_CMP_DATA[code].color) || '#64748b';
+  }
+  // gstatic favicon'ın IATA kodu olmayan/eksik döndüğü havayolları için özel logo
+  const AC_LOGO_OVERRIDE = {
+    AFKLM: 'https://assets.planespotters.net/files/airlines/1/air-france-klm_8e92ea.svg'
+  };
+  function _acLogoUrl(code) {
+    return AC_LOGO_OVERRIDE[code] || `https://www.gstatic.com/flights/airline_logos/70px/${code}.png`;
+  }
+
+  function buildAcChips() {
+    const wrap = document.getElementById('fleet-ac-chips');
+    if (!wrap) return;
+    // Veride bulunan havayolları; FLEET_CMP_DATA sırasını koru
+    const present = new Set(_acData.map(a => a.airline).filter(Boolean));
+    let codes = [];
+    if (typeof FLEET_CMP_DATA !== 'undefined') codes = Object.keys(FLEET_CMP_DATA).filter(c => present.has(c));
+    present.forEach(c => { if (!codes.includes(c)) codes.push(c); });
+    if (!_acAirline || !present.has(_acAirline)) _acAirline = codes[0] || null;
+    const counts = {};
+    _acData.forEach(a => { counts[a.airline] = (counts[a.airline] || 0) + 1; });
+    wrap.innerHTML = codes.map(c => {
+      const active = c === _acAirline;
+      const color = _acAirColor(c);
+      const logo = `<img class="acx-chip-logo" src="${_acLogoUrl(c)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=\\'acx-chip-dot\\' style=\\'background:${color}\\'></span>'">`;
+      return `<button type="button" class="acx-chip${active ? ' acx-chip--active' : ''}" data-code="${c}" onclick="selectAcAirline('${c}')"${active ? ` style="background:${color}"` : ''} aria-pressed="${active}">
+        ${logo}<span>${_acAirName(c)}</span><span style="opacity:.7;font-weight:500">${counts[c] || 0}</span>
+      </button>`;
+    }).join('');
+  }
+
+  window.selectAcAirline = function(code) {
+    _acAirline = code;
+    buildAcChips();
+    filterAircraftList();
+  };
+
   window.loadAircraftList = async function() {
     const tbody = document.getElementById('fleet-ac-tbody');
     const cnt = document.getElementById('fleet-ac-count');
@@ -23327,69 +23408,45 @@ document.addEventListener('DOMContentLoaded', () => {
         _acData = await res.json();
         if (!Array.isArray(_acData)) _acData = [];
       } catch(e) { _acData = []; }
-      const sel = document.getElementById('fleet-ac-filter-airline');
-      if (sel) {
-        const names = {};
-        _acData.forEach(a => {
-          if (a.airline) {
-            const name = (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[a.airline] && FLEET_CMP_DATA[a.airline].name) || a.airlineName || a.airline;
-            names[a.airline] = name;
-          }
-        });
-        sel.innerHTML = '<option value="">Tüm Havayolları</option>' + Object.entries(names)
-          .sort((x,y)=>x[1].localeCompare(y[1],'tr'))
-          .map(([c,n])=>`<option value="${c}">${n} (${c})</option>`).join('');
-      }
     }
+    buildAcChips();
     filterAircraftList();
   };
+
   window.filterAircraftList = function() {
     const tbody = document.getElementById('fleet-ac-tbody');
     const cnt = document.getElementById('fleet-ac-count');
     if (!tbody || !_acData) return;
     const q = (document.getElementById('fleet-ac-search')?.value || '').toLowerCase().trim();
-    const air = document.getElementById('fleet-ac-filter-airline')?.value || '';
+    if (!_acData.length) {
+      if (cnt) cnt.textContent = 'Veri yok — "Listeyi Güncelle" ile uçak listesini bir kez çekmek gerekiyor.';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:24px">Henüz uçak verisi yok.</td></tr>';
+      return;
+    }
     const rows = _acData.filter(a => {
-      if (air && a.airline !== air) return false;
+      if (_acAirline && a.airline !== _acAirline) return false;
       if (!q) return true;
-      const airName = (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[a.airline] && FLEET_CMP_DATA[a.airline].name) || a.airlineName || a.airline;
-      return [a.reg, a.type, airName, a.airline, a.config, a.remark, a.fleetNo || a.fleet_no, a.name].some(v => (v||'').toLowerCase().includes(q));
+      return [a.reg, a.type, a.config, a.name, a.remark].some(v => (v || '').toLowerCase().includes(q));
     });
     if (cnt) {
-      cnt.textContent = _acData.length
-        ? `Toplam ${rows.length} uçak listeleniyor.`
-        : 'Veri yok — "Listeyi Güncelle" ile uçak listesini bir kez çekmek gerekiyor.';
+      const nm = _acAirline ? _acAirName(_acAirline) : 'Tümü';
+      cnt.textContent = `${nm}: ${rows.length} uçak`;
     }
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
     tbody.innerHTML = rows.map(a => {
-      const airData = typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[a.airline];
-      const airName = airData ? airData.name : (a.airlineName || a.airline);
-      const airColor = airData ? airData.color : '#94a3b8';
       const ageStr = a.age ? parseFloat(a.age).toFixed(1) : '—';
-      const statusText = a.remark || '—';
-      const isAct = statusText.toLowerCase() === 'active';
-      return `
-        <tr>
-          <td>
-            <span class="fdd-dot" style="background:${airColor};margin-right:6px;"></span>
-            <span style="font-weight:600;color:var(--text-1)">${esc(airName)}</span>
-          </td>
-          <td><span style="font-family:monospace;font-weight:bold;color:var(--text-1);background:var(--bg-secondary);padding:2px 6px;border-radius:4px;border:1px solid var(--border-color);">${esc(a.reg) || '—'}</span></td>
-          <td><span style="font-weight:500;">${esc(a.type) || '—'}</span></td>
-          <td style="color:var(--text-2)">${esc(a.config) || '—'}</td>
-          <td style="color:var(--text-3)">${esc(a.fleetNo || a.fleetNo || a.fleet_no) || '—'}</td>
-          <td style="color:var(--text-2);font-style:italic;">${esc(a.name) || '—'}</td>
-          <td style="text-align:right;font-weight:500;color:var(--text-1);">${esc(ageStr)}</td>
-          <td style="color:var(--text-3);font-size:11px;">${esc(a.delivered || a.delivery_date) || '—'}</td>
-          <td>
-            <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:${isAct ? 'rgba(5,150,105,0.1)' : 'rgba(220,38,38,0.1)'};color:${isAct ? '#059669' : '#dc2626'}">
-              ${esc(statusText)}
-            </span>
-          </td>
-        </tr>
-      `;
-    }).join('') || '<tr><td colspan="9" style="text-align:center;color:var(--text-3);padding:20px">Kayıt bulunamadı.</td></tr>';
+      return `<tr>
+        <td class="acx-reg"><span>${esc(a.reg) || '—'}</span></td>
+        <td style="font-weight:500;color:var(--text-1)">${esc(a.type) || '—'}</td>
+        <td style="color:var(--text-2)">${esc(a.config) || '—'}</td>
+        <td style="color:var(--text-2);font-style:italic">${esc(a.name) || '—'}</td>
+        <td class="acx-age">${esc(ageStr)}</td>
+        <td style="color:var(--text-3);font-size:11px;white-space:nowrap">${esc(a.delivered) || '—'}</td>
+        <td style="color:var(--text-2)">${esc(a.remark) || '—'}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:24px">Bu filtreye uyan uçak bulunamadı.</td></tr>';
   };
+
   // ── Uçak Listesi güncelleme (yalnızca bu sekme; arka planda tarar, durumu yoklar) ──
   window.triggerAircraftUpdate = function() {
     window._fleetPwdTarget = 'aircrafts';
@@ -23440,6 +23497,107 @@ document.addEventListener('DOMContentLoaded', () => {
       setIdle();
       alert('Uçak listesi güncellenemedi: ' + e.message);
     }
+  };
+
+  window.openAircraftExportModal = function() {
+    const modal = document.getElementById('fleet-ac-export-modal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    
+    const listDiv = document.getElementById('fleet-ac-export-list');
+    if (!listDiv) return;
+    
+    // Benzersiz havayolu listesini çıkar
+    const codes = {};
+    if (Array.isArray(_acData)) {
+      _acData.forEach(a => {
+        if (a.airline) {
+          codes[a.airline] = _acAirName(a.airline);
+        }
+      });
+    }
+    
+    // Sırala ve checkbox listesini doldur
+    const sorted = Object.entries(codes).sort((x,y) => x[1].localeCompare(y[1], 'tr'));
+    
+    listDiv.innerHTML = sorted.map(([code, name]) => {
+      return `
+        <label style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-1); cursor: pointer; user-select: none;">
+          <input type="checkbox" class="fleet-ac-export-checkbox" value="${code}" checked style="cursor: pointer; accent-color: var(--accent);">
+          <span style="font-weight: 600;">${name} (${code})</span>
+        </label>
+      `;
+    }).join('');
+  };
+
+  window.closeAircraftExportModal = function() {
+    const modal = document.getElementById('fleet-ac-export-modal');
+    if (modal) modal.style.display = 'none';
+  };
+
+  window.selectExportAllAirlines = function(status) {
+    document.querySelectorAll('.fleet-ac-export-checkbox').forEach(cb => {
+      cb.checked = status;
+    });
+  };
+
+  window.runAircraftExportToExcel = function() {
+    if (!Array.isArray(_acData) || _acData.length === 0) {
+      alert("Dışa aktarılacak uçak verisi bulunamadı. Lütfen önce listeyi güncelleyin.");
+      return;
+    }
+    
+    const selectedCheckboxes = document.querySelectorAll('.fleet-ac-export-checkbox:checked');
+    if (selectedCheckboxes.length === 0) {
+      alert("Lütfen en az bir havayolu seçin.");
+      return;
+    }
+    
+    const selectedAirlines = Array.from(selectedCheckboxes).map(cb => cb.value);
+    
+    // Verileri filtrele
+    const filtered = _acData.filter(a => selectedAirlines.includes(a.airline));
+    
+    // CSV oluştur
+    const headers = ["Havayolu", "Tescil (Reg)", "Uçak Tipi", "Koltuk Düzeni (Config)", "Filo No", "Uçak Adı", "Uçak Yaşı", "Teslimat Tarihi", "Açıklama (Remark)"];
+    let csvRows = [headers.join(";")];
+    
+    filtered.forEach(a => {
+      const row = [
+        _acAirName(a.airline),
+        a.reg || "",
+        a.type || "",
+        a.config || "",
+        a.fleetNo || a.fleet_no || "",
+        a.name || "",
+        a.age || "",
+        a.delivered || a.delivery_date || "",
+        a.remark || ""
+      ];
+      // Satır değerlerini tırnak içine alarak escape et
+      const escapedRow = row.map(val => {
+        const str = String(val).replace(/"/g, '""');
+        return `"${str}"`;
+      });
+      csvRows.push(escapedRow.join(";"));
+    });
+    
+    const csvContent = csvRows.join("\n");
+    
+    // UTF-8 BOM ekle (Excel'de Türkçe karakterlerin düzgün açılması için kritik)
+    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const today = new Date().toISOString().split('T')[0];
+    
+    link.href = URL.createObjectURL(blob);
+    link.download = `Ucak_Listesi_${today}.csv`;
+    link.style.display = "none";
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    closeAircraftExportModal();
   };
 })();
 

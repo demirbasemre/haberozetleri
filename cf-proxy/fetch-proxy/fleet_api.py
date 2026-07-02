@@ -2,6 +2,7 @@ import os
 import time
 import json
 import re
+import random
 import threading
 import urllib.request
 from datetime import datetime
@@ -14,24 +15,35 @@ PORT = 5005
 # Uçak listesi arka plan tarama durumu
 AC_STATE = {"running": False, "result": None, "error": None, "started_at": None}
 API_BASE = os.environ.get('FLEET_API_BASE', 'https://api-fleet.emredemirbas.com')
+# FlareSolverr: planespotters'ın Cloudflare + site-içi Turnstile katmanını geçmek için.
+# Uçak listesi (tescil bazlı) YALNIZCA bu yolla çekilir; matris hâlâ Playwright kullanır.
+FLARESOLVERR_URL = os.environ.get('FLARESOLVERR_URL', 'http://192.168.3.100:8191/v1')
 user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"
 
 # Havayolları konfigürasyonu
 airlines = {
-    "TK": {"name": "Turkish Airlines", "slug": "Turkish-Airlines", "cargo_slug": "Turkish-Cargo", "cargo_mode": "SUBSET_A330"},
-    "EK": {"name": "Emirates", "slug": "Emirates", "cargo_slug": "Emirates-SkyCargo", "cargo_mode": "NONE"},
-    "CX": {"name": "Cathay Pacific", "slug": "Cathay-Pacific", "cargo_slug": "Cathay-Cargo", "cargo_mode": "SUBSET_B747"},
-    "CK": {"name": "China Cargo Airlines", "slug": "China-Cargo-Airlines", "cargo_mode": "ALL_CARGO"},
-    "QR": {"name": "Qatar Airways", "slug": "Qatar-Airways", "cargo_slug": "Qatar-Airways-Cargo", "cargo_mode": "NONE"},
-    "LH": {"name": "Lufthansa", "slug": "Lufthansa", "cargo_slug": "Lufthansa-Cargo", "cargo_mode": "ADDITIVE"},
-    "AFKLM": {"name": "Air France-KLM", "slug": "Air-France-KLM", "cargo_mode": "NONE"},
-    "KE": {"name": "Korean Air", "slug": "Korean-Air", "cargo_mode": "NONE"},
-    "CV": {"name": "Cargolux", "slug": "Cargolux-Airlines-International", "cargo_mode": "ALL_CARGO"},
-    "LA": {"name": "LATAM Airlines", "slug": "LATAM-Airlines-Group", "cargo_slugs": ["LATAM-Cargo-Chile", "LATAM-Cargo-Brasil"], "cargo_mode": "ADDITIVE_LATAM"},
-    "CI": {"name": "China Airlines", "slug": "China-Airlines", "cargo_mode": "CI_SPECIAL"},
-    "CZ": {"name": "China Southern", "slug": "China-Southern-Airlines", "cargo_mode": "NONE"},
-    "CA": {"name": "Air China", "slug": "Air-China", "cargo_slug": "Air-China-Cargo", "cargo_mode": "ADDITIVE"},
-    "SQ": {"name": "Singapore Airlines", "slug": "Singapore-Airlines", "cargo_slug": "Singapore-Airlines-Cargo", "cargo_mode": "SUBSET_B747"}
+    "TK": {"name": "Turkish Airlines", "slug": "Turkish-Airlines", "cargo_slug": "Turkish-Cargo", "cargo_mode": "SUBSET_A330", "color": "#E30613"},
+    "EK": {"name": "Emirates", "slug": "Emirates", "cargo_slug": "Emirates-SkyCargo", "cargo_mode": "NONE", "color": "#F59E0B"},
+    "CX": {"name": "Cathay Pacific", "slug": "Cathay-Pacific", "cargo_slug": "Cathay-Cargo", "cargo_mode": "SUBSET_B747", "color": "#1D6FE8"},
+    "CK": {"name": "China Cargo Airlines", "slug": "China-Cargo-Airlines", "cargo_mode": "ALL_CARGO", "color": "#8b5cf6"},
+    "QR": {"name": "Qatar Airways", "slug": "Qatar-Airways", "cargo_slug": "Qatar-Airways-Cargo", "cargo_mode": "NONE", "color": "#7C3AED"},
+    "LH": {"name": "Lufthansa", "slug": "Lufthansa", "cargo_slug": "Lufthansa-Cargo", "cargo_mode": "ADDITIVE", "color": "#374151"},
+    "AFKLM": {"name": "Air France-KLM", "slug": "Air-France-KLM", "cargo_mode": "NONE", "color": "#059669"},
+    "KE": {"name": "Korean Air", "slug": "Korean-Air", "cargo_mode": "NONE", "color": "#1a3a8f"},
+    "CV": {"name": "Cargolux", "slug": "Cargolux-Airlines-International", "cargo_mode": "ALL_CARGO", "color": "#6B7280"},
+    "LA": {"name": "LATAM Airlines", "slug": "LATAM-Airlines-Group", "cargo_slugs": ["LATAM-Cargo-Chile", "LATAM-Cargo-Brasil"], "cargo_mode": "ADDITIVE_LATAM", "color": "#059669"},
+    "CI": {"name": "China Airlines", "slug": "China-Airlines", "cargo_mode": "CI_SPECIAL", "color": "#0891B2"},
+    "CZ": {"name": "China Southern", "slug": "China-Southern-Airlines", "cargo_mode": "NONE", "color": "#2563EB"},
+    "CA": {"name": "Air China", "slug": "Air-China", "cargo_slug": "Air-China-Cargo", "cargo_mode": "ADDITIVE", "color": "#DC2626"},
+    "SQ": {"name": "Singapore Airlines", "slug": "Singapore-Airlines", "cargo_slug": "Singapore-Airlines-Cargo", "cargo_mode": "SUBSET_B747", "color": "#0f4c8a"},
+    "MU": {"name": "China Eastern", "slug": "China-Eastern-Airlines", "cargo_slug": "China-Eastern-Cargo", "cargo_mode": "ADDITIVE", "color": "#014099"},
+    "EY": {"name": "Etihad Airways", "slug": "Etihad-Airways", "cargo_slug": "Etihad-Cargo", "cargo_mode": "ADDITIVE", "color": "#c4a45c"},
+    "3S": {"name": "AeroLogic", "slug": "AeroLogic", "cargo_mode": "ALL_CARGO", "color": "#ffcc00"},
+    "ZETA": {"name": "AirZeta", "slug": "AirZeta", "cargo_mode": "ALL_CARGO", "color": "#0099cc"},
+    "N8": {"name": "National Airlines", "slug": "National-Airlines", "cargo_mode": "NONE", "color": "#003366"},
+    "CC": {"name": "CMA CGM", "slug": "CMA-CGM-Air-Cargo", "cargo_mode": "ALL_CARGO", "color": "#002d72"},
+    "3U": {"name": "Sichuan Airlines", "slug": "Sichuan-Airlines", "cargo_mode": "NONE", "color": "#e3001b"},
+    "AV": {"name": "Avianca", "slug": "Avianca", "cargo_slug": "Avianca-Cargo", "cargo_mode": "ADDITIVE", "color": "#dc241f"}
 }
 
 def api_get(path):
@@ -204,87 +216,119 @@ def extract_fleet(page, url, last_stored_date=None):
         })
     return parsed_types, page_last_updated
 
-# ── Uçak Listesi (tescil bazlı Fleet List) ──────────────────────────────
-# Sayfadaki thead'inde "Reg" ile başlayan sütun bulunan tabloyu yakalar,
-# başlıkları isimle eşler ve sayfalama linklerinden en yüksek sayfa
-# numarasını döndürür. Yapı değişirse başlık eşlemesi log'a düşer.
-FLEETLIST_JS = """
-() => {
-    let listTable = null;
-    document.querySelectorAll('table').forEach(t => {
-        const ths = Array.from(t.querySelectorAll('thead th')).map(x => x.textContent.trim().toLowerCase());
-        if (ths.some(h => h.startsWith('reg'))) listTable = t;
-    });
-    if (!listTable) return null;
-    const heads = Array.from(listTable.querySelectorAll('thead th')).map(x => x.textContent.trim());
-    const rows = Array.from(listTable.querySelectorAll('tbody tr')).map(tr =>
-        Array.from(tr.querySelectorAll('td,th')).map(td => td.textContent.trim().replace(/\\s+/g, ' '))
-    );
-    let maxPage = 1;
-    document.querySelectorAll('a[href*="/fleet/list/"][href*="page="]').forEach(a => {
-        const m = a.getAttribute('href').match(/page=(\\d+)/);
-        if (m) maxPage = Math.max(maxPage, parseInt(m[1]));
-    });
-    return { heads, rows, maxPage };
-}
-"""
+# ── Uçak Listesi (tescil bazlı Fleet List, FlareSolverr üzerinden) ──────────
+# planespotters fleet list sayfası div-tabanlı "data table" (.dt-tr/.dt-td/.dt-th)
+# kullanır ve Cloudflare + site-içi Turnstile ile korunur. FlareSolverr her iki
+# katmanı da geçer (challenge çözer); kullanıcının çerezleri Turnstile için şart.
 
-def map_aircraft_row(heads, row):
-    m = {}
-    for h, val in zip(heads, row):
-        hl = h.lower()
-        if hl.startswith('reg'):
-            m['reg'] = val
-        elif 'aircraft' in hl or 'type' in hl:
-            m['type'] = val
-        elif 'config' in hl:
-            m['config'] = val
-        elif 'fleet' in hl:
-            m['fleetNo'] = val
-        elif 'name' in hl:
-            m['name'] = val
-        elif 'age' in hl:
-            m['age'] = clean_age(val)
-        elif 'deliver' in hl or 'first' in hl:
-            m['delivered'] = val
-        elif 'remark' in hl or 'note' in hl or 'status' in hl:
-            m['remark'] = val
-    return m
+# İnsan benzeri, nazik gecikmeler (kişisel kullanım — planespotters'a yük bindirmemek
+# ve bot tespitini azaltmak için). Ticari amaç yok.
+PAGE_DELAY = (3.0, 7.0)      # aynı havayolunun sayfaları arası
+AIRLINE_DELAY = (6.0, 14.0)  # havayolları arası
+RETRY_DELAY = (8.0, 16.0)    # geçici hata (500 vb.) sonrası tekrar denemeden önce
 
-def extract_aircraft_list(page, slug):
-    """Havayolunun tescil bazlı uçak listesini (tüm sayfalar) çeker."""
-    aircrafts = []
-    url = f"https://www.planespotters.net/fleet/list/{slug}/current"
-    page.goto(url, wait_until="networkidle", timeout=60000)
-    time.sleep(2)
-    title = page.title()
-    if "Cloudflare" in title or "Attention Required" in title or "Blocked" in title:
-        raise Exception(f"Cloudflare Engeline Takıldı (fleet list): {title}")
+def _nap(rng):
+    time.sleep(random.uniform(*rng))
 
-    result = page.evaluate(FLEETLIST_JS)
-    if not result:
-        print(f"[UYARI] {slug}: uçak listesi tablosu bulunamadı ({page.url})")
-        return aircrafts
+def flaresolverr_get(url, cookies_list, timeout_ms=80000, retries=2):
+    """FlareSolverr üzerinden URL'i çeker, HTML döner. Geçici hatada bekleyip tekrar dener."""
+    payload = {"cmd": "request.get", "url": url, "maxTimeout": timeout_ms}
+    if cookies_list:
+        payload["cookies"] = cookies_list
+    last_err = None
+    for attempt in range(retries + 1):
+        try:
+            req = urllib.request.Request(
+                FLARESOLVERR_URL,
+                data=json.dumps(payload).encode('utf-8'),
+                headers={'Content-Type': 'application/json'},
+                method='POST'
+            )
+            with urllib.request.urlopen(req, timeout=(timeout_ms / 1000) + 20) as r:
+                resp = json.loads(r.read().decode('utf-8'))
+            sol = resp.get("solution", {})
+            html = sol.get("response", "") or ""
+            if "Security Verification" in html or "Attention Required" in html or sol.get("status") != 200:
+                raise Exception(f"Cloudflare/Turnstile geçilemedi (http {sol.get('status')})")
+            return html
+        except Exception as e:
+            last_err = e
+            if attempt < retries:
+                print(f"[AC] Geçici hata ({e}) — tekrar deneniyor ({attempt + 1}/{retries})...", flush=True)
+                _nap(RETRY_DELAY)
+    raise Exception(f"{last_err} (çerezler geçersiz/süresi dolmuş olabilir veya sunucu geçici yük altında)")
 
-    heads = result["heads"]
-    print(f"{slug} uçak listesi sütunları: {heads} — {result['maxPage']} sayfa")
-    for row in result["rows"]:
-        rec = map_aircraft_row(heads, row)
-        if rec.get('reg'):
-            aircrafts.append(rec)
+def _dt_cells(block, cls):
+    """block içinden verilen .dt-* sınıfına ait hücrelerin düz metnini (boşlar dahil) döndürür."""
+    out = []
+    for m in re.finditer(r'<div class="' + cls + r'\b[^"]*"[^>]*>(.*?)</div>', block, re.S):
+        txt = re.sub(r'<[^>]+>', ' ', m.group(1))
+        out.append(re.sub(r'\s+', ' ', txt).strip())
+    return out
 
-    for pno in range(2, result["maxPage"] + 1):
-        page.goto(f"{url}?page={pno}", wait_until="networkidle", timeout=60000)
-        time.sleep(1.5)
-        pres = page.evaluate(FLEETLIST_JS)
-        if not pres:
-            print(f"[UYARI] {slug} sayfa {pno}: tablo bulunamadı")
+def parse_aircraft_page(html):
+    """Fleet list HTML'inden (heads, satır dict listesi, maxPage) döndürür."""
+    heads = _dt_cells(html, 'dt-th')  # foto/ikon başlıkları boş string olarak dahil (hizalama için)
+    rows = []
+    trs = re.split(r'<div class="dt-tr', html)
+    for tr in trs[1:]:
+        tds = _dt_cells('<div class="dt-tr' + tr, 'dt-td')
+        if not tds:
             continue
-        for row in pres["rows"]:
-            rec = map_aircraft_row(pres["heads"], row)
-            if rec.get('reg'):
-                aircrafts.append(rec)
+        rec = {}
+        for h, v in zip(heads, tds):
+            hl = h.lower()
+            if not h:
+                continue
+            if hl == 'reg':
+                rec['reg'] = v
+            elif 'aircraft type' in hl or hl == 'type':
+                rec['type'] = v
+            elif 'config' in hl:
+                rec['config'] = v
+            elif 'deliver' in hl:
+                rec['delivered'] = v
+            elif 'remark' in hl:
+                rec['remark'] = v
+            elif 'name' in hl:
+                rec['name'] = v
+            elif 'age' in hl:
+                rec['age'] = clean_age(v)
+        if rec.get('reg'):
+            rows.append(rec)
+    max_page = max([int(x) for x in re.findall(r'[?&]page=(\d+)', html)] + [1])
+    return heads, rows, max_page
+
+def extract_aircraft_list(slug, cookies_list):
+    """Havayolunun tescil bazlı uçak listesini (tüm sayfalar) FlareSolverr ile çeker."""
+    aircrafts = []
+    base = f"https://www.planespotters.net/fleet/list/{slug}/current"
+    html = flaresolverr_get(base, cookies_list)
+    heads, rows, max_page = parse_aircraft_page(html)
+    if not [h for h in heads if h.lower() == 'reg']:
+        print(f"[UYARI] {slug}: 'Reg' sütunu bulunamadı, yapı değişmiş olabilir. Başlıklar: {heads}", flush=True)
+    print(f"{slug} uçak listesi: {[h for h in heads if h]} — {max_page} sayfa", flush=True)
+    aircrafts.extend(rows)
+
+    for pno in range(2, max_page + 1):
+        _nap(PAGE_DELAY)  # sayfalar arası nazik bekleme
+        try:
+            html = flaresolverr_get(f"{base}?page={pno}", cookies_list)
+            _, rows, _ = parse_aircraft_page(html)
+            aircrafts.extend(rows)
+        except Exception as e:
+            print(f"[UYARI] {slug} sayfa {pno}: {e}", flush=True)
     return aircrafts
+
+def cookie_str_to_flaresolverr(cookie_str):
+    """'a=b; c=d' çerez dizesini FlareSolverr cookie formatına çevirir."""
+    out = []
+    for part in (cookie_str or "").split(";"):
+        if "=" in part:
+            name, value = part.strip().split("=", 1)
+            if name:
+                out.append({"name": name, "value": value, "domain": ".planespotters.net"})
+    return out
 
 class FleetAPIHandler(BaseHTTPRequestHandler):
     def end_headers(self):
@@ -385,7 +429,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             cookies, pwd, ua = auth
             AC_STATE.update({"running": True, "result": None, "error": None,
                              "started_at": datetime.now().isoformat(timespec='seconds')})
-            t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd, ua), daemon=True)
+            t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd), daemon=True)
             t.start()
             self._json_response(202, {"status": "started", "message": "Uçak listesi taraması arka planda başlatıldı."})
 
@@ -537,6 +581,11 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                         pass
             k1age = round(total_age_sum / total_count, 1) if total_count > 0 else None
 
+            if code not in fleet_data:
+                fleet_data[code] = {
+                    "name": info["name"],
+                    "color": info.get("color", "#64748b")
+                }
             fleet_data[code]["types"] = new_types
             fleet_data[code]["ca"] = ca
             fleet_data[code]["ci"] = ci
@@ -560,45 +609,33 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
 
         return {"status": "success", "updated": updated_list, "skipped": skipped_list}
 
-def run_aircraft_scraping(cookies, pwd, ua=None):
-    """Tüm havayollarının tescil bazlı uçak listesini tarar ve KV'ye yazar.
-    Arka plan thread'inde çalışır; durum AC_STATE üzerinden izlenir."""
+def run_aircraft_scraping(cookies, pwd):
+    """Tüm havayollarının tescil bazlı uçak listesini FlareSolverr ile tarar ve KV'ye yazar.
+    Arka plan thread'inde çalışır; durum AC_STATE üzerinden izlenir.
+    cookies: playwright formatı liste; FlareSolverr için name/value/domain'e indirgenir."""
     try:
         all_aircrafts = []
         per_airline = {}
         errors = []
-        with sync_playwright() as p:
-            browserless_url = os.environ.get('BROWSERLESS_URL')
-            if browserless_url:
-                print(f"[AC] Browserless bağlantısı kuruluyor: {browserless_url}", flush=True)
-                browser = p.chromium.connect_over_cdp(browserless_url)
-            else:
-                browser = p.chromium.launch(headless=True)
+        fs_cookies = [{"name": c["name"], "value": c["value"],
+                       "domain": c.get("domain", ".planespotters.net")} for c in cookies]
 
-            context = browser.new_context(
-                user_agent=ua or user_agent,
-                viewport={"width": 1440, "height": 900},
-                locale="en-US"
-            )
-            context.add_cookies(cookies)
-            page = context.new_page()
-            page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-
-            for code, info in airlines.items():
-                print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...", flush=True)
-                try:
-                    ac_list = extract_aircraft_list(page, info['slug'])
-                    for rec in ac_list:
-                        rec["airline"] = code
-                        rec["airlineName"] = info["name"]
-                    all_aircrafts.extend(ac_list)
-                    per_airline[code] = len(ac_list)
-                except Exception as e:
-                    print(f"[AC][HATA] {code} uçak listesi çekilemedi: {e}", flush=True)
-                    per_airline[code] = 0
-                    errors.append(f"{code}: {e}")
-
-            browser.close()
+        for idx, (code, info) in enumerate(airlines.items()):
+            if idx > 0:
+                _nap(AIRLINE_DELAY)  # havayolları arası nazik bekleme
+            print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...", flush=True)
+            try:
+                ac_list = extract_aircraft_list(info['slug'], fs_cookies)
+                for rec in ac_list:
+                    rec["airline"] = code
+                    rec["airlineName"] = info["name"]
+                all_aircrafts.extend(ac_list)
+                per_airline[code] = len(ac_list)
+                print(f"[AC] {code}: {len(ac_list)} uçak", flush=True)
+            except Exception as e:
+                print(f"[AC][HATA] {code} uçak listesi çekilemedi: {e}", flush=True)
+                per_airline[code] = 0
+                errors.append(f"{code}: {e}")
 
         if not all_aircrafts:
             detail = f" İlk hata: {errors[0]}" if errors else ""
