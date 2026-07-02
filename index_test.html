@@ -23329,8 +23329,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const sel = document.getElementById('fleet-ac-filter-airline');
       if (sel) {
         const names = {};
-        _acData.forEach(a => { if (a.airline) names[a.airline] = a.airlineName || a.airline; });
-        sel.innerHTML = '<option value="">Tümü</option>' + Object.entries(names)
+        _acData.forEach(a => {
+          if (a.airline) {
+            const name = (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[a.airline] && FLEET_CMP_DATA[a.airline].name) || a.airlineName || a.airline;
+            names[a.airline] = name;
+          }
+        });
+        sel.innerHTML = '<option value="">Tüm Havayolları</option>' + Object.entries(names)
           .sort((x,y)=>x[1].localeCompare(y[1],'tr'))
           .map(([c,n])=>`<option value="${c}">${n} (${c})</option>`).join('');
       }
@@ -23346,20 +23351,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const rows = _acData.filter(a => {
       if (air && a.airline !== air) return false;
       if (!q) return true;
-      return [a.reg, a.type, a.airlineName, a.airline, a.config, a.remark].some(v => (v||'').toLowerCase().includes(q));
+      const airName = (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[a.airline] && FLEET_CMP_DATA[a.airline].name) || a.airlineName || a.airline;
+      return [a.reg, a.type, airName, a.airline, a.config, a.remark, a.fleetNo || a.fleet_no, a.name].some(v => (v||'').toLowerCase().includes(q));
     });
-    if (cnt) cnt.textContent = _acData.length
-      ? `Toplam ${rows.length} uçak listeleniyor.`
-      : 'Veri yok — "Listeyi Güncelle" ile uçak listesini bir kez çekmek gerekiyor.';
+    if (cnt) {
+      cnt.textContent = _acData.length
+        ? `Toplam ${rows.length} uçak listeleniyor.`
+        : 'Veri yok — "Listeyi Güncelle" ile uçak listesini bir kez çekmek gerekiyor.';
+    }
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-    tbody.innerHTML = rows.map(a => `<tr>
-      <td>${esc(a.airlineName || a.airline) || '—'}</td>
-      <td style="font-family:monospace">${esc(a.reg) || '—'}</td>
-      <td>${esc(a.type) || '—'}</td>
-      <td>${esc(a.config) || '—'}</td>
-      <td>${esc(a.delivered) || '—'}</td>
-      <td>${esc(a.remark) || '—'}</td>
-    </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:20px">Kayıt bulunamadı.</td></tr>';
+    tbody.innerHTML = rows.map(a => {
+      const airData = typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[a.airline];
+      const airName = airData ? airData.name : (a.airlineName || a.airline);
+      const airColor = airData ? airData.color : '#94a3b8';
+      const ageStr = a.age ? parseFloat(a.age).toFixed(1) : '—';
+      const statusText = a.remark || '—';
+      const isAct = statusText.toLowerCase() === 'active';
+      return `
+        <tr>
+          <td>
+            <span class="fdd-dot" style="background:${airColor};margin-right:6px;"></span>
+            <span style="font-weight:600;color:var(--text-1)">${esc(airName)}</span>
+          </td>
+          <td><span style="font-family:monospace;font-weight:bold;color:var(--text-1);background:var(--bg-secondary);padding:2px 6px;border-radius:4px;border:1px solid var(--border-color);">${esc(a.reg) || '—'}</span></td>
+          <td><span style="font-weight:500;">${esc(a.type) || '—'}</span></td>
+          <td style="color:var(--text-2)">${esc(a.config) || '—'}</td>
+          <td style="color:var(--text-3)">${esc(a.fleetNo || a.fleetNo || a.fleet_no) || '—'}</td>
+          <td style="color:var(--text-2);font-style:italic;">${esc(a.name) || '—'}</td>
+          <td style="text-align:right;font-weight:500;color:var(--text-1);">${esc(ageStr)}</td>
+          <td style="color:var(--text-3);font-size:11px;">${esc(a.delivered || a.delivery_date) || '—'}</td>
+          <td>
+            <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:${isAct ? 'rgba(5,150,105,0.1)' : 'rgba(220,38,38,0.1)'};color:${isAct ? '#059669' : '#dc2626'}">
+              ${esc(statusText)}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join('') || '<tr><td colspan="9" style="text-align:center;color:var(--text-3);padding:20px">Kayıt bulunamadı.</td></tr>';
   };
   // ── Uçak Listesi güncelleme (yalnızca bu sekme; arka planda tarar, durumu yoklar) ──
   window.triggerAircraftUpdate = function() {
