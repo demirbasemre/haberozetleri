@@ -1,0 +1,8 @@
+name = "haberozetleri-fleet-api"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+workers_dev = false
+
+kv_namespaces = [
+  { binding = "FLEET_DATA_KV", id = "6ca92108136c487facc971854f9be784" }
+]

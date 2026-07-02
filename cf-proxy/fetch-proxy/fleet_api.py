@@ -1,14 +1,19 @@
 import os
 import time
 import json
-import subprocess
 import re
+import threading
+import urllib.request
 from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import browser_cookie3
 from playwright.sync_api import sync_playwright
 
 PORT = 5005
+
+# Uçak listesi arka plan tarama durumu
+AC_STATE = {"running": False, "result": None, "error": None, "started_at": None}
+API_BASE = os.environ.get('FLEET_API_BASE', 'https://api-fleet.emredemirbas.com')
 user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"
 
 # Havayolları konfigürasyonu
@@ -28,6 +33,21 @@ airlines = {
     "CA": {"name": "Air China", "slug": "Air-China", "cargo_slug": "Air-China-Cargo", "cargo_mode": "ADDITIVE"},
     "SQ": {"name": "Singapore Airlines", "slug": "Singapore-Airlines", "cargo_slug": "Singapore-Airlines-Cargo", "cargo_mode": "SUBSET_B747"}
 }
+
+def api_get(path):
+    req = urllib.request.Request(API_BASE + path, headers={'User-Agent': user_agent})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return json.loads(r.read().decode('utf-8'))
+
+def api_post(path, payload):
+    req = urllib.request.Request(
+        API_BASE + path,
+        data=json.dumps(payload).encode('utf-8'),
+        headers={'Content-Type': 'application/json', 'User-Agent': user_agent},
+        method='POST'
+    )
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read().decode('utf-8'))
 
 def get_chrome_cookies():
     try:
@@ -61,7 +81,7 @@ def classify_variant_name(v):
     v = v.replace("Airbus ", "").replace("Boeing ", "B")
     if v.startswith("AA"):
         v = "A" + v[2:]
-        
+
     if "787-9 Dreamliner" in v or "787-9" in v:
         v = "B787-9"
     elif "787-10 Dreamliner" in v or "787-10" in v:
@@ -100,7 +120,7 @@ def merge_types(types_list):
                 merged[v]["age_count"] += t_val
             except ValueError:
                 pass
-                
+
     result = []
     for v, info in merged.items():
         age_str = ""
@@ -132,15 +152,15 @@ def extract_fleet(page, url, last_stored_date=None):
     print(f"Sayfa açılıyor: {url}")
     page.goto(url, wait_until="networkidle", timeout=60000)
     time.sleep(2)
-    
+
     title = page.title()
     if "Cloudflare" in title or "Attention Required" in title or "Blocked" in title:
         raise Exception(f"Cloudflare Engeline Takıldı: {title}")
-        
+
     # Last updated tarihini kontrol et
     page_last_updated = get_last_updated_date(page)
     print(f"Planespotters Son Güncelleme Tarihi: {page_last_updated}")
-    
+
     if last_stored_date and page_last_updated and last_stored_date == page_last_updated:
         print(">> Sayfa son taranan tarihle aynı. Tarama atlanıyor (Hızlı Geçiş).")
         return None, page_last_updated
@@ -168,7 +188,7 @@ def extract_fleet(page, url, last_stored_date=None):
     data = page.evaluate(js_code)
     if not data:
         return [], page_last_updated
-    
+
     parsed_types = []
     for row in data:
         raw_v, active, parked, current, future, historic, age, total = row
@@ -184,7 +204,87 @@ def extract_fleet(page, url, last_stored_date=None):
         })
     return parsed_types, page_last_updated
 
-import re
+# ── Uçak Listesi (tescil bazlı Fleet List) ──────────────────────────────
+# Sayfadaki thead'inde "Reg" ile başlayan sütun bulunan tabloyu yakalar,
+# başlıkları isimle eşler ve sayfalama linklerinden en yüksek sayfa
+# numarasını döndürür. Yapı değişirse başlık eşlemesi log'a düşer.
+FLEETLIST_JS = """
+() => {
+    let listTable = null;
+    document.querySelectorAll('table').forEach(t => {
+        const ths = Array.from(t.querySelectorAll('thead th')).map(x => x.textContent.trim().toLowerCase());
+        if (ths.some(h => h.startsWith('reg'))) listTable = t;
+    });
+    if (!listTable) return null;
+    const heads = Array.from(listTable.querySelectorAll('thead th')).map(x => x.textContent.trim());
+    const rows = Array.from(listTable.querySelectorAll('tbody tr')).map(tr =>
+        Array.from(tr.querySelectorAll('td,th')).map(td => td.textContent.trim().replace(/\\s+/g, ' '))
+    );
+    let maxPage = 1;
+    document.querySelectorAll('a[href*="/fleet/list/"][href*="page="]').forEach(a => {
+        const m = a.getAttribute('href').match(/page=(\\d+)/);
+        if (m) maxPage = Math.max(maxPage, parseInt(m[1]));
+    });
+    return { heads, rows, maxPage };
+}
+"""
+
+def map_aircraft_row(heads, row):
+    m = {}
+    for h, val in zip(heads, row):
+        hl = h.lower()
+        if hl.startswith('reg'):
+            m['reg'] = val
+        elif 'aircraft' in hl or 'type' in hl:
+            m['type'] = val
+        elif 'config' in hl:
+            m['config'] = val
+        elif 'fleet' in hl:
+            m['fleetNo'] = val
+        elif 'name' in hl:
+            m['name'] = val
+        elif 'age' in hl:
+            m['age'] = clean_age(val)
+        elif 'deliver' in hl or 'first' in hl:
+            m['delivered'] = val
+        elif 'remark' in hl or 'note' in hl or 'status' in hl:
+            m['remark'] = val
+    return m
+
+def extract_aircraft_list(page, slug):
+    """Havayolunun tescil bazlı uçak listesini (tüm sayfalar) çeker."""
+    aircrafts = []
+    url = f"https://www.planespotters.net/fleet/list/{slug}/current"
+    page.goto(url, wait_until="networkidle", timeout=60000)
+    time.sleep(2)
+    title = page.title()
+    if "Cloudflare" in title or "Attention Required" in title or "Blocked" in title:
+        raise Exception(f"Cloudflare Engeline Takıldı (fleet list): {title}")
+
+    result = page.evaluate(FLEETLIST_JS)
+    if not result:
+        print(f"[UYARI] {slug}: uçak listesi tablosu bulunamadı ({page.url})")
+        return aircrafts
+
+    heads = result["heads"]
+    print(f"{slug} uçak listesi sütunları: {heads} — {result['maxPage']} sayfa")
+    for row in result["rows"]:
+        rec = map_aircraft_row(heads, row)
+        if rec.get('reg'):
+            aircrafts.append(rec)
+
+    for pno in range(2, result["maxPage"] + 1):
+        page.goto(f"{url}?page={pno}", wait_until="networkidle", timeout=60000)
+        time.sleep(1.5)
+        pres = page.evaluate(FLEETLIST_JS)
+        if not pres:
+            print(f"[UYARI] {slug} sayfa {pno}: tablo bulunamadı")
+            continue
+        for row in pres["rows"]:
+            rec = map_aircraft_row(pres["heads"], row)
+            if rec.get('reg'):
+                aircrafts.append(rec)
+    return aircrafts
 
 class FleetAPIHandler(BaseHTTPRequestHandler):
     def end_headers(self):
@@ -203,87 +303,104 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps({"status": "running", "service": "Antigravity Fleet Scraper API"}).encode('utf-8'))
+        elif self.path == '/api/aircraft-status':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(AC_STATE).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
+
+    def _json_response(self, status, payload):
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json')
+        self.end_headers()
+        self.wfile.write(json.dumps(payload).encode('utf-8'))
+
+    def _parse_auth_and_cookies(self):
+        """Body'den şifre + çerezleri okur; hata durumunda yanıtı yazar ve None döner."""
+        content_length = int(self.headers['Content-Length'] or 0)
+        post_data = self.rfile.read(content_length)
+
+        req_cookies = []
+        req_password = ""
+        try:
+            if post_data:
+                req_json = json.loads(post_data.decode('utf-8'))
+                manual_cookie_str = req_json.get("cookies", "")
+                req_password = req_json.get("password", "")
+                if manual_cookie_str:
+                    # Manuel çerez dizesini parse et
+                    for part in manual_cookie_str.split(";"):
+                        if "=" in part:
+                            name, value = part.strip().split("=", 1)
+                            req_cookies.append({
+                                "name": name, "value": value,
+                                "domain": ".planespotters.net", "path": "/", "secure": True
+                            })
+                    print(f"Kullanıcıdan {len(req_cookies)} adet manuel çerez alındı.")
+        except Exception as e:
+            print(f"POST body okuma hatası: {e}")
+
+        # Şifre Doğrulaması — yalnızca ortam değişkeninden okunur
+        expected_pwd = os.environ.get('FLEET_UPDATE_PASSWORD')
+        if not expected_pwd:
+            self._json_response(500, {"error": "ConfigError", "message": "FLEET_UPDATE_PASSWORD ortam değişkeni ayarlanmamış."})
+            return None
+        if req_password != expected_pwd:
+            self._json_response(401, {"error": "Unauthorized", "message": "Geçersiz şifre girdiniz."})
+            return None
+
+        # Çerezleri birleştir (öncelik kullanıcının gönderdiğinde)
+        cookies = req_cookies if req_cookies else get_chrome_cookies()
+        if not cookies:
+            self._json_response(400, {"error": "No valid cookies", "message": "Geçerli çerez bulunamadı. Lütfen Chrome'dan kopyalayıp çerez paneline yapıştırın."})
+            return None
+        return cookies, expected_pwd
 
     def do_POST(self):
         if self.path == '/api/update-fleet':
-            content_length = int(self.headers['Content-Length'] or 0)
-            post_data = self.rfile.read(content_length)
-            
-            req_cookies = []
-            req_password = ""
-            try:
-                if post_data:
-                    req_json = json.loads(post_data.decode('utf-8'))
-                    manual_cookie_str = req_json.get("cookies", "")
-                    req_password = req_json.get("password", "")
-                    if manual_cookie_str:
-                        # Manuel çerez dizesini parse et
-                        for part in manual_cookie_str.split(";"):
-                            if "=" in part:
-                                name, value = part.strip().split("=", 1)
-                                req_cookies.append({
-                                    "name": name, "value": value,
-                                    "domain": ".planespotters.net", "path": "/", "secure": True
-                                })
-                        print(f"Kullanıcıdan {len(req_cookies)} adet manuel çerez alındı.")
-            except Exception as e:
-                print(f"POST body okuma hatası: {e}")
-
-            # Şifre Doğrulaması
-            expected_pwd = os.environ.get('FLEET_UPDATE_PASSWORD', '[KALDIRILDI]')
-            if req_password != expected_pwd:
-                self.send_response(401)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": "Unauthorized", "message": "Geçersiz şifre girdiniz."}).encode('utf-8'))
+            auth = self._parse_auth_and_cookies()
+            if not auth:
                 return
-
-            # Çerezleri birleştir (öncelik kullanıcının gönderdiğinde)
-            cookies = req_cookies if req_cookies else get_chrome_cookies()
-            
-            if not cookies:
-                self.send_response(400)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": "No valid cookies", "message": "Geçerli çerez bulunamadı. Lütfen Chrome'dan kopyalayıp çerez paneline yapıştırın."}).encode('utf-8'))
-                return
-
-            # Scraping işlemini çalıştır
+            cookies, pwd = auth
             try:
-                result = self.process_scraping(cookies)
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps(result).encode('utf-8'))
+                result = self.process_scraping(cookies, pwd)
+                self._json_response(200, result)
             except Exception as e:
                 print(f"Scraping error: {e}")
-                self.send_response(500)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": "ServerError", "message": str(e)}).encode('utf-8'))
+                self._json_response(500, {"error": "ServerError", "message": str(e)})
+
+        elif self.path == '/api/update-aircrafts':
+            if AC_STATE["running"]:
+                self._json_response(409, {"error": "Busy", "message": "Uçak listesi taraması zaten sürüyor."})
+                return
+            auth = self._parse_auth_and_cookies()
+            if not auth:
+                return
+            cookies, pwd = auth
+            AC_STATE.update({"running": True, "result": None, "error": None,
+                             "started_at": datetime.now().isoformat(timespec='seconds')})
+            t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd), daemon=True)
+            t.start()
+            self._json_response(202, {"status": "started", "message": "Uçak listesi taraması arka planda başlatıldı."})
 
         else:
             self.send_response(404)
             self.end_headers()
 
-    def process_scraping(self, cookies):
-        workspace_dir = "/Users/emre/Desktop/haberozetleri"
-        fleet_json_path = os.path.join(workspace_dir, "data/fleet.json")
-        history_dir = os.path.join(workspace_dir, "data/history")
-        history_index_path = os.path.join(workspace_dir, "data/history_index.json")
-        
-        # Mevcut veriyi yükle
-        with open(fleet_json_path, "r", encoding="utf-8") as f:
-            fleet_data = json.load(f)
+    def process_scraping(self, cookies, pwd):
+        # Mevcut veriyi KV'den yükle (yerel dosya bağımlılığı yok)
+        fleet_data = api_get('/api/get-fleet')
+        if not isinstance(fleet_data, dict) or not fleet_data or "airlines" in fleet_data:
+            raise Exception("KV'den mevcut filo verisi alınamadı (get-fleet boş döndü).")
 
         updated_count = 0
         all_results = {}
         updated_list = []
         skipped_list = []
-        
+
         with sync_playwright() as p:
             browserless_url = os.environ.get('BROWSERLESS_URL')
             if browserless_url:
@@ -291,7 +408,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                 browser = p.chromium.connect_over_cdp(browserless_url)
             else:
                 browser = p.chromium.launch(headless=True)
-                
+
             context = browser.new_context(
                 user_agent=user_agent,
                 viewport={"width": 1440, "height": 900},
@@ -300,22 +417,22 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             context.add_cookies(cookies)
             page = context.new_page()
             page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-            
+
             for code, info in airlines.items():
                 print(f"\nScraping {info['name']} ({code})...")
                 url = f"https://www.planespotters.net/airline/{info['slug']}"
-                
+
                 # Önceki taranan "last updated" tarihini al
                 last_stored_date = fleet_data.get(code, {}).get("planespotters_last_updated")
-                
+
                 try:
                     types, page_last_updated = extract_fleet(page, url, last_stored_date)
-                    
+
                     if types is None:
-                        # Güncelleme tarihi değişmemiş, atla
+                        # Güncelleme tarihi değişmemiş, matris taraması atla
                         skipped_list.append({"code": code, "name": info["name"], "date": page_last_updated})
                         continue
-                        
+
                     mode = info.get("cargo_mode")
                     if mode == "ALL_CARGO":
                         for t in types:
@@ -332,12 +449,12 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                                 act = int(t["a"] or 0)
                                 park = int(t["i"] or 0)
                                 new_types.append({
-                                    "v": "A330-200", 
-                                    "a": str(act - 10) if act - 10 > 0 else "", 
-                                    "i": str(park) if park > 0 else "", 
-                                    "w": "", 
-                                    "t": str(tot - 10) if tot - 10 > 0 else "", 
-                                    "o": t["o"], 
+                                    "v": "A330-200",
+                                    "a": str(act - 10) if act - 10 > 0 else "",
+                                    "i": str(park) if park > 0 else "",
+                                    "w": "",
+                                    "t": str(tot - 10) if tot - 10 > 0 else "",
+                                    "o": t["o"],
                                     "age": t["age"]
                                 })
                             else:
@@ -378,7 +495,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                         for t in types:
                             if t["v"] == "B747-400":
                                 t["v"] = "B747-400(F)"
-                                
+
                     types = merge_types(types)
                     all_results[code] = {
                         "types": types,
@@ -388,22 +505,22 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                     updated_list.append({"code": code, "name": info["name"], "date": page_last_updated})
                 except Exception as e:
                     print(f"[KRİTİK HATA] {code} çekilemedi: {e}")
-            
+
             browser.close()
 
         if updated_count == 0:
             return {"status": "success", "updated": [], "skipped": skipped_list, "message": "Tüm havayolu filoları zaten güncel."}
 
-        # fleet.json'ı güncelle
+        # fleet verisini bellekte güncelle
         for code, data in all_results.items():
             new_types = data["types"]
             page_last_updated = data["planespotters_last_updated"]
-            
+
             ca = sum(int(t.get("a") or 0) for t in new_types)
             ci = sum(int(t.get("i") or 0) for t in new_types)
             ct = sum(int(t.get("t") or 0) for t in new_types)
             co = sum(int(t.get("o") or 0) for t in new_types)
-            
+
             total_age_sum = 0.0
             total_count = 0
             for t in new_types:
@@ -416,7 +533,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                     except ValueError:
                         pass
             k1age = round(total_age_sum / total_count, 1) if total_count > 0 else None
-            
+
             fleet_data[code]["types"] = new_types
             fleet_data[code]["ca"] = ca
             fleet_data[code]["ci"] = ci
@@ -426,51 +543,73 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             fleet_data[code]["po"] = co
             fleet_data[code]["k1age"] = k1age
             fleet_data[code]["planespotters_last_updated"] = page_last_updated
-            
-        with open(fleet_json_path, "w", encoding="utf-8") as f:
-            json.dump(fleet_data, f, indent=1, ensure_ascii=False)
-            
-        # 4. Tarihsel yedeği kaydet
-        today_str = datetime.now().strftime("%Y-%m-%d")
-        history_file_path = os.path.join(history_dir, f"{today_str}.json")
-        
-        # fleet.json kopyasını kaydet
-        with open(history_file_path, "w", encoding="utf-8") as f:
-            json.dump(fleet_data, f, indent=1, ensure_ascii=False)
-            
-        # Tarih indeksini güncelle
-        history_index = []
-        if os.path.exists(history_index_path):
-            with open(history_index_path, "r", encoding="utf-8") as f:
-                history_index = json.load(f)
-        if today_str not in history_index:
-            history_index.append(today_str)
-            with open(history_index_path, "w", encoding="utf-8") as f:
-                json.dump(history_index, f, indent=1, ensure_ascii=False)
 
-        # 5. Cloudflare Workers KV'ye Gönder
-        print("Veriler Cloudflare Workers KV'ye gönderiliyor...")
-        cf_url = "https://api-fleet.emredemirbas.com/api/save-fleet"
+        # Cloudflare Workers KV'ye gönder (tek yazma noktası)
+        today_str = datetime.now().strftime("%Y-%m-%d")
         payload = {
-            "password": expected_pwd,
+            "password": pwd,
             "fleet": fleet_data,
             "date": today_str
         }
-        try:
-            import urllib.request
-            req = urllib.request.Request(
-                cf_url,
-                data=json.dumps(payload).encode('utf-8'),
-                headers={'Content-Type': 'application/json'},
-                method='POST'
-            )
-            with urllib.request.urlopen(req, timeout=15) as response:
-                res_body = response.read().decode('utf-8')
-                print(f"Cloudflare Workers yanıtı: {res_body}")
-        except Exception as cf_err:
-            print(f"Cloudflare KV güncelleme hatası: {cf_err}")
+        print("Veriler Cloudflare Workers KV'ye gönderiliyor...")
+        cf_res = api_post('/api/save-fleet', payload)
+        print(f"Cloudflare Workers yanıtı: {cf_res}")
 
         return {"status": "success", "updated": updated_list, "skipped": skipped_list}
+
+def run_aircraft_scraping(cookies, pwd):
+    """Tüm havayollarının tescil bazlı uçak listesini tarar ve KV'ye yazar.
+    Arka plan thread'inde çalışır; durum AC_STATE üzerinden izlenir."""
+    try:
+        all_aircrafts = []
+        per_airline = {}
+        with sync_playwright() as p:
+            browserless_url = os.environ.get('BROWSERLESS_URL')
+            if browserless_url:
+                print(f"[AC] Browserless bağlantısı kuruluyor: {browserless_url}")
+                browser = p.chromium.connect_over_cdp(browserless_url)
+            else:
+                browser = p.chromium.launch(headless=True)
+
+            context = browser.new_context(
+                user_agent=user_agent,
+                viewport={"width": 1440, "height": 900},
+                locale="en-US"
+            )
+            context.add_cookies(cookies)
+            page = context.new_page()
+            page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
+            for code, info in airlines.items():
+                print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...")
+                try:
+                    ac_list = extract_aircraft_list(page, info['slug'])
+                    for rec in ac_list:
+                        rec["airline"] = code
+                        rec["airlineName"] = info["name"]
+                    all_aircrafts.extend(ac_list)
+                    per_airline[code] = len(ac_list)
+                except Exception as e:
+                    print(f"[AC][HATA] {code} uçak listesi çekilemedi: {e}")
+                    per_airline[code] = 0
+
+            browser.close()
+
+        if not all_aircrafts:
+            raise Exception("Hiç uçak kaydı çekilemedi — çerezler geçersiz olabilir.")
+
+        print(f"[AC] {len(all_aircrafts)} uçak kaydı KV'ye gönderiliyor...")
+        cf_res = api_post('/api/save-aircrafts', {"password": pwd, "aircrafts": all_aircrafts})
+        print(f"[AC] Cloudflare Workers yanıtı: {cf_res}")
+
+        AC_STATE.update({"running": False, "error": None, "result": {
+            "aircraft_count": len(all_aircrafts),
+            "per_airline": per_airline,
+            "finished_at": datetime.now().isoformat(timespec='seconds')
+        }})
+    except Exception as e:
+        print(f"[AC][KRİTİK] Uçak listesi taraması başarısız: {e}")
+        AC_STATE.update({"running": False, "result": None, "error": str(e)})
 
 def run_server():
     server_address = ('', PORT)

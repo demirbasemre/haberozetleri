@@ -3850,9 +3850,9 @@
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13 0h3a2 2 0 0 0 2-2v-3"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
             Karşılaştır
           </button>
-          <button class="fdd-btn fleet-src-pill" data-src="history_diff" id="fleet-src-diff" style="font-size:11.5px;padding:4px 12px">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M12 20V10M18 20V4M6 20v-6"/></svg>
-            Değişim Analizi
+          <button class="fdd-btn fleet-src-pill" data-src="aircrafts" id="fleet-src-ac" style="font-size:11.5px;padding:4px 12px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Uçak Listesi
           </button>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
@@ -3892,6 +3892,10 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
           Tablo Görünümü
         </button>
+        <button class="flt-view-btn" id="flt-view-diff-btn" onclick="switchFleetView('diff')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 20V10M18 20V4M6 20v-6"/></svg>
+          Değişim Analizi
+        </button>
       </div>
 
       <!-- Kaynak 1 kart grid — buildK1Cards() ile dinamik doldurulur -->
@@ -3906,6 +3910,39 @@
         </table>
       </div>
 
+      <!-- ══════ DEĞİŞİM ANALİZİ GÖRÜNÜMÜ ══════ -->
+      <div id="fleet-diff-content" style="display:none">
+        <!-- Kontrol paneli -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;background:var(--bg-secondary);padding:12px;border-radius:8px;border:1px solid var(--border-color);">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Başlangıç Tarihi:</span>
+            <select id="fleet-diff-start-date" onchange="calculateFleetDiff()" style="font-size:11.5px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;cursor:pointer;"></select>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Bitiş Tarihi:</span>
+            <select id="fleet-diff-end-date" onchange="calculateFleetDiff()" style="font-size:11.5px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;cursor:pointer;"></select>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-3);margin-left:auto;font-weight:500;" id="fleet-diff-status">İki tarih arasındaki filo değişimleri listeleniyor.</div>
+        </div>
+
+        <!-- Değişim Analizi Tablosu -->
+        <div class="flt-table-wrap">
+          <table class="flt-table" id="fleet-diff-table">
+            <thead>
+              <tr>
+                <th style="text-align:left">Havayolu / Uçak Modeli</th>
+                <th style="text-align:left">Kategori</th>
+                <th style="text-align:right">Aktif Fark</th>
+                <th style="text-align:right">Park Fark</th>
+                <th style="text-align:right">Toplam Fark</th>
+                <th style="text-align:right">Sipariş Fark</th>
+              </tr>
+            </thead>
+            <tbody id="fleet-diff-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="fin-table-footnotes" style="display:flex;margin-top:8px">
         <div class="fin-footnote-item">
           <span class="fin-footnote-symbol">†</span>
@@ -3913,6 +3950,43 @@
         </div>
       </div>
       </div><!-- /fleet-k1-content -->
+
+      <!-- ══════ UÇAK LİSTESİ GÖRÜNÜMÜ ══════ -->
+      <div id="fleet-ac-content" style="display:none">
+        <!-- Arama ve Filtreleme çubuğu -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;background:var(--bg-secondary);padding:12px;border-radius:8px;border:1px solid var(--border-color);">
+          <div style="display:flex;align-items:center;gap:6px;flex:1;min-width:200px;">
+            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Ara:</span>
+            <input type="text" id="fleet-ac-search" oninput="filterAircraftList()" placeholder="Tescil, tip, havayolu veya isim..." style="font-size:11.5px;padding:5px 10px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;width:100%;">
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Havayolu:</span>
+            <select id="fleet-ac-filter-airline" onchange="filterAircraftList()" style="font-size:11.5px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;cursor:pointer;"></select>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-3);font-weight:500;" id="fleet-ac-count">Toplam 0 uçak listeleniyor.</div>
+          <button class="fdd-btn" id="fleet-ac-update-btn" onclick="triggerAircraftUpdate()" style="margin-left:auto;font-size:11px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;display:flex;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;" title="Planespotters'tan tescil bazlı uçak listesini çek (yalnızca bu sekmeyi günceller)">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Listeyi Güncelle
+          </button>
+        </div>
+
+        <!-- Uçak Listesi Tablosu -->
+        <div class="flt-table-wrap">
+          <table class="flt-table" id="fleet-ac-table">
+            <thead>
+              <tr>
+                <th style="text-align:left">Havayolu</th>
+                <th style="text-align:left">Tescil (Reg)</th>
+                <th style="text-align:left">Uçak Tipi</th>
+                <th style="text-align:left">Koltuk (Config)</th>
+                <th style="text-align:left">Teslimat Tarihi</th>
+                <th style="text-align:left">Açıklama (Remark)</th>
+              </tr>
+            </thead>
+            <tbody id="fleet-ac-tbody"></tbody>
+          </table>
+        </div>
+      </div>
 
       <!-- ══════ CH AVIATION GÖRÜNÜMÜ ══════ -->
       <div id="fleet-k2-content" style="display:none">
@@ -3991,38 +4065,7 @@
         </div>
       </div>
 
-      <!-- ══════ DEĞİŞİM ANALİZİ GÖRÜNÜMÜ ══════ -->
-      <div id="fleet-diff-content" style="display:none">
-        <!-- Kontrol paneli -->
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;background:var(--bg-secondary);padding:12px;border-radius:8px;border:1px solid var(--border-color);">
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Başlangıç Tarihi:</span>
-            <select id="fleet-diff-start-date" onchange="calculateFleetDiff()" style="font-size:11.5px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;cursor:pointer;"></select>
-          </div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="font-size:11.5px;font-weight:600;color:var(--text-1)">Bitiş Tarihi:</span>
-            <select id="fleet-diff-end-date" onchange="calculateFleetDiff()" style="font-size:11.5px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);outline:none;cursor:pointer;"></select>
-          </div>
-          <div style="font-size:11.5px;color:var(--text-3);margin-left:auto;font-weight:500;" id="fleet-diff-status">İki tarih arasındaki filo değişimleri listeleniyor.</div>
-        </div>
 
-        <!-- Değişim Analizi Tablosu -->
-        <div class="flt-table-wrap">
-          <table class="flt-table" id="fleet-diff-table">
-            <thead>
-              <tr>
-                <th style="text-align:left">Havayolu / Uçak Modeli</th>
-                <th style="text-align:left">Kategori</th>
-                <th style="text-align:right">Aktif Fark</th>
-                <th style="text-align:right">Park Fark</th>
-                <th style="text-align:right">Toplam Fark</th>
-                <th style="text-align:right">Sipariş Fark</th>
-              </tr>
-            </thead>
-            <tbody id="fleet-diff-tbody"></tbody>
-          </table>
-        </div>
-      </div>
 
       <!-- ══════ FİLO GÜNCELLEME ÖZET MODALİ ══════ -->
       <div id="fleet-summary-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fleet-summary-title">
@@ -23267,17 +23310,121 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('hashchange', handleHashRouting);
 });
 
+// ── Uçak Listesi (tescil bazlı, KV'den) ─────────────────────
+(function() {
+  let _acData = null;
+  const _acApiBase = () => (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+    ? 'http://127.0.0.1:5005' : 'https://api-fleet.emredemirbas.com';
+  window.loadAircraftList = async function() {
+    const tbody = document.getElementById('fleet-ac-tbody');
+    const cnt = document.getElementById('fleet-ac-count');
+    if (!tbody) return;
+    if (!_acData) {
+      if (cnt) cnt.textContent = 'Yükleniyor…';
+      try {
+        const res = await fetch('https://api-fleet.emredemirbas.com/api/get-aircrafts');
+        _acData = await res.json();
+        if (!Array.isArray(_acData)) _acData = [];
+      } catch(e) { _acData = []; }
+      const sel = document.getElementById('fleet-ac-filter-airline');
+      if (sel) {
+        const names = {};
+        _acData.forEach(a => { if (a.airline) names[a.airline] = a.airlineName || a.airline; });
+        sel.innerHTML = '<option value="">Tümü</option>' + Object.entries(names)
+          .sort((x,y)=>x[1].localeCompare(y[1],'tr'))
+          .map(([c,n])=>`<option value="${c}">${n} (${c})</option>`).join('');
+      }
+    }
+    filterAircraftList();
+  };
+  window.filterAircraftList = function() {
+    const tbody = document.getElementById('fleet-ac-tbody');
+    const cnt = document.getElementById('fleet-ac-count');
+    if (!tbody || !_acData) return;
+    const q = (document.getElementById('fleet-ac-search')?.value || '').toLowerCase().trim();
+    const air = document.getElementById('fleet-ac-filter-airline')?.value || '';
+    const rows = _acData.filter(a => {
+      if (air && a.airline !== air) return false;
+      if (!q) return true;
+      return [a.reg, a.type, a.airlineName, a.airline, a.config, a.remark].some(v => (v||'').toLowerCase().includes(q));
+    });
+    if (cnt) cnt.textContent = _acData.length
+      ? `Toplam ${rows.length} uçak listeleniyor.`
+      : 'Veri yok — "Listeyi Güncelle" ile uçak listesini bir kez çekmek gerekiyor.';
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    tbody.innerHTML = rows.map(a => `<tr>
+      <td>${esc(a.airlineName || a.airline) || '—'}</td>
+      <td style="font-family:monospace">${esc(a.reg) || '—'}</td>
+      <td>${esc(a.type) || '—'}</td>
+      <td>${esc(a.config) || '—'}</td>
+      <td>${esc(a.delivered) || '—'}</td>
+      <td>${esc(a.remark) || '—'}</td>
+    </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:20px">Kayıt bulunamadı.</td></tr>';
+  };
+  // ── Uçak Listesi güncelleme (yalnızca bu sekme; arka planda tarar, durumu yoklar) ──
+  window.triggerAircraftUpdate = function() {
+    window._fleetPwdTarget = 'aircrafts';
+    const pwd = localStorage.getItem('fleet_update_password') || '';
+    if (!pwd) {
+      const input = document.getElementById('fleet-update-password-input');
+      if (input) input.value = '';
+      const modal = document.getElementById('fleet-password-modal');
+      if (modal) modal.style.display = 'flex';
+      setTimeout(() => input && input.focus(), 150);
+      return;
+    }
+    runAircraftUpdateWithPassword(pwd);
+  };
+  window.runAircraftUpdateWithPassword = async function(pwd) {
+    const btn = document.getElementById('fleet-ac-update-btn');
+    if (!btn || btn.disabled) return;
+    const origHtml = btn.innerHTML;
+    const setBusy = txt => { btn.disabled = true; btn.style.opacity = '0.7'; btn.textContent = txt; };
+    const setIdle = () => { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = origHtml; };
+    setBusy('Başlatılıyor…');
+    try {
+      const res = await fetch(_acApiBase() + '/api/update-aircrafts', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ cookies: localStorage.getItem('fleet_cf_cookies') || '', password: pwd })
+      });
+      if (res.status === 401) { localStorage.removeItem('fleet_update_password'); throw new Error('Girdiğiniz şifre geçersizdir.'); }
+      const data = await res.json();
+      if (res.status !== 202 && !res.ok) throw new Error(data.message || 'Sunucu isteği reddetti.');
+      localStorage.setItem('fleet_update_password', pwd);
+      const t0 = Date.now();
+      const poll = async () => {
+        if (Date.now() - t0 > 30*60*1000) { setIdle(); alert('Uçak listesi taraması zaman aşımına uğradı (30 dk).'); return; }
+        setBusy('Taranıyor… ' + Math.round((Date.now()-t0)/1000) + 's');
+        try {
+          const sr = await fetch(_acApiBase() + '/api/aircraft-status');
+          const st = await sr.json();
+          if (st.running) { setTimeout(poll, 10000); return; }
+          setIdle();
+          if (st.error) { alert('Uçak listesi güncellenemedi: ' + st.error); return; }
+          _acData = null;
+          await window.loadAircraftList();
+          alert('Uçak listesi güncellendi: ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt.');
+        } catch(e) { setTimeout(poll, 10000); }
+      };
+      setTimeout(poll, 5000);
+    } catch(e) {
+      setIdle();
+      alert('Uçak listesi güncellenemedi: ' + e.message);
+    }
+  };
+})();
+
 (function() {
   // ── Kaynak geçiş ──────────────────────────────────
   function switchFleetSrc(src) {
-    ['k1','k2','cmp','diff'].forEach(s => {
+    ['k1','k2','cmp','ac'].forEach(s => {
       const btn = document.getElementById('fleet-src-' + s);
-      if (btn) btn.classList.toggle('fdd-btn--active', s === src.replace('kaynak1','k1').replace('kaynak2','k2').replace('compare','cmp').replace('history_diff','diff'));
+      if (btn) btn.classList.toggle('fdd-btn--active', s === src.replace('kaynak1','k1').replace('kaynak2','k2').replace('compare','cmp').replace('aircrafts','ac'));
     });
     const k1  = document.getElementById('fleet-k1-content');
     const k2  = document.getElementById('fleet-k2-content');
     const cmp = document.getElementById('fleet-cmp-content');
-    const diff = document.getElementById('fleet-diff-content');
+    const ac  = document.getElementById('fleet-ac-content');
     const dt  = document.getElementById('fleet-src-date');
     const catBar = document.getElementById('fleet-cat-bar');
     // Cache sıfırla filtre değişince yeniden build etmek için
@@ -23288,16 +23435,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (k1)  k1.style.display  = '';
       if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = 'none';
-      if (diff) diff.style.display = 'none';
+      if (ac)  ac.style.display  = 'none';
       if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: 1 Tem 2026)';
       if (catBar) catBar.style.display = '';
-      buildK1Cards();
-      if (_fleetView === 'table') buildFleetTable();
+      switchFleetView(_fleetView);
     } else if (src === 'kaynak2') {
       if (k1)  k1.style.display  = 'none';
       if (k2)  k2.style.display = '';
       if (cmp) cmp.style.display = 'none';
-      if (diff) diff.style.display = 'none';
+      if (ac)  ac.style.display  = 'none';
       if (dt)  dt.textContent    = 'Kaynak 2 · 1 Tem 2026';
       if (catBar) catBar.style.display = '';
       buildK2Cards();
@@ -23305,18 +23451,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (k1)  k1.style.display  = 'none';
       if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = '';
-      if (diff) diff.style.display = 'none';
+      if (ac)  ac.style.display  = 'none';
       if (dt)  dt.textContent    = 'Kaynak 1 + Kaynak 2 · 1 Tem 2026';
       if (catBar) catBar.style.display = 'none';
       buildCmpTable();
-    } else if (src === 'history_diff') {
+    } else if (src === 'aircrafts') {
       if (k1)  k1.style.display  = 'none';
       if (k2)  k2.style.display = 'none';
       if (cmp) cmp.style.display = 'none';
-      if (diff) diff.style.display = '';
-      if (dt)  dt.textContent    = 'Filo Değişim Analizi';
+      if (ac)  ac.style.display  = '';
+      if (dt)  dt.textContent    = 'Detaylı Uçak Listesi';
       if (catBar) catBar.style.display = 'none';
-      loadHistoryIndex();
+      loadAircraftList();
     }
   }
 
@@ -23992,10 +24138,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     closeFleetPasswordModal();
-    runUpdateWithPassword(pwd);
+    if (window._fleetPwdTarget === 'aircrafts') runAircraftUpdateWithPassword(pwd);
+    else runUpdateWithPassword(pwd);
   };
 
   window.triggerFleetUpdate = async function() {
+    window._fleetPwdTarget = 'fleet';
     let pwd = localStorage.getItem('fleet_update_password') || '';
     if (!pwd) {
       const input = document.getElementById('fleet-update-password-input');
