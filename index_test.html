@@ -23420,9 +23420,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── Uçak Listesi (tescil bazlı, KV'den) ─────────────────────
 (function() {
   let _acData = null;
+  let _acMeta = null;     // KV meta: {updatedAt, count} — kayıtlarda tarih yoksa etikette kullanılır
   let _acAirline = null;  // seçili havayolu kodu (tek seçim)
   const _acApiBase = () => (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
     ? 'http://127.0.0.1:5005' : 'https://api-fleet.emredemirbas.com';
+  // getAircraftsLastUpdated ayrı IIFE'de yaşar; veriye bu köprülerle erişir
+  window._acGetData = () => _acData;
+  window._acGetMeta = () => _acMeta;
 
   let _acNames = {};
   function _acAirName(code) {
@@ -23473,9 +23477,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!_acData) {
       if (cnt) cnt.textContent = 'Yükleniyor…';
       try {
-        const res = await fetch('https://api-fleet.emredemirbas.com/api/get-aircrafts');
+        const [res, metaRes] = await Promise.all([
+          fetch('https://api-fleet.emredemirbas.com/api/get-aircrafts'),
+          fetch('https://api-fleet.emredemirbas.com/api/get-aircrafts-meta').catch(() => null)
+        ]);
         _acData = await res.json();
         if (!Array.isArray(_acData)) _acData = [];
+        if (metaRes && metaRes.ok) { try { _acMeta = await metaRes.json(); } catch(e) {} }
       } catch(e) { _acData = []; }
       _acNames = {};
       _acData.forEach(a => { if (a.airline && a.airlineName) _acNames[a.airline] = a.airlineName; });
@@ -23858,18 +23866,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.getAircraftsLastUpdated = function() {
-    if (typeof _acData === 'undefined' || !_acData || !_acData.length) return 'Yükleniyor...';
+    const data = (typeof window._acGetData === 'function') ? window._acGetData() : null;
+    if (!data) return 'Yükleniyor...';
     let latest = '';
-    for (const a of _acData) {
+    for (const a of data) {
       if (a.updated && a.updated > latest) {
         latest = a.updated;
       }
     }
     if (!latest) {
-      const found = _acData.find(a => a.updated);
+      const found = data.find(a => a.updated);
       if (found) latest = found.updated;
     }
-    return latest ? formatPlanespottersDate(latest) : 'Bilinmiyor';
+    if (latest) return formatPlanespottersDate(latest);
+    // Kayıtlarda tarih yoksa KV'ye son yazma zamanına (meta) düş
+    const meta = (typeof window._acGetMeta === 'function') ? window._acGetMeta() : null;
+    if (meta && meta.updatedAt) {
+      const d = new Date(meta.updatedAt);
+      if (!isNaN(d)) return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    return data.length ? 'Bilinmiyor' : 'Veri yok';
   };
 
   // ── Kaynak geçiş ──────────────────────────────────
@@ -24624,6 +24640,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.triggerFleetUpdate = async function() {
+    // Uçak Listesi sekmesindeyken bu buton tescil listesi güncellemesini başlatır
+    const activeSrc = document.querySelector('.fleet-src-pill.fdd-btn--active')?.dataset.src;
+    if (activeSrc === 'aircrafts' && typeof window.triggerAircraftUpdate === 'function') {
+      window.triggerAircraftUpdate();
+      return;
+    }
     window._fleetPwdTarget = 'fleet';
     let pwd = localStorage.getItem('fleet_update_password') || '';
     if (!pwd) {
@@ -24637,111 +24659,166 @@ document.addEventListener('DOMContentLoaded', () => {
     runUpdateWithPassword(pwd);
   };
 
-  window.runUpdateWithPassword = async function(pwd) {
-    const btn = document.getElementById('fleet-update-btn');
-    const spinner = document.getElementById('update-btn-spinner');
-    if (!btn) return;
-    
-    btn.disabled = true;
-    btn.style.opacity = '0.7';
-    btn.textContent = "Güncelleniyor...";
-    if (spinner) spinner.style.transform = 'rotate(360deg)';
-    
-    const savedCookies = localStorage.getItem('fleet_cf_cookies') || '';
-    
-    try {
-      const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-        ? 'http://127.0.0.1:5005/api/update-fleet' 
-        : 'https://api-fleet.emredemirbas.com/api/update-fleet';
-      
-      const res = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ cookies: savedCookies, password: pwd, ua: navigator.userAgent })
-      });
-      
-      if (res.status === 401) {
-        localStorage.removeItem('fleet_update_password');
-        throw new Error("Girdiğiniz şifre geçersizdir.");
-      }
-      
-      if (!res.ok) {
-        const errJson = await res.json();
-        throw new Error(errJson.message || "Sunucu güncelleme isteğini reddetti.");
-      }
-      
-      localStorage.setItem('fleet_update_password', pwd);
-      const data = await res.json();
-      
-      // Popup özet tablosunu oluştur
-      const summaryBody = document.getElementById('fleet-summary-body');
-      if (summaryBody) {
-        let html = '';
-        
-        if (data.updated && data.updated.length > 0) {
-          html += `
-            <div style="font-weight: 600; color: #059669; font-size: 12px; display: flex; align-items: center; gap: 4px;">
-              <span style="display:inline-block;width:6px;height:6px;background:#059669;border-radius:50%"></span>
-              Güncellenen Havayolları (${data.updated.length})
-            </div>
-            <table class="flt-detail-table" style="width:100%; font-size:11px; border-collapse:collapse; margin-bottom:8px;">
-              <thead>
-                <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-3); text-align: left;">
-                  <th style="padding:4px 0;">Havayolu</th>
-                  <th style="padding:4px 0; text-align:right;">Yeni Güncelleme Tarihi</th>
+  function showFleetSummary(data) {
+    // Popup özet tablosunu oluştur
+    const summaryBody = document.getElementById('fleet-summary-body');
+    if (summaryBody) {
+      let html = '';
+
+      if (data.updated && data.updated.length > 0) {
+        html += `
+          <div style="font-weight: 600; color: #059669; font-size: 12px; display: flex; align-items: center; gap: 4px;">
+            <span style="display:inline-block;width:6px;height:6px;background:#059669;border-radius:50%"></span>
+            Güncellenen Havayolları (${data.updated.length})
+          </div>
+          <table class="flt-detail-table" style="width:100%; font-size:11px; border-collapse:collapse; margin-bottom:8px;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-3); text-align: left;">
+                <th style="padding:4px 0;">Havayolu</th>
+                <th style="padding:4px 0; text-align:right;">Yeni Güncelleme Tarihi</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.updated.map(a => `
+                <tr style="border-bottom: 1px dashed var(--border-soft);">
+                  <td style="padding:5px 0; font-weight:600; color:var(--text-1);">${a.name} (${a.code})</td>
+                  <td style="padding:5px 0; text-align:right; color:var(--text-2);">${a.date || '—'}</td>
                 </tr>
-              </thead>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      if (data.skipped && data.skipped.length > 0) {
+        html += `
+          <div style="font-weight: 600; color: var(--text-3); font-size: 12px; display: flex; align-items: center; gap: 4px; margin-top: 6px;">
+            <span style="display:inline-block;width:6px;height:6px;background:var(--text-3);border-radius:50%"></span>
+            Değişiklik Olmayan Havayolları (${data.skipped.length})
+          </div>
+          <div style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 8px; background: var(--bg-soft);">
+            <table class="flt-detail-table" style="width:100%; font-size:10.5px; border-collapse:collapse;">
               <tbody>
-                ${data.updated.map(a => `
-                  <tr style="border-bottom: 1px dashed var(--border-soft);">
-                    <td style="padding:5px 0; font-weight:600; color:var(--text-1);">${a.name} (${a.code})</td>
-                    <td style="padding:5px 0; text-align:right; color:var(--text-2);">${a.date || '—'}</td>
+                ${data.skipped.map(a => `
+                  <tr style="border-bottom: 1px solid var(--border-soft);">
+                    <td style="padding:4px 0; color:var(--text-2);">${a.name} (${a.code})</td>
+                    <td style="padding:4px 0; text-align:right; color:var(--text-3); font-size:9.5px;">Güncel (${a.date || '—'})</td>
                   </tr>
                 `).join('')}
               </tbody>
             </table>
-          `;
-        }
-        
-        if (data.skipped && data.skipped.length > 0) {
-          html += `
-            <div style="font-weight: 600; color: var(--text-3); font-size: 12px; display: flex; align-items: center; gap: 4px; margin-top: 6px;">
-              <span style="display:inline-block;width:6px;height:6px;background:var(--text-3);border-radius:50%"></span>
-              Değişiklik Olmayan Havayolları (${data.skipped.length})
-            </div>
-            <div style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 8px; background: var(--bg-soft);">
-              <table class="flt-detail-table" style="width:100%; font-size:10.5px; border-collapse:collapse;">
-                <tbody>
-                  ${data.skipped.map(a => `
-                    <tr style="border-bottom: 1px solid var(--border-soft);">
-                      <td style="padding:4px 0; color:var(--text-2);">${a.name} (${a.code})</td>
-                      <td style="padding:4px 0; text-align:right; color:var(--text-3); font-size:9.5px;">Güncel (${a.date || '—'})</td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          `;
-        }
-        
-        summaryBody.innerHTML = html;
+          </div>
+        `;
       }
-      
-      // Modali Göster
-      const modal = document.getElementById('fleet-summary-modal');
-      if (modal) modal.style.display = 'flex';
-      
-    } catch (err) {
-      alert("HATA: Güncelleme gerçekleştirilemedi.\n" + err.message + "\n\nNot: Eğer çerez hatası alıyorsanız, lütfen çerez butonuna tıklayarak güncel Planespotters çerezlerinizi yapıştırın.");
-    } finally {
+
+      if (data.failed && data.failed.length > 0) {
+        html += `
+          <div style="font-weight: 600; color: #dc2626; font-size: 12px; display: flex; align-items: center; gap: 4px; margin-top: 6px;">
+            <span style="display:inline-block;width:6px;height:6px;background:#dc2626;border-radius:50%"></span>
+            Güncellenemeyen Havayolları (${data.failed.length})
+          </div>
+          <div style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 8px; background: var(--bg-soft);">
+            <table class="flt-detail-table" style="width:100%; font-size:10.5px; border-collapse:collapse;">
+              <tbody>
+                ${data.failed.map(a => `
+                  <tr style="border-bottom: 1px solid var(--border-soft);">
+                    <td style="padding:4px 0; color:var(--text-2); white-space:nowrap;">${a.name} (${a.code})</td>
+                    <td style="padding:4px 0; text-align:right; color:#dc2626; font-size:9.5px;">${a.error || 'Çekilemedi'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      if (!html) {
+        html = `<div style="font-size:12px; color:var(--text-2); text-align:center; padding:16px;">${data.message || 'Hiçbir havayolu güncellenemedi.'}</div>`;
+      } else if (data.message) {
+        html += `<div style="font-size:11px; color:var(--text-3); margin-top:6px;">${data.message}</div>`;
+      }
+
+      summaryBody.innerHTML = html;
+    }
+
+    // Modali Göster
+    const modal = document.getElementById('fleet-summary-modal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  window.runUpdateWithPassword = async function(pwd) {
+    const btn = document.getElementById('fleet-update-btn');
+    const spinner = document.getElementById('update-btn-spinner');
+    if (!btn || btn.disabled) return;
+
+    const setBusy = txt => { btn.disabled = true; btn.style.opacity = '0.7'; btn.textContent = txt; };
+    const setIdle = () => {
       btn.disabled = false;
       btn.style.opacity = '1';
       btn.innerHTML = `
         <svg id="update-btn-spinner" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
         Canlı Güncelle
       `;
+    };
+
+    setBusy("Güncelleniyor...");
+    if (spinner) spinner.style.transform = 'rotate(360deg)';
+
+    const savedCookies = localStorage.getItem('fleet_cf_cookies') || '';
+    const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://127.0.0.1:5005'
+      : 'https://api-fleet.emredemirbas.com';
+
+    try {
+      const res = await fetch(base + '/api/update-fleet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cookies: savedCookies, password: pwd, ua: navigator.userAgent })
+      });
+
+      if (res.status === 401) {
+        localStorage.removeItem('fleet_update_password');
+        throw new Error("Girdiğiniz şifre geçersizdir.");
+      }
+
+      // 202: tarama başlatıldı; 409: zaten sürüyor → her iki durumda da durumu yokla
+      if (!res.ok && res.status !== 202 && res.status !== 409) {
+        const errJson = await res.json();
+        throw new Error(errJson.message || "Sunucu güncelleme isteğini reddetti.");
+      }
+
+      localStorage.setItem('fleet_update_password', pwd);
+
+      // Tarama arka planda sürer (dakikalar alabilir); /api/fleet-status yoklanır
+      const t0 = Date.now();
+      const poll = async () => {
+        if (Date.now() - t0 > 30 * 60 * 1000) {
+          setIdle();
+          alert('Filo güncellemesi zaman aşımına uğradı (30 dk).');
+          return;
+        }
+        setBusy('Güncelleniyor… ' + Math.round((Date.now() - t0) / 1000) + 's');
+        try {
+          const sr = await fetch(base + '/api/fleet-status');
+          const st = await sr.json();
+          if (st.running) { setTimeout(poll, 10000); return; }
+          setIdle();
+          if (st.error) {
+            alert("HATA: Güncelleme gerçekleştirilemedi.\n" + st.error + "\n\nNot: Eğer çerez hatası alıyorsanız, lütfen çerez butonuna tıklayarak güncel Planespotters çerezlerinizi yapıştırın.");
+            return;
+          }
+          showFleetSummary(st.result || {});
+        } catch (e) {
+          setTimeout(poll, 10000);
+        }
+      };
+      setTimeout(poll, 3000);
+
+    } catch (err) {
+      setIdle();
+      alert("HATA: Güncelleme gerçekleştirilemedi.\n" + err.message + "\n\nNot: Eğer çerez hatası alıyorsanız, lütfen çerez butonuna tıklayarak güncel Planespotters çerezlerinizi yapıştırın.");
     }
   };
 })();

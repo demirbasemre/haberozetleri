@@ -24,9 +24,19 @@ AC_STATE = {
     "total_pages": 0,
     "completed_airlines": []
 }
+# Filo matrisi (tip özeti) arka plan tarama durumu
+FLEET_STATE = {
+    "running": False,
+    "result": None,
+    "error": None,
+    "started_at": None,
+    "current_airline": None,
+    "current_airline_name": None,
+    "completed_airlines": []
+}
 API_BASE = os.environ.get('FLEET_API_BASE', 'https://api-fleet.emredemirbas.com')
 # FlareSolverr: planespotters'ın Cloudflare + site-içi Turnstile katmanını geçmek için.
-# Uçak listesi (tescil bazlı) YALNIZCA bu yolla çekilir; matris hâlâ Playwright kullanır.
+# Uçak listesi (tescil bazlı) bu yolla çekilir; matris Playwright/Browserless kullanır.
 FLARESOLVERR_URL = os.environ.get('FLARESOLVERR_URL', 'http://192.168.3.100:8191/v1')
 user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"
 
@@ -400,6 +410,11 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(json.dumps(AC_STATE).encode('utf-8'))
+        elif self.path == '/api/fleet-status':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps(FLEET_STATE).encode('utf-8'))
         else:
             self.send_response(404)
             self.end_headers()
@@ -456,16 +471,25 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == '/api/update-fleet':
+            if FLEET_STATE["running"]:
+                self._json_response(409, {"error": "Busy", "message": "Filo matrisi taraması zaten sürüyor."})
+                return
             auth = self._parse_auth_and_cookies()
             if not auth:
                 return
             cookies, pwd, ua = auth
-            try:
-                result = self.process_scraping(cookies, pwd, ua)
-                self._json_response(200, result)
-            except Exception as e:
-                print(f"Scraping error: {e}")
-                self._json_response(500, {"error": "ServerError", "message": str(e)})
+            FLEET_STATE.update({
+                "running": True,
+                "result": None,
+                "error": None,
+                "started_at": datetime.now().isoformat(timespec='seconds'),
+                "current_airline": None,
+                "current_airline_name": None,
+                "completed_airlines": []
+            })
+            t = threading.Thread(target=run_fleet_scraping, args=(cookies, pwd, ua), daemon=True)
+            t.start()
+            self._json_response(202, {"status": "started", "message": "Filo matrisi taraması arka planda başlatıldı."})
 
         elif self.path == '/api/update-aircrafts':
             if AC_STATE["running"]:
@@ -494,7 +518,10 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-    def process_scraping(self, cookies, pwd, ua=None):
+def run_fleet_scraping(cookies, pwd, ua=None):
+    """Filo matrisini (havayolu başına tip özeti) FlareSolverr ile tarar ve KV'ye yazar.
+    Arka plan thread'inde çalışır; durum FLEET_STATE üzerinden izlenir."""
+    try:
         # Mevcut veriyi KV'den yükle (yerel dosya bağımlılığı yok)
         fleet_data = api_get('/api/get-fleet')
         if not isinstance(fleet_data, dict) or not fleet_data or "airlines" in fleet_data:
@@ -504,6 +531,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
         all_results = {}
         updated_list = []
         skipped_list = []
+        failed_list = []
 
         with sync_playwright() as p:
             browserless_url = os.environ.get('BROWSERLESS_URL')
@@ -524,6 +552,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
 
             for code, info in airlines.items():
                 print(f"\nScraping {info['name']} ({code})...", flush=True)
+                FLEET_STATE.update({"current_airline": code, "current_airline_name": info["name"]})
                 url = f"https://www.planespotters.net/airline/{info['slug']}"
 
                 # Önceki taranan "last updated" tarihini al
@@ -535,6 +564,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                     if types is None:
                         # Güncelleme tarihi değişmemiş, matris taraması atla
                         skipped_list.append({"code": code, "name": info["name"], "date": page_last_updated})
+                        FLEET_STATE["completed_airlines"].append({"code": code, "name": info["name"], "status": "skipped", "date": page_last_updated})
                         continue
 
                     mode = info.get("cargo_mode")
@@ -607,13 +637,25 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                     }
                     updated_count += 1
                     updated_list.append({"code": code, "name": info["name"], "date": page_last_updated})
+                    FLEET_STATE["completed_airlines"].append({"code": code, "name": info["name"], "status": "success", "date": page_last_updated})
                 except Exception as e:
-                    print(f"[KRİTİK HATA] {code} çekilemedi: {e}")
+                    print(f"[KRİTİK HATA] {code} çekilemedi: {e}", flush=True)
+                    failed_list.append({"code": code, "name": info["name"], "error": str(e)})
+                    FLEET_STATE["completed_airlines"].append({"code": code, "name": info["name"], "status": "failed", "error": str(e)})
 
             browser.close()
 
+        FLEET_STATE.update({"current_airline": None, "current_airline_name": None})
+
         if updated_count == 0:
-            return {"status": "success", "updated": [], "skipped": skipped_list, "message": "Tüm havayolu filoları zaten güncel."}
+            msg = "Hiçbir havayolu güncellenemedi." if failed_list else "Tüm havayolu filoları zaten güncel."
+            FLEET_STATE.update({"running": False, "error": None, "result": {
+                "status": "error" if failed_list and not skipped_list else "success",
+                "updated": [], "skipped": skipped_list, "failed": failed_list,
+                "message": msg,
+                "finished_at": datetime.now().isoformat(timespec='seconds')
+            }})
+            return
 
         # fleet verisini bellekte güncelle
         for code, data in all_results.items():
@@ -640,8 +682,8 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
 
             if code not in fleet_data:
                 fleet_data[code] = {
-                    "name": info["name"],
-                    "color": info.get("color", "#64748b")
+                    "name": airlines[code]["name"],
+                    "color": airlines[code].get("color", "#64748b")
                 }
             fleet_data[code]["types"] = new_types
             fleet_data[code]["ca"] = ca
@@ -664,7 +706,14 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
         cf_res = api_post('/api/save-fleet', payload)
         print(f"Cloudflare Workers yanıtı: {cf_res}")
 
-        return {"status": "success", "updated": updated_list, "skipped": skipped_list}
+        FLEET_STATE.update({"running": False, "error": None, "result": {
+            "status": "success",
+            "updated": updated_list, "skipped": skipped_list, "failed": failed_list,
+            "finished_at": datetime.now().isoformat(timespec='seconds')
+        }})
+    except Exception as e:
+        print(f"[FLEET][KRİTİK] Filo matrisi taraması başarısız: {e}", flush=True)
+        FLEET_STATE.update({"running": False, "result": None, "error": str(e)})
 
 def run_aircraft_scraping(cookies, pwd, ua=None):
     """Tüm havayollarının tescil bazlı uçak listesini Playwright ile tarar ve KV'ye yazar.

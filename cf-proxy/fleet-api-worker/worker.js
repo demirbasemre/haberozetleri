@@ -25,6 +25,11 @@ export default {
       return new Response(data || '[]', { headers: corsHeaders });
     }
 
+    if (method === 'GET' && path === '/api/get-aircrafts-meta') {
+      const data = await env.FLEET_DATA_KV.get('aircraft_list_meta');
+      return new Response(data || '{}', { headers: corsHeaders });
+    }
+
     if (method === 'GET' && path === '/api/get-history-index') {
       const data = await env.FLEET_DATA_KV.get('history_index');
       return new Response(data || '[]', { headers: corsHeaders });
@@ -91,6 +96,10 @@ export default {
         }
 
         await env.FLEET_DATA_KV.put('aircraft_list', JSON.stringify(body.aircrafts));
+        await env.FLEET_DATA_KV.put('aircraft_list_meta', JSON.stringify({
+          updatedAt: new Date().toISOString(),
+          count: body.aircrafts.length
+        }));
         return new Response(JSON.stringify({ success: true, count: body.aircrafts.length }), { headers: corsHeaders });
       } catch(e) {
         return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });
