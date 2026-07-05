@@ -174,6 +174,19 @@
   .fleet-type-mini-item { display:flex; align-items:center; gap:4px; color:var(--text-2); }
   .fleet-type-mini-dot { width:8px; height:8px; border-radius:2px; flex-shrink:0; }
 
+  /* ── Uçak Listesi tablosu: ilk sütun (Reg) hariç ortalı + sıralanabilir başlıklar ── */
+  #fleet-ac-table th:not(:first-child), #fleet-ac-table td:not(:first-child) { text-align: center; }
+  #fleet-ac-table th { cursor: pointer; user-select: none; transition: background 0.15s; }
+  #fleet-ac-table th:hover { background: color-mix(in srgb, var(--navy) 80%, white 20%); }
+  #fleet-ac-table th[aria-sort="ascending"],
+  #fleet-ac-table th[aria-sort="descending"] { background: color-mix(in srgb, var(--navy) 70%, var(--accent) 30%); }
+  .ac-sort-icon {
+    display: inline-block; margin-left: 4px; font-size: 9px; opacity: 0.35;
+    transition: opacity 0.15s; vertical-align: middle; line-height: 1;
+  }
+  #fleet-ac-table th[aria-sort="ascending"] .ac-sort-icon,
+  #fleet-ac-table th[aria-sort="descending"] .ac-sort-icon { opacity: 1; }
+
   /* ══════ FİNANSAL TABLOLAR ══════════════════════ */
   .fin-control-bar {
     display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start;
@@ -3989,13 +4002,13 @@
           <table class="flt-table" id="fleet-ac-table">
             <thead>
               <tr>
-                <th style="text-align:left">Tescil (Reg)</th>
-                <th style="text-align:left">Uçak Tipi</th>
-                <th style="text-align:left">Koltuk (Config)</th>
-                <th style="text-align:left">Uçak Adı</th>
-                <th class="acx-age">Yaş</th>
-                <th style="text-align:left">Teslimat</th>
-                <th style="text-align:left">Açıklama (Remark)</th>
+                <th style="text-align:left" id="ac-th-reg" onclick="sortAcTable('reg')">Tescil (Reg) <span class="ac-sort-icon">⇅</span></th>
+                <th id="ac-th-type" onclick="sortAcTable('type')">Uçak Tipi <span class="ac-sort-icon">⇅</span></th>
+                <th id="ac-th-config" onclick="sortAcTable('config')">Koltuk (Config) <span class="ac-sort-icon">⇅</span></th>
+                <th id="ac-th-name" onclick="sortAcTable('name')">Uçak Adı <span class="ac-sort-icon">⇅</span></th>
+                <th class="acx-age" id="ac-th-age" onclick="sortAcTable('age')">Yaş <span class="ac-sort-icon">⇅</span></th>
+                <th id="ac-th-delivered" onclick="sortAcTable('delivered')">Teslimat <span class="ac-sort-icon">⇅</span></th>
+                <th id="ac-th-remark" onclick="sortAcTable('remark')">Açıklama (Remark) <span class="ac-sort-icon">⇅</span></th>
               </tr>
             </thead>
             <tbody id="fleet-ac-tbody"></tbody>
@@ -23524,21 +23537,75 @@ window.classifyFleetError = function(msg) {
     }
   };
 
+  // ── Uçak Listesi tablosu sıralaması ──
+  let _acSort = { col: null, dir: 'none' }; // col: 'reg'|'type'|'config'|'name'|'age'|'delivered'|'remark'
+  const _AC_SORT_COLS = ['reg', 'type', 'config', 'name', 'age', 'delivered', 'remark'];
+  window.sortAcTable = function(col) {
+    if (_acSort.col === col) {
+      // none → desc → asc → none döngüsü (finansal tablolardaki gibi)
+      if      (_acSort.dir === 'none') _acSort.dir = 'desc';
+      else if (_acSort.dir === 'desc') _acSort.dir = 'asc';
+      else { _acSort.col = null; _acSort.dir = 'none'; }
+    } else {
+      _acSort.col = col;
+      _acSort.dir = 'desc';
+    }
+    filterAircraftList();
+  };
+  function _updateAcSortHeaders() {
+    _AC_SORT_COLS.forEach(col => {
+      const th = document.getElementById('ac-th-' + col);
+      if (!th) return;
+      const active = _acSort.col === col;
+      th.setAttribute('aria-sort', active ? (_acSort.dir === 'asc' ? 'ascending' : 'descending') : 'none');
+      const icon = th.querySelector('.ac-sort-icon');
+      if (icon) icon.textContent = active ? (_acSort.dir === 'asc' ? '↑' : '↓') : '⇅';
+    });
+  }
+  function _acSortValue(a, col) {
+    const v = a[col];
+    if (col === 'age') {
+      const n = parseFloat(v);
+      return isNaN(n) ? null : n;
+    }
+    if (col === 'delivered') {
+      const t = v ? new Date(v).getTime() : NaN;
+      return isNaN(t) ? (v || null) : t;
+    }
+    return (v || '').toString();
+  }
+
   window.filterAircraftList = function() {
     const tbody = document.getElementById('fleet-ac-tbody');
     const cnt = document.getElementById('fleet-ac-count');
     if (!tbody || !_acData) return;
+    _updateAcSortHeaders();
     const q = (document.getElementById('fleet-ac-search')?.value || '').toLowerCase().trim();
     if (!_acData.length) {
       if (cnt) cnt.textContent = 'Veri yok — "Listeyi Güncelle" ile uçak listesini bir kez çekmek gerekiyor.';
       tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:24px">Henüz uçak verisi yok.</td></tr>';
       return;
     }
-    const rows = _acData.filter(a => {
+    let rows = _acData.filter(a => {
       if (_acAirline && a.airline !== _acAirline) return false;
       if (!q) return true;
       return [a.reg, a.type, a.config, a.name, a.remark].some(v => (v || '').toLowerCase().includes(q));
     });
+    if (_acSort.col) {
+      const col = _acSort.col, dir = _acSort.dir;
+      rows = rows.slice().sort((a, b) => {
+        const va = _acSortValue(a, col), vb = _acSortValue(b, col);
+        const aEmpty = va === null || va === '';
+        const bEmpty = vb === null || vb === '';
+        if (aEmpty && bEmpty) return 0;
+        if (aEmpty) return 1;   // boş değerler her zaman en alta
+        if (bEmpty) return -1;
+        let cmp;
+        if (typeof va === 'number' && typeof vb === 'number') cmp = va - vb;
+        else cmp = String(va).localeCompare(String(vb), 'tr', { numeric: true, sensitivity: 'base' });
+        return dir === 'asc' ? cmp : -cmp;
+      });
+    }
     if (cnt) {
       const nm = _acAirline ? _acAirName(_acAirline) : 'Tümü';
       cnt.textContent = `${nm}: ${rows.length} uçak`;
@@ -23825,8 +23892,10 @@ window.classifyFleetError = function(msg) {
           setAcProgressAlert('success', 'Güncelleme tamamlandı', 'Uçak listesi başarıyla güncellendi: ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt.');
           _acData = null;
           await window.loadAircraftList();
-        } catch(e) { 
-          setTimeout(poll, 2000); 
+          // Aynı tarama filo matrisini de güncelledi (aynı sayfadan gelir) — Mevcut Filo görünümünü tazele
+          if (typeof window.reloadFleetMatrix === 'function') await window.reloadFleetMatrix();
+        } catch(e) {
+          setTimeout(poll, 2000);
         }
       };
       setTimeout(poll, 1000);
@@ -23986,6 +24055,38 @@ window.classifyFleetError = function(msg) {
     return data.length ? 'Bilinmiyor' : 'Veri yok';
   };
 
+  // Mevcut Filo (Kaynak 1) için havayolları arasındaki gerçek en son "Last updated" tarihi
+  window.getFleetMatrixLastUpdated = function() {
+    if (typeof FLEET_CMP_DATA === 'undefined' || !FLEET_CMP_DATA) return '1 Tem 2026';
+    const dates = Object.values(FLEET_CMP_DATA).map(a => a.planespotters_last_updated).filter(Boolean);
+    const best = dates.reduce((max, d) => {
+      const t = new Date(d).getTime();
+      return (!isNaN(t) && t > max.t) ? { d, t } : max;
+    }, { d: null, t: -Infinity });
+    return best.d ? formatPlanespottersDate(best.d) : '1 Tem 2026';
+  };
+
+  // Arka planda taranan uçak listesi güncellemesi filo matrisini de günceller (aynı sayfadan gelir);
+  // bu yüzden tarama bitince FLEET_CMP_DATA'yı KV'den yeniden çekip Mevcut Filo görünümünü tazeliyoruz.
+  window.reloadFleetMatrix = async function() {
+    try {
+      const res = await fetch('https://api-fleet.emredemirbas.com/api/get-fleet');
+      const data = await res.json();
+      if (data && typeof data === 'object' && !Array.isArray(data) && !('airlines' in data)) {
+        FLEET_CMP_DATA = data;
+        _k1Built = false;
+        if (typeof window.ensureFleetK1Loaded === 'function') window.ensureFleetK1Loaded();
+        const activePill = document.querySelector('.fleet-src-pill.fdd-btn--active');
+        if (activePill && activePill.dataset.src === 'kaynak1') {
+          const dt = document.getElementById('fleet-src-date');
+          if (dt) dt.textContent = 'Mevcut Filo (Güncelleme Tarihi: ' + window.getFleetMatrixLastUpdated() + ')';
+        }
+      }
+    } catch (e) {
+      console.warn('Filo matrisi yeniden yüklenemedi:', e);
+    }
+  };
+
   // ── Kaynak geçiş ──────────────────────────────────
   function switchFleetSrc(src) {
     ['k1','k2','cmp','ac'].forEach(s => {
@@ -24008,17 +24109,7 @@ window.classifyFleetError = function(msg) {
       if (cmp) cmp.style.display = 'none';
       if (ac)  ac.style.display  = 'none';
       
-      let latestDate = '1 Tem 2026';
-      if (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA) {
-        const dates = Object.values(FLEET_CMP_DATA).map(a => a.planespotters_last_updated).filter(Boolean);
-        // dates[0] havayolu ekleniş sırasına göre rastgele bir kayıt seçerdi; gerçek en son tarihi bul
-        const best = dates.reduce((max, d) => {
-          const t = new Date(d).getTime();
-          return (!isNaN(t) && t > max.t) ? { d, t } : max;
-        }, { d: null, t: -Infinity });
-        if (best.d) latestDate = formatPlanespottersDate(best.d);
-      }
-      if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: ' + latestDate + ')';
+      if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: ' + window.getFleetMatrixLastUpdated() + ')';
       if (catBar) catBar.style.display = '';
       switchFleetView(_fleetView);
     } else if (src === 'kaynak2') {

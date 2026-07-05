@@ -37,9 +37,6 @@ FLEET_STATE = {
     "completed_airlines": []
 }
 API_BASE = os.environ.get('FLEET_API_BASE', 'https://api-fleet.emredemirbas.com')
-# FlareSolverr: planespotters'ın Cloudflare + site-içi Turnstile katmanını geçmek için.
-# Uçak listesi (tescil bazlı) bu yolla çekilir; matris Playwright/Browserless kullanır.
-FLARESOLVERR_URL = os.environ.get('FLARESOLVERR_URL', 'http://192.168.3.100:8191/v1')
 user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"
 
 # Havayolları konfigürasyonu
@@ -183,6 +180,42 @@ def get_last_updated_date(page):
         print(f"Güncelleme tarihi okunamadı: {e}")
     return None
 
+MATRIX_JS = """
+() => {
+    let matrixTable = null;
+    document.querySelectorAll('table').forEach(t=>{ if(t.innerText.includes('Aircraft Type') && t.innerText.includes('In Service')) matrixTable = t; });
+    if(!matrixTable) return null;
+    const rows = matrixTable.querySelectorAll('tbody tr');
+    let result = [];
+    rows.forEach(tr=>{
+      const isSub = tr.classList.contains('subtype');
+      const th = tr.querySelector('th');
+      const label = th ? th.textContent.trim() : '';
+      const tds = Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim());
+      if(isSub && (tds[0]||tds[1]||tds[2]) && !label.includes('Bombardier') && !label.includes('Gulfstream')){
+        result.push([label, tds[0], tds[1], tds[2], tds[3], tds[4], tds[5], tds[6]]);
+      }
+    });
+    return result;
+}
+"""
+
+def _parse_matrix_rows(data):
+    """MATRIX_JS'in döndürdüğü ham [label, active, parked, current, future, historic, age, total] satırlarını tip sözlüklerine çevirir."""
+    parsed_types = []
+    for row in (data or []):
+        raw_v, active, parked, current, future, historic, age, total = row
+        parsed_types.append({
+            "v": classify_variant_name(raw_v),
+            "a": active if active else "",
+            "i": parked if parked else "",
+            "w": "",
+            "t": current if current else "",
+            "o": future if future else "",
+            "age": clean_age(age)
+        })
+    return parsed_types
+
 def extract_fleet(page, url, last_stored_date=None):
     print(f"Sayfa açılıyor: {url}")
     page.goto(url, wait_until="networkidle", timeout=60000)
@@ -200,178 +233,154 @@ def extract_fleet(page, url, last_stored_date=None):
         print(">> Sayfa son taranan tarihle aynı. Tarama atlanıyor (Hızlı Geçiş).")
         return None, page_last_updated
 
-    # JS Extraction
-    js_code = """
-    () => {
-        let matrixTable = null;
-        document.querySelectorAll('table').forEach(t=>{ if(t.innerText.includes('Aircraft Type') && t.innerText.includes('In Service')) matrixTable = t; });
-        if(!matrixTable) return null;
-        const rows = matrixTable.querySelectorAll('tbody tr');
-        let result = [];
-        rows.forEach(tr=>{
-          const isSub = tr.classList.contains('subtype');
-          const th = tr.querySelector('th');
-          const label = th ? th.textContent.trim() : '';
-          const tds = Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim());
-          if(isSub && (tds[0]||tds[1]||tds[2]) && !label.includes('Bombardier') && !label.includes('Gulfstream')){
-            result.push([label, tds[0], tds[1], tds[2], tds[3], tds[4], tds[5], tds[6]]);
-          }
-        });
-        return result;
-    }
-    """
-    data = page.evaluate(js_code)
+    data = page.evaluate(MATRIX_JS)
     if not data:
         return [], page_last_updated
+    return _parse_matrix_rows(data), page_last_updated
 
-    parsed_types = []
-    for row in data:
-        raw_v, active, parked, current, future, historic, age, total = row
-        v_name = classify_variant_name(raw_v)
-        parsed_types.append({
-            "v": v_name,
-            "a": active if active else "",
-            "i": parked if parked else "",
-            "w": "",
-            "t": current if current else "",
-            "o": future if future else "",
-            "age": clean_age(age)
-        })
-    return parsed_types, page_last_updated
-
-# ── Uçak Listesi (tescil bazlı Fleet List, FlareSolverr üzerinden) ──────────
-# planespotters fleet list sayfası div-tabanlı "data table" (.dt-tr/.dt-td/.dt-th)
-# kullanır ve Cloudflare + site-içi Turnstile ile korunur. FlareSolverr her iki
-# katmanı da geçer (challenge çözer); kullanıcının çerezleri Turnstile için şart.
+# ── Uçak Listesi (tescil bazlı Fleet List, gerçek sayfalama tıklamasıyla) ───
+# planespotters'ta /fleet/list/{slug}/current?page=N URL'ine DÜZ NAVİGASYONLA
+# gidilirse (FlareSolverr dahil, hangi yöntemle olursa olsun) site /airline/{slug}
+# sayfasına yönlendirir ve her zaman 1. sayfayı döner — ?page= parametresinin bir
+# etkisi yok. Sayfalama yalnızca sayfadaki "2", "3", ... linkine GERÇEKTEN
+# TIKLANINCA çalışıyor (AJAX ile, adres satırı değişmeden). Bu yüzden uçak listesi
+# de filo matrisi gibi canlı bir Playwright sayfası üzerinden, tıklama simüle
+# edilerek çekilir (doğrulandı: bkz. konuşma geçmişi — gerçek çerezle test edildi).
 
 # İnsan benzeri, nazik gecikmeler (kişisel kullanım — planespotters'a yük bindirmemek
 # ve bot tespitini azaltmak için). Ticari amaç yok.
 PAGE_DELAY = (3.0, 7.0)      # aynı havayolunun sayfaları arası
 AIRLINE_DELAY = (6.0, 14.0)  # havayolları arası
-RETRY_DELAY = (8.0, 16.0)    # geçici hata (500 vb.) sonrası tekrar denemeden önce
 
 def _nap(rng):
     time.sleep(random.uniform(*rng))
 
-def flaresolverr_get(url, cookies_list, timeout_ms=80000, retries=2):
-    """FlareSolverr üzerinden URL'i çeker, HTML döner. Geçici hatada bekleyip tekrar dener."""
-    payload = {"cmd": "request.get", "url": url, "maxTimeout": timeout_ms}
-    if cookies_list:
-        payload["cookies"] = cookies_list
-    last_err = None
-    for attempt in range(retries + 1):
+AC_LIST_JS = """
+() => {
+    const headerDivs = document.querySelectorAll('.dt-th');
+    const headers = Array.from(headerDivs).map(th => th.textContent.trim().toLowerCase());
+    const rows = [];
+    document.querySelectorAll('.dt-tr').forEach(tr => {
+        const tds = tr.querySelectorAll('.dt-td');
+        if (tds.length === 0) return;
+        const rec = {};
+        tds.forEach((td, idx) => {
+            const h = headers[idx] || '';
+            const v = td.textContent.trim();
+            if (!h) return;
+            if (h === 'reg') rec.reg = v;
+            else if (h.includes('aircraft type') || h === 'type') rec.type = v;
+            else if (h.includes('config')) rec.config = v;
+            else if (h.includes('deliver')) rec.delivered = v;
+            else if (h.includes('remark')) rec.remark = v;
+            else if (h.includes('name')) rec.name = v;
+            else if (h.includes('age')) rec.age = v;
+        });
+        if (rec.reg) rows.push(rec);
+    });
+    return rows;
+}
+"""
+
+AC_MAX_PAGE_JS = """
+() => {
+    let maxPage = 1;
+    document.querySelectorAll('.pagination_classic a[href*="page="]').forEach(a => {
+        const m = a.href.match(/page=(\\d+)/);
+        if (m) maxPage = Math.max(maxPage, parseInt(m[1]));
+    });
+    return maxPage;
+}
+"""
+
+def _extract_ac_rows(page):
+    """Sayfadaki (canlı DOM) .dt-tr satırlarını okur, yaşı temizler, aynı sayfa içindeki
+    tescil tekrarlarını (ör. duyarlı görünüm için gizli kopya satır) eler."""
+    rows = page.evaluate(AC_LIST_JS)
+    seen, deduped = set(), []
+    for r in rows:
+        if not r.get('reg'):
+            continue
+        key = r['reg'].strip().upper()
+        if key in seen:
+            continue
+        seen.add(key)
+        r['age'] = clean_age(r.get('age', ''))
+        deduped.append(r)
+    return deduped
+
+def extract_aircraft_list(page, slug, last_stored=None):
+    """Havayolunun /airline/{slug} sayfasını Playwright ile açar; Fleet Matrix'i (mevcut filo)
+    ve tescil bazlı Fleet List'in TÜM sayfalarını gerçek tıklama ile çeker (yukarıdaki nota bakın —
+    ?page=N ile düz navigasyon çalışmıyor, sayfalama linkine tıklamak gerekiyor).
+    Dönüş: (aircrafts | None, matrix_types, page_updated, page_error).
+    - aircrafts None ise: sayfa 'Last updated' tarihi KV'dekiyle aynı → değişmemiş, atla.
+    - page_error True ise: sayfalama bir noktada koptu (liste eksik olabilir, tarihi yazma)."""
+    url = f"https://www.planespotters.net/airline/{slug}"
+    page.goto(url, wait_until="networkidle", timeout=60000)
+    time.sleep(1.5)
+
+    title = page.title()
+    if "Cloudflare" in title or "Attention Required" in title or "Blocked" in title:
+        raise Exception(f"Cloudflare Engeline Takıldı: {title}")
+
+    page_updated = get_last_updated_date(page)
+    if last_stored and page_updated and last_stored == page_updated:
+        print(f"{slug}: değişmemiş (Last updated {page_updated}) — atlanıyor", flush=True)
+        return None, None, page_updated, False
+
+    matrix_types = _parse_matrix_rows(page.evaluate(MATRIX_JS))
+
+    try:
+        page.wait_for_selector(".dt-tr, .dt-th", timeout=15000)
+    except Exception:
+        print(f"[UYARI] {slug}: uçak listesi tablosu bulunamadı (yayınlanmıyor olabilir)", flush=True)
+        return [], matrix_types, page_updated, False
+
+    aircrafts = _extract_ac_rows(page)
+    max_page = page.evaluate(AC_MAX_PAGE_JS)
+    AC_STATE.update({"total_pages": max_page})
+    print(f"{slug} uçak listesi: 1. sayfa {len(aircrafts)} kayıt — {max_page} sayfa (Last updated {page_updated})", flush=True)
+
+    page_error = False
+    for pno in range(2, max_page + 1):
+        _nap(PAGE_DELAY)  # sayfalar arası nazik bekleme
+        AC_STATE.update({"current_page": pno})
         try:
-            req = urllib.request.Request(
-                FLARESOLVERR_URL,
-                data=json.dumps(payload).encode('utf-8'),
-                headers={'Content-Type': 'application/json'},
-                method='POST'
+            link = page.query_selector(f'.pagination_classic a[href*="page={pno}"]')
+            if not link:
+                raise Exception("sayfalama linki bulunamadı")
+            prev_snapshot = page.evaluate("() => document.querySelectorAll('.dt-tr')[0]?.textContent || ''")
+            link.click()
+            page.wait_for_function(
+                "(prev) => { const tr = document.querySelectorAll('.dt-tr')[0]; return tr && tr.textContent !== prev; }",
+                arg=prev_snapshot,
+                timeout=15000
             )
-            with urllib.request.urlopen(req, timeout=(timeout_ms / 1000) + 20) as r:
-                resp = json.loads(r.read().decode('utf-8'))
-            sol = resp.get("solution", {})
-            html = sol.get("response", "") or ""
-            # Veri limiti sayfası 200 döner ama içerik yoktur — boş liste sanılmasın diye yakala
-            if "Data Limit Reached" in html or "data access limit" in html:
-                raise Exception("DATA_LIMIT: planespotters 24 saatlik veri erişim limiti dolu")
-            if "Security Verification" in html or "Attention Required" in html or sol.get("status") != 200:
-                raise Exception(f"Cloudflare/Turnstile geçilemedi (http {sol.get('status')})")
-            return html
+            aircrafts.extend(_extract_ac_rows(page))
         except Exception as e:
-            last_err = e
-            if attempt < retries:
-                print(f"[AC] Geçici hata ({e}) — tekrar deneniyor ({attempt + 1}/{retries})...", flush=True)
-                _nap(RETRY_DELAY)
-    raise Exception(f"{last_err} (çerezler geçersiz/süresi dolmuş olabilir veya sunucu geçici yük altında)")
+            page_error = True
+            print(f"[UYARI] {slug} sayfa {pno} tıklanamadı/güncellenmedi: {e}", flush=True)
+            break  # sayfalama bir kere koptuğunda devamı da güvenilir olmaz
 
-def _dt_cells(block, cls):
-    """block içinden verilen .dt-* sınıfına ait hücrelerin düz metnini (boşlar dahil) döndürür."""
-    out = []
-    for m in re.finditer(r'<div class="' + cls + r'\b[^"]*"[^>]*>(.*?)</div>', block, re.S):
-        txt = re.sub(r'<[^>]+>', ' ', m.group(1))
-        out.append(re.sub(r'\s+', ' ', txt).strip())
-    return out
-
-def parse_aircraft_page(html):
-    """Fleet list HTML'inden (heads, satır dict listesi, maxPage) döndürür."""
-    heads = _dt_cells(html, 'dt-th')  # foto/ikon başlıkları boş string olarak dahil (hizalama için)
-    rows = []
-    trs = re.split(r'<div class="dt-tr', html)
-    for tr in trs[1:]:
-        tds = _dt_cells('<div class="dt-tr' + tr, 'dt-td')
-        if not tds:
+    # Sayfalar arası da aynı tescil tekrar edebilir (ör. tıklama tam yerleşmeden önceki
+    # anlık görüntü) — tekrar tekile indir
+    seen_regs = set()
+    deduped_aircrafts = []
+    for rec in aircrafts:
+        reg_key = rec['reg'].strip().upper()
+        if reg_key in seen_regs:
             continue
-        rec = {}
-        for h, v in zip(heads, tds):
-            hl = h.lower()
-            if not h:
-                continue
-            if hl == 'reg':
-                rec['reg'] = v
-            elif 'aircraft type' in hl or hl == 'type':
-                rec['type'] = v
-            elif 'config' in hl:
-                rec['config'] = v
-            elif 'deliver' in hl:
-                rec['delivered'] = v
-            elif 'remark' in hl:
-                rec['remark'] = v
-            elif 'name' in hl:
-                rec['name'] = v
-            elif 'age' in hl:
-                rec['age'] = clean_age(v)
-        if rec.get('reg'):
-            rows.append(rec)
-    max_page = max([int(x) for x in re.findall(r'[?&]page=(\d+)', html)] + [1])
-    return heads, rows, max_page
+        seen_regs.add(reg_key)
+        deduped_aircrafts.append(rec)
+    if len(deduped_aircrafts) != len(aircrafts):
+        print(f"[AC] {slug}: {len(aircrafts) - len(deduped_aircrafts)} tekrarlı tescil kaydı elendi", flush=True)
 
-def parse_last_updated(html):
-    """Fleet list sayfasındaki 'Last updated on Jul 02, 2026' tarihini döndürür."""
-    m = re.search(r"Last updated on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})", html)
-    return m.group(1).strip() if m else None
-
-def parse_fleet_matrix(html):
-    """Fleet Matrix tablosunu ('Aircraft Type' / 'In Service' başlıklı özet tablo) ham HTML'den çıkarır.
-    Uçak listesiyle (fleet list) aynı sayfada geldiği için ayrı bir istek gerektirmez."""
-    matrix_html = None
-    for t in re.findall(r'<table\b[^>]*>.*?</table>', html, re.S):
-        if 'Aircraft Type' in t and 'In Service' in t:
-            matrix_html = t
-            break
-    if not matrix_html:
-        return []
-
-    result = []
-    for m in re.finditer(r'<tr\b([^>]*)>(.*?)</tr>', matrix_html, re.S):
-        attrs, row_html = m.group(1), m.group(2)
-        if not re.search(r'\bsubtype\b', attrs):
-            continue
-        th_m = re.search(r'<th\b[^>]*>(.*?)</th>', row_html, re.S)
-        label = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', th_m.group(1))).strip() if th_m else ''
-        if not label or 'Bombardier' in label or 'Gulfstream' in label:
-            continue
-        tds = [re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', td)).strip()
-               for td in re.findall(r'<td\b[^>]*>(.*?)</td>', row_html, re.S)]
-        active, parked, current, future, historic, age = (tds + [''] * 6)[:6]
-        if not (active or parked or current):
-            continue
-        result.append({
-            "v": classify_variant_name(label),
-            "a": active, "i": parked, "w": "",
-            "t": current, "o": future,
-            "age": clean_age(age)
-        })
-    return result
-
-def fetch_matrix_via_flaresolverr(cookies, slug):
-    """Kargo alt-markası (ör. Lufthansa Cargo) için Fleet Matrix'i FlareSolverr ile çeker.
-    ADDITIVE/ADDITIVE_LATAM modlarında ana havayolunun matrisine eklenecek kargo tiplerini almak için kullanılır."""
-    html = flaresolverr_get(f"https://www.planespotters.net/fleet/list/{slug}/current", cookies)
-    return parse_fleet_matrix(html)
+    return deduped_aircrafts, matrix_types, page_updated, page_error
 
 def apply_cargo_mode(info, types, get_cargo_types):
     """cargo_mode'a göre tip listesini dönüştürür/genişletir.
-    get_cargo_types(slug): kargo alt-markasının tiplerini döndüren fonksiyon (Playwright ya da FlareSolverr ile beslenebilir)."""
+    get_cargo_types(slug): kargo alt-markasının tiplerini döndüren fonksiyon (Playwright ile beslenir)."""
     mode = info.get("cargo_mode")
     if mode == "ALL_CARGO":
         for t in types:
@@ -433,69 +442,6 @@ def apply_cargo_mode(info, types, get_cargo_types):
             if t["v"] == "B747-400":
                 t["v"] = "B747-400(F)"
     return types
-
-def extract_aircraft_list(cookies, slug, last_stored=None):
-    """Havayolunun tescil bazlı uçak listesini FlareSolverr ile çeker.
-    Dönüş: (aircrafts | None, page_updated, page_error, matrix_types | None).
-    - aircrafts None ise: sayfa 'Last updated' tarihi KV'dekiyle aynı → değişmemiş, atla.
-    - page_error True ise: bazı sayfalar çekilemedi (liste eksik olabilir, tarihi yazma).
-    - matrix_types: aynı sayfada gelen Fleet Matrix özeti (mevcut filo) — ayrı istek gerektirmez."""
-    aircrafts = []
-    base = f"https://www.planespotters.net/fleet/list/{slug}/current"
-    
-    AC_STATE.update({
-        "current_page": 1,
-        "total_pages": 1
-    })
-    
-    try:
-        html = flaresolverr_get(base, cookies)
-    except Exception as e:
-        raise Exception(f"Ana sayfa çekilemedi: {e}")
-        
-    page_updated = parse_last_updated(html)
-
-    # Bir önceki taramadan sonra güncellenmediyse hiç sayfa çekmeden atla (kota tasarrufu)
-    if last_stored and page_updated and last_stored == page_updated:
-        print(f"{slug}: değişmemiş (Last updated {page_updated}) — atlanıyor", flush=True)
-        return None, page_updated, False, None
-
-    matrix_types = parse_fleet_matrix(html)
-
-    heads, rows, max_page = parse_aircraft_page(html)
-    AC_STATE.update({
-        "total_pages": max_page
-    })
-    
-    if not [h for h in heads if h.lower() == 'reg']:
-        print(f"[UYARI] {slug}: 'Reg' sütunu bulunamadı, yapı değişmiş olabilir. Başlıklar: {heads}", flush=True)
-    print(f"{slug} uçak listesi: {[h for h in heads if h]} — {max_page} sayfa (Last updated {page_updated})", flush=True)
-    aircrafts.extend(rows)
-
-    page_error = False
-    for pno in range(2, max_page + 1):
-        _nap(PAGE_DELAY)  # sayfalar arası nazik bekleme
-        AC_STATE.update({
-            "current_page": pno
-        })
-        try:
-            sub_html = flaresolverr_get(f"{base}?page={pno}", cookies)
-            _, rows, _ = parse_aircraft_page(sub_html)
-            aircrafts.extend(rows)
-        except Exception as e:
-            page_error = True
-            print(f"[UYARI] {slug} sayfa {pno}: {e}", flush=True)
-    return aircrafts, page_updated, page_error, matrix_types
-
-def cookie_str_to_flaresolverr(cookie_str):
-    """'a=b; c=d' çerez dizesini FlareSolverr cookie formatına çevirir."""
-    out = []
-    for part in (cookie_str or "").split(";"):
-        if "=" in part:
-            name, value = part.strip().split("=", 1)
-            if name:
-                out.append({"name": name, "value": value, "domain": ".planespotters.net"})
-    return out
 
 class FleetAPIHandler(BaseHTTPRequestHandler):
     def end_headers(self):
@@ -630,7 +576,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
 def run_fleet_scraping(cookies, pwd, ua=None):
-    """Filo matrisini (havayolu başına tip özeti) FlareSolverr ile tarar ve KV'ye yazar.
+    """Filo matrisini (havayolu başına tip özeti) Playwright ile tarar ve KV'ye yazar.
     Arka plan thread'inde çalışır; durum FLEET_STATE üzerinden izlenir."""
     try:
         # Mevcut veriyi KV'den yükle (yerel dosya bağımlılığı yok)
@@ -766,11 +712,11 @@ def run_fleet_scraping(cookies, pwd, ua=None):
         FLEET_STATE.update({"running": False, "result": None, "error": str(e)})
 
 def run_aircraft_scraping(cookies, pwd, ua=None):
-    """Tüm havayollarının tescil bazlı uçak listesini FlareSolverr ile tarar ve KV'ye yazar.
-    Aynı sayfada gelen Fleet Matrix (mevcut filo) özetini de çıkarıp ayrıca kaydeder —
-    planespotters'ta uçak listesi ve filo matrisi aynı sayfada olduğu için ek istek gerekmez.
+    """Tüm havayollarının tescil bazlı uçak listesini Playwright ile (gerçek sayfalama
+    tıklamasıyla) tarar ve KV'ye yazar. Aynı sayfada gelen Fleet Matrix (mevcut filo)
+    özetini de çıkarıp ayrıca kaydeder — ayrı istek gerekmez.
     Arka plan thread'inde çalışır; durum AC_STATE üzerinden izlenir.
-    cookies: FlareSolverr/Cloudflare çerez listesi."""
+    cookies: Playwright formatı çerez listesi."""
     try:
         per_airline = {}
         errors = []
@@ -807,131 +753,150 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
 
         kept = {}  # code -> uçak kayıtları listesi (yeni taranan, korunan veya atlanan)
 
-        for idx, (code, info) in enumerate(airlines.items()):
-            if idx > 0:
-                _nap(AIRLINE_DELAY)  # havayolları arası nazik bekleme
-            print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...", flush=True)
-            AC_STATE.update({
-                "current_airline": code,
-                "current_airline_name": info["name"],
-                "current_page": 0,
-                "total_pages": 0
-            })
-            try:
-                ac_list, page_updated, page_error, matrix_types = extract_aircraft_list(
-                    cookies, info['slug'], existing_updated.get(code))
+        with sync_playwright() as p:
+            browserless_url = os.environ.get('BROWSERLESS_URL')
+            if browserless_url:
+                print(f"Browserless bağlantısı kuruluyor: {browserless_url}")
+                browser = p.chromium.connect_over_cdp(browserless_url)
+            else:
+                browser = p.chromium.launch(headless=True)
 
-                if ac_list is None:
-                    # 'Last updated' değişmemiş → mevcut KV verisini (uçak listesi + filo matrisi) olduğu gibi koru
-                    kept[code] = existing_by.get(code, [])
-                    skipped.append(code)
-                    per_airline[code] = len(kept[code])
-                    fleet_skipped_list.append({"code": code, "name": info["name"], "date": page_updated})
-                    AC_STATE["completed_airlines"].append({
-                        "code": code,
-                        "name": info["name"],
-                        "count": per_airline[code],
-                        "status": "skipped"
-                    })
-                    continue
+            context = browser.new_context(
+                user_agent=ua or user_agent,
+                viewport={"width": 1440, "height": 900},
+                locale="en-US"
+            )
+            context.add_cookies(cookies)
+            page = context.new_page()
+            page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
-                if (page_error or len(ac_list) == 0) and existing_by.get(code):
-                    # Kısmi (bazı sayfalar düştü) VEYA boş sonuç + eski veri var → eskiyi koru
-                    kept[code] = existing_by[code]
-                    per_airline[code] = len(kept[code])
-                    errors.append(f"{code}: eksik/boş sonuç, eski veri korundu")
-                    print(f"[AC] {code}: eksik/boş sonuç → eski veri korundu ({len(kept[code])})", flush=True)
-                    AC_STATE["completed_airlines"].append({
-                        "code": code,
-                        "name": info["name"],
-                        "count": per_airline[code],
-                        "status": "error",
-                        "error": "Eksik/boş sonuç (eski veri korundu)"
-                    })
-                    fleet_failed_list.append({"code": code, "name": info["name"], "error": "Kısmi/boş sonuç, filo matrisi korundu"})
-                    continue
-
-                for rec in ac_list:
-                    rec["airline"] = code
-                    rec["airlineName"] = info["name"]
-                    # Kısmi tarama olduysa tarihi yazma ki sonraki sefer yeniden denesin
-                    rec["updated"] = "" if page_error else (page_updated or "")
-                kept[code] = ac_list
-                per_airline[code] = len(ac_list)
-                print(f"[AC] {code}: {len(ac_list)} uçak", flush=True)
-                AC_STATE["completed_airlines"].append({
-                    "code": code,
-                    "name": info["name"],
-                    "count": per_airline[code],
-                    "status": "success"
+            for idx, (code, info) in enumerate(airlines.items()):
+                if idx > 0:
+                    _nap(AIRLINE_DELAY)  # havayolları arası nazik bekleme
+                print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...", flush=True)
+                AC_STATE.update({
+                    "current_airline": code,
+                    "current_airline_name": info["name"],
+                    "current_page": 0,
+                    "total_pages": 0
                 })
+                try:
+                    ac_list, matrix_types, page_updated, page_error = extract_aircraft_list(
+                        page, info['slug'], existing_updated.get(code))
 
-                # ── Fleet Matrix (mevcut filo) — aynı sayfadan, ek istek yok ──
-                if matrix_types:
-                    try:
-                        types = apply_cargo_mode(info, matrix_types,
-                            lambda slug: fetch_matrix_via_flaresolverr(cookies, slug))
-                        types = merge_types(types)
+                    if ac_list is None:
+                        # 'Last updated' değişmemiş → mevcut KV verisini (uçak listesi + filo matrisi) olduğu gibi koru
+                        kept[code] = existing_by.get(code, [])
+                        skipped.append(code)
+                        per_airline[code] = len(kept[code])
+                        fleet_skipped_list.append({"code": code, "name": info["name"], "date": page_updated})
+                        AC_STATE["completed_airlines"].append({
+                            "code": code,
+                            "name": info["name"],
+                            "count": per_airline[code],
+                            "status": "skipped"
+                        })
+                        continue
 
-                        ca = sum(int(t.get("a") or 0) for t in types)
-                        ci = sum(int(t.get("i") or 0) for t in types)
-                        ct = sum(int(t.get("t") or 0) for t in types)
-                        co = sum(int(t.get("o") or 0) for t in types)
-                        total_age_sum, total_count = 0.0, 0
-                        for t in types:
-                            t_val = int(t.get("t") or 0)
-                            age_str = (t.get("age") or "").strip()
-                            if t_val > 0 and age_str:
-                                try:
-                                    total_age_sum += float(age_str) * t_val
-                                    total_count += t_val
-                                except ValueError:
-                                    pass
-                        k1age = round(total_age_sum / total_count, 1) if total_count > 0 else None
+                    if (page_error or len(ac_list) == 0) and existing_by.get(code):
+                        # Kısmi (bazı sayfalar düştü) VEYA boş sonuç + eski veri var → eskiyi koru
+                        kept[code] = existing_by[code]
+                        per_airline[code] = len(kept[code])
+                        errors.append(f"{code}: eksik/boş sonuç, eski veri korundu")
+                        print(f"[AC] {code}: eksik/boş sonuç → eski veri korundu ({len(kept[code])})", flush=True)
+                        AC_STATE["completed_airlines"].append({
+                            "code": code,
+                            "name": info["name"],
+                            "count": per_airline[code],
+                            "status": "error",
+                            "error": "Eksik/boş sonuç (eski veri korundu)"
+                        })
+                        fleet_failed_list.append({"code": code, "name": info["name"], "error": "Kısmi/boş sonuç, filo matrisi korundu"})
+                        continue
 
-                        if code not in fleet_data:
-                            fleet_data[code] = {"name": info["name"], "color": info.get("color", "#64748b")}
-                        fleet_data[code]["types"] = types
-                        fleet_data[code]["ca"] = ca
-                        fleet_data[code]["ci"] = ci
-                        fleet_data[code]["ct"] = ct
-                        fleet_data[code]["co"] = co
-                        fleet_data[code]["pt"] = ct
-                        fleet_data[code]["po"] = co
-                        fleet_data[code]["k1age"] = k1age
-                        fleet_data[code]["planespotters_last_updated"] = page_updated
-                        fleet_updated_list.append({"code": code, "name": info["name"], "date": page_updated})
-                    except Exception as e:
-                        print(f"[AC][FLEET] {code} filo matrisi işlenemedi: {e}", flush=True)
-                        fleet_failed_list.append({"code": code, "name": info["name"], "error": str(e)})
-                else:
-                    fleet_failed_list.append({"code": code, "name": info["name"], "error": "Fleet Matrix sayfada bulunamadı"})
-            except Exception as e:
-                # Çekilemedi (limit/Cloudflare/çerez) → varsa eski veriyi koru (merge koruması)
-                if existing_by.get(code):
-                    kept[code] = existing_by[code]
-                    per_airline[code] = len(kept[code])
-                    errors.append(f"{code}: {e} (eski veri korundu)")
-                    print(f"[AC][HATA] {code} çekilemedi, eski veri korundu: {e}", flush=True)
+                    for rec in ac_list:
+                        rec["airline"] = code
+                        rec["airlineName"] = info["name"]
+                        # Kısmi tarama olduysa tarihi yazma ki sonraki sefer yeniden denesin
+                        rec["updated"] = "" if page_error else (page_updated or "")
+                    kept[code] = ac_list
+                    per_airline[code] = len(ac_list)
+                    print(f"[AC] {code}: {len(ac_list)} uçak", flush=True)
                     AC_STATE["completed_airlines"].append({
                         "code": code,
                         "name": info["name"],
                         "count": per_airline[code],
-                        "status": "error",
-                        "error": str(e)
+                        "status": "success"
                     })
-                else:
-                    per_airline[code] = 0
-                    errors.append(f"{code}: {e}")
-                    print(f"[AC][HATA] {code} çekilemedi ve eski veri yok: {e}", flush=True)
-                    AC_STATE["completed_airlines"].append({
-                        "code": code,
-                        "name": info["name"],
-                        "count": 0,
-                        "status": "failed",
-                        "error": str(e)
-                    })
-                fleet_failed_list.append({"code": code, "name": info["name"], "error": str(e)})
+
+                    # ── Fleet Matrix (mevcut filo) — aynı sayfadan, ek istek yok ──
+                    if matrix_types:
+                        try:
+                            types = apply_cargo_mode(info, matrix_types,
+                                lambda slug: extract_fleet(page, f"https://www.planespotters.net/airline/{slug}")[0])
+                            types = merge_types(types)
+
+                            ca = sum(int(t.get("a") or 0) for t in types)
+                            ci = sum(int(t.get("i") or 0) for t in types)
+                            ct = sum(int(t.get("t") or 0) for t in types)
+                            co = sum(int(t.get("o") or 0) for t in types)
+                            total_age_sum, total_count = 0.0, 0
+                            for t in types:
+                                t_val = int(t.get("t") or 0)
+                                age_str = (t.get("age") or "").strip()
+                                if t_val > 0 and age_str:
+                                    try:
+                                        total_age_sum += float(age_str) * t_val
+                                        total_count += t_val
+                                    except ValueError:
+                                        pass
+                            k1age = round(total_age_sum / total_count, 1) if total_count > 0 else None
+
+                            if code not in fleet_data:
+                                fleet_data[code] = {"name": info["name"], "color": info.get("color", "#64748b")}
+                            fleet_data[code]["types"] = types
+                            fleet_data[code]["ca"] = ca
+                            fleet_data[code]["ci"] = ci
+                            fleet_data[code]["ct"] = ct
+                            fleet_data[code]["co"] = co
+                            fleet_data[code]["pt"] = ct
+                            fleet_data[code]["po"] = co
+                            fleet_data[code]["k1age"] = k1age
+                            fleet_data[code]["planespotters_last_updated"] = page_updated
+                            fleet_updated_list.append({"code": code, "name": info["name"], "date": page_updated})
+                        except Exception as e:
+                            print(f"[AC][FLEET] {code} filo matrisi işlenemedi: {e}", flush=True)
+                            fleet_failed_list.append({"code": code, "name": info["name"], "error": str(e)})
+                    else:
+                        fleet_failed_list.append({"code": code, "name": info["name"], "error": "Fleet Matrix sayfada bulunamadı"})
+                except Exception as e:
+                    # Çekilemedi (Cloudflare/çerez/zaman aşımı) → varsa eski veriyi koru (merge koruması)
+                    if existing_by.get(code):
+                        kept[code] = existing_by[code]
+                        per_airline[code] = len(kept[code])
+                        errors.append(f"{code}: {e} (eski veri korundu)")
+                        print(f"[AC][HATA] {code} çekilemedi, eski veri korundu: {e}", flush=True)
+                        AC_STATE["completed_airlines"].append({
+                            "code": code,
+                            "name": info["name"],
+                            "count": per_airline[code],
+                            "status": "error",
+                            "error": str(e)
+                        })
+                    else:
+                        per_airline[code] = 0
+                        errors.append(f"{code}: {e}")
+                        print(f"[AC][HATA] {code} çekilemedi ve eski veri yok: {e}", flush=True)
+                        AC_STATE["completed_airlines"].append({
+                            "code": code,
+                            "name": info["name"],
+                            "count": 0,
+                            "status": "failed",
+                            "error": str(e)
+                        })
+                    fleet_failed_list.append({"code": code, "name": info["name"], "error": str(e)})
+
+            browser.close()
 
         # Birleştir: yapılandırılmış havayolları + KV'de olup config'te olmayanlar (kaybetme)
         all_aircrafts = []
@@ -940,6 +905,22 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
         for code, recs in existing_by.items():
             if code not in airlines and code not in kept:
                 all_aircrafts.extend(recs)
+
+        # Son güvenlik: (havayolu, tescil) bazında tekrar eden kayıtları ele — mevcut KV'de
+        # bu düzeltmeden önce birikmiş tekrarlar da burada temizlenir
+        seen_keys = set()
+        deduped_all = []
+        dup_count = 0
+        for rec in all_aircrafts:
+            key = (rec.get('airline'), (rec.get('reg') or '').strip().upper())
+            if key in seen_keys:
+                dup_count += 1
+                continue
+            seen_keys.add(key)
+            deduped_all.append(rec)
+        if dup_count:
+            print(f"[AC] Toplamda {dup_count} tekrarlı (havayolu, tescil) kaydı elendi", flush=True)
+        all_aircrafts = deduped_all
 
         if not all_aircrafts:
             detail = f" İlk hata: {errors[0]}" if errors else ""
