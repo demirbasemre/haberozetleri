@@ -3875,8 +3875,9 @@
         <div style="font-size:11px;font-weight:600;color:var(--text-1);">Cloudflare Bypass Çerezleri (Gerekirse)</div>
         <div style="font-size:10px;color:var(--text-3);margin-bottom:4px;">Tarayıcı F12 -> Network -> Request Headers altındaki 'cookie:' satırını kopyalayıp buraya yapıştırın.</div>
         <textarea id="fleet-cookie-input" placeholder="__psuid=...; cf_clearance=...; ps_sessid=..." style="width:100%;height:60px;font-family:monospace;font-size:10px;padding:6px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);resize:vertical;"></textarea>
+        <div id="fleet-cookie-feedback" role="status" aria-live="polite" style="display:none;align-items:flex-start;gap:6px;font-size:10.5px;line-height:1.5;margin-top:2px;"></div>
         <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:6px;">
-          <button class="fdd-btn" onclick="saveFleetCookies()" style="font-size:10px;padding:4px 10px;background:#059669;color:white;border:none;border-radius:4px;cursor:pointer;">Çerezleri Kaydet</button>
+          <button class="fdd-btn" id="fleet-cookie-save-btn" onclick="saveFleetCookies()" style="font-size:10px;padding:4px 10px;background:#059669;color:white;border:none;border-radius:4px;cursor:pointer;">Çerezleri Kaydet</button>
         </div>
       </div>
 
@@ -23417,6 +23418,35 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('hashchange', handleHashRouting);
 });
 
+// ── Filo güncelleme hataları — ortak yardımcılar (aircraft + matrix akışları paylaşır) ──
+window.formatElapsed = function(ms) {
+  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+};
+
+// Hata mesajını inceleyip "bu hata çerezle mi ilgili?" sorusuna AÇIK bir cevap üretir.
+window.classifyFleetError = function(msg) {
+  const m = (msg || '').toLowerCase();
+  if (/şifre/.test(m)) {
+    return { cookie: false, hint: 'Bu hata çerezlerle ilgili değil: girdiğiniz şifre hatalı.' };
+  }
+  if (/zaman aşım/.test(m)) {
+    return { cookie: false, hint: 'Bu hata çerezlerle ilgili değil: tarama süresi doldu; sunucuda hâlâ çalışıyor olabilir, birazdan tekrar deneyin.' };
+  }
+  if (/sunucuya ulaşılamadı|failed to fetch|networkerror|load failed/.test(m)) {
+    return { cookie: false, hint: 'Bu hata çerezlerle ilgili değil: sunucuya bağlanılamadı (ağ/bağlantı sorunu).' };
+  }
+  if (/zaten sürüyor|busy/.test(m)) {
+    return { cookie: false, hint: 'Bu hata çerezlerle ilgili değil: aynı anda başka bir tarama zaten çalışıyor.' };
+  }
+  if (/çerez|cloudflare|turnstile|engelin|data_limit|veri eri(ş|s)im limiti/.test(m)) {
+    return { cookie: true, hint: 'Bu hata çerezlerden kaynaklanıyor: çerez panelinden güncel bir Planespotters oturum çerezi girip tekrar deneyin.' };
+  }
+  return { cookie: false, hint: 'Bu hata çerezlerle ilgili değil: sunucu tarafında beklenmeyen bir hata oluştu.' };
+};
+
 // ── Uçak Listesi (tescil bazlı, KV'den) ─────────────────────
 (function() {
   let _acData = null;
@@ -23568,6 +23598,25 @@ document.addEventListener('DOMContentLoaded', () => {
           
           <!-- Content -->
           <div style="padding: 20px; display:flex; flex-direction:column; gap:16px; overflow-y:auto;" id="ac-progress-body">
+            <!-- Durum Bandı (hata/başarı — native alert yerine) -->
+            <div id="ac-progress-alert" role="alert" aria-live="polite" style="display:none; align-items:flex-start; gap:10px; border-radius:10px; padding:12px 14px; border:1px solid transparent;">
+              <span id="ac-progress-alert-icon" aria-hidden="true" style="flex-shrink:0; display:flex; margin-top:1px;"></span>
+              <div style="display:flex; flex-direction:column; gap:3px; min-width:0;">
+                <div id="ac-progress-alert-title" style="font-weight:600; font-size:12.5px;"></div>
+                <div id="ac-progress-alert-msg" style="font-size:11.5px; line-height:1.5; color:var(--text-2, #475569); word-break:break-word;"></div>
+                <div id="ac-progress-alert-hint" style="display:none; font-size:11px; line-height:1.5; color:var(--text-3, #64748b); word-break:break-word;"></div>
+              </div>
+            </div>
+            <!-- Genel İlerleme: taranan havayolu sayısı / toplam izlenen havayolu -->
+            <div id="ac-progress-overall-step" style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display:flex; align-items:baseline; justify-content:space-between;">
+                <span style="font-size: 10px; color: var(--text-3, #64748b); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">İzlenen Havayolları</span>
+                <span id="ac-progress-overall-label" style="font-size:11.5px; font-weight:700; color:var(--text-1, #0f172a);">0 / 0</span>
+              </div>
+              <div style="height:8px; background:var(--border-color, #e2e8f0); border-radius:4px; overflow:hidden;">
+                <div id="ac-progress-overall-bar" style="width: 0%; height:100%; background: var(--accent, #3b82f6); border-radius:4px; transition: width 0.3s ease;"></div>
+              </div>
+            </div>
             <!-- Active Step -->
             <div id="ac-progress-active-step" style="background: var(--bg-secondary, #f8fafc); border-radius: 10px; padding: 12px 16px; border: 1px dashed var(--border-color, #e2e8f0); display: flex; flex-direction: column; gap: 6px;">
               <div style="font-size: 10px; color: var(--text-3, #64748b); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Şu An Taranan Havayolu</div>
@@ -23593,7 +23642,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- Footer -->
           <div id="ac-progress-footer" style="padding: 12px 20px; border-top: 1px solid var(--border-color, #e2e8f0); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary, #f8fafc);">
-            <span style="font-size: 11px; color:var(--text-3, #64748b);" id="ac-progress-timer">Geçen Süre: 0s</span>
+            <span style="font-size: 11px; color:var(--text-3, #64748b);" id="ac-progress-timer">Geçen Süre: 00:00</span>
             <button id="ac-progress-ok-btn" class="fdd-btn" style="font-size: 11px; padding: 6px 16px; background: var(--accent, #3b82f6); color:#fff; border:none; border-radius:6px; cursor:pointer; display:none;" onclick="document.getElementById('aircraft-progress-modal').style.display='none'">Tamam</button>
           </div>
         </div>
@@ -23619,11 +23668,52 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('ac-progress-airline-name').textContent = 'Bağlanıyor...';
       document.getElementById('ac-progress-bar').style.width = '0%';
       document.getElementById('ac-progress-pages-label').textContent = '0 / 0';
+      document.getElementById('ac-progress-overall-bar').style.width = '0%';
+      document.getElementById('ac-progress-overall-label').textContent = '0 / 0';
       document.getElementById('ac-progress-list').innerHTML = '<div style="font-size:12px; color:var(--text-3); text-align:center; padding:12px;">Henüz tamamlanan adım yok.</div>';
       document.getElementById('ac-progress-close-btn').style.display = 'none';
       document.getElementById('ac-progress-ok-btn').style.display = 'none';
-      document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: 0s';
+      document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: 00:00';
+      setAcProgressAlert(null);
     }
+  }
+
+  // Modal içi durum bandı: kind = 'error' | 'success' | null (gizle). hint: çerez ile ilgili olup olmadığını açıkça belirtir.
+  function setAcProgressAlert(kind, title, msg, hint) {
+    const box = document.getElementById('ac-progress-alert');
+    if (!box) return;
+    if (!kind) { box.style.display = 'none'; return; }
+    const isOk = kind === 'success';
+    const c = isOk ? '#059669' : '#dc2626';
+    box.style.display = 'flex';
+    box.style.background = isOk ? 'rgba(5,150,105,0.08)' : 'rgba(220,38,38,0.08)';
+    box.style.borderColor = isOk ? 'rgba(5,150,105,0.35)' : 'rgba(220,38,38,0.35)';
+    const icon = document.getElementById('ac-progress-alert-icon');
+    if (icon) {
+      icon.style.color = c;
+      icon.innerHTML = isOk
+        ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+        : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    }
+    const titleEl = document.getElementById('ac-progress-alert-title');
+    if (titleEl) { titleEl.textContent = title || ''; titleEl.style.color = c; }
+    const msgEl = document.getElementById('ac-progress-alert-msg');
+    if (msgEl) msgEl.textContent = msg || '';
+    const hintEl = document.getElementById('ac-progress-alert-hint');
+    if (hintEl) {
+      if (hint) { hintEl.style.display = 'block'; hintEl.textContent = hint; }
+      else { hintEl.style.display = 'none'; hintEl.textContent = ''; }
+    }
+  }
+
+  // Taramayı bitmiş görünüme al (spinner gizle, kapat/tamam butonlarını göster)
+  function finishAcProgress(title) {
+    const set = (id, fn) => { const el = document.getElementById(id); if (el) fn(el); };
+    set('ac-progress-spinner', el => el.style.display = 'none');
+    set('ac-progress-active-step', el => el.style.display = 'none');
+    set('ac-progress-title', el => el.textContent = title);
+    set('ac-progress-close-btn', el => el.style.display = 'block');
+    set('ac-progress-ok-btn', el => el.style.display = 'block');
   }
 
   window.runAircraftUpdateWithPassword = async function(pwd) {
@@ -23641,38 +23731,43 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ cookies: localStorage.getItem('fleet_cf_cookies') || '', password: pwd, ua: navigator.userAgent })
       });
-      if (res.status === 401) { 
-        document.getElementById('aircraft-progress-modal').style.display = 'none';
-        localStorage.removeItem('fleet_update_password'); 
-        throw new Error('Girdiğiniz şifre geçersizdir.'); 
+      if (res.status === 401) {
+        localStorage.removeItem('fleet_update_password');
+        throw new Error('Girdiğiniz şifre geçersizdir.');
       }
       const data = await res.json();
-      if (res.status !== 202 && !res.ok) {
-        document.getElementById('aircraft-progress-modal').style.display = 'none';
+      // 202: tarama başlatıldı; 409: zaten sürüyor (başka sekme/istek) → hata sayma, mevcut taramayı yoklamaya devam et
+      const alreadyRunning = res.status === 409;
+      if (res.status !== 202 && !alreadyRunning && !res.ok) {
         throw new Error(data.message || 'Sunucu isteği reddetti.');
       }
       localStorage.setItem('fleet_update_password', pwd);
-      
+
       const t0 = Date.now();
       const poll = async () => {
-        if (Date.now() - t0 > 30*60*1000) { 
-          setIdle(); 
-          document.getElementById('ac-progress-spinner').style.display = 'none';
-          document.getElementById('ac-progress-active-step').style.display = 'none';
-          document.getElementById('ac-progress-title').textContent = 'Zaman Aşımı';
-          document.getElementById('ac-progress-close-btn').style.display = 'block';
-          document.getElementById('ac-progress-ok-btn').style.display = 'block';
-          alert('Uçak listesi taraması zaman aşımına uğradı (30 dk).'); 
-          return; 
+        if (Date.now() - t0 > 45*60*1000) {
+          setIdle();
+          finishAcProgress('Zaman Aşımı');
+          setAcProgressAlert('error', 'Zaman aşımı', 'Uçak listesi taraması 45 dakika içinde tamamlanamadı. Tarama sunucuda sürüyor olabilir — sekmeyi yeniden açtığınızda kaldığı yerden takip edebilirsiniz.', window.classifyFleetError('zaman aşımı').hint);
+          return;
         }
-        
-        document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: ' + Math.round((Date.now()-t0)/1000) + 's';
-        setBusy('Taranıyor… ' + Math.round((Date.now()-t0)/1000) + 's');
-        
+
+        document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: ' + window.formatElapsed(Date.now()-t0);
+        setBusy('Taranıyor… ' + window.formatElapsed(Date.now()-t0));
+
         try {
           const sr = await fetch(_acApiBase() + '/api/aircraft-status');
           const st = await sr.json();
           
+          // Genel ilerleme: kaç havayolu tamamlandı / toplam izlenen havayolu
+          const doneCount = (st.completed_airlines || []).length;
+          const totalAirlines = st.total_airlines || 0;
+          const overallPct = totalAirlines > 0 ? (doneCount / totalAirlines) * 100 : 0;
+          const overallBar = document.getElementById('ac-progress-overall-bar');
+          const overallLabel = document.getElementById('ac-progress-overall-label');
+          if (overallBar) overallBar.style.width = overallPct + '%';
+          if (overallLabel) overallLabel.textContent = totalAirlines > 0 ? `${doneCount} / ${totalAirlines}` : `${doneCount} / ${doneCount}`;
+
           // Güncel adımı ekrana bas
           if (st.running) {
             const name = st.current_airline_name || st.current_airline || 'Bağlanıyor...';
@@ -23720,21 +23815,17 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Başarılı/Başarısız Bitiş
           setIdle();
-          document.getElementById('ac-progress-spinner').style.display = 'none';
-          document.getElementById('ac-progress-active-step').style.display = 'none';
-          document.getElementById('ac-progress-close-btn').style.display = 'block';
-          document.getElementById('ac-progress-ok-btn').style.display = 'block';
-          
-          if (st.error) { 
-            document.getElementById('ac-progress-title').textContent = 'Güncelleme Başarısız';
-            alert('Uçak listesi güncellenemedi: ' + st.error); 
-            return; 
+
+          if (st.error) {
+            finishAcProgress('Güncelleme Başarısız');
+            setAcProgressAlert('error', 'Uçak listesi güncellenemedi', st.error, window.classifyFleetError(st.error).hint);
+            return;
           }
-          
-          document.getElementById('ac-progress-title').textContent = 'Güncelleme Tamamlandı';
+
+          finishAcProgress('Güncelleme Tamamlandı');
+          setAcProgressAlert('success', 'Güncelleme tamamlandı', 'Uçak listesi başarıyla güncellendi: ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt.');
           _acData = null;
           await window.loadAircraftList();
-          alert('Uçak listesi başarıyla güncellendi: ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt.');
         } catch(e) { 
           setTimeout(poll, 2000); 
         }
@@ -23742,7 +23833,11 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(poll, 1000);
     } catch(e) {
       setIdle();
-      alert('Uçak listesi güncellenemedi: ' + e.message);
+      finishAcProgress('Güncelleme Başlatılamadı');
+      const msg = /failed to fetch|networkerror|load failed/i.test(e.message)
+        ? 'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin veya biraz sonra tekrar deneyin.'
+        : e.message;
+      setAcProgressAlert('error', 'Uçak listesi güncellenemedi', msg, window.classifyFleetError(msg).hint);
     }
   };
 
@@ -24599,21 +24694,51 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // --- CANLI GÜNCELLEME İŞLEMLERİ ---
+  // Çerez paneli satır içi geri bildirimi: kind = 'error' | 'success' | null (gizle)
+  function setCookieFeedback(kind, msg) {
+    const fb = document.getElementById('fleet-cookie-feedback');
+    if (!fb) return;
+    if (!kind) { fb.style.display = 'none'; fb.innerHTML = ''; return; }
+    const isOk = kind === 'success';
+    fb.style.display = 'flex';
+    fb.style.color = isOk ? '#059669' : '#dc2626';
+    fb.innerHTML = (isOk
+      ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:1px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+      : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:1px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>')
+      + '<span></span>';
+    fb.querySelector('span').textContent = msg;
+  }
+
   window.toggleCookiePanel = function() {
     const panel = document.getElementById('fleet-cookie-panel');
     if (!panel) return;
-    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+    const opening = panel.style.display === 'none';
+    // Açılışta önceki geri bildirim ve bekleyen otomatik kapanma sıfırlanır
+    clearTimeout(window._cookiePanelCloseT);
+    setCookieFeedback(null);
+    const input = document.getElementById('fleet-cookie-input');
+    if (input) input.style.borderColor = '';
+    panel.style.display = opening ? 'flex' : 'none';
+    if (opening && input) setTimeout(() => input.focus(), 100);
   };
 
   window.saveFleetCookies = function() {
     const input = document.getElementById('fleet-cookie-input');
     if (!input || !input.value.trim()) {
-      alert("Lütfen geçerli bir çerez dizesi girin.");
+      setCookieFeedback('error', 'Lütfen geçerli bir çerez dizesi girin.');
+      if (input) { input.style.borderColor = '#dc2626'; input.focus(); }
       return;
     }
+    input.style.borderColor = '';
     localStorage.setItem('fleet_cf_cookies', input.value.trim());
-    alert("Çerezler tarayıcı hafızasına kaydedildi. Güncelle butonuna bastığınızda kullanılacaktır.");
-    document.getElementById('fleet-cookie-panel').style.display = 'none';
+    setCookieFeedback('success', 'Çerezler kaydedildi. "Canlı Güncelle" veya "Listeyi Güncelle" butonuna bastığınızda kullanılacak.');
+    // Onay okunabilsin diye panel kısa bir süre sonra kendiliğinden kapanır
+    clearTimeout(window._cookiePanelCloseT);
+    window._cookiePanelCloseT = setTimeout(() => {
+      const panel = document.getElementById('fleet-cookie-panel');
+      if (panel) panel.style.display = 'none';
+      setCookieFeedback(null);
+    }, 2500);
   };
 
   window.closeFleetSummaryModal = function() {
@@ -24720,12 +24845,14 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="max-height: 150px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 4px 8px; background: var(--bg-soft);">
             <table class="flt-detail-table" style="width:100%; font-size:10.5px; border-collapse:collapse;">
               <tbody>
-                ${data.failed.map(a => `
+                ${data.failed.map(a => {
+                  const cls = window.classifyFleetError(a.error || '');
+                  return `
                   <tr style="border-bottom: 1px solid var(--border-soft);">
                     <td style="padding:4px 0; color:var(--text-2); white-space:nowrap;">${a.name} (${a.code})</td>
-                    <td style="padding:4px 0; text-align:right; color:#dc2626; font-size:9.5px;">${a.error || 'Çekilemedi'}</td>
+                    <td style="padding:4px 0; text-align:right; color:#dc2626; font-size:9.5px;">${a.error || 'Çekilemedi'}<br><span style="color:var(--text-3); font-weight:400;">${cls.cookie ? 'Çerezle ilgili' : 'Çerezle ilgili değil'}</span></td>
                   </tr>
-                `).join('')}
+                `; }).join('')}
               </tbody>
             </table>
           </div>
@@ -24742,6 +24869,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Modali Göster
+    const modal = document.getElementById('fleet-summary-modal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  // Taramanın hiç sonuca ulaşamadığı sert hatalar için (timeout, sunucu hatası, bağlantı hatası) —
+  // native alert() yerine aynı özet modalını, çerez ilgisini açıkça belirten bir bantla kullanır.
+  function showFleetError(title, msg) {
+    const cls = window.classifyFleetError(msg);
+    const summaryBody = document.getElementById('fleet-summary-body');
+    if (summaryBody) {
+      summaryBody.innerHTML = `
+        <div style="display:flex; align-items:flex-start; gap:10px; border-radius:10px; padding:12px 14px; border:1px solid rgba(220,38,38,0.35); background:rgba(220,38,38,0.08);">
+          <span style="flex-shrink:0; display:flex; margin-top:1px; color:#dc2626;" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </span>
+          <div style="display:flex; flex-direction:column; gap:3px; min-width:0;">
+            <div style="font-weight:600; font-size:12.5px; color:#dc2626;">${title}</div>
+            <div style="font-size:11.5px; line-height:1.5; color:var(--text-2); word-break:break-word;">${msg}</div>
+            <div style="font-size:11px; line-height:1.5; color:var(--text-3); word-break:break-word;">${cls.hint}</div>
+          </div>
+        </div>
+      `;
+    }
     const modal = document.getElementById('fleet-summary-modal');
     if (modal) modal.style.display = 'flex';
   }
@@ -24794,19 +24944,19 @@ document.addEventListener('DOMContentLoaded', () => {
       // Tarama arka planda sürer (dakikalar alabilir); /api/fleet-status yoklanır
       const t0 = Date.now();
       const poll = async () => {
-        if (Date.now() - t0 > 30 * 60 * 1000) {
+        if (Date.now() - t0 > 45 * 60 * 1000) {
           setIdle();
-          alert('Filo güncellemesi zaman aşımına uğradı (30 dk).');
+          showFleetError('Zaman Aşımı', 'Filo güncellemesi 45 dakika içinde tamamlanamadı.');
           return;
         }
-        setBusy('Güncelleniyor… ' + Math.round((Date.now() - t0) / 1000) + 's');
+        setBusy('Güncelleniyor… ' + window.formatElapsed(Date.now() - t0));
         try {
           const sr = await fetch(base + '/api/fleet-status');
           const st = await sr.json();
           if (st.running) { setTimeout(poll, 10000); return; }
           setIdle();
           if (st.error) {
-            alert("HATA: Güncelleme gerçekleştirilemedi.\n" + st.error + "\n\nNot: Eğer çerez hatası alıyorsanız, lütfen çerez butonuna tıklayarak güncel Planespotters çerezlerinizi yapıştırın.");
+            showFleetError('Güncelleme Başarısız', st.error);
             return;
           }
           showFleetSummary(st.result || {});
@@ -24818,7 +24968,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       setIdle();
-      alert("HATA: Güncelleme gerçekleştirilemedi.\n" + err.message + "\n\nNot: Eğer çerez hatası alıyorsanız, lütfen çerez butonuna tıklayarak güncel Planespotters çerezlerinizi yapıştırın.");
+      const msg = /failed to fetch|networkerror|load failed/i.test(err.message)
+        ? 'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin veya biraz sonra tekrar deneyin.'
+        : err.message;
+      showFleetError('Güncelleme Başlatılamadı', msg);
     }
   };
 })();

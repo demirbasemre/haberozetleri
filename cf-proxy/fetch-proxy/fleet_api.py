@@ -22,6 +22,7 @@ AC_STATE = {
     "current_airline_name": None,
     "current_page": 0,
     "total_pages": 0,
+    "total_airlines": 0,
     "completed_airlines": []
 }
 # Filo matrisi (tip özeti) arka plan tarama durumu
@@ -32,6 +33,7 @@ FLEET_STATE = {
     "started_at": None,
     "current_airline": None,
     "current_airline_name": None,
+    "total_airlines": 0,
     "completed_airlines": []
 }
 API_BASE = os.environ.get('FLEET_API_BASE', 'https://api-fleet.emredemirbas.com')
@@ -485,6 +487,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                 "started_at": datetime.now().isoformat(timespec='seconds'),
                 "current_airline": None,
                 "current_airline_name": None,
+                "total_airlines": len(airlines),
                 "completed_airlines": []
             })
             t = threading.Thread(target=run_fleet_scraping, args=(cookies, pwd, ua), daemon=True)
@@ -508,6 +511,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                 "current_airline_name": None,
                 "current_page": 0,
                 "total_pages": 0,
+                "total_airlines": len(airlines),
                 "completed_airlines": []
             })
             t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd, ua), daemon=True)
