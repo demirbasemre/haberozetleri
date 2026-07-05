@@ -8,7 +8,9 @@ export default {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      // KV verisi sık değişiyor — Cloudflare edge veya tarayıcı bunu önbelleğe almasın
+      'Cache-Control': 'no-store'
     };
 
     if (method === 'OPTIONS') {

@@ -23906,7 +23906,10 @@ window.classifyFleetError = function(msg) {
             return;
           }
 
-          if (st.result && st.result.cancelled) {
+          if (st.result && st.result.auto_stopped_reason) {
+            finishAcProgress('Otomatik Durduruldu');
+            setAcProgressAlert('error', 'Çerezler geçersiz görünüyor', st.result.auto_stopped_reason, window.classifyFleetError('çerez').hint);
+          } else if (st.result && st.result.cancelled) {
             finishAcProgress('Durduruldu');
             setAcProgressAlert('success', 'Tarama durduruldu', `Kullanıcı isteğiyle durduruldu. O ana kadar taranan havayolları kaydedildi, kalanlar önceki verileriyle korundu (toplam ${(st.result && st.result.aircraft_count) || 0} kayıt).`);
           } else {

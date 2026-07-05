@@ -780,9 +780,17 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
             page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
             cancelled = False
+            auto_stopped_reason = None
+            consecutive_cf_failures = 0
+            CF_FAILURE_LIMIT = 3  # art arda bu kadar Cloudflare engeli görülürse çerezler geçersizdir, taramayı bitirmenin anlamı yok
             for idx, (code, info) in enumerate(airlines.items()):
                 if AC_STATE.get("cancel_requested"):
                     print(f"\n[AC] Durdurma isteği alındı — {code}'den itibaren kalan havayolları eski veriyle korunacak.", flush=True)
+                    cancelled = True
+                    break
+                if consecutive_cf_failures >= CF_FAILURE_LIMIT:
+                    print(f"\n[AC] Art arda {CF_FAILURE_LIMIT} Cloudflare engeli — çerezler geçersiz görünüyor, tarama otomatik durduruluyor.", flush=True)
+                    auto_stopped_reason = "Art arda birden fazla havayolunda Cloudflare/Turnstile engeline takılındı — çerezler geçersiz/süresi dolmuş olabilir. Tarama otomatik durduruldu, kalan havayolları eski verileriyle korundu."
                     cancelled = True
                     break
                 if idx > 0:
@@ -797,6 +805,7 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                 try:
                     ac_list, matrix_types, page_updated, page_error = extract_aircraft_list(
                         page, info['slug'], existing_updated.get(code))
+                    consecutive_cf_failures = 0  # sayfa gerçekten yüklendi (Cloudflare engeli değil)
 
                     if ac_list is None:
                         # 'Last updated' değişmemiş → mevcut KV verisini (uçak listesi + filo matrisi) olduğu gibi koru
@@ -885,6 +894,10 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                         fleet_failed_list.append({"code": code, "name": info["name"], "error": "Fleet Matrix sayfada bulunamadı"})
                 except Exception as e:
                     # Çekilemedi (Cloudflare/çerez/zaman aşımı) → varsa eski veriyi koru (merge koruması)
+                    if "Cloudflare" in str(e):
+                        consecutive_cf_failures += 1
+                    else:
+                        consecutive_cf_failures = 0
                     if existing_by.get(code):
                         kept[code] = existing_by[code]
                         per_airline[code] = len(kept[code])
@@ -971,6 +984,7 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
             "skipped": skipped,
             "errors": errors,
             "cancelled": cancelled,
+            "auto_stopped_reason": auto_stopped_reason,
             "fleet_matrix": {
                 "updated": fleet_updated_list,
                 "skipped": fleet_skipped_list,

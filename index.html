@@ -22367,7 +22367,10 @@ document.addEventListener('DOMContentLoaded', () => {
           await window.loadAircraftList();
           // Aynı tarama filo matrisini de güncelledi (aynı sayfadan gelir) — Mevcut Filo görünümünü tazele
           if (typeof window.reloadFleetMatrix === 'function') await window.reloadFleetMatrix();
-          if (st.result && st.result.cancelled) {
+          if (st.result && st.result.auto_stopped_reason) {
+            document.getElementById('ac-progress-title').textContent = 'Otomatik Durduruldu';
+            alert(st.result.auto_stopped_reason);
+          } else if (st.result && st.result.cancelled) {
             document.getElementById('ac-progress-title').textContent = 'Durduruldu';
             alert('Tarama kullanıcı isteğiyle durduruldu. O ana kadar taranan havayolları kaydedildi, kalanlar önceki verileriyle korundu (toplam ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt).');
           } else {
