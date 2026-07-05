@@ -330,11 +330,116 @@ def parse_last_updated(html):
     m = re.search(r"Last updated on\s+([A-Za-z]+\s+\d{1,2},\s+\d{4})", html)
     return m.group(1).strip() if m else None
 
+def parse_fleet_matrix(html):
+    """Fleet Matrix tablosunu ('Aircraft Type' / 'In Service' başlıklı özet tablo) ham HTML'den çıkarır.
+    Uçak listesiyle (fleet list) aynı sayfada geldiği için ayrı bir istek gerektirmez."""
+    matrix_html = None
+    for t in re.findall(r'<table\b[^>]*>.*?</table>', html, re.S):
+        if 'Aircraft Type' in t and 'In Service' in t:
+            matrix_html = t
+            break
+    if not matrix_html:
+        return []
+
+    result = []
+    for m in re.finditer(r'<tr\b([^>]*)>(.*?)</tr>', matrix_html, re.S):
+        attrs, row_html = m.group(1), m.group(2)
+        if not re.search(r'\bsubtype\b', attrs):
+            continue
+        th_m = re.search(r'<th\b[^>]*>(.*?)</th>', row_html, re.S)
+        label = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', th_m.group(1))).strip() if th_m else ''
+        if not label or 'Bombardier' in label or 'Gulfstream' in label:
+            continue
+        tds = [re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', td)).strip()
+               for td in re.findall(r'<td\b[^>]*>(.*?)</td>', row_html, re.S)]
+        active, parked, current, future, historic, age = (tds + [''] * 6)[:6]
+        if not (active or parked or current):
+            continue
+        result.append({
+            "v": classify_variant_name(label),
+            "a": active, "i": parked, "w": "",
+            "t": current, "o": future,
+            "age": clean_age(age)
+        })
+    return result
+
+def fetch_matrix_via_flaresolverr(cookies, slug):
+    """Kargo alt-markası (ör. Lufthansa Cargo) için Fleet Matrix'i FlareSolverr ile çeker.
+    ADDITIVE/ADDITIVE_LATAM modlarında ana havayolunun matrisine eklenecek kargo tiplerini almak için kullanılır."""
+    html = flaresolverr_get(f"https://www.planespotters.net/fleet/list/{slug}/current", cookies)
+    return parse_fleet_matrix(html)
+
+def apply_cargo_mode(info, types, get_cargo_types):
+    """cargo_mode'a göre tip listesini dönüştürür/genişletir.
+    get_cargo_types(slug): kargo alt-markasının tiplerini döndüren fonksiyon (Playwright ya da FlareSolverr ile beslenebilir)."""
+    mode = info.get("cargo_mode")
+    if mode == "ALL_CARGO":
+        for t in types:
+            if not t["v"].endswith("(F)"):
+                t["v"] += "(F)"
+    elif mode == "SUBSET_A330":
+        new_types = []
+        for t in types:
+            if t["v"] == "A330-200":
+                new_types.append({
+                    "v": "A330-200(F)", "a": "10", "i": "", "w": "", "t": "10", "o": "", "age": t["age"]
+                })
+                tot = int(t["t"] or 0)
+                act = int(t["a"] or 0)
+                park = int(t["i"] or 0)
+                new_types.append({
+                    "v": "A330-200",
+                    "a": str(act - 10) if act - 10 > 0 else "",
+                    "i": str(park) if park > 0 else "",
+                    "w": "",
+                    "t": str(tot - 10) if tot - 10 > 0 else "",
+                    "o": t["o"],
+                    "age": t["age"]
+                })
+            else:
+                new_types.append(t)
+        types = new_types
+    elif mode == "SUBSET_B747":
+        for t in types:
+            if t["v"] in ["B747-400", "B747-8"]:
+                t["v"] += "(F)"
+    elif mode == "ADDITIVE":
+        try:
+            cargo_types = get_cargo_types(info['cargo_slug'])
+            if cargo_types:
+                for ct in cargo_types:
+                    if not ct["v"].endswith("(F)") and not ct["v"].endswith("F"):
+                        ct["v"] += "(F)"
+                    elif ct["v"].endswith("F") and not ct["v"].endswith("(F)"):
+                        ct["v"] = ct["v"][:-1] + "(F)"
+                types.extend(cargo_types)
+        except Exception as e:
+            print(f"Kargo çekilemedi: {e}")
+    elif mode == "ADDITIVE_LATAM":
+        for c_slug in info["cargo_slugs"]:
+            try:
+                cargo_types = get_cargo_types(c_slug)
+                if cargo_types:
+                    for ct in cargo_types:
+                        if not ct["v"].endswith("(F)") and not ct["v"].endswith("F"):
+                            ct["v"] += "(F)"
+                        elif ct["v"].endswith("F"):
+                            ct["v"] = ct["v"][:-1] + "(F)"
+                    types.extend(cargo_types)
+            except Exception as e:
+                print(f"LATAM Kargo çekilemedi: {e}")
+    elif mode == "CI_SPECIAL":
+        for t in types:
+            if t["v"] == "B747-400":
+                t["v"] = "B747-400(F)"
+    return types
+
 def extract_aircraft_list(cookies, slug, last_stored=None):
     """Havayolunun tescil bazlı uçak listesini FlareSolverr ile çeker.
-    Dönüş: (aircrafts | None, page_updated, page_error).
+    Dönüş: (aircrafts | None, page_updated, page_error, matrix_types | None).
     - aircrafts None ise: sayfa 'Last updated' tarihi KV'dekiyle aynı → değişmemiş, atla.
-    - page_error True ise: bazı sayfalar çekilemedi (liste eksik olabilir, tarihi yazma)."""
+    - page_error True ise: bazı sayfalar çekilemedi (liste eksik olabilir, tarihi yazma).
+    - matrix_types: aynı sayfada gelen Fleet Matrix özeti (mevcut filo) — ayrı istek gerektirmez."""
     aircrafts = []
     base = f"https://www.planespotters.net/fleet/list/{slug}/current"
     
@@ -353,7 +458,9 @@ def extract_aircraft_list(cookies, slug, last_stored=None):
     # Bir önceki taramadan sonra güncellenmediyse hiç sayfa çekmeden atla (kota tasarrufu)
     if last_stored and page_updated and last_stored == page_updated:
         print(f"{slug}: değişmemiş (Last updated {page_updated}) — atlanıyor", flush=True)
-        return None, page_updated, False
+        return None, page_updated, False, None
+
+    matrix_types = parse_fleet_matrix(html)
 
     heads, rows, max_page = parse_aircraft_page(html)
     AC_STATE.update({
@@ -378,7 +485,7 @@ def extract_aircraft_list(cookies, slug, last_stored=None):
         except Exception as e:
             page_error = True
             print(f"[UYARI] {slug} sayfa {pno}: {e}", flush=True)
-    return aircrafts, page_updated, page_error
+    return aircrafts, page_updated, page_error, matrix_types
 
 def cookie_str_to_flaresolverr(cookie_str):
     """'a=b; c=d' çerez dizesini FlareSolverr cookie formatına çevirir."""
@@ -516,7 +623,7 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
             })
             t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd, ua), daemon=True)
             t.start()
-            self._json_response(202, {"status": "started", "message": "Uçak listesi taraması arka planda başlatıldı."})
+            self._json_response(202, {"status": "started", "message": "Uçak listesi taraması (mevcut filo dahil) arka planda başlatıldı."})
 
         else:
             self.send_response(404)
@@ -571,69 +678,8 @@ def run_fleet_scraping(cookies, pwd, ua=None):
                         FLEET_STATE["completed_airlines"].append({"code": code, "name": info["name"], "status": "skipped", "date": page_last_updated})
                         continue
 
-                    mode = info.get("cargo_mode")
-                    if mode == "ALL_CARGO":
-                        for t in types:
-                            if not t["v"].endswith("(F)"):
-                                t["v"] += "(F)"
-                    elif mode == "SUBSET_A330":
-                        new_types = []
-                        for t in types:
-                            if t["v"] == "A330-200":
-                                new_types.append({
-                                    "v": "A330-200(F)", "a": "10", "i": "", "w": "", "t": "10", "o": "", "age": t["age"]
-                                })
-                                tot = int(t["t"] or 0)
-                                act = int(t["a"] or 0)
-                                park = int(t["i"] or 0)
-                                new_types.append({
-                                    "v": "A330-200",
-                                    "a": str(act - 10) if act - 10 > 0 else "",
-                                    "i": str(park) if park > 0 else "",
-                                    "w": "",
-                                    "t": str(tot - 10) if tot - 10 > 0 else "",
-                                    "o": t["o"],
-                                    "age": t["age"]
-                                })
-                            else:
-                                new_types.append(t)
-                        types = new_types
-                    elif mode == "SUBSET_B747":
-                        for t in types:
-                            if t["v"] in ["B747-400", "B747-8"]:
-                                t["v"] += "(F)"
-                    elif mode == "ADDITIVE":
-                        cargo_url = f"https://www.planespotters.net/airline/{info['cargo_slug']}"
-                        try:
-                            cargo_types, _ = extract_fleet(page, cargo_url)
-                            if cargo_types:
-                                for ct in cargo_types:
-                                    if not ct["v"].endswith("(F)") and not ct["v"].endswith("F"):
-                                        ct["v"] += "(F)"
-                                    elif ct["v"].endswith("F") and not ct["v"].endswith("(F)"):
-                                        ct["v"] = ct["v"][:-1] + "(F)"
-                                types.extend(cargo_types)
-                        except Exception as e:
-                            print(f"Kargo çekilemedi: {e}")
-                    elif mode == "ADDITIVE_LATAM":
-                        for c_slug in info["cargo_slugs"]:
-                            cargo_url = f"https://www.planespotters.net/airline/{c_slug}"
-                            try:
-                                cargo_types, _ = extract_fleet(page, cargo_url)
-                                if cargo_types:
-                                    for ct in cargo_types:
-                                        if not ct["v"].endswith("(F)") and not ct["v"].endswith("F"):
-                                            ct["v"] += "(F)"
-                                        elif ct["v"].endswith("F"):
-                                            ct["v"] = ct["v"][:-1] + "(F)"
-                                    types.extend(cargo_types)
-                            except Exception as e:
-                                print(f"LATAM Kargo çekilemedi: {e}")
-                    elif mode == "CI_SPECIAL":
-                        for t in types:
-                            if t["v"] == "B747-400":
-                                t["v"] = "B747-400(F)"
-
+                    types = apply_cargo_mode(info, types,
+                        lambda slug: extract_fleet(page, f"https://www.planespotters.net/airline/{slug}")[0])
                     types = merge_types(types)
                     all_results[code] = {
                         "types": types,
@@ -720,9 +766,11 @@ def run_fleet_scraping(cookies, pwd, ua=None):
         FLEET_STATE.update({"running": False, "result": None, "error": str(e)})
 
 def run_aircraft_scraping(cookies, pwd, ua=None):
-    """Tüm havayollarının tescil bazlı uçak listesini Playwright ile tarar ve KV'ye yazar.
+    """Tüm havayollarının tescil bazlı uçak listesini FlareSolverr ile tarar ve KV'ye yazar.
+    Aynı sayfada gelen Fleet Matrix (mevcut filo) özetini de çıkarıp ayrıca kaydeder —
+    planespotters'ta uçak listesi ve filo matrisi aynı sayfada olduğu için ek istek gerekmez.
     Arka plan thread'inde çalışır; durum AC_STATE üzerinden izlenir.
-    cookies: playwright formatı liste; User-Agent ile birlikte Cloudflare geçişi sağlar."""
+    cookies: FlareSolverr/Cloudflare çerez listesi."""
     try:
         per_airline = {}
         errors = []
@@ -745,6 +793,18 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
             if a.get("updated") and code not in existing_updated:
                 existing_updated[code] = a["updated"]
 
+        # Fleet Matrix (mevcut filo) — uçak listesiyle aynı sayfadan gelir, ayrı istek gerektirmez
+        try:
+            fleet_data = api_get('/api/get-fleet')
+            if not isinstance(fleet_data, dict) or "airlines" in fleet_data:
+                fleet_data = {}
+        except Exception:
+            fleet_data = {}
+
+        fleet_updated_list = []
+        fleet_skipped_list = []
+        fleet_failed_list = []
+
         kept = {}  # code -> uçak kayıtları listesi (yeni taranan, korunan veya atlanan)
 
         for idx, (code, info) in enumerate(airlines.items()):
@@ -758,14 +818,15 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                 "total_pages": 0
             })
             try:
-                ac_list, page_updated, page_error = extract_aircraft_list(
+                ac_list, page_updated, page_error, matrix_types = extract_aircraft_list(
                     cookies, info['slug'], existing_updated.get(code))
 
                 if ac_list is None:
-                    # 'Last updated' değişmemiş → mevcut KV verisini olduğu gibi koru
+                    # 'Last updated' değişmemiş → mevcut KV verisini (uçak listesi + filo matrisi) olduğu gibi koru
                     kept[code] = existing_by.get(code, [])
                     skipped.append(code)
                     per_airline[code] = len(kept[code])
+                    fleet_skipped_list.append({"code": code, "name": info["name"], "date": page_updated})
                     AC_STATE["completed_airlines"].append({
                         "code": code,
                         "name": info["name"],
@@ -787,6 +848,7 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                         "status": "error",
                         "error": "Eksik/boş sonuç (eski veri korundu)"
                     })
+                    fleet_failed_list.append({"code": code, "name": info["name"], "error": "Kısmi/boş sonuç, filo matrisi korundu"})
                     continue
 
                 for rec in ac_list:
@@ -803,6 +865,47 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                     "count": per_airline[code],
                     "status": "success"
                 })
+
+                # ── Fleet Matrix (mevcut filo) — aynı sayfadan, ek istek yok ──
+                if matrix_types:
+                    try:
+                        types = apply_cargo_mode(info, matrix_types,
+                            lambda slug: fetch_matrix_via_flaresolverr(cookies, slug))
+                        types = merge_types(types)
+
+                        ca = sum(int(t.get("a") or 0) for t in types)
+                        ci = sum(int(t.get("i") or 0) for t in types)
+                        ct = sum(int(t.get("t") or 0) for t in types)
+                        co = sum(int(t.get("o") or 0) for t in types)
+                        total_age_sum, total_count = 0.0, 0
+                        for t in types:
+                            t_val = int(t.get("t") or 0)
+                            age_str = (t.get("age") or "").strip()
+                            if t_val > 0 and age_str:
+                                try:
+                                    total_age_sum += float(age_str) * t_val
+                                    total_count += t_val
+                                except ValueError:
+                                    pass
+                        k1age = round(total_age_sum / total_count, 1) if total_count > 0 else None
+
+                        if code not in fleet_data:
+                            fleet_data[code] = {"name": info["name"], "color": info.get("color", "#64748b")}
+                        fleet_data[code]["types"] = types
+                        fleet_data[code]["ca"] = ca
+                        fleet_data[code]["ci"] = ci
+                        fleet_data[code]["ct"] = ct
+                        fleet_data[code]["co"] = co
+                        fleet_data[code]["pt"] = ct
+                        fleet_data[code]["po"] = co
+                        fleet_data[code]["k1age"] = k1age
+                        fleet_data[code]["planespotters_last_updated"] = page_updated
+                        fleet_updated_list.append({"code": code, "name": info["name"], "date": page_updated})
+                    except Exception as e:
+                        print(f"[AC][FLEET] {code} filo matrisi işlenemedi: {e}", flush=True)
+                        fleet_failed_list.append({"code": code, "name": info["name"], "error": str(e)})
+                else:
+                    fleet_failed_list.append({"code": code, "name": info["name"], "error": "Fleet Matrix sayfada bulunamadı"})
             except Exception as e:
                 # Çekilemedi (limit/Cloudflare/çerez) → varsa eski veriyi koru (merge koruması)
                 if existing_by.get(code):
@@ -828,6 +931,7 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                         "status": "failed",
                         "error": str(e)
                     })
+                fleet_failed_list.append({"code": code, "name": info["name"], "error": str(e)})
 
         # Birleştir: yapılandırılmış havayolları + KV'de olup config'te olmayanlar (kaybetme)
         all_aircrafts = []
@@ -846,11 +950,21 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
         cf_res = api_post('/api/save-aircrafts', {"password": pwd, "aircrafts": all_aircrafts})
         print(f"[AC] Cloudflare Workers yanıtı: {cf_res}")
 
+        if fleet_updated_list:
+            today_str = datetime.now().strftime("%Y-%m-%d")
+            fleet_res = api_post('/api/save-fleet', {"password": pwd, "fleet": fleet_data, "date": today_str})
+            print(f"[AC] {len(fleet_updated_list)} havayolu için filo matrisi de KV'ye gönderildi: {fleet_res}", flush=True)
+
         AC_STATE.update({"running": False, "error": None, "result": {
             "aircraft_count": len(all_aircrafts),
             "per_airline": per_airline,
             "skipped": skipped,
             "errors": errors,
+            "fleet_matrix": {
+                "updated": fleet_updated_list,
+                "skipped": fleet_skipped_list,
+                "failed": fleet_failed_list
+            },
             "finished_at": datetime.now().isoformat(timespec='seconds')
         }})
     except Exception as e:
