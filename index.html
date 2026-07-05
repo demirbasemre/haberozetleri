@@ -21917,9 +21917,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.getAircraftsLastUpdated = function() {
     if (typeof _acData === 'undefined' || !_acData || !_acData.length) return 'Yükleniyor...';
-    let latest = '';
+    let latest = '', latestTime = -Infinity;
     for (const a of _acData) {
-      if (a.updated && a.updated > latest) {
+      if (!a.updated) continue;
+      const t = new Date(a.updated).getTime();
+      // Tarih string karşılaştırması ("Jun" > "Jul" gibi) yanlış sıralar; sayısal zaman damgasıyla kıyasla
+      if (!isNaN(t) && t > latestTime) {
+        latestTime = t;
         latest = a.updated;
       }
     }
@@ -21955,9 +21959,12 @@ document.addEventListener('DOMContentLoaded', () => {
       let latestDate = '1 Tem 2026';
       if (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA) {
         const dates = Object.values(FLEET_CMP_DATA).map(a => a.planespotters_last_updated).filter(Boolean);
-        if (dates.length) {
-          latestDate = formatPlanespottersDate(dates[0]);
-        }
+        // dates[0] havayolu ekleniş sırasına göre rastgele bir kayıt seçerdi; gerçek en son tarihi bul
+        const best = dates.reduce((max, d) => {
+          const t = new Date(d).getTime();
+          return (!isNaN(t) && t > max.t) ? { d, t } : max;
+        }, { d: null, t: -Infinity });
+        if (best.d) latestDate = formatPlanespottersDate(best.d);
       }
       if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: ' + latestDate + ')';
       if (catBar) catBar.style.display = '';
@@ -22214,21 +22221,28 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(data.message || 'Sunucu isteği reddetti.');
       }
       localStorage.setItem('fleet_update_password', pwd);
-      
+
       const t0 = Date.now();
+      // Sunucuyu 2 sn'de bir yoklamaya devam ederiz (istek sayısı artmaz);
+      // "Geçen Süre" yazısı ise ağdan bağımsız, yalnızca ekranda 1 sn hassasiyetle ilerler.
+      const acTimerInterval = setInterval(() => {
+        document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: ' + Math.round((Date.now()-t0)/1000) + 's';
+      }, 1000);
+      const stopAcTimer = () => clearInterval(acTimerInterval);
+
       const poll = async () => {
-        if (Date.now() - t0 > 30*60*1000) { 
-          setIdle(); 
+        if (Date.now() - t0 > 30*60*1000) {
+          stopAcTimer();
+          setIdle();
           document.getElementById('ac-progress-spinner').style.display = 'none';
           document.getElementById('ac-progress-active-step').style.display = 'none';
           document.getElementById('ac-progress-title').textContent = 'Zaman Aşımı';
           document.getElementById('ac-progress-close-btn').style.display = 'block';
           document.getElementById('ac-progress-ok-btn').style.display = 'block';
-          alert('Uçak listesi taraması zaman aşımına uğradı (30 dk).'); 
-          return; 
+          alert('Uçak listesi taraması zaman aşımına uğradı (30 dk).');
+          return;
         }
-        
-        document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: ' + Math.round((Date.now()-t0)/1000) + 's';
+
         setBusy('Taranıyor… ' + Math.round((Date.now()-t0)/1000) + 's');
         
         try {
@@ -22281,13 +22295,14 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           
           // Başarılı/Başarısız Bitiş
+          stopAcTimer();
           setIdle();
           document.getElementById('ac-progress-spinner').style.display = 'none';
           document.getElementById('ac-progress-active-step').style.display = 'none';
           document.getElementById('ac-progress-close-btn').style.display = 'block';
           document.getElementById('ac-progress-ok-btn').style.display = 'block';
-          
-          if (st.error) { 
+
+          if (st.error) {
             document.getElementById('ac-progress-title').textContent = 'Güncelleme Başarısız';
             alert('Uçak listesi güncellenemedi: ' + st.error); 
             return; 

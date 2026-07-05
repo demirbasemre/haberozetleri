@@ -23699,8 +23699,12 @@ window.classifyFleetError = function(msg) {
     }
   }
 
+  // Geçen Süre yazısı için ağdan bağımsız 1 sn'lik sayaç (poll aralığı 2 sn'de kalır, istek sayısı artmaz)
+  let _acTimerInterval = null;
+
   // Taramayı bitmiş görünüme al (spinner gizle, kapat/tamam butonlarını göster)
   function finishAcProgress(title) {
+    if (_acTimerInterval) { clearInterval(_acTimerInterval); _acTimerInterval = null; }
     const set = (id, fn) => { const el = document.getElementById(id); if (el) fn(el); };
     set('ac-progress-spinner', el => el.style.display = 'none');
     set('ac-progress-active-step', el => el.style.display = 'none');
@@ -23737,6 +23741,9 @@ window.classifyFleetError = function(msg) {
       localStorage.setItem('fleet_update_password', pwd);
 
       const t0 = Date.now();
+      _acTimerInterval = setInterval(() => {
+        document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: ' + window.formatElapsed(Date.now()-t0);
+      }, 1000);
       const poll = async () => {
         if (Date.now() - t0 > 45*60*1000) {
           setIdle();
@@ -23745,7 +23752,6 @@ window.classifyFleetError = function(msg) {
           return;
         }
 
-        document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: ' + window.formatElapsed(Date.now()-t0);
         setBusy('Taranıyor… ' + window.formatElapsed(Date.now()-t0));
 
         try {
@@ -23956,9 +23962,13 @@ window.classifyFleetError = function(msg) {
   window.getAircraftsLastUpdated = function() {
     const data = (typeof window._acGetData === 'function') ? window._acGetData() : null;
     if (!data) return 'Yükleniyor...';
-    let latest = '';
+    let latest = '', latestTime = -Infinity;
     for (const a of data) {
-      if (a.updated && a.updated > latest) {
+      if (!a.updated) continue;
+      const t = new Date(a.updated).getTime();
+      // Tarih string karşılaştırması ("Jun" > "Jul" gibi) yanlış sıralar; sayısal zaman damgasıyla kıyasla
+      if (!isNaN(t) && t > latestTime) {
+        latestTime = t;
         latest = a.updated;
       }
     }
@@ -24001,9 +24011,12 @@ window.classifyFleetError = function(msg) {
       let latestDate = '1 Tem 2026';
       if (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA) {
         const dates = Object.values(FLEET_CMP_DATA).map(a => a.planespotters_last_updated).filter(Boolean);
-        if (dates.length) {
-          latestDate = formatPlanespottersDate(dates[0]);
-        }
+        // dates[0] havayolu ekleniş sırasına göre rastgele bir kayıt seçerdi; gerçek en son tarihi bul
+        const best = dates.reduce((max, d) => {
+          const t = new Date(d).getTime();
+          return (!isNaN(t) && t > max.t) ? { d, t } : max;
+        }, { d: null, t: -Infinity });
+        if (best.d) latestDate = formatPlanespottersDate(best.d);
       }
       if (dt)  dt.textContent    = 'Mevcut Filo (Güncelleme Tarihi: ' + latestDate + ')';
       if (catBar) catBar.style.display = '';
