@@ -23703,7 +23703,10 @@ window.classifyFleetError = function(msg) {
           <!-- Footer -->
           <div id="ac-progress-footer" style="padding: 12px 20px; border-top: 1px solid var(--border-color, #e2e8f0); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary, #f8fafc);">
             <span style="font-size: 11px; color:var(--text-3, #64748b);" id="ac-progress-timer">Geçen Süre: 00:00</span>
-            <button id="ac-progress-ok-btn" class="fdd-btn" style="font-size: 11px; padding: 6px 16px; background: var(--accent, #3b82f6); color:#fff; border:none; border-radius:6px; cursor:pointer; display:none;" onclick="document.getElementById('aircraft-progress-modal').style.display='none'">Tamam</button>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <button id="ac-progress-stop-btn" onclick="window.stopAircraftUpdate()" style="font-size: 11px; padding: 6px 14px; background: transparent; color:#dc2626; border:1px solid #dc2626; border-radius:6px; cursor:pointer; transition: background 0.15s;">Durdur</button>
+              <button id="ac-progress-ok-btn" class="fdd-btn" style="font-size: 11px; padding: 6px 16px; background: var(--accent, #3b82f6); color:#fff; border:none; border-radius:6px; cursor:pointer; display:none;" onclick="document.getElementById('aircraft-progress-modal').style.display='none'">Tamam</button>
+            </div>
           </div>
         </div>
 
@@ -23734,6 +23737,8 @@ window.classifyFleetError = function(msg) {
       document.getElementById('ac-progress-close-btn').style.display = 'none';
       document.getElementById('ac-progress-ok-btn').style.display = 'none';
       document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: 00:00';
+      const stopBtn = document.getElementById('ac-progress-stop-btn');
+      if (stopBtn) { stopBtn.style.display = ''; stopBtn.disabled = false; stopBtn.textContent = 'Durdur'; }
       setAcProgressAlert(null);
     }
   }
@@ -23778,7 +23783,20 @@ window.classifyFleetError = function(msg) {
     set('ac-progress-title', el => el.textContent = title);
     set('ac-progress-close-btn', el => el.style.display = 'block');
     set('ac-progress-ok-btn', el => el.style.display = 'block');
+    set('ac-progress-stop-btn', el => el.style.display = 'none');
   }
+
+  // Kullanıcı "Durdur"a bastığında: mevcut adım bitince tarama nazikçe sonlanır,
+  // o ana kadar taranmış havayolları kaydedilir, kalanlar eski veriyle korunur.
+  window.stopAircraftUpdate = async function() {
+    const btn = document.getElementById('ac-progress-stop-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Durduruluyor…'; }
+    try {
+      await fetch(_acApiBase() + '/api/cancel-aircrafts', { method: 'POST' });
+    } catch (e) {
+      console.warn('Durdurma isteği gönderilemedi:', e);
+    }
+  };
 
   window.runAircraftUpdateWithPassword = async function(pwd) {
     const btn = document.getElementById('fleet-ac-update-btn');
@@ -23888,8 +23906,13 @@ window.classifyFleetError = function(msg) {
             return;
           }
 
-          finishAcProgress('Güncelleme Tamamlandı');
-          setAcProgressAlert('success', 'Güncelleme tamamlandı', 'Uçak listesi başarıyla güncellendi: ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt.');
+          if (st.result && st.result.cancelled) {
+            finishAcProgress('Durduruldu');
+            setAcProgressAlert('success', 'Tarama durduruldu', `Kullanıcı isteğiyle durduruldu. O ana kadar taranan havayolları kaydedildi, kalanlar önceki verileriyle korundu (toplam ${(st.result && st.result.aircraft_count) || 0} kayıt).`);
+          } else {
+            finishAcProgress('Güncelleme Tamamlandı');
+            setAcProgressAlert('success', 'Güncelleme tamamlandı', 'Uçak listesi başarıyla güncellendi: ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt.');
+          }
           _acData = null;
           await window.loadAircraftList();
           // Aynı tarama filo matrisini de güncelledi (aynı sayfadan gelir) — Mevcut Filo görünümünü tazele

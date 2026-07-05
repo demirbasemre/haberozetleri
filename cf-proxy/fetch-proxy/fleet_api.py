@@ -23,7 +23,8 @@ AC_STATE = {
     "current_page": 0,
     "total_pages": 0,
     "total_airlines": 0,
-    "completed_airlines": []
+    "completed_airlines": [],
+    "cancel_requested": False
 }
 # Filo matrisi (tip özeti) arka plan tarama durumu
 FLEET_STATE = {
@@ -565,11 +566,19 @@ class FleetAPIHandler(BaseHTTPRequestHandler):
                 "current_page": 0,
                 "total_pages": 0,
                 "total_airlines": len(airlines),
-                "completed_airlines": []
+                "completed_airlines": [],
+                "cancel_requested": False
             })
             t = threading.Thread(target=run_aircraft_scraping, args=(cookies, pwd, ua), daemon=True)
             t.start()
             self._json_response(202, {"status": "started", "message": "Uçak listesi taraması (mevcut filo dahil) arka planda başlatıldı."})
+
+        elif self.path == '/api/cancel-aircrafts':
+            if not AC_STATE["running"]:
+                self._json_response(409, {"error": "NotRunning", "message": "Şu an sürmekte olan bir uçak listesi taraması yok."})
+                return
+            AC_STATE["cancel_requested"] = True
+            self._json_response(202, {"status": "cancelling", "message": "Durdurma isteği alındı — mevcut adım bitince tarama sonlandırılacak."})
 
         else:
             self.send_response(404)
@@ -770,7 +779,12 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
             page = context.new_page()
             page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
 
+            cancelled = False
             for idx, (code, info) in enumerate(airlines.items()):
+                if AC_STATE.get("cancel_requested"):
+                    print(f"\n[AC] Durdurma isteği alındı — {code}'den itibaren kalan havayolları eski veriyle korunacak.", flush=True)
+                    cancelled = True
+                    break
                 if idx > 0:
                     _nap(AIRLINE_DELAY)  # havayolları arası nazik bekleme
                 print(f"\n[AC] Uçak listesi taranıyor: {info['name']} ({code})...", flush=True)
@@ -896,6 +910,21 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                         })
                     fleet_failed_list.append({"code": code, "name": info["name"], "error": str(e)})
 
+            if cancelled:
+                # Henüz sırası gelmemiş havayollarını eski verileriyle koru (kaybetme)
+                for code, info in airlines.items():
+                    if code in kept:
+                        continue
+                    kept[code] = existing_by.get(code, [])
+                    per_airline[code] = len(kept[code])
+                    skipped.append(code)
+                    AC_STATE["completed_airlines"].append({
+                        "code": code,
+                        "name": info["name"],
+                        "count": per_airline[code],
+                        "status": "skipped"
+                    })
+
             browser.close()
 
         # Birleştir: yapılandırılmış havayolları + KV'de olup config'te olmayanlar (kaybetme)
@@ -936,11 +965,12 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
             fleet_res = api_post('/api/save-fleet', {"password": pwd, "fleet": fleet_data, "date": today_str})
             print(f"[AC] {len(fleet_updated_list)} havayolu için filo matrisi de KV'ye gönderildi: {fleet_res}", flush=True)
 
-        AC_STATE.update({"running": False, "error": None, "result": {
+        AC_STATE.update({"running": False, "error": None, "cancel_requested": False, "result": {
             "aircraft_count": len(all_aircrafts),
             "per_airline": per_airline,
             "skipped": skipped,
             "errors": errors,
+            "cancelled": cancelled,
             "fleet_matrix": {
                 "updated": fleet_updated_list,
                 "skipped": fleet_skipped_list,
@@ -950,7 +980,7 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
         }})
     except Exception as e:
         print(f"[AC][KRİTİK] Uçak listesi taraması başarısız: {e}")
-        AC_STATE.update({"running": False, "result": None, "error": str(e)})
+        AC_STATE.update({"running": False, "result": None, "error": str(e), "cancel_requested": False})
 
 def run_server():
     server_address = ('', PORT)
