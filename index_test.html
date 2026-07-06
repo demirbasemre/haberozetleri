@@ -9882,6 +9882,17 @@ async function loadDashboard() {
           applyDateBadgeFreshness(jfDateEl);
         }
       }
+      // Canlı noktayı seriye de ekle — modal ve enerji grafikleri aynı diziden okur.
+      // Fiyat $/ton gelir; dizi cts/gal tuttuğundan PLATTS_CVT ile geri çevrilir.
+      if (live.date && !PLATTS_JET_DATA.dates.includes(live.date)) {
+        PLATTS_JET_DATA.dates.push(live.date);
+        PLATTS_JET_DATA.global.push(parseFloat((live.price / PLATTS_CVT).toFixed(2)));
+        if (_brentRaw) renderEnergyChart();
+        const jfModal = document.getElementById('jetfuel-chart-modal');
+        if (jfModal && jfModal.style.display === 'flex' && typeof window.renderJetfuelModalChart === 'function') {
+          window.renderJetfuelModalChart();
+        }
+      }
     });
 
     // 3. FRED DCOILBRENTEU (Dated Brent spot) — enerji grafiği için
