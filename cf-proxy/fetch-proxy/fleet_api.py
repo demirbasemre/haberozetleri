@@ -269,7 +269,9 @@ def _parse_matrix_rows(data):
 
 def extract_fleet(page, url, last_stored_date=None):
     print(f"Sayfa açılıyor: {url}")
-    page.goto(url, wait_until="networkidle", timeout=60000)
+    # networkidle: sayfadaki sürekli analytics/tracker istekleri yüzünden hiç tetiklenmeyebiliyor
+    # (60 sn'lik zaman aşımına takılıyordu) — domcontentloaded + kısa bekleme yeterli ve güvenilir
+    page.goto(url, wait_until="domcontentloaded", timeout=45000)
     time.sleep(2)
 
     title = page.title()
@@ -368,12 +370,18 @@ def extract_aircraft_list(page, slug, last_stored=None):
     - aircrafts None ise: sayfa 'Last updated' tarihi KV'dekiyle aynı → değişmemiş, atla.
     - page_error True ise: sayfalama bir noktada koptu (liste eksik olabilir, tarihi yazma)."""
     url = f"https://www.planespotters.net/airline/{slug}"
-    page.goto(url, wait_until="networkidle", timeout=60000)
+    # networkidle: sayfadaki sürekli analytics/tracker istekleri yüzünden hiç tetiklenmeyebiliyor
+    # (60 sn'lik zaman aşımına takılıyordu) — domcontentloaded + kısa bekleme yeterli ve güvenilir
+    page.goto(url, wait_until="domcontentloaded", timeout=45000)
     time.sleep(1.5)
 
     title = page.title()
     if "Cloudflare" in title or "Attention Required" in title or "Blocked" in title:
         raise Exception(f"Cloudflare Engeline Takıldı: {title}")
+
+    body_text = page.evaluate("() => document.body ? document.body.innerText : ''")
+    if "Data Limit Reached" in body_text or "data access limit" in body_text:
+        raise Exception("DATA_LIMIT: planespotters 24 saatlik veri erişim limiti dolu")
 
     page_updated = get_last_updated_date(page)
     if last_stored and page_updated and last_stored == page_updated:
@@ -395,24 +403,51 @@ def extract_aircraft_list(page, slug, last_stored=None):
 
     page_error = False
     for pno in range(2, max_page + 1):
-        _nap(PAGE_DELAY)  # sayfalar arası nazik bekleme
         AC_STATE.update({"current_page": pno})
-        try:
-            link = page.query_selector(f'.pagination_classic a[href*="page={pno}"]')
-            if not link:
-                raise Exception("sayfalama linki bulunamadı")
-            prev_snapshot = page.evaluate("() => document.querySelectorAll('.dt-tr')[0]?.textContent || ''")
-            link.click()
-            page.wait_for_function(
-                "(prev) => { const tr = document.querySelectorAll('.dt-tr')[0]; return tr && tr.textContent !== prev; }",
-                arg=prev_snapshot,
-                timeout=15000
-            )
-            aircrafts.extend(_extract_ac_rows(page))
-        except Exception as e:
+        # Ham DOM metnine bakmak yerine gerçek çıkarım fonksiyonunu tekrar tekrar deneyip
+        # tescil listesinin değiştiğini kontrol ediyoruz — bir önceki satırın "başlık" olup
+        # olmadığını tahmin etmeye çalışmaktan daha güvenilir.
+        seen_regs_before = {r['reg'] for r in aircrafts}
+        new_rows = None
+        last_err = None
+        for attempt in range(3):  # tıklama bazen ilk seferde tutmuyor — normal, JS-click, scroll+JS-click sırayla denenir
+            try:
+                link = page.query_selector(f'.pagination_classic a[href*="page={pno}"]')
+                if not link:
+                    raise Exception("sayfalama linki bulunamadı")
+                if attempt == 0:
+                    # Normal Playwright tıklaması (actionability bekler); overlay varsa takılmasın diye kısa timeout
+                    link.click(timeout=5000)
+                else:
+                    # Bir overlay (ör. consent/banner) tıklamayı yutuyorsa doğrudan JS click bunu bypass eder
+                    link.scroll_into_view_if_needed(timeout=3000)
+                    page.evaluate("el => el.click()", link)
+                deadline = time.time() + 12
+                while time.time() < deadline:
+                    time.sleep(0.5)
+                    candidate = _extract_ac_rows(page)
+                    candidate_regs = {r['reg'] for r in candidate}
+                    if candidate_regs and not candidate_regs.issubset(seen_regs_before):
+                        new_rows = candidate
+                        break
+                if new_rows is not None:
+                    break
+                last_err = Exception("sayfa içeriği güncellenmedi (zaman aşımı)")
+            except Exception as e:
+                last_err = e
+        if new_rows is None:
+            # Asıl neden veri limiti olabilir — teşhisi netleştir (UI çerez/limit ayrımını buna göre gösteriyor)
+            try:
+                body_text = page.evaluate("() => document.body ? document.body.innerText : ''")
+                if "Data Limit Reached" in body_text or "data access limit" in body_text:
+                    last_err = Exception("DATA_LIMIT: planespotters 24 saatlik veri erişim limiti dolu")
+            except Exception:
+                pass
             page_error = True
-            print(f"[UYARI] {slug} sayfa {pno} tıklanamadı/güncellenmedi: {e}", flush=True)
+            print(f"[UYARI] {slug} sayfa {pno} tıklanamadı/güncellenmedi: {last_err}", flush=True)
             break  # sayfalama bir kere koptuğunda devamı da güvenilir olmaz
+        aircrafts.extend(new_rows)
+        _nap(PAGE_DELAY)  # sayfalar arası nazik bekleme (veri alındıktan sonra)
 
     # Sayfalar arası da aynı tescil tekrar edebilir (ör. tıklama tam yerleşmeden önceki
     # anlık görüntü) — tekrar tekile indir
@@ -835,6 +870,7 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
             auto_stopped_reason = None
             consecutive_cf_failures = 0
             CF_FAILURE_LIMIT = 3  # art arda bu kadar Cloudflare engeli görülürse çerezler geçersizdir, taramayı bitirmenin anlamı yok
+            data_limit_hit = False  # planespotters günlük veri limiti — kalan havayollarını denemenin anlamı yok
             for idx, (code, info) in enumerate(airlines.items()):
                 if AC_STATE.get("cancel_requested"):
                     print(f"\n[AC] Durdurma isteği alındı — {code}'den itibaren kalan havayolları eski veriyle korunacak.", flush=True)
@@ -843,6 +879,11 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                 if consecutive_cf_failures >= CF_FAILURE_LIMIT:
                     print(f"\n[AC] Art arda {CF_FAILURE_LIMIT} Cloudflare engeli — çerezler geçersiz görünüyor, tarama otomatik durduruluyor.", flush=True)
                     auto_stopped_reason = "Art arda birden fazla havayolunda Cloudflare/Turnstile engeline takılındı — çerezler geçersiz/süresi dolmuş olabilir. Tarama otomatik durduruldu, kalan havayolları eski verileriyle korundu."
+                    cancelled = True
+                    break
+                if data_limit_hit:
+                    print(f"\n[AC] Planespotters veri erişim limiti dolu — tarama otomatik durduruluyor.", flush=True)
+                    auto_stopped_reason = "Planespotters 24 saatlik veri erişim limiti doldu. Tarama otomatik durduruldu, kalan havayolları eski verileriyle korundu — limit sıfırlanınca tekrar deneyin."
                     cancelled = True
                     break
                 if idx > 0:
@@ -945,11 +986,13 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                     else:
                         fleet_failed_list.append({"code": code, "name": info["name"], "error": "Fleet Matrix sayfada bulunamadı"})
                 except Exception as e:
-                    # Çekilemedi (Cloudflare/çerez/zaman aşımı) → varsa eski veriyi koru (merge koruması)
+                    # Çekilemedi (Cloudflare/çerez/limit/zaman aşımı) → varsa eski veriyi koru (merge koruması)
                     if "Cloudflare" in str(e):
                         consecutive_cf_failures += 1
                     else:
                         consecutive_cf_failures = 0
+                    if "DATA_LIMIT" in str(e):
+                        data_limit_hit = True
                     if existing_by.get(code):
                         kept[code] = existing_by[code]
                         per_airline[code] = len(kept[code])
