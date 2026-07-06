@@ -4216,7 +4216,16 @@
         </div>
         <div style="display: flex; flex-direction: column; gap: 12px;">
           <div style="font-size: 11px; color: var(--text-3); line-height: 1.4;">
-            Dışa aktarmak istediğiniz havayollarını seçin. Excel dosyasında her metrik ayrı satırda, yıllar sütunlarda yer alacak.
+            Dışa aktarmak istediğiniz havayollarını ve tablo yönünü seçin.
+          </div>
+
+          <!-- Tablo Yönü -->
+          <div style="display: flex; flex-direction: column; gap: 5px;">
+            <span style="font-size: 10px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px;">Tablo Yönü</span>
+            <div style="display: flex; gap: 6px;">
+              <button class="fdd-btn fdd-btn--active" id="fin-export-orient-cols" onclick="setFinExportOrientation('years-cols', this)" style="font-size: 10.5px; padding: 6px 8px; cursor: pointer; flex: 1; justify-content: center; text-align: center;">Yıllar Sütun · Metrik Satır</button>
+              <button class="fdd-btn" id="fin-export-orient-rows" onclick="setFinExportOrientation('years-rows', this)" style="font-size: 10.5px; padding: 6px 8px; cursor: pointer; flex: 1; justify-content: center; text-align: center;">Yıllar Satır · Metrik Sütun</button>
+            </div>
           </div>
 
           <!-- Hızlı Kontroller -->
@@ -21168,6 +21177,7 @@ window.openFinExportModal = function() {
     </label>
   `;
   }).join('');
+  setFinExportOrientation('years-cols', document.getElementById('fin-export-orient-cols'));
   modal.style.display = 'flex';
 };
 
@@ -21180,33 +21190,73 @@ window.selectAllFinExport = function(status) {
   document.querySelectorAll('.fin-export-checkbox').forEach(cb => { cb.checked = status; });
 };
 
+let _finExportOrientation = 'years-cols';
+window.setFinExportOrientation = function(mode, btnEl) {
+  _finExportOrientation = mode;
+  const colsBtn = document.getElementById('fin-export-orient-cols');
+  const rowsBtn = document.getElementById('fin-export-orient-rows');
+  if (colsBtn) colsBtn.classList.toggle('fdd-btn--active', mode === 'years-cols');
+  if (rowsBtn) rowsBtn.classList.toggle('fdd-btn--active', mode === 'years-rows');
+};
+
 window.runFinExportToExcel = function() {
   const selected = Array.from(document.querySelectorAll('.fin-export-checkbox:checked')).map(cb => cb.value);
   if (!selected.length) { alert('Lütfen en az bir havayolu seçin.'); return; }
 
-  const years   = getFinExportYears();
-  const headers = ['Hava Yolu', 'Metrik', ...years];
-  const rows    = [headers.join(';')];
+  const years = getFinExportYears();
+  const rows  = [];
 
-  selected.forEach(slug => {
-    const airline = FIN_DATA[slug];
-    if (!airline) return;
-    FIN_METRIC_DEFS.forEach(def => {
-      const data   = getEffectiveData(airline, slug, def.key);
-      const hasAny = years.some(y => data[y] != null);
-      if (!hasAny) return;
-      const row = [
-        airline.name,
-        `${def.label} (${def.unit})`,
-        ...years.map(y => {
-          const v = data[y];
-          return v == null ? '' : Math.round(v * 100) / 100;
-        })
-      ];
-      const escapedRow = row.map(val => `"${String(val).replace(/"/g, '""')}"`);
-      rows.push(escapedRow.join(';'));
+  if (_finExportOrientation === 'years-rows') {
+    // Yıllar satır, metrikler sütun: her (havayolu, yıl) çifti bir satır.
+    const headers = ['Hava Yolu', 'Yıl', ...FIN_METRIC_DEFS.map(def => `${def.label} (${def.unit})`)];
+    rows.push(headers.join(';'));
+
+    selected.forEach(slug => {
+      const airline = FIN_DATA[slug];
+      if (!airline) return;
+      const metricData = {};
+      FIN_METRIC_DEFS.forEach(def => { metricData[def.key] = getEffectiveData(airline, slug, def.key); });
+
+      years.forEach(y => {
+        const hasAny = FIN_METRIC_DEFS.some(def => metricData[def.key][y] != null);
+        if (!hasAny) return;
+        const row = [
+          airline.name,
+          y,
+          ...FIN_METRIC_DEFS.map(def => {
+            const v = metricData[def.key][y];
+            return v == null ? '' : Math.round(v * 100) / 100;
+          })
+        ];
+        const escapedRow = row.map(val => `"${String(val).replace(/"/g, '""')}"`);
+        rows.push(escapedRow.join(';'));
+      });
     });
-  });
+  } else {
+    // Yıllar sütun, metrikler satır (varsayılan).
+    const headers = ['Hava Yolu', 'Metrik', ...years];
+    rows.push(headers.join(';'));
+
+    selected.forEach(slug => {
+      const airline = FIN_DATA[slug];
+      if (!airline) return;
+      FIN_METRIC_DEFS.forEach(def => {
+        const data   = getEffectiveData(airline, slug, def.key);
+        const hasAny = years.some(y => data[y] != null);
+        if (!hasAny) return;
+        const row = [
+          airline.name,
+          `${def.label} (${def.unit})`,
+          ...years.map(y => {
+            const v = data[y];
+            return v == null ? '' : Math.round(v * 100) / 100;
+          })
+        ];
+        const escapedRow = row.map(val => `"${String(val).replace(/"/g, '""')}"`);
+        rows.push(escapedRow.join(';'));
+      });
+    });
+  }
 
   const csvContent = rows.join('\n');
   const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: 'text/csv;charset=utf-8;' });
