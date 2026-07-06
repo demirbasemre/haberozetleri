@@ -22705,6 +22705,11 @@ window.setFinExportOrientation = function(mode, btnEl) {
   if (rowsBtn) rowsBtn.classList.toggle('fdd-btn--active', mode === 'years-rows');
 };
 
+function _finCsvNum(v) {
+  if (v == null) return '';
+  return (Math.round(v * 100) / 100).toLocaleString('tr-TR', { maximumFractionDigits: 2 });
+}
+
 window.runFinExportToExcel = function() {
   const selected = Array.from(document.querySelectorAll('.fin-export-checkbox:checked')).map(cb => cb.value);
   if (!selected.length) { alert('Lütfen en az bir havayolu seçin.'); return; }
@@ -22729,10 +22734,7 @@ window.runFinExportToExcel = function() {
         const row = [
           airline.name,
           y,
-          ...FIN_METRIC_DEFS.map(def => {
-            const v = metricData[def.key][y];
-            return v == null ? '' : Math.round(v * 100) / 100;
-          })
+          ...FIN_METRIC_DEFS.map(def => _finCsvNum(metricData[def.key][y]))
         ];
         const escapedRow = row.map(val => `"${String(val).replace(/"/g, '""')}"`);
         rows.push(escapedRow.join(';'));
@@ -22753,10 +22755,7 @@ window.runFinExportToExcel = function() {
         const row = [
           airline.name,
           `${def.label} (${def.unit})`,
-          ...years.map(y => {
-            const v = data[y];
-            return v == null ? '' : Math.round(v * 100) / 100;
-          })
+          ...years.map(y => _finCsvNum(data[y]))
         ];
         const escapedRow = row.map(val => `"${String(val).replace(/"/g, '""')}"`);
         rows.push(escapedRow.join(';'));
