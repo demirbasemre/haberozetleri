@@ -23793,7 +23793,12 @@ window.classifyFleetError = function(msg) {
     }
     if (cnt) {
       const nm = _acAirline ? _acAirName(_acAirline) : 'Tümü';
-      cnt.textContent = `${nm}: ${rows.length} uçak`;
+      // Planespotters "Current Fleet" listesi henüz teslim edilmemiş (On Order) uçakları da
+      // içerir; bunlar sitedeki Fleet Size'a dahil değildir — ayrı gösterilir
+      const onOrder = rows.filter(a => (a.delivered || '').trim().toLowerCase() === 'on order').length;
+      cnt.textContent = onOrder
+        ? `${nm}: ${rows.length - onOrder} uçak + ${onOrder} sipariş`
+        : `${nm}: ${rows.length} uçak`;
     }
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
     tbody.innerHTML = rows.map(a => {
