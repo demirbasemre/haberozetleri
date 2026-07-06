@@ -35,3 +35,6 @@ filo-veri-notlari.md
 
 # Markdown dosyaları GitHub'a gitmez (lokal dokümantasyon)
 *.md
+
+# Güvenlik nedeniyle fetch-proxy klasörü GitHub'a gönderilmez (Unraid yerelinde tutulur)
+cf-proxy/fetch-proxy/
