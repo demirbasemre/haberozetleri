@@ -1575,11 +1575,15 @@ export default {
     if (urlObj.pathname === '/jetfuel') {
       const forceDirect = urlObj.searchParams.get('direct') === '1';
       try {
+        // IATA verisi her pazartesi güncellenir; o gün önbelleği kısaltarak yeni
+        // verinin siteye daha hızlı yansımasını sağla, diğer günler 6 saatte kalsın.
+        const istWeekday = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Istanbul', weekday: 'short' }).format(new Date());
+        const jetfuelTtl = istWeekday === 'Mon' ? 1800 : 21600;
         const res = await doFetch(
           'https://www.iata.org/en/publications/economics/fuel-monitor/',
           { headers: { 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' } },
           forceDirect,
-          21600 // 6 saat önbellek — veri haftalık güncellenir
+          jetfuelTtl
         );
         if (res.status !== 200) {
           return new Response(JSON.stringify({ error: 'IATA fetch failed', status: res.status }), {
@@ -1623,7 +1627,7 @@ export default {
             ...corsHeaders,
             'Content-Type': 'application/json',
             'X-Proxy': res.proxy,
-            'Cache-Control': 'public, max-age=21600',
+            'Cache-Control': `public, max-age=${jetfuelTtl}`,
           },
         });
       } catch (err) {
