@@ -461,6 +461,10 @@ def extract_aircraft_list(page, slug, last_stored=None):
                     break
                 last_err = Exception("sayfa içeriği güncellenmedi (zaman aşımı)")
             except Exception as e:
+                if _is_session_closed_error(e):
+                    # Sayfalama içi tıklama yeniden denemesiyle çözülmez — dışarıdaki
+                    # yeniden bağlanma mantığının yakalayıp havayoluyu baştan denemesi için fırlat
+                    raise
                 last_err = e
         if new_rows is None:
             # Asıl neden veri limiti olabilir — teşhisi netleştir (UI çerez/limit ayrımını buna göre gösteriyor)
