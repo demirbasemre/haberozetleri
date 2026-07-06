@@ -4165,10 +4165,16 @@
     <div class="fin-table-section">
       <div class="fin-table-header">
         <span class="fin-chart-title" id="fin-table-title">Toplam Gelir · Havayolu Karşılaştırması</span>
-        <span class="fin-table-sort-hint">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
-          Sütun başlığına tıklayarak sırala
-        </span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="fin-table-sort-hint">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
+            Sütun başlığına tıklayarak sırala
+          </span>
+          <button class="fdd-btn" id="fin-export-btn" onclick="openFinExportModal()" style="font-size:11px;padding:6px 10px;display:flex;align-items:center;gap:5px;cursor:pointer;" title="Seçilen havayollarının finansal verilerini Excel/CSV olarak indir">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Excel'e Aktar
+          </button>
+        </div>
       </div>
       <div class="fin-table-wrap">
         <table class="fin-cmp-table" id="fin-cmp-table">
@@ -4194,6 +4200,39 @@
         </p>
         <div class="fin-src-grid" id="fin-src-grid">
           <!-- JS tarafından doldurulur -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ FİNANSAL VERİLERİ DIŞA AKTAR MODALİ ══════ -->
+    <div id="fin-export-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fin-export-title">
+      <div class="rel-add-card" style="max-width: 420px; width: 90vw;">
+        <div class="rel-add-head" style="border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 12px;">
+          <div class="rel-add-title" id="fin-export-title" style="font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Finansal Verileri Dışa Aktar
+          </div>
+          <button class="rel-add-x" onclick="closeFinExportModal()" style="font-size: 18px;" aria-label="Kapat">×</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 11px; color: var(--text-3); line-height: 1.4;">
+            Dışa aktarmak istediğiniz havayollarını seçin. Excel dosyasında her metrik ayrı satırda, yıllar sütunlarda yer alacak.
+          </div>
+
+          <!-- Hızlı Kontroller -->
+          <div style="display: flex; gap: 8px;">
+            <button class="fdd-btn" onclick="selectAllFinExport(true)" style="font-size: 10px; padding: 4px 8px; cursor: pointer;">Tümünü Seç</button>
+            <button class="fdd-btn" onclick="selectAllFinExport(false)" style="font-size: 10px; padding: 4px 8px; cursor: pointer;">Seçimleri Kaldır</button>
+          </div>
+
+          <!-- Checkbox Listesi -->
+          <div id="fin-export-list" style="max-height: 240px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; padding: 8px; background: var(--bg); display: flex; flex-direction: column; gap: 6px;">
+            <!-- Dinamik doldurulacak -->
+          </div>
+
+          <button class="fdd-btn" onclick="runFinExportToExcel()" style="width: 100%; justify-content: center; padding: 8px; background: #059669; color: white; font-size: 11.5px; font-weight: 600; border-radius: 4px; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; box-sizing: border-box;">
+            Dışa Aktar (Excel/CSV)
+          </button>
         </div>
       </div>
     </div>
@@ -21096,6 +21135,86 @@ function getFinYears() {
   if (_finRange >= 90) return sorted;
   return sorted.slice(-_finRange);
 }
+
+// Dışa aktarım tüm metrikleri satır olarak içerdiği için, tek metriğe göre
+// hesaplanan getFinYears() yerine tüm metriklerin birleşik yıl kümesini kullanır.
+function getFinExportYears() {
+  const allYears = new Set();
+  Object.values(FIN_DATA || {}).forEach(airline => {
+    FIN_METRIC_DEFS.forEach(def => {
+      Object.keys(getMetricValues(airline, def.key)).forEach(y => allYears.add(y));
+    });
+  });
+  const sorted = Array.from(allYears).sort();
+  if (_finRange >= 90) return sorted;
+  return sorted.slice(-_finRange);
+}
+
+window.openFinExportModal = function() {
+  const modal   = document.getElementById('fin-export-modal');
+  const listDiv = document.getElementById('fin-export-list');
+  if (!modal || !listDiv || !FIN_DATA) return;
+  const entries = Object.entries(FIN_DATA).sort((a, b) => a[1].name.localeCompare(b[1].name, 'tr'));
+  listDiv.innerHTML = entries.map(([slug, d]) => `
+    <label style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text);cursor:pointer;user-select:none;">
+      <input type="checkbox" class="fin-export-checkbox" value="${slug}" ${_finHidden.has(slug) ? '' : 'checked'} style="cursor:pointer;accent-color:var(--accent);">
+      <span style="width:10px;height:10px;border-radius:3px;background:${d.color};flex-shrink:0;display:inline-block"></span>
+      <span style="font-weight:600;">${d.name}</span>
+    </label>
+  `).join('');
+  modal.style.display = 'flex';
+};
+
+window.closeFinExportModal = function() {
+  const modal = document.getElementById('fin-export-modal');
+  if (modal) modal.style.display = 'none';
+};
+
+window.selectAllFinExport = function(status) {
+  document.querySelectorAll('.fin-export-checkbox').forEach(cb => { cb.checked = status; });
+};
+
+window.runFinExportToExcel = function() {
+  const selected = Array.from(document.querySelectorAll('.fin-export-checkbox:checked')).map(cb => cb.value);
+  if (!selected.length) { alert('Lütfen en az bir havayolu seçin.'); return; }
+
+  const years   = getFinExportYears();
+  const headers = ['Hava Yolu', 'Metrik', ...years];
+  const rows    = [headers.join(';')];
+
+  selected.forEach(slug => {
+    const airline = FIN_DATA[slug];
+    if (!airline) return;
+    FIN_METRIC_DEFS.forEach(def => {
+      const data   = getEffectiveData(airline, slug, def.key);
+      const hasAny = years.some(y => data[y] != null);
+      if (!hasAny) return;
+      const row = [
+        airline.name,
+        `${def.label} (${def.unit})`,
+        ...years.map(y => {
+          const v = data[y];
+          return v == null ? '' : Math.round(v * 100) / 100;
+        })
+      ];
+      const escapedRow = row.map(val => `"${String(val).replace(/"/g, '""')}"`);
+      rows.push(escapedRow.join(';'));
+    });
+  });
+
+  const csvContent = rows.join('\n');
+  const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const today = new Date().toISOString().split('T')[0];
+  link.href = URL.createObjectURL(blob);
+  link.download = `Finansal_Tablolar_${today}.csv`;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+  closeFinExportModal();
+};
 
 function fmtVal(v, metric) {
   if (v == null || v === undefined) return null;
