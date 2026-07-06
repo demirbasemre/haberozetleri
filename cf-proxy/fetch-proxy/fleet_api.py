@@ -102,6 +102,56 @@ def get_chrome_cookies():
         print(f"browser_cookie3 hata: {e}")
         return []
 
+# Gerçek bir Mac/Chrome kullanıcısının fingerprint'i (amiunique.org raporundan alındı).
+# Browserless üzerinden connect_over_cdp ile bağlanınca Playwright'ın context-level
+# user_agent/viewport ayarları SESSİZCE uygulanmıyor (test edildi: navigator.userAgent hâlâ
+# "HeadlessChrome/149 ... X11; Linux x86_64" dönüyordu) — bu, Cloudflare'e karşı en bariz
+# otomasyon işareti. Bunun yerine ham CDP komutlarıyla (Network.setUserAgentOverride,
+# Emulation.setDeviceMetricsOverride) zorlanması gerekiyor; bunlar doğrulanmış şekilde çalışıyor.
+REAL_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"
+REAL_PLATFORM = "MacIntel"
+REAL_VIEWPORT = {"width": 1470, "height": 956}
+REAL_DEVICE_SCALE_FACTOR = 2
+REAL_WEBGL_VENDOR = "Google Inc. (Apple)"
+REAL_WEBGL_RENDERER = "ANGLE (Apple, ANGLE Metal Renderer: Apple M2, Unspecified Version)"
+
+def apply_stealth_fingerprint(context, page):
+    """Playwright/Browserless oturumunu gerçek bir Mac/Chrome kullanıcısına benzetir:
+    User-Agent + platform (CDP ile, context seviyesi ayar Browserless'ta işe yaramıyor),
+    ekran boyutu/ölçeği, WebGL vendor/renderer ve donanım bilgisi (hardwareConcurrency/deviceMemory)."""
+    try:
+        cdp = context.new_cdp_session(page)
+        cdp.send("Network.setUserAgentOverride", {"userAgent": REAL_UA, "platform": REAL_PLATFORM})
+        cdp.send("Emulation.setDeviceMetricsOverride", {
+            "width": REAL_VIEWPORT["width"], "height": REAL_VIEWPORT["height"],
+            "deviceScaleFactor": REAL_DEVICE_SCALE_FACTOR, "mobile": False
+        })
+    except Exception as e:
+        print(f"[STEALTH] CDP fingerprint override uygulanamadı: {e}", flush=True)
+    try:
+        page.set_viewport_size(REAL_VIEWPORT)
+    except Exception:
+        pass
+    page.add_init_script(f"""
+        Object.defineProperty(navigator, 'webdriver', {{get: () => undefined}});
+        Object.defineProperty(navigator, 'hardwareConcurrency', {{get: () => 8}});
+        Object.defineProperty(navigator, 'deviceMemory', {{get: () => 16}});
+        Object.defineProperty(navigator, 'platform', {{get: () => '{REAL_PLATFORM}'}});
+        (function() {{
+            const spoof = (proto) => {{
+                if (!proto) return;
+                const orig = proto.getParameter;
+                proto.getParameter = function(param) {{
+                    if (param === 37445) return '{REAL_WEBGL_VENDOR}';
+                    if (param === 37446) return '{REAL_WEBGL_RENDERER}';
+                    return orig.apply(this, arguments);
+                }};
+            }};
+            spoof(window.WebGLRenderingContext && window.WebGLRenderingContext.prototype);
+            spoof(window.WebGL2RenderingContext && window.WebGL2RenderingContext.prototype);
+        }})();
+    """)
+
 def clean_age(age_str):
     age_str = age_str.replace("Years", "").replace("Year", "").strip()
     try:
@@ -608,13 +658,14 @@ def run_fleet_scraping(cookies, pwd, ua=None):
                 browser = p.chromium.launch(headless=True)
 
             context = browser.new_context(
-                user_agent=ua or user_agent,
-                viewport={"width": 1440, "height": 900},
-                locale="en-US"
+                user_agent=ua or REAL_UA,
+                viewport=REAL_VIEWPORT,
+                locale="tr-TR",
+                timezone_id="Europe/Istanbul"
             )
             context.add_cookies(cookies)
             page = context.new_page()
-            page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            apply_stealth_fingerprint(context, page)
 
             for code, info in airlines.items():
                 print(f"\nScraping {info['name']} ({code})...", flush=True)
@@ -771,13 +822,14 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                 browser = p.chromium.launch(headless=True)
 
             context = browser.new_context(
-                user_agent=ua or user_agent,
-                viewport={"width": 1440, "height": 900},
-                locale="en-US"
+                user_agent=ua or REAL_UA,
+                viewport=REAL_VIEWPORT,
+                locale="tr-TR",
+                timezone_id="Europe/Istanbul"
             )
             context.add_cookies(cookies)
             page = context.new_page()
-            page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            apply_stealth_fingerprint(context, page)
 
             cancelled = False
             auto_stopped_reason = None
