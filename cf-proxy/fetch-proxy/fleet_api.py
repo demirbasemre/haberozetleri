@@ -152,6 +152,33 @@ def apply_stealth_fingerprint(context, page):
         }})();
     """)
 
+def _open_browserless_session(p, ua, cookies):
+    """Browserless'a (ya da yoksa yerel headless Chromium'a) bağlanıp fingerprint uygulanmış,
+    çerezleri yüklü bir (browser, context, page) döndürür. Uzun taramalarda Browserless
+    bağlantısı bir noktada kopabiliyor ('Target page, context or browser has been closed') —
+    bu durumda aynı fonksiyon yeniden çağrılarak temiz bir oturuma geçilir."""
+    browserless_url = os.environ.get('BROWSERLESS_URL')
+    if browserless_url:
+        browser = p.chromium.connect_over_cdp(browserless_url)
+    else:
+        browser = p.chromium.launch(headless=True)
+
+    context = browser.new_context(
+        user_agent=ua or REAL_UA,
+        viewport=REAL_VIEWPORT,
+        locale="tr-TR",
+        timezone_id="Europe/Istanbul"
+    )
+    context.add_cookies(cookies)
+    page = context.new_page()
+    apply_stealth_fingerprint(context, page)
+    return browser, context, page
+
+def _is_session_closed_error(e):
+    """Browserless/Playwright oturumu koptuğunda atılan hatayı tanır (yeniden bağlanma tetiklenir)."""
+    msg = str(e)
+    return "has been closed" in msg or "Target closed" in msg or "Target page" in msg
+
 def clean_age(age_str):
     age_str = age_str.replace("Years", "").replace("Year", "").strip()
     try:
@@ -685,22 +712,8 @@ def run_fleet_scraping(cookies, pwd, ua=None):
         failed_list = []
 
         with sync_playwright() as p:
-            browserless_url = os.environ.get('BROWSERLESS_URL')
-            if browserless_url:
-                print(f"Browserless bağlantısı kuruluyor: {browserless_url}")
-                browser = p.chromium.connect_over_cdp(browserless_url)
-            else:
-                browser = p.chromium.launch(headless=True)
-
-            context = browser.new_context(
-                user_agent=ua or REAL_UA,
-                viewport=REAL_VIEWPORT,
-                locale="tr-TR",
-                timezone_id="Europe/Istanbul"
-            )
-            context.add_cookies(cookies)
-            page = context.new_page()
-            apply_stealth_fingerprint(context, page)
+            print("Browserless bağlantısı kuruluyor...")
+            browser, context, page = _open_browserless_session(p, ua, cookies)
 
             for code, info in airlines.items():
                 print(f"\nScraping {info['name']} ({code})...", flush=True)
@@ -711,7 +724,25 @@ def run_fleet_scraping(cookies, pwd, ua=None):
                 last_stored_date = fleet_data.get(code, {}).get("planespotters_last_updated")
 
                 try:
-                    types, page_last_updated = extract_fleet(page, url, last_stored_date)
+                    types = None
+                    for _reconnect_try in range(2):
+                        try:
+                            types, page_last_updated = extract_fleet(page, url, last_stored_date)
+                            break
+                        except Exception as e_inner:
+                            if _reconnect_try == 0 and _is_session_closed_error(e_inner):
+                                print(f"[FLEET] Browserless bağlantısı koptu ({e_inner}) — yeniden bağlanıp {code} tekrar deneniyor...", flush=True)
+                                try:
+                                    context.close()
+                                except Exception:
+                                    pass
+                                try:
+                                    browser.close()
+                                except Exception:
+                                    pass
+                                browser, context, page = _open_browserless_session(p, ua, cookies)
+                                continue
+                            raise
 
                     if types is None:
                         # Güncelleme tarihi değişmemiş, matris taraması atla
@@ -849,22 +880,8 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
         kept = {}  # code -> uçak kayıtları listesi (yeni taranan, korunan veya atlanan)
 
         with sync_playwright() as p:
-            browserless_url = os.environ.get('BROWSERLESS_URL')
-            if browserless_url:
-                print(f"Browserless bağlantısı kuruluyor: {browserless_url}")
-                browser = p.chromium.connect_over_cdp(browserless_url)
-            else:
-                browser = p.chromium.launch(headless=True)
-
-            context = browser.new_context(
-                user_agent=ua or REAL_UA,
-                viewport=REAL_VIEWPORT,
-                locale="tr-TR",
-                timezone_id="Europe/Istanbul"
-            )
-            context.add_cookies(cookies)
-            page = context.new_page()
-            apply_stealth_fingerprint(context, page)
+            print("Browserless bağlantısı kuruluyor...")
+            browser, context, page = _open_browserless_session(p, ua, cookies)
 
             cancelled = False
             auto_stopped_reason = None
@@ -896,8 +913,27 @@ def run_aircraft_scraping(cookies, pwd, ua=None):
                     "total_pages": 0
                 })
                 try:
-                    ac_list, matrix_types, page_updated, page_error = extract_aircraft_list(
-                        page, info['slug'], existing_updated.get(code))
+                    for _reconnect_try in range(2):
+                        try:
+                            ac_list, matrix_types, page_updated, page_error = extract_aircraft_list(
+                                page, info['slug'], existing_updated.get(code))
+                            break
+                        except Exception as e_inner:
+                            if _reconnect_try == 0 and _is_session_closed_error(e_inner):
+                                # Uzun taramalarda Browserless oturumu bir noktada kopabiliyor —
+                                # temiz bir oturum açıp aynı havayoluyla bir kez daha dene
+                                print(f"[AC] Browserless bağlantısı koptu ({e_inner}) — yeniden bağlanıp {code} tekrar deneniyor...", flush=True)
+                                try:
+                                    context.close()
+                                except Exception:
+                                    pass
+                                try:
+                                    browser.close()
+                                except Exception:
+                                    pass
+                                browser, context, page = _open_browserless_session(p, ua, cookies)
+                                continue
+                            raise
                     consecutive_cf_failures = 0  # sayfa gerçekten yüklendi (Cloudflare engeli değil)
 
                     if ac_list is None:
