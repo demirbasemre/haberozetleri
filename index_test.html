@@ -4324,7 +4324,7 @@
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"/></svg>
             Sütun başlığına tıklayarak sırala
           </span>
-          <button class="fdd-btn" id="fin-export-btn" onclick="openFinExportModal()" style="font-size:11px;padding:6px 10px;display:flex;align-items:center;gap:5px;cursor:pointer;" title="Seçilen havayollarının finansal verilerini Excel/CSV olarak indir">
+          <button class="fdd-btn" id="fin-export-btn" onclick="openFinExportModal()" style="font-size:11.5px;font-weight:700;padding:7px 12px;display:flex;align-items:center;gap:6px;cursor:pointer;background:var(--accent);border-color:var(--accent);color:#fff;border-radius:6px;box-shadow:0 2px 8px rgba(29,111,232,0.3);" title="Seçilen havayollarının finansal verilerini Excel/CSV olarak indir">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Excel'e Aktar
           </button>
@@ -22661,13 +22661,19 @@ window.openFinExportModal = function() {
   const listDiv = document.getElementById('fin-export-list');
   if (!modal || !listDiv || !FIN_DATA) return;
   const entries = Object.entries(FIN_DATA).sort((a, b) => a[1].name.localeCompare(b[1].name, 'tr'));
-  listDiv.innerHTML = entries.map(([slug, d]) => `
+  listDiv.innerHTML = entries.map(([slug, d]) => {
+    const logo   = finLogoUrl(slug);
+    const logoEl = logo
+      ? `<img src="${logo}" width="16" height="16" style="border-radius:3px;flex-shrink:0;display:block" alt="" onerror="this.style.display='none'">`
+      : `<span style="width:10px;height:10px;border-radius:3px;background:${d.color};flex-shrink:0;display:inline-block"></span>`;
+    return `
     <label style="display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text);cursor:pointer;user-select:none;">
       <input type="checkbox" class="fin-export-checkbox" value="${slug}" ${_finHidden.has(slug) ? '' : 'checked'} style="cursor:pointer;accent-color:var(--accent);">
-      <span style="width:10px;height:10px;border-radius:3px;background:${d.color};flex-shrink:0;display:inline-block"></span>
+      ${logoEl}
       <span style="font-weight:600;">${d.name}</span>
     </label>
-  `).join('');
+  `;
+  }).join('');
   modal.style.display = 'flex';
 };
 
