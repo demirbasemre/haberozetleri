@@ -187,6 +187,69 @@
   #fleet-ac-table th[aria-sort="ascending"] .ac-sort-icon,
   #fleet-ac-table th[aria-sort="descending"] .ac-sort-icon { opacity: 1; }
 
+  /* ── Filo tablosu: araç çubuğu + satır detayları ── */
+  .flt-table-toolbar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 8px 10px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky; left: 0;
+  }
+  .flt-orders-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 8px; cursor: pointer;
+    font-size: 11.5px; font-weight: 600; border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--text-2);
+    transition: all 0.15s;
+  }
+  .flt-orders-btn:hover { color: #059669; border-color: #059669; }
+  .flt-orders-btn:active { transform: scale(0.96); }
+  .flt-orders-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .flt-orders-btn--active { background: #059669; border-color: #059669; color: #fff; }
+  .flt-orders-btn--active:hover { color: #fff; background: color-mix(in srgb, #059669 85%, black 15%); border-color: #059669; }
+  .flt-toolbar-hint { font-size: 10.5px; color: var(--text-3); }
+  @media (prefers-reduced-motion: reduce) {
+    .flt-orders-btn, .flt-row-chevron { transition: none !important; }
+    .flt-orders-btn:active { transform: none !important; }
+  }
+  .flt-row-main { cursor: pointer; }
+  .flt-row-main:focus-visible td:first-child { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .flt-row-chevron {
+    display: inline-block; font-size: 9px; color: var(--text-3);
+    transition: transform 0.2s; flex-shrink: 0; width: 10px;
+  }
+  .flt-row-chevron--open { transform: rotate(90deg); color: var(--accent); }
+  .flt-table tr.flt-type-row td {
+    background: var(--bg); color: var(--text-2); font-weight: 400;
+    padding: 4px 10px; font-size: 11px;
+  }
+  .flt-table tr.flt-type-row td:first-child {
+    background: var(--bg); font-weight: 600; color: var(--text);
+    padding-left: 33px;
+  }
+  .flt-table tr.flt-type-row:hover td { background: var(--bg); }
+  .flt-type-row td.flt-td-cat-total { font-weight: 700; color: var(--text-2); }
+  .flt-type-cat-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 6px; flex-shrink: 0; vertical-align: baseline; }
+  .flt-td-order { color: #047857; font-weight: 700; }
+  [data-theme="dark"] .flt-td-order { color: #34d399; }
+  /* Sipariş vurgusu: "Siparişleri Göster" aktifken ilgili satırlar yeşil tonla öne çıkar */
+  .flt-table tr.flt-order-row td,
+  .flt-table tr.flt-order-row:hover td { background: color-mix(in srgb, var(--bg) 91%, #059669 9%); }
+  .flt-table tr.flt-order-row td:first-child,
+  .flt-table tr.flt-order-row:hover td:first-child {
+    background: color-mix(in srgb, var(--bg) 86%, #059669 14%);
+    box-shadow: inset 3px 0 0 #059669;
+  }
+  .flt-order-badge {
+    display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 9px;
+    font-size: 9.5px; font-weight: 800; letter-spacing: 0.02em;
+    background: #059669; color: #fff; flex-shrink: 0;
+  }
+  .flt-td-order-hl {
+    color: #047857 !important; font-weight: 800 !important;
+    background: color-mix(in srgb, var(--bg) 90%, #059669 10%) !important;
+  }
+  [data-theme="dark"] .flt-td-order-hl { color: #34d399 !important; }
+
   /* ══════ FİNANSAL TABLOLAR ══════════════════════ */
   .fin-control-bar {
     display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start;
@@ -3931,6 +3994,13 @@
 
       <!-- Kaynak 1 tablo görünümü — buildFleetTable() ile dinamik doldurulur -->
       <div class="flt-table-wrap" id="fleet-k1-table-wrap" style="display:none">
+        <div class="flt-table-toolbar">
+          <button class="flt-orders-btn" id="flt-orders-btn" onclick="toggleFleetOrders()" aria-pressed="false">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            Siparişleri Göster
+          </button>
+          <span class="flt-toolbar-hint">Havayolu satırına tıklayarak uçak tipi detayını açabilirsiniz.</span>
+        </div>
         <table class="flt-table" id="fleet-k1-table">
           <thead id="fleet-k1-table-thead"></thead>
           <tbody id="fleet-k1-table-tbody"></tbody>
@@ -24509,6 +24579,24 @@ window.classifyFleetError = function(msg) {
     _fleetTableCatOpen[cat] = !_fleetTableCatOpen[cat];
     buildFleetTable();
   };
+  let _fleetTableRowOpen = {};
+  let _fleetShowOrders = false;
+  window.toggleFleetTableRow = function(iata) {
+    _fleetTableRowOpen[iata] = !_fleetTableRowOpen[iata];
+    buildFleetTable();
+  };
+  window.toggleFleetOrders = function() {
+    _fleetShowOrders = !_fleetShowOrders;
+    const btn = document.getElementById('flt-orders-btn');
+    if (btn) {
+      btn.classList.toggle('flt-orders-btn--active', _fleetShowOrders);
+      btn.setAttribute('aria-pressed', _fleetShowOrders ? 'true' : 'false');
+      btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${_fleetShowOrders ? '<path d="M5 12h14"/>' : '<path d="M12 5v14M5 12h14"/>'}</svg> ${_fleetShowOrders ? 'Siparişleri Gizle' : 'Siparişleri Göster'}`;
+    }
+    buildFleetTable();
+  };
+
+  const FLEET_CAT_COLORS = { wb: '#7c3aed', nb: '#2563eb', cargo: '#b45309' };
 
   const FLEET_CAT_DEFS = [
     { key: 'wb',    label: 'Geniş Gövde', cls: 'flt-th-cat-wb' },
@@ -24553,6 +24641,7 @@ window.classifyFleetError = function(msg) {
     thead.innerHTML = groupRow + subRow;
 
     // ── Gövde satırları ──
+    const nCols = 4 + FLEET_CAT_DEFS.reduce((s, c) => s + (_fleetTableCatOpen[c.key] ? 3 : 1), 0);
     const totals = { wb:{a:0,p:0,t:0}, nb:{a:0,p:0,t:0}, cargo:{a:0,p:0,t:0}, pt:0, po:0 };
     const rows = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
       const _logoSrc = iata === 'AFKLM' ? 'https://assets.planespotters.net/files/airlines/1/air-france-klm_8e92ea.svg' : `https://www.gstatic.com/flights/airline_logos/70px/${iata}.png`;
@@ -24566,13 +24655,59 @@ window.classifyFleetError = function(msg) {
         return `<td class="flt-td-sub">${sums.a || '—'}</td><td class="flt-td-sub">${sums.p || '—'}</td><td class="flt-td-cat-total">${sums.t || '—'}</td>`;
       }).join('');
       totals.pt += (d.pt || 0); totals.po += (d.po || 0);
-      return `<tr>
-        <td><span class="flt-table-airline-cell">${logoEl}<span style="font-weight:700;color:${d.color}">${d.name}</span></span></td>
+
+      const rowOpen = !!_fleetTableRowOpen[iata];
+      const mainRow = `<tr class="flt-row-main" tabindex="0" role="button" aria-expanded="${rowOpen}"
+        onclick="toggleFleetTableRow('${iata}')"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleFleetTableRow('${iata}')}"
+        title="Uçak tipi detayını aç-kapat">
+        <td><span class="flt-table-airline-cell"><span class="flt-row-chevron${rowOpen ? ' flt-row-chevron--open' : ''}">▶</span>${logoEl}<span style="font-weight:700;color:${d.color}">${d.name}</span></span></td>
         ${catCells}
         <td class="flt-td-grand">${d.pt ?? '—'}</td>
-        <td>${d.po != null ? '+'+d.po : '—'}</td>
+        <td class="${_fleetShowOrders && d.po ? 'flt-td-order-hl' : ''}">${d.po != null ? '+'+d.po : '—'}</td>
         <td>${d.k1age ?? '—'}</td>
       </tr>`;
+
+      // Uçak tipi detay satırları — büyük tablonun sütun düzenine hizalı.
+      // fleetMode: filo verisi (Aktif/Park/Toplam kendi kategori sütununda), değilse sipariş satırı (yalnızca Sipariş sütunu dolu)
+      const typeRowHtml = (t, fleetMode) => {
+        const tCat = classifyVariant(t.v);
+        const hl = _fleetShowOrders && parseInt(t.o) > 0;
+        const cells = FLEET_CAT_DEFS.map(c => {
+          if (!fleetMode || c.key !== tCat) {
+            return _fleetTableCatOpen[c.key] ? '<td></td><td></td><td></td>' : '<td></td>';
+          }
+          if (!_fleetTableCatOpen[c.key]) return `<td class="flt-td-cat-total">${t.t || '—'}</td>`;
+          return `<td>${t.a || '—'}</td><td>${t.i || '—'}</td><td class="flt-td-cat-total">${t.t || '—'}</td>`;
+        }).join('');
+        return `<tr class="flt-type-row${hl ? ' flt-order-row' : ''}">
+          <td><span class="flt-table-airline-cell"><span class="flt-type-cat-dot" style="background:${FLEET_CAT_COLORS[tCat] || 'var(--text-3)'}"></span>${t.v}${hl ? `<span class="flt-order-badge">+${t.o} sipariş</span>` : ''}</span></td>
+          ${cells}
+          <td>${fleetMode ? (t.t || '—') : ''}</td>
+          <td class="flt-td-order">${t.o ? '+'+t.o : (fleetMode ? '—' : '')}</td>
+          <td>${fleetMode ? (t.age ? t.age+'y' : '—') : ''}</td>
+        </tr>`;
+      };
+
+      // Havayolu satırına tıklayınca: tüm uçak tipleri, filo verisiyle
+      let typeRows = '';
+      if (rowOpen) {
+        const typesSorted = (d.types || []).slice().sort((x, y) => (parseInt(y.t)||0) - (parseInt(x.t)||0));
+        typeRows = typesSorted.length
+          ? typesSorted.map(t => typeRowHtml(t, true)).join('')
+          : `<tr class="flt-type-row"><td colspan="${nCols}" style="text-align:left;color:var(--text-3)">Uçak tipi detayı bulunamadı.</td></tr>`;
+      }
+
+      // "Siparişleri Göster" aktifken: yalnızca siparişi olan tipler, Sipariş sütununda.
+      // Satır zaten açıksa tip satırlarında sipariş görünüyor; tekrar eklenmez.
+      let orderRows = '';
+      if (_fleetShowOrders && !rowOpen) {
+        orderRows = (d.types || [])
+          .filter(t => parseInt(t.o) > 0)
+          .sort((x, y) => (parseInt(y.o)||0) - (parseInt(x.o)||0))
+          .map(t => typeRowHtml(t, false)).join('');
+      }
+      return mainRow + typeRows + orderRows;
     });
     tbody.innerHTML = rows.join('');
 
