@@ -237,12 +237,18 @@
   .fin-mpill-sep {
     font-size: 9.5px; font-weight: 800; text-transform: uppercase;
     letter-spacing: 0.07em; padding: 0 2px; flex-basis: 100%; margin-top: 8px;
+    display: inline-flex; align-items: center; gap: 5px;
   }
   .fin-mpill-sep:first-child { margin-top: 0; }
   .fin-mpill-sep--primary  { color: #2563eb; }
   .fin-mpill-sep--calc     { color: #d97706; }
   .fin-mpill-sep--pax      { color: #059669; }
   .fin-mpill-sep--pax-calc { color: #7c3aed; }
+  /* Hesaplanan grup başlıklarındaki formül "i" simgesi (dot deseni CY kontrolüyle ortak) */
+  .fin-mpill-sep .fin-info-dot { color: currentColor; border-color: currentColor; opacity: 0.75; }
+  .fin-mpill-sep .fin-info-dot:hover, .fin-mpill-sep .fin-info-dot:focus-visible,
+  .fin-mpill-sep .fin-info-dot.open { color: var(--accent); border-color: var(--accent); opacity: 1; }
+  .fin-mpill-sep .fin-info-pop { left: -6px; transform: none; width: 300px; }
   .fin-mpill {
     padding: 4px 11px; border-radius: 16px; cursor: pointer;
     font-size: 11.5px; font-weight: 600; border: 1.5px solid var(--border);
@@ -658,6 +664,11 @@
     .fin-metric-pills::-webkit-scrollbar { display: none; }
     .fin-metric-pills .fin-mpill, .fin-metric-pills .fin-mpill-sep { flex: 0 0 auto; }
     .fin-metric-pills .fin-mpill-sep { flex-basis: auto; margin-top: 0; align-self: center; }
+    /* Formül balonu kaydırma şeridinde kırpılmasın: viewport altına sabitle */
+    .fin-metric-pills .fin-info-pop {
+      position: fixed; left: 12px; right: 12px; top: auto; bottom: 14px;
+      width: auto; transform: none; z-index: 9990;
+    }
     /* Dokunma hedefleri (44px hedefine yaklaş; site dili kompakt chip) */
     .fin-mpill { padding: 8px 13px; }
     .fin-type-btn, .fin-range-btn, .fin-cy-btn { padding: 8px 12px; }
@@ -4185,7 +4196,9 @@
           <button class="fin-mpill fin-mpill--fin-primary" data-metric="net_profit_musd">Net Kâr</button>
           <button class="fin-mpill fin-mpill--fin-primary" data-metric="employees">Çalışanlar</button>
           <!-- Hesaplanan Oran (turuncu) -->
-          <span class="fin-mpill-sep fin-mpill-sep--calc">Hesaplanan Oran</span>
+          <span class="fin-mpill-sep fin-mpill-sep--calc">Hesaplanan Oran<button type="button" class="fin-info-dot" aria-label="Hesaplanan oranlar nasıl hesaplanıyor?"
+            onclick="this.classList.toggle('open'); event.stopPropagation();"
+            onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Büyüme oranları</strong> (Gelir, Yolcu, Kargo, Diğer Gelir %): (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.<br><strong>İşletme Marjı:</strong> İşletme Kârı ÷ Toplam Gelir × 100<br><strong>Net Marj:</strong> Net Kâr ÷ Toplam Gelir × 100</span></button></span>
           <button class="fin-mpill fin-mpill--fin-calc" data-metric="total_revenue_growth_pct">Gelir Büyümesi</button>
           <button class="fin-mpill fin-mpill--fin-calc" data-metric="passenger_revenue_growth_pct">Yolcu Gelir %</button>
           <button class="fin-mpill fin-mpill--fin-calc" data-metric="cargo_revenue_growth_pct">Kargo Gelir %</button>
@@ -4201,7 +4214,9 @@
           <button class="fin-mpill fin-mpill--pax-primary" data-metric="rpm_m">RPM</button>
           <button class="fin-mpill fin-mpill--pax-primary" data-metric="load_factor_pct">Doluluk</button>
           <!-- Hesaplanan Yolcu (mor) -->
-          <span class="fin-mpill-sep fin-mpill-sep--pax-calc">Hesaplanan Yolcu</span>
+          <span class="fin-mpill-sep fin-mpill-sep--pax-calc">Hesaplanan Yolcu<button type="button" class="fin-info-dot" aria-label="Hesaplanan yolcu metrikleri nasıl hesaplanıyor?"
+            onclick="this.classList.toggle('open'); event.stopPropagation();"
+            onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Yolcu / ASK / RPK Büyümesi:</strong> (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.</span></button></span>
           <button class="fin-mpill fin-mpill--pax-calc" data-metric="passenger_growth_pct">Yolcu Büyümesi</button>
           <button class="fin-mpill fin-mpill--pax-calc" data-metric="ask_growth_pct">ASK Büyümesi</button>
           <button class="fin-mpill fin-mpill--pax-calc" data-metric="rpk_growth_pct">RPK Büyümesi</button>
