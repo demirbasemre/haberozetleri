@@ -4213,17 +4213,17 @@
 
       <!-- ══════ UÇAK LİSTESİ DIŞA AKTAR MODALİ ══════ -->
       <div id="fleet-ac-export-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fleet-ac-export-title">
-        <div class="rel-add-card" style="max-width: 420px; width: 90vw;">
-          <div class="rel-add-head" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 12px;">
+        <div class="rel-add-card" style="max-width: 680px; width: 90vw; max-height: calc(100vh - 40px); display: flex; flex-direction: column;">
+          <div class="rel-add-head" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 12px; flex-shrink: 0;">
             <div class="rel-add-title" id="fleet-ac-export-title" style="font-size: 13px; font-weight: 700; color: var(--text-1); display: flex; align-items: center; gap: 6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
               Uçak Listesini Dışa Aktar
             </div>
             <button class="rel-add-x" onclick="closeAircraftExportModal()" style="font-size: 18px;" aria-label="Kapat">×</button>
           </div>
-          <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0;">
             <!-- HAVAYOLU SEÇİMİ -->
-            <div>
+            <div style="flex-shrink: 0;">
               <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
                 <span>HAVAYOLLARI</span>
                 <div style="display: flex; gap: 6px;">
@@ -4234,11 +4234,11 @@
             </div>
             
             <!-- Checkbox Listesi -->
-            <div id="fleet-ac-export-list" style="max-height: 240px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--bg-soft); display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+            <div id="fleet-ac-export-list" style="overflow-y: auto; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; background: var(--bg-soft); display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; flex: 1; min-height: 0;">
               <!-- Dinamik doldurulacak -->
             </div>
             
-            <button class="fdd-btn" onclick="runAircraftExportToExcel()" style="width: 100%; justify-content: center; padding: 8px; background: #059669; color: white; font-size: 11.5px; font-weight: 600; border-radius: 4px; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; box-sizing: border-box;">
+            <button class="fdd-btn" onclick="runAircraftExportToExcel()" style="width: 100%; justify-content: center; padding: 8px; background: #059669; color: white; font-size: 11.5px; font-weight: 600; border-radius: 4px; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; box-sizing: border-box; flex-shrink: 0;">
               Dışa Aktar (Excel/CSV)
             </button>
           </div>
@@ -4247,8 +4247,8 @@
       
       <!-- ══════ TABLO GÖRÜNÜMÜ DIŞA AKTAR MODALİ ══════ -->
       <div id="fleet-table-export-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="fleet-table-export-title">
-        <div class="rel-add-card" style="max-width: 440px; width: 95vw; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); backdrop-filter: blur(10px); padding: 20px;">
-          <div class="rel-add-head" style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="rel-add-card" style="max-width: 680px; width: 95vw; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); backdrop-filter: blur(10px); padding: 20px; max-height: calc(100vh - 40px); display: flex; flex-direction: column;">
+          <div class="rel-add-head" style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
             <div class="rel-add-title" id="fleet-table-export-title" style="font-size: 13px; font-weight: 700; color: var(--text-1); display: flex; align-items: center; gap: 8px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
               Filo Tablosunu Dışa Aktar
@@ -4256,9 +4256,9 @@
             <button class="rel-add-x" onclick="closeFleetTableExportModal()" style="font-size: 18px; background: none; border: none; color: var(--text-3); cursor: pointer;" aria-label="Kapat">×</button>
           </div>
           
-          <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; flex-direction: column; gap: 16px; flex: 1; min-height: 0;">
             <!-- DETAY SEVİYESİ SEÇİMİ (Segmented Control) -->
-            <div>
+            <div style="flex-shrink: 0;">
               <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 8px;">TABLO DETAY TİPİ</div>
               <div style="display: flex; background: var(--bg-soft); border-radius: 8px; padding: 4px; border: 1px solid var(--border-color); gap: 4px;">
                 <button class="fdd-btn fdd-btn--active" id="fleet-table-export-type-summary" onclick="setFleetTableExportType('summary')" style="flex: 1; text-align: center; justify-content: center; font-size: 10.5px; font-weight: 600; padding: 8px; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
@@ -4274,8 +4274,8 @@
             </div>
 
             <!-- HAVAYOLU SEÇİMİ -->
-            <div>
-              <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+              <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
                 <span>HAVAYOLLARI</span>
                 <div style="display: flex; gap: 6px;">
                   <button class="fdd-btn" onclick="selectFleetTableExportAll(true)" style="font-size: 9px; padding: 2px 6px; cursor: pointer; font-weight:600;">Tümünü Seç</button>
@@ -4284,12 +4284,12 @@
               </div>
               
               <!-- Checkbox/Chip Listesi -->
-              <div id="fleet-table-export-list" style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--bg-soft); display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+              <div id="fleet-table-export-list" style="overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; background: var(--bg-soft); display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; flex: 1; min-height: 0;">
                 <!-- Dinamik doldurulacak -->
               </div>
             </div>
             
-            <button class="fdd-btn" onclick="runFleetTableExport()" style="width: 100%; justify-content: center; padding: 10px; background: var(--accent); color: white; font-size: 11.5px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(29, 111, 232, 0.3);">
+            <button class="fdd-btn" onclick="runFleetTableExport()" style="width: 100%; justify-content: center; padding: 10px; background: var(--accent); color: white; font-size: 11.5px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; box-sizing: border-box; box-shadow: 0 4px 12px rgba(29, 111, 232, 0.3); flex-shrink: 0;">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Dışa Aktar (Excel/CSV)
             </button>
@@ -24124,7 +24124,7 @@ window.classifyFleetError = function(msg) {
               <div id="ac-progress-airline-name" style="font-weight: 600; font-size: 13px; color: var(--text-1, #0f172a);">Bağlanıyor...</div>
               
               <!-- Progress Substeps / Pages -->
-              <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+              <div id="ac-progress-pages-row" style="display:flex; align-items:center; gap:8px; margin-top:4px;">
                 <div style="flex:1; height:6px; background:var(--border-color, #e2e8f0); border-radius:3px; overflow:hidden;">
                   <div id="ac-progress-bar" style="width: 0%; height:100%; background: var(--accent, #3b82f6); border-radius:3px; transition: width 0.3s ease;"></div>
                 </div>
@@ -24172,6 +24172,8 @@ window.classifyFleetError = function(msg) {
       document.getElementById('ac-progress-airline-name').textContent = 'Bağlanıyor...';
       document.getElementById('ac-progress-bar').style.width = '0%';
       document.getElementById('ac-progress-pages-label').textContent = '0 / 0';
+      const pagesRow = document.getElementById('ac-progress-pages-row');
+      if (pagesRow) pagesRow.style.display = 'flex'; // filo akışı gizlemiş olabilir
       document.getElementById('ac-progress-overall-bar').style.width = '0%';
       document.getElementById('ac-progress-overall-label').textContent = '0 / 0';
       document.getElementById('ac-progress-list').innerHTML = '<div style="font-size:12px; color:var(--text-3); text-align:center; padding:12px;">Henüz tamamlanan adım yok.</div>';
@@ -24211,6 +24213,9 @@ window.classifyFleetError = function(msg) {
       else { hintEl.style.display = 'none'; hintEl.textContent = ''; }
     }
   }
+
+  // Mevcut Filo güncellemesi de aynı ilerleme popup'ını kullanır (fleet IIFE'sinden erişilir)
+  window._acProgress = { open: openAircraftProgressModal, finish: finishAcProgress, alert: setAcProgressAlert };
 
   // Geçen Süre yazısı için ağdan bağımsız 1 sn'lik sayaç (poll aralığı 2 sn'de kalır, istek sayısı artmaz)
   let _acTimerInterval = null;
@@ -25924,6 +25929,64 @@ window.classifyFleetError = function(msg) {
       `;
     };
 
+    // Uçak Listesi'ndeki ilerleme popup'ının aynısı; filo taramasına uyarlanır
+    const setEl = (id, fn) => { const el = document.getElementById(id); if (el) fn(el); };
+    let fleetTimerInterval = null;
+    const openFleetProgress = () => {
+      if (!window._acProgress) return;
+      window._acProgress.open();
+      setEl('ac-progress-title', el => el.textContent = 'Mevcut Filo Güncelleniyor');
+      setEl('ac-progress-stop-btn', el => el.style.display = 'none');  // filo taramasında durdurma desteği yok
+      setEl('ac-progress-pages-row', el => el.style.display = 'none'); // sayfa bazlı ilerleme filo taramasında yok
+    };
+    const finishFleetProgress = (title) => {
+      if (fleetTimerInterval) { clearInterval(fleetTimerInterval); fleetTimerInterval = null; }
+      if (window._acProgress) window._acProgress.finish(title);
+    };
+    const hideFleetProgress = () => setEl('aircraft-progress-modal', el => el.style.display = 'none');
+    // Sert hatalarda ilerleme popup'ı kapanır, hata mevcut özet modalıyla gösterilir
+    const failFleetProgress = (title, msg) => {
+      finishFleetProgress(title);
+      hideFleetProgress();
+      showFleetError(title, msg);
+    };
+    const renderFleetProgress = (st) => {
+      const done = (st.completed_airlines || []).length;
+      const total = st.total_airlines || 0;
+      const pct = total > 0 ? (done / total) * 100 : 0;
+      setEl('ac-progress-overall-bar', el => el.style.width = pct + '%');
+      setEl('ac-progress-overall-label', el => el.textContent = `${done} / ${total || done}`);
+      if (st.running) {
+        const name = st.current_airline_name || st.current_airline || 'Bağlanıyor...';
+        const code = st.current_airline ? ` (${st.current_airline})` : '';
+        setEl('ac-progress-airline-name', el => el.innerHTML = `<b>${name}${code}</b>`);
+      }
+      const listDiv = document.getElementById('ac-progress-list');
+      if (listDiv && st.completed_airlines && st.completed_airlines.length) {
+        listDiv.innerHTML = '';
+        st.completed_airlines.forEach(item => {
+          let icon = '✅';
+          let statusText = item.date ? ` (Güncellendi: ${item.date})` : ' (Güncellendi)';
+          let itemColor = 'var(--text-1)';
+          if (item.status === 'skipped') {
+            icon = '⏭️';
+            statusText = ' (Zaten güncel, atlandı)';
+            itemColor = 'var(--text-3)';
+          } else if (item.status === 'error' || item.status === 'failed') {
+            icon = '❌';
+            statusText = ` (Hata: ${item.error || 'Çekilemedi'})`;
+            itemColor = '#ef4444';
+          }
+          const row = document.createElement('div');
+          row.style = "display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; padding: 4px 6px; border-bottom: 1px solid var(--border-color, #e2e8f0); color: " + itemColor + "; gap: 10px;";
+          row.innerHTML = "<div style=\"font-weight:500;\">" + icon + " " + item.name + "</div><div style=\"font-size:10px; opacity:0.85; text-align:right;\">" + statusText + "</div>";
+          listDiv.appendChild(row);
+        });
+        listDiv.scrollTop = listDiv.scrollHeight;
+      }
+    };
+
+    openFleetProgress();
     setBusy("Güncelleniyor...");
     if (spinner) spinner.style.transform = 'rotate(360deg)';
 
@@ -25956,35 +26019,42 @@ window.classifyFleetError = function(msg) {
 
       // Tarama arka planda sürer (dakikalar alabilir); /api/fleet-status yoklanır
       const t0 = Date.now();
+      fleetTimerInterval = setInterval(() => {
+        setEl('ac-progress-timer', el => el.textContent = 'Geçen Süre: ' + window.formatElapsed(Date.now() - t0));
+      }, 1000);
       const poll = async () => {
         if (Date.now() - t0 > 45 * 60 * 1000) {
           setIdle();
-          showFleetError('Zaman Aşımı', 'Filo güncellemesi 45 dakika içinde tamamlanamadı.');
+          failFleetProgress('Zaman Aşımı', 'Filo güncellemesi 45 dakika içinde tamamlanamadı.');
           return;
         }
         setBusy('Güncelleniyor… ' + window.formatElapsed(Date.now() - t0));
         try {
           const sr = await fetch(base + '/api/fleet-status');
           const st = await sr.json();
-          if (st.running) { setTimeout(poll, 10000); return; }
+          renderFleetProgress(st);
+          if (st.running) { setTimeout(poll, 3000); return; }
           setIdle();
           if (st.error) {
-            showFleetError('Güncelleme Başarısız', st.error);
+            failFleetProgress('Güncelleme Başarısız', st.error);
             return;
           }
+          // Başarılı bitiş: ilerleme popup'ı kapanır, mevcut özet popup'ı açılır
+          finishFleetProgress('Güncelleme Tamamlandı');
+          hideFleetProgress();
           showFleetSummary(st.result || {});
         } catch (e) {
-          setTimeout(poll, 10000);
+          setTimeout(poll, 3000);
         }
       };
-      setTimeout(poll, 3000);
+      setTimeout(poll, 1500);
 
     } catch (err) {
       setIdle();
       const msg = /failed to fetch|networkerror|load failed/i.test(err.message)
         ? 'Sunucuya ulaşılamadı. İnternet bağlantınızı kontrol edin veya biraz sonra tekrar deneyin.'
         : err.message;
-      showFleetError('Güncelleme Başlatılamadı', msg);
+      failFleetProgress('Güncelleme Başlatılamadı', msg);
     }
   };
 })();
