@@ -22,7 +22,7 @@
   } catch(e) {}
 })();
 </script>
-<link rel="stylesheet" href="index.css?v=1.0.6">
+<link rel="stylesheet" href="index.css?v=1.0.7">
 <style>
   /* ══════════════════════════════════════
      FLEET COMPARISON & Kaynak 2 STYLES
@@ -3842,7 +3842,7 @@
             <input type="text" id="fleet-ac-search" oninput="filterAircraftList()" placeholder="Tescil, tip, koltuk veya açıklama ara…" aria-label="Uçak listesinde ara">
           </div>
           <div id="fleet-ac-count">Toplam 0 uçak listeleniyor.</div>
-          <div style="display:flex;gap:6px;">
+          <div style="display:flex;gap:6px;margin-left:auto;">
             <button class="fdd-btn" id="fleet-ac-export-btn" onclick="openAircraftExportModal()" style="font-size:11px;padding:6px 10px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:6px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:all 0.2s;" title="Seçilen havayollarının uçak listesini Excel/CSV olarak indir">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Excel'e Aktar
@@ -22187,8 +22187,21 @@ document.addEventListener('DOMContentLoaded', () => {
   function _acAirName(code) {
     return (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[code] && FLEET_CMP_DATA[code].name) || _acNames[code] || code;
   }
+  // FLEET_CMP_DATA'da rengi olmayan (yalnız uçak listesinde görünen) havayolları için marka renkleri
+  const AC_COLOR_OVERRIDE = {
+    '3S': '#78A22F',   // AeroLogic — yeşil
+    '3U': '#C8102E',   // Sichuan Airlines — kırmızı
+    'ABD': '#1E40AF',  // Air Atlanta Icelandic — lacivert
+    'MU': '#E60012'    // China Eastern — kırmızı
+  };
+  // Bilinmeyen kodlar griye düşmesin: koddan deterministik, beyaz metinle okunur bir renk seç
+  const AC_FALLBACK_PALETTE = ['#DC2626','#EA580C','#B45309','#65A30D','#059669','#0D9488','#0284C7','#2563EB','#7C3AED','#C026D3','#DB2777','#475569'];
   function _acAirColor(code) {
-    return (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[code] && FLEET_CMP_DATA[code].color) || '#64748b';
+    const known = (typeof FLEET_CMP_DATA !== 'undefined' && FLEET_CMP_DATA[code] && FLEET_CMP_DATA[code].color) || AC_COLOR_OVERRIDE[code];
+    if (known) return known;
+    let h = 0;
+    for (let i = 0; i < (code || '').length; i++) h = (h * 31 + code.charCodeAt(i)) >>> 0;
+    return AC_FALLBACK_PALETTE[h % AC_FALLBACK_PALETTE.length];
   }
   // gstatic favicon'ın IATA kodu olmayan/eksik döndüğü havayolları için özel logo
   const AC_LOGO_OVERRIDE = {

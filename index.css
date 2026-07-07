@@ -9615,7 +9615,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  flex: 1;
+  /* Sabit tercih genişliği: sağındaki sayaç metni değişince kutu genişlemesin/daralmasın
+     (dar ekranda yine küçülebilir) */
+  flex: 0 1 340px;
   min-width: 200px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
