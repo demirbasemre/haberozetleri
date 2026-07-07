@@ -8880,6 +8880,23 @@ function closeJetfuelChartModal() {
   const m = document.getElementById('jetfuel-chart-modal');
   if (m) m.style.display = 'none';
 }
+function openCrackSpreadChartModal() {
+  const m = document.getElementById('energy-chart-modal');
+  if (m) {
+    m.style.display = 'flex';
+    setTimeout(() => {
+      if (typeof window.renderEnergyModalChart === 'function') {
+        window.renderEnergyModalChart();
+      } else {
+        console.warn("window.renderEnergyModalChart henüz hazır değil.");
+      }
+    }, 150);
+  }
+}
+function closeCrackSpreadChartModal() {
+  const m = document.getElementById('energy-chart-modal');
+  if (m) m.style.display = 'none';
+}
 async function saveReleaseAddModal() {
   const title  = document.getElementById('rel-add-input-title').value.trim();
   const dateS  = document.getElementById('rel-add-input-date').value;
@@ -9742,6 +9759,7 @@ function buildReleaseCalendar() {
     ['iata-chart-modal',        closeIataChartModal],
     ['brent-chart-modal',       closeBrentChartModal],
     ['jetfuel-chart-modal',     closeJetfuelChartModal],
+    ['energy-chart-modal',      closeCrackSpreadChartModal],
   ];
   _chartModalMap.forEach(([id, closeFn]) => {
     const el = document.getElementById(id);
@@ -9808,9 +9826,12 @@ async function loadDashboard() {
   }
 
   let _energyCurrentPeriod = 'all';
-  function renderEnergyChart(period) {
-    if (period) _energyCurrentPeriod = period;
-    const activePeriod = _energyCurrentPeriod;
+  let _energyModalCurrentPeriod = 'all';
+  function renderEnergyChart(period, opts) {
+    const isModal = !!(opts && opts.modal);
+    if (isModal) { if (period) _energyModalCurrentPeriod = period; }
+    else { if (period) _energyCurrentPeriod = period; }
+    const activePeriod = isModal ? _energyModalCurrentPeriod : _energyCurrentPeriod;
     if (!_brentRaw) return;
     const jetW = PLATTS_JET_DATA.dates.map((date, i) => ({
       key: isoWeekKey(date), date, value: PLATTS_JET_DATA.global[i] * 42 / 100
@@ -9905,8 +9926,8 @@ async function loadDashboard() {
     // KPI: latest spread + weekly change
     const lastIdx = (() => { for (let i = spreadSeries.length - 1; i >= 0; i--) if (spreadSeries[i] != null) return i; return -1; })();
     const prevIdx = (() => { for (let i = lastIdx - 1; i >= 0; i--) if (spreadSeries[i] != null) return i; return -1; })();
-    const csValEl   = document.getElementById('cs-value');
-    const csDeltaEl = document.getElementById('cs-delta');
+    const csValEl   = document.getElementById(isModal ? 'cs-value-modal' : 'cs-value');
+    const csDeltaEl = document.getElementById(isModal ? 'cs-delta-modal' : 'cs-delta');
     if (csValEl && csDeltaEl) {
       if (lastIdx >= 0) {
         const cur = spreadSeries[lastIdx];
@@ -9928,7 +9949,7 @@ async function loadDashboard() {
       }
     }
 
-    lineChart('chart-energy', labels,
+    lineChart(isModal ? 'chart-energy-modal' : 'chart-energy', labels,
       [
         {
           label: 'Jet Yakıt ($/varil)',
@@ -9971,11 +9992,24 @@ async function loadDashboard() {
   }
 
   // Period button wiring
-  document.querySelectorAll('.energy-period-btn').forEach(btn => {
+  document.querySelectorAll('#dc-energy-chart .energy-period-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.energy-period-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#dc-energy-chart .energy-period-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderEnergyChart(btn.dataset.period);
+    });
+  });
+
+  function renderEnergyModalChart(period) {
+    renderEnergyChart(period, { modal: true });
+  }
+
+  // Period button wiring (crack spread popup)
+  document.querySelectorAll('#energy-chart-modal .energy-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#energy-chart-modal .energy-period-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderEnergyModalChart(btn.dataset.period);
     });
   });
 
@@ -10744,6 +10778,7 @@ async function loadDashboard() {
             { dateIso: '2022-02-24', label: 'Rusya-Ukrayna Savaşı', color: '#F59E0B' },
             { dateIso: '2023-04-02', label: 'OPEC+ Üretim Kesintisi', color: '#B45309' },
             { dateIso: '2024-01-12', label: 'Kızıldeniz Krizi', color: '#7C3AED' },
+            { dateIso: '2026-02-28', label: 'Ortadoğu Savaşı', color: '#0D9488' },
           ];
 
           const rawDatesArray = chart.$rawDates;
@@ -16050,6 +16085,7 @@ async function loadDashboard() {
 
   // Export functions to global scope
   window.renderEnergyChart = renderEnergyChart;
+  window.renderEnergyModalChart = renderEnergyModalChart;
   window.renderBrentModalChart = renderBrentModalChart;
 
   // MutationObserver for theme changes to automatically update/redraw the charts
@@ -16084,6 +16120,13 @@ async function loadDashboard() {
     if (wciModal && wciModal.style.display === 'flex') {
       if (typeof window.renderWciChart === 'function') {
         window.renderWciChart();
+      }
+    }
+    // 6. Crack Spread / Energy Chart (if modal is open)
+    const energyModal = document.getElementById('energy-chart-modal');
+    if (energyModal && energyModal.style.display === 'flex') {
+      if (typeof window.renderEnergyModalChart === 'function') {
+        window.renderEnergyModalChart();
       }
     }
     // 6. THY Chart (if modal is open)
@@ -20365,18 +20408,7 @@ function initControls(allArticles) {
       'Hava Kargo Kapasitesi': () => { if (typeof openIataChartModal === 'function') openIataChartModal(); },
       'IATA Jet Yakıtı': () => { if (typeof openJetfuelChartModal === 'function') openJetfuelChartModal(); },
       'Brent Petrol': () => { if (typeof openBrentChartModal === 'function') openBrentChartModal(); },
-      'Crack Spread': () => {
-        switchTab('dashboard');
-        setTimeout(() => {
-          const el = document.getElementById('dc-energy-chart');
-          if (el) {
-            document.querySelectorAll('.metric-highlight-active').forEach(o => o.classList.remove('metric-highlight-active'));
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.classList.add('metric-highlight-active');
-            setTimeout(() => el.classList.remove('metric-highlight-active'), 2000);
-          }
-        }, 120);
-      },
+      'Crack Spread': () => { if (typeof openCrackSpreadChartModal === 'function') openCrackSpreadChartModal(); },
       // Air Freight Index ve Global Spot Rates için dashboard'da karşılığı yok; tıklama etkisiz.
       'Air Freight Index': null,
       'Global Spot Rates': null
@@ -26761,6 +26793,36 @@ window.resetIndicatorsConfig = function() {
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-jetfuel-modal"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jet Yakıt, Brent & Crack Spread Grafik Modali -->
+    <div id="energy-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="energy-chart-title">
+      <div class="chart-modal-card">
+        <div class="rel-add-head">
+          <div id="energy-chart-title" class="rel-add-title">Jet Yakıt, Brent &amp; Crack Spread</div>
+          <button class="rel-add-x" onclick="closeCrackSpreadChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="chart-modal-controls">
+          <div class="modal-controls-left">
+            <div class="energy-period-btns">
+              <button class="energy-period-btn" data-period="3m">3A</button>
+              <button class="energy-period-btn" data-period="6m">6A</button>
+              <button class="energy-period-btn" data-period="1y">1Y</button>
+              <button class="energy-period-btn active" data-period="all">Tümü</button>
+            </div>
+          </div>
+          <div class="modal-controls-right">
+            <div class="crack-spread-strip" aria-live="polite">
+              <span class="cs-label">Crack Spread</span>
+              <span><span class="cs-value" id="cs-value-modal">—</span><span class="cs-unit"> $/varil</span></span>
+              <span class="cs-delta" id="cs-delta-modal">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-energy-modal"></canvas>
         </div>
       </div>
     </div>
