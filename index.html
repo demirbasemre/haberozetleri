@@ -3727,9 +3727,10 @@
           </button>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
-          <div class="fleet-src-date-badge" id="fleet-src-date-container" style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-2);background:var(--bg-secondary);border:1px solid var(--border-color);padding:5px 12px;border-radius:20px;font-weight:500;box-shadow: 0 1px 2px rgba(0,0,0,0.05);transition: all 0.2s;">
+          <div class="fleet-src-date-badge" id="fleet-src-date-container" onclick="openFleetUpdateDetail()" title="Havayolu bazında güncelleme detayını gör" style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-2);background:var(--bg-secondary);border:1px solid var(--border-color);padding:5px 12px;border-radius:20px;font-weight:500;box-shadow: 0 1px 2px rgba(0,0,0,0.05);transition: all 0.2s;cursor:pointer;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="color:var(--text-3);vertical-align: middle;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             <span id="fleet-src-date">Güncelleme Tarihi: 1 Tem 2026</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-3);"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
           <button class="fdd-btn" id="fleet-update-btn" onclick="triggerFleetUpdate()" style="font-size:11px;padding:4px 8px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;display:flex;align-items:center;gap:4px;cursor:pointer;transition:all 0.2s;" title="Planespotters'tan canlı verileri çek ve güncelle">
             <svg id="update-btn-spinner" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
@@ -22317,6 +22318,102 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // ── Güncelleme Detayı popup'ı ─────────────────────
+  // Havayolu bazında son veri değişim tarihleri (Mevcut Filo + Uçak Listesi). Tarihler kaynak
+  // sayfadaki "Last updated" değeridir: yeni bir güncelleme kontrolüne rağmen tarih
+  // ilerlemiyorsa o havayolunun verisi değişmemiş demektir.
+  function _updRelChip(dateStr) {
+    if (!dateStr) return '';
+    const t = new Date(dateStr).getTime();
+    if (isNaN(t)) return '';
+    const days = Math.floor((Date.now() - t) / 86400000);
+    const txt = days <= 0 ? 'bugün' : days === 1 ? 'dün' : days + ' gün önce';
+    const c = days <= 0 ? '#059669' : days <= 7 ? 'var(--text-3)' : '#b45309';
+    return `<span style="font-size:9.5px;color:${c};font-weight:600;margin-left:6px;white-space:nowrap;">${txt}</span>`;
+  }
+  function _updDetailRows() {
+    if (typeof FLEET_CMP_DATA === 'undefined' || !FLEET_CMP_DATA) return '';
+    // Uçak listesi tarafı: havayolu koduna göre kayıtlardaki en yeni "updated" tarihi
+    const acLatest = {};
+    const acData = _acData;
+    if (acData) {
+      for (const a of acData) {
+        if (!a.airline || !a.updated) continue;
+        const t = new Date(a.updated).getTime();
+        if (isNaN(t)) continue;
+        if (!acLatest[a.airline] || t > acLatest[a.airline].t) acLatest[a.airline] = { d: a.updated, t };
+      }
+    }
+    const rows = Object.entries(FLEET_CMP_DATA).map(([code, d]) => {
+      const fleetDate = d.planespotters_last_updated || '';
+      let fleetT = fleetDate ? new Date(fleetDate).getTime() : -Infinity;
+      if (isNaN(fleetT)) fleetT = -Infinity;
+      const ac = acLatest[code];
+      return { code, name: d.name || code, fleetDate, fleetT, acDate: ac ? ac.d : '' };
+    });
+    rows.sort((a, b) => b.fleetT - a.fleetT || a.name.localeCompare(b.name, 'tr'));
+    const cell = (dateStr) => dateStr
+      ? `<span style="color:var(--text-2);">${formatPlanespottersDate(dateStr)}</span>${_updRelChip(dateStr)}`
+      : '<span style="color:var(--text-3);">—</span>';
+    return rows.map(r => `
+      <tr style="border-bottom:1px solid var(--border-soft);">
+        <td style="padding:5px 0;font-weight:600;color:var(--text-1);">${r.name} (${r.code})</td>
+        <td style="padding:5px 0;text-align:right;white-space:nowrap;">${cell(r.fleetDate)}</td>
+        <td style="padding:5px 0 5px 14px;text-align:right;white-space:nowrap;">${cell(r.acDate)}</td>
+      </tr>`).join('');
+  }
+  window.closeFleetUpdateDetail = function() {
+    const m = document.getElementById('fleet-update-detail-modal');
+    if (m) m.style.display = 'none';
+  };
+  window.openFleetUpdateDetail = async function() {
+    let modal = document.getElementById('fleet-update-detail-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'fleet-update-detail-modal';
+      modal.style = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:10000;font-family:inherit;";
+      modal.addEventListener('click', e => { if (e.target === modal) window.closeFleetUpdateDetail(); });
+      modal.innerHTML = `
+        <div style="background:var(--bg-primary,#fff);color:var(--text-1,#0f172a);border:1px solid var(--border-color,#e2e8f0);width:100%;max-width:560px;border-radius:16px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1),0 10px 10px -5px rgba(0,0,0,0.04);display:flex;flex-direction:column;max-height:85vh;overflow:hidden;">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border-color,#e2e8f0);display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-weight:600;font-size:14px;">Güncelleme Detayı</span>
+            <button style="background:none;border:none;cursor:pointer;color:var(--text-3,#64748b);font-size:16px;padding:4px;" onclick="window.closeFleetUpdateDetail()">✕</button>
+          </div>
+          <div style="padding:16px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;">
+            <div style="font-size:11px;line-height:1.5;color:var(--text-3);background:var(--bg-secondary,#f8fafc);border:1px solid var(--border-color,#e2e8f0);border-radius:8px;padding:10px 12px;">
+              Tarihler, kaynak sayfadaki havayoluna ait <b>"Last updated"</b> değeridir. Canlı güncelleme yaptığınız hâlde bir havayolunun tarihi ilerlemiyorsa, o havayolunun verisinde <b>değişiklik yok</b> demektir. Mevcut Filo ve Uçak Listesi ayrı taramalarla güncellenir; bu yüzden iki sütunun tarihleri farklı olabilir.
+            </div>
+            <table style="width:100%;font-size:11px;border-collapse:collapse;">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border-color);color:var(--text-3);text-align:left;">
+                  <th style="padding:4px 0;">Havayolu</th>
+                  <th style="padding:4px 0;text-align:right;">Mevcut Filo</th>
+                  <th style="padding:4px 0 4px 14px;text-align:right;">Uçak Listesi</th>
+                </tr>
+              </thead>
+              <tbody id="fleet-update-detail-body"></tbody>
+            </table>
+          </div>
+          <div style="padding:12px 20px;border-top:1px solid var(--border-color,#e2e8f0);display:flex;justify-content:flex-end;background:var(--bg-secondary,#f8fafc);">
+            <button class="fdd-btn" style="font-size:11px;padding:6px 16px;background:var(--accent,#3b82f6);color:#fff;border:none;border-radius:6px;cursor:pointer;" onclick="window.closeFleetUpdateDetail()">Tamam</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modal);
+    } else {
+      modal.style.display = 'flex';
+    }
+    const body = document.getElementById('fleet-update-detail-body');
+    if (body) body.innerHTML = _updDetailRows() || '<tr><td colspan="3" style="padding:10px 0;color:var(--text-3);">Veri yükleniyor…</td></tr>';
+    // Uçak Listesi verisi henüz yüklenmediyse arka planda çekip tabloyu tazele
+    if (!_acData && typeof window.loadAircraftList === 'function') {
+      try { await window.loadAircraftList(); } catch (e) {}
+      if (body) {
+        const rows = _updDetailRows();
+        if (rows) body.innerHTML = rows;
+      }
+    }
+  };
+
   let _acData = null;
   let _acAirline = null;  // seçili havayolu kodu (tek seçim)
   const _acApiBase = () => (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
@@ -23257,6 +23354,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.ensureFleetK1Loaded = function() {
     if (!FLEET_CMP_DATA) return;
+    // Rozetteki sabit HTML tarihi veri gelince gerçek son değişim tarihiyle değiştirilir
+    const activeSrc = document.querySelector('.fleet-src-pill.fdd-btn--active')?.dataset.src;
+    if (!activeSrc || activeSrc === 'kaynak1') {
+      const dt = document.getElementById('fleet-src-date');
+      if (dt && typeof window.getFleetMatrixLastUpdated === 'function') dt.textContent = 'Mevcut Filo (Güncelleme Tarihi: ' + window.getFleetMatrixLastUpdated() + ')';
+    }
     if (_fleetView === 'table') buildFleetTable();
     else buildK1Cards();
   };
@@ -24209,6 +24312,8 @@ document.addEventListener('DOMContentLoaded', () => {
           finishFleetProgress('Güncelleme Tamamlandı');
           hideFleetProgress();
           showSummary(st.result || {});
+          // Yeni veriyi KV'den çekip kartları ve tarih rozetini tazele
+          if (typeof window.reloadFleetMatrix === 'function') window.reloadFleetMatrix();
         } catch (e) {
           setTimeout(poll, 3000);
         }
