@@ -24,7 +24,7 @@
   } catch(e) {}
 })();
 </script>
-<link rel="stylesheet" href="index.css?v=1.0.8">
+<link rel="stylesheet" href="index.css?v=1.0.9">
 <style>
   /* ══════════════════════════════════════
      FLEET COMPARISON & Kaynak 2 STYLES
@@ -3106,7 +3106,7 @@
         </div>
         <div class="dash-card dash-card-clickable" id="dc-licargo" title="LinkedIn takipçi karşılaştırması için tıkla" onclick="openLinkedinChartModal()">
           <div class="dash-card-timer" id="dc-licargo-timer">
-            <span class="timer-dot"></span>Aylık
+            <span class="timer-dot"></span>Haftalık
           </div>
           <div class="dash-card-header-row">
             <div class="dash-card-label dash-card-label--wrap">LinkedIn Takipçi Sayısı</div>
@@ -3115,7 +3115,7 @@
           <div class="dash-card-change"></div>
           <div class="dash-card-sub">Turkish Cargo · resmî sayfa</div>
           <div class="dash-card-footer">
-            <div class="dash-card-note"><a href="https://www.linkedin.com/company/turkishcargo" target="_blank" rel="noopener">linkedin.com/turkishcargo →</a> · Aylık</div>
+            <div class="dash-card-note"><a href="https://www.linkedin.com/company/turkishcargo" target="_blank" rel="noopener">linkedin.com/turkishcargo →</a> · Haftalık</div>
           </div>
           <div class="dc-date-footer">
             <div id="dc-licargo-date" class="dash-card-date-badge"></div>
@@ -3415,8 +3415,9 @@
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-licargo"></canvas>
         </div>
+        <div id="licargo-chart-legend" class="licargo-legend-row"></div>
         <div style="margin-top: 10px; font-size: 11px; color: var(--text-3); line-height: 1.5;">
-          ⓘ Geçmiş noktalar Wayback Machine arşivinden alınmıştır; seyrek ve düzensiz aralıklıdır. Günlük otomatik kayıt 8 Tem 2026'da başladı — seri zamanla sıklaşacak. Lejanttaki marka adına tıklayarak seriyi gizleyebilirsin.
+          ⓘ Geçmiş noktalar Wayback Machine arşivinden alınmıştır; seyrek ve düzensiz aralıklıdır. Haftalık otomatik kayıt 9 Tem 2026'da başladı — seri zamanla sıklaşacak.
         </div>
       </div>
     </div>
@@ -8552,7 +8553,7 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
       plugins: {
         ...CHART_DEFAULTS.plugins,
         legend: {
-          display: datasets.length > 1,
+          display: extraOpts.showLegend === false ? false : datasets.length > 1,
           position: extraOpts.legendPosition || 'top',
           labels: { font: { size: 11, family: 'Inter' }, boxWidth: 10, padding: 10 }
         },
@@ -10189,6 +10190,7 @@ async function loadDashboard() {
   };
   let _liSeries = null;
   let _liPeriod = 'max';
+  const _liHidden = new Set();
 
   function liSortedDates(code) {
     return Object.keys((_liSeries && _liSeries[code]) || {}).sort();
@@ -10213,14 +10215,7 @@ async function loadDashboard() {
         ' <span style="font-size:11px;font-weight:400;color:var(--text-3)">· önceki kayda göre</span>';
       cEl.className = 'dash-card-change ' + dir;
     }
-    // Aylık cadence — jetfuel/BAFI'deki günlük tazelik renklendirmesi (14 gün sonra "stale")
-    // burada yanıltıcı olur; IATA kartındaki gibi renksiz "Son veri: ay yılı" gösterilir.
-    const dateEl = document.getElementById('dc-licargo-date');
-    if (dateEl) {
-      const [y, m] = last.split('-');
-      const monthNames = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-      dateEl.textContent = `Son veri: ${monthNames[parseInt(m, 10) - 1]} ${y}`;
-    }
+    setDateBadge('dc-licargo-date', isoToDisplay(last));
   }
 
   async function initLinkedinCard() {
@@ -10281,23 +10276,31 @@ async function loadDashboard() {
       if (isNaN(dateObj)) return d;
       return dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
     });
-    const datasets = Object.entries(LI_CARGO_META)
-      .filter(([c]) => _liSeries[c] && Object.keys(_liSeries[c]).some(d => d >= dates[0] && d <= dates[dates.length - 1]))
-      .map(([c, meta]) => ({
-        label: meta.name,
-        data: dates.map(d => _liSeries[c][d] != null ? _liSeries[c][d] : null),
-        borderColor: meta.color,
-        backgroundColor: c === 'TK' ? 'rgba(227,6,19,0.06)' : meta.color + '22',
-        fill: c === 'TK',
-        spanGaps: true,
-        tension: 0.35,
-        pointRadius: 2,
-        pointHoverRadius: 5,
-        borderWidth: c === 'TK' ? 3 : 2
-      }));
+    const availableCodes = Object.keys(LI_CARGO_META)
+      .filter(c => _liSeries[c] && Object.keys(_liSeries[c]).some(d => d >= dates[0] && d <= dates[dates.length - 1]));
+    const datasets = availableCodes
+      .filter(c => !_liHidden.has(c))
+      .map(c => {
+        const meta = LI_CARGO_META[c];
+        return {
+          label: meta.name,
+          data: dates.map(d => _liSeries[c][d] != null ? _liSeries[c][d] : null),
+          borderColor: meta.color,
+          backgroundColor: c === 'TK' ? 'rgba(227,6,19,0.06)' : meta.color + '22',
+          fill: c === 'TK',
+          spanGaps: true,
+          tension: 0.35,
+          pointRadius: 2,
+          pointHoverRadius: 5,
+          borderWidth: c === 'TK' ? 3 : 2
+        };
+      });
+    // Finansal tablolar grafiği deseni: Chart.js'in gömülü legend'i kapalı,
+    // grafiğin altında logo'lu tıklanabilir çip satırı legend görevi görür.
     lineChart('chart-licargo', labels, datasets,
       v => v >= 1000000 ? (v / 1000000).toFixed(1).replace('.', ',') + ' M' : v >= 1000 ? Math.round(v / 1000) + ' K' : v,
-      { rawDates: dates });
+      { rawDates: dates, showLegend: false });
+    buildLinkedinLegend(availableCodes);
 
     // Başlıkta güncel Turkish Cargo değeri (jet yakıtı modalı deseni)
     const titleEl = document.getElementById('licargo-chart-title');
@@ -10307,6 +10310,30 @@ async function loadDashboard() {
     }
   }
   window.renderLinkedinModalChart = renderLinkedinModalChart;
+
+  function buildLinkedinLegend(codes) {
+    const cont = document.getElementById('licargo-chart-legend');
+    if (!cont) return;
+    cont.innerHTML = codes.map(c => {
+      const meta = LI_CARGO_META[c];
+      const bg = meta.color + '22';
+      const logo = typeof window.finLogoUrl === 'function' ? window.finLogoUrl(c) : '';
+      const logoEl = logo
+        ? `<img class="licargo-legend-logo" src="${logo}" alt="" onerror="this.style.display='none'">`
+        : `<span class="licargo-legend-dot" style="background:${meta.color}"></span>`;
+      return `<button class="licargo-legend-chip${_liHidden.has(c) ? ' hidden' : ''}" data-code="${c}" aria-pressed="${!_liHidden.has(c)}"
+        style="background:${bg};border-color:${meta.color};color:${meta.color}"
+        onclick="toggleLinkedinAirline('${c}')">
+        ${logoEl}${meta.name}
+      </button>`;
+    }).join('');
+  }
+
+  window.toggleLinkedinAirline = function(code) {
+    if (_liHidden.has(code)) _liHidden.delete(code);
+    else _liHidden.add(code);
+    renderLinkedinModalChart();
+  };
 
   window.openLinkedinChartModal = function() {
     const m = document.getElementById('licargo-chart-modal');

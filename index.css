@@ -7060,6 +7060,38 @@
   }
 
   /* Segmented control layout for Forex toggles */
+  /* LinkedIn takipçi modalı — finansal tablolardaki havayolu çipleriyle aynı
+     görsel dil (logo + renkli çerçeve), grafiğin ALTINDA tıklanabilir legend */
+  .licargo-legend-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 6px;
+    margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-soft);
+  }
+  .licargo-legend-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px 3px 7px; border-radius: 16px;
+    font-size: 11px; font-weight: 700; cursor: pointer; border: 2px solid transparent;
+    transition: opacity 0.15s, transform 0.12s; user-select: none;
+  }
+  .licargo-legend-chip:hover { transform: translateY(-1px); }
+  .licargo-legend-chip.hidden { opacity: 0.42; filter: grayscale(0.35); }
+  .licargo-legend-chip.hidden:hover { opacity: 0.75; filter: none; }
+  [data-theme="dark"] .licargo-legend-chip { filter: brightness(1.25) saturate(1.05); }
+  [data-theme="dark"] .licargo-legend-chip.hidden {
+    opacity: 1; filter: none;
+    color: rgba(255,255,255,0.55) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    background: rgba(255,255,255,0.05) !important;
+  }
+  [data-theme="dark"] .licargo-legend-chip.hidden .licargo-legend-logo { filter: grayscale(1); opacity: .6; }
+  [data-theme="dark"] .licargo-legend-chip.hidden:hover {
+    color: rgba(255,255,255,0.92) !important;
+    border-color: rgba(255,255,255,0.45) !important;
+    background: rgba(255,255,255,0.1) !important;
+  }
+  [data-theme="dark"] .licargo-legend-chip.hidden:hover .licargo-legend-logo { filter: none; opacity: 1; }
+  .licargo-legend-logo { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; object-fit: contain; }
+  .licargo-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
   .forex-toggle-btns, .forex-period-btns, .brent-period-btns, .jetfuel-period-btns, .wci-period-btns, .thy-period-btns, .bafi-period-btns, .iata-period-btns, .fbx-period-btns, .iata-modal-period-btns, .licargo-period-btns {
     display: flex;
     background: var(--bg);
