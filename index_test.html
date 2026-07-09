@@ -24,7 +24,7 @@
   } catch(e) {}
 })();
 </script>
-<link rel="stylesheet" href="index.css?v=1.0.7">
+<link rel="stylesheet" href="index.css?v=1.0.8">
 <style>
   /* ══════════════════════════════════════
      FLEET COMPARISON & Kaynak 2 STYLES
@@ -3104,6 +3104,23 @@
             <div id="dc-cargo-date" class="dash-card-date-badge"></div>
           </div>
         </div>
+        <div class="dash-card dash-card-clickable" id="dc-licargo" title="LinkedIn takipçi karşılaştırması için tıkla" onclick="openLinkedinChartModal()">
+          <div class="dash-card-timer" id="dc-licargo-timer">
+            <span class="timer-dot"></span>Aylık
+          </div>
+          <div class="dash-card-header-row">
+            <div class="dash-card-label dash-card-label--wrap">LinkedIn Takipçi Sayısı</div>
+          </div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Turkish Cargo · resmî sayfa</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note"><a href="https://www.linkedin.com/company/turkishcargo" target="_blank" rel="noopener">linkedin.com/turkishcargo →</a> · Aylık</div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-licargo-date" class="dash-card-date-badge"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -3347,6 +3364,59 @@
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-bafi"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- LinkedIn Takipçi Grafik Modali -->
+    <div id="licargo-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="licargo-chart-title">
+      <div class="chart-modal-card" style="max-width: 940px;">
+        <div class="rel-add-head">
+          <div id="licargo-chart-title" class="rel-add-title">LinkedIn Takipçi Sayıları — Kargo Markaları</div>
+          <button class="rel-add-x" onclick="closeLinkedinChartModal()" aria-label="Kapat">×</button>
+        </div>
+        <div class="chart-modal-controls">
+          <div class="modal-controls-left">
+            <div class="licargo-period-btns">
+              <button class="licargo-period-btn forex-btn" id="btn-licargo-1m" data-period="1m">1A</button>
+              <button class="licargo-period-btn forex-btn" id="btn-licargo-6m" data-period="6m">6A</button>
+              <button class="licargo-period-btn forex-btn" id="btn-licargo-ytd" data-period="ytd">YTD</button>
+              <button class="licargo-period-btn forex-btn" id="btn-licargo-1y" data-period="1y">1Y</button>
+              <button class="licargo-period-btn forex-btn active" id="btn-licargo-max" data-period="max">Tümü</button>
+            </div>
+            <div class="modal-date-picker">
+              <input type="date" lang="tr" class="modal-date-input" id="licargo-date-start" aria-label="Başlangıç tarihi">
+              <span class="modal-date-separator">→</span>
+              <input type="date" lang="tr" class="modal-date-input" id="licargo-date-end" aria-label="Bitiş tarihi">
+            </div>
+          </div>
+          <div class="modal-controls-right">
+            <div class="modal-chart-type-group">
+              <button class="modal-chart-type-btn active" data-type="line" title="Çizgi Grafik" aria-label="Çizgi Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"></path>
+                  <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                </svg>
+              </button>
+              <button class="modal-chart-type-btn" data-type="bar" title="Sütun Grafik" aria-label="Sütun Grafik" onclick="toggleModalChartType(this)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+              </button>
+            </div>
+            <button class="export-btn" onclick="exportLinkedinToCSV()" title="LinkedIn takipçi verisini CSV olarak indir">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Excel
+            </button>
+          </div>
+        </div>
+        <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
+          <canvas id="chart-licargo"></canvas>
+        </div>
+        <div style="margin-top: 10px; font-size: 11px; color: var(--text-3); line-height: 1.5;">
+          ⓘ Geçmiş noktalar Wayback Machine arşivinden alınmıştır; seyrek ve düzensiz aralıklıdır. Günlük otomatik kayıt 8 Tem 2026'da başladı — seri zamanla sıklaşacak. Lejanttaki marka adına tıklayarak seriyi gizleyebilirsin.
         </div>
       </div>
     </div>
@@ -8335,6 +8405,8 @@ function toggleModalChartType(btn) {
     if (typeof window.renderBrentModalChart === 'function') window.renderBrentModalChart();
   } else if (modalId === 'jetfuel-chart-modal') {
     if (typeof window.renderJetfuelModalChart === 'function') window.renderJetfuelModalChart();
+  } else if (modalId === 'licargo-chart-modal') {
+    if (typeof window.renderLinkedinModalChart === 'function') window.renderLinkedinModalChart();
   }
 }
 
@@ -10081,6 +10153,201 @@ async function loadDashboard() {
   setInterval(() => {
     if (document.visibilityState === 'visible') initJetfuelCard();
   }, 60 * 60 * 1000);
+
+  // ── Turkish Cargo LinkedIn Takipçi Kartı + Kargo Markaları Karşılaştırma Modalı ──
+  // Veri zinciri: statik tohum (Wayback arşiv noktaları + 8 Tem 2026 canlı ölçüm)
+  // + api-fleet get-linkedin (KV; unraid scraper günlük yazar) merge — KV kazanır.
+  const LI_CARGO_META = {
+    TK:  { name: 'Turkish Cargo',          color: '#E30613' },
+    CX:  { name: 'Cathay Cargo',           color: '#1D6FE8' },
+    SV:  { name: 'Saudia Cargo',           color: '#065F46' },
+    EK:  { name: 'Emirates SkyCargo',      color: '#F59E0B' },
+    LA:  { name: 'LATAM Cargo',            color: '#0D9488' },
+    LH:  { name: 'Lufthansa Cargo',        color: '#64748B' },
+    QR:  { name: 'Qatar Airways Cargo',    color: '#7C3AED' },
+    ETI: { name: 'Etihad Cargo',           color: '#C4A45C' },
+    CV:  { name: 'Cargolux',               color: '#6B7280' },
+    AV:  { name: 'Avianca Cargo',          color: '#DC241F' },
+    AF:  { name: 'AF-KLM-Martinair Cargo', color: '#059669' },
+    ET:  { name: 'Ethiopian Cargo',        color: '#16A34A' },
+    CA:  { name: 'Air China Cargo',        color: '#DC2626' }
+  };
+  const LI_CARGO_SEED = {
+    TK:  { '2024-12-14': 93626, '2025-10-16': 122084, '2026-02-23': 155585, '2026-07-08': 172597 },
+    CX:  { '2025-03-13': 87801, '2026-07-08': 178507 },
+    SV:  { '2024-12-28': 145025, '2025-07-25': 156679, '2026-07-08': 192160 },
+    EK:  { '2024-05-11': 94908, '2025-02-19': 109871, '2026-07-08': 153916 },
+    LA:  { '2021-09-29': 41485, '2021-11-11': 47101, '2022-01-15': 53323, '2024-05-09': 112591, '2025-08-05': 126491, '2026-07-08': 143473 },
+    LH:  { '2024-04-19': 93722, '2024-05-11': 94632, '2026-07-08': 118504 },
+    QR:  { '2021-11-03': 42898, '2025-04-24': 98039, '2025-08-24': 103506, '2026-07-08': 115535 },
+    ETI: { '2021-11-29': 41755, '2025-09-09': 95052, '2026-07-08': 106367 },
+    CV:  { '2026-07-08': 102303 },
+    AV:  { '2026-07-08': 89222 },
+    AF:  { '2024-05-11': 46901, '2026-07-08': 56230 },
+    ET:  { '2025-07-09': 12165, '2026-07-08': 12918 },
+    CA:  { '2026-07-08': 4212 }
+  };
+  let _liSeries = null;
+  let _liPeriod = 'max';
+
+  function liSortedDates(code) {
+    return Object.keys((_liSeries && _liSeries[code]) || {}).sort();
+  }
+
+  function updateLinkedinCard() {
+    const dates = liSortedDates('TK');
+    if (!dates.length) return;
+    const last = dates[dates.length - 1];
+    const lastVal = _liSeries.TK[last];
+    const valEl = document.querySelector('#dc-licargo .dash-card-value');
+    if (valEl) {
+      valEl.classList.remove('skeleton');
+      valEl.textContent = lastVal.toLocaleString('tr-TR');
+    }
+    const cEl = document.querySelector('#dc-licargo .dash-card-change');
+    if (cEl && dates.length >= 2) {
+      const prev = _liSeries.TK[dates[dates.length - 2]];
+      const chg = (lastVal - prev) / prev * 100;
+      const dir = chg > 0.05 ? 'up' : chg < -0.05 ? 'down' : 'flat';
+      cEl.innerHTML = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(chg).toFixed(1) +
+        ' <span style="font-size:11px;font-weight:400;color:var(--text-3)">· önceki kayda göre</span>';
+      cEl.className = 'dash-card-change ' + dir;
+    }
+    // Aylık cadence — jetfuel/BAFI'deki günlük tazelik renklendirmesi (14 gün sonra "stale")
+    // burada yanıltıcı olur; IATA kartındaki gibi renksiz "Son veri: ay yılı" gösterilir.
+    const dateEl = document.getElementById('dc-licargo-date');
+    if (dateEl) {
+      const [y, m] = last.split('-');
+      const monthNames = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+      dateEl.textContent = `Son veri: ${monthNames[parseInt(m, 10) - 1]} ${y}`;
+    }
+  }
+
+  async function initLinkedinCard() {
+    // 1. Statik tohumla hemen doldur
+    if (!_liSeries) _liSeries = JSON.parse(JSON.stringify(LI_CARGO_SEED));
+    updateLinkedinCard();
+    // 2. KV'deki günlük seriyi üstüne merge et (1 saat önbellek; boş seri önbelleğe yazılmaz)
+    const live = await fetchCached('linkedin_followers_v1', () =>
+      fetch('https://api-fleet.emredemirbas.com/api/get-linkedin')
+        .then(r => r.ok ? r.json() : null)
+        .catch(() => null),
+      60 * 60 * 1000,
+      d => d && d.series && Object.keys(d.series).length > 0
+    );
+    if (live && live.series) {
+      Object.entries(live.series).forEach(([code, dates]) => {
+        if (!LI_CARGO_META[code]) return;
+        if (!_liSeries[code]) _liSeries[code] = {};
+        Object.assign(_liSeries[code], dates);
+      });
+      updateLinkedinCard();
+      const m = document.getElementById('licargo-chart-modal');
+      if (m && m.style.display === 'flex') renderLinkedinModalChart();
+    }
+  }
+
+  window._licargoCustomRange = false;
+  function renderLinkedinModalChart(period) {
+    if (period) {
+      _liPeriod = period;
+      window._licargoCustomRange = false;
+    }
+    document.querySelectorAll('#licargo-chart-modal .licargo-period-btn').forEach(btn => btn.classList.remove('active'));
+    if (!window._licargoCustomRange) {
+      const activeBtn = document.getElementById(`btn-licargo-${_liPeriod}`);
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+    if (!_liSeries) return;
+    // Tüm hesapların tarihlerini tek eksende birleştir
+    const allDates = new Set();
+    Object.keys(LI_CARGO_META).forEach(c =>
+      Object.keys(_liSeries[c] || {}).forEach(d => allDates.add(d)));
+    let dates = [...allDates].sort();
+    if (!dates.length) return;
+
+    // Dönem seçimi tarih girişlerini doldurur; filtre her zaman girişlerden okunur (BAFI deseni)
+    if (!window._licargoCustomRange) {
+      setDateInputsForPeriod('licargo', _liPeriod, dates[0], dates[dates.length - 1]);
+    }
+    const startVal = document.getElementById('licargo-date-start')?.value;
+    const endVal = document.getElementById('licargo-date-end')?.value;
+    if (startVal) dates = dates.filter(d => d >= startVal);
+    if (endVal) dates = dates.filter(d => d <= endVal);
+    if (!dates.length) return;
+
+    const labels = dates.map(d => {
+      const dateObj = new Date(d + 'T12:00:00Z');
+      if (isNaN(dateObj)) return d;
+      return dateObj.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+    });
+    const datasets = Object.entries(LI_CARGO_META)
+      .filter(([c]) => _liSeries[c] && Object.keys(_liSeries[c]).some(d => d >= dates[0] && d <= dates[dates.length - 1]))
+      .map(([c, meta]) => ({
+        label: meta.name,
+        data: dates.map(d => _liSeries[c][d] != null ? _liSeries[c][d] : null),
+        borderColor: meta.color,
+        backgroundColor: c === 'TK' ? 'rgba(227,6,19,0.06)' : meta.color + '22',
+        fill: c === 'TK',
+        spanGaps: true,
+        tension: 0.35,
+        pointRadius: 2,
+        pointHoverRadius: 5,
+        borderWidth: c === 'TK' ? 3 : 2
+      }));
+    lineChart('chart-licargo', labels, datasets,
+      v => v >= 1000000 ? (v / 1000000).toFixed(1).replace('.', ',') + ' M' : v >= 1000 ? Math.round(v / 1000) + ' K' : v,
+      { rawDates: dates });
+
+    // Başlıkta güncel Turkish Cargo değeri (jet yakıtı modalı deseni)
+    const titleEl = document.getElementById('licargo-chart-title');
+    const tkDates = liSortedDates('TK');
+    if (titleEl && tkDates.length) {
+      titleEl.textContent = `LinkedIn Takipçi — Turkish Cargo ${_liSeries.TK[tkDates[tkDates.length - 1]].toLocaleString('tr-TR')}`;
+    }
+  }
+  window.renderLinkedinModalChart = renderLinkedinModalChart;
+
+  window.openLinkedinChartModal = function() {
+    const m = document.getElementById('licargo-chart-modal');
+    if (m) {
+      m.style.display = 'flex';
+      setTimeout(() => renderLinkedinModalChart(), 120);
+    }
+  };
+  window.closeLinkedinChartModal = function() {
+    const m = document.getElementById('licargo-chart-modal');
+    if (m) m.style.display = 'none';
+  };
+
+  window.exportLinkedinToCSV = function() {
+    if (!_liSeries) return;
+    const codes = Object.keys(LI_CARGO_META).filter(c => _liSeries[c] && Object.keys(_liSeries[c]).length);
+    const allDates = new Set();
+    codes.forEach(c => Object.keys(_liSeries[c]).forEach(d => allDates.add(d)));
+    const dates = [...allDates].sort();
+    const isoToTR = iso => { const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; };
+    const csv = '﻿' + 'Tarih;' + codes.map(c => LI_CARGO_META[c].name).join(';') + '\n' +
+      dates.map(d => isoToTR(d) + ';' + codes.map(c => _liSeries[c][d] ?? '').join(';')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'LinkedIn_Takipci_' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  document.querySelectorAll('#licargo-chart-modal .licargo-period-btn').forEach(btn => {
+    btn.addEventListener('click', () => renderLinkedinModalChart(btn.dataset.period));
+  });
+  // Tema değişince açık modal grafiğini yeniden çiz (gridline rengi temaya bağlı)
+  new MutationObserver(() => {
+    const m = document.getElementById('licargo-chart-modal');
+    if (m && m.style.display === 'flex') renderLinkedinModalChart();
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  initLinkedinCard();
 
   // ── Forex Verisini Çek ve Göster ──────────────────────────────
   let _latestUsdPrice = null;
@@ -23767,7 +24034,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Custom date inputs event binding
-  ['wci', 'bafi', 'iata', 'fbx', 'thy', 'forex', 'brent', 'jetfuel'].forEach(prefix => {
+  ['wci', 'bafi', 'iata', 'fbx', 'thy', 'forex', 'brent', 'jetfuel', 'licargo'].forEach(prefix => {
     const startInput = document.getElementById(`${prefix}-date-start`);
     const endInput = document.getElementById(`${prefix}-date-end`);
     
@@ -23796,6 +24063,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.renderBrentModalChart();
       } else if (prefix === 'jetfuel' && typeof window.renderJetfuelModalChart === 'function') {
         window.renderJetfuelModalChart();
+      } else if (prefix === 'licargo' && typeof window.renderLinkedinModalChart === 'function') {
+        window.renderLinkedinModalChart();
       }
     };
 
@@ -26330,6 +26599,9 @@ window.applyIndicatorsConfig = function() {
   // için en sona sabitlenmesi gerekiyor, yoksa listenin başına kayar.
   const cargoEl = document.getElementById('dc-cargo');
   if (cargoEl) mainContainer.appendChild(cargoEl);
+  // dc-licargo da özelleştirme sistemine dahil değil — dc-cargo'dan sonra, her zaman EN SON kart
+  const licargoEl = document.getElementById('dc-licargo');
+  if (licargoEl) mainContainer.appendChild(licargoEl);
 
   // "YENİ" badge ekle / kaldır
   ALL_INDICATOR_CARDS.forEach(card => {

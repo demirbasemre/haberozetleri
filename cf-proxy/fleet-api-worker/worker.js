@@ -46,6 +46,56 @@ export default {
       return new Response(data || '{}', { headers: corsHeaders });
     }
 
+    if (method === 'GET' && path === '/api/get-linkedin') {
+      const data = await env.FLEET_DATA_KV.get('linkedin_followers');
+      return new Response(data || '{"series":{},"accounts":{}}', { headers: corsHeaders });
+    }
+
+    if (method === 'POST' && path === '/api/save-linkedin') {
+      try {
+        const body = await request.json();
+
+        if (!env.FLEET_PASSWORD || body.password !== env.FLEET_PASSWORD) {
+          return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: corsHeaders });
+        }
+        if (!body.entries || typeof body.entries !== 'object') {
+          return new Response(JSON.stringify({ error: 'entries is required' }), { status: 400, headers: corsHeaders });
+        }
+
+        let data = { series: {}, accounts: {} };
+        const raw = await env.FLEET_DATA_KV.get('linkedin_followers');
+        if (raw) {
+          try { data = JSON.parse(raw); } catch(e) {}
+        }
+        data.series = data.series || {};
+        data.accounts = data.accounts || {};
+
+        // entries: { "TK": { "2026-07-08": 172597, ... }, ... } — mevcut serinin üzerine tarih bazlı merge
+        let added = 0;
+        for (const [code, dates] of Object.entries(body.entries)) {
+          if (!dates || typeof dates !== 'object') continue;
+          data.series[code] = data.series[code] || {};
+          for (const [date, count] of Object.entries(dates)) {
+            const n = parseInt(count, 10);
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(n) || n <= 0) continue;
+            data.series[code][date] = n;
+            added++;
+          }
+        }
+        if (body.accounts && typeof body.accounts === 'object') {
+          for (const [code, meta] of Object.entries(body.accounts)) {
+            if (meta && typeof meta === 'object') data.accounts[code] = meta;
+          }
+        }
+        data.updatedAt = new Date().toISOString();
+
+        await env.FLEET_DATA_KV.put('linkedin_followers', JSON.stringify(data));
+        return new Response(JSON.stringify({ success: true, added }), { headers: corsHeaders });
+      } catch(e) {
+        return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: corsHeaders });
+      }
+    }
+
     if (method === 'POST' && path === '/api/save-fleet') {
       try {
         const body = await request.json();

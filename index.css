@@ -7060,7 +7060,7 @@
   }
 
   /* Segmented control layout for Forex toggles */
-  .forex-toggle-btns, .forex-period-btns, .brent-period-btns, .jetfuel-period-btns, .wci-period-btns, .thy-period-btns, .bafi-period-btns, .iata-period-btns, .fbx-period-btns, .iata-modal-period-btns {
+  .forex-toggle-btns, .forex-period-btns, .brent-period-btns, .jetfuel-period-btns, .wci-period-btns, .thy-period-btns, .bafi-period-btns, .iata-period-btns, .fbx-period-btns, .iata-modal-period-btns, .licargo-period-btns {
     display: flex;
     background: var(--bg);
     padding: 3px;
@@ -8667,10 +8667,7 @@
   color: var(--text);
 }
 .dash-customize-btn svg {
-  transition: transform 0.2s ease;
-}
-.dash-customize-btn:hover svg {
-  transform: rotate(30deg);
+  transition: none;
 }
 
 .customize-list {
