@@ -3818,7 +3818,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:4px;">
           <div style="font-size:11px;font-weight:600;color:var(--text-1);">Cloudflare Bypass Çerezleri (Gerekirse)</div>
           <select id="fleet-browser-profile" style="font-size:10px;padding:2px 6px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);cursor:pointer;outline:none;">
-            <option value="auto">Otomatik Algıla</option>
+            <option value="auto">Canlı Parmak İzi (Önerilen)</option>
             <option value="vivaldi_mac">Vivaldi / Mac (M2 GPU)</option>
             <option value="edge_win">Edge / Windows (NVIDIA GPU)</option>
           </select>
@@ -23035,13 +23035,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setBusy('Başlatılıyor…');
     
     try {
+      const profileVal = localStorage.getItem('fleet_cf_browser_profile') || 'auto';
+      const liveFingerprint = profileVal === 'auto' ? getLiveFingerprint() : null;
+
       const res = await fetch(_acApiBase() + '/api/update-aircrafts', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify({ 
           cookies: localStorage.getItem('fleet_cf_cookies') || '', 
           password: pwd, 
           ua: navigator.userAgent,
-          profile: localStorage.getItem('fleet_cf_browser_profile') || 'auto'
+          profile: profileVal,
+          fingerprint: liveFingerprint
         })
       });
       if (res.status === 401) { 
@@ -24362,6 +24366,38 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mainRow) mainRow.classList.toggle('flt-row-open', open);
   };
 
+  // Tarayıcıdan unmasked GPU ve donanım parametrelerini canlı okur
+  window.getLiveFingerprint = function() {
+    let vendor = "Google Inc. (Apple)";
+    let renderer = "ANGLE (Apple, ANGLE Metal Renderer: Apple M2, Unspecified Version)";
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (gl) {
+        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        if (debugInfo) {
+          vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || vendor;
+          renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || renderer;
+        }
+      }
+    } catch(e) {
+      console.warn("WebGL unmasked info okunamadı, varsayılan kullanılacak:", e);
+    }
+
+    return {
+      ua: navigator.userAgent,
+      platform: navigator.platform || "MacIntel",
+      hardware_concurrency: navigator.hardwareConcurrency || 8,
+      device_pixel_ratio: window.devicePixelRatio || 2,
+      viewport: {
+        width: window.innerWidth || 1470,
+        height: window.innerHeight || 956
+      },
+      webgl_vendor: vendor,
+      webgl_renderer: renderer
+    };
+  };
+
   // --- CANLI GÜNCELLEME İŞLEMLERİ ---
   window.toggleCookiePanel = function() {
     const panel = document.getElementById('fleet-cookie-panel');
@@ -24585,6 +24621,9 @@ document.addEventListener('DOMContentLoaded', () => {
       : 'https://api-fleet.emredemirbas.com';
 
     try {
+      const profileVal = localStorage.getItem('fleet_cf_browser_profile') || 'auto';
+      const liveFingerprint = profileVal === 'auto' ? getLiveFingerprint() : null;
+
       const res = await fetch(base + '/api/update-fleet', {
         method: 'POST',
         headers: {
@@ -24594,7 +24633,8 @@ document.addEventListener('DOMContentLoaded', () => {
           cookies: savedCookies, 
           password: pwd, 
           ua: navigator.userAgent,
-          profile: localStorage.getItem('fleet_cf_browser_profile') || 'auto'
+          profile: profileVal,
+          fingerprint: liveFingerprint
         })
       });
 
