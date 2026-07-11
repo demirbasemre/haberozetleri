@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 1588,
-  "lastScanned": "2026-06-20T23:16:07.325Z",
-  "scannedCount": 167,
+  "lastScannedId": 1661,
+  "lastScanned": "2026-07-11T23:16:07.052Z",
+  "scannedCount": 73,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -528,6 +528,33 @@
         "china cargo airlines"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=ckair.com"
+    },
+    {
+      "id": "dyn_air_india_cargo",
+      "label": "Air India Cargo",
+      "group": "cargo",
+      "kw": [
+        "air india cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=airindia.com"
+    },
+    {
+      "id": "dyn_riyadh_cargo",
+      "label": "Riyadh Cargo",
+      "group": "cargo",
+      "kw": [
+        "riyadh cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=riyadhair.com"
+    },
+    {
+      "id": "dyn_oman_air",
+      "label": "Oman Air",
+      "group": "cargo",
+      "kw": [
+        "oman air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=omanair.com"
     }
   ],
   "gsa": []
