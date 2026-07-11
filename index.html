@@ -3815,7 +3815,14 @@
 
       <!-- Çerez Giriş Paneli -->
       <div id="fleet-cookie-panel" style="display:none;margin-top:8px;padding:12px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:6px;gap:8px;flex-direction:column;width:100%;">
-        <div style="font-size:11px;font-weight:600;color:var(--text-1);">Cloudflare Bypass Çerezleri (Gerekirse)</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:4px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text-1);">Cloudflare Bypass Çerezleri (Gerekirse)</div>
+          <select id="fleet-browser-profile" style="font-size:10px;padding:2px 6px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);cursor:pointer;outline:none;">
+            <option value="auto">Otomatik Algıla</option>
+            <option value="vivaldi_mac">Vivaldi / Mac (M2 GPU)</option>
+            <option value="edge_win">Edge / Windows (NVIDIA GPU)</option>
+          </select>
+        </div>
         <div style="font-size:10px;color:var(--text-3);margin-bottom:4px;">Tarayıcı F12 -> Network -> Request Headers altındaki 'cookie:' satırını kopyalayıp buraya yapıştırın.</div>
         <textarea id="fleet-cookie-input" placeholder="__psuid=...; cf_clearance=...; ps_sessid=..." style="width:100%;height:60px;font-family:monospace;font-size:10px;padding:6px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);resize:vertical;"></textarea>
         <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:6px;">
@@ -23030,7 +23037,12 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const res = await fetch(_acApiBase() + '/api/update-aircrafts', {
         method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ cookies: localStorage.getItem('fleet_cf_cookies') || '', password: pwd, ua: navigator.userAgent })
+        body: JSON.stringify({ 
+          cookies: localStorage.getItem('fleet_cf_cookies') || '', 
+          password: pwd, 
+          ua: navigator.userAgent,
+          profile: localStorage.getItem('fleet_cf_browser_profile') || 'auto'
+        })
       });
       if (res.status === 401) { 
         document.getElementById('aircraft-progress-modal').style.display = 'none';
@@ -24354,17 +24366,31 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toggleCookiePanel = function() {
     const panel = document.getElementById('fleet-cookie-panel');
     if (!panel) return;
-    panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+    const isShowing = panel.style.display === 'none';
+    panel.style.display = isShowing ? 'flex' : 'none';
+    if (isShowing) {
+      const savedProfile = localStorage.getItem('fleet_cf_browser_profile') || 'auto';
+      const profileSelect = document.getElementById('fleet-browser-profile');
+      if (profileSelect) profileSelect.value = savedProfile;
+      
+      const savedCookies = localStorage.getItem('fleet_cf_cookies') || '';
+      const cookieInput = document.getElementById('fleet-cookie-input');
+      if (cookieInput) cookieInput.value = savedCookies;
+    }
   };
 
   window.saveFleetCookies = function() {
     const input = document.getElementById('fleet-cookie-input');
+    const profileSelect = document.getElementById('fleet-browser-profile');
     if (!input || !input.value.trim()) {
       alert("Lütfen geçerli bir çerez dizesi girin.");
       return;
     }
     localStorage.setItem('fleet_cf_cookies', input.value.trim());
-    alert("Çerezler tarayıcı hafızasına kaydedildi. Güncelle butonuna bastığınızda kullanılacaktır.");
+    if (profileSelect) {
+      localStorage.setItem('fleet_cf_browser_profile', profileSelect.value);
+    }
+    alert("Çerezler ve tarayıcı profili tarayıcı hafızasına kaydedildi. Güncelle butonuna bastığınızda kullanılacaktır.");
     document.getElementById('fleet-cookie-panel').style.display = 'none';
   };
 
@@ -24564,7 +24590,12 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ cookies: savedCookies, password: pwd, ua: navigator.userAgent })
+        body: JSON.stringify({ 
+          cookies: savedCookies, 
+          password: pwd, 
+          ua: navigator.userAgent,
+          profile: localStorage.getItem('fleet_cf_browser_profile') || 'auto'
+        })
       });
 
       if (res.status === 401) {
