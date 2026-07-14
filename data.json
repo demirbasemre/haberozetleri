@@ -1,10 +1,10 @@
 [
   {
-    "title": "Batı Sidney Uluslararası Havalimanı Kargo Uçuş Denemelerine Başladı",
-    "summary": "Batı Sidney Uluslararası (Nancy-Bird Walton) Havalimanı, <strong>26 Temmuz</strong> tarihindeki resmi açılışı öncesinde kargo bölgesi deneme uçuşlarına başladı. İlk deneme uçuşu, Qantas'a ait bir A321 kargo uçağı ile gerçekleştirildi. Kargo merkezinin resmi açılışıyla birlikte Qantas Freight, Menzies Aviation, dnata Cargo ve Texel Air gibi ortaklar tesiste operasyonlara başlayacak. Havalimanının yıllık <strong>220.000 ton</strong> kargo taşıma kapasitesini desteklemesi planlanmaktadır.",
-    "category": "Altyapı",
-    "source": "stattimes",
-    "link": "https://www.stattimes.com/air-cargo/western-sydney-international-begins-cargo-flight-trials-1359861",
+    "title": "Cathay Cargo Mumbai Operasyonlarını Kaydırıyor ve Ağana Astana'yı Ekliyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span>'in kargo kolu Cathay Cargo, Chhatrapati Shivaji Maharaj Uluslararası Havalimanı'ndaki yenileme çalışmaları nedeniyle Mumbai kargo uçağı operasyonlarını geçici olarak yeni Navi Mumbai Uluslararası Havalimanı'na kaydıracağını duyurdu. Havayolu ayrıca Orta Doğu'daki çatışmalar sebebiyle askıya alınan Dubai operasyonlarının ardından, Asya-Avrupa kargo uçağı seferleri için teknik mola noktası olarak Kazakistan'ın Astana şehrini uçuş ağına ekledi. Bu hamle, <span style='color:#C8102E;font-weight:700;'>Cathay Pacific</span>'in <strong>2027</strong> yılı başlarında Almatı'ya başlatmayı planladığı doğrudan yolcu seferleri öncesinde gerçekleşti. Şirket ayrıca <strong>1 Ağustos</strong>'tan itibaren Riyad'a kargo uçağı seferlerini yeniden başlatmayı planlıyor.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/supply-chains/2026/07/cathay-cargo-shifts-mumbai-operations-and-adds-astana-to-network/",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
@@ -15,19 +15,125 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
+    "date": "2026-07-13"
+  },
+  {
+    "title": "Frankfurt Kargo Hacimleri Orta Doğu Çatışması ve Grevlerden Etkilendi",
+    "summary": "Avrupa'nın en büyük kargo aktarma merkezi olan Frankfurt Havalimanı, <strong>2026</strong>'nın ilk yarısında Orta Doğu çatışmaları ve <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> grevlerinin etkisiyle kargo hacminde yıllık yalnızca <strong>%1</strong> artış kaydederek <strong>1 milyon</strong> tona ulaştı. Havalimanı işletmecisi Fraport, dijitalleşmenin etkisiyle hava posta hacminin <strong>%12,4</strong> düşüşle <strong>15.000</strong> tona gerilediğini belirtti. İkinci çeyrekte Orta Doğu trafiğinde yaşanan <strong>%19,8</strong>'lik düşüşe karşın, Afrika rotasındaki hacimler <strong>%11</strong>, Uzak Doğu rotasındaki hacimler ise <strong>%7</strong> artış gösterdi. Ayrıca, <span style='color:#C8102E;font-weight:700;'>Lufthansa</span>'nın A321P2F kargo uçağı filosunun yere indirilmesi de Avrupa içi trafikte <strong>%6,9</strong>'luk bir düşüşe yol açtı. AB'nin e-ticaret ithalatına yönelik getirdiği <strong>3 avroluk</strong> yeni gümrük vergisi ise e-ticaret büyüme hızını yavaşlattı.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/cargo-airport/2026/07/frankfurt-cargo-volumes-impacted-by-middle-east-conflict-and-strikes/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Turkish Cargo, Frankfurt (FRA) ve Orta Doğu rotalarına hem kargo uçağı hem de yolcu uçağı altı kargo kapasitesiyle yoğun hizmet sunmaktadır. <span style='color:#C8102E;font-weight:700;'>Lufthansa</span>'daki grevler ve kargo uçağı filosunun yere indirilmesi nedeniyle FRA'da yaşanan kapasite daralması, İstanbul aktarma merkezinin (IST) 24/7 kesintisiz operasyon gücüyle birleşerek taze gıda, e-ticaret ve otomotiv gibi zaman duyarlı segmentlerde pazar payı kazanma fırsatı yaratmaktadır. Ayrıca, Orta Doğu hava sahası kısıtlamaları nedeniyle doğrudan Avrupa-Afrika ve Avrupa-Uzak Doğu rotalarına kayan transit kargo akışları, Turkish Cargo'nun IST üzerinden sunduğu geniş uçuş ağı için ek talep oluşturmaktadır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-07-13"
+  },
+  {
+    "title": "SolitAir Dubai-Tianjin Uçuşlarına Başlıyor",
+    "summary": "Dubai merkezli kargo havayolu SolitAir, Dubai World Central Havalimanı (DWC) ile Çin'deki Tianjin Binhai Uluslararası Havalimanı arasında yeni bir kargo uçağı rotası başlattı. İlk uçuşta özel bir VIP yükü taşınırken; bu yeni koridor otomotiv, havacılık, elektronik ve ilaç gibi gelişmiş imalat sektörlerinin güvenli ve zaman hassasiyetli taşımacılık taleplerini karşılamayı hedefliyor. SolitAir, <strong>Ekim 2024</strong>'teki operasyonel lansmanından bu yana, Nairobi merkezli <strong>18</strong> şehri kapsayan Afrika ağı da dahil olmak üzere <strong>30</strong>'dan fazla ülkede <strong>56</strong> rotaya ulaştı. Havayolu, her biri <strong>20 ton</strong> kargo kapasitesine sahip <strong>7</strong> adet Boeing 737-800 dönüştürülmüş kargo uçağı işletiyor ve filosunu <strong>20</strong> uçağa çıkarmayı planlıyor.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freighter-operator/2026/07/solitair-begins-dubai-tianjin-flights/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-07-13",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/solitair-expands-china-network-with-tianjin-1359848"
+      }
+    ]
+  },
+  {
+    "title": "Yakında Açılacak Olan Batı Sidney Havalimanı'nda Kargo Uçağı Test Uçuşları Yapıldı",
+    "summary": "Yakında ticari operasyonlara açılacak olan Batı Sidney Uluslararası Havalimanı'nda (WSI) kargo deneme uçuşları başladı. Testler kapsamında Qantas Freight şirketine ait bir Airbus A321 kargo uçağı havalimanına başarılı bir iniş gerçekleştirdi. Menzies Aviation, dnata ve Texel Air gibi yer hizmetleri ve kargo firmalarının faaliyet göstereceği yeni kargo bölgesinin yıllık <strong>220.000 ton</strong> kargo elleçleme kapasitesi sunması planlanıyor. 24 saat kesintisiz çalışacak bu yeni altyapı, Sidney bölgesindeki e-ticaret ve ertesi gün teslimat taleplerini karşılamada kritik rol oynayacak. Havalimanının resmi açılışının bu ayın sonlarında gerçekleştirilmesi bekleniyor.",
+    "category": "Altyapı",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/editorial/2026/07/freighter-trial-flights-take-place-at-soon-to-open-western-sydney/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-07-13",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/western-sydney-international-begins-cargo-flight-trials-1359861"
+      },
+      {
+        "source": "aircargoupdate",
+        "link": "https://aircargupdate.com/wsi-welcomes-first-cargo-trial-flight-ahead-of-freight-operations/"
+      }
+    ]
+  },
+  {
+    "title": "FedEx Özel Yaşam Bilimleri Organizasyonunu Hayata Geçirdi",
+    "summary": "Küresel ekspres devi FedEx, ilaç, biyolojik ürünler ve klinik araştırmalar gibi sıcaklık ve zaman hassasiyetli sağlık gönderilerini desteklemek amacıyla \"FedEx Life Sciences\" birimini kurduğunu açıkladı. Organizasyonun başkanlığına, FedEx bünyesinde 30 yılı aşkın süredir sağlık lojistiği gelirlerini yaklaşık <strong>10 milyar dolara</strong> ulaştırmada önemli rol oynayan Nick Gennari atandı. Şirket, May <strong>2025</strong>'te IATA'nın CEIV Pharma sertifikasını almış ve Indianapolis ile Dublin gibi iki büyük ilaç üretim merkezi arasında doğrudan uçuşlar başlatmıştı. Yeni birim, makine öğrenimi kullanan \"FedEx Surround\" gerçek zamanlı izleme sistemi ve dünya genelindeki <strong>6</strong> yaşam bilimleri merkeziyle desteklenecek.",
+    "category": "Özel Kargo",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/pharma-logistics/2026/07/fedex-launches-dedicated-life-sciences-organisation/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Turkish Cargo, ilaç ve soğuk zincir lojistiğinde geniş bir yolcu uçağı altı kargo kapasitesi ve kargo uçağı ağıyla küresel bazda yoğun faaliyet göstermektedir. FedEx'in yapay zeka destekli izleme sistemi (FedEx Surround) ve entegre CEIV sertifikalı altyapısıyla yaşam bilimleri alanında özel bir yapılanmaya gitmesi, özellikle Kuzey Amerika-Avrupa (transatlantik) koridorundaki yüksek birim gelir getiren premium ilaç taşımacılığında rekabet baskısı oluşturabilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-07-13"
+  },
+  {
+    "title": "Batı Sidney Uluslararası Havalimanı Kargo Uçuş Testlerine Başladı",
+    "summary": "Batı Sidney Uluslararası Havalimanı (WSI), <strong>26 Temmuz</strong> tarihindeki resmi açılışı öncesinde kargo bölgesi operasyonel hazırlık programı kapsamında deneme uçuşlarına başladı. İlk deneme uçuşunda Qantas Freight şirketine ait bir Airbus A321 kargo uçağı havalimanına iniş yaptı. Yeni 24 saat kesintisiz hizmet verecek kargo merkezinde Qantas Freight'in yanı sıra Menzies Aviation, dnata Cargo ve Texel Air gibi ortaklar da faaliyet gösterecek. Yıllık <strong>220.000 ton</strong> kargo elleçleme kapasitesine sahip olacak olan tesis, Sidney'in hava kargo kapasitesini artırarak zaman kritik sevkiyatları ve e-ticaret lojistiğini destekleyecek.",
+    "category": "Altyapı",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/western-sydney-international-begins-cargo-flight-trials-1359861",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Yakında Açılacak Olan Batı Sidney Havalimanı'nda Kargo Uçağı Test Uçuşları Yapıldı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
     "date": "2026-07-14"
   },
   {
-    "title": "Soğuk Zincirin Ötesinde: Veriler İlaç Lojistiğini Nasıl Yeniden Şekillendiriyor?",
-    "summary": "İlaç lojistiğinde fiziksel taşımanın yanı sıra gerçek zamanlı veri takibi ve görünürlük kritik bir gereksinim haline geldi. DHL Supply Chain, ilaç lojistiğine <strong>2 milyar avro</strong> yatırım yaparak gerçek zamanlı izleme araçlarını genişletti. Kuehne+Nagel ve <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo gibi sektör temsilcileri, sensörler ve tahmine dayalı dijital araçların riskleri önceden belirlemede kritik rol oynadığını vurguluyor. Küresel ticaret kurallarının hızla değiştiği günümüzde, anlık verilere sahip olmak tedarik zincirlerinin esnekliğini korumasını sağlıyor.",
-    "category": "Özel Kargo",
+    "title": "Soğuk Zincirin Ötesinde: Veri İlaç Lojistiğini Nasıl Yeniden Şekillendiriyor?",
+    "summary": "İlaç lojistiğinde canlı sıcaklık ve konum verilerinin gerçek zamanlı izlenmesi, fiziksel elleçleme kadar kritik bir gereksinim haline geldi. DHL Supply Chain, DHL Health Logistics birimine <strong>2 milyar avro</strong> yatırım yaparak CRYOPDP şirketini satın aldı ve \"DHL LifeTrack\" platformu üzerinden gerçek zamanlı izlenebilirlik sunuyor. Benzer şekilde Kuehne+Nagel da Haydarabad'daki tesisini genişleterek myKN ve HealthChain platformlarıyla standartlaştırılmış veri takibi sağlıyor. <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo ise \"smartULD\" ve \"Pharma Control Tower\" hizmetleriyle konteyner koşullarını API entegrasyonuyla anlık paylaşıyor. Gerçek zamanlı ve tahmine dayalı veri analitiği, gümrük kurallarının hızla değiştiği günümüz pazarında rota risk analizini kolaylaştırarak tedarik zincirlerinin esnekliğini artırıyor.",
+    "category": "Teknoloji & Dijitalleşme",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/beyond-the-cold-chain-how-data-is-reshaping-pharma-logistics-1359857",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Turkish Cargo, geniş kargo uçağı ve yolcu uçağı altı kargo kapasitesiyle küresel ilaç lojistiği pazarında önemli bir oyuncudur. <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo gibi rakiplerin smartULD ve entegre veri paylaşım sistemleriyle sunduğu gerçek zamanlı veri akışı ve tahmine dayalı rota analizleri, dijitalleşme standartlarını yükselterek benzer entegrasyonlara sahip olmayan taşıyıcılar üzerinde birim gelir ve pazar payı kaybı riski yaratmaktadır.",
     "etkiAlani": {
       "direct": [],
       "hub": []
@@ -36,9 +142,9 @@
     "date": "2026-07-14"
   },
   {
-    "title": "ECS Group, CORSAIR’ın İlaç Denetim Hazırlığına Destek Veriyor",
-    "summary": "ECS Group'un yan kuruluşu Aero Cargo International France, CORSAIR ve pharma lojistiği uzmanı Healthc'Air ile birlikte havayolu için uçtan uca ilaç kargo yönetimi çözümü uygulamak üzere çalışıyor. <strong>20 haftalık</strong> uygulama projesi, CORSAIR'ın ilaç kargo operasyonlarını destekleyecek ve denetime hazır bir kalite yönetim sistemi oluşturacak. İlaç kargosu, CORSAIR'ın yıllık tonajının <strong>%4</strong>'ünden fazlasını oluşturuyor ve Fransız Denizaşırı ağındaki ihracatta bu oran ikiye katlanarak genel kargonun <strong>%15</strong> ile <strong>%20</strong> üzerinde birim gelir getiriyor. Uygulama planı, mevcut ağın değerlendirilmesi, operasyonel veri tabanı oluşturulması ve süreçlerin devreye alınması olmak üzere <strong>üç</strong> ana sütuna dayanıyor.",
-    "category": "Özel Kargo",
+    "title": "ECS Group CORSAIR'ın İlaç Denetim Hazırlığına Destek Veriyor",
+    "summary": "GSSA temsilcisi ECS Group'un yan kuruluşu Aero Cargo International, Fransız havayolu CORSAIR ve ilaç lojistiği uzmanı Healthc’Air ile iş birliği yaparak <strong>20 haftalık</strong> bir ilaç kargo yönetim projesi başlattı. Proje, CORSAIR'ın özellikle onkoloji tedavileri ve insan organları gibi hassas gönderiler içeren yüksek değerli sağlık kargoları alanındaki rekabetçiliğini artırmak amacıyla denetime hazır bir kalite yönetim sistemi oluşturmayı hedefliyor. İlaç kargoları, CORSAIR'ın yıllık taşıma hacminin <strong>%4</strong>'ünden fazlasını oluşturmakta olup, Fransız Denizaşırı toprakları ağında bu oran iki katına çıkmaktadır ve navlun oranları genel kargoya göre <strong>%15</strong> ile <strong>%20</strong> daha yüksektir. Girişim kapsamında istasyon ve filo yetkinliklerinin değerlendirilmesi ile operasyonel süreçlerin entegrasyonu sağlanacak.",
+    "category": "Ortaklık & İş Birlikleri",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/ecs-group-supports-corsairs-pharma-audit-readiness-1359854",
     "id": null,
@@ -55,13 +161,13 @@
     "sources": [
       {
         "source": "aircargoupdate",
-        "link": "https://aircargoupdate.com/ecs-group-makes-corsair-pharma-audit-ready/"
+        "link": "https://aircargupdate.com/ecs-group-makes-corsair-pharma-audit-ready/"
       }
     ]
   },
   {
-    "title": "LODD, Hili VTOL Kargo Uçağının Sertifikasyon Sürecini Başlattı",
-    "summary": "LODD Autonomous, BAE Genel Sivil Havacılık Otoritesi (GCAA) ile hibrit kargo uçağı Hili için sertifikasyon programını başlattı. Abu Dabi'de geliştirilen Hili, <strong>250 kg</strong>'a kadar yükleri <strong>700 km</strong> mesafeye taşıyabilen hibrit dikey kalkış ve iniş (VTOL) yapabilen otonom bir uçaktır. Proje, BAE'de tasarlanan, mühendisliği yapılan ve sertifikalandırılan ilk gelişmiş otonom sivil kargo uçağı olmayı hedefliyor. Sertifikasyonun ardından uçağın orta mesafe lojistiği, sağlık tedarik zincirleri ve bölgesel kargo taşımacılığında kullanılması planlanmaktadır.",
+    "title": "LODD Hili VTOL Kargo Uçağının Sertifikasyon Sürecini Başlattı",
+    "summary": "BAE merkezli LODD Autonomous, ülkede tasarlanan ve geliştirilen ilk otonom kargo uçağı olan hibrit enerjili dikey kalkış ve iniş (VTOL) yapabilen \"Hili\" için Genel Sivil Havacılık Otoritesi (GCAA) nezdinde resmi sertifikasyon sürecini başlattı. Abu Dabi'de geliştirilen Hili, <strong>250 kg</strong>'a kadar olan faydalı yükleri <strong>700 km</strong> mesafeye kadar otonom olarak taşıma kapasitesine sahiptir. Uçağın sağlık sektörü, enerji, insani yardım ve endüstriyel tedarik zincirlerinde orta mesafe lojistik operasyonlarını desteklemesi planlanıyor. Proje, Abu Dabi Yatırım Ofisi'nin (ADIO) Akıllı ve Otonom Araçlar Endüstrisi (SAVI) Kümesi ve Abu Dabi Mobilite birimi tarafından desteklenmektedir.",
     "category": "Filo & Network",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/lodd-starts-certification-of-hili-vtol-cargo-aircraft-1359851",
@@ -78,34 +184,16 @@
     "date": "2026-07-14"
   },
   {
-    "title": "National Air Cargo Katalizör Tüpü Sevkiyatını Tamamladı",
-    "summary": "National Air Cargo, karmaşık bir katalizör tüpü sevkiyatını başarıyla tamamlayarak özel proje kargosu taşımacılığındaki operasyonel kabiliyetini gösterdi. Sevkiyat süreci, Frankfurt-Hahn Havalimanı (HHN) ve yer hizmetleri acentesi VG Cargo'nun iş birliğiyle koordine edildi. Projenin her aşaması, yük planlaması ve özel elleçleme prosedürleri dahil olmak üzere hassas bir şekilde yürütüldü. Havayolu, bu operasyonun havalimanı işletmecileri, yer hizmetleri ve havayolu ekipleri arasındaki koordinasyonun önemini vurguladığını belirtti.",
-    "category": "Özel Kargo",
-    "source": "stattimes",
-    "link": "https://www.stattimes.com/air-cargo/national-air-cargo-completes-catalyst-tube-shipment-1359850",
-    "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
-    "etkiAlani": {
-      "direct": [],
-      "hub": []
-    },
-    "etkiAlaniGerekce": "",
-    "date": "2026-07-14"
-  },
-  {
-    "title": "Kapasite Toparlanırken Küresel Hava Kargo Navlun Oranları Gevşiyor",
-    "summary": "Küresel hava kargo oranları, <strong>5 Temmuz</strong> ile biten haftada, ABD ile İran arasındaki gerilime rağmen hafif bir düşüş gösterdi. Ortalama küresel spot oranlar <strong>%2</strong> düşüşle kilogram başına <strong>3,62 dolar</strong> seviyesine gerilerken, spot fiyatlar geçen yılın aynı dönemine göre <strong>%37</strong> daha yüksek seyretti. E-ticaret hacimlerinin, AB'nin <strong>1 Temmuz</strong> itibarıyla <strong>150 avro</strong> altındaki gümrük muafiyetini kaldırmasıyla Hong Kong-Avrupa hattında <strong>%12</strong> düştüğü görüldü. Buna karşın, yapay zeka bilgisayar ekipmanlarına yönelik talep nedeniyle Tayvan'dan Avrupa'ya giden tonajlar son <strong>üç haftada</strong> yaklaşık <strong>%20</strong> artış kaydetti.",
+    "title": "Kapasite Toparlanırken Küresel Hava Navlun Oranları Gevşiyor",
+    "summary": "Küresel hava kargo navlun oranları, <strong>5 Temmuz</strong> ile biten haftada bir önceki haftaya göre <strong>%1</strong> düşüşle kilogram başına ortalama <strong>3,13 dolara</strong> geriledi. Küresel spot fiyatlar da <strong>%2</strong> azalarak <strong>3,62 dolar</strong> olurken, yıllık bazda ise hala <strong>%37</strong> daha yüksek seviyede seyrediyor. AB'nin <strong>1 Temmuz</strong> itibarıyla <strong>150 avro</strong> altındaki gümrük vergisi muafiyetini kaldırmasının ardından Hong Kong-Avrupa hattındaki e-ticaret tonajı haftalık bazda <strong>%12</strong> geriledi. Diğer yandan, Tayvan'dan Avrupa'ya giden kargo hacmi yapay zeka bilgisayar ekipmanlarına yönelik güçlü talep sayesinde son üç haftada yaklaşık <strong>%20</strong> artış gösterdi. Küresel hava kargo kapasitesi ise ABD Bağımsızlık Günü tatili nedeniyle Kuzey Amerika çıkışlı kapasitenin <strong>%4</strong> azalmasıyla haftalık bazda <strong>%1</strong> geriledi.",
     "category": "Diğer",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/global-air-freight-rates-ease-as-capacity-recovers-1359849",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "notr",
-    "thyAnalysis": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Turkish Cargo, Asya-Pasifik'ten Avrupa'ya giden e-ticaret ve teknoloji kargolarında kargo uçuşları ve yolcu uçağı altı kargo kapasitesiyle çok önemli bir köprü konumundadır. AB'nin yeni de minimis gümrük kuralları sonrası Hong Kong-Avrupa hattında e-ticaret hacimlerinin <strong>%12</strong> daralması, bu yüksek hacimli koridordaki birim gelirler (yield) üzerinde aşağı yönlü baskı yaratabilir. Ancak Tayvan-Avrupa hattındaki yapay zeka ekipmanı odaklı <strong>%20</strong>'lik hacim artışı, taşıyıcının bu koridorda kapasite kaydırarak olumsuz etkiyi dengelemesi için bir fırsat sunmaktadır.",
     "etkiAlani": {
       "direct": [],
       "hub": []
@@ -115,19 +203,19 @@
     "sources": [
       {
         "source": "aircargoupdate",
-        "link": "https://aircargoupdate.com/rates-fall-further-but-the-threat-of-renewed-disruption-returns/"
+        "link": "https://aircargupdate.com/rates-fall-further-but-the-threat-of-renewed-disruption-returns/"
       }
     ]
   },
   {
-    "title": "SolitAir Tianjin ile Çin Uçuş Ağını Genişletiyor",
-    "summary": "SolitAir, Dubai World Central (DWC) aktarma merkezi ile Tianjin Binhai Uluslararası Havalimanı (TSN) arasında yeni bir kargo uçağı hattı açarak Çin'deki uçuş ağını genişletti. Tianjin; Hong Kong ve Urumçi'nin ardından havayolunun Çin'deki <strong>üçüncü</strong> destinasyonu oldu. Şirket, her biri <strong>20 ton</strong> taşıma kapasitesine sahip <strong>yedi</strong> adet Boeing 737-800 BCF kargo uçağı filosuyla operasyonlarını yürütmektedir. <strong>Ekim 2024</strong>'te faaliyete başlayan SolitAir, filosunu <strong>20</strong> uçağa çıkarmayı ve DWC merkezli uçuş ağını büyütmeyi planlıyor.",
+    "title": "SolitAir Çin Ağını Tianjin ile Genişletiyor",
+    "summary": "Dubai merkezli kargo havayolu SolitAir, Dubai World Central (DWC) merkezinden Çin'deki Tianjin Binhai Uluslararası Havalimanı'na (TSN) yeni bir kargo rotası başlatarak Çin pazarındaki varlığını genişletti. Hong Kong ve Urumçi'den sonra havayolunun Çin'deki üçüncü varış noktası olan Tianjin, Kuzey Çin'in endüstriyel ve lojistik merkezlerine doğrudan erişim sağlıyor. <strong>Ekim 2024</strong>'te faaliyete geçen SolitAir, <strong>7</strong> adet Boeing 737-800 dönüştürülmüş kargo uçağıyla <strong>33</strong> ülkede <strong>56</strong> rotaya ulaşmış durumda. Şirket, otomotiv, havacılık, elektronik ve ilaç gibi yüksek değerli sanayi kollarına hizmet veren bu rotayla Çin ile BAE arasındaki petrol dışı ticareti güçlendirmeyi amaçlıyor.",
     "category": "Filo & Network",
     "source": "stattimes",
     "link": "https://www.stattimes.com/air-cargo/solitair-expands-china-network-with-tianjin-1359848",
     "id": null,
-    "isDuplicate": false,
-    "duplicateOf": "",
+    "isDuplicate": true,
+    "duplicateOf": "SolitAir Dubai-Tianjin Uçuşlarına Başlıyor",
     "thyImpact": "notr",
     "thyAnalysis": "",
     "etkiAlani": {
@@ -138,8 +226,8 @@
     "date": "2026-07-14"
   },
   {
-    "title": "Kargo Dönüşümü: Emirates SkyCargo’nun Boeing 777-300ER Özel Kargo Uçağı Tanıtıldı",
-    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo'nun büyüyen filosuna katılan A6-EBK tescilli Boeing 777-300ERSF uçağı, yolcu uçağından dönüştürülmüş özel bir kargo uçağı olarak hizmete girdi. Dönüşüm sürecinde koltuklar sökülerek ana güverte kargo kapısı kuruldu, zemin güçlendirildi ve sıcaklık kontrollü taşımacılığı destekleyen gelişmiş iklimlendirme sistemleri entegre edildi. Taşıyıcı, <strong>Mart 2026</strong>'dan bu yana teslim aldığı <strong>altı</strong> adet fabrikasyon Boeing 777-F kargo uçağına ek olarak bu yıl <strong>dört</strong> adet daha fabrikasyon ve <strong>bir</strong> adet dönüştürülmüş kargo uçağı teslim almayı planlıyor. Bu kapasite artışı, havayolunun <strong>150</strong>'den fazla destinasyona yayılan küresel uçuş ağında esneklik sunmasını sağlıyor.",
+    "title": "Bir Kargo Dönüşümü: Emirates SkyCargo'nun Boeing 777-300 ER Özel Kargo Uçağı Tanıtıldı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, filosuna katılan ilk dönüştürülmüş Boeing 777-300ERSF (A6-EBK tescilli) kargo uçağının ticari hizmete girdiğini duyurdu. Yolcu uçağından kargo uçağına dönüştürülen bu özel uçak için gövde modifikasyonları, geniş bir ana güverte kargo kapısı montajı, 9G kuvvetine dayanıklı bariyer yerleşimi ve zemin güçlendirmesi yapıldı. Uçakta ayrıca sıcaklık hassasiyeti yüksek ilaç ve bozulabilir gıda taşımacılığı için gelişmiş iklimlendirme ve duman algılama sistemleri kuruldu. <span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, <strong>Mart 2026</strong>'dan bu yana teslim aldığı <strong>6</strong> adet fabrika çıkışlı Boeing 777-F uçağına ek olarak bu yıl <strong>4</strong> adet daha 777-F ve <strong>1</strong> adet daha dönüştürülmüş kargo uçağı almayı planlıyor.",
     "category": "Filo & Network",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/07/cargo-makeover-introducing-emirates-skycargo-boeing-777-300-er-special-freighter/",
@@ -147,7 +235,7 @@
     "isDuplicate": true,
     "duplicateOf": "Emirates, Boeing 777-300ERSF Modelini Hizmete Alan İlk Havayolu Kargo Taşıyıcısı Oldu",
     "thyImpact": "risk",
-    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Emirates</span>'in yüksek hacim sunan B777-300ERSF kargo uçağını hizmete alması ve filosunu genişletmesi, özellikle e-ticaret segmentinde rekabeti artırmaktadır. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, Dubai'ye hem kargo uçağı hem de yolcu uçağı altı kargo kapasitesiyle hizmet verse de, rakibin home-hub (DXB/DWC) avantajı ve artan kapasitesi transit kargo akışlarında baskı oluşturabilir. Bu durum, özellikle Asya-Avrupa koridorundaki pazar payı ve birim gelirler üzerinde orta vadeli bir risk oluşturmaktadır.",
+    "thyAnalysis": "Turkish Cargo, İstanbul aktarma merkezinden geniş kargo uçağı ve yolcu uçağı altı kargo kapasitesiyle küresel e-ticaret, ilaç ve bozulabilir gıda taşımacılığında <span style='color:#C8102E;font-weight:700;'>Emirates</span> ile doğrudan rekabet etmektedir. Rakibin, standart B777-F'e göre <strong>%25</strong> daha fazla hacim sunan Boeing 777-300ERSF dönüştürülmüş kargo uçaklarını ve yeni fabrika çıkışlı kargo uçaklarını filosuna hızla eklemesi, özellikle Uzak Doğu-Avrupa ve Uzak Doğu-Amerika transit koridorlarında kapasite ve birim gelir baskısı yaratmaktadır.",
     "etkiAlani": {
       "direct": [],
       "hub": []
@@ -157,7 +245,7 @@
   },
   {
     "title": "Expoline Animal Akvaryum Sergisi İçin 35.000 Sardalyanın İthalat Lojistiğini Tamamladı",
-    "summary": "Canlı hayvan taşımacılığı uzmanı Expoline Animal, Güney Kore'deki bir akvaryumda sergilenmek üzere <strong>35.000</strong> adet Japon sardalyasının ithalat lojistiğini başarıyla yönetti. Operasyon, <strong>28 Mayıs</strong> ile <strong>26 Haziran</strong> tarihleri arasında gerçekleştirilen <strong>üç</strong> ayrı sevkiyatla tamamlandı. Sardalyalar, feribotla Busan Limanı'na ulaşan canlı balık taşıma kamyonuyla ülkeye getirildi. Şirket, karantina kontrolleri, gümrük işlemleri ve akvaryuma kadar olan yerli taşıma süreçlerini koordine etti.",
+    "summary": "Canlı hayvan taşımacılığı uzmanı Expoline Animal, Güney Kore'deki bir akvaryumda sergilenmek üzere Japonya'dan <strong>35.000</strong> adet Japon sardalyasının ithalat lojistiğini başarıyla gerçekleştirdi. <strong>28 Mayıs</strong> ile <strong>26 Haziran</strong> tarihleri arasında düzenlenen üç ayrı operasyon kapsamında balıklar, feribotla Busan Limanı'na ulaşan özel tırlarla taşındı. Şirket, canlı su canlılarının sağlığını korumak amacıyla gümrükleme, karantina başvuruları, liman tahliye işlemleri ve iç nakliye eskortluğu süreçlerini titizlikle koordine etti. 20 yılı aşkın süredir bu alanda faaliyet gösteren şirket, geyik, kuş, sürüngen ve ayı gibi çeşitli özel türlerin de lojistiğini yönetiyor.",
     "category": "Özel Kargo",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/07/expoline-animal-completes-import-logistics-project-sardines-destined-aquarium-exhibition/",
@@ -174,14 +262,14 @@
     "date": "2026-07-14"
   },
   {
-    "title": "FTAI Aviation ve AEI, B737-800 Kargo Uçağı Dönüşümleri İçin İş Birliği Yapıyor",
-    "summary": "FTAI Aviation ve Aeronautical Engineers, Inc. (AEI), küresel havayolu ortaklarına daha uygun maliyetli Boeing 737-800 kargo uçağı çözümleri sunmak için stratejik ortaklık kurdu. Ortaklık kapsamında FTAI'nin CFM56 motor bakım yetenekleri ile AEI'nin kargo uçağı dönüşüm uzmanlığı bir araya getirilecek. <strong>6000</strong>'e yakın teslimatla Boeing 737-800, dar gövdeli kargo taşımacılığında önemli bir yere sahiptir. AEI bugüne kadar <strong>130</strong>'dan fazla Ek Tip Sertifikası geliştirerek <strong>625</strong>'ten fazla uçağı dönüştürmüştür.",
-    "category": "Filo & Network",
+    "title": "FTAI Aviation ve AEI Boeing 737-800 Kargo Uçağı Talebini Karşılamak İçin Stratejik Ortaklık Duyurdu",
+    "summary": "FTAI Aviation ve Aeronautical Engineers Inc. (AEI), havayolu ortaklarına küresel ölçekte daha düşük maliyetli Boeing 737-800 kargo uçağı dönüştürme çözümleri sunmak üzere stratejik iş birliği kurdu. Ortaklık, FTAI'ın motor bakım kabiliyetleri ile AEI'ın kargo dönüşüm (P2F) liderliğini bir araya getiriyor. FTAI, kargo ekonomisine uygun, düşük çevrim süreli CFM56 motorları tedarik ve bakım desteği sunarak operasyonel maliyetleri düşürmeyi hedeflerken; AEI ise <strong>130</strong>'dan fazla Ek Tip Sertifikası (STC) ve <strong>625</strong>'in üzerinde modifiye edilmiş uçakla dönüşüm uzmanlığını projeye yansıtacak. Neredeyse <strong>6.000</strong> adet üretilen Boeing 737-800 modeli, dar gövde kargo pazarının yeni ana uçağı olmaya aday gösteriliyor.",
+    "category": "Ortaklık & İş Birlikleri",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/07/ftai-aviation-aei-announce-strategic-collaboration-meet-growing-demand-boeing-737-800-freighters/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "FTAI ve AEI, 737-800 Kargo Uçağı Ortaklığını Başlattı",
+    "duplicateOf": "FTAI Aviation ve AEI, Boeing 737-800 Kargo Uçağı Dönüşümlerini Genişletmek İçin Ortak Oldu",
     "thyImpact": "notr",
     "thyAnalysis": "",
     "etkiAlani": {
@@ -192,8 +280,8 @@
     "date": "2026-07-14"
   },
   {
-    "title": "J&T Express’in Günlük Ortalama Paket Hacmi 2026’nın İkinci Çeyreğinde 100 Milyonu Aşarak Rekor Kırdı",
-    "summary": "J&T Express, <strong>2026</strong>'nın ikinci çeyreğinde toplam paket hacmini yıllık <strong>%24,2</strong> artışla <strong>9,177 milyar</strong> adede ulaştırarak günlük ortalama <strong>101 milyon</strong> paket barajını aştı. Çin dışındaki pazarlarda paket hacmi yıllık <strong>%66,9</strong> artışla <strong>2,966 milyar</strong> adede ulaşarak toplam hacmin <strong>%32,3</strong>'ünü oluşturdu. Şirket, Güneydoğu Asya'da paket hacmini <strong>%63,2</strong> artırarak <strong>2,755 milyar</strong> adede çıkardı ve bölgedeki aktarma merkezi sayısını <strong>127</strong>'ye ulaştırdı. TikTok, TEMU, SHEIN ve AliExpress gibi küresel e-ticaret platformlarıyla iş birliklerini derinleştiren şirket, haziran ayında Hang Seng Endeksi'ne dahil edildi.",
+    "title": "J&T Express'in Günlük Ortalama Paket Hacmi 2026'nın İkinci Çeyreğinde 100 Milyonu Aştı",
+    "summary": "Küresel lojistik sağlayıcısı J&T Express, <strong>2026</strong>'nın ikinci çeyreğinde toplam paket hacmini yıllık <strong>%24,2</strong> artırarak <strong>9,177 milyar</strong> adede ulaştırdı ve günlük ortalama paket hacminde <strong>101 milyon</strong> barajını aşarak yeni bir rekor kırdı. Çin dışındaki paket hacmi yıllık <strong>%66,9</strong> artışla <strong>2,966 milyar</strong> adede ulaşarak toplam hacmin <strong>%32,3</strong>'ünü oluşturdu. Güneydoğu Asya'da paket hacmi yıllık <strong>%63,2</strong> artarak <strong>2,755 milyar</strong> olurken, bölgedeki tasnif merkezi sayısı <strong>127</strong>'ye, otomatik tasnif bantları ise <strong>75</strong>'e çıkarıldı. Şirket, Latin Amerika ve Orta Doğu gibi yeni gelişen pazarlarda TikTok, TEMU, SHEIN, AliExpress ve Mercado Libre gibi e-ticaret devleriyle iş birliklerini derinleştirerek ağını genişletmeye devam ediyor.",
     "category": "Özel Kargo",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/07/jt-express-average-daily-parcel-volume-exceeds-100-million-second-quarter-2026/",
@@ -201,7 +289,99 @@
     "isDuplicate": false,
     "duplicateOf": "",
     "thyImpact": "firsat",
-    "thyAnalysis": "J&T Express'in küresel e-ticaret hacimlerindeki güçlü büyümesi, Asya çıkışlı hava kargo talebini doğrudan artırmaktadır. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, Çin (CAN, PVG, SZX, CGO) ve Güneydoğu Asya (SIN, BKK, HAN, SGN) hatlarında hem kargo uçağı operasyonu hem de yolcu uçağı altı kargo kapasitesiyle güçlü bir varlığa sahiptir. E-ticaret devlerinin artan lojistik ihtiyaçları, özellikle İstanbul aktarma merkezi üzerinden Avrupa ve Orta Doğu'ya yapılacak sevkiyatlarda <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için birim gelir desteği ve ek taşıma talebi yaratmaktadır.",
+    "thyAnalysis": "Turkish Cargo, e-ticaret lojistiğinde kargo uçağı operasyonları ve İstanbul aktarma merkezi üzerinden sunduğu geniş uçuş ağıyla küresel bir liderdir. J&T Express'in günlük <strong>100 milyon</strong> paketi aşan muazzam hacmi ve SHEIN, TEMU ile TikTok gibi platformlarla küresel iş birliklerini derinleştirmesi, özellikle Uzak Doğu çıkışlı, Orta Doğu, Avrupa ve Latin Amerika varışlı hava kargo talebini artırmaktadır. Bu durum, Turkish Cargo'nun e-ticaret dikeyindeki kargo uçakları için sürdürülebilir yüksek hacimli sevkiyat ortaklıkları kurması adına güçlü bir ticari fırsat yaratmaktadır.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-07-14"
+  },
+  {
+    "title": "WSI, Kargo Operasyonları Öncesinde İlk Deneme Uçuşunu Karşıladı",
+    "summary": "Western Sydney International (Nancy-Bird Walton) Havalimanı (WSI), bu ayın sonlarında başlayacak ticari operasyonlar öncesinde ilk kargo deneme uçuşunu gerçekleştirdi. Denemeler kapsamında Qantas Freight'e ait bir Airbus A321 kargo uçağı havalimanına iniş yaptı. Havalimanının kargo bölgesi, Menzies Aviation, dnata Cargo ve Texel Air gibi ortakların katılımıyla yıllık <strong>220.000 ton</strong> kargo elleçleme kapasitesine sahip olacak. <strong>24 saat</strong> kesintisiz hizmet verecek olan bu modern altyapı, Avustralya'da son <strong>50 yılda</strong> sıfırdan inşa edilen ilk uluslararası havalimanı olma özelliğini taşıyor.",
+    "category": "Altyapı",
+    "source": "aircargoupdate",
+    "link": "https://aircargupdate.com/wsi-welcomes-first-cargo-trial-flight-ahead-of-freight-operations/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Yakında Açılacak Olan Batı Sidney Havalimanı'nda Kargo Uçağı Test Uçuşları Yapıldı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-07-14"
+  },
+  {
+    "title": "ECS Group, CORSAIR Havayolu'nu İlaç Denetimlerine Hazır Hale Getiriyor",
+    "summary": "ECS Group'un yan kuruluşu Aero Cargo International France, CORSAIR havayolu ve ilaç lojistiği uzmanı Healthc'Air iş birliğiyle <strong>20 haftalık</strong> bir ilaç yönetim sistemi projesi başlattı. Proje, CORSAIR'ın özellikle onkoloji tedavileri ve hassas sağlık gönderileri gibi yüksek değerli kargo ihalelerindeki konumunu güçlendirmeyi hedefliyor. İlaç kargoları, taşıyıcının yıllık tonajının <strong>%4</strong>'ünden fazlasını oluştururken, Fransız Denizaşırı ülkeleri ağında bu oran ikiye katlanmakta ve tarifeler genel kargoya kıyasla <strong>%15</strong> ile <strong>%20</strong> daha yüksek seyretmektedir. Üç aşamalı olarak uygulanacak plan kapsamında ağ analizleri, operasyonel veri tabanı oluşturulması ve süreç entegrasyonu gerçekleştirilecek.",
+    "category": "Özel Kargo",
+    "source": "aircargoupdate",
+    "link": "https://aircargupdate.com/ecs-group-makes-corsair-pharma-audit-ready/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "ECS Group CORSAIR'ın İlaç Denetim Hazırlığına Destek Veriyor",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-07-14"
+  },
+  {
+    "title": "Logistaas, Taşıma İşleri Organizatörleri İçin Yeni Yapay Zeka Araçlarıyla TMS Sistemini Genişletiyor",
+    "summary": "Lojistik yazılım sağlayıcısı Logistaas, taşıma işleri organizatörlerinin rutin süreçleri otomatikleştirmesi ve veri odaklı kararlar alabilmesi için Averroes AI adlı yeni yapay zeka paketini kullanıma sundu. Doğrudan mevcut nakliye yönetim sistemine (TMS) entegre edilen bu teknoloji, konşimento ve faturalardan otomatik veri ayıklama ile sevkiyat risk analizleri gerçekleştirebilmektedir. Ayrıca sistem, mevzuata uyum kontrolleri ve kullanıcılara rehberlik eden bir yapay zeka asistanı da sunmaktadır. Halihazırda <strong>80</strong>'den fazla ülkede kullanılan platform, taşıma işleri organizatörlerinin iş yapış şekillerini değiştirmeden verimliliklerini artırmayı amaçlıyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoupdate",
+    "link": "https://aircargupdate.com/logistaas-expands-tms-innovation-with-new-ai-tools-for-freight-forwarders/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-07-14"
+  },
+  {
+    "title": "Hava Kargo Navlun Oranları Gerilemeye Devam Ediyor Ancak Yeni Aksamalar Kapıda",
+    "summary": "WorldACD verilerine göre, küresel hava kargo navlun oranları ve tonajları, azalan yakıt fiyatları ve ABD'deki <strong>4 Temmuz</strong> resmi tatili nedeniyle haziran sonu ve temmuz başında düşüş gösterdi. Haftalık bazda ortalama küresel spot fiyatlar <strong>%2</strong> azalarak kilogram başına <strong>3,62 dolar</strong> seviyesine gerilese de yıllık bazda halen <strong>%37</strong> daha yüksek seyretmektedir. AB'nin <strong>1 Temmuz</strong>'da yürürlüğe giren yeni de minimis kuralları nedeniyle Hong Kong'dan Avrupa'ya giden e-ticaret tonajlarında haftalık <strong>%12</strong>'lik sert bir düşüş yaşandı. Buna karşın, yapay zeka bilgisayar donanımları sevkiyatlarındaki güçlü taleple Tayvan'dan Avrupa'ya giden kargo hacmi son <strong>üç haftada</strong> yaklaşık <strong>%20</strong> artış gösterdi.",
+    "category": "Diğer",
+    "source": "aircargoupdate",
+    "link": "https://aircargupdate.com/rates-fall-further-but-the-threat-of-renewed-disruption-returns/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Kapasite Toparlanırken Küresel Hava Navlun Oranları Gevşiyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, Hong Kong (HKG) ve Çin'in diğer ana merkezlerinden (CAN, PVG) Avrupa'ya hem kargo uçağı hem de yolcu uçağı altı kargo kapasitesiyle yoğun şekilde e-ticaret taşımaktadır. AB'nin <strong>1 Temmuz</strong> itibarıyla yürürlüğe giren de minimis muafiyetini kaldırmasıyla Hong Kong-Avrupa hattında e-ticaret hacimlerinin <strong>%12</strong> gerilemesi, bu koridordaki birim gelirler (yield) üzerinde aşağı yönlü baskı yaratabilir. Ancak, Tayvan'dan Avrupa'ya yapay zeka ekipmanı taşımalarındaki <strong>%20</strong>'lik artış, yüksek değerli kargo segmentinde yeni kapasite kaydırma fırsatları sunarak bu riski kısmen dengeleyebilir.",
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Birim Gelirler (Yield)"
+      ]
+    },
+    "etkiAlaniGerekce": "AB gümrük kurallarının değişmesi e-ticaret talebini daraltırken, Tayvan çıkışlı yapay zeka ekipmanı sevkiyatları kargo kompozisyonunu değiştirmektedir.",
+    "date": "2026-07-14"
+  },
+  {
+    "title": "National Air Cargo Katalizör Tüpü Sevkiyatını Tamamladı",
+    "summary": "National Air Cargo, karmaşık bir katalizör tüpü sevkiyatını başarıyla tamamlayarak özel proje kargosu taşımacılığındaki operasyonel kabiliyetini gösterdi. Sevkiyat süreci, Frankfurt-Hahn Havalimanı (HHN) ve yer hizmetleri acentesi VG Cargo'nun iş birliğiyle koordine edildi. Projenin her aşaması, yük planlaması ve özel elleçleme prosedürleri dahil olmak üzere hassas bir şekilde yürütüldü. Havayolu, bu operasyonun havalimanı işletmecileri, yer hizmetleri ve havayolu ekipleri arasındaki koordinasyonun önemini vurguladığını belirtti.",
+    "category": "Özel Kargo",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/national-air-cargo-completes-catalyst-tube-shipment-1359850",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
     "etkiAlani": {
       "direct": [],
       "hub": []
@@ -1624,7 +1804,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-07-10"
+    "date": "2026-07-10",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/07/ftai-aviation-aei-announce-strategic-collaboration-meet-growing-demand-boeing-737-800-freighters/"
+      }
+    ]
   },
   {
     "title": "Swissport, Güvenliği ve Operasyonel Verimliliği Artırmak İçin Birmingham Havalimanı'nda Entegre Kontrol Merkezi Kurdu",
