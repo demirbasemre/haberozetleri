@@ -1180,6 +1180,42 @@ export default {
 
       parsed.routes = finalRoutes;
 
+      // Cloudflare KV ile global WCI kompozit endeksinin geçmişini kalıcı olarak biriktir ve
+      // %değişimi gerçek fiyat farkından hesapla. Drewry'nin canlı sayfa metni bazı haftalarda
+      // yüzdeyi belirtmiyor ("...increased to $4,639" gibi, "by X%" olmadan) — bu durumda
+      // parseWCI'daki regex yüzde grubu eşleşmeyip changePercent sessizce 0 kalıyordu.
+      if (env.FBX_ROUTES_KV) {
+        try {
+          let compositeHist = await env.FBX_ROUTES_KV.get('wci_composite_history', { type: 'json' }) || [];
+          const todayIso = new Date().toISOString().slice(0, 10);
+          const alreadyToday = compositeHist.length && compositeHist[compositeHist.length - 1].date === todayIso;
+          const prevEntry = alreadyToday
+            ? (compositeHist.length > 1 ? compositeHist[compositeHist.length - 2] : null)
+            : (compositeHist.length ? compositeHist[compositeHist.length - 1] : null);
+
+          if (prevEntry && prevEntry.value && prevEntry.value !== parsed.price) {
+            const computedChange = ((parsed.price - prevEntry.value) / prevEntry.value) * 100;
+            parsed.change = Math.round(computedChange * 100) / 100;
+            parsed.direction = parsed.change > 0 ? 'up' : parsed.change < 0 ? 'down' : 'flat';
+          } else if (prevEntry && prevEntry.value === parsed.price) {
+            parsed.change = 0;
+            parsed.direction = 'flat';
+          }
+
+          if (!alreadyToday) {
+            compositeHist.push({ date: todayIso, value: parsed.price });
+            await env.FBX_ROUTES_KV.put('wci_composite_history', JSON.stringify(compositeHist));
+          } else if (compositeHist[compositeHist.length - 1].value !== parsed.price) {
+            compositeHist[compositeHist.length - 1].value = parsed.price;
+            await env.FBX_ROUTES_KV.put('wci_composite_history', JSON.stringify(compositeHist));
+          }
+
+          parsed.history = compositeHist;
+        } catch (kvErr) {
+          console.warn('WCI kompozit geçmiş KV hatası:', kvErr.message);
+        }
+      }
+
       // Cloudflare KV ile rota bazlı geçmişi kalıcı olarak biriktir
       if (env.FBX_ROUTES_KV) {
         try {

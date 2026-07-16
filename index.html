@@ -2703,7 +2703,7 @@
         </button>
       </div>
       <div class="dash-cards">
-        <div class="dash-card dash-card-clickable" id="dc-jetfuel" title="Jet yakıtı fiyat detayları için tıkla" onclick="openJetfuelChartModal()">
+        <div class="dash-card dash-card-clickable" id="dc-jetfuel" onclick="openJetfuelChartModal()">
           <div class="dash-card-timer" id="dc-jetfuel-timer">
             <span class="timer-dot"></span>Haftalık
           </div>
@@ -2720,7 +2720,7 @@
             <div id="dc-jetfuel-date" class="dash-card-date-badge"></div>
           </div>
         </div>
-        <div class="dash-card dash-card-clickable" id="dc-brent" title="Brent petrol detayları için tıkla" onclick="openBrentChartModal()">
+        <div class="dash-card dash-card-clickable" id="dc-brent" onclick="openBrentChartModal()">
           <div class="dash-card-timer">
             <span class="timer-dot"></span>
             <span class="timer-secs">60s</span>
@@ -2738,7 +2738,7 @@
             <div id="dc-brent-date" class="dash-card-date-badge"></div>
           </div>
         </div>
-        <div class="dash-card dash-card-clickable" id="dc-thy" title="THYAO hisse detayları için tıkla" onclick="openThyChartModal()">
+        <div class="dash-card dash-card-clickable" id="dc-thy" onclick="openThyChartModal()">
           <div class="dash-card-timer">
             <span class="timer-dot"></span>
             <span class="timer-secs">60s</span>
@@ -2759,7 +2759,7 @@
             <div id="dc-thy-date" class="dash-card-date-badge"></div>
           </div>
         </div>
-        <div class="dash-card dash-card-clickable" id="dc-usd" title="Döviz kurları detayları için tıkla" onclick="openForexChartModal()">
+        <div class="dash-card dash-card-clickable" id="dc-usd" onclick="openForexChartModal()">
           <div class="dash-card-timer">
             <span class="timer-dot"></span>
             <span class="timer-secs">60s</span>
@@ -2815,7 +2815,7 @@
             <div id="dc-usd-date" class="dash-card-date-badge"></div>
           </div>
         </div>
-        <div class="dash-card dash-card-clickable" id="dc-wci" title="Drewry WCI grafiğini göster" onclick="openWciChartModal()">
+        <div class="dash-card dash-card-clickable" id="dc-wci" onclick="openWciChartModal()">
           <div class="dash-card-timer" id="dc-wci-timer">
             <span class="timer-dot"></span>Haftalık
           </div>
@@ -2833,7 +2833,7 @@
           </div>
         </div>
         
-        <div class="dash-card dash-card-clickable" id="dc-bafi" title="BAFI grafiğini göster" onclick="openBafiChartModal()">
+        <div class="dash-card dash-card-clickable" id="dc-bafi" onclick="openBafiChartModal()">
           <div class="dash-card-timer" id="dc-bafi-timer">
             <span class="timer-dot"></span>Haftalık
           </div>
@@ -2850,7 +2850,7 @@
             <div id="dc-bafi-date" class="dash-card-date-badge"></div>
           </div>
         </div>
-        <div class="dash-card dash-card-clickable" id="dc-iata" title="IATA grafiğini göster" onclick="openIataChartModal()">
+        <div class="dash-card dash-card-clickable" id="dc-iata" onclick="openIataChartModal()">
           <div class="dash-card-timer" id="dc-iata-timer">
             <span class="timer-dot"></span>Aylık
           </div>
@@ -2883,7 +2883,7 @@
             <div id="dc-iata-date" class="dash-card-date-badge"></div>
           </div>
         </div>
-        <div class="dash-card dash-card-clickable" id="dc-fbx" title="FBX grafiğini göster" onclick="openFbxChartModal()">
+        <div class="dash-card dash-card-clickable" id="dc-fbx" onclick="openFbxChartModal()">
           <div class="dash-card-timer" id="dc-fbx-timer">
             <span class="timer-dot"></span>Günlük
           </div>
@@ -2900,7 +2900,7 @@
             <div id="dc-fbx-date" class="dash-card-date-badge"></div>
           </div>
         </div>
-        <div class="dash-card dash-card-clickable" id="dc-licargo" title="LinkedIn takipçi karşılaştırması için tıkla" onclick="openLinkedinChartModal()">
+        <div class="dash-card dash-card-clickable" id="dc-licargo" onclick="openLinkedinChartModal()">
           <div class="dash-card-timer" id="dc-licargo-timer">
             <span class="timer-dot"></span>Haftalık
           </div>
@@ -3461,7 +3461,7 @@
       <!-- Ziyaretçi İstatistikleri -->
       <h2 class="dash-section-title">Ziyaretçi İstatistikleri</h2>
       <div class="dash-cards" style="margin-bottom:16px;">
-        <div class="dash-card dash-card-clickable" id="vis-card-total" title="Günlük trendi görüntüle">
+        <div class="dash-card dash-card-clickable" id="vis-card-total">
           <div class="dash-card-label">Toplam Ziyaret</div>
           <div class="dash-card-value" id="vis-kpi-total">—</div>
           <div class="vis-sparkline-wrap"><canvas id="chart-visitors-spark"></canvas></div>
@@ -3491,7 +3491,7 @@
       <!-- Chatbot İstatistikleri -->
       <h2 class="dash-section-title" style="margin-top:28px;">Chatbot Kullanım İstatistikleri</h2>
       <div class="dash-cards" style="margin-bottom:16px;">
-        <div class="dash-card dash-card-clickable kpi-card-with-spark" id="chat-card-total" title="Günlük kullanım trendini görüntüle">
+        <div class="dash-card dash-card-clickable kpi-card-with-spark" id="chat-card-total">
           <div class="kpi-card-header">
             <div class="dash-card-label">Toplam Konuşma</div>
           </div>
@@ -14084,11 +14084,9 @@ async function loadDashboard() {
     // Diğer günler (Cmt, Paz, Pzt, Sal) veri değişmeyeceğinden günde bir kez (24 saat) kontrol yeterlidir.
     const wciTtl = (day === 3 || day === 4 || day === 5) ? (1 * 60 * 60 * 1000) : (24 * 60 * 60 * 1000);
 
-    return fetchCached('wci_full_data_v7', async () => {
-      const [history, latest] = await Promise.all([
-        fetch('wci-history.json').then(r => r.ok ? r.json() : WCI_DEFAULT_HISTORY).catch(() => WCI_DEFAULT_HISTORY),
-        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci?t=' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null)
-      ]);
+    return fetchCached('wci_full_data_v8', async () => {
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci?t=' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null);
+      const history = (latest && Array.isArray(latest.history) && latest.history.length) ? latest.history : WCI_DEFAULT_HISTORY;
 
       // Eğer yeni çekilen veri başarısız (null veya fiyatsız) ise, localStorage'daki eski geçerli veriyi koruyup geri dönelim
       let finalLatest = latest;
