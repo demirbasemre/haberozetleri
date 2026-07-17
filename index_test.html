@@ -3246,7 +3246,7 @@
       <div style="display:none"><div class="dash-tl-track" id="tl-track"></div></div>
       <div class="dash-releases" id="dash-releases"></div>
     </section>
-
+  </div><!-- /dashboard-panel -->
 
     <!-- WCI Grafik Modali -->
     <div id="wci-chart-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="wci-chart-title">
@@ -3564,8 +3564,6 @@
       </div>
     </div>
 
-
-  </div><!-- /dashboard-panel -->
 
   <!-- ── Site İstatistikleri Paneli ─────────────────────────── -->
   <div id="stats-panel" style="display:none">
@@ -8082,6 +8080,14 @@ let _todoInit    = false;
 let _statsInit   = false;
 let _reportsInit = false;
 
+// Dashboard verisi yüklenmeden rapor KPI kartlarından grafik modalı açılırsa
+// render fonksiyonları henüz tanımsız olur; bu yardımcı tek seferlik yüklemeyi garanti eder.
+let _dashLoadPromise = null;
+function ensureDashboardLoaded() {
+  if (!_dashInit) { _dashInit = true; _dashLoadPromise = loadDashboard(); }
+  return _dashLoadPromise || Promise.resolve();
+}
+
 function dashScrollTo(id) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -8181,7 +8187,7 @@ function switchTab(tab) {
   if (el.todoBtn)    el.todoBtn.classList.toggle('main-tab-active',    isTodo);
   if (el.statsBtn)   el.statsBtn.classList.toggle('main-tab-active',   isStats);
   if (el.reportsBtn) el.reportsBtn.classList.toggle('main-tab-active', isReports);
-  if (isDash    && !_dashInit)    { _dashInit    = true; loadDashboard(); }
+  if (isDash) ensureDashboardLoaded();
   if (isTodo    && !_todoInit)    { _todoInit    = true; initTodo(); }
   if (isStats   && !_statsInit)   { _statsInit   = true; initStatsTab(); }
   if (isReports && !_reportsInit) { _reportsInit = true; initReportsTab(); }
@@ -8823,19 +8829,26 @@ function openWciChartModal() {
   const m = document.getElementById('wci-chart-modal');
   if (m) {
     m.style.display = 'flex';
-    setTimeout(() => {
-      if (typeof window.renderWciRouteMap === 'function') {
-        window.renderWciRouteMap();
-      }
-      if (typeof window.renderWciRouteOptions === 'function') {
-        window.renderWciRouteOptions();
-      }
-      if (typeof window.selectWciRoute === 'function') {
-        window.selectWciRoute('WCI');
-      } else if (typeof window.renderWciChart === 'function') {
-        window.renderWciChart();
-      }
-    }, 150);
+    // WCI verisi (initWciCard) yüklenmeden çizim yapılmasın; dashboard hiç
+    // açılmadıysa ensureDashboardLoaded veriyi tetikler.
+    ensureDashboardLoaded()
+      .then(() => window._wciInitPromise)
+      .catch(() => {})
+      .then(() => {
+        setTimeout(() => {
+          if (typeof window.renderWciRouteMap === 'function') {
+            window.renderWciRouteMap();
+          }
+          if (typeof window.renderWciRouteOptions === 'function') {
+            window.renderWciRouteOptions();
+          }
+          if (typeof window.selectWciRoute === 'function') {
+            window.selectWciRoute('WCI');
+          } else if (typeof window.renderWciChart === 'function') {
+            window.renderWciChart();
+          }
+        }, 150);
+      });
   }
 }
 function closeWciChartModal() {
@@ -14510,7 +14523,7 @@ async function loadDashboard() {
       }
     });
   }
-  initWciCard();
+  window._wciInitPromise = initWciCard();
   // Sekme açık kalsa bile (yenileme yapılmasa bile) her saat başı taze veriyi otomatik çek
   setInterval(() => {
     if (document.visibilityState === 'visible') initWciCard();
@@ -20743,7 +20756,8 @@ function initControls(allArticles) {
       card.addEventListener('click', (e) => {
         e.preventDefault();
         const action = actions[text];
-        if (action) action();
+        if (!action) return;
+        ensureDashboardLoaded().then(action);
       });
     });
   }
