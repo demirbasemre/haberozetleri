@@ -4029,7 +4029,14 @@
 
       <!-- Çerez Giriş Paneli -->
       <div id="fleet-cookie-panel" style="display:none;margin-top:8px;padding:12px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:6px;gap:8px;flex-direction:column;width:100%;">
-        <div style="font-size:11px;font-weight:600;color:var(--text-1);">Cloudflare Bypass Çerezleri (Gerekirse)</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:4px;">
+          <div style="font-size:11px;font-weight:600;color:var(--text-1);">Cloudflare Bypass Çerezleri (Gerekirse)</div>
+          <select id="fleet-browser-profile" style="font-size:10px;padding:2px 6px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);cursor:pointer;outline:none;">
+            <option value="auto">Canlı Parmak İzi (Önerilen)</option>
+            <option value="vivaldi_mac">Vivaldi / Mac (M2 GPU)</option>
+            <option value="edge_win">Edge / Windows (NVIDIA GPU)</option>
+          </select>
+        </div>
         <div style="font-size:10px;color:var(--text-3);margin-bottom:4px;">Tarayıcı F12 -> Network -> Request Headers altındaki 'cookie:' satırını kopyalayıp buraya yapıştırın.</div>
         <textarea id="fleet-cookie-input" placeholder="__psuid=...; cf_clearance=...; ps_sessid=..." style="width:100%;height:60px;font-family:monospace;font-size:10px;padding:6px;background:var(--bg-primary);border:1px solid var(--border-color);border-radius:4px;color:var(--text-1);resize:vertical;"></textarea>
         <div id="fleet-cookie-feedback" role="status" aria-live="polite" style="display:none;align-items:flex-start;gap:6px;font-size:10.5px;line-height:1.5;margin-top:2px;"></div>
@@ -24008,6 +24015,7 @@ new MutationObserver(() => { if (_finBuilt) renderFinChart(); })
 function classifyVariant(v) {
   const u = v.toUpperCase();
   if (u.includes('-F') || u.includes('(F)') || u.includes('BCF') ||
+      u.includes('BDSF') || u.includes('P2F') ||
       u.includes('FSCD') || u.includes('ERF') || u.includes('SF)') ||
       /A330F|A350F|B747F|B777F|B787F|ATR.?F|B76.*F/.test(u)) return 'cargo';
   if (/A3[3-9]\d|A38\d|B74[0-9]|B76[0-9]|B77[0-9]|B78[0-9]|IL.?96|MD.?11|DC.?10|L.?101/.test(u)) return 'wb';
@@ -24652,9 +24660,18 @@ window.classifyFleetError = function(msg) {
     setBusy('Başlatılıyor…');
     
     try {
+      const profileVal = localStorage.getItem('fleet_cf_browser_profile') || 'auto';
+      const liveFingerprint = profileVal === 'auto' ? getLiveFingerprint() : null;
+
       const res = await fetch(_acApiBase() + '/api/update-aircrafts', {
         method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ cookies: localStorage.getItem('fleet_cf_cookies') || '', password: pwd, ua: navigator.userAgent })
+        body: JSON.stringify({ 
+          cookies: localStorage.getItem('fleet_cf_cookies') || '', 
+          password: pwd, 
+          ua: navigator.userAgent,
+          profile: profileVal,
+          fingerprint: liveFingerprint
+        })
       });
       if (res.status === 401) {
         localStorage.removeItem('fleet_update_password');
@@ -26293,6 +26310,38 @@ window.classifyFleetError = function(msg) {
     fb.querySelector('span').textContent = msg;
   }
 
+  // Tarayıcıdan unmasked GPU ve donanım parametrelerini canlı okur
+  window.getLiveFingerprint = function() {
+    let vendor = "Google Inc. (Apple)";
+    let renderer = "ANGLE (Apple, ANGLE Metal Renderer: Apple M2, Unspecified Version)";
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (gl) {
+        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        if (debugInfo) {
+          vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || vendor;
+          renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || renderer;
+        }
+      }
+    } catch(e) {
+      console.warn("WebGL unmasked info okunamadı, varsayılan kullanılacak:", e);
+    }
+
+    return {
+      ua: navigator.userAgent,
+      platform: navigator.platform || "MacIntel",
+      hardware_concurrency: navigator.hardwareConcurrency || 8,
+      device_pixel_ratio: window.devicePixelRatio || 2,
+      viewport: {
+        width: window.innerWidth || 1470,
+        height: window.innerHeight || 956
+      },
+      webgl_vendor: vendor,
+      webgl_renderer: renderer
+    };
+  };
+
   window.toggleCookiePanel = function() {
     const panel = document.getElementById('fleet-cookie-panel');
     if (!panel) return;
@@ -26303,11 +26352,20 @@ window.classifyFleetError = function(msg) {
     const input = document.getElementById('fleet-cookie-input');
     if (input) input.style.borderColor = '';
     panel.style.display = opening ? 'flex' : 'none';
-    if (opening && input) setTimeout(() => input.focus(), 100);
+    if (opening) {
+      const savedProfile = localStorage.getItem('fleet_cf_browser_profile') || 'auto';
+      const profileSelect = document.getElementById('fleet-browser-profile');
+      if (profileSelect) profileSelect.value = savedProfile;
+      
+      const savedCookies = localStorage.getItem('fleet_cf_cookies') || '';
+      if (input) input.value = savedCookies;
+      if (input) setTimeout(() => input.focus(), 100);
+    }
   };
 
   window.saveFleetCookies = function() {
     const input = document.getElementById('fleet-cookie-input');
+    const profileSelect = document.getElementById('fleet-browser-profile');
     if (!input || !input.value.trim()) {
       setCookieFeedback('error', 'Lütfen geçerli bir çerez dizesi girin.');
       if (input) { input.style.borderColor = '#dc2626'; input.focus(); }
@@ -26315,6 +26373,9 @@ window.classifyFleetError = function(msg) {
     }
     input.style.borderColor = '';
     localStorage.setItem('fleet_cf_cookies', input.value.trim());
+    if (profileSelect) {
+      localStorage.setItem('fleet_cf_browser_profile', profileSelect.value);
+    }
     setCookieFeedback('success', 'Çerezler kaydedildi. "Canlı Güncelle" veya "Listeyi Güncelle" butonuna bastığınızda kullanılacak.');
     // Onay okunabilsin diye panel kısa bir süre sonra kendiliğinden kapanır
     clearTimeout(window._cookiePanelCloseT);
@@ -26571,12 +26632,21 @@ window.classifyFleetError = function(msg) {
       : 'https://api-fleet.emredemirbas.com';
 
     try {
+      const profileVal = localStorage.getItem('fleet_cf_browser_profile') || 'auto';
+      const liveFingerprint = profileVal === 'auto' ? getLiveFingerprint() : null;
+
       const res = await fetch(base + '/api/update-fleet', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ cookies: savedCookies, password: pwd, ua: navigator.userAgent })
+        body: JSON.stringify({ 
+          cookies: savedCookies, 
+          password: pwd, 
+          ua: navigator.userAgent,
+          profile: profileVal,
+          fingerprint: liveFingerprint
+        })
       });
 
       if (res.status === 401) {
