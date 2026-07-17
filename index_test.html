@@ -3113,7 +3113,7 @@
           </div>
           <div class="dash-card-value skeleton">&nbsp;</div>
           <div class="dash-card-change"></div>
-          <div class="dash-card-sub">Turkish Cargo · resmî sayfa</div>
+          <div class="dash-card-sub">Turkish Cargo</div>
           <div class="dash-card-footer">
             <div class="dash-card-note"><a href="https://www.linkedin.com/company/turkishcargo" target="_blank" rel="noopener">linkedin.com/turkishcargo →</a> · Haftalık</div>
           </div>
@@ -8469,14 +8469,33 @@ const CHART_DEFAULTS = {
   }
 };
 
+// Fin sekmesindeki gibi: çok sayıda seri olan grafiklerde hover'da yalnız
+// üzerinde olunan seri vurgulanır, diğerleri soluklaşır — kalabalık çizgi
+// gruplarında okunabilirliği artırır.
+function chartHoverEmphasis(chart, idx) {
+  if (chart.$hoverDS === idx) return;
+  chart.$hoverDS = idx;
+  chart.data.datasets.forEach((ds, i) => {
+    const dim = idx !== null && i !== idx;
+    const base = ds.$base || ds.borderColor;
+    ds.borderColor = dim ? base + '30' : base;
+    if ('pointBackgroundColor' in ds) ds.pointBackgroundColor = dim ? base + '30' : base;
+    ds.borderWidth = (idx !== null && i === idx) ? (ds.$baseWidth || 2) + 1 : (ds.$baseWidth || ds.borderWidth);
+  });
+  chart.update('none');
+}
+
 function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
   const ctx = document.getElementById(id);
   if (!ctx) return;
-  
+
   let existingChart = Chart.getChart(ctx);
   const wrap = ctx.closest('.dash-chart-wrap');
   if (wrap) wrap.classList.remove('loading');
   if (wrap) wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
+  if (extraOpts.hoverEmphasis) {
+    ctx.onmouseleave = () => { const inst = Chart.getChart(ctx); if (inst) chartHoverEmphasis(inst, null); };
+  }
 
   // Determine chart type (line or bar) based on active button in modal
   const modal = ctx.closest('.rel-add-modal');
@@ -8508,6 +8527,10 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
         }
       }
     }
+  }
+
+  if (extraOpts.hoverEmphasis) {
+    finalDatasets.forEach(ds => { ds.$base = ds.borderColor; ds.$baseWidth = ds.borderWidth; });
   }
 
   if (existingChart) {
@@ -8550,6 +8573,10 @@ function lineChart(id, labels, datasets, yFmt, extraOpts = {}) {
       ...CHART_DEFAULTS,
       animation:  { duration: 400, easing: 'easeOutQuart' },
       animations: { x: { duration: 0 } },
+      ...(extraOpts.hoverEmphasis ? {
+        interaction: { mode: 'nearest', intersect: false },
+        onHover: (evt, els, chart) => chartHoverEmphasis(chart, els.length ? els[0].datasetIndex : null)
+      } : {}),
       plugins: {
         ...CHART_DEFAULTS.plugins,
         legend: {
@@ -10211,8 +10238,7 @@ async function loadDashboard() {
       const prev = _liSeries.TK[dates[dates.length - 2]];
       const chg = (lastVal - prev) / prev * 100;
       const dir = chg > 0.05 ? 'up' : chg < -0.05 ? 'down' : 'flat';
-      cEl.innerHTML = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(chg).toFixed(1) +
-        ' <span style="font-size:11px;font-weight:400;color:var(--text-3)">· önceki kayda göre</span>';
+      cEl.innerHTML = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '→ ') + '%' + Math.abs(chg).toFixed(1);
       cEl.className = 'dash-card-change ' + dir;
     }
     setDateBadge('dc-licargo-date', isoToDisplay(last));
@@ -10297,9 +10323,11 @@ async function loadDashboard() {
       });
     // Finansal tablolar grafiği deseni: Chart.js'in gömülü legend'i kapalı,
     // grafiğin altında logo'lu tıklanabilir çip satırı legend görevi görür.
+    // hoverEmphasis: çok sayıda havayolu serisi olduğundan (fin sekmesindeki
+    // gibi) hover'da yalnız üzerinde olunan seri vurgulanır, nearest tooltip tekil seri gösterir.
     lineChart('chart-licargo', labels, datasets,
-      v => v >= 1000000 ? (v / 1000000).toFixed(1).replace('.', ',') + ' M' : v >= 1000 ? Math.round(v / 1000) + ' K' : v,
-      { rawDates: dates, showLegend: false });
+      v => Math.round(v).toLocaleString('tr-TR'),
+      { rawDates: dates, showLegend: false, hoverEmphasis: true });
     buildLinkedinLegend(availableCodes);
 
     // Başlıkta güncel Turkish Cargo değeri (jet yakıtı modalı deseni)
