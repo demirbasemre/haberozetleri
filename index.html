@@ -22632,6 +22632,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const c = days <= 0 ? '#059669' : days <= 7 ? 'var(--text-3)' : '#b45309';
     return `<span style="font-size:9.5px;color:${c};font-weight:600;margin-left:6px;white-space:nowrap;">${txt}</span>`;
   }
+  // Planespotters kaynak sayfası slug'ları (fleet_api.py'deki airlines dict ile hizalı)
+  const FLEET_PS_SLUGS = {
+    TK: 'Turkish-Airlines', EK: 'Emirates', CX: 'Cathay-Pacific', CK: 'China-Cargo-Airlines',
+    QR: 'Qatar-Airways', LH: 'Lufthansa', AFKLM: 'Air-France-KLM', KE: 'Korean-Air',
+    CV: 'Cargolux-Airlines-International', LA: 'LATAM-Airlines-Group', CI: 'China-Airlines',
+    CZ: 'China-Southern-Airlines', CA: 'Air-China', SQ: 'Singapore-Airlines',
+    MU: 'China-Eastern-Airlines', EY: 'Etihad-Airways', '3S': 'AeroLogic', ZETA: 'AirZeta',
+    N8: 'National-Airlines-MUA', CC: 'CMA-CGM-Air-Cargo', '3U': 'Sichuan-Airlines',
+    AV: 'Avianca', ABD: 'Air-Atlanta-Icelandic'
+  };
   function _updDetailRows(isAC) {
     if (typeof FLEET_CMP_DATA === 'undefined' || !FLEET_CMP_DATA) return '';
     // Uçak listesi tarafı: havayolu koduna göre kayıtlardaki en yeni "updated" tarihi
@@ -22650,17 +22660,23 @@ document.addEventListener('DOMContentLoaded', () => {
       let fleetT = fleetDate ? new Date(fleetDate).getTime() : -Infinity;
       if (isNaN(fleetT)) fleetT = -Infinity;
       const ac = acLatest[code];
-      return { code, name: d.name || code, fleetDate, fleetT, acDate: ac ? ac.d : '' };
+      const slug = FLEET_PS_SLUGS[code];
+      const srcUrl = slug
+        ? (isAC ? `https://www.planespotters.net/fleet/list/${slug}/current` : `https://www.planespotters.net/airline/${slug}`)
+        : '';
+      return { code, name: d.name || code, fleetDate, fleetT, acDate: ac ? ac.d : '', srcUrl };
     });
 
+    // Turkish Airlines her zaman en üstte, kalanlar tarihe göre yeniden eskiye
+    const pinTK = (a, b) => (a.code === 'TK') ? -1 : (b.code === 'TK') ? 1 : 0;
     if (isAC) {
       rows.sort((a, b) => {
         const tA = a.acDate ? new Date(a.acDate).getTime() : -Infinity;
         const tB = b.acDate ? new Date(b.acDate).getTime() : -Infinity;
-        return tB - tA || a.name.localeCompare(b.name, 'tr');
+        return pinTK(a, b) || tB - tA || a.name.localeCompare(b.name, 'tr');
       });
     } else {
-      rows.sort((a, b) => b.fleetT - a.fleetT || a.name.localeCompare(b.name, 'tr'));
+      rows.sort((a, b) => pinTK(a, b) || b.fleetT - a.fleetT || a.name.localeCompare(b.name, 'tr'));
     }
 
     const cell = (dateStr) => dateStr
@@ -22669,16 +22685,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return rows.map(r => {
       const colCell = isAC ? cell(r.acDate) : cell(r.fleetDate);
+      const srcHtml = r.srcUrl ? `
+            <div class="fud-src" style="display:none;margin:3px 0 2px;">
+              <a href="${r.srcUrl}" target="_blank" rel="noopener" title="Kaynak sayfayı yeni sekmede aç" style="font-size:10px;font-weight:500;color:var(--accent,#3b82f6);text-decoration:none;display:inline-flex;align-items:center;gap:4px;max-width:100%;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.srcUrl.replace('https://www.', '')}</span>
+              </a>
+            </div>` : '';
       return `
         <tr style="border-bottom:1px solid var(--border-soft);">
-          <td style="padding:5px 0;font-weight:600;color:var(--text-1);">${r.name} (${r.code})</td>
-          <td style="padding:5px 0;text-align:right;white-space:nowrap;">${colCell}</td>
+          <td style="padding:5px 0;font-weight:600;color:var(--text-1);vertical-align:top;">${r.name} (${r.code})${srcHtml}</td>
+          <td style="padding:5px 0;text-align:right;white-space:nowrap;vertical-align:top;">${colCell}</td>
         </tr>`;
     }).join('');
   }
   window.closeFleetUpdateDetail = function() {
     const m = document.getElementById('fleet-update-detail-modal');
     if (m) m.style.display = 'none';
+  };
+  // Kaynak linklerinin görünürlüğünü butonun aria-pressed durumuna göre uygular
+  // (tablo async yeniden çizildiğinde de çağrılır ki açık durum kaybolmasın)
+  function _syncFudSrcVisibility() {
+    const btn = document.getElementById('fud-src-toggle');
+    const show = btn && btn.getAttribute('aria-pressed') === 'true';
+    document.querySelectorAll('#fleet-update-detail-modal .fud-src').forEach(el => {
+      el.style.display = show ? '' : 'none';
+    });
+    if (btn) {
+      const lbl = document.getElementById('fud-src-toggle-label');
+      if (lbl) lbl.textContent = show ? 'Veri kaynaklarını gizle' : 'Veri kaynaklarını göster';
+      btn.style.color = show ? 'var(--accent,#3b82f6)' : 'var(--text-2)';
+      btn.style.borderColor = show ? 'var(--accent,#3b82f6)' : 'var(--border-color,#e2e8f0)';
+    }
+  }
+  window.toggleFleetUpdateSources = function() {
+    const btn = document.getElementById('fud-src-toggle');
+    if (!btn) return;
+    btn.setAttribute('aria-pressed', btn.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    _syncFudSrcVisibility();
   };
   window.openFleetUpdateDetail = async function() {
     const activePill = document.querySelector('.fleet-src-pill.fdd-btn--active');
@@ -22719,6 +22763,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="font-size:11px;line-height:1.5;color:var(--text-3);background:var(--bg-secondary,#f8fafc);border:1px solid var(--border-color,#e2e8f0);border-radius:8px;padding:10px 12px;">
             Tarihler, kaynak sayfadaki havayoluna ait <b>"Last updated"</b> değeridir. Canlı güncelleme yaptığınız hâlde tarih ilerlemiyorsa, havayolunun verisinde <b>değişiklik yok</b> demektir.
           </div>
+          <button id="fud-src-toggle" type="button" aria-pressed="false" onclick="window.toggleFleetUpdateSources()" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--text-2);background:var(--bg-secondary,#f8fafc);border:1px solid var(--border-color,#e2e8f0);border-radius:20px;padding:6px 14px;min-height:30px;cursor:pointer;transition:all .2s;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span id="fud-src-toggle-label">Veri kaynaklarını göster</span>
+          </button>
           <table style="width:100%;font-size:11px;border-collapse:collapse;">
             <thead>
               <tr style="border-bottom:1px solid var(--border-color);color:var(--text-3);text-align:left;">
@@ -22742,7 +22790,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try { await window.loadAircraftList(); } catch (e) {}
       if (body) {
         const rows = _updDetailRows(true);
-        if (rows) body.innerHTML = rows;
+        if (rows) { body.innerHTML = rows; _syncFudSrcVisibility(); }
       }
     }
   };
