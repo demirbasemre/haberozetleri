@@ -25210,6 +25210,19 @@ window.classifyFleetError = function(msg) {
     N8: 'National-Airlines-MUA', CC: 'CMA-CGM-Air-Cargo', '3U': 'Sichuan-Airlines',
     AV: 'Avianca', ABD: 'Air-Atlanta-Icelandic'
   };
+  const FLEET_PS_CARGO_SLUGS = {
+    TK: ['Turkish-Cargo'],
+    EK: ['Emirates-SkyCargo'],
+    CX: ['Cathay-Cargo'],
+    QR: ['Qatar-Airways-Cargo'],
+    LH: ['Lufthansa-Cargo'],
+    LA: ['LATAM-Cargo-Chile', 'LATAM-Cargo-Brasil'],
+    CA: ['Air-China-Cargo'],
+    SQ: ['Singapore-Airlines-Cargo'],
+    MU: ['China-Eastern-Cargo'],
+    EY: ['Etihad-Cargo'],
+    AV: ['Avianca-Cargo']
+  };
   function _updDetailRows(isAC) {
     if (typeof FLEET_CMP_DATA === 'undefined' || !FLEET_CMP_DATA) return '';
     // Uçak listesi tarafı: havayolu koduna göre kayıtlardaki en yeni "updated" tarihi
@@ -25229,10 +25242,21 @@ window.classifyFleetError = function(msg) {
       if (isNaN(fleetT)) fleetT = -Infinity;
       const ac = acLatest[code];
       const slug = FLEET_PS_SLUGS[code];
-      const srcUrl = slug
-        ? (isAC ? `https://www.planespotters.net/fleet/list/${slug}/current` : `https://www.planespotters.net/airline/${slug}`)
-        : '';
-      return { code, name: d.name || code, fleetDate, fleetT, acDate: ac ? ac.d : '', srcUrl };
+      const urls = [];
+      if (slug) {
+        urls.push({
+          label: slug,
+          url: isAC ? `https://www.planespotters.net/fleet/list/${slug}/current` : `https://www.planespotters.net/airline/${slug}`
+        });
+      }
+      const cargoSlugs = FLEET_PS_CARGO_SLUGS[code] || [];
+      cargoSlugs.forEach(cSlug => {
+        urls.push({
+          label: cSlug,
+          url: isAC ? `https://www.planespotters.net/fleet/list/${cSlug}/current` : `https://www.planespotters.net/airline/${cSlug}`
+        });
+      });
+      return { code, name: d.name || code, fleetDate, fleetT, acDate: ac ? ac.d : '', urls };
     });
     // Turkish Airlines her zaman en üstte, kalanlar tarihe göre yeniden eskiye
     const pinTK = (a, b) => (a.code === 'TK') ? -1 : (b.code === 'TK') ? 1 : 0;
@@ -25250,13 +25274,13 @@ window.classifyFleetError = function(msg) {
       : '<span style="color:var(--text-3);">—</span>';
     return rows.map(r => {
       const colCell = isAC ? cell(r.acDate) : cell(r.fleetDate);
-      const srcHtml = r.srcUrl ? `
+      const srcHtml = r.urls && r.urls.length > 0 ? r.urls.map(uInfo => `
             <div class="fud-src" style="display:none;margin:3px 0 2px;">
-              <a href="${r.srcUrl}" target="_blank" rel="noopener" title="Kaynak sayfayı yeni sekmede aç" style="font-size:10px;font-weight:500;color:var(--accent,#3b82f6);text-decoration:none;display:inline-flex;align-items:center;gap:4px;max-width:100%;">
+              <a href="${uInfo.url}" target="_blank" rel="noopener" title="Kaynak sayfayı yeni sekmede aç" style="font-size:10px;font-weight:500;color:var(--accent,#3b82f6);text-decoration:none;display:inline-flex;align-items:center;gap:4px;max-width:100%;">
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.srcUrl.replace('https://www.', '')}</span>
+                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${uInfo.url.replace('https://www.', '')}</span>
               </a>
-            </div>` : '';
+            </div>`).join('') : '';
       return `
         <tr style="border-bottom:1px solid var(--border-soft);">
           <td style="padding:5px 0;font-weight:600;color:var(--text-1);vertical-align:top;">${r.name} (${r.code})${srcHtml}</td>
