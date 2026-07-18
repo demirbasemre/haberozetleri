@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 1661,
-  "lastScanned": "2026-07-11T23:16:07.052Z",
-  "scannedCount": 73,
+  "lastScannedId": 1849,
+  "lastScanned": "2026-07-18T23:15:58.667Z",
+  "scannedCount": 109,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -555,6 +555,33 @@
         "oman air"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=omanair.com"
+    },
+    {
+      "id": "dyn_hong_kong_hava_kargo",
+      "label": "Hong Kong Hava Kargo",
+      "group": "cargo",
+      "kw": [
+        "hong kong hava kargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=hkaircargo.com"
+    },
+    {
+      "id": "dyn_getjet_airlines",
+      "label": "Getjet Airlines",
+      "group": "charter",
+      "kw": [
+        "getjet airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=getjet.aero"
+    },
+    {
+      "id": "dyn_texel_air",
+      "label": "Texel Air",
+      "group": "cargo",
+      "kw": [
+        "texel air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=texelair.com"
     }
   ],
   "gsa": []
