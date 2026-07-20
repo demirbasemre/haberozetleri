@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bülten Onay Paneli</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --red: #C8102E;
@@ -46,7 +44,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -72,7 +70,7 @@
     gap: 14px;
   }
   .topbar-logo {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--red);
     letter-spacing: 2px;
@@ -84,9 +82,9 @@
     background: var(--border);
   }
   .topbar-meta {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
   }
   .topbar-right {
     display: flex;
@@ -98,9 +96,9 @@
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 4px 12px;
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
   }
   .stats-pill span {
     color: var(--text);
@@ -114,9 +112,9 @@
     border: none;
     padding: 8px 20px;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     cursor: pointer;
     letter-spacing: 0.3px;
     transition: opacity 0.15s;
@@ -128,9 +126,9 @@
     border: 1px solid var(--red);
     padding: 8px 20px;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     cursor: pointer;
     letter-spacing: 0.3px;
     transition: all 0.15s;
@@ -159,7 +157,7 @@
     padding: 0 16px 16px;
   }
   .sidebar-label {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--text-muted);
     letter-spacing: 1.5px;
@@ -186,13 +184,13 @@
     flex-shrink: 0;
   }
   .cat-nav-name {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text);
     flex: 1;
   }
   .cat-nav-count {
-    font-size: 11px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     color: var(--text-muted);
     background: var(--surface);
     border: 1px solid var(--border);
@@ -200,8 +198,8 @@
     padding: 1px 7px;
   }
   .removed-count-badge {
-    font-size: 11px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     color: var(--red);
     background: rgba(200,16,46,0.12);
     border: 1px solid rgba(200,16,46,0.3);
@@ -241,14 +239,14 @@
     border-radius: 2px;
   }
   .cat-title {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
   }
   .cat-count-badge {
-    font-size: 11px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     color: var(--text-muted);
     background: var(--surface2);
     border-radius: 10px;
@@ -293,7 +291,7 @@
     flex: 1;
   }
   .article-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     line-height: 1.45;
     color: var(--text);
@@ -312,9 +310,9 @@
     outline: 1px solid var(--border);
   }
   .article-date {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-muted);
-    font-family: 'IBM Plex Mono', monospace;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     margin-top: 4px;
   }
   .remove-btn {
@@ -324,7 +322,7 @@
     background: transparent;
     border: 1px solid var(--border);
     color: var(--text-muted);
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -339,7 +337,7 @@
     color: var(--red);
   }
   .article-summary {
-    font-size: 13px;
+    font-size: 14px;
     color: #b0b8c8;
     line-height: 1.65;
     margin-bottom: 12px;
@@ -360,6 +358,10 @@
   .article-summary strong { color: var(--text); }
   .article-summary span[style] { }
 
+  /* Manşet (featured THY) card */
+  .article-card.featured-card { border: 2px solid var(--red); }
+  [data-theme="light"] .article-card.featured-card { background: #fff8f8; }
+
   /* THY analysis box */
   .thy-analysis-wrapper {
     position: relative;
@@ -370,7 +372,7 @@
     border-left: 3px solid var(--red);
     border-radius: 0 4px 4px 0;
     padding: 8px 28px 8px 12px;
-    font-size: 12px;
+    font-size: 13px;
     color: #c8d0e0;
     line-height: 1.6;
     cursor: text;
@@ -387,7 +389,7 @@
     background: none;
     border: none;
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1;
     cursor: pointer;
     padding: 2px 4px;
@@ -399,7 +401,7 @@
   .thy-analysis-label {
     font-weight: 700;
     color: var(--red);
-    font-size: 11px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.8px;
     margin-bottom: 4px;
@@ -423,12 +425,12 @@
     height: 14px;
   }
   .source-name {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: #8892a4;
   }
   .source-link {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--red);
     text-decoration: none;
@@ -444,7 +446,7 @@
   /* Sentiment badge */
   .sentiment-badge {
     display: inline-block;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.8px;
     text-transform: uppercase;
@@ -477,8 +479,8 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading-text {
-    font-size: 13px;
-    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
   }
 
   .error-screen {
@@ -492,9 +494,9 @@
     text-align: center;
     padding: 24px;
   }
-  .error-icon { font-size: 48px; }
-  .error-title { font-size: 18px; font-weight: 700; color: var(--text); }
-  .error-msg { font-size: 13px; max-width: 400px; line-height: 1.6; }
+  .error-icon { font-size: 49px; }
+  .error-title { font-size: 19px; font-weight: 700; color: var(--text); }
+  .error-msg { font-size: 14px; max-width: 400px; line-height: 1.6; }
 
   /* ─── CONFIRM MODAL ─── */
   .modal-overlay {
@@ -516,14 +518,14 @@
     width: 90%;
     text-align: center;
   }
-  .modal-icon { font-size: 40px; margin-bottom: 12px; }
+  .modal-icon { font-size: 41px; margin-bottom: 12px; }
   .modal-title {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     margin-bottom: 8px;
   }
   .modal-body {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 20px;
@@ -539,9 +541,9 @@
     border: 1px solid var(--border);
     padding: 9px 22px;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     cursor: pointer;
     transition: all 0.15s;
   }
@@ -562,13 +564,13 @@
     padding: 24px;
   }
   .success-screen.open { display: flex; }
-  .success-icon { font-size: 64px; animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+  .success-icon { font-size: 65px; animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
   @keyframes pop {
     0% { transform: scale(0); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
   }
-  .success-title { font-size: 22px; font-weight: 700; }
-  .success-msg { font-size: 14px; color: var(--text-muted); max-width: 400px; line-height: 1.6; }
+  .success-title { font-size: 23px; font-weight: 700; }
+  .success-msg { font-size: 15px; color: var(--text-muted); max-width: 400px; line-height: 1.6; }
 
 
   /* Scroll smooth */
@@ -581,12 +583,12 @@
     justify-content: center;
     padding: 48px;
     color: var(--text-muted);
-    font-size: 13px;
+    font-size: 14px;
     flex-direction: column;
     gap: 8px;
   }
   .empty-state.visible { display: flex; }
-  .empty-state-icon { font-size: 32px; opacity: 0.4; }
+  .empty-state-icon { font-size: 33px; opacity: 0.4; }
 
   /* removed indicator */
   .removed-ribbon {
@@ -596,7 +598,7 @@
     background: rgba(200,16,46,0.15);
     border: 1px solid rgba(200,16,46,0.3);
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--red);
     padding: 2px 6px;
@@ -619,7 +621,7 @@
     backdrop-filter: blur(1px);
   }
   .undo-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--red);
     text-transform: uppercase;
@@ -631,10 +633,10 @@
     color: var(--red);
     border-radius: 6px;
     padding: 5px 14px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     transition: background 0.15s;
     pointer-events: all;
   }
@@ -650,7 +652,7 @@
   }
   .edited-badge {
     display: none;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     color: #4CAF50;
     background: rgba(76,175,80,0.15);
@@ -663,7 +665,7 @@
   .edited-badge.visible { display: inline-block; }
   .revert-btn {
     display: none;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     color: var(--text-muted);
     background: transparent;
@@ -671,7 +673,7 @@
     border-radius: 3px;
     padding: 1px 7px;
     cursor: pointer;
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
     transition: all 0.15s;
     letter-spacing: 0.3px;
   }
@@ -736,7 +738,7 @@
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">
       <div class="sidebar-label">Özet</div>
-      <div id="sidebar-stats" style="padding: 0 4px; font-size: 12px; color: var(--text-muted); line-height: 2;"></div>
+      <div id="sidebar-stats" style="padding: 0 4px; font-size: 13px; color: var(--text-muted); line-height: 2;"></div>
     </div>
   </div>
 
@@ -921,7 +923,7 @@ function updateStats() {
       Aktif: <strong style="color:#4caf7d">${active.length}</strong><br>
       Kaldırılan: <strong style="color:var(--red)">${removed}</strong><br>
       Okuma: <strong style="color:var(--text)">~${rt}</strong>
-      ${removed > 0 ? '<div style="margin-top:8px;font-size:11px;line-height:1.5;color:var(--text-muted)">Kaldırılan haberler yalnızca e-posta bülteninden çıkar; web sitesinde kalır.</div>' : ''}
+      ${removed > 0 ? '<div style="margin-top:8px;font-size:12px;line-height:1.5;color:var(--text-muted)">Kaldırılan haberler yalnızca e-posta bülteninden çıkar; web sitesinde kalır.</div>' : ''}
     `;
   }
 }
@@ -953,27 +955,31 @@ function slugify(s) {
   return s.replace(/[^a-z0-9]/gi, '-').toLowerCase();
 }
 
-function renderArticles() {
-  const grouped = groupArticles();
-  const main = document.getElementById('main-content');
-  main.innerHTML = '';
+// ─── MANŞET — e-postadaki thyFeatured seçimiyle birebir aynı mantık ───
+const THY_KEYWORDS = ['Turkish Airlines', 'Turkish Cargo'];
+function isThyArticle(a) {
+  const t = (a.title||'') + ' ' + (a.summary||'');
+  return THY_KEYWORDS.some(k => t.indexOf(k) !== -1);
+}
+function computeImportance(a) {
+  let score = 0;
+  const title = a.title || '';
+  if (THY_KEYWORDS.some(k => title.indexOf(k) !== -1)) score += 5;
+  if (a.thyImpact === 'firsat' || a.thyImpact === 'risk') score += 3;
+  if (a.thyAnalysis && String(a.thyAnalysis).trim()) score += 2;
+  score += Math.min((a.summary||'').length / 400, 2);
+  return score;
+}
+function getFeaturedArticle() {
+  const active = articles.filter(a => !removedIds.has(a.id || a.title));
+  let feat = null;
+  active.forEach(a => {
+    if (isThyArticle(a) && (!feat || computeImportance(a) > computeImportance(feat))) feat = a;
+  });
+  return feat;
+}
 
-  if (Object.keys(grouped).length === 0) {
-    main.innerHTML = '<div class="empty-state visible"><div class="empty-state-icon">📭</div><span>Tüm haberler kaldırıldı.</span></div>';
-    return;
-  }
-
-  Object.keys(grouped).forEach(cat => {
-    const color = getCatColor(cat);
-    const icon = getCatIcon(cat);
-    const articles_in_cat = grouped[cat];
-    
-    const section = document.createElement('div');
-    section.className = 'cat-section';
-    section.id = 'section-' + slugify(cat);
-
-    let cardsHtml = '';
-    articles_in_cat.forEach(a => {
+function buildCardHtml(a, color, extraClass) {
       const artId = a.id || a.title;
       const sentiment = a.sentiment || '';
       // Analiz varsa nötr badge gösterme — analiz zaten etkiyi açıklıyor
@@ -1023,8 +1029,8 @@ function renderArticles() {
           </div>`;
       }
 
-      cardsHtml += `
-        <div class="article-card" id="card-${encodeURIComponent(artId)}" data-article-id="${encodeURIComponent(artId)}">
+      return `
+        <div class="article-card${extraClass || ''}" id="card-${encodeURIComponent(artId)}" data-article-id="${encodeURIComponent(artId)}">
           <div class="card-color-top" style="background:${color}"></div>
           <div class="card-inner">
             <div class="card-top">
@@ -1043,7 +1049,46 @@ function renderArticles() {
             </div>
           </div>
         </div>`;
-    });
+}
+
+function renderArticles() {
+  const grouped = groupArticles();
+  const main = document.getElementById('main-content');
+  main.innerHTML = '';
+
+  if (Object.keys(grouped).length === 0) {
+    main.innerHTML = '<div class="empty-state visible"><div class="empty-state-icon">📭</div><span>Tüm haberler kaldırıldı.</span></div>';
+    return;
+  }
+
+  // Manşet: e-postadaki gibi THY haberi en üstte, kırmızı çerçeveli kutuda
+  const featured = getFeaturedArticle();
+  if (featured) {
+    const fCat = featured.category || 'Diğer';
+    const section = document.createElement('div');
+    section.className = 'cat-section';
+    section.id = 'section-manset';
+    section.innerHTML = `
+      <div class="cat-header">
+        <div class="cat-color-bar" style="background:var(--red)"></div>
+        <span class="cat-title" style="color:var(--red)">${getCatIcon(fCat)} ${fCat}</span>
+      </div>
+      ${buildCardHtml(featured, getCatColor(fCat), ' featured-card')}
+    `;
+    main.appendChild(section);
+  }
+
+  Object.keys(grouped).forEach(cat => {
+    const color = getCatColor(cat);
+    const icon = getCatIcon(cat);
+    const articles_in_cat = grouped[cat].filter(a => a !== featured);
+    if (articles_in_cat.length === 0) return;
+
+    const section = document.createElement('div');
+    section.className = 'cat-section';
+    section.id = 'section-' + slugify(cat);
+
+    const cardsHtml = articles_in_cat.map(a => buildCardHtml(a, color, '')).join('');
 
     section.innerHTML = `
       <div class="cat-header">
@@ -1294,8 +1339,8 @@ async function confirmAction() {
 
 // ─── THEME ───
 function initTheme() {
-  const saved = localStorage.getItem('approval-theme') || 'dark';
-  applyTheme(saved);
+  // Sayfa her açılışta aydınlık modda başlar (toggle oturum içinde çalışmaya devam eder)
+  applyTheme('light');
 }
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
