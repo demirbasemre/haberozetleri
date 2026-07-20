@@ -15398,19 +15398,6 @@ async function loadDashboard() {
     initIataCard();
   }, 60 * 60 * 1000);
 
-  // "Havadaki Kargo Uçağı Sayısı" kartı ALL_INDICATOR_CARDS/applyIndicatorsConfig
-  // döngüsünün dışında olduğundan "Yeni" rozetini kendi başına uygular.
-  (function applyCargoNewBadge() {
-    const el = document.getElementById('dc-cargo');
-    if (!el || typeof isNewBadgeVisible !== 'function') return;
-    if (isNewBadgeVisible('dc-cargo') && !el.querySelector('.dash-card-new-badge')) {
-      const badge = document.createElement('span');
-      badge.className = 'dash-card-new-badge';
-      badge.textContent = 'Yeni';
-      el.prepend(badge);
-    }
-  })();
-
   // ── THY Hisse Verisini Çek ve Göster ──────────────────────────────
   let _thy1yRaw = null;
   let _thyMaxRaw = null;
@@ -26816,21 +26803,32 @@ window.toggleFinSources = function() {
 
 // ── INDICATORS CUSTOMIZATION ──────────────────────────────────────────
 
-const ALL_INDICATOR_CARDS = [
-  { id: 'dc-jetfuel', name: 'Jet Yakıtı', defaultVisible: true, isCargo: false },
-  { id: 'dc-brent', name: 'Brent Petrol', defaultVisible: true, isCargo: false },
-  { id: 'dc-thy', name: 'THYAO Hisse', defaultVisible: true, isCargo: false },
-  { id: 'dc-usd', name: 'Döviz & Parite', defaultVisible: true, isCargo: false },
-  { id: 'dc-wci', name: 'Dünya Konteyner Endeksi (WCI)', defaultVisible: true, isCargo: false },
-  { id: 'dc-bafi', name: 'Baltık Hava Kargo Endeksi (BAFI)', defaultVisible: true, isCargo: false },
-  { id: 'dc-iata', name: 'IATA Market Analizi', defaultVisible: true, isCargo: false },
-  { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: true, isCargo: false }
-];
+// Kart listesi DOM'dan türetilir: #dash-sec-anlık .dash-cards içindeki her
+// .dash-card[id] otomatik olarak özelleştirme listesine girer; kayıtlı sıralamada
+// olmayan yeni kartlar getIndicatorsConfig içinde listenin SONUNA eklenir
+// (mevcut kullanıcı ayarları bozulmaz). İsim kartın .dash-card-label metninden
+// alınır; farklı bir ad gerekiyorsa INDICATOR_NAME_OVERRIDES'a ekle.
+const INDICATOR_NAME_OVERRIDES = {
+  'dc-thy': 'THYAO Hisse',
+  'dc-iata': 'IATA Market Analizi',
+  'dc-cargo': 'Havadaki Kargo Uçağı Sayısı'
+};
+
+const ALL_INDICATOR_CARDS = Array.from(
+  document.querySelectorAll('#dash-sec-anlık .dash-cards .dash-card[id]')
+).map(el => ({
+  id: el.id,
+  name: INDICATOR_NAME_OVERRIDES[el.id] ||
+        (el.querySelector('.dash-card-label')?.textContent || el.id).replace(/\s+/g, ' ').trim(),
+  defaultVisible: true,
+  isCargo: false
+}));
 
 // Yeni eklenen kartlar: { addedAt: ISO tarih, badgeDays: kaç gün "YENİ" etiketi görünsün }
 const NEW_CARDS = {
   'dc-bafi': { addedAt: '2026-06-18', badgeDays: 3 },
-  'dc-cargo': { addedAt: '2026-06-25', badgeDays: 7 }
+  'dc-cargo': { addedAt: '2026-06-25', badgeDays: 7 },
+  'dc-licargo': { addedAt: '2026-07-20', badgeDays: 3 }
 };
 
 function isNewBadgeVisible(cardId) {
@@ -26841,8 +26839,8 @@ function isNewBadgeVisible(cardId) {
 }
 
 const DEFAULT_INDICATORS_CONFIG = {
-  order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx'],
-  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx']
+  order: ALL_INDICATOR_CARDS.map(c => c.id),
+  visible: ALL_INDICATOR_CARDS.map(c => c.id)
 };
 
 window.getIndicatorsConfig = function() {
@@ -26852,7 +26850,9 @@ window.getIndicatorsConfig = function() {
       const parsed = JSON.parse(saved);
       const allIds = ALL_INDICATOR_CARDS.map(c => c.id);
       if (parsed.order && parsed.visible) {
-        // Kayıp kartları sıralamanın sonuna ekle (self-healing)
+        // Artık var olmayan kart id'lerini ayıkla
+        parsed.order = parsed.order.filter(id => allIds.includes(id));
+        // Kayıtta olmayan (yeni) kartları sıralamanın sonuna ekle (self-healing)
         allIds.forEach(id => {
           if (!parsed.order.includes(id)) parsed.order.push(id);
         });
@@ -26889,15 +26889,6 @@ window.applyIndicatorsConfig = function() {
       el.style.display = 'none';
     }
   });
-
-  // dc-cargo özelleştirme/sıralama sistemine dahil değil (ALL_INDICATOR_CARDS'ta
-  // yok) — yukarıdaki döngü onu yerinden oynatmadan diğer kartları sonuna taşıdığı
-  // için en sona sabitlenmesi gerekiyor, yoksa listenin başına kayar.
-  const cargoEl = document.getElementById('dc-cargo');
-  if (cargoEl) mainContainer.appendChild(cargoEl);
-  // dc-licargo da özelleştirme sistemine dahil değil — dc-cargo'dan sonra, her zaman EN SON kart
-  const licargoEl = document.getElementById('dc-licargo');
-  if (licargoEl) mainContainer.appendChild(licargoEl);
 
   // "YENİ" badge ekle / kaldır
   ALL_INDICATOR_CARDS.forEach(card => {
