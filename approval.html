@@ -1275,6 +1275,8 @@ async function confirmAction() {
       })
     });
 
+    if (!resp.ok) throw new Error(`HTTP ${resp.status} — n8n onay isteğini kabul etmedi (workflow beklemede olmayabilir veya link süresi dolmuş olabilir)`);
+
     document.getElementById('loading-screen').style.display = 'none';
     const ss = document.getElementById('success-screen');
     ss.classList.add('open');
