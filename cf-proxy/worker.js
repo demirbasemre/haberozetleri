@@ -2655,7 +2655,7 @@ export default {
           'Content-Type': res.contentType,
           'X-Proxy': res.proxy,
           'X-Proxy-Status': String(res.status),
-          'Cache-Control': `public, max-age=${customTtl}`,
+          'Cache-Control': (urlObj.searchParams.has('_t') || urlObj.searchParams.has('t')) ? 'no-cache, no-store, must-revalidate' : `public, max-age=${customTtl}`,
         },
       });
     } catch (err) {

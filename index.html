@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Hava Kargo Bülteni</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg transform='rotate(15, 12, 12)'%3E%3Cpath fill='%23e30613' d='M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4440,6 +4443,8 @@ async function fetchCached(key, fetchFn, ttlMs, shouldCacheFn) {
     } catch (e) {
       console.warn('Cache write error for ' + key + ':', e);
     }
+  } else {
+    try { localStorage.removeItem(key); } catch(e) {}
   }
   return data;
 }
@@ -7069,11 +7074,11 @@ document.addEventListener('click', e => {
 buildRegionDropdown();
 
 // Load data
-const DATA_URL = 'data.json';
-const CUSTOM_ENTITIES_URL = './custom_entities.json';
+const DATA_URL = 'data.json?t=' + Date.now();
+const CUSTOM_ENTITIES_URL = './custom_entities.json?t=' + Date.now();
 
 function loadCustomEntities() {
-  return fetch(CUSTOM_ENTITIES_URL)
+  return fetch(CUSTOM_ENTITIES_URL, { cache: 'no-store' })
     .then(r => r.ok ? r.json() : null)
     .catch(() => null)
     .then(entities => {
@@ -7100,8 +7105,8 @@ window.mainDataPromise = Promise.all([
     let lastErr;
     for (let attempt = 0; attempt < 5; attempt++) {
       try {
-        const url = attempt === 0 ? DATA_URL : ('data.json?retry=' + attempt);
-        const r = await fetch(url);
+        const url = 'data.json?t=' + Date.now() + (attempt > 0 ? ('&retry=' + attempt) : '');
+        const r = await fetch(url, { cache: 'no-store' });
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return await r.json();
       } catch (e) {
@@ -8007,8 +8012,8 @@ async function fredFetch(seriesId, limit) {
   return fetchCached(cacheKey, async () => {
     // n8n server-side proxy routed via Cloudflare Workers
     const n8nUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
-    const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}`;
-    const res = await fetch(proxyUrl);
+    const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}&_t=${Date.now()}`;
+    const res = await fetch(proxyUrl, { cache: 'no-store' });
     if (!res.ok) throw new Error('FRED proxy via CF ' + res.status);
     const d = await res.json();
     if (d.error_message) throw new Error(d.error_message);
@@ -8036,7 +8041,7 @@ async function wbFetch(indicator, countries) {
 
 async function fxFetch() {
   return fetchCached('fx_rates_cache', async () => {
-    const r = await fetch('https://open.er-api.com/v6/latest/USD');
+    const r = await fetch('https://open.er-api.com/v6/latest/USD?t=' + Date.now(), { cache: 'no-store' });
     if (!r.ok) throw new Error('FX ' + r.status);
     return r.json();
   }, 12 * 60 * 60 * 1000); // 12 hours TTL
@@ -8058,7 +8063,7 @@ async function _fetchN8nImf() {
   if (_n8nImfCache) return _n8nImfCache;
   if (_n8nImfFetchPromise) return _n8nImfFetchPromise;
   _n8nImfFetchPromise = fetchCached('imf_data_cache', async () => {
-    const r = await fetch('https://n8n.emredemirbas.com/webhook/imf-data');
+    const r = await fetch('https://n8n.emredemirbas.com/webhook/imf-data?t=' + Date.now(), { cache: 'no-store' });
     if (!r.ok) throw new Error('n8n IMF ' + r.status);
     return r.json();
   }, 7 * 24 * 60 * 60 * 1000) // 7 days TTL
@@ -9146,7 +9151,7 @@ function buildReleaseCalendar() {
   });
 
   if (needsIataFetch) {
-    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
+    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(data => {
       if (data && data.date) {
         const parsed = parseTrMonthYearIata(data.date);
         if (parsed) {
@@ -9905,7 +9910,7 @@ async function loadDashboard() {
     const staticLastDate = PLATTS_JET_DATA.dates[n - 1];
     const jetfuelTtl = 1 * 60 * 60 * 1000;
     fetchCached('jetfuel_live_v2', () =>
-      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/jetfuel')
+      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/jetfuel?t=' + Date.now(), { cache: 'no-store' })
         .then(r => r.ok ? r.json() : null)
         .catch(() => null),
       jetfuelTtl
@@ -10014,7 +10019,7 @@ async function loadDashboard() {
     updateLinkedinCard();
     // 2. KV'deki günlük seriyi üstüne merge et (1 saat önbellek; boş seri önbelleğe yazılmaz)
     const live = await fetchCached('linkedin_followers_v1', () =>
-      fetch('https://api-fleet.emredemirbas.com/api/get-linkedin')
+      fetch('https://api-fleet.emredemirbas.com/api/get-linkedin?t=' + Date.now(), { cache: 'no-store' })
         .then(r => r.ok ? r.json() : null)
         .catch(() => null),
       60 * 60 * 1000,
@@ -10216,9 +10221,9 @@ async function loadDashboard() {
       }
 
       const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
-      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}&_t=${Date.now()}`;
       
-      const res = await fetch(proxyUrl);
+      const res = await fetch(proxyUrl, { cache: 'no-store' });
       if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
       const d = await res.json();
       if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
@@ -10732,8 +10737,8 @@ async function loadDashboard() {
       }
 
       const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
-      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
-      const res = await fetch(proxyUrl);
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}&_t=${Date.now()}`;
+      const res = await fetch(proxyUrl, { cache: 'no-store' });
       if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
       const d = await res.json();
       if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
@@ -11106,8 +11111,8 @@ async function loadDashboard() {
 
     return fetchCached(cacheKey, async () => {
       const n8nUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
-      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}`;
-      const res = await fetch(proxyUrl);
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}&_t=${Date.now()}`;
+      const res = await fetch(proxyUrl, { cache: 'no-store' });
       if (!res.ok) throw new Error('FRED proxy via CF ' + res.status);
       const d = await res.json();
       if (d.error_message) throw new Error(d.error_message);
@@ -14126,7 +14131,7 @@ async function loadDashboard() {
     const wciTtl = (day === 3 || day === 4 || day === 5) ? (1 * 60 * 60 * 1000) : (24 * 60 * 60 * 1000);
 
     return fetchCached('wci_full_data_v8', async () => {
-      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci?t=' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null);
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
       const history = (latest && Array.isArray(latest.history) && latest.history.length) ? latest.history : WCI_DEFAULT_HISTORY;
 
       // Eğer yeni çekilen veri başarısız (null veya fiyatsız) ise, localStorage'daki eski geçerli veriyi koruyup geri dönelim
@@ -14189,7 +14194,7 @@ async function loadDashboard() {
   // BAFI Verisini Çek ve Göster (veri tümüyle worker/KV üzerinden gelir)
   async function initBafiCard() {
     return fetchCached('bafi_v6', async () => {
-      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi')
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi?t=' + Date.now(), { cache: 'no-store' })
         .then(r => r.ok ? r.json() : null).catch(() => null);
       return { latest };
     }, 1 * 60 * 60 * 1000).then(({ latest }) => {
@@ -14217,7 +14222,7 @@ async function loadDashboard() {
   // FBX Verisini Çek ve Göster (veri tümüyle worker/KV üzerinden gelir)
   async function initFbxCard() {
     return fetchCached('fbx_v3', async () => {
-      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null);
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
       return { latest };
     }, 1 * 60 * 60 * 1000).then(({ latest }) => {
       if (latest && Array.isArray(latest.history)) {
@@ -14259,7 +14264,7 @@ async function loadDashboard() {
     return fetchCached('iata_full_data_v2', async () => {
       const [history, latest] = await Promise.all([
         fetch('iata-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null)
+        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
       return { history, latest };
     }, 1 * 60 * 60 * 1000, (d) => !!(d && d.latest && d.latest.demand)).then(({ history, latest }) => {
@@ -14358,9 +14363,9 @@ async function loadDashboard() {
 
     return fetchCached(cacheKey, async () => {
       const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/THYAO.IS?interval=${interval}&range=${range}`;
-      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}&_t=${Date.now()}`;
 
-      const res = await fetch(proxyUrl);
+      const res = await fetch(proxyUrl, { cache: 'no-store' });
       if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
       const d = await res.json();
       if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
@@ -20245,7 +20250,7 @@ function initControls(allArticles) {
         try {
           window._iataLatest = await fetchCached(
             'iata_latest_only',
-            () => fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null),
+            () => fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
             24 * 60 * 60 * 1000,
             (d) => !!(d && d.demand)
           );
@@ -23381,7 +23386,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Tarama kullanıcı isteğiyle durduruldu. O ana kadar taranan havayolları kaydedildi, kalanlar önceki verileriyle korundu (toplam ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt).');
           } else {
             document.getElementById('ac-progress-title').textContent = 'Güncelleme Tamamlandı';
-            showAcSummary(st.result);
+            const completed = st.completed_airlines || [];
+            showAcSummary({
+              updated: completed.filter(x => x.status === 'success').map(x => ({ name: x.name, code: x.code, count: x.count })),
+              skipped: completed.filter(x => x.status === 'skipped').map(x => ({ name: x.name, code: x.code })),
+              failed: completed.filter(x => x.status === 'error' || x.status === 'failed').map(x => ({ name: x.name, code: x.code, error: x.error }))
+            });
           }
         } catch(e) { 
           setTimeout(poll, 2000); 
