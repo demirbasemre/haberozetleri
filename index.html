@@ -4461,10 +4461,7 @@ function hasAnalysis(a) {
   if (!a) return false;
   const imp = a.impact || a.thyImpact;
   const ana = a.analysis || a.thyAnalysis;
-  const ger = a.etkiAlaniGerekce;
-  return (imp && imp !== 'notr') || 
-         (ana && String(ana).trim() !== '') || 
-         (ger && String(ger).trim() !== '');
+  return !!(imp && imp !== 'notr' && ana && String(ana).trim() !== '');
 }
 
 
@@ -6964,17 +6961,22 @@ function navigateToMetric(item) {
   }, 120);
 }
 
-// Arama kutusunun genişliğini alttaki sekme grubuyla (Haberler/Raporlar/Dashboard) hizalar
+// Arama kutusunun genişliğini alttaki sekme grubuyla (Haberler/Raporlar/Dashboard) hizalar,
+// ama içindeki istatistik metnini (#header-stats) asla kısacak kadar daraltmaz.
 (function syncSearchWidthToTabs() {
   const tabs = document.querySelector('.main-tabs');
+  const stats = document.getElementById('header-stats');
   if (!tabs) return;
   const sync = () => {
-    const w = tabs.getBoundingClientRect().width;
+    const tabsWidth = tabs.getBoundingClientRect().width;
+    const statsWidth = stats ? (34 + stats.scrollWidth + 16) : 0;
+    const w = Math.max(tabsWidth, statsWidth);
     if (w > 0) document.documentElement.style.setProperty('--tabs-width', w + 'px');
   };
   sync();
   if (window.ResizeObserver) {
     new ResizeObserver(sync).observe(tabs);
+    if (stats) new ResizeObserver(sync).observe(stats);
   } else {
     window.addEventListener('resize', sync);
   }
