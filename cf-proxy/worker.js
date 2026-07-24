@@ -1777,6 +1777,15 @@ export default {
         return isCargoRange ? 'cargo' : 'pax';
       }
 
+      // OpenSky'nin state vektöründe Turkish Airlines ICAO çağrı kodu (THY)
+      // gelir. Kullanıcıya gösterilecek ticari uçuş numarası ise TK'dır.
+      // Bu dönüşümü tek yerde yapmak, hem liste hem de API tüketicileri için
+      // THY6354 / TK6354 karışıklığını engeller.
+      function toCommercialFlightNumber(callsign) {
+        const match = String(callsign || '').trim().toUpperCase().match(/^THY(\d{1,4})$/);
+        return match ? `TK${match[1]}` : null;
+      }
+
       async function computeBaseCargoFlights() {
         const token = await getOpenSkyToken(env, doFetch);
         const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
@@ -1798,6 +1807,7 @@ export default {
           if (on_ground || latitude == null || longitude == null) continue;
           allFlights.push({
             icao24, callsign, lat: latitude, lon: longitude,
+            flightNumber: toCommercialFlightNumber(callsign),
             altitude: baro_altitude, geoAltitude: geo_altitude, velocity, track: true_track,
             verticalRate: vertical_rate, squawk: squawk || null, originCountry: origin_country || null,
             lastContact: last_contact,
@@ -2366,51 +2376,33 @@ export default {
                 let apiRoute = null;
                 let valid = false;
 
-                // 1. FlightAware (Browserless üzerinden, genellikle başarılı)
-                if (!valid) {
-                  const faRoute = await fetchRouteFromFlightAware(f.callsign);
-                  if (faRoute && faRoute.dep && faRoute.arr) {
-                    if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
-                      apiRoute = faRoute;
-                      valid = true;
-                    }
-                  }
-                }
+                // Yalnızca ücretsiz ve anahtarsız kaynaklar kullanılır. Bir rota
+                // konum/yön kontrolünden geçmezse hiç gösterilmez; yanlış rota
+                // göstermektense "doğrulanamadı" durumunda kalır.
 
-                // 2. ADS-B Exchange (Cloudflare yok, ücretsiz, from/to alanları varsa hızlı)
-                if (!valid) {
-                  const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
-                  if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
-                    if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
-                      apiRoute = adsbxRoute;
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 3. Adsbdb API
+                // 1. ADSBDB (ücretsiz, çağrı kodundan kalkış/varış)
                 if (!valid) {
                   const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
                   if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
                     if (isRouteConsistent(f, adsbRoute.dep, adsbRoute.arr)) {
-                      apiRoute = adsbRoute;
+                      apiRoute = { ...adsbRoute, source: 'adsbdb' };
                       valid = true;
                     }
                   }
                 }
-                
-                // 4. OpenSky Route API
+
+                // 2. OpenSky'nin ücretsiz rota endpoint'i
                 if (!valid) {
                   const osRoute = await fetchRouteFromOpenSky(f.callsign);
                   if (osRoute && osRoute.dep && osRoute.arr) {
                     if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
-                      apiRoute = osRoute;
+                      apiRoute = { ...osRoute, source: 'opensky' };
                       valid = true;
                     }
                   }
                 }
-                
-                // 5. Statik rota tablosu
+
+                // 3. Yerel, doğrulanmış Turkish Cargo rota tablosu
                 if (!valid) {
                   const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
                   if (candidates) {
@@ -2419,7 +2411,7 @@ export default {
                       const arrDb = AIRPORT_DB[c.arr.toUpperCase()];
                       if (depDb && arrDb) {
                         if (isRouteConsistent(f, depDb, arrDb)) {
-                          apiRoute = { dep: depDb, arr: arrDb };
+                          apiRoute = { dep: depDb, arr: arrDb, source: 'local' };
                           valid = true;
                           break;
                         }
@@ -2428,31 +2420,11 @@ export default {
                   }
                 }
 
-                // 6. AeroAPI (ücretli, son çare)
-                if (!valid && env.AEROAPI_KEY) {
-                  const aeroRoute = await fetchRouteFromAeroAPI(f.callsign);
-                  if (aeroRoute && aeroRoute.dep && aeroRoute.arr) {
-                    if (isRouteConsistent(f, aeroRoute.dep, aeroRoute.arr)) {
-                      apiRoute = aeroRoute;
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 7. FlightRadar24 (Cloudflare engelliyor, genellikle başarısız, en son denenir)
-                if (!valid) {
-                  const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
-                  if (frRoute && frRoute.dep && frRoute.arr) {
-                    if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
-                      apiRoute = frRoute;
-                      valid = true;
-                    }
-                  }
-                }
-
                 if (valid && apiRoute && apiRoute.dep && apiRoute.arr) {
                   f.dep = apiRoute.dep;
                   f.arr = apiRoute.arr;
+                  f.routeSource = apiRoute.source || 'verified';
+                  f.routeVerifiedAt = Math.floor(Date.now() / 1000);
                   cacheUpdated = true;
                   // Başarılıysa KV'ye öğrenilmiş rota olarak kaydet
                   await saveLearnedRoute(f.callsign, apiRoute);
@@ -2508,6 +2480,8 @@ export default {
               if (isRouteConsistent(f, prev.dep, prev.arr)) {
                 f.dep = prev.dep;
                 f.arr = prev.arr;
+                f.routeSource = prev.routeSource || 'cache';
+                f.routeVerifiedAt = prev.routeVerifiedAt || null;
                 cleanRouteCities(f);
               }
             }
@@ -2522,6 +2496,7 @@ export default {
             if (learnedRoute) {
               f.dep = learnedRoute.dep;
               f.arr = learnedRoute.arr;
+              f.routeSource = learnedRoute.source || 'cache';
             }
           }
           // Quick static routes fallback if KV learned routes were also missing
@@ -2535,6 +2510,7 @@ export default {
                   if (isRouteConsistent(f, depDb, arrDb)) {
                     f.dep = depDb;
                     f.arr = arrDb;
+                    f.routeSource = 'local';
                     break;
                   }
                 }

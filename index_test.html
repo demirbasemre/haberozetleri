@@ -14900,9 +14900,10 @@ async function loadDashboard() {
       const item = document.createElement('div');
       item.className = 'cargo-flight-item' + (_cargoSelectedIdx === idx ? ' selected' : '');
       item.dataset.idx = idx;
+      const flightNumber = f.flightNumber || String(f.callsign || '').replace(/^THY/i, 'TK') || 'TK—';
       const routeLine = (f.dep || f.arr)
         ? `<div style="color:var(--text-2); margin-top:2px; font-weight:500;">${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}</div>`
-        : '';
+        : `<div style="color:var(--text-3); margin-top:2px; font-size:11px;">Rota doğrulanıyor…</div>`;
       const regBadge = f.aircraftDetails?.registration
         ? `<span style="font-family:monospace; font-size:10px; color:var(--text-3); background:var(--surface-3, rgba(0,0,0,0.06)); padding:1px 4px; border-radius:3px; font-weight:normal;">${f.aircraftDetails.registration}</span>`
         : '';
@@ -14919,7 +14920,7 @@ async function loadDashboard() {
         <div style="font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:5px;">
           <div style="display:flex; align-items:center; gap:5px;">
             ${dotHtml}
-            ${f.callsign}
+            <span title="ATC çağrı kodu: ${f.callsign || '—'}">${flightNumber}</span>
             ${signalLostLabel}
           </div>
           ${regBadge}
@@ -15168,8 +15169,8 @@ async function loadDashboard() {
         
         <div class="ticket-row">
           <div>
-            <div class="ticket-label">Çağrı Kodu</div>
-            <div class="ticket-value">${f.callsign}</div>
+            <div class="ticket-label">Uçuş Numarası</div>
+            <div class="ticket-value" title="ATC çağrı kodu: ${f.callsign || '—'}">${f.flightNumber || String(f.callsign || '').replace(/^THY/i, 'TK') || '—'}</div>
           </div>
           <div style="text-align:right;">
             <div class="ticket-label">Kuyruk Tescil</div>
