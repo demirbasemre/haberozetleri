@@ -24561,6 +24561,8 @@ window.classifyFleetError = function(msg) {
     } catch (e) {
       console.warn('Durdurma isteği gönderilemedi:', e);
     }
+  };
+
   window.runClientSideScraper = async function(pwd) {
     if (!pwd) pwd = localStorage.getItem('fleet_update_password') || '';
     openAircraftProgressModal();
