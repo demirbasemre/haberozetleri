@@ -2379,15 +2379,45 @@ export default {
                 let valid = false;
 
                 // Yalnızca ücretsiz ve anahtarsız kaynaklar kullanılır. Bir rota
-                // konum/yön kontrolünden geçmezse hiç gösterilmez; yanlış rota
-                // göstermektense "doğrulanamadı" durumunda kalır.
+                // 1. FlightRadar24 (FlareSolverr proxy destekli)
+                if (!valid) {
+                  const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
+                  if (frRoute && frRoute.dep && frRoute.arr) {
+                    if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
+                      apiRoute = { ...frRoute, source: "flightradar24" };
+                      valid = true;
+                    }
+                  }
+                }
 
-                // 1. ADSBDB (ücretsiz, çağrı kodundan kalkış/varış)
+                // 2. FlightAware (FlareSolverr proxy destekli)
+                if (!valid) {
+                  const faRoute = await fetchRouteFromFlightAware(f.callsign);
+                  if (faRoute && faRoute.dep && faRoute.arr) {
+                    if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
+                      apiRoute = { ...faRoute, source: "flightaware" };
+                      valid = true;
+                    }
+                  }
+                }
+
+                // 3. ADSBDB (ücretsiz, çağrı kodundan kalkış/varış)
                 if (!valid) {
                   const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
                   if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
                     if (isRouteConsistent(f, adsbRoute.dep, adsbRoute.arr)) {
-                      apiRoute = { ...adsbRoute, source: 'adsbdb' };
+                      apiRoute = { ...adsbRoute, source: "adsbdb" };
+                      valid = true;
+                    }
+                  }
+                }
+
+                // 4. ADSBExchange (re-api canlı çağrı araması)
+                if (!valid) {
+                  const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
+                  if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
+                    if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
+                      apiRoute = { ...adsbxRoute, source: "adsbexchange" };
                       valid = true;
                     }
                   }
