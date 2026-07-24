@@ -26,6 +26,8 @@ const PROXY_ALLOWED_HOSTS = new Set([
   'www.tacindex.com',
   'freightos.com',
   'www.freightos.com',
+  'planespotters.net',
+  'www.planespotters.net',
 ]);
 
 const AIRPORT_DB = {

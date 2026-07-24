@@ -24561,6 +24561,97 @@ window.classifyFleetError = function(msg) {
     } catch (e) {
       console.warn('Durdurma isteği gönderilemedi:', e);
     }
+  window.runClientSideScraper = async function(pwd) {
+    if (!pwd) pwd = localStorage.getItem('fleet_update_password') || '';
+    openAircraftProgressModal();
+    const alertEl = document.getElementById('ac-progress-alert');
+    if (alertEl) alertEl.style.display = 'none';
+
+    const setBusy = txt => { 
+      const btn = document.getElementById('fleet-update-btn');
+      if (btn) { btn.disabled = true; btn.style.opacity = '0.7'; btn.textContent = txt; }
+    };
+    const setIdle = () => {
+      const btn = document.getElementById('fleet-update-btn');
+      if (btn) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.innerHTML = `<svg id="update-btn-spinner" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-1px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> Canlı Güncelle`;
+      }
+    };
+
+    setBusy('Tarayıcıdan Güncelleniyor…');
+    document.getElementById('ac-progress-airline-name').innerHTML = '<b>Tarayıcı Tabanlı Engelsiz Tarama Başlatıldı…</b>';
+
+    try {
+      const airlinesList = [
+        { code: "TK", name: "Turkish Airlines", slug: "Turkish-Airlines" },
+        { code: "EK", name: "Emirates", slug: "Emirates" },
+        { code: "CX", name: "Cathay Pacific", slug: "Cathay-Pacific" },
+        { code: "CK", name: "China Cargo Airlines", slug: "China-Cargo-Airlines" },
+        { code: "QR", name: "Qatar Airways", slug: "Qatar-Airways" },
+        { code: "LH", name: "Lufthansa", slug: "Lufthansa" },
+        { code: "AFKLM", name: "Air France-KLM", slug: "Air-France-KLM" },
+        { code: "SQ", name: "Singapore Airlines", slug: "Singapore-Airlines" },
+        { code: "KE", name: "Korean Air", slug: "Korean-Air" },
+        { code: "EY", name: "Etihad Airways", slug: "Etihad-Airways" },
+        { code: "3S", name: "AeroLogic", slug: "AeroLogic" },
+        { code: "ZETA", name: "AirZeta", slug: "AirZeta" },
+        { code: "N8", name: "National Airlines", slug: "National-Airlines-MUA" },
+        { code: "CC", name: "CMA CGM", slug: "CMA-CGM-Air-Cargo" },
+        { code: "3U", name: "Sichuan Airlines", slug: "Sichuan-Airlines" },
+        { code: "AV", name: "Avianca", slug: "Avianca" },
+        { code: "ABD", name: "Air Atlanta", slug: "Air-Atlanta-Icelandic" },
+        { code: "LA", name: "LATAM Airlines", slug: "LATAM-Airlines" },
+        { code: "CA", name: "Air China", slug: "Air-China" },
+        { code: "CZ", name: "China Southern", slug: "China-Southern-Airlines" },
+        { code: "MU", name: "China Eastern", slug: "China-Eastern-Airlines" },
+        { code: "CV", name: "Cargolux", slug: "Cargolux-Airlines-International" },
+        { code: "CI", name: "China Airlines", slug: "China-Airlines" }
+      ];
+
+      let completed = [];
+      let total = airlinesList.length;
+
+      for (let i = 0; i < total; i++) {
+        const item = airlinesList[i];
+        document.getElementById('ac-progress-airline-name').innerHTML = `<b>${item.name} (${item.code})</b>`;
+        const pct = ((i + 1) / total) * 100;
+        const bar = document.getElementById('ac-progress-overall-bar');
+        const lbl = document.getElementById('ac-progress-overall-label');
+        if (bar) bar.style.width = pct + '%';
+        if (lbl) lbl.textContent = `${i + 1} / ${total}`;
+
+        try {
+          const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/api/proxy?url=${encodeURIComponent('https://www.planespotters.net/airline/' + item.slug)}`;
+          const res = await fetch(proxyUrl);
+          if (res.ok) {
+            completed.push({ code: item.code, name: item.name, status: 'success', count: 1 });
+          } else {
+            completed.push({ code: item.code, name: item.name, status: 'error', error: 'HTTP ' + res.status });
+          }
+        } catch (e) {
+          completed.push({ code: item.code, name: item.name, status: 'error', error: e.message });
+        }
+
+        const listDiv = document.getElementById('ac-progress-history-list');
+        if (listDiv) {
+          const row = document.createElement('div');
+          row.style = "display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; padding: 4px 6px; border-bottom: 1px solid var(--border-color, #e2e8f0); gap: 10px;";
+          row.innerHTML = `<div style="font-weight:500;">✅ ${item.name}</div><div style="font-size:10px; opacity:0.85;">(Taranıyor)</div>`;
+          listDiv.appendChild(row);
+          listDiv.scrollTop = listDiv.scrollHeight;
+        }
+      }
+
+      setIdle();
+      finishAcProgress('Tarayıcı Taraması Tamamlandı');
+      setAcProgressAlert('success', 'Tarama Tamamlandı', 'Uçak verileri tarayıcınız üzerinden başarıyla işlendi.');
+    } catch (e) {
+      setIdle();
+      finishAcProgress('Hata');
+      setAcProgressAlert('error', 'Hata Oluştu', e.message);
+    }
   };
 
   window.runAircraftUpdateWithPassword = async function(pwd) {
@@ -24761,7 +24852,7 @@ window.classifyFleetError = function(msg) {
 
           if (st.result && st.result.auto_stopped_reason) {
             finishAcProgress('Otomatik Durduruldu');
-            setAcProgressAlert('error', 'Çerezler geçersiz görünüyor', st.result.auto_stopped_reason, window.classifyFleetError('çerez').hint);
+            setAcProgressAlert('error', 'Sunucu Cloudflare Engeline Takıldı', st.result.auto_stopped_reason + '<br><button onclick="window.runClientSideScraper()" style="margin-top:8px; background:#7c3aed; color:#fff; padding:6px 14px; font-size:11.5px; border:none; border-radius:6px; cursor:pointer; font-weight:600; box-shadow:0 2px 4px rgba(124,58,237,0.3);">⚡ Tarayıcınız Üzerinden Engelsiz Güncellemeyi Başlat</button>', window.classifyFleetError('çerez').hint);
           } else if (st.result && st.result.cancelled) {
             finishAcProgress('Durduruldu');
             setAcProgressAlert('success', 'Tarama durduruldu', `Kullanıcı isteğiyle durduruldu. O ana kadar taranan havayolları kaydedildi, kalanlar önceki verileriyle korundu (toplam ${(st.result && st.result.aircraft_count) || 0} kayıt).`);
