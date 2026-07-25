@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 1849,
-  "lastScanned": "2026-07-18T23:15:58.667Z",
-  "scannedCount": 109,
+  "lastScannedId": 2010,
+  "lastScanned": "2026-07-25T23:16:03.370Z",
+  "scannedCount": 159,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -582,6 +582,60 @@
         "texel air"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=texelair.com"
+    },
+    {
+      "id": "dyn_bbn_airlines",
+      "label": "Bbn Airlines",
+      "group": "passenger",
+      "kw": [
+        "bbn airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bbnairlines.com"
+    },
+    {
+      "id": "dyn_mng_airlines",
+      "label": "Mng Airlines",
+      "group": "cargo",
+      "kw": [
+        "mng airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=mngairlines.com"
+    },
+    {
+      "id": "dyn_fuji_dream_airlines",
+      "label": "Fuji Dream Airlines",
+      "group": "passenger",
+      "kw": [
+        "fuji dream airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=fujidream.co.jp"
+    },
+    {
+      "id": "dyn_maersk_air_cargo",
+      "label": "Maersk Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "maersk air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=maersk.com"
+    },
+    {
+      "id": "dyn_klm_cargo",
+      "label": "Klm Cargo",
+      "group": "cargo",
+      "kw": [
+        "klm cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=klmcargo.com"
+    },
+    {
+      "id": "dyn_scat_airlines",
+      "label": "Scat Airlines",
+      "group": "passenger",
+      "kw": [
+        "scat airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=scat.kz"
     }
   ],
   "gsa": []
