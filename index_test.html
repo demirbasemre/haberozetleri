@@ -8783,6 +8783,14 @@ function barChart(id, labels, data, colors, opts = {}) {
   if (existingChart) existingChart.destroy();
   ctx.style.display = 'block';
 
+  const isUsd = opts.unit === '$';
+  const fmtVal = opts.valueFormatter || (v => {
+    if (v == null) return '—';
+    if (isUsd) return '$' + Math.round(v).toLocaleString('tr-TR');
+    return (v > 0 ? '+' : '') + v.toFixed(1) + '%';
+  });
+  const fmtTick = opts.tickFormatter || (v => isUsd ? '$' + Math.round(v).toLocaleString('tr-TR') : v + '%');
+
   const drawLabelsPlugin = {
     id: 'drawLabels',
     afterDatasetsDraw(chart) {
@@ -8803,7 +8811,7 @@ function barChart(id, labels, data, colors, opts = {}) {
           c.textAlign = isNeg ? 'right' : 'left';
           const x = isNeg ? bar.x - pad : bar.x + pad;
           
-          c.fillText((val > 0 ? '+' : '') + val.toFixed(1) + '%', x, bar.y);
+          c.fillText(fmtVal(val), x, bar.y);
         });
       });
     }
@@ -8831,13 +8839,13 @@ function barChart(id, labels, data, colors, opts = {}) {
             const item = items[0];
             return item ? `${item.label}${item.dataset.label ? ' (' + item.dataset.label + ')' : ''}` : '';
           },
-          label: c => ' ' + (c.dataset.label ? c.dataset.label + ': ' : '') + (c.raw != null ? (c.raw > 0 ? '+' : '') + c.raw.toFixed(1) + '%' : '—'),
+          label: c => ' ' + (c.dataset.label ? c.dataset.label + ': ' : '') + (c.raw != null ? fmtVal(c.raw) : '—'),
           footer: tooltipFooter ? (items) => tooltipFooter(items[0]?.datasetIndex, items[0]?.dataIndex) : undefined
         } }
       },
       scales: {
         x: { 
-          ticks: { callback: v => v + '%', font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, 
+          ticks: { callback: fmtTick, font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, 
           grid: { color: () => document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.04)' }, 
           border: { display: false } 
         },
@@ -11917,6 +11925,7 @@ async function loadDashboard() {
       _imfCache[chartId] = { wbSeries: wbData, dataC, indicator, wbLatestByC, unit, single: true };
 
       barChart(chartId, dataC.map(c => WB_LABELS[c] || c), vals, color, {
+        unit,
         onClick: (itemIdx) => openForecastPopover(chartId, dataC[itemIdx]),
         tooltipFooter: (dsIdx, itemIdx) => {
           const c = dataC[itemIdx];
