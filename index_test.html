@@ -3222,8 +3222,7 @@
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-unemployment"></canvas></div>
           <div class="chart-legend">
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(99,102,241,0.85)"></span>IMF WEO</span>
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(20,184,166,0.85)"></span>Dünya Bankası</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(245,158,11,0.85)"></span>Dünya Bankası (Resmi Veri)</span>
           </div>
         </div>
         <div class="dash-chart-card" id="dc-ca-chart">
@@ -3243,8 +3242,7 @@
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-current-account"></canvas></div>
           <div class="chart-legend">
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(139,92,246,0.85)"></span>IMF WEO</span>
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(236,72,153,0.85)"></span>Dünya Bankası</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(139,92,246,0.85)"></span>Dünya Bankası (Resmi Veri)</span>
           </div>
         </div>
         <div class="dash-chart-card" id="dc-gdpcap-chart">
@@ -12037,15 +12035,15 @@ async function loadDashboard() {
   // Event listener bindings & Initial calls for 6 Economic Charts
   document.getElementById('sel-gdp-group')?.addEventListener('change', () => updateEconChart('NGDP_RPCH', 'NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp'));
   document.getElementById('sel-cpi-group')?.addEventListener('change', () => updateEconChart('PCPIPCH',  'FP.CPI.TOTL.ZG',     'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi'));
-  document.getElementById('sel-unemp-group')?.addEventListener('change', () => updateEconChart('LUR',      'SL.UEM.TOTL.ZS',     'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', 'unemp'));
-  document.getElementById('sel-ca-group')?.addEventListener('change', () => updateEconChart('BCA_NGDPD',  'BN.CAB.XOKA.GD.ZS',  'sel-ca-group', 'chart-current-account', 'ca-meta-note', 'ca'));
+  document.getElementById('sel-unemp-group')?.addEventListener('change', () => updateWbSingleChart('SL.UEM.TOTL.ZS', 'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', '%', 'rgba(245,158,11,0.85)'));
+  document.getElementById('sel-ca-group')?.addEventListener('change', () => updateWbSingleChart('BN.CAB.XOKA.GD.ZS', 'sel-ca-group', 'chart-current-account', 'ca-meta-note', '%', 'rgba(139,92,246,0.85)'));
   document.getElementById('sel-gdpcap-group')?.addEventListener('change', () => updateWbSingleChart('NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', '$', 'rgba(59,130,246,0.85)'));
   document.getElementById('sel-debt-group')?.addEventListener('change', () => updateWbSingleChart('GC.DOD.TOTL.GD.ZS', 'sel-debt-group', 'chart-gov-debt', 'debt-meta-note', '%', 'rgba(239,68,68,0.85)'));
 
   updateEconChart('NGDP_RPCH', 'NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
   updateEconChart('PCPIPCH',  'FP.CPI.TOTL.ZG',     'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
-  updateEconChart('LUR',      'SL.UEM.TOTL.ZS',     'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', 'unemp');
-  updateEconChart('BCA_NGDPD',  'BN.CAB.XOKA.GD.ZS',  'sel-ca-group', 'chart-current-account', 'ca-meta-note', 'ca');
+  updateWbSingleChart('SL.UEM.TOTL.ZS', 'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', '%', 'rgba(245,158,11,0.85)');
+  updateWbSingleChart('BN.CAB.XOKA.GD.ZS', 'sel-ca-group', 'chart-current-account', 'ca-meta-note', '%', 'rgba(139,92,246,0.85)');
   updateWbSingleChart('NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', '$', 'rgba(59,130,246,0.85)');
   updateWbSingleChart('GC.DOD.TOTL.GD.ZS', 'sel-debt-group', 'chart-gov-debt', 'debt-meta-note', '%', 'rgba(239,68,68,0.85)');
 
