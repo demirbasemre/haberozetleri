@@ -11,6 +11,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Lato:wght@400;700;900&family=DM+Sans:wght@400;500;700&family=Manrope:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <!-- FOUC prevention — apply saved prefs to <html> before render -->
 <script>
 (function() {
@@ -4712,14 +4714,16 @@
 
 <script>
 async function fetchCached(key, fetchFn, ttlMs, shouldCacheFn) {
+  let lastGood = null;
   try {
     const cached = localStorage.getItem(key);
     if (cached) {
       const { timestamp, data } = JSON.parse(cached);
-      const isFresh = Date.now() - timestamp < ttlMs;
       const isValid = typeof shouldCacheFn !== 'function' || shouldCacheFn(data);
-      if (isFresh && isValid) {
-        return data;
+      if (isValid) {
+        lastGood = data;
+        const isFresh = Date.now() - timestamp < ttlMs;
+        if (isFresh) return data;
       }
     }
   } catch (e) {
@@ -4732,9 +4736,11 @@ async function fetchCached(key, fetchFn, ttlMs, shouldCacheFn) {
     } catch (e) {
       console.warn('Cache write error for ' + key + ':', e);
     }
-  } else {
-    try { localStorage.removeItem(key); } catch(e) {}
+    return data;
   }
+  // Canlı veri geçersiz/başarısız: elimizde önceden doğrulanmış gerçek veri varsa
+  // onu koru (fake/statik yedek yerine son bilinen gerçek veriyi göster)
+  if (lastGood !== null) return lastGood;
   return data;
 }
 
@@ -14656,12 +14662,10 @@ async function loadDashboard() {
         const bafiDateStr = latest.date && latest.date.includes('-') ? isoToDisplay(latest.date) : (latest.date || '');
         if (bafiDateStr) setDateBadge('dc-bafi-date', bafiDateStr);
       } else {
-        setCard('dc-bafi', '2,180', 1.20, "Hava kargo spot tarifesi endeksi", `Son veri: 20.07.2026<br><a href="https://dashboard.tacindex.com" target="_blank" rel="noopener">TAC Index →</a>`);
-        setDateBadge('dc-bafi-date', '20.07.2026');
+        setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
       }
     }).catch(() => {
-      setCard('dc-bafi', '2,180', 1.20, "Hava kargo spot tarifesi endeksi", `Son veri: 20.07.2026<br><a href="https://dashboard.tacindex.com" target="_blank" rel="noopener">TAC Index →</a>`);
-      setDateBadge('dc-bafi-date', '20.07.2026');
+      setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
     });
   }
 
@@ -14688,8 +14692,7 @@ async function loadDashboard() {
         const fbxIso = fbxRaw.includes('-') ? fbxRaw : (fbxRaw ? new Date().toISOString().slice(0,10) : null);
         if (fbxIso) setDateBadge('dc-fbx-date', isoToDisplay(fbxIso));
       } else {
-        setCard('dc-fbx', '2,415 $', -2.10, "Global konteyner spot fiyat endeksi", `Son veri: 24.07.2026<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`);
-        setDateBadge('dc-fbx-date', '24.07.2026');
+        setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
       }
 
       // Rota seçici menüsünü doldur (FBX01, FBX11, vb. anlık rota değerleri)
@@ -14697,8 +14700,7 @@ async function loadDashboard() {
         window.renderFbxRouteOptions();
       }
     }).catch(() => {
-      setCard('dc-fbx', '2,415 $', -2.10, "Global konteyner spot fiyat endeksi", `Son veri: 24.07.2026<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`);
-      setDateBadge('dc-fbx-date', '24.07.2026');
+      setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
     });
   }
 
@@ -14756,24 +14758,24 @@ async function loadDashboard() {
         const cEl = document.getElementById('iata-val-capacity');
         const lfEl = document.getElementById('iata-val-loadfactor');
         const srEl = document.getElementById('iata-val-spotrate');
-        if (dEl) { dEl.textContent = '%+5.4'; dEl.classList.remove('skeleton'); dEl.classList.add('positive'); }
-        if (cEl) { cEl.textContent = '%+4.8'; cEl.classList.remove('skeleton'); cEl.classList.add('positive'); }
-        if (lfEl) { lfEl.textContent = '%46.2'; lfEl.classList.remove('skeleton'); }
-        if (srEl) { srEl.textContent = '$2.58'; srEl.classList.remove('skeleton'); }
+        if (dEl) { dEl.textContent = '—'; dEl.classList.remove('skeleton'); }
+        if (cEl) { cEl.textContent = '—'; cEl.classList.remove('skeleton'); }
+        if (lfEl) { lfEl.textContent = '—'; lfEl.classList.remove('skeleton'); }
+        if (srEl) { srEl.textContent = '—'; srEl.classList.remove('skeleton'); }
         const noteEl = document.getElementById('dc-iata-note');
-        if (noteEl) noteEl.innerHTML = `Son veri: Haziran 2026<br><a href="https://www.iata.org" target="_blank" rel="noopener">IATA Reports →</a>`;
-        const iataDateEl = document.getElementById('dc-iata-date');
-        if (iataDateEl) iataDateEl.textContent = `Son veri: Haziran 2026`;
+        if (noteEl) noteEl.innerHTML = 'Veri alınamadı';
       }
     }).catch(() => {
       const dEl = document.getElementById('iata-val-demand');
       const cEl = document.getElementById('iata-val-capacity');
       const lfEl = document.getElementById('iata-val-loadfactor');
       const srEl = document.getElementById('iata-val-spotrate');
-      if (dEl) { dEl.textContent = '%+5.4'; dEl.classList.remove('skeleton'); dEl.classList.add('positive'); }
-      if (cEl) { cEl.textContent = '%+4.8'; cEl.classList.remove('skeleton'); cEl.classList.add('positive'); }
-      if (lfEl) { lfEl.textContent = '%46.2'; lfEl.classList.remove('skeleton'); }
-      if (srEl) { srEl.textContent = '$2.58'; srEl.classList.remove('skeleton'); }
+      if (dEl) { dEl.textContent = '—'; dEl.classList.remove('skeleton'); }
+      if (cEl) { cEl.textContent = '—'; cEl.classList.remove('skeleton'); }
+      if (lfEl) { lfEl.textContent = '—'; lfEl.classList.remove('skeleton'); }
+      if (srEl) { srEl.textContent = '—'; srEl.classList.remove('skeleton'); }
+      const noteEl = document.getElementById('dc-iata-note');
+      if (noteEl) noteEl.innerHTML = 'Veri alınamadı';
     });
   }
 
@@ -14840,12 +14842,20 @@ async function loadDashboard() {
       const min = String(today.getMinutes()).padStart(2, '0');
       const dateStr = `${dd}.${mm}.${yyyy} ${hh}:${min}`;
       setDateBadge('dc-cargo-date', dateStr);
+      try { localStorage.setItem('cargo_count_last_good', JSON.stringify({ count, dateStr })); } catch (e) {}
       if (document.getElementById('cargo-flights-modal')?.style.display === 'flex') {
         renderCargoFlightsModal(false);
       }
     } catch (_) {
-      setCard('dc-cargo', '24', null, 'Turkish Cargo', `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
-      setDateBadge('dc-cargo-date', '27.07.2026 00:30');
+      // Canlı OpenSky verisi alınamadı: elimizdeki son gerçek anlık sayıyı göster (fake veri yerine)
+      let lastGood = null;
+      try { lastGood = JSON.parse(localStorage.getItem('cargo_count_last_good') || 'null'); } catch (e) {}
+      if (lastGood && typeof lastGood.count === 'number') {
+        setCard('dc-cargo', String(lastGood.count), null, 'Turkish Cargo', `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
+        setDateBadge('dc-cargo-date', lastGood.dateStr);
+      } else {
+        setCard('dc-cargo', '—', null, '', 'Veri alınamadı');
+      }
     }
   }
 
@@ -14933,7 +14943,7 @@ async function loadDashboard() {
 
   let _cargoSelectedIdx = null;
   let _cargoHighlightMarker = null;
-  const cargoHighlightIcon = L.divIcon({
+  const cargoHighlightIcon = () => L.divIcon({
     className: 'cargo-highlight-icon',
     html: `<div style="width:36px; height:36px; border-radius:50%; border:2.5px solid #1D6FE8; box-shadow:0 0 0 4px rgba(29,111,232,0.18); animation:cargoHighlightPulse 1.6s ease-out infinite;"></div>`,
     iconSize: [36, 36],
@@ -15004,7 +15014,7 @@ async function loadDashboard() {
       _cargoRemainingLine = null;
 
       if (_cargoHighlightMarker) _cargoMap.removeLayer(_cargoHighlightMarker);
-      _cargoHighlightMarker = L.marker([targetLat, targetLon], { icon: cargoHighlightIcon, interactive: false, zIndexOffset: -100 });
+      _cargoHighlightMarker = L.marker([targetLat, targetLon], { icon: cargoHighlightIcon(), interactive: false, zIndexOffset: -100 });
       _cargoHighlightMarker.addTo(_cargoMap);
 
       const bounds = [[targetLat, targetLon]];
@@ -15121,20 +15131,6 @@ async function loadDashboard() {
       arrTimeStr = formatTime(arrTime);
     }
 
-    // Bezier arc calculations for plane location & direction angle
-    const t = progress;
-    const x0 = 16, y0 = 26;
-    const x1 = 80, y1 = 4;
-    const x2 = 144, y2 = 26;
-    
-    const planeX = Math.round(((1-t)*(1-t)*x0 + 2*(1-t)*t*x1 + t*t*x2) * 10) / 10;
-    const planeY = Math.round(((1-t)*(1-t)*y0 + 2*(1-t)*t*y1 + t*t*y2) * 10) / 10;
-    
-    const dxdt = 2*(1-t)*(x1-x0) + 2*t*(x2-x1);
-    const dydt = 2*(1-t)*(y1-y0) + 2*t*(y2-y1);
-    const angleRad = Math.atan2(dydt, dxdt);
-    const angleDeg = Math.round(angleRad * (180 / Math.PI));
-
     const pctInt = Math.round(progress * 100);
     const vrate = f.verticalRate || 0;
     const vIcon = vrate > 0.5 ? _cargoDetailIcons.vrateUp : vrate < -0.5 ? _cargoDetailIcons.vrateDown : _cargoDetailIcons.vrateLevel;
@@ -15196,9 +15192,6 @@ async function loadDashboard() {
                     <stop offset="0%" stop-color="#C8102E" stop-opacity="0.85"/>
                     <stop offset="100%" stop-color="#E30613" stop-opacity="1"/>
                   </linearGradient>
-                  <filter id="planeGlowFilter" x="-30%" y="-30%" width="160%" height="160%">
-                    <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#C8102E" flood-opacity="0.45"/>
-                  </filter>
                 </defs>
                 
                 <!-- Background remaining dashed arc line -->
@@ -15215,11 +15208,6 @@ async function loadDashboard() {
                 <!-- Arrival Airport Ring/Dot -->
                 <circle cx="144" cy="26" r="6" fill="none" stroke="var(--border-color, #94A3B8)" stroke-width="1.5"/>
                 <circle cx="144" cy="26" r="3.5" fill="var(--text-3, #64748B)"/>
-
-                <!-- Traveling Plane SVG Icon directly rendered on Bezier curve -->
-                <g transform="translate(${planeX}, ${planeY}) rotate(${angleDeg})" filter="url(#planeGlowFilter)">
-                  <path fill="#C8102E" d="M12 2L9.5 9.5L2 12L9.5 14.5L12 22L14.5 14.5L22 12L14.5 9.5L12 2Z" transform="translate(-12, -12) scale(0.7)"/>
-                </g>
               </svg>
             </div>
             <div class="ticket-badge-pill">✈ %${pctInt} Uçuşta</div>
@@ -15275,7 +15263,7 @@ async function loadDashboard() {
   }
 
   let _cargoShowNetwork = true;
-  const cargoNetworkIcon = L.divIcon({
+  const cargoNetworkIcon = () => L.divIcon({
     className: 'cargo-network-icon',
     html: `<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="#9CA3AF" fill-opacity="0.55" stroke="#6B7280" stroke-width="1"/></svg>`,
     iconSize: [8, 8],
@@ -15365,7 +15353,7 @@ async function loadDashboard() {
 
     if (_cargoShowNetwork && typeof TURKISH_CARGO_DESTINATIONS !== 'undefined') {
       TURKISH_CARGO_DESTINATIONS.forEach(dest => {
-        const netMarker = L.marker([dest.lat, dest.lon], { icon: cargoNetworkIcon })
+        const netMarker = L.marker([dest.lat, dest.lon], { icon: cargoNetworkIcon() })
           .bindPopup(`<strong>Ağ Noktası:</strong> ${dest.name} (${dest.iata})<br>${dest.country}`);
         netMarker.addTo(_cargoMap);
         _cargoMapLayers.push(netMarker);
@@ -15868,18 +15856,29 @@ async function loadDashboard() {
         );
         const thyDateEl = document.getElementById('dc-thy-date');
         if (thyDateEl && lastObsDate) { thyDateEl.textContent = `Son veri: ${lastObsDate}`; applyDateBadgeFreshness(thyDateEl); }
+        try { localStorage.setItem('thy_last_good', JSON.stringify({ price, change, lastObsDate })); } catch (e) {}
       } catch (err) {
         console.error("THY kart güncelleme hatası:", err);
-        setCard('dc-thy', '308.50 ₺', 0.65, 'Borsa İstanbul · hisse fiyatı', `Son veri: 24.07.2026<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>`);
-        const thyDateEl = document.getElementById('dc-thy-date');
-        if (thyDateEl) { thyDateEl.textContent = 'Son veri: 24.07.2026 18:10'; applyDateBadgeFreshness(thyDateEl); }
+        setThyCardFromLastGood();
       }
     }).catch(err => {
       console.error("THY stock 1y fetch error:", err);
-      setCard('dc-thy', '308.50 ₺', 0.65, 'Borsa İstanbul · hisse fiyatı', `Son veri: 24.07.2026<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>`);
-      const thyDateEl = document.getElementById('dc-thy-date');
-      if (thyDateEl) { thyDateEl.textContent = 'Son veri: 24.07.2026 18:10'; applyDateBadgeFreshness(thyDateEl); }
+      setThyCardFromLastGood();
     });
+
+    // Canlı Yahoo Finance verisi alınamadığında son bilinen gerçek fiyatı göster (fake veri yerine)
+    function setThyCardFromLastGood() {
+      let lastGood = null;
+      try { lastGood = JSON.parse(localStorage.getItem('thy_last_good') || 'null'); } catch (e) {}
+      if (lastGood && typeof lastGood.price === 'number') {
+        setCard('dc-thy', lastGood.price.toFixed(2) + ' ₺', lastGood.change, 'Borsa İstanbul · hisse fiyatı',
+          `Son veri: ${lastGood.lastObsDate}<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>`);
+        const thyDateEl = document.getElementById('dc-thy-date');
+        if (thyDateEl) { thyDateEl.textContent = `Son veri: ${lastGood.lastObsDate}`; applyDateBadgeFreshness(thyDateEl); }
+      } else {
+        setCard('dc-thy', '—', null, '', 'Veri okunamadı');
+      }
+    }
   }
   initThyCard();
 
@@ -16244,25 +16243,53 @@ async function loadDashboard() {
   }
   startDashboardPolling();
 
-  // Safety net: Guarantee all KPI cards remove skeleton shimmer and render valid numbers even if adblockers block worker requests
+  // Safety net: 2sn sonra hâlâ skeleton'da kalan kartları temizle. Fake/statik sayı BASMA —
+  // yalnızca localStorage'daki son gerçek başarılı veriyi (fetchCached / *_last_good) kullan,
+  // o da yoksa dürüstçe "Veri alınamadı" göster.
   setTimeout(() => {
+    const readCache = (key) => {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw).data : null;
+      } catch (e) { return null; }
+    };
+
     const thyVal = document.querySelector('#dc-thy .dash-card-value');
     if (thyVal && (thyVal.classList.contains('skeleton') || thyVal.textContent === '—')) {
-      setCard('dc-thy', '308.50 ₺', 0.65, 'Borsa İstanbul · hisse fiyatı', 'Son veri: 24.07.2026<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>');
-      const thyDateEl = document.getElementById('dc-thy-date');
-      if (thyDateEl) thyDateEl.textContent = 'Son veri: 24.07.2026 18:10';
+      let lastGood = null;
+      try { lastGood = JSON.parse(localStorage.getItem('thy_last_good') || 'null'); } catch (e) {}
+      if (lastGood && typeof lastGood.price === 'number') {
+        setCard('dc-thy', lastGood.price.toFixed(2) + ' ₺', lastGood.change, 'Borsa İstanbul · hisse fiyatı',
+          `Son veri: ${lastGood.lastObsDate}<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>`);
+        const thyDateEl = document.getElementById('dc-thy-date');
+        if (thyDateEl) thyDateEl.textContent = `Son veri: ${lastGood.lastObsDate}`;
+      } else {
+        setCard('dc-thy', '—', null, '', 'Veri alınamadı');
+      }
     }
 
     const bafiVal = document.querySelector('#dc-bafi .dash-card-value');
     if (bafiVal && (bafiVal.classList.contains('skeleton') || bafiVal.textContent === '—')) {
-      setCard('dc-bafi', '2,180', 1.20, 'Hava kargo spot tarifesi endeksi', 'Son veri: 20.07.2026<br><a href="https://dashboard.tacindex.com" target="_blank" rel="noopener">TAC Index →</a>');
-      setDateBadge('dc-bafi-date', '20.07.2026');
+      const d = readCache('bafi_v8');
+      if (d?.latest?.price) {
+        setCard('dc-bafi', Number(d.latest.price).toLocaleString('tr-TR'), d.latest.change, 'Hava kargo spot tarifesi endeksi',
+          `Son veri: ${isoToDisplay(d.latest.date)}<br><a href="https://dashboard.tacindex.com" target="_blank" rel="noopener">TAC Index →</a>`);
+        setDateBadge('dc-bafi-date', isoToDisplay(d.latest.date));
+      } else {
+        setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
+      }
     }
 
     const fbxVal = document.querySelector('#dc-fbx .dash-card-value');
     if (fbxVal && (fbxVal.classList.contains('skeleton') || fbxVal.textContent === '—')) {
-      setCard('dc-fbx', '2,415 $', -2.10, 'Global konteyner spot fiyat endeksi', 'Son veri: 24.07.2026<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>');
-      setDateBadge('dc-fbx-date', '24.07.2026');
+      const d = readCache('fbx_v8');
+      if (d?.latest?.price) {
+        setCard('dc-fbx', d.latest.price.toLocaleString('en-US') + ' $', d.latest.change, 'Global konteyner spot fiyat endeksi',
+          `Son veri: ${d.latest.date}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`);
+        setDateBadge('dc-fbx-date', isoToDisplay(d.latest.date));
+      } else {
+        setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
+      }
     }
 
     const dEl = document.getElementById('iata-val-demand');
@@ -16270,20 +16297,34 @@ async function loadDashboard() {
       const cEl = document.getElementById('iata-val-capacity');
       const lfEl = document.getElementById('iata-val-loadfactor');
       const srEl = document.getElementById('iata-val-spotrate');
-      if (dEl) { dEl.textContent = '%+5.4'; dEl.classList.remove('skeleton'); dEl.classList.add('positive'); }
-      if (cEl) { cEl.textContent = '%+4.8'; cEl.classList.remove('skeleton'); cEl.classList.add('positive'); }
-      if (lfEl) { lfEl.textContent = '%46.2'; lfEl.classList.remove('skeleton'); }
-      if (srEl) { srEl.textContent = '$2.58'; srEl.classList.remove('skeleton'); }
-      const noteEl = document.getElementById('dc-iata-note');
-      if (noteEl) noteEl.innerHTML = 'Son veri: Haziran 2026<br><a href="https://www.iata.org" target="_blank" rel="noopener">IATA Reports →</a>';
-      const iataDateEl = document.getElementById('dc-iata-date');
-      if (iataDateEl) iataDateEl.textContent = 'Son veri: Haziran 2026';
+      const d = readCache('iata_full_data_v8');
+      if (d?.latest?.demand) {
+        if (dEl) { dEl.textContent = window.formatLF(d.latest.demand); dEl.classList.remove('skeleton'); }
+        if (cEl) { cEl.textContent = window.formatLF(d.latest.capacity); cEl.classList.remove('skeleton'); }
+        if (lfEl) { lfEl.textContent = window.formatLF(d.latest.loadFactor); lfEl.classList.remove('skeleton'); }
+        if (srEl) { const n = parseFloat(d.latest.spotRate); srEl.textContent = !isNaN(n) ? '$' + n.toFixed(2) : (d.latest.spotRate || '—'); srEl.classList.remove('skeleton'); }
+        const noteEl = document.getElementById('dc-iata-note');
+        if (noteEl) noteEl.innerHTML = `Son veri: ${d.latest.date}<br><a href="https://www.iata.org" target="_blank" rel="noopener">IATA Reports →</a>`;
+      } else {
+        if (dEl) { dEl.textContent = '—'; dEl.classList.remove('skeleton'); }
+        if (cEl) { cEl.textContent = '—'; cEl.classList.remove('skeleton'); }
+        if (lfEl) { lfEl.textContent = '—'; lfEl.classList.remove('skeleton'); }
+        if (srEl) { srEl.textContent = '—'; srEl.classList.remove('skeleton'); }
+        const noteEl = document.getElementById('dc-iata-note');
+        if (noteEl) noteEl.innerHTML = 'Veri alınamadı';
+      }
     }
 
     const cargoVal = document.querySelector('#dc-cargo .dash-card-value');
     if (cargoVal && (cargoVal.classList.contains('skeleton') || cargoVal.textContent === '—')) {
-      setCard('dc-cargo', '24', null, 'Turkish Cargo', 'Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>');
-      setDateBadge('dc-cargo-date', '27.07.2026 00:30');
+      let lastGood = null;
+      try { lastGood = JSON.parse(localStorage.getItem('cargo_count_last_good') || 'null'); } catch (e) {}
+      if (lastGood && typeof lastGood.count === 'number') {
+        setCard('dc-cargo', String(lastGood.count), null, 'Turkish Cargo', 'Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>');
+        setDateBadge('dc-cargo-date', lastGood.dateStr);
+      } else {
+        setCard('dc-cargo', '—', null, '', 'Veri alınamadı');
+      }
     }
   }, 2000);
 
