@@ -2086,6 +2086,34 @@
   @media (prefers-reduced-motion: reduce) {
     .analysis-drawer, .analysis-backdrop { transition: none; }
   }
+  .web-search-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: rgba(0,86,179,0.06);
+    border-left: 3px solid #0056b3;
+    border-top: 1px dashed rgba(0,86,179,0.3);
+    border-radius: 0 6px 6px 0;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #1d3f66;
+  }
+  .web-search-label {
+    display: block;
+    font-weight: 700;
+    color: #0056b3;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+  .web-search-source {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .web-search-source a { color: var(--red); text-decoration: none; font-weight: 600; }
+  .web-search-source a:hover { text-decoration: underline; }
 
   /* ── INFINITE SCROLL SENTINEL ───────────────── */
   .load-sentinel {

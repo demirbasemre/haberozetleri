@@ -5758,7 +5758,7 @@ function buildCardHTML(article) {
         ${etkiHtml}
         <div class="card-spacer"></div>
         ${hasAnalysis ? `
-          <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(analysisVal||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
+          <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(analysisVal||'').replace(/"/g,'&quot;')}" data-used-web-search="${article.usedWebSearch ? '1' : ''}" data-web-search-details="${(article.webSearchDetails||'').replace(/"/g,'&quot;')}" data-web-search-source="${(article.webSearchSource||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 3v18h18"/>
               <path d="M7 14l4-4 3 3 5-6"/>
@@ -7561,7 +7561,20 @@ function toggleExtraSources(btn) {
 
 function openAnalysisDrawer(btn) {
   const text = btn.getAttribute('data-analysis') || '';
-  document.getElementById('analysisDrawerBody').innerHTML = text;
+  const usedWebSearch = btn.getAttribute('data-used-web-search') === '1';
+  const webSearchDetails = btn.getAttribute('data-web-search-details') || '';
+  let html = text;
+  if (usedWebSearch && webSearchDetails.trim()) {
+    const srcRaw = (btn.getAttribute('data-web-search-source') || '').trim();
+    const srcUrl = srcRaw ? (/^https?:\/\//i.test(srcRaw) ? srcRaw : 'https://' + srcRaw) : '';
+    const srcDisp = srcRaw ? srcRaw.replace(/^https?:\/\/(www\.)?/i, '').split('/')[0] : '';
+    html += `
+      <div class="web-search-box">
+        <span class="web-search-label">🔎 Canlı Web Araması</span>${webSearchDetails}
+        ${srcRaw ? `<span class="web-search-source">(Kaynak: <a href="${srcUrl}" target="_blank" rel="noopener">${srcDisp}</a>)</span>` : ''}
+      </div>`;
+  }
+  document.getElementById('analysisDrawerBody').innerHTML = html;
   document.getElementById('analysisDrawer').classList.add('open');
   document.getElementById('analysisBd').classList.add('open');
   document.getElementById('analysisDrawer').focus();

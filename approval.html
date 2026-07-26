@@ -434,6 +434,66 @@
     display: block;
   }
 
+  /* Web araması katkısı (analiz kutusunun altında, ayrı ve düzenlenemez) */
+  .web-search-box {
+    position: relative;
+    margin-top: 8px;
+    padding: 8px 28px 8px 12px;
+    background: rgba(0,86,179,0.08);
+    border-left: 3px solid #4a90d9;
+    border-top: 1px dashed rgba(0,86,179,0.3);
+    border-radius: 0 4px 4px 0;
+    font-size: 12.5px;
+    color: #7fa8d6;
+    line-height: 1.6;
+  }
+  [data-theme="light"] .web-search-box { color: #2c5282; background: rgba(0,86,179,0.05); }
+  .web-search-content {
+    cursor: text;
+    outline: none;
+    border-radius: 3px;
+    transition: background 0.12s;
+  }
+  .web-search-content:focus {
+    background: rgba(0,86,179,0.14);
+    padding: 2px 4px;
+    margin: -2px -4px;
+  }
+  .web-search-label {
+    font-weight: 700;
+    color: #4a90d9;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-right: 5px;
+    white-space: nowrap;
+  }
+  [data-theme="light"] .web-search-label { color: #0056b3; }
+  .web-search-source {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .web-search-source a { color: var(--red); text-decoration: none; font-weight: 600; }
+  .web-search-source a:hover { text-decoration: underline; }
+  .websearch-remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    opacity: 0.5;
+    transition: opacity 0.12s, color 0.12s;
+  }
+  .websearch-remove-btn:hover { opacity: 1; color: #0056b3; }
+
   /* Source rows */
   .sources-row {
     display: flex;
@@ -897,6 +957,7 @@ let articles = [];
 let originalArticles = {};
 let removedIds = new Set();
 let unfeaturedIds = new Set();
+let manualFeaturedId = null;
 let currentAction = null;
 let resumeUrl = null;
 let summaryId = null;
@@ -939,7 +1000,7 @@ async function init() {
     originalArticles = {};
     articles.forEach(a => {
       const key = a.id || a.title;
-      originalArticles[key] = { title: a.title, summary: a.summary, thyAnalysis: a.thyAnalysis };
+      originalArticles[key] = { title: a.title, summary: a.summary, thyAnalysis: a.thyAnalysis, usedWebSearch: a.usedWebSearch, webSearchDetails: a.webSearchDetails, webSearchSource: a.webSearchSource };
     });
     renderPage(data);
   } catch(err) {
@@ -1059,9 +1120,15 @@ function computeImportance(a) {
   return score;
 }
 function getFeaturedArticle() {
-  const active = articles.filter(a => !removedIds.has(a.id || a.title) && !unfeaturedIds.has(a.id || a.title));
+  const active = articles.filter(a => !removedIds.has(a.id || a.title));
+  // Manuel olarak manşete alınan haber, otomatik THY tespitinden önceliklidir
+  if (manualFeaturedId) {
+    const manual = active.find(a => (a.id || a.title) === manualFeaturedId);
+    if (manual) return manual;
+  }
+  const autoActive = active.filter(a => !unfeaturedIds.has(a.id || a.title));
   let feat = null;
-  active.forEach(a => {
+  autoActive.forEach(a => {
     if (isThyArticle(a) && (!feat || computeImportance(a) > computeImportance(feat))) feat = a;
   });
   return feat;
@@ -1069,9 +1136,48 @@ function getFeaturedArticle() {
 
 function unfeatureArticle(encodedId) {
   const artId = decodeURIComponent(encodedId);
+  if (manualFeaturedId === artId) manualFeaturedId = null;
   unfeaturedIds.add(artId);
   renderArticles();
   renderSidebar();
+}
+
+function promoteArticle(encodedId) {
+  const artId = decodeURIComponent(encodedId);
+  manualFeaturedId = artId;
+  unfeaturedIds.delete(artId);
+  renderArticles();
+  renderSidebar();
+}
+
+function buildWebSearchHtml(a, artId) {
+  if (!(a.usedWebSearch && a.webSearchDetails && String(a.webSearchDetails).trim())) return '';
+  const encodedId = encodeURIComponent(artId);
+  const srcRaw = a.webSearchSource ? String(a.webSearchSource).trim() : '';
+  const srcUrl = srcRaw ? (/^https?:\/\//i.test(srcRaw) ? srcRaw : 'https://' + srcRaw) : '';
+  const srcDisp = srcRaw ? srcRaw.replace(/^https?:\/\/(www\.)?/i, '').split('/')[0] : '';
+  return `
+    <div class="web-search-box" id="websearch-wrapper-${encodedId}">
+      <div class="web-search-content" contenteditable="true" data-field="webSearchDetails" data-id="${encodedId}" onblur="handleEdit(this)" oninput="markEdited(this)">
+        <span class="web-search-label">🔎 Canlı Web Araması</span>${a.webSearchDetails}
+      </div>
+      ${srcRaw ? `<span class="web-search-source">(Kaynak: <a href="${srcUrl}" target="_blank" rel="noopener">${srcDisp}</a>)</span>` : ''}
+      <button class="websearch-remove-btn" title="Web araması notunu kaldır" onclick="removeWebSearch('${encodedId}')">✕</button>
+    </div>`;
+}
+
+function buildAnalysisWrapperHtml(a, artId) {
+  if (!a.thyAnalysis || !a.thyAnalysis.trim()) return '';
+  const encodedId = encodeURIComponent(artId);
+  return `
+    <div class="thy-analysis-wrapper" id="analysis-wrapper-${encodedId}">
+      <div class="thy-analysis-box" contenteditable="true" data-field="thyAnalysis" data-id="${encodedId}" onblur="handleEdit(this)" oninput="markEdited(this)">
+        <span class="thy-analysis-label">Analiz</span>
+        ${a.thyAnalysis}
+      </div>
+      ${buildWebSearchHtml(a, artId)}
+      <button class="analysis-remove-btn" title="Analizi kaldır" onclick="removeAnalysis('${encodedId}')">✕</button>
+    </div>`;
 }
 
 function buildCardHtml(a, color, extraClass, isFeatured) {
@@ -1111,18 +1217,8 @@ function buildCardHtml(a, color, extraClass, isFeatured) {
           </div>`;
       });
 
-      // THY analysis
-      let thyHtml = '';
-      if (a.thyAnalysis && a.thyAnalysis.trim()) {
-        thyHtml = `
-          <div class="thy-analysis-wrapper" id="analysis-wrapper-${encodeURIComponent(artId)}">
-            <div class="thy-analysis-box" contenteditable="true" data-field="thyAnalysis" data-id="${encodeURIComponent(artId)}" onblur="handleEdit(this)" oninput="markEdited(this)">
-              <span class="thy-analysis-label">Analiz</span>
-              ${a.thyAnalysis}
-            </div>
-            <button class="analysis-remove-btn" title="Analizi kaldır" onclick="removeAnalysis('${encodeURIComponent(artId)}')">✕</button>
-          </div>`;
-      }
+      // THY analysis (+ varsa canlı web araması katkısı)
+      let thyHtml = buildAnalysisWrapperHtml(a, artId);
 
       return `
         <div class="article-card${extraClass || ''}" id="card-${encodeURIComponent(artId)}" data-article-id="${encodeURIComponent(artId)}">
@@ -1134,7 +1230,9 @@ function buildCardHtml(a, color, extraClass, isFeatured) {
                 ${pd ? `<div class="article-date">${pd}</div>` : ''}
               </div>
               <div class="card-actions">
-                ${isFeatured ? `<button class="unfeature-btn" title="Bu haberi manşetten çıkar, normal kategorisine geri koy" onclick="unfeatureArticle('${encodeURIComponent(artId)}')">▾ Manşetten çıkar</button>` : ''}
+                ${isFeatured
+                  ? `<button class="unfeature-btn" title="Bu haberi manşetten çıkar, normal kategorisine geri koy" onclick="unfeatureArticle('${encodeURIComponent(artId)}')">▾ Manşetten çıkar</button>`
+                  : `<button class="unfeature-btn" title="Bu haberi manşete al" onclick="promoteArticle('${encodeURIComponent(artId)}')">▴ Manşete al</button>`}
                 <button class="remove-btn" title="Kaldır" onclick="removeArticle('${encodeURIComponent(artId)}')">✕</button>
               </div>
             </div>
@@ -1220,6 +1318,10 @@ function handleEdit(el) {
   if (field === 'thyAnalysis') {
     val = el.innerHTML.replace(/<span class="thy-analysis-label">.*?<\/span>/i, '').trim();
   }
+  // For webSearchDetails, strip the label span
+  if (field === 'webSearchDetails') {
+    val = el.innerHTML.replace(/<span class="web-search-label">.*?<\/span>/i, '').trim();
+  }
   // For title, strip anchor
   if (field === 'title') {
     val = el.innerText.trim();
@@ -1287,6 +1389,17 @@ function removeAnalysis(encodedId) {
   markEdited({ dataset: { id: encodedId } });
 }
 
+function removeWebSearch(encodedId) {
+  const artId = decodeURIComponent(encodedId);
+  const article = articles.find(a => (a.id || a.title) === artId);
+  if (!article) return;
+  article.usedWebSearch = false;
+  article.webSearchDetails = '';
+  const wrapper = document.getElementById('websearch-wrapper-' + encodedId);
+  if (wrapper) wrapper.remove();
+  markEdited({ dataset: { id: encodedId } });
+}
+
 function revertArticle(encodedId) {
   const artId = decodeURIComponent(encodedId);
   const orig = originalArticles[artId];
@@ -1297,6 +1410,9 @@ function revertArticle(encodedId) {
   article.title = orig.title;
   article.summary = orig.summary;
   if (orig.thyAnalysis !== undefined) article.thyAnalysis = orig.thyAnalysis;
+  if (orig.usedWebSearch !== undefined) article.usedWebSearch = orig.usedWebSearch;
+  if (orig.webSearchDetails !== undefined) article.webSearchDetails = orig.webSearchDetails;
+  if (orig.webSearchSource !== undefined) article.webSearchSource = orig.webSearchSource;
 
   const titleEl = document.querySelector(`.article-title[data-id="${encodedId}"]`);
   if (titleEl) titleEl.innerHTML = `<a href="${article.link||'#'}" target="_blank" style="color:inherit;text-decoration:none;">${orig.title||'Başlık yok'}</a>`;
@@ -1304,28 +1420,16 @@ function revertArticle(encodedId) {
   const summaryEl = document.querySelector(`.article-summary[data-id="${encodedId}"]`);
   if (summaryEl) summaryEl.innerHTML = orig.summary || '';
 
-  // Restore analysis — re-create wrapper if it was removed
+  // Restore analysis (+ varsa web araması kutusu) — mevcut wrapper'ı yeniden kur
   if (orig.thyAnalysis !== undefined) {
-    let wrapper = document.getElementById('analysis-wrapper-' + encodedId);
-    if (orig.thyAnalysis && orig.thyAnalysis.trim()) {
-      if (!wrapper) {
-        wrapper = document.createElement('div');
-        wrapper.className = 'thy-analysis-wrapper';
-        wrapper.id = 'analysis-wrapper-' + encodedId;
-        wrapper.innerHTML = `
-          <div class="thy-analysis-box" contenteditable="true" data-field="thyAnalysis" data-id="${encodedId}" onblur="handleEdit(this)" oninput="markEdited(this)">
-            <span class="thy-analysis-label">Analiz</span>
-            ${orig.thyAnalysis}
-          </div>
-          <button class="analysis-remove-btn" title="Analizi kaldır" onclick="removeAnalysis('${encodedId}')">✕</button>`;
-        const summaryEl2 = document.querySelector(`.article-summary[data-id="${encodedId}"]`);
-        if (summaryEl2) summaryEl2.insertAdjacentElement('afterend', wrapper);
-      } else {
-        const thyEl = wrapper.querySelector('.thy-analysis-box');
-        if (thyEl) thyEl.innerHTML = `<span class="thy-analysis-label">Analiz</span>${orig.thyAnalysis}`;
-      }
-    } else if (wrapper) {
-      wrapper.remove();
+    const wrapper = document.getElementById('analysis-wrapper-' + encodedId);
+    const newHtml = buildAnalysisWrapperHtml(article, artId);
+    if (wrapper) {
+      if (newHtml) wrapper.outerHTML = newHtml;
+      else wrapper.remove();
+    } else if (newHtml) {
+      const summaryEl2 = document.querySelector(`.article-summary[data-id="${encodedId}"]`);
+      if (summaryEl2) summaryEl2.insertAdjacentHTML('afterend', newHtml);
     }
   }
 
@@ -1477,7 +1581,8 @@ async function confirmAction() {
         removedArticles: articles.filter(a => removedIds.has(a.id || a.title)),
         removedCount: removedIds.size,
         totalSent: activeArticles.length,
-        unfeaturedArticleIds: isApprove ? Array.from(unfeaturedIds) : []
+        unfeaturedArticleIds: isApprove ? Array.from(unfeaturedIds) : [],
+        manualFeaturedArticleId: isApprove ? manualFeaturedId : null
       })
     });
 
