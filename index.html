@@ -2952,7 +2952,7 @@
 
     <!-- Ekonomik göstergeler -->
     <section class="dash-section" id="dash-sec-ekonomi">
-      <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">IMF WEO</span></h2>
+      <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">IMF WEO & Dünya Bankası</span></h2>
       <div class="dash-charts">
         <div class="dash-chart-card" id="dc-gdp-chart">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -2971,8 +2971,8 @@
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-gdp"></canvas></div>
           <div class="chart-legend">
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(29,111,232,0.72)"></span>Büyüme</span>
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.72)"></span>Küçülme</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(29,111,232,0.85)"></span>IMF WEO</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(16,185,129,0.85)"></span>Dünya Bankası</span>
             <span class="cl-item" id="gdp-legend-forecast" style="display:none"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
           </div>
         </div>
@@ -2993,14 +2993,95 @@
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-cpi"></canvas></div>
           <div class="chart-legend">
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(5,150,105,0.72)"></span>≤ %3 Düşük</span>
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(234,88,12,0.72)"></span>%3–%6 Orta</span>
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.72)"></span>> %6 Yüksek</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.85)"></span>IMF WEO</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(245,158,11,0.85)"></span>Dünya Bankası</span>
             <span class="cl-item" id="cpi-legend-forecast" style="display:none"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
           </div>
         </div>
+        <div class="dash-chart-card" id="dc-unemp-chart">
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            İşsizlik Oranı (%)
+            <select id="sel-unemp-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
+          <div class="dash-chart-meta">
+            <span id="unemp-meta-note">Yükleniyor…</span>
+          </div>
+          <div class="dash-chart-wrap short loading"><canvas id="chart-unemployment"></canvas></div>
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(99,102,241,0.85)"></span>IMF WEO</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(20,184,166,0.85)"></span>Dünya Bankası</span>
+          </div>
+        </div>
+        <div class="dash-chart-card" id="dc-ca-chart">
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            Cari Denge / GSYH (%)
+            <select id="sel-ca-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
+          <div class="dash-chart-meta">
+            <span id="ca-meta-note">Yükleniyor…</span>
+          </div>
+          <div class="dash-chart-wrap short loading"><canvas id="chart-current-account"></canvas></div>
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(139,92,246,0.85)"></span>IMF WEO</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(236,72,153,0.85)"></span>Dünya Bankası</span>
+          </div>
+        </div>
+        <div class="dash-chart-card" id="dc-gdpcap-chart">
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            Kişi Başı Gelir ($ USD)
+            <select id="sel-gdpcap-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
+          <div class="dash-chart-meta">
+            <span id="gdpcap-meta-note">Yükleniyor…</span>
+          </div>
+          <div class="dash-chart-wrap short loading"><canvas id="chart-gdp-per-capita"></canvas></div>
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(59,130,246,0.85)"></span>Dünya Bankası (Resmi Veri)</span>
+          </div>
+        </div>
+        <div class="dash-chart-card" id="dc-debt-chart">
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            Kamu Borcu / GSYH (%)
+            <select id="sel-debt-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
+          <div class="dash-chart-meta">
+            <span id="debt-meta-note">Yükleniyor…</span>
+          </div>
+          <div class="dash-chart-wrap short loading"><canvas id="chart-gov-debt"></canvas></div>
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(239,68,68,0.85)"></span>Dünya Bankası (Resmi Veri)</span>
+          </div>
+        </div>
       </div>
-      <div class="dash-section-note" id="imf-section-note">ⓘ IMF World Economic Outlook verileri yükleniyor… Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a></div>
+      <div class="dash-section-note" id="imf-section-note">ⓘ IMF WEO ve Dünya Bankası verileri yükleniyor… Kaynaklar: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a> & <a href="https://data.worldbank.org/" target="_blank" rel="noopener">data.worldbank.org</a></div>
     </section>
 
     <!-- Takip gereken endeksler -->
@@ -8450,12 +8531,11 @@ function barChart(id, labels, data, colors, opts = {}) {
   if (wrap) wrap.classList.remove('loading');
   if (wrap) wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
 
+  const chartDatasets = opts.datasets || [{ label: opts.label || '', data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }];
+
   if (existingChart && !opts.forceRecreate) {
     existingChart.data.labels = labels;
-    if (existingChart.data.datasets && existingChart.data.datasets[0]) {
-      existingChart.data.datasets[0].data = data;
-      if (colors) existingChart.data.datasets[0].backgroundColor = colors;
-    }
+    existingChart.data.datasets = chartDatasets;
     existingChart.update();
     return;
   }
@@ -8468,15 +8548,16 @@ function barChart(id, labels, data, colors, opts = {}) {
       const c = chart.ctx;
       chart.data.datasets.forEach((dataset, i) => {
         const meta = chart.getDatasetMeta(i);
+        if (meta.hidden) return;
         meta.data.forEach((bar, index) => {
           const val = dataset.data[index];
           if (val === null || val === undefined) return;
           c.fillStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? '#E5E7EB' : '#374151';
-          c.font = '600 10.5px Inter, sans-serif';
+          c.font = '600 10px Inter, sans-serif';
           c.textBaseline = 'middle';
           
           const isNeg = val < 0;
-          const pad = 6;
+          const pad = 5;
           // Position relative to bar end
           c.textAlign = isNeg ? 'right' : 'left';
           const x = isNeg ? bar.x - pad : bar.x + pad;
@@ -8487,26 +8568,30 @@ function barChart(id, labels, data, colors, opts = {}) {
     }
   };
 
-  const tooltipFooter = opts.tooltipFooter; // (index) => string|null
-  const onBarClick = opts.onClick;          // (index, event) => void
+  const tooltipFooter = opts.tooltipFooter; // (dsIdx, itemIdx) => string|null
+  const onBarClick = opts.onClick;          // (itemIdx, dsIdx, event) => void
   if (onBarClick) ctx.style.cursor = 'pointer';
 
   new Chart(ctx, {
     type: 'bar',
-    data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
+    data: { labels, datasets: chartDatasets },
     options: {
       ...CHART_DEFAULTS,
       indexAxis: 'y',
       interaction: { mode: 'nearest', axis: 'y', intersect: true },
-      layout: { padding: { left: 80, right: 60, top: 10, bottom: 10 } },
+      layout: { padding: { left: 80, right: 65, top: 10, bottom: 10 } },
       onClick: onBarClick ? (evt, els) => {
-        if (els && els.length) onBarClick(els[0].index, evt);
+        if (els && els.length) onBarClick(els[0].index, els[0].datasetIndex, evt);
       } : undefined,
       plugins: {
         ...CHART_DEFAULTS.plugins,
         tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
-          label: c => ' ' + (c.raw > 0 ? '+' : '') + c.raw.toFixed(1) + '%',
-          footer: tooltipFooter ? (items) => tooltipFooter(items[0]?.dataIndex) : undefined
+          title: items => {
+            const item = items[0];
+            return item ? `${item.label}${item.dataset.label ? ' (' + item.dataset.label + ')' : ''}` : '';
+          },
+          label: c => ' ' + (c.dataset.label ? c.dataset.label + ': ' : '') + (c.raw != null ? (c.raw > 0 ? '+' : '') + c.raw.toFixed(1) + '%' : '—'),
+          footer: tooltipFooter ? (items) => tooltipFooter(items[0]?.datasetIndex, items[0]?.dataIndex) : undefined
         } }
       },
       scales: {
@@ -11443,111 +11528,169 @@ async function loadDashboard() {
   // Cache last fetched IMF series per chart so popover can read it
   const _imfCache = {};
 
-  async function updateImfChart(indicator, selId, chartId, metaId, kind) {
+  async function updateEconChart(imfIndicator, wbIndicator, selId, chartId, metaId, kind) {
     const groupKey = document.getElementById(selId).value;
     const countries = WB_GROUPS[groupKey];
     const currentYear = new Date().getFullYear();
     try {
-      const data = await imfSeriesFetch(indicator, countries);
-      // For each country: pick the most recent year with a value, capped at currentYear (actual zone)
-      const latestByC = {};
-      const actualCap = currentYear - 1; // IMF WEO'da önceki yıl gerçekleşen, bu yıl tahmini
+      const [imfData, wbData] = await Promise.all([
+        imfSeriesFetch(imfIndicator, countries).catch(() => ({})),
+        wbSeriesFetch(wbIndicator, countries).catch(() => ({}))
+      ]);
+
+      const imfLatestByC = {};
+      const wbLatestByC = {};
+      const actualCap = currentYear - 1;
+
       countries.forEach(c => {
-        const series = data[c];
-        if (!series) return;
-        const yrs = Object.keys(series).map(Number).sort((a,b) => a - b);
-        // Önce actualCap (2025) veya öncesindeki en güncel gerçekleşeni ara
-        let chosen = null;
-        for (let i = yrs.length - 1; i >= 0; i--) {
-          if (yrs[i] <= actualCap && series[yrs[i]] != null) { chosen = yrs[i]; break; }
+        // IMF latest selection
+        const imfSeries = imfData[c];
+        if (imfSeries) {
+          const yrs = Object.keys(imfSeries).map(Number).sort((a,b) => a - b);
+          let chosen = null;
+          for (let i = yrs.length - 1; i >= 0; i--) {
+            if (yrs[i] <= actualCap && imfSeries[yrs[i]] != null) { chosen = yrs[i]; break; }
+          }
+          if (chosen == null && imfSeries[currentYear] != null) chosen = currentYear;
+          if (chosen == null) {
+            for (const y of yrs) { if (imfSeries[y] != null) { chosen = y; break; } }
+          }
+          if (chosen != null) imfLatestByC[c] = { year: chosen, value: imfSeries[chosen] };
         }
-        // Bulamazsan currentYear (tahmini) dene
-        if (chosen == null && series[currentYear] != null) chosen = currentYear;
-        // Hâlâ yoksa herhangi bir değer al
-        if (chosen == null) {
-          for (const y of yrs) { if (series[y] != null) { chosen = y; break; } }
+
+        // WB latest selection
+        const wbSeries = wbData[c];
+        if (wbSeries) {
+          const yrs = Object.keys(wbSeries).map(Number).sort((a,b) => a - b);
+          let chosen = null;
+          for (let i = yrs.length - 1; i >= 0; i--) {
+            if (wbSeries[yrs[i]] != null) { chosen = yrs[i]; break; }
+          }
+          if (chosen != null) wbLatestByC[c] = { year: chosen, value: wbSeries[chosen] };
         }
-        if (chosen != null) latestByC[c] = { year: chosen, value: series[chosen] };
       });
 
-      const dataC = countries.filter(c => latestByC[c]);
+      const dataC = countries.filter(c => imfLatestByC[c] || wbLatestByC[c]);
       if (!dataC.length) {
         chartErr(chartId, 'Veri alınamadı');
         document.getElementById(metaId).textContent = 'Veri alınamadı';
         return;
       }
 
-      const vals = dataC.map(c => latestByC[c].value);
-      let colors;
-      if (kind === 'gdp') {
-        colors = vals.map(v => v >= 0 ? 'rgba(29,111,232,0.72)' : 'rgba(230,57,70,0.72)');
-        if (groupKey === 'default' && latestByC.WLD) {
-          setCard('dc-gdp', latestByC.WLD.value.toFixed(1) + '%', null,
-            `Küresel büyüme (${latestByC.WLD.year})`, 'IMF WEO · Yıllık');
-        }
-      } else {
-        colors = vals.map(v => v > 6 ? 'rgba(230,57,70,0.72)' : v > 3 ? 'rgba(234,88,12,0.72)' : 'rgba(5,150,105,0.72)');
-      }
+      const imfVals = dataC.map(c => imfLatestByC[c]?.value ?? null);
+      const wbVals  = dataC.map(c => wbLatestByC[c]?.value ?? null);
 
-      // Hint for tooltip: indicate whether each bar has future forecasts
-      const futureCount = dataC.map(c => {
-        const s = data[c] || {};
-        return Object.keys(s).filter(y => Number(y) > currentYear && s[y] != null).length;
-      });
+      // Colors for datasets
+      const imfColor = kind === 'gdp' ? 'rgba(29, 111, 232, 0.85)' : 'rgba(230, 57, 70, 0.85)';
+      const wbColor  = kind === 'gdp' ? 'rgba(16, 185, 129, 0.85)' : 'rgba(245, 158, 11, 0.85)';
+
+      const datasets = [
+        {
+          label: 'IMF WEO',
+          data: imfVals,
+          backgroundColor: imfColor,
+          borderRadius: 4,
+          borderSkipped: false
+        },
+        {
+          label: 'Dünya Bankası',
+          data: wbVals,
+          backgroundColor: wbColor,
+          borderRadius: 4,
+          borderSkipped: false
+        }
+      ];
+
+      // Update Top Summary Card for Default Group
+      if (kind === 'gdp' && groupKey === 'default' && imfLatestByC.WLD) {
+        const wbWldStr = wbLatestByC.WLD ? ` · WB: ${wbLatestByC.WLD.value > 0 ? '+' : ''}${wbLatestByC.WLD.value.toFixed(1)}%` : '';
+        setCard('dc-gdp', imfLatestByC.WLD.value.toFixed(1) + '%', null,
+          `Küresel büyüme (IMF ${imfLatestByC.WLD.year}${wbWldStr})`, 'IMF WEO & WB');
+      }
 
       // Cache for popover
-      _imfCache[chartId] = { series: data, countries: dataC, kind, indicator };
+      _imfCache[chartId] = { imfSeries: imfData, wbSeries: wbData, dataC, kind, imfIndicator, wbIndicator, imfLatestByC, wbLatestByC };
 
-      barChart(chartId, dataC.map(c => WB_LABELS[c] || c), vals, colors, {
-        onClick: (idx) => openForecastPopover(chartId, dataC[idx]),
-        tooltipFooter: (idx) => {
-          if (idx == null) return null;
-          return futureCount[idx] > 0
-            ? `Tıkla → ${futureCount[idx]} yıl tahmin`
-            : 'Tıkla → tüm yıllar';
+      barChart(chartId, dataC.map(c => WB_LABELS[c] || c), null, null, {
+        datasets,
+        onClick: (itemIdx) => openForecastPopover(chartId, dataC[itemIdx]),
+        tooltipFooter: (dsIdx, itemIdx) => {
+          const c = dataC[itemIdx];
+          if (!c) return null;
+          const imfObj = imfLatestByC[c];
+          const wbObj  = wbLatestByC[c];
+          let txt = '';
+          if (imfObj) txt += `IMF: ${imfObj.year}`;
+          if (wbObj)  txt += `${txt ? ' | ' : ''}WB: ${wbObj.year}`;
+          return txt ? `Tıkla → Detay serisi (${txt})` : 'Tıkla → Detaylar';
         }
       });
 
-      // Latest year label: use the most common year across countries
-      const yearCounts = {};
-      dataC.forEach(c => { const y = latestByC[c].year; yearCounts[y] = (yearCounts[y]||0)+1; });
-      const dominantYear = Object.entries(yearCounts).sort((a,b) => b[1]-a[1])[0][0];
-      const domYearNum = Number(dominantYear);
-      const domLabel = domYearNum < currentYear ? 'gerçekleşen' : domYearNum === currentYear ? 'tahmini' : 'öngörü';
-      document.getElementById(metaId).textContent = `Son veri: ${dominantYear} (${domLabel}) · IMF WEO`;
+      // Metadata note update
+      const imfYears = dataC.map(c => imfLatestByC[c]?.year).filter(Boolean);
+      const wbYears  = dataC.map(c => wbLatestByC[c]?.year).filter(Boolean);
+      const imfDom   = imfYears.length ? imfYears.sort((a,b) => a-b)[imfYears.length-1] : '—';
+      const wbDom    = wbYears.length  ? wbYears.sort((a,b) => a-b)[wbYears.length-1]   : '—';
+      document.getElementById(metaId).textContent = `IMF WEO: ${imfDom} · Dünya Bankası: ${wbDom}`;
 
-      // Tahmin/Öngörü legend: sadece gösterilen yıllar gerçekleşen değilse göster
-      const legendId = kind === 'gdp' ? 'gdp-legend-forecast' : 'cpi-legend-forecast';
-      const legendEl = document.getElementById(legendId);
-      if (legendEl) legendEl.style.display = domYearNum >= currentYear ? '' : 'none';
-
-      // ── Update section note dynamically (runs after both charts load) ──
+      // Section note update
       const noteEl = document.getElementById('imf-section-note');
       if (noteEl) {
-        // Detect forecast years from the loaded data (any year > dominantYear with values)
-        let forecastMin = null, forecastMax = null;
-        Object.values(data).forEach(s => {
-          Object.keys(s).forEach(y => {
-            const n = Number(y);
-            if (s[y] != null && n > Number(dominantYear)) {
-              if (forecastMin == null || n < forecastMin) forecastMin = n;
-              if (forecastMax == null || n > forecastMax) forecastMax = n;
-            }
-          });
-        });
-        const forecastPart = forecastMin
-          ? `; <strong>${forecastMin}–${forecastMax}</strong> yılları IMF tahmini`
-          : '';
-        noteEl.innerHTML = `ⓘ Gösterilen değer <strong>${dominantYear}</strong> yılına aittir · ≤${currentYear-1} gerçekleşen, ${currentYear} tahmini${forecastMin ? `, ${forecastMin}–${forecastMax} öngörü` : ''}. Tüm veriler <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>'dan alınmaktadır. Çubuğa tıklayarak yıllık dizi görüntülenebilir.`;
+        noteEl.innerHTML = `ⓘ Kurumsal Karşılaştırma: <strong>IMF WEO Nisan 2026</strong> (tahmin & öngörüler) ve <strong>Dünya Bankası</strong> (resmi gerçekleşen veriler). Çubuklara tıklayarak detaylı yıllık serileri görüntüleyebilirsiniz.`;
       }
     } catch (e) {
-      console.error('[IMF chart error]', chartId, e?.message || e);
+      console.error('[Econ chart error]', chartId, e?.message || e);
       chartErr(chartId, 'Veri alınamadı');
       document.getElementById(metaId).textContent = 'Veri alınamadı';
-      const noteEl = document.getElementById('imf-section-note');
-      if (noteEl && noteEl.innerHTML.includes('yükleniyor')) {
-        noteEl.innerHTML = `ⓘ IMF WEO verileri yüklenemedi (${e?.message || 'ağ hatası'}). Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a>`;
+    }
+  }
+
+  async function updateWbSingleChart(indicator, selId, chartId, metaId, unit = '', color = 'rgba(59,130,246,0.85)') {
+    const groupKey = document.getElementById(selId).value;
+    const countries = WB_GROUPS[groupKey];
+    try {
+      const wbData = await wbSeriesFetch(indicator, countries).catch(() => ({}));
+      const wbLatestByC = {};
+
+      countries.forEach(c => {
+        const wbSeries = wbData[c];
+        if (wbSeries) {
+          const yrs = Object.keys(wbSeries).map(Number).sort((a,b) => a - b);
+          let chosen = null;
+          for (let i = yrs.length - 1; i >= 0; i--) {
+            if (wbSeries[yrs[i]] != null) { chosen = yrs[i]; break; }
+          }
+          if (chosen != null) wbLatestByC[c] = { year: chosen, value: wbSeries[chosen] };
+        }
+      });
+
+      const dataC = countries.filter(c => wbLatestByC[c]);
+      if (!dataC.length) {
+        chartErr(chartId, 'Veri alınamadı');
+        document.getElementById(metaId).textContent = 'Veri alınamadı';
+        return;
       }
+
+      const vals = dataC.map(c => wbLatestByC[c].value);
+
+      _imfCache[chartId] = { wbSeries: wbData, dataC, indicator, wbLatestByC, unit, single: true };
+
+      barChart(chartId, dataC.map(c => WB_LABELS[c] || c), vals, color, {
+        onClick: (itemIdx) => openForecastPopover(chartId, dataC[itemIdx]),
+        tooltipFooter: (dsIdx, itemIdx) => {
+          const c = dataC[itemIdx];
+          const wbObj = wbLatestByC[c];
+          return wbObj ? `Tıkla → Detay serisi (${wbObj.year})` : 'Tıkla → Detaylar';
+        }
+      });
+
+      const wbYears = dataC.map(c => wbLatestByC[c]?.year).filter(Boolean);
+      const wbDom   = wbYears.length ? wbYears.sort((a,b) => a-b)[wbYears.length-1] : '—';
+      document.getElementById(metaId).textContent = `Son Veri: ${wbDom} · Dünya Bankası`;
+    } catch (e) {
+      console.error('[WB single chart error]', chartId, e?.message || e);
+      chartErr(chartId, 'Veri alınamadı');
+      document.getElementById(metaId).textContent = 'Veri alınamadı';
     }
   }
 
@@ -11555,76 +11698,74 @@ async function loadDashboard() {
   function openForecastPopover(chartId, countryCode) {
     const cache = _imfCache[chartId];
     if (!cache) return;
-    const series = cache.series[countryCode] || {};
+    const imfSeries = (cache.imfSeries && cache.imfSeries[countryCode]) || {};
+    const wbSeries  = (cache.wbSeries  && cache.wbSeries[countryCode])  || {};
     const currentYear = new Date().getFullYear();
-    const allYears = Object.keys(series).map(Number).filter(y => series[y] != null).sort((a,b) => a-b);
+
+    const allYears = Array.from(new Set([
+      ...Object.keys(imfSeries).map(Number),
+      ...Object.keys(wbSeries).map(Number)
+    ])).filter(y => imfSeries[y] != null || wbSeries[y] != null).sort((a,b) => a-b);
+
     if (!allYears.length) return;
-    // Limit to a reasonable window: last 5 actual + all future
     const past = allYears.filter(y => y <= currentYear).slice(-5);
     const future = allYears.filter(y => y > currentYear);
     const shown = [...past, ...future];
 
     const name = WB_LABELS[countryCode] || countryCode;
-    const indicatorLabel = cache.kind === 'gdp' ? 'GDP Büyüme Oranı' : 'TÜFE Enflasyon';
-    const colorFor = (v) => {
-      if (cache.kind === 'gdp') return v >= 0 ? '#1D6FE8' : '#E63946';
-      if (v > 6) return '#E63946';
-      if (v > 3) return '#EA580C';
-      return '#059669';
+    const isSingle = cache.single;
+    const isUsd = cache.unit === '$';
+
+    let indicatorLabel = 'Ekonomik Gösterge';
+    if (cache.kind === 'gdp') indicatorLabel = 'GDP Büyüme Oranı (%)';
+    else if (cache.kind === 'cpi') indicatorLabel = 'TÜFE Enflasyon (%)';
+    else if (cache.kind === 'unemp') indicatorLabel = 'İşsizlik Oranı (%)';
+    else if (cache.kind === 'ca') indicatorLabel = 'Cari Denge / GSYH (%)';
+    else if (cache.unit === '$') indicatorLabel = 'Kişi Başı Gelir (USD)';
+    else indicatorLabel = 'Kamu Borcu / GSYH (%)';
+
+    const fmtVal = (v) => {
+      if (v == null) return '—';
+      if (isUsd) return '$' + Math.round(v).toLocaleString('tr-TR');
+      return (v > 0 ? '+' : '') + v.toFixed(1) + '%';
     };
 
-    // IMF WEO Nisan 2026: ≤2025 gerçekleşen/tahmin, 2026 tahmini, ≥2027 öngörü
-    // Mayıs 2026 itibarıyla 2025 verileri büyük ölçüde kesinleşmiştir
-    const ACTUAL_MAX = currentYear - 1;   // 2025
-    const ESTIMATE_YEAR = currentYear;    // 2026
-
-    const maxAbs = Math.max(...shown.map(y => Math.abs(series[y])), 1);
     const rows = shown.map(y => {
-      const v = series[y];
-      const isForecast = y >= ESTIMATE_YEAR;
-      const barW = (Math.abs(v) / maxAbs) * 100;
-      const sign = v > 0 ? '+' : '';
-      let yearLabel;
-      if (y <= ACTUAL_MAX)       yearLabel = `${y} <em class="fpop-tag actual">Gerçekleşen</em>`;
-      else if (y === ESTIMATE_YEAR) yearLabel = `${y} <em class="fpop-tag estimate">Tahmini</em>`;
-      else                       yearLabel = `${y} <em class="fpop-tag forecast">Öngörü</em>`;
-      return `<div class="fpop-row${isForecast ? ' fpop-future' : ''}">
-        <span class="fpop-year">${yearLabel}</span>
-        <span class="fpop-bar-track"><span class="fpop-bar-fill" style="width:${barW.toFixed(1)}%; background:${colorFor(v)}"></span></span>
-        <span class="fpop-val" style="color:${colorFor(v)}">${sign}${v.toFixed(1)}%</span>
+      const imfVal = imfSeries[y];
+      const wbVal  = wbSeries[y];
+      const isForecast = y >= currentYear;
+
+      let yearTag;
+      if (y < currentYear)       yearTag = `${y} <em class="fpop-tag actual">Gerçekleşen</em>`;
+      else if (y === currentYear) yearTag = `${y} <em class="fpop-tag estimate">Tahmini</em>`;
+      else                       yearTag = `${y} <em class="fpop-tag forecast">Öngörü</em>`;
+
+      if (isSingle) {
+        return `<div class="fpop-row${isForecast ? ' fpop-future' : ''}" style="grid-template-columns: 100px 1fr; font-size: 11.5px; padding: 3px 0;">
+          <span class="fpop-year">${yearTag}</span>
+          <span style="color:#1D6FE8; font-weight:600;">WB: ${fmtVal(wbVal)}</span>
+        </div>`;
+      }
+
+      return `<div class="fpop-row${isForecast ? ' fpop-future' : ''}" style="grid-template-columns: 100px 1fr 1fr; font-size: 11.5px; padding: 3px 0;">
+        <span class="fpop-year">${yearTag}</span>
+        <span style="color:${imfVal != null ? '#1D6FE8' : 'var(--text-3)'}; font-weight:600;">IMF: ${fmtVal(imfVal)}</span>
+        <span style="color:${wbVal  != null ? '#10B981' : 'var(--text-3)'}; font-weight:600;">WB: ${fmtVal(wbVal)}</span>
       </div>`;
     }).join('');
-
-    // Çizgi grafik düğmesi — hem GDP hem CPI için
-    const chartIconSvg = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="1,12 5,7 8,9 12,4 15,6"/>
-        <line x1="1" y1="15" x2="15" y2="15"/>
-      </svg>`;
-    const chartBtnHtml = `<button class="fpop-chart-btn" id="fpop-chart-trigger" aria-label="Çizgi grafik">${chartIconSvg} Çizgi grafik</button>`;
-
-    const futureNote = `
-      <div class="fpop-foot fpop-foot-row">
-        <span>Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>${future.length ? ' · ' + future.length + ' yıl öngörü' : ''}</span>
-        ${chartBtnHtml}
-      </div>`;
 
     const pop = document.getElementById('forecast-popover');
     pop.innerHTML = `
       <button class="fpop-close" aria-label="Kapat" onclick="document.getElementById('forecast-popover').classList.remove('open')">×</button>
       <div class="fpop-head">
         <div class="fpop-country">${name}</div>
-        <div class="fpop-indicator">${indicatorLabel}</div>
+        <div class="fpop-indicator">${indicatorLabel} ${isSingle ? '· Dünya Bankası' : '· IMF WEO vs Dünya Bankası'}</div>
       </div>
       <div class="fpop-rows">${rows}</div>
-      ${futureNote}`;
+      <div class="fpop-foot">
+        <span>Kaynaklar: ${isSingle ? '<a href="https://data.worldbank.org/" target="_blank" rel="noopener">Dünya Bankası API</a>' : '<a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO</a> · <a href="https://data.worldbank.org/" target="_blank" rel="noopener">Dünya Bankası API</a>'}</span>
+      </div>`;
     pop.classList.add('open');
-
-    // Grafik düğmesine tıklanınca popup içinde çizgi grafiğe geç
-    document.getElementById('fpop-chart-trigger')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showPopoverLineChart(pop, chartId, countryCode, series, name, indicatorLabel, cache.kind);
-    });
   }
 
   document.addEventListener('click', (e) => {
@@ -11643,11 +11784,20 @@ async function loadDashboard() {
     }
   });
 
-  document.getElementById('sel-gdp-group').addEventListener('change', () => updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp'));
-  document.getElementById('sel-cpi-group').addEventListener('change', () => updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi'));
+  // Event listener bindings & Initial calls for 6 Economic Charts
+  document.getElementById('sel-gdp-group')?.addEventListener('change', () => updateEconChart('NGDP_RPCH', 'NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp'));
+  document.getElementById('sel-cpi-group')?.addEventListener('change', () => updateEconChart('PCPIPCH',  'FP.CPI.TOTL.ZG',     'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi'));
+  document.getElementById('sel-unemp-group')?.addEventListener('change', () => updateEconChart('LUR',      'SL.UEM.TOTL.ZS',     'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', 'unemp'));
+  document.getElementById('sel-ca-group')?.addEventListener('change', () => updateEconChart('BCA_NGDPD',  'BN.CAB.XOKA.GD.ZS',  'sel-ca-group', 'chart-current-account', 'ca-meta-note', 'ca'));
+  document.getElementById('sel-gdpcap-group')?.addEventListener('change', () => updateWbSingleChart('NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', '$', 'rgba(59,130,246,0.85)'));
+  document.getElementById('sel-debt-group')?.addEventListener('change', () => updateWbSingleChart('GC.DOD.TOTL.GD.ZS', 'sel-debt-group', 'chart-gov-debt', 'debt-meta-note', '%', 'rgba(239,68,68,0.85)'));
 
-  updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
-  updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
+  updateEconChart('NGDP_RPCH', 'NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
+  updateEconChart('PCPIPCH',  'FP.CPI.TOTL.ZG',     'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
+  updateEconChart('LUR',      'SL.UEM.TOTL.ZS',     'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', 'unemp');
+  updateEconChart('BCA_NGDPD',  'BN.CAB.XOKA.GD.ZS',  'sel-ca-group', 'chart-current-account', 'ca-meta-note', 'ca');
+  updateWbSingleChart('NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', '$', 'rgba(59,130,246,0.85)');
+  updateWbSingleChart('GC.DOD.TOTL.GD.ZS', 'sel-debt-group', 'chart-gov-debt', 'debt-meta-note', '%', 'rgba(239,68,68,0.85)');
 
   // ── WCI (Drewry) Verisini Çek ───────────────────────────────────
   const WCI_DEFAULT_HISTORY = [
