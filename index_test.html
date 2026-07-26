@@ -14622,11 +14622,11 @@ async function loadDashboard() {
 
   // BAFI Verisini Çek ve Göster (veri tümüyle worker/KV üzerinden gelir)
   async function initBafiCard() {
-    return fetchCached('bafi_v6', async () => {
+    return fetchCached('bafi_v7', async () => {
       const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi?t=' + Date.now(), { cache: 'no-store' })
         .then(r => r.ok ? r.json() : null).catch(() => null);
       return { latest };
-    }, 1 * 60 * 60 * 1000).then(({ latest }) => {
+    }, 1 * 60 * 60 * 1000, d => !!(d && d.latest && d.latest.price)).then(({ latest }) => {
       _bafiLatest = latest;
 
       if (latest?.history?.dates) {
@@ -14650,10 +14650,10 @@ async function loadDashboard() {
 
   // FBX Verisini Çek ve Göster (veri tümüyle worker/KV üzerinden gelir)
   async function initFbxCard() {
-    return fetchCached('fbx_v3', async () => {
+    return fetchCached('fbx_v7', async () => {
       const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
       return { latest };
-    }, 1 * 60 * 60 * 1000).then(({ latest }) => {
+    }, 1 * 60 * 60 * 1000, d => !!(d && d.latest && d.latest.price)).then(({ latest }) => {
       if (latest && Array.isArray(latest.history)) {
         _fbxHistory = latest.history.slice().sort((a, b) => a.date.localeCompare(b.date));
       }
@@ -14690,7 +14690,7 @@ async function loadDashboard() {
 
   // IATA Verisini Çek ve Göster
   async function initIataCard() {
-    return fetchCached('iata_full_data_v2', async () => {
+    return fetchCached('iata_full_data_v7', async () => {
       const [history, latest] = await Promise.all([
         fetch('iata-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
         fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
@@ -15436,7 +15436,7 @@ async function loadDashboard() {
   let _thyCurrentPeriod = 'ytd';
 
   async function fetchThyStock(range = '1y') {
-    const cacheKey = `thy_stock_${range}`;
+    const cacheKey = `thy_stock_v7_${range}`;
     let ttl = 1 * 60 * 60 * 1000; // default (1y, 1m, 6m, ytd): 1h
     if (range === 'max') {
       ttl = 24 * 60 * 60 * 1000; // max: 24h
@@ -15468,7 +15468,7 @@ async function loadDashboard() {
       const d = await res.json();
       if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
       return d;
-    }, ttl);
+    }, ttl, d => !!(d && d.chart && d.chart.result && d.chart.result.length > 0));
   }
 
   function drawThyChartFromRaw(rawJSON, period) {
