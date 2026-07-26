@@ -1745,8 +1745,7 @@ export default {
         '4bb14c', '4bb14d', '4bb14e', '4bb14f', '4bb150', '4bb152', '4bb153', '4bb154', '4bb155', '4bb156', '4bb159', '4bb15a',
         // Airbus A330F
         '4ba88f', '4ba890', '4ba891', '4ba892', '4ba893', '4ba9ef', '4ba9f4', '4ba9f6', '4ba9f9', '4ba9fa',
-        // Wet-leased freighters (ACT, ULS, BBN, Atlas Air, etc. regularly flying under THY callsigns)
-        '4ba875', '4ba879', '4ba87b', '4ba87d', '4bae23', '4baa96',
+        // Dedicated wet-leased freighters (ULS Cargo, BBN Airlines, Atlas Air)
         '4bb0b2', // TC-LER (A310-300F - ULS Cargo)
         '4b9c63', // TC-GCC (A321-200 P2F - BBN Airlines)
         '4b9df5', // TC-GOU (A330-300 P2F - ULS Cargo)
@@ -1754,38 +1753,58 @@ export default {
         'a54535'  // N439GT (B747-400F - Atlas Air)
       ]);
 
-      function determineFlightType(icao24, flightNum, details) {
-        const hex = icao24.toLowerCase();
-        
-        // 1. If it's a known dedicated or wet-leased freighter hex code, it's cargo.
+      function determineFlightType(icao24, callsign, details) {
+        const hex = (icao24 || '').toLowerCase();
+        const cs = (callsign || '').trim().toUpperCase();
+
+        // 1. THY passenger flights use Eurocontrol ATC alphanumeric callsigns (e.g. THY9UG, THY12A, THY72X).
+        // Turkish Cargo flights NEVER use trailing letters in ATC callsigns (they always use THY6xxx).
+        if (/^THY\d+[A-Z]+$/i.test(cs)) {
+          return 'pax';
+        }
+
+        // 2. Turkish Cargo commercial flight number block range (6000 - 6999)
+        const numMatch = cs.match(/^THY(\d+)$/i);
+        if (numMatch) {
+          const flightNum = parseInt(numMatch[1], 10);
+          if (flightNum >= 6000 && flightNum <= 6999) {
+            return 'cargo';
+          }
+          if (flightNum < 6000 || flightNum >= 7000) {
+            if (!TURKISH_CARGO_HEX.has(hex)) {
+              return 'pax';
+            }
+          }
+        }
+
+        // 3. Known dedicated freighter aircraft hex codes (Boeing 777F, Airbus A330F, wet-leased freighters)
         if (TURKISH_CARGO_HEX.has(hex)) {
           return 'cargo';
         }
-        
-        // 2. If it has aircraft details, we can check if it's explicitly a freighter/cargo aircraft
+
+        // 4. Check aircraft details (model/type) if available
         if (details) {
           const type = (details.icaoType || details.type || '').toUpperCase();
           if (type.endsWith('F') && type !== 'B38M' && type !== 'B39M') {
             return 'cargo';
           }
           const desc = (details.type || '').toLowerCase();
-          if (desc.includes('freighter') || desc.includes('cargo')) {
+          if (desc.includes('freighter') || desc.includes('cargo') || desc.includes('p2f')) {
             return 'cargo';
           }
         }
-        
-        // 3. Fallback to Turkish Cargo flight number block range (6000 - 6499)
-        const isCargoRange = (flightNum >= 6000 && flightNum <= 6499);
-        return isCargoRange ? 'cargo' : 'pax';
+
+        return 'pax';
       }
 
       // OpenSky'nin state vektöründe Turkish Airlines ICAO çağrı kodu (THY)
       // gelir. Kullanıcıya gösterilecek ticari uçuş numarası ise TK'dır.
-      // Bu dönüşümü tek yerde yapmak, hem liste hem de API tüketicileri için
-      // THY6354 / TK6354 karışıklığını engeller.
       function toCommercialFlightNumber(callsign) {
-        const match = String(callsign || '').trim().toUpperCase().match(/^THY(\d{1,4})$/);
-        return match ? `TK${match[1]}` : null;
+        const cs = String(callsign || '').trim().toUpperCase();
+        if (cs.startsWith('THY')) {
+          return 'TK' + cs.slice(3);
+        }
+        return null;
       }
 
       async function computeBaseCargoFlights() {
@@ -1802,9 +1821,6 @@ export default {
         for (const s of states) {
           const callsign = (s[1] || '').trim();
           if (!callsign.startsWith('THY')) continue;
-          const flightNumMatch = callsign.match(/^THY(\d+)/);
-          if (!flightNumMatch) continue;
-          const flightNum = parseInt(flightNumMatch[1], 10);
           const [icao24, , origin_country, , last_contact, longitude, latitude, baro_altitude, on_ground, velocity, true_track, vertical_rate, , geo_altitude, squawk] = s;
           if (on_ground || latitude == null || longitude == null) continue;
           allFlights.push({
@@ -1813,7 +1829,7 @@ export default {
             altitude: baro_altitude, geoAltitude: geo_altitude, velocity, track: true_track,
             verticalRate: vertical_rate, squawk: squawk || null, originCountry: origin_country || null,
             lastContact: last_contact,
-            type: determineFlightType(icao24, flightNum, null),
+            type: determineFlightType(icao24, callsign, null),
           });
         }
 
@@ -2472,9 +2488,7 @@ export default {
               const acDetails = await fetchAircraftDetailsFromAdsbdb(f.icao24);
               if (acDetails) {
                 f.aircraftDetails = acDetails;
-                const flightNumMatch = f.callsign.match(/^THY(\d+)/);
-                const flightNum = flightNumMatch ? parseInt(flightNumMatch[1], 10) : 0;
-                f.type = determineFlightType(f.icao24, flightNum, acDetails);
+                f.type = determineFlightType(f.icao24, f.callsign, acDetails);
                 cacheUpdated = true;
               }
             } catch (_) {}
@@ -2560,9 +2574,7 @@ export default {
           }
           
           // Re-evaluate type now that details may have been populated from cache/KV
-          const flightNumMatch = f.callsign.match(/^THY(\d+)/);
-          const flightNum = flightNumMatch ? parseInt(flightNumMatch[1], 10) : 0;
-          f.type = determineFlightType(f.icao24, flightNum, f.aircraftDetails);
+          f.type = determineFlightType(f.icao24, f.callsign, f.aircraftDetails);
         }
 
         // Re-calculate counts in case types were corrected

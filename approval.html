@@ -336,6 +336,32 @@
     border-color: var(--red);
     color: var(--red);
   }
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .unfeature-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    font-family: Aptos, 'Segoe UI', Arial, Helvetica, sans-serif;
+    padding: 0 10px;
+    height: 28px;
+    border-radius: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    letter-spacing: 0.2px;
+  }
+  .unfeature-btn:hover {
+    background: rgba(200,16,46,0.1);
+    border-color: var(--red);
+    color: var(--red);
+  }
   .article-summary {
     font-size: 14px;
     color: #b0b8c8;
@@ -699,6 +725,57 @@
   .theme-btn:hover { border-color: var(--text-muted); color: var(--text); }
   .theme-btn svg { width: 16px; height: 16px; }
 
+  /* ─── FORMAT TOOLBAR (metin biçimlendirme) ─── */
+  .format-toolbar {
+    position: fixed;
+    display: none;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 5px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.35), 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 500;
+    gap: 3px;
+    align-items: center;
+  }
+  .format-toolbar.open { display: flex; }
+  .format-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.12s, transform 0.08s;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  .format-btn:hover { background: var(--border); }
+  .format-btn:active { transform: scale(0.92); }
+  .format-btn.f-bold { font-weight: 800; }
+  .format-btn.f-thin { font-weight: 400; font-style: normal; }
+  .format-btn.f-red { color: var(--red); font-weight: 800; }
+  .format-btn.f-black { color: var(--text); font-weight: 800; }
+  .format-btn.f-red .format-swatch { background: var(--red); }
+  .format-swatch {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--text);
+    border: 1px solid var(--border);
+  }
+  .format-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--border);
+    margin: 0 3px;
+    flex-shrink: 0;
+  }
+
   @media (max-width: 768px) {
     .sidebar { display: none; }
     .main { padding: 16px; }
@@ -773,6 +850,15 @@
   </div>
 </div>
 
+<!-- FORMAT TOOLBAR -->
+<div class="format-toolbar" id="format-toolbar">
+  <button class="format-btn f-bold" title="Kalın" onmousedown="event.preventDefault()" onclick="fmtBold()">B</button>
+  <button class="format-btn f-thin" title="İnce" onmousedown="event.preventDefault()" onclick="fmtThin()">T</button>
+  <div class="format-divider"></div>
+  <button class="format-btn f-red" title="Kırmızı" onmousedown="event.preventDefault()" onclick="fmtColor('#C8102E')"><span class="format-swatch"></span></button>
+  <button class="format-btn f-black" title="Siyah" onmousedown="event.preventDefault()" onclick="fmtColor('')"><span class="format-swatch"></span></button>
+</div>
+
 <!-- SUCCESS -->
 <div class="success-screen" id="success-screen">
   <div class="success-icon" id="success-icon">✅</div>
@@ -810,9 +896,11 @@ const SOURCE_META = {
 let articles = [];
 let originalArticles = {};
 let removedIds = new Set();
+let unfeaturedIds = new Set();
 let currentAction = null;
 let resumeUrl = null;
 let summaryId = null;
+let activeEditEl = null;
 
 // ─── INIT ───
 function getParams() {
@@ -971,7 +1059,7 @@ function computeImportance(a) {
   return score;
 }
 function getFeaturedArticle() {
-  const active = articles.filter(a => !removedIds.has(a.id || a.title));
+  const active = articles.filter(a => !removedIds.has(a.id || a.title) && !unfeaturedIds.has(a.id || a.title));
   let feat = null;
   active.forEach(a => {
     if (isThyArticle(a) && (!feat || computeImportance(a) > computeImportance(feat))) feat = a;
@@ -979,7 +1067,14 @@ function getFeaturedArticle() {
   return feat;
 }
 
-function buildCardHtml(a, color, extraClass) {
+function unfeatureArticle(encodedId) {
+  const artId = decodeURIComponent(encodedId);
+  unfeaturedIds.add(artId);
+  renderArticles();
+  renderSidebar();
+}
+
+function buildCardHtml(a, color, extraClass, isFeatured) {
       const artId = a.id || a.title;
       const sentiment = a.sentiment || '';
       // Analiz varsa nötr badge gösterme — analiz zaten etkiyi açıklıyor
@@ -1038,7 +1133,10 @@ function buildCardHtml(a, color, extraClass) {
                 <div class="article-title" contenteditable="true" data-field="title" data-id="${encodeURIComponent(artId)}" onblur="handleEdit(this)" oninput="markEdited(this)"><a href="${a.link||'#'}" target="_blank" style="color:inherit;text-decoration:none;">${a.title||'Başlık yok'}</a></div>
                 ${pd ? `<div class="article-date">${pd}</div>` : ''}
               </div>
-              <button class="remove-btn" title="Kaldır" onclick="removeArticle('${encodeURIComponent(artId)}')">✕</button>
+              <div class="card-actions">
+                ${isFeatured ? `<button class="unfeature-btn" title="Bu haberi manşetten çıkar, normal kategorisine geri koy" onclick="unfeatureArticle('${encodeURIComponent(artId)}')">▾ Manşetten çıkar</button>` : ''}
+                <button class="remove-btn" title="Kaldır" onclick="removeArticle('${encodeURIComponent(artId)}')">✕</button>
+              </div>
             </div>
             <div class="article-summary" contenteditable="true" data-field="summary" data-id="${encodeURIComponent(artId)}" onblur="handleEdit(this)" oninput="markEdited(this)">${a.summary||''}</div>
             ${thyHtml}
@@ -1073,7 +1171,7 @@ function renderArticles() {
         <div class="cat-color-bar" style="background:var(--red)"></div>
         <span class="cat-title" style="color:var(--red)">${getCatIcon(fCat)} ${fCat}</span>
       </div>
-      ${buildCardHtml(featured, getCatColor(fCat), ' featured-card')}
+      ${buildCardHtml(featured, getCatColor(fCat), ' featured-card', true)}
     `;
     main.appendChild(section);
   }
@@ -1267,6 +1365,68 @@ function updateAfterRemove() {
   }
 }
 
+// ─── FORMAT TOOLBAR (metin biçimlendirme: kalın/ince, kırmızı/siyah) ───
+function initFormatToolbar() {
+  document.addEventListener('mouseup', handleSelectionForToolbar);
+  document.addEventListener('keyup', handleSelectionForToolbar);
+  document.addEventListener('mousedown', (e) => {
+    const tb = document.getElementById('format-toolbar');
+    if (tb && !tb.contains(e.target)) tb.classList.remove('open');
+  });
+}
+
+function handleSelectionForToolbar(e) {
+  const tb = document.getElementById('format-toolbar');
+  if (e.target && e.target.closest && e.target.closest('.format-toolbar')) return;
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || sel.rangeCount === 0 || sel.toString().trim() === '') {
+    tb.classList.remove('open');
+    return;
+  }
+  const anchorNode = sel.anchorNode;
+  const container = anchorNode && (anchorNode.nodeType === 1 ? anchorNode : anchorNode.parentElement);
+  const editable = container ? container.closest('.article-summary, .thy-analysis-box') : null;
+  if (!editable) { tb.classList.remove('open'); return; }
+  activeEditEl = editable;
+  const range = sel.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  if (rect.width === 0 && rect.height === 0) { tb.classList.remove('open'); return; }
+  tb.classList.add('open');
+  const tbRect = tb.getBoundingClientRect();
+  let left = rect.left + rect.width / 2 - tbRect.width / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - tbRect.width - 8));
+  let top = rect.top - tbRect.height - 8;
+  if (top < 4) top = rect.bottom + 8;
+  tb.style.left = left + 'px';
+  tb.style.top = top + 'px';
+}
+
+function syncActiveEdit() {
+  if (activeEditEl) { handleEdit(activeEditEl); markEdited(activeEditEl); }
+}
+
+function fmtBold() {
+  if (!document.queryCommandState('bold')) document.execCommand('bold');
+  syncActiveEdit();
+}
+
+function fmtThin() {
+  if (document.queryCommandState('bold')) document.execCommand('bold');
+  syncActiveEdit();
+}
+
+function fmtColor(color) {
+  document.execCommand('styleWithCSS', false, true);
+  if (color) {
+    document.execCommand('foreColor', false, color);
+    if (!document.queryCommandState('bold')) document.execCommand('bold');
+  } else {
+    // Siyah: sadece rengi varsayılana döndür, kalın/ince durumuna dokunma
+    document.execCommand('foreColor', false, 'inherit');
+  }
+  syncActiveEdit();
+}
+
 // ─── MODAL ───
 function openModal(type) {
   currentAction = type;
@@ -1316,7 +1476,8 @@ async function confirmAction() {
         editedArticles: isApprove ? activeArticles : [],
         removedArticles: articles.filter(a => removedIds.has(a.id || a.title)),
         removedCount: removedIds.size,
-        totalSent: activeArticles.length
+        totalSent: activeArticles.length,
+        unfeaturedArticleIds: isApprove ? Array.from(unfeaturedIds) : []
       })
     });
 
@@ -1362,6 +1523,7 @@ function toggleTheme() {
 
 // ─── START ───
 initTheme();
+initFormatToolbar();
 init();
 </script>
 </body>
