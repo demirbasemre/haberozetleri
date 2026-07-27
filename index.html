@@ -24614,10 +24614,14 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Girdiğiniz şifre geçersizdir.'); 
       }
       const data = await res.json();
-      if (res.status !== 202 && !res.ok) {
+      if (res.status !== 202 && res.status !== 409 && !res.ok) {
         document.getElementById('aircraft-progress-modal').style.display = 'none';
         throw new Error(data.message || 'Sunucu isteği reddetti.');
       }
+      if (res.status === 409) {
+        console.log('[AC Update] Zaten arka planda sürmekte olan taramaya bağlanılıyor...');
+      }
+
       localStorage.setItem('fleet_update_password', pwd);
 
       const t0 = Date.now();

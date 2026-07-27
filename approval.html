@@ -494,6 +494,51 @@
   }
   .websearch-remove-btn:hover { opacity: 1; color: #0056b3; }
 
+  /* Web araması yeniden üretme (manuel prompt) */
+  .websearch-regen-box {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: rgba(120,120,140,0.06);
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+  }
+  [data-theme="light"] .websearch-regen-box { background: rgba(120,120,140,0.05); }
+  .websearch-regen-prompt {
+    width: 100%;
+    min-height: 54px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 5px 7px;
+    box-sizing: border-box;
+  }
+  .websearch-regen-prompt:focus { color: var(--text); outline: none; border-color: #4a90d9; }
+  .websearch-regen-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .websearch-regen-btn {
+    font-size: 11px;
+    font-weight: 700;
+    color: #4a90d9;
+    background: rgba(0,86,179,0.08);
+    border: 1px solid rgba(74,144,217,0.4);
+    border-radius: 4px;
+    padding: 4px 9px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .websearch-regen-btn:hover:not(:disabled) { background: rgba(0,86,179,0.16); }
+  .websearch-regen-btn:disabled { opacity: 0.5; cursor: default; }
+  .websearch-regen-status { font-size: 11px; color: var(--text-muted); }
+
   /* Source rows */
   .sources-row {
     display: flex;
@@ -960,6 +1005,7 @@ let unfeaturedIds = new Set();
 let manualFeaturedId = null;
 let currentAction = null;
 let resumeUrl = null;
+let n8nBase = '';
 let summaryId = null;
 let activeEditEl = null;
 
@@ -980,7 +1026,6 @@ async function init() {
 
   // n8n base URL'ini resumeUrl'den çıkar
   // resumeUrl format: https://n8n.emredemirbas.com/webhook-waiting/...
-  let n8nBase = '';
   try {
     const u = new URL(ru);
     n8nBase = u.origin;
@@ -1150,6 +1195,33 @@ function promoteArticle(encodedId) {
   renderSidebar();
 }
 
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function stripHtml(str) {
+  return String(str || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function buildDefaultWebSearchPrompt(a) {
+  const title = a.title || '';
+  const analysis = stripHtml(a.thyAnalysis || '');
+  return `Turkish Cargo (Turkish Airlines kargo birimi) açısından şu haberin stratejik etkisini destekleyen, güncel ve somut bir bulgu bul (örnek: rakip filo büyüklüğü, güzergah kapasitesi, pazar payı istatistiği, ilgili düzenleme). Haber başlığı: ${title}. Mevcut analiz: ${analysis}. Bulguyu Türkçe, 1-2 cümlede ve öz şekilde yaz; sadece bulgu cümlesini yaz, başka açıklama ekleme.`;
+}
+
+function buildRegenerateBoxHtml(a, artId) {
+  const encodedId = encodeURIComponent(artId);
+  const prompt = buildDefaultWebSearchPrompt(a);
+  return `
+    <div class="websearch-regen-box" id="regen-box-${encodedId}">
+      <textarea class="websearch-regen-prompt" id="regen-prompt-${encodedId}" spellcheck="false">${escapeHtml(prompt)}</textarea>
+      <div class="websearch-regen-actions">
+        <button class="websearch-regen-btn" onclick="regenerateWebSearch('${encodedId}')">🔁 Web Aramasını Yeniden Üret</button>
+        <span class="websearch-regen-status" id="regen-status-${encodedId}"></span>
+      </div>
+    </div>`;
+}
+
 function buildWebSearchHtml(a, artId) {
   if (!(a.usedWebSearch && a.webSearchDetails && String(a.webSearchDetails).trim())) return '';
   const encodedId = encodeURIComponent(artId);
@@ -1176,6 +1248,7 @@ function buildAnalysisWrapperHtml(a, artId) {
         ${a.thyAnalysis}
       </div>
       ${buildWebSearchHtml(a, artId)}
+      ${buildRegenerateBoxHtml(a, artId)}
       <button class="analysis-remove-btn" title="Analizi kaldır" onclick="removeAnalysis('${encodedId}')">✕</button>
     </div>`;
 }
@@ -1398,6 +1471,49 @@ function removeWebSearch(encodedId) {
   const wrapper = document.getElementById('websearch-wrapper-' + encodedId);
   if (wrapper) wrapper.remove();
   markEdited({ dataset: { id: encodedId } });
+}
+
+async function regenerateWebSearch(encodedId) {
+  const artId = decodeURIComponent(encodedId);
+  const article = articles.find(a => (a.id || a.title) === artId);
+  if (!article) return;
+
+  const promptEl = document.getElementById('regen-prompt-' + encodedId);
+  const statusEl = document.getElementById('regen-status-' + encodedId);
+  const btn = document.querySelector(`#regen-box-${CSS.escape(encodedId)} .websearch-regen-btn`);
+  const prompt = promptEl ? promptEl.value.trim() : '';
+  if (!prompt) { if (statusEl) statusEl.textContent = 'Prompt boş olamaz.'; return; }
+  if (!n8nBase) { if (statusEl) statusEl.textContent = 'n8n bağlantısı yok.'; return; }
+
+  if (btn) btn.disabled = true;
+  if (statusEl) statusEl.textContent = 'Üretiliyor...';
+
+  try {
+    const resp = await fetch(`${n8nBase}/webhook/regenerate-websearch`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: article.title, thyAnalysis: stripHtml(article.thyAnalysis), prompt })
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+
+    if (!data.usedWebSearch || !data.webSearchDetails) {
+      if (statusEl) statusEl.textContent = 'Sonuç bulunamadı, tekrar deneyin.';
+      if (btn) btn.disabled = false;
+      return;
+    }
+
+    article.usedWebSearch = true;
+    article.webSearchDetails = data.webSearchDetails;
+    article.webSearchSource = data.webSearchSource || '';
+
+    const wrapper = document.getElementById('analysis-wrapper-' + encodedId);
+    if (wrapper) wrapper.outerHTML = buildAnalysisWrapperHtml(article, artId);
+    markEdited({ dataset: { id: encodedId } });
+  } catch (e) {
+    if (statusEl) statusEl.textContent = 'Hata: ' + e.message;
+    if (btn) btn.disabled = false;
+  }
 }
 
 function revertArticle(encodedId) {
