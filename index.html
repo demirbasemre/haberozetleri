@@ -24035,7 +24035,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!acLatest[a.airline] || t > acLatest[a.airline].t) acLatest[a.airline] = { d: a.updated, t };
       }
     }
-    const rows = Object.entries(FLEET_CMP_DATA).map(([code, d]) => {
+    const rows = Object.entries(FLEET_CMP_DATA).filter(([code, d]) => !code.startsWith('_') && d && typeof d === 'object').map(([code, d]) => {
+
       const fleetDate = d.planespotters_last_updated || '';
       let fleetT = fleetDate ? new Date(fleetDate).getTime() : -Infinity;
       if (isNaN(fleetT)) fleetT = -Infinity;
@@ -25325,7 +25326,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<td>${totals[c.key].a || '—'}</td><td>${totals[c.key].p || '—'}</td><td>${totals[c.key].t || '—'}</td>`;
     }).join('');
     tfoot.innerHTML = `<tr>
-      <td>Toplam (${Object.keys(FLEET_CMP_DATA).length} havayolu)</td>
+      <td>Toplam (${Object.keys(FLEET_CMP_DATA).filter(k => !k.startsWith('_')).length} havayolu)</td>
+
       ${footCatCells}
       <td>${totals.pt}</td>
       <td>+${totals.po}</td>
