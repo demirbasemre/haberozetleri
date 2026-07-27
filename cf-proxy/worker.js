@@ -1708,7 +1708,7 @@ export default {
     }
 
     // ── /cargo-flights Canlı THY Kargo Uçakları Rotası ──
-    if (urlObj.pathname === '/cargo-flights') {
+    if (urlObj.pathname === '/cargo-flights' || urlObj.pathname === '/cargo-flight-detail') {
       const forceDirect = urlObj.searchParams.get('direct') === '1';
       const cacheKey = new Request('https://internal.cache/cargo-flights-v1');
       const kvKey = 'cargo_flights_cache_v1';
@@ -1888,6 +1888,24 @@ export default {
                   Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
         const brng = Math.atan2(y, x) * 180 / Math.PI;
         return (brng + 360) % 360;
+      }
+
+      // Büyük daire (great-circle) enterpolasyonu — sinyal kaybı sonrası uçağı
+      // son bilinen konumdan varış noktasına doğru rota üzerinde ilerletmek için.
+      function interpolateGreatCircle(lat1, lon1, lat2, lon2, fraction) {
+        const toRad = d => d * Math.PI / 180;
+        const toDeg = r => r * 180 / Math.PI;
+        const phi1 = toRad(lat1), lam1 = toRad(lon1), phi2 = toRad(lat2), lam2 = toRad(lon2);
+        const angularDist = 2 * Math.asin(Math.sqrt(
+          Math.sin((phi2 - phi1) / 2) ** 2 + Math.cos(phi1) * Math.cos(phi2) * Math.sin((lam2 - lam1) / 2) ** 2
+        ));
+        if (angularDist === 0) return { lat: lat1, lon: lon1 };
+        const a = Math.sin((1 - fraction) * angularDist) / Math.sin(angularDist);
+        const b = Math.sin(fraction * angularDist) / Math.sin(angularDist);
+        const x = a * Math.cos(phi1) * Math.cos(lam1) + b * Math.cos(phi2) * Math.cos(lam2);
+        const y = a * Math.cos(phi1) * Math.sin(lam1) + b * Math.cos(phi2) * Math.sin(lam2);
+        const z = a * Math.sin(phi1) + b * Math.sin(phi2);
+        return { lat: toDeg(Math.atan2(z, Math.sqrt(x * x + y * y))), lon: toDeg(Math.atan2(y, x)) };
       }
 
       function isValidRouteForCallsign(callsign, depIcao, arrIcao) {
@@ -2374,128 +2392,140 @@ export default {
         return null;
       }
 
+      // Rota tespiti (hafızadan/API'den teyitli). Yalnızca cargo için arka planda
+      // proaktif çağrılır (bkz. enrichInBackground) — yolcu uçuşları için ise
+      // /cargo-flight-detail ucundan isteğe bağlı (kullanıcı detay panelini
+      // açtığında) çağrılır; ~130+ yolcu uçuşunun hepsini her döngüde taramak
+      // FlareSolverr/scraping yükünü ve site sınırlaması riskini büyütür.
+      async function resolveFlightRoute(f) {
+        if (f.dep) return false;
+        const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon, f.track);
+        if (learnedRoute) {
+          f.dep = learnedRoute.dep;
+          f.arr = learnedRoute.arr;
+          return true;
+        }
+        let updated = false;
+        try {
+          let apiRoute = null;
+          let valid = false;
+
+          // Yalnızca ücretsiz ve anahtarsız kaynaklar kullanılır.
+          // 1. FlightRadar24 (FlareSolverr proxy destekli)
+          if (!valid) {
+            const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
+            if (frRoute && frRoute.dep && frRoute.arr) {
+              if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
+                apiRoute = { ...frRoute, source: "flightradar24" };
+                valid = true;
+              }
+            }
+          }
+
+          // 2. FlightAware (FlareSolverr proxy destekli)
+          if (!valid) {
+            const faRoute = await fetchRouteFromFlightAware(f.callsign);
+            if (faRoute && faRoute.dep && faRoute.arr) {
+              if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
+                apiRoute = { ...faRoute, source: "flightaware" };
+                valid = true;
+              }
+            }
+          }
+
+          // 3. ADSBDB (ücretsiz, çağrı kodundan kalkış/varış)
+          if (!valid) {
+            const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
+            if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
+              if (isRouteConsistent(f, adsbRoute.dep, adsbRoute.arr)) {
+                apiRoute = { ...adsbRoute, source: "adsbdb" };
+                valid = true;
+              }
+            }
+          }
+
+          // 4. ADSBExchange (re-api canlı çağrı araması)
+          if (!valid) {
+            const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
+            if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
+              if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
+                apiRoute = { ...adsbxRoute, source: "adsbexchange" };
+                valid = true;
+              }
+            }
+          }
+
+          // 5. OpenSky'nin ücretsiz rota endpoint'i
+          if (!valid) {
+            const osRoute = await fetchRouteFromOpenSky(f.callsign);
+            if (osRoute && osRoute.dep && osRoute.arr) {
+              if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
+                apiRoute = { ...osRoute, source: 'opensky' };
+                valid = true;
+              }
+            }
+          }
+
+          // 6. Yerel, doğrulanmış Turkish Cargo rota tablosu
+          if (!valid) {
+            const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
+            if (candidates) {
+              for (const c of candidates) {
+                const depDb = AIRPORT_DB[c.dep.toUpperCase()];
+                const arrDb = AIRPORT_DB[c.arr.toUpperCase()];
+                if (depDb && arrDb) {
+                  if (isRouteConsistent(f, depDb, arrDb)) {
+                    apiRoute = { dep: depDb, arr: arrDb, source: 'local' };
+                    valid = true;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+
+          if (valid && apiRoute && apiRoute.dep && apiRoute.arr) {
+            f.dep = apiRoute.dep;
+            f.arr = apiRoute.arr;
+            f.routeSource = apiRoute.source || 'verified';
+            f.routeVerifiedAt = Math.floor(Date.now() / 1000);
+            updated = true;
+            // Başarılıysa KV'ye öğrenilmiş rota olarak kaydet
+            await saveLearnedRoute(f.callsign, apiRoute);
+          }
+        } catch (_) {}
+        // Dış kaynaklara nazik olmak için istek sonrası bekleme (KV hit'te bu yola girilmez)
+        await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
+        return updated;
+      }
+
+      // Uçak detaylarını (tescil, model, fotoğraf) çeker. Aynı şekilde cargo için
+      // arka planda proaktif, yolcu için /cargo-flight-detail'den isteğe bağlı çağrılır.
+      async function resolveAircraftDetails(f) {
+        if (f.aircraftDetails) return false;
+        let updated = false;
+        try {
+          const acDetails = await fetchAircraftDetailsFromAdsbdb(f.icao24);
+          if (acDetails) {
+            f.aircraftDetails = acDetails;
+            f.type = determineFlightType(f.icao24, f.callsign, acDetails);
+            updated = true;
+          }
+        } catch (_) {}
+        await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
+        return updated;
+      }
+
       async function enrichInBackground(data, cachedFlights) {
         const { flights } = data;
         const cargoFlights = flights.filter(f => f.type === 'cargo');
         let cacheUpdated = false;
-        
+
         for (const f of cargoFlights) {
-          // 1. Rota tespiti (Hafızadan/API'den teyitli)
-          if (!f.dep) {
-            // Önce kendi KV'mizden öğrenilmiş rotaları kontrol et
-            const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon, f.track);
-            if (learnedRoute) {
-              f.dep = learnedRoute.dep;
-              f.arr = learnedRoute.arr;
-              cacheUpdated = true;
-            } else {
-              // KV'de yoksa API'den çek ve teyit et
-              try {
-                let apiRoute = null;
-                let valid = false;
-
-                // Yalnızca ücretsiz ve anahtarsız kaynaklar kullanılır. Bir rota
-                // 1. FlightRadar24 (FlareSolverr proxy destekli)
-                if (!valid) {
-                  const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
-                  if (frRoute && frRoute.dep && frRoute.arr) {
-                    if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
-                      apiRoute = { ...frRoute, source: "flightradar24" };
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 2. FlightAware (FlareSolverr proxy destekli)
-                if (!valid) {
-                  const faRoute = await fetchRouteFromFlightAware(f.callsign);
-                  if (faRoute && faRoute.dep && faRoute.arr) {
-                    if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
-                      apiRoute = { ...faRoute, source: "flightaware" };
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 3. ADSBDB (ücretsiz, çağrı kodundan kalkış/varış)
-                if (!valid) {
-                  const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
-                  if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
-                    if (isRouteConsistent(f, adsbRoute.dep, adsbRoute.arr)) {
-                      apiRoute = { ...adsbRoute, source: "adsbdb" };
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 4. ADSBExchange (re-api canlı çağrı araması)
-                if (!valid) {
-                  const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
-                  if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
-                    if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
-                      apiRoute = { ...adsbxRoute, source: "adsbexchange" };
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 2. OpenSky'nin ücretsiz rota endpoint'i
-                if (!valid) {
-                  const osRoute = await fetchRouteFromOpenSky(f.callsign);
-                  if (osRoute && osRoute.dep && osRoute.arr) {
-                    if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
-                      apiRoute = { ...osRoute, source: 'opensky' };
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 3. Yerel, doğrulanmış Turkish Cargo rota tablosu
-                if (!valid) {
-                  const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
-                  if (candidates) {
-                    for (const c of candidates) {
-                      const depDb = AIRPORT_DB[c.dep.toUpperCase()];
-                      const arrDb = AIRPORT_DB[c.arr.toUpperCase()];
-                      if (depDb && arrDb) {
-                        if (isRouteConsistent(f, depDb, arrDb)) {
-                          apiRoute = { dep: depDb, arr: arrDb, source: 'local' };
-                          valid = true;
-                          break;
-                        }
-                      }
-                    }
-                  }
-                }
-
-                if (valid && apiRoute && apiRoute.dep && apiRoute.arr) {
-                  f.dep = apiRoute.dep;
-                  f.arr = apiRoute.arr;
-                  f.routeSource = apiRoute.source || 'verified';
-                  f.routeVerifiedAt = Math.floor(Date.now() / 1000);
-                  cacheUpdated = true;
-                  // Başarılıysa KV'ye öğrenilmiş rota olarak kaydet
-                  await saveLearnedRoute(f.callsign, apiRoute);
-                }
-              } catch (_) {}
-              await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
-            }
-          }
-
-          // 2. Uçak detaylarını (Tescil, Model, Fotoğraf) çek
-          if (!f.aircraftDetails) {
-            try {
-              const acDetails = await fetchAircraftDetailsFromAdsbdb(f.icao24);
-              if (acDetails) {
-                f.aircraftDetails = acDetails;
-                f.type = determineFlightType(f.icao24, f.callsign, acDetails);
-                cacheUpdated = true;
-              }
-            } catch (_) {}
-            await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
-          }
+          if (await resolveFlightRoute(f)) cacheUpdated = true;
+          if (await resolveAircraftDetails(f)) cacheUpdated = true;
         }
-        
+
         if (cacheUpdated) {
           const { token: _t, authHeaders: _a, ...publicData } = data;
           await setCachedFlights(publicData);
@@ -2577,6 +2607,50 @@ export default {
           f.type = determineFlightType(f.icao24, f.callsign, f.aircraftDetails);
         }
 
+        // ── Sinyal kaybı: rota biliniyorsa "en iyi ihtimalle" dead-reckoning ──
+        // OpenSky'den kaybolan bir uçak için son GERÇEK konum + rota + hız kullanılarak
+        // varışa ne kadar sürede ulaşacağı hesaplanır; bu süre boyunca büyük daire rotası
+        // üzerinde ilerletilir (signalLost:true). Süre dolduğunda (muhtemelen inmiştir)
+        // artık listede gösterilmez — donmuş/hayalet uçak yerine sessizce kaybolur.
+        const freshCallsigns = new Set(fresh.flights.map(f => f.callsign));
+        const nowSec = Math.floor(Date.now() / 1000);
+        for (const prev of cachedFlights) {
+          if (freshCallsigns.has(prev.callsign)) continue;
+
+          const baseLat = prev.lastRealLat != null ? prev.lastRealLat : prev.lat;
+          const baseLon = prev.lastRealLon != null ? prev.lastRealLon : prev.lon;
+          const baseVelocity = prev.lastRealVelocity != null ? prev.lastRealVelocity : prev.velocity;
+          const hasRoute = prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null;
+
+          if (!hasRoute || baseLat == null || baseLon == null || !baseVelocity || baseVelocity < 5 || !prev.lastContact) {
+            continue; // Rota veya hız bilinmiyor: en iyi ihtimalle bile tahmin edilemez, gösterme
+          }
+
+          const speedKmh = baseVelocity * 3.6;
+          const distRemaining = getDistance(baseLat, baseLon, prev.arr.lat, prev.arr.lon);
+          const etaSec = (distRemaining / speedKmh) * 3600;
+          const elapsed = nowSec - prev.lastContact;
+
+          if (!isFinite(etaSec) || etaSec <= 0 || elapsed >= etaSec) {
+            continue; // En iyi ihtimalle varmış/inmiş olması gerekir: artık gösterme
+          }
+
+          const fraction = Math.max(0, Math.min(1, elapsed / etaSec));
+          const pos = interpolateGreatCircle(baseLat, baseLon, prev.arr.lat, prev.arr.lon, fraction);
+
+          fresh.flights.push({
+            ...prev,
+            lat: pos.lat,
+            lon: pos.lon,
+            track: getBearing(pos.lat, pos.lon, prev.arr.lat, prev.arr.lon),
+            velocity: baseVelocity,
+            signalLost: true,
+            lastRealLat: baseLat,
+            lastRealLon: baseLon,
+            lastRealVelocity: baseVelocity,
+          });
+        }
+
         // Re-calculate counts in case types were corrected
         fresh.count = fresh.flights.filter(f => f.type === 'cargo').length;
         fresh.paxCount = fresh.flights.filter(f => f.type === 'pax').length;
@@ -2585,6 +2659,43 @@ export default {
         await setCachedFlights(publicData);
         ctx.waitUntil(enrichInBackground(fresh, cachedFlights).catch(() => {}));
         return publicData;
+      }
+
+      // ── /cargo-flight-detail: yolcu uçuşları için isteğe bağlı (on-demand) rota +
+      // uçak detayı çözümü. Kullanıcı popover'da bir yolcu uçuşuna tıklayıp detay
+      // panelini açtığında tetiklenir — 130+ yolcu uçuşunun hepsini arka planda
+      // proaktif taramak yerine, gerçek kullanım kadar dış API/scraping yükü biner.
+      if (urlObj.pathname === '/cargo-flight-detail') {
+        try {
+          const callsign = (urlObj.searchParams.get('callsign') || '').trim().toUpperCase();
+          const icao24 = (urlObj.searchParams.get('icao24') || '').trim().toLowerCase();
+          const lat = parseFloat(urlObj.searchParams.get('lat'));
+          const lon = parseFloat(urlObj.searchParams.get('lon'));
+          const trackRaw = urlObj.searchParams.get('track');
+          const track = trackRaw != null && trackRaw !== '' ? parseFloat(trackRaw) : null;
+
+          if (!callsign || !icao24 || !isFinite(lat) || !isFinite(lon)) {
+            return new Response(JSON.stringify({ error: 'callsign, icao24, lat, lon gerekli' }), {
+              status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+          }
+
+          const f = { callsign, icao24, lat, lon, track, type: 'pax' };
+          await resolveFlightRoute(f);
+          await resolveAircraftDetails(f);
+
+          return new Response(JSON.stringify({
+            dep: f.dep || null,
+            arr: f.arr || null,
+            routeSource: f.routeSource || null,
+            aircraftDetails: f.aircraftDetails || null,
+            type: f.type,
+          }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        } catch (err) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
       }
 
       try {

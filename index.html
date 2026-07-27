@@ -14895,20 +14895,10 @@ async function loadDashboard() {
         return f;
       });
 
-      let prevSelected = null;
-      if (_cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx]) {
-        prevSelected = _cargoFlights[_cargoSelectedIdx];
-      }
-
-      if (prevSelected && prevSelected.signalLost) {
-        const found = freshFlights.find(f => f.icao24 === prevSelected.icao24);
-        if (!found) {
-          freshFlights.push(prevSelected);
-        } else {
-          found.signalLost = false;
-        }
-      }
-
+      // Not: sinyal kaybı/tahmini konum artık worker (dead-reckoning) tarafından
+      // hesaplanıp signalLost:true olarak gönderiliyor; istemci tarafında ayrıca
+      // "seçili uçağı diri tut" yaması gerekmiyor (worker gerçekten kaybolduğuna
+      // karar verene kadar zaten listede kalıyor).
       _cargoAllFlights = freshFlights;
 
       const count = data && typeof data.count === 'number' ? data.count : _cargoAllFlights.filter(f => f.type === 'cargo').length;
@@ -15138,6 +15128,36 @@ async function loadDashboard() {
       el.classList.toggle('selected', Number(el.dataset.idx) === idx);
     });
     renderCargoFlightDetail(f);
+
+    if (!f.dep && !f._routeLookupDone) {
+      f._routeLookupDone = true; // başarısız olsa da tekrar denemesin
+      fetchCargoFlightRouteOnDemand(f, idx);
+    }
+  }
+
+  async function fetchCargoFlightRouteOnDemand(f, idx) {
+    try {
+      const params = new URLSearchParams({ callsign: f.callsign, icao24: f.icao24, lat: f.lat, lon: f.lon });
+      if (f.track != null) params.set('track', f.track);
+      const res = await fetch(`https://haberozetleri-proxy.demirbasemre.workers.dev/cargo-flight-detail?${params}`);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (data.dep && data.arr) {
+        f.dep = data.dep;
+        f.arr = data.arr;
+        f.routeSource = data.routeSource;
+      } else {
+        f._routeLookupFailed = true;
+      }
+      if (data.aircraftDetails) f.aircraftDetails = data.aircraftDetails;
+      if (data.type) f.type = data.type;
+    } catch (_) {
+      f._routeLookupFailed = true;
+    } finally {
+      if (_cargoSelectedIdx === idx && _cargoFlights[idx] === f) {
+        selectCargoFlight(idx, false);
+      }
+    }
   }
 
   function focusCargoFlight(idx) {
@@ -15183,10 +15203,13 @@ async function loadDashboard() {
       return;
     }
     
+    const routeKnown = !!(f.dep && f.dep.lat != null && f.arr && f.arr.lat != null);
+    const routeFailed = !routeKnown && f._routeLookupFailed === true;
+
     let progress = 0.5;
-    let depTimeStr = '21:25';
-    let arrTimeStr = '07:27';
-    if (f.dep && f.dep.lat != null && f.arr && f.arr.lat != null) {
+    let depTimeStr = null;
+    let arrTimeStr = null;
+    if (routeKnown) {
       const dDep = getDistance(f.lat, f.lon, f.dep.lat, f.dep.lon);
       const dArr = getDistance(f.lat, f.lon, f.arr.lat, f.arr.lon);
       const totalDist = dDep + dArr;
@@ -15212,7 +15235,7 @@ async function loadDashboard() {
       arrTimeStr = formatTime(arrTime);
     }
 
-    const pctInt = Math.round(progress * 100);
+    const pctInt = routeKnown ? Math.round(progress * 100) : 0;
     const vrate = f.verticalRate || 0;
     const vIcon = vrate > 0.5 ? _cargoDetailIcons.vrateUp : vrate < -0.5 ? _cargoDetailIcons.vrateDown : _cargoDetailIcons.vrateLevel;
     const vLabel = vrate > 0.5 ? 'Tırmanıyor' : vrate < -0.5 ? 'Alçalıyor' : 'Düz Uçuş';
@@ -15257,14 +15280,14 @@ async function loadDashboard() {
         
         <div class="ticket-header-row">
           <div class="ticket-airport-block">
-            <div class="ticket-airport-code">${f.dep?.iata || f.dep?.icao || 'IST'}</div>
-            <div class="ticket-airport-time">
+            <div class="ticket-airport-code">${routeKnown ? (f.dep.iata || f.dep.icao || '—') : '—'}</div>
+            ${depTimeStr ? `<div class="ticket-airport-time">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               ${depTimeStr}
-            </div>
-            <div class="ticket-airport-city" title="${f.dep?.city || f.dep?.name || 'Istanbul'}">${f.dep?.city || 'Istanbul'}</div>
+            </div>` : ''}
+            <div class="ticket-airport-city" title="${routeKnown ? (f.dep.city || f.dep.name || '') : (routeFailed ? 'Rota bulunamadı' : 'Rota aranıyor…')}">${routeKnown ? (f.dep.city || f.dep.name || '') : (routeFailed ? 'Bulunamadı' : 'Aranıyor…')}</div>
           </div>
-          
+
           <div class="ticket-route-graphic">
             <div class="ticket-route-svg-wrap">
               <svg class="ticket-route-svg" viewBox="0 0 160 36" preserveAspectRatio="none">
@@ -15274,33 +15297,33 @@ async function loadDashboard() {
                     <stop offset="100%" stop-color="#E30613" stop-opacity="1"/>
                   </linearGradient>
                 </defs>
-                
+
                 <!-- Background remaining dashed arc line -->
                 <path d="M 16 26 Q 80 4 144 26" fill="none" stroke="var(--border-soft, #CBD5E1)" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"/>
-                
+
                 <!-- Traveled solid gradient arc line -->
                 <path d="M 16 26 Q 80 4 144 26" fill="none" stroke="url(#${uniqueGradId})" stroke-width="2.8" stroke-linecap="round"
                       pathLength="100" stroke-dasharray="${pctInt} 100"/>
-                
+
                 <!-- Departure Airport Ring/Dot -->
-                <circle cx="16" cy="26" r="6" fill="none" stroke="#C8102E" stroke-width="1.5" opacity="0.4"/>
-                <circle cx="16" cy="26" r="3.5" fill="#C8102E"/>
-                
+                <circle cx="16" cy="26" r="6" fill="none" stroke="${routeKnown ? '#C8102E' : 'var(--text-3)'}" stroke-width="1.5" opacity="0.4"/>
+                <circle cx="16" cy="26" r="3.5" fill="${routeKnown ? '#C8102E' : 'var(--text-3)'}"/>
+
                 <!-- Arrival Airport Ring/Dot -->
                 <circle cx="144" cy="26" r="6" fill="none" stroke="var(--border-color, #94A3B8)" stroke-width="1.5"/>
                 <circle cx="144" cy="26" r="3.5" fill="var(--text-3, #64748B)"/>
               </svg>
             </div>
-            <div class="ticket-badge-pill">✈ %${pctInt} Uçuşta</div>
+            <div class="ticket-badge-pill"${routeKnown ? '' : ' style="opacity:0.75;"'}>${routeKnown ? `✈ %${pctInt} Uçuşta` : (routeFailed ? 'Rota bulunamadı' : 'Rota aranıyor…')}</div>
           </div>
-          
+
           <div class="ticket-airport-block" style="text-align:right;">
-            <div class="ticket-airport-code">${f.arr?.iata || f.arr?.icao || 'ORD'}</div>
-            <div class="ticket-airport-time" style="justify-content:flex-end;">
+            <div class="ticket-airport-code">${routeKnown ? (f.arr.iata || f.arr.icao || '—') : '—'}</div>
+            ${arrTimeStr ? `<div class="ticket-airport-time" style="justify-content:flex-end;">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               ${arrTimeStr}
-            </div>
-            <div class="ticket-airport-city" title="${f.arr?.city || f.arr?.name || 'Chicago'}">${f.arr?.city || 'Chicago'}</div>
+            </div>` : ''}
+            <div class="ticket-airport-city" title="${routeKnown ? (f.arr.city || f.arr.name || '') : (routeFailed ? 'Rota bulunamadı' : 'Rota aranıyor…')}">${routeKnown ? (f.arr.city || f.arr.name || '') : (routeFailed ? 'Bulunamadı' : 'Aranıyor…')}</div>
           </div>
         </div>
         
@@ -15317,7 +15340,7 @@ async function loadDashboard() {
           </div>
           <div class="ticket-grid-item">
             <div class="ticket-label">UÇAK TİPİ</div>
-            <div class="ticket-val" style="font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}">${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || '777 F'}</div>
+            <div class="ticket-val" style="font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}">${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || '—'}</div>
           </div>
           <div class="ticket-grid-item" style="text-align:right;">
             <div class="ticket-label">UÇUŞ TİPİ</div>

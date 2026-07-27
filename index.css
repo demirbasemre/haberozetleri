@@ -2221,9 +2221,11 @@
   }
   .main-tabs-wrap {
     display: flex;
+    align-items: center;
     justify-content: center;
     margin: 0;
-    padding: 12px 24px;
+    height: 62px;
+    padding: 0 24px;
     position: sticky;
     top: 60px;
     z-index: 95;
