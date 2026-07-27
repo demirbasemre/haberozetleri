@@ -23954,13 +23954,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mevcut Filo (Kaynak 1) için havayolları arasındaki gerçek en son "Last updated" tarihi
   window.getFleetMatrixLastUpdated = function() {
     if (typeof FLEET_CMP_DATA === 'undefined' || !FLEET_CMP_DATA) return '1 Tem 2026';
-    const dates = Object.values(FLEET_CMP_DATA).map(a => a.planespotters_last_updated).filter(Boolean);
+    if (FLEET_CMP_DATA._last_scan_date) {
+      return formatPlanespottersDate(FLEET_CMP_DATA._last_scan_date);
+    }
+    const dates = Object.values(FLEET_CMP_DATA).map(a => a && a.planespotters_last_updated).filter(Boolean);
     const best = dates.reduce((max, d) => {
       const t = new Date(d).getTime();
       return (!isNaN(t) && t > max.t) ? { d, t } : max;
     }, { d: null, t: -Infinity });
     return best.d ? formatPlanespottersDate(best.d) : '1 Tem 2026';
   };
+
 
   // Arka planda taranan uçak listesi güncellemesi filo matrisini de günceller (aynı sayfadan gelir);
   // bu yüzden tarama bitince FLEET_CMP_DATA'yı KV'den yeniden çekip Mevcut Filo görünümünü tazeliyoruz.
