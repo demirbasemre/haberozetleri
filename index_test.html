@@ -24397,6 +24397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <td style="color:var(--text-2)">${esc(a.remark) || '—'}</td>
       </tr>`;
     }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:24px">Bu filtreye uyan uçak bulunamadı.</td></tr>';
+  };
   function _parseStartedAt(startedAt) {
     if (!startedAt) return null;
     const isoStr = startedAt.includes('T') ? startedAt : startedAt.replace(' ', 'T');
