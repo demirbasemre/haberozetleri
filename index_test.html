@@ -8283,7 +8283,14 @@ function switchTab(tab) {
   if (isDash) ensureDashboardLoaded();
   if (isTodo    && !_todoInit)    { _todoInit    = true; initTodo(); }
   if (isStats   && !_statsInit)   { _statsInit   = true; initStatsTab(); }
-  if (isReports && !_reportsInit) { _reportsInit = true; initReportsTab(); }
+  if (isReports) {
+    if (!_reportsInit) { _reportsInit = true; initReportsTab(); }
+    const subHash = (window.location.hash || '').replace('#', '').split('/')[1];
+    if (!subHash && typeof window.showReportsHome === 'function') {
+      window.showReportsHome();
+    }
+  }
+
   if (el.todoBtn) el.todoBtn.style.display = isTodo ? '' : 'none';
   // Reflect active tab on <body> for cross-cutting CSS (e.g. stats pill highlight)
   document.body.setAttribute('data-active-tab', tab);
@@ -21374,7 +21381,8 @@ function initControls(allArticles) {
   // Rapor tipi: 'arz_talep_navlun' | 'filo' | 'finansal'
   let _activeReportType = 'arz_talep_navlun';
   // Giriş kartları görünümü aktif mi? (true iken alt görünümler kendini göstermez)
-  let _reportsHomeActive = false;
+  let _reportsHomeActive = true;
+
 
   function switchReportType(type) {
     _activeReportType = type;
@@ -23807,9 +23815,10 @@ let FIN_INVESTOR_URLS_STATIC = null;
 
 async function loadAppData() {
   const [fleet, fin, finSrc, invUrls] = await Promise.all([
-    fetch('https://api-fleet.emredemirbas.com/api/get-fleet').then(r=>r.json()),
-    fetch('data/financials.json').then(r=>r.json()),
+    fetch('https://api-fleet.emredemirbas.com/api/get-fleet').then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch('data/financials.json').then(r=>r.json()).catch(()=>({})),
     fetch('data/fin_sources.json').then(r=>r.json()).catch(()=>({})),
+
     Promise.resolve({
       "QR": {name:"Qatar Airways",     url:"https://www.qatarairways.com/en/about-qatar-airways/annual-reports.html"},
       "EK": {name:"Emirates",          url:"https://www.emirates.com/english/about-us/financial-transparency/annual-reports/"},
@@ -25281,8 +25290,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (view === 'aircrafts') window.loadAircraftList();
     if (view === 'diff') loadHistoryIndex();
   };
-  window.ensureFleetK1Loaded = function() {
-    if (!FLEET_CMP_DATA) return;
+  window.ensureFleetK1Loaded = async function() {
+    if (!FLEET_CMP_DATA) {
+      try {
+        const res = await fetch('https://api-fleet.emredemirbas.com/api/get-fleet');
+        if (res.ok) FLEET_CMP_DATA = await res.json();
+      } catch(e) {
+        console.warn('ensureFleetK1Loaded fetch failed:', e);
+      }
+    }
+    if (!FLEET_CMP_DATA) {
+      const grid = document.getElementById('fleet-k1-cards');
+      if (grid) grid.innerHTML = '<div style="padding:40px; text-align:center; color:var(--text-3); grid-column:1/-1;">Filo verileri yükleniyor veya alınıyor...<br><button onclick="window.ensureFleetK1Loaded()" style="margin-top:10px; padding:6px 14px; background:var(--accent); color:#fff; border:none; border-radius:6px; cursor:pointer;">Tekrar Yenile</button></div>';
+      return;
+    }
     // Rozetteki sabit HTML tarihi veri gelince gerçek son değişim tarihiyle değiştirilir
     const activeSrc = document.querySelector('.fleet-src-pill.fdd-btn--active')?.dataset.src;
     if (!activeSrc || activeSrc === 'kaynak1') {
@@ -25292,6 +25313,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (_fleetView === 'table') buildFleetTable();
     else buildK1Cards();
   };
+
   window.toggleFleetTableCat = function(cat) {
     _fleetTableCatOpen[cat] = !_fleetTableCatOpen[cat];
     buildFleetTable();
