@@ -24963,7 +24963,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!listDiv || !FLEET_CMP_DATA) return;
     
     // Havayollarını al ve sırala (TK en başta, diğerleri Türkçe alfabetik)
-    const sorted = Object.entries(FLEET_CMP_DATA).sort((x, y) => x[1].name.localeCompare(y[1].name, 'tr'));
+    const sorted = Object.entries(FLEET_CMP_DATA).filter(([code, d]) => !code.startsWith('_') && d && typeof d === 'object').sort((x, y) => (x[1].name || '').localeCompare(y[1].name || '', 'tr'));
     const tkIdx = sorted.findIndex(([iata]) => iata === 'TK');
     if (tkIdx > -1) {
       const [tkEl] = sorted.splice(tkIdx, 1);
@@ -25019,7 +25019,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Seçilen havayollarını derle. TK en başta, diğerleri alfabetik.
     const exportData = [];
-    const selectedEntries = Object.entries(FLEET_CMP_DATA).filter(([iata]) => selectedIatas.includes(iata));
+    const selectedEntries = Object.entries(FLEET_CMP_DATA).filter(([iata, d]) => !iata.startsWith('_') && d && typeof d === 'object' && selectedIatas.includes(iata));
     
     // TK en başa gelsin
     selectedEntries.sort((x, y) => x[1].name.localeCompare(y[1].name, 'tr'));
@@ -25199,7 +25199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     _k1Built = true;
     const grid = document.getElementById('fleet-k1-cards');
     if (!grid) return;
-    grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
+    grid.innerHTML = Object.entries(FLEET_CMP_DATA).filter(([code, d]) => !code.startsWith('_') && d && typeof d === 'object').map(([iata, d]) => {
       const total = d.pt != null ? d.pt : '—';
       const order = d.po != null ? '+'+d.po : '—';
       const age   = d.k1age ? d.k1age : '—';
@@ -25341,7 +25341,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Gövde satırları ──
     const totals = { wb:{a:0,p:0,t:0}, nb:{a:0,p:0,t:0}, cargo:{a:0,p:0,t:0}, pt:0, po:0 };
-    const rows = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
+    const rows = Object.entries(FLEET_CMP_DATA).filter(([code, d]) => !code.startsWith('_') && d && typeof d === 'object').map(([iata, d]) => {
       const _logoSrc = _getFleetLogoUrl(iata);
       const logoEl = `<img src="${_logoSrc}" alt="" width="16" height="16" loading="lazy" onerror="this.style.display='none'">`;
       const catCells = FLEET_CAT_DEFS.map(c => {
@@ -25384,7 +25384,7 @@ document.addEventListener('DOMContentLoaded', () => {
     _k2Built = true;
     const grid = document.getElementById('fleet-k2-cards');
     if (!grid) return;
-    grid.innerHTML = Object.entries(FLEET_CMP_DATA).map(([iata, d]) => {
+    grid.innerHTML = Object.entries(FLEET_CMP_DATA).filter(([code, d]) => !code.startsWith('_') && d && typeof d === 'object').map(([iata, d]) => {
       const bd = k2Breakdown(d.types || [], _catFilter);
       const catNote = _catFilter !== 'all' ? ` (${_catFilter === 'cargo' ? 'Kargo' : _catFilter === 'wb' ? 'Geniş Gövde' : 'Dar Gövde'})` : '';
       const miniItems = [];
@@ -25513,7 +25513,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function rerenderCmpRows() {
-    Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
+    Object.entries(FLEET_CMP_DATA).filter(([code, d]) => !code.startsWith('_') && d && typeof d === 'object').forEach(([iata, d]) => {
       const psCell  = document.getElementById('flt-k1-val-' + iata);
       const k2Cell = document.getElementById('flt-k2-val-' + iata);
       const diff    = document.getElementById('flt-diff-' + iata);
@@ -25536,7 +25536,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tbody = document.getElementById('fleet-cmp-tbody');
     if (!tbody) return;
     let html = '';
-    Object.entries(FLEET_CMP_DATA).forEach(([iata, d]) => {
+    Object.entries(FLEET_CMP_DATA).filter(([code, d]) => !code.startsWith('_') && d && typeof d === 'object').forEach(([iata, d]) => {
       const k1O   = d.po != null ? '+'+d.po : '—';
       const k2O  = d.co ? '+'+d.co : '—';
       const k1Age = d.k1age ? d.k1age+'y' : '—';
