@@ -1649,13 +1649,17 @@ export default {
         }
 
         // Prevent date advancing when the scraped data hasn't changed (IATA website not updated yet)
+        // Ayrıca Cloudflare KV üzerinde jet yakıtı haftalık geçmişini kalıcı biriktir.
         if (env.FBX_ROUTES_KV) {
           try {
             const cacheKey = 'last_jetfuel_data';
+            const histKey = 'jetfuel_history';
             let cachedData = await env.FBX_ROUTES_KV.get(cacheKey, { type: 'json' });
+            let history = await env.FBX_ROUTES_KV.get(histKey, { type: 'json' }) || [];
+
             if (!cachedData) {
-              // Seed with the last known static report data (June 19)
-              cachedData = { price: 941.2, change: -14.2, date: '2026-06-19' };
+              // Seed with the last known static report data (July 24)
+              cachedData = { price: 1264.0, change: 7.1, date: '2026-07-24' };
               await env.FBX_ROUTES_KV.put(cacheKey, JSON.stringify(cachedData));
             }
             if (parsed.price === cachedData.price && parsed.change === cachedData.change) {
@@ -1665,6 +1669,17 @@ export default {
               cachedData = { price: parsed.price, change: parsed.change, date: parsed.date };
               await env.FBX_ROUTES_KV.put(cacheKey, JSON.stringify(cachedData));
             }
+
+            // Haftalık geçmiş dizisini güncelle ve KV'ye yaz
+            const byDate = new Map(history.map(h => [h.date, h.price]));
+            if (parsed.date && parsed.price) {
+              byDate.set(parsed.date, parsed.price);
+            }
+            history = Array.from(byDate.entries())
+              .map(([date, price]) => ({ date, price }))
+              .sort((a, b) => a.date.localeCompare(b.date));
+            await env.FBX_ROUTES_KV.put(histKey, JSON.stringify(history));
+            parsed.history = history;
           } catch (e) {
             // Fail silently
           }
@@ -1753,36 +1768,67 @@ export default {
         'a54535'  // N439GT (B747-400F - Atlas Air)
       ]);
 
-      function determineFlightType(icao24, callsign, details) {
+      // Takip edilen kargo havayolları. `prefix` = OpenSky ATC çağrı kodu öneki,
+      // `allCargo` = true ise o önekle uçan HER uçuş kargodur (ayrı uçak tipi
+      // kontrolüne gerek yok); false ise (THY, Emirates) yolcu filosuyla karışık
+      // uçtuğu için tip/uçak modeli kontrolü gerekir.
+      const CARGO_AIRLINES = [
+        { code: 'THY', prefix: 'THY', iata: 'TK', name: 'Turkish Cargo',       color: '#E30613', allCargo: false },
+        { code: 'GEC', prefix: 'GEC', iata: 'LH', name: 'Lufthansa Cargo',     color: '#F9BA00', allCargo: true },
+        { code: 'CKK', prefix: 'CKK', iata: 'CK', name: 'China Cargo Airlines', color: '#00A9E0', allCargo: true },
+        { code: 'MNB', prefix: 'MNB', iata: 'MB', name: 'MNG Airlines',        color: '#7C3AED', allCargo: true },
+        { code: 'UAE', prefix: 'UAE', iata: 'EK', name: 'Emirates SkyCargo',   color: '#D71921', allCargo: false },
+      ];
+      const CARGO_AIRLINE_BY_CODE = new Map(CARGO_AIRLINES.map(a => [a.code, a]));
+
+      function matchCargoAirline(callsign) {
+        const cs = (callsign || '').trim().toUpperCase();
+        for (const a of CARGO_AIRLINES) {
+          if (cs.startsWith(a.prefix)) return a;
+        }
+        return null;
+      }
+
+      function determineFlightType(icao24, callsign, details, airlineCode) {
         const hex = (icao24 || '').toLowerCase();
         const cs = (callsign || '').trim().toUpperCase();
+        const airline = airlineCode || (matchCargoAirline(cs) || {}).code;
 
-        // 1. THY passenger flights use Eurocontrol ATC alphanumeric callsigns (e.g. THY9UG, THY12A, THY72X).
-        // Turkish Cargo flights NEVER use trailing letters in ATC callsigns (they always use THY6xxx).
-        if (/^THY\d+[A-Z]+$/i.test(cs)) {
-          return 'pax';
-        }
-
-        // 2. Turkish Cargo commercial flight number block range (6000 - 6999)
-        const numMatch = cs.match(/^THY(\d+)$/i);
-        if (numMatch) {
-          const flightNum = parseInt(numMatch[1], 10);
-          if (flightNum >= 6000 && flightNum <= 6999) {
-            return 'cargo';
+        if (airline === 'THY') {
+          // 1. THY passenger flights use Eurocontrol ATC alphanumeric callsigns (e.g. THY9UG, THY12A, THY72X).
+          // Turkish Cargo flights NEVER use trailing letters in ATC callsigns (they always use THY6xxx).
+          if (/^THY\d+[A-Z]+$/i.test(cs)) {
+            return 'pax';
           }
-          if (flightNum < 6000 || flightNum >= 7000) {
-            if (!TURKISH_CARGO_HEX.has(hex)) {
-              return 'pax';
+
+          // 2. Turkish Cargo commercial flight number block range (6000 - 6999)
+          const numMatch = cs.match(/^THY(\d+)$/i);
+          if (numMatch) {
+            const flightNum = parseInt(numMatch[1], 10);
+            if (flightNum >= 6000 && flightNum <= 6999) {
+              return 'cargo';
+            }
+            if (flightNum < 6000 || flightNum >= 7000) {
+              if (!TURKISH_CARGO_HEX.has(hex)) {
+                return 'pax';
+              }
             }
           }
+
+          // 3. Known dedicated freighter aircraft hex codes (Boeing 777F, Airbus A330F, wet-leased freighters)
+          if (TURKISH_CARGO_HEX.has(hex)) {
+            return 'cargo';
+          }
+        } else {
+          // Dedicated all-cargo carriers: her uçuş kargo (ayrı yolcu filosu yok/karışmaz)
+          const meta = CARGO_AIRLINE_BY_CODE.get(airline);
+          if (meta && meta.allCargo) {
+            return 'cargo';
+          }
         }
 
-        // 3. Known dedicated freighter aircraft hex codes (Boeing 777F, Airbus A330F, wet-leased freighters)
-        if (TURKISH_CARGO_HEX.has(hex)) {
-          return 'cargo';
-        }
-
-        // 4. Check aircraft details (model/type) if available
+        // 4. Karışık filolu havayolları (THY tip tespiti başarısız olursa, Emirates vb.):
+        // uçak tipi/açıklaması "freighter" ise kargo kabul et.
         if (details) {
           const type = (details.icaoType || details.type || '').toUpperCase();
           if (type.endsWith('F') && type !== 'B38M' && type !== 'B39M') {
@@ -1797,14 +1843,14 @@ export default {
         return 'pax';
       }
 
-      // OpenSky'nin state vektöründe Turkish Airlines ICAO çağrı kodu (THY)
-      // gelir. Kullanıcıya gösterilecek ticari uçuş numarası ise TK'dır.
+      // OpenSky'nin state vektöründe havayolunun ICAO çağrı kodu gelir
+      // (THY, GEC, CKK, MNB, UAE...). Kullanıcıya gösterilecek ticari uçuş
+      // numarası ise IATA öneki + kalan rakamlardır (TK, LH, CK, MB, EK).
       function toCommercialFlightNumber(callsign) {
         const cs = String(callsign || '').trim().toUpperCase();
-        if (cs.startsWith('THY')) {
-          return 'TK' + cs.slice(3);
-        }
-        return null;
+        const meta = matchCargoAirline(cs);
+        if (!meta) return null;
+        return meta.iata + cs.slice(meta.prefix.length);
       }
 
       async function computeBaseCargoFlights() {
@@ -1820,22 +1866,26 @@ export default {
         const allFlights = [];
         for (const s of states) {
           const callsign = (s[1] || '').trim();
-          if (!callsign.startsWith('THY')) continue;
+          const meta = matchCargoAirline(callsign);
+          if (!meta) continue;
           const [icao24, , origin_country, , last_contact, longitude, latitude, baro_altitude, on_ground, velocity, true_track, vertical_rate, , geo_altitude, squawk] = s;
           if (on_ground || latitude == null || longitude == null) continue;
           allFlights.push({
             icao24, callsign, lat: latitude, lon: longitude,
+            airline: meta.code,
             flightNumber: toCommercialFlightNumber(callsign),
             altitude: baro_altitude, geoAltitude: geo_altitude, velocity, track: true_track,
             verticalRate: vertical_rate, squawk: squawk || null, originCountry: origin_country || null,
             lastContact: last_contact,
-            type: determineFlightType(icao24, callsign, null),
+            type: determineFlightType(icao24, callsign, null, meta.code),
           });
         }
 
         return {
-          count: allFlights.filter(f => f.type === 'cargo').length,
-          paxCount: allFlights.filter(f => f.type === 'pax').length,
+          count: allFlights.filter(f => f.airline === 'THY' && f.type === 'cargo').length,
+          paxCount: allFlights.filter(f => f.airline === 'THY' && f.type === 'pax').length,
+          countByAirline: Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, allFlights.filter(f => f.airline === a.code && f.type === 'cargo').length])),
+          airlines: CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata })),
           flights: allFlights,
           updated: Math.floor(Date.now() / 1000),
           token, authHeaders,
@@ -2508,7 +2558,7 @@ export default {
           const acDetails = await fetchAircraftDetailsFromAdsbdb(f.icao24);
           if (acDetails) {
             f.aircraftDetails = acDetails;
-            f.type = determineFlightType(f.icao24, f.callsign, acDetails);
+            f.type = determineFlightType(f.icao24, f.callsign, acDetails, f.airline);
             updated = true;
           }
         } catch (_) {}
@@ -2604,7 +2654,7 @@ export default {
           }
           
           // Re-evaluate type now that details may have been populated from cache/KV
-          f.type = determineFlightType(f.icao24, f.callsign, f.aircraftDetails);
+          f.type = determineFlightType(f.icao24, f.callsign, f.aircraftDetails, f.airline);
         }
 
         // ── Sinyal kaybı: rota biliniyorsa "en iyi ihtimalle" dead-reckoning ──
@@ -2652,8 +2702,10 @@ export default {
         }
 
         // Re-calculate counts in case types were corrected
-        fresh.count = fresh.flights.filter(f => f.type === 'cargo').length;
-        fresh.paxCount = fresh.flights.filter(f => f.type === 'pax').length;
+        fresh.count = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'cargo').length;
+        fresh.paxCount = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'pax').length;
+        fresh.countByAirline = Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, fresh.flights.filter(f => f.airline === a.code && f.type === 'cargo').length]));
+        fresh.airlines = CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata }));
 
         const { token: _t, authHeaders: _a, ...publicData } = fresh;
         await setCachedFlights(publicData);
@@ -2680,7 +2732,8 @@ export default {
             });
           }
 
-          const f = { callsign, icao24, lat, lon, track, type: 'pax' };
+          const airlineMeta = matchCargoAirline(callsign);
+          const f = { callsign, icao24, lat, lon, track, type: 'pax', airline: airlineMeta ? airlineMeta.code : null };
           await resolveFlightRoute(f);
           await resolveAircraftDetails(f);
 
@@ -2690,6 +2743,7 @@ export default {
             routeSource: f.routeSource || null,
             aircraftDetails: f.aircraftDetails || null,
             type: f.type,
+            airline: f.airline,
           }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
         } catch (err) {
           return new Response(JSON.stringify({ error: err.message }), {
