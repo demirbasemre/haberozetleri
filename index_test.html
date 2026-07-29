@@ -24423,19 +24423,32 @@ document.addEventListener('DOMContentLoaded', () => {
           
           <!-- Content -->
           <div style="padding: 20px; display:flex; flex-direction:column; gap:16px; overflow-y:auto;" id="ac-progress-body">
-            <!-- Active Step -->
+            <!-- Overall Progress Bar -->
+            <div style="display:flex; flex-direction:column; gap:6px; background: var(--bg-secondary, #f8fafc); border-radius: 10px; padding: 10px 14px; border: 1px solid var(--border-color, #e2e8f0);">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:600; color:var(--text-1, #0f172a);">
+                <span>Genel Havayolu İlerlemesi</span>
+                <span id="ac-progress-total-airlines-label" style="color: var(--accent, #3b82f6); font-weight:700;">0 / 23 Havayolu</span>
+              </div>
+              <div style="height:7px; background:var(--border-color, #e2e8f0); border-radius:4px; overflow:hidden;">
+                <div id="ac-progress-total-bar" style="width: 0%; height:100%; background: linear-gradient(90deg, #10b981, #059669); border-radius:4px; transition: width 0.3s ease;"></div>
+              </div>
+            </div>
+
+            <!-- Active Step & Page Bar -->
             <div id="ac-progress-active-step" style="background: var(--bg-secondary, #f8fafc); border-radius: 10px; padding: 12px 16px; border: 1px dashed var(--border-color, #e2e8f0); display: flex; flex-direction: column; gap: 6px;">
               <div style="font-size: 10px; color: var(--text-3, #64748b); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;">Şu An Taranan Havayolu</div>
               <div id="ac-progress-airline-name" style="font-weight: 600; font-size: 13px; color: var(--text-1, #0f172a);">Bağlanıyor...</div>
               
               <!-- Progress Substeps / Pages -->
-              <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
-                <div style="flex:1; height:6px; background:var(--border-color, #e2e8f0); border-radius:3px; overflow:hidden;">
-                  <div id="ac-progress-bar" style="width: 0%; height:100%; background: var(--accent, #3b82f6); border-radius:3px; transition: width 0.3s ease;"></div>
-                </div>
-                <span id="ac-progress-pages-label" style="font-size:11px; font-weight:600; color:var(--text-2, #475569); min-width:40px; text-align:right;">0 / 0</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
+                <span style="font-size: 10px; color: var(--text-3, #64748b); text-transform: uppercase; font-weight: 600;">Sayfa İlerlemesi</span>
+                <span id="ac-progress-pages-label" style="font-size:11px; font-weight:600; color:var(--text-2, #475569); text-align:right;">0 / 0 Sayfa</span>
+              </div>
+              <div style="height:6px; background:var(--border-color, #e2e8f0); border-radius:3px; overflow:hidden;">
+                <div id="ac-progress-bar" style="width: 0%; height:100%; background: var(--accent, #3b82f6); border-radius:3px; transition: width 0.3s ease;"></div>
               </div>
             </div>
+
 
             <!-- Completed List -->
             <div style="display:flex; flex-direction:column; gap:8px;">
@@ -24668,19 +24681,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (parsedStart) t0 = parsedStart;
           }
 
-          // Güncel adımı ekrana bas
+          // 1) Genel Havayolu İlerleme Barını Güncelle
+          const doneAirlines = (st.completed_airlines || []).length;
+          const totalAirlines = st.total_airlines || 23;
+          const totalPct = totalAirlines > 0 ? Math.min(100, Math.round((doneAirlines / totalAirlines) * 100)) : 0;
+          const totalBar = document.getElementById('ac-progress-total-bar');
+          if (totalBar) totalBar.style.width = totalPct + '%';
+          const totalLabel = document.getElementById('ac-progress-total-airlines-label');
+          if (totalLabel) totalLabel.textContent = `${doneAirlines} / ${totalAirlines} Havayolu (%${totalPct})`;
+
+          // 2) Aktif Havayolu Sayfa Barını Güncelle
           if (st.running) {
             const name = st.current_airline_name || st.current_airline || 'Bağlanıyor...';
             const code = st.current_airline ? ` (${st.current_airline})` : '';
             document.getElementById('ac-progress-airline-name').innerHTML = `<b>${name}${code}</b>`;
 
-            
             const current = st.current_page || 0;
             const total = st.total_pages || 0;
             const pct = total > 0 ? (current / total) * 100 : 0;
             document.getElementById('ac-progress-bar').style.width = pct + '%';
-            document.getElementById('ac-progress-pages-label').textContent = total > 0 ? `${current} / ${total}` : '0 / 0';
+            document.getElementById('ac-progress-pages-label').textContent = total > 0 ? `${current} / ${total} Sayfa` : '0 / 0 Sayfa';
           }
+
           
           // Tamamlananları listele
           const listDiv = document.getElementById('ac-progress-list');
