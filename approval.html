@@ -1045,7 +1045,7 @@ async function init() {
     originalArticles = {};
     articles.forEach(a => {
       const key = a.id || a.title;
-      originalArticles[key] = { title: a.title, summary: a.summary, thyAnalysis: a.thyAnalysis, usedWebSearch: a.usedWebSearch, webSearchDetails: a.webSearchDetails, webSearchSource: a.webSearchSource };
+      originalArticles[key] = { title: a.title, summary: a.summary, thyAnalysis: a.thyAnalysis, usedWebSearch: a.usedWebSearch, webSearchDetails: a.webSearchDetails, webSearchSource: a.webSearchSource, webSearchSources: Array.isArray(a.webSearchSources) ? a.webSearchSources.slice() : [] };
     });
     renderPage(data);
   } catch(err) {
@@ -1206,7 +1206,7 @@ function stripHtml(str) {
 function buildDefaultWebSearchPrompt(a) {
   const title = a.title || '';
   const analysis = stripHtml(a.thyAnalysis || '');
-  return `Turkish Cargo (Turkish Airlines kargo birimi) açısından şu haberin stratejik etkisini destekleyen, güncel ve somut bir bulgu bul (örnek: rakip filo büyüklüğü, güzergah kapasitesi, pazar payı istatistiği, ilgili düzenleme). Haber başlığı: ${title}. Mevcut analiz: ${analysis}. Bulguyu Türkçe, 1-2 cümlede ve öz şekilde yaz; sadece bulgu cümlesini yaz, başka açıklama ekleme.`;
+  return `Turkish Cargo (Turkish Airlines kargo birimi) açısından aşağıdaki haberin stratejik etkisini DOĞRULAYAN, haberde GEÇMEYEN yeni ve somut bir kanıt/veri bul (örnek: Turkish Cargo'nun kendi filo/kapasite rakamları, rakip kıyaslaması, pazar payı istatistiği, ilgili düzenleme). Haberdeki bilgiyi ASLA tekrar etme veya özetleme; sadece onu destekleyen, haberin dışında kalan ek bir bulgu sun. Eğer böyle bir ek veri bulamazsan sadece BOŞ DÖN. Haber başlığı: ${title}. Mevcut analiz: ${analysis}. Bulguyu Türkçe, 1-2 cümlede ve öz şekilde yaz; sadece bulgu cümlesini yaz, başka açıklama ekleme.`;
 }
 
 function buildRegenerateBoxHtml(a, artId) {
@@ -1222,18 +1222,37 @@ function buildRegenerateBoxHtml(a, artId) {
     </div>`;
 }
 
+function buildSourcesHtml(a) {
+  let list = Array.isArray(a.webSearchSources) ? a.webSearchSources.filter(Boolean) : [];
+  if (!list.length && a.webSearchSource) list = [a.webSearchSource];
+  const seen = new Set();
+  list = list.filter(u => {
+    const k = String(u).trim();
+    if (!k || seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  }).slice(0, 3);
+  if (!list.length) return '';
+  const links = list.map(raw => {
+    const url = /^https?:\/\//i.test(raw) ? raw : 'https://' + raw;
+    const disp = raw.replace(/^https?:\/\/(www\.)?/i, '').split('/')[0];
+    return `<a href="${url}" target="_blank" rel="noopener">${disp}</a>`;
+  });
+  const label = links.length > 1 ? 'Kaynaklar' : 'Kaynak';
+  const joined = links.length > 1 ? (links.slice(0, -1).join(', ') + ' ve ' + links[links.length - 1]) : links[0];
+  return `(${label}: ${joined})`;
+}
+
 function buildWebSearchHtml(a, artId) {
   if (!(a.usedWebSearch && a.webSearchDetails && String(a.webSearchDetails).trim())) return '';
   const encodedId = encodeURIComponent(artId);
-  const srcRaw = a.webSearchSource ? String(a.webSearchSource).trim() : '';
-  const srcUrl = srcRaw ? (/^https?:\/\//i.test(srcRaw) ? srcRaw : 'https://' + srcRaw) : '';
-  const srcDisp = srcRaw ? srcRaw.replace(/^https?:\/\/(www\.)?/i, '').split('/')[0] : '';
+  const srcHtml = buildSourcesHtml(a);
   return `
     <div class="web-search-box" id="websearch-wrapper-${encodedId}">
       <div class="web-search-content" contenteditable="true" data-field="webSearchDetails" data-id="${encodedId}" onblur="handleEdit(this)" oninput="markEdited(this)">
-        <span class="web-search-label">🔎 Canlı Web Araması</span>${a.webSearchDetails}
+        <span class="web-search-label">İlave Bilgi</span><br>${a.webSearchDetails}
       </div>
-      ${srcRaw ? `<span class="web-search-source">(Kaynak: <a href="${srcUrl}" target="_blank" rel="noopener">${srcDisp}</a>)</span>` : ''}
+      ${srcHtml ? `<span class="web-search-source">${srcHtml}</span>` : ''}
       <button class="websearch-remove-btn" title="Web araması notunu kaldır" onclick="removeWebSearch('${encodedId}')">✕</button>
     </div>`;
 }
@@ -1264,7 +1283,14 @@ function buildCardHtml(a, color, extraClass, isFeatured) {
       const dateVal = a.publishDate || a.date;
       if (dateVal) {
         try {
-          const cleanDate = String(dateVal).replace(/^Published\s*:\s*/i, '').replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*/i, '').trim();
+          let cleanDate = String(dateVal).replace(/^Published\s*:\s*/i, '').replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*/i, '').trim();
+          const guncellemeMatch = cleanDate.match(/G[üu]ncelleme\s*:?\s*(\d{2})\.(\d{2})\.(\d{4})/i);
+          if (guncellemeMatch) {
+            cleanDate = `${guncellemeMatch[3]}-${guncellemeMatch[2]}-${guncellemeMatch[1]}`;
+          } else {
+            const ddmmyyyyMatch = cleanDate.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+            if (ddmmyyyyMatch) cleanDate = `${ddmmyyyyMatch[3]}-${ddmmyyyyMatch[2]}-${ddmmyyyyMatch[1]}`;
+          }
           if (cleanDate !== '') {
             const d = new Date(cleanDate);
             if (!isNaN(d.getTime())) {
@@ -1506,6 +1532,7 @@ async function regenerateWebSearch(encodedId) {
     article.usedWebSearch = true;
     article.webSearchDetails = data.webSearchDetails;
     article.webSearchSource = data.webSearchSource || '';
+    article.webSearchSources = Array.isArray(data.webSearchSources) ? data.webSearchSources : [];
 
     const wrapper = document.getElementById('analysis-wrapper-' + encodedId);
     if (wrapper) wrapper.outerHTML = buildAnalysisWrapperHtml(article, artId);
@@ -1529,6 +1556,7 @@ function revertArticle(encodedId) {
   if (orig.usedWebSearch !== undefined) article.usedWebSearch = orig.usedWebSearch;
   if (orig.webSearchDetails !== undefined) article.webSearchDetails = orig.webSearchDetails;
   if (orig.webSearchSource !== undefined) article.webSearchSource = orig.webSearchSource;
+  if (orig.webSearchSources !== undefined) article.webSearchSources = orig.webSearchSources;
 
   const titleEl = document.querySelector(`.article-title[data-id="${encodedId}"]`);
   if (titleEl) titleEl.innerHTML = `<a href="${article.link||'#'}" target="_blank" style="color:inherit;text-decoration:none;">${orig.title||'Başlık yok'}</a>`;
