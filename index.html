@@ -24381,10 +24381,17 @@ document.addEventListener('DOMContentLoaded', () => {
         <td style="color:var(--text-2)">${esc(a.remark) || '—'}</td>
       </tr>`;
     }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-3);padding:24px">Bu filtreye uyan uçak bulunamadı.</td></tr>';
-  };
+  function _parseStartedAt(startedAt) {
+    if (!startedAt) return null;
+    const isoStr = startedAt.includes('T') ? startedAt : startedAt.replace(' ', 'T');
+    const hasTZ = isoStr.endsWith('Z') || isoStr.includes('+');
+    const t = new Date(hasTZ ? isoStr : isoStr + 'Z').getTime();
+    return (!isNaN(t) && t <= Date.now()) ? t : null;
+  }
 
   // ── Uçak Listesi güncelleme (yalnızca bu sekme; arka planda tarar, durumu yoklar) ──
   window.triggerAircraftUpdate = function() {
+
     window._fleetPwdTarget = 'aircrafts';
     const pwd = localStorage.getItem('fleet_update_password') || '';
     if (!pwd) {
@@ -24629,16 +24636,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
       localStorage.setItem('fleet_update_password', pwd);
 
-      const t0 = Date.now();
-      // Sunucuyu 2 sn'de bir yoklamaya devam ederiz (istek sayısı artmaz);
-      // "Geçen Süre" yazısı ise ağdan bağımsız, yalnızca ekranda 1 sn hassasiyetle ilerler.
+      let t0 = Date.now();
       const acTimerInterval = setInterval(() => {
-        document.getElementById('ac-progress-timer').textContent = 'Geçen Süre: ' + Math.round((Date.now()-t0)/1000) + 's';
+        const timerEl = document.getElementById('ac-progress-timer');
+        if (timerEl) timerEl.textContent = 'Geçen Süre: ' + Math.round((Date.now()-t0)/1000) + 's';
       }, 1000);
       const stopAcTimer = () => clearInterval(acTimerInterval);
 
       const poll = async () => {
-        if (Date.now() - t0 > 30*60*1000) {
+        if (Date.now() - t0 > 45*60*1000) {
           stopAcTimer();
           setIdle();
           document.getElementById('ac-progress-spinner').style.display = 'none';
@@ -24647,7 +24653,7 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById('ac-progress-close-btn').style.display = 'block';
           document.getElementById('ac-progress-ok-btn').style.display = 'block';
           document.getElementById('ac-progress-stop-btn').style.display = 'none';
-          alert('Uçak listesi taraması zaman aşımına uğradı (30 dk).');
+          alert('Uçak listesi taraması zaman aşımına uğradı (45 dk).');
           return;
         }
 
@@ -24657,11 +24663,17 @@ document.addEventListener('DOMContentLoaded', () => {
           const sr = await fetch(_acApiBase() + '/api/aircraft-status');
           const st = await sr.json();
           
+          if (st && st.started_at) {
+            const parsedStart = _parseStartedAt(st.started_at);
+            if (parsedStart) t0 = parsedStart;
+          }
+
           // Güncel adımı ekrana bas
           if (st.running) {
             const name = st.current_airline_name || st.current_airline || 'Bağlanıyor...';
             const code = st.current_airline ? ` (${st.current_airline})` : '';
             document.getElementById('ac-progress-airline-name').innerHTML = `<b>${name}${code}</b>`;
+
             
             const current = st.current_page || 0;
             const total = st.total_pages || 0;
@@ -26241,7 +26253,7 @@ document.addEventListener('DOMContentLoaded', () => {
       localStorage.setItem('fleet_update_password', pwd);
 
       // Tarama arka planda sürer (dakikalar alabilir); /api/fleet-status yoklanır
-      const t0 = Date.now();
+      let t0 = Date.now();
       fleetTimerInterval = setInterval(() => {
         setEl('ac-progress-timer', el => el.textContent = 'Geçen Süre: ' + Math.round((Date.now() - t0) / 1000) + 's');
       }, 1000);
@@ -26256,7 +26268,12 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
           const sr = await fetch(base + '/api/fleet-status');
           const st = await sr.json();
+          if (st && st.started_at) {
+            const parsedStart = _parseStartedAt(st.started_at);
+            if (parsedStart) t0 = parsedStart;
+          }
           renderFleetProgress(st);
+
           if (st.running) { setTimeout(poll, 3000); return; }
           setIdle();
           if (st.error) {
