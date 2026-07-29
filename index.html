@@ -15189,7 +15189,11 @@ async function loadDashboard() {
       }
     }
     document.querySelectorAll('.cargo-flight-item').forEach(el => {
-      el.classList.toggle('selected', Number(el.dataset.idx) === idx);
+      const isSelected = Number(el.dataset.idx) === idx;
+      el.classList.toggle('selected', isSelected);
+      if (isSelected) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     });
     renderCargoFlightDetail(f);
 
