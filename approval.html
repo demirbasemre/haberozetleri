@@ -1206,7 +1206,8 @@ function stripHtml(str) {
 function buildDefaultWebSearchPrompt(a) {
   const title = a.title || '';
   const analysis = stripHtml(a.thyAnalysis || '');
-  return `Turkish Cargo (Turkish Airlines kargo birimi) açısından aşağıdaki haberin stratejik etkisini DOĞRULAYAN, haberde GEÇMEYEN yeni ve somut bir kanıt/veri bul (örnek: Turkish Cargo'nun kendi filo/kapasite rakamları, rakip kıyaslaması, pazar payı istatistiği, ilgili düzenleme). Haberdeki bilgiyi ASLA tekrar etme veya özetleme; sadece onu destekleyen, haberin dışında kalan ek bir bulgu sun. Eğer böyle bir ek veri bulamazsan sadece BOŞ DÖN. Haber başlığı: ${title}. Mevcut analiz: ${analysis}. Bulguyu Türkçe, 1-2 cümlede ve öz şekilde yaz; sadece bulgu cümlesini yaz, başka açıklama ekleme.`;
+  const currentYear = new Date().getFullYear();
+  return `Turkish Cargo (Turkish Airlines kargo birimi) açısından aşağıdaki haberin stratejik etkisini DOĞRULAYAN, haberde GEÇMEYEN yeni ve somut bir kanıt/veri bul (örnek: Turkish Cargo'nun kendi filo/kapasite rakamları, rakip kıyaslaması, pazar payı istatistiği, ilgili düzenleme). Bulgu MUTLAKA güncel olmalı: sadece ${currentYear} yılına veya son 12 aya ait veri kullan; bir iki yıl eski istatistikleri KULLANMA. Haberdeki bilgiyi ASLA tekrar etme veya özetleme; sadece onu destekleyen, haberin dışında kalan ek bir bulgu sun. Eğer böyle bir ek veri bulamazsan sadece BOŞ DÖN. Haber başlığı: ${title}. Mevcut analiz: ${analysis}. Bulguyu Türkçe, 1-2 cümlede ve öz şekilde yaz; sadece bulgu cümlesini yaz, başka açıklama ekleme.`;
 }
 
 function buildRegenerateBoxHtml(a, artId) {
