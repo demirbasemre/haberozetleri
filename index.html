@@ -2211,10 +2211,10 @@
       .cargo-signal-lost-dot {
         width: 7px;
         height: 7px;
-        background: #F59E0B;
+        background: #9CA3AF;
         border-radius: 50%;
         display: inline-block;
-        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+        box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.25);
       }
       @keyframes cargoLivePulse {
         0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.4); }
@@ -14895,7 +14895,7 @@ async function loadDashboard() {
   let _cargoAllFlights = [];
   let _cargoFlights = [];
   let _cargoActiveFilter = 'cargo';
-  let _cargoSelectedAirlines = new Set(Object.keys(CARGO_AIRLINE_META));
+  let _cargoSelectedAirlines = new Set(['THY']);
   let _cargoAnimInterval = null;
   let _cargoPlaneMarkers = new Map();
   const cargoAirlineColor = (code) => (CARGO_AIRLINE_META[code] && CARGO_AIRLINE_META[code].color) || '#C8102E';
@@ -15053,7 +15053,7 @@ async function loadDashboard() {
       const dotHtml = f.signalLost 
         ? `<span class="cargo-signal-lost-dot" title="Sinyal Kaybı (Tahmini Konum)"></span>`
         : `<span class="cargo-live-dot"></span>`;
-      const signalLostLabel = f.signalLost ? `<span style="font-size:10px; color:#F59E0B; font-weight:700; margin-left:3px;">(Sinyal Kaybı)</span>` : '';
+      const signalLostLabel = f.signalLost ? `<span style="font-size:10px; color:#9CA3AF; font-weight:700; margin-left:3px;">(Sinyal Kaybı)</span>` : '';
       
       item.innerHTML = `
         <div style="font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:5px;">
@@ -15548,7 +15548,7 @@ async function loadDashboard() {
       const routeInfo = (f.dep || f.arr)
         ? `${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}<br>`
         : `<span style="font-size:11px;color:#9CA3AF">Rota bilgisi mevcut değil</span><br>`;
-      const markerColor = f.signalLost ? '#F59E0B' : cargoAirlineColor(f.airline);
+      const markerColor = f.signalLost ? '#9CA3AF' : cargoAirlineColor(f.airline);
       const planeMarker = L.marker([curLat, curLon], { icon: cargoPlaneIcon(f.track, markerColor) });
       
       planeMarker.on('click', () => {
@@ -15595,7 +15595,7 @@ async function loadDashboard() {
     const m = document.getElementById('cargo-flights-modal');
     if (!m) return;
     _cargoActiveFilter = 'cargo';
-    _cargoSelectedAirlines = new Set(Object.keys(CARGO_AIRLINE_META));
+    _cargoSelectedAirlines = new Set(['THY']);
     _cargoFlights = _cargoAllFlights.filter(f => f.type === 'cargo' && _cargoSelectedAirlines.has(f.airline));
     document.querySelectorAll('#cargo-type-toggle .forex-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.type === 'cargo');
