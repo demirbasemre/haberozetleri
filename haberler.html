@@ -7445,6 +7445,17 @@ window.mainDataPromise = Promise.all([
       a._plainSummary = stripHtml(a.summary || '').toLowerCase();
       a._dateParts = extractDateParts(a.date) || extractDateParts(a.publishDate) || null;
     });
+    // Bu sayfada (haberler.html) haberler en fazla 3 gün geriye gider.
+    (function limitToLast3Days() {
+      const cutoff = new Date();
+      cutoff.setHours(0, 0, 0, 0);
+      cutoff.setDate(cutoff.getDate() - 3);
+      allArticles = allArticles.filter(a => {
+        if (!a._dateParts) return false;
+        const d = new Date(Number(a._dateParts.y), Number(a._dateParts.m) - 1, Number(a._dateParts.day));
+        return d >= cutoff;
+      });
+    })();
     window.allArticles = allArticles; // news-reader.js için
     buildDatePanel(allArticles);
     await loadAirlineConfig(); // config önce yüklensin, sonra filtre kurulsun
