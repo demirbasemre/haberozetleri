@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 2010,
-  "lastScanned": "2026-07-25T23:16:03.370Z",
-  "scannedCount": 159,
+  "lastScannedId": 2284,
+  "lastScanned": "2026-08-01T23:16:03.887Z",
+  "scannedCount": 158,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -636,6 +636,78 @@
         "scat airlines"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=scat.kz"
+    },
+    {
+      "id": "dyn_acc_aviation",
+      "label": "Acc Aviation",
+      "group": "passenger",
+      "kw": [
+        "acc aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=accaviation.com"
+    },
+    {
+      "id": "dyn_neutral_air",
+      "label": "Neutral Air",
+      "group": "cargo",
+      "kw": [
+        "neutral air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=neutralairpartner.com"
+    },
+    {
+      "id": "dyn_universal_aviation",
+      "label": "Universal Aviation",
+      "group": "passenger",
+      "kw": [
+        "universal aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=universalaviation.aero"
+    },
+    {
+      "id": "dyn_textron_aviation",
+      "label": "Textron Aviation",
+      "group": "passenger",
+      "kw": [
+        "textron aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=txtav.com"
+    },
+    {
+      "id": "dyn_smbc_aviation",
+      "label": "Smbc Aviation",
+      "group": "passenger",
+      "kw": [
+        "smbc aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=smbcaviationcapital.com"
+    },
+    {
+      "id": "dyn_airhub_aviation",
+      "label": "Airhub Aviation",
+      "group": "cargo",
+      "kw": [
+        "airhub aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=airhubaviation.com"
+    },
+    {
+      "id": "dyn_royal_air_maroc_cargo",
+      "label": "Royal Air Maroc Cargo",
+      "group": "cargo",
+      "kw": [
+        "royal air maroc cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=royalairmaroc-cargo.com"
+    },
+    {
+      "id": "dyn_africa_world_airlines",
+      "label": "Africa World Airlines",
+      "group": "passenger",
+      "kw": [
+        "africa world airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=flyawa.com"
     }
   ],
   "gsa": []
