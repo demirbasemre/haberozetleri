@@ -1530,6 +1530,7 @@ export default {
         const linkMatch = portalRes.body.match(/href=["']([^"']*?air-cargo-market-analysis-([a-z]+)-(\d{4})\/?)/i);
         
         let reportUrl = 'https://www.iata.org/en/publications/economics/';
+        let pdfUrl = reportUrl;
         let reportMonth = '';
         if (linkMatch) {
           reportUrl = linkMatch[1];
@@ -1537,8 +1538,9 @@ export default {
             reportUrl = 'https://www.iata.org' + (reportUrl.startsWith('/') ? '' : '/') + reportUrl;
           }
           // Site, makale sayfasını "/publications/economics/reports/" altında yayınlıyor,
-          // ama gerçek PDF indirme linki "/iata-repository/publications/economic-reports/" takma adında.
-          reportUrl = reportUrl.replace('/publications/economics/reports/', '/iata-repository/publications/economic-reports/');
+          // gerçek PDF indirme linki ise "/iata-repository/publications/economic-reports/" takma adında.
+          // reportUrl = makale/basın bülteni sayfası, pdfUrl = doğrudan PDF/repository sayfası.
+          pdfUrl = reportUrl.replace('/publications/economics/reports/', '/iata-repository/publications/economic-reports/');
           const monthsTr = {
             january: 'Ocak', february: 'Şubat', march: 'Mart', april: 'Nisan',
             may: 'Mayıs', june: 'Haziran', july: 'Temmuz', august: 'Ağustos',
@@ -1593,7 +1595,8 @@ export default {
 
         const parsed = {
           success: true,
-          pdfLink: reportUrl,
+          link: reportUrl,
+          pdfLink: pdfUrl,
           date: finalDate,
           publishedDate: latestReport.date,
           demand: demand,

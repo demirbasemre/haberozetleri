@@ -21677,7 +21677,8 @@ function initControls(allArticles) {
             capacity: window._iataLatest.capacity,
             loadFactor: window._iataLatest.loadFactor,
             spotRate: window._iataLatest.spotRate,
-            link: window._iataLatest.pdfLink,
+            link: window._iataLatest.link || window._iataLatest.pdfLink,
+            pdfLink: window._iataLatest.pdfLink,
             summary: window._iataLatest.summary
           });
         }
