@@ -1580,7 +1580,6 @@ export default {
         const demand = extractVal('Hava Kargo Talebi');
         const capacity = extractVal('Hava Kargo Kapasitesi');
         const loadFactor = extractVal('Yük Faktörü (CLF)') !== '—' ? extractVal('Yük Faktörü (CLF)') : extractVal('Yük Faktörü');
-        const spotRate = extractVal('Global Spot Rates') !== '—' ? extractVal('Global Spot Rates') : extractVal('Air Freight Index');
 
         // Extract IATA summary from Section 4 summary-box
         const sec4Match = html.match(/id="sec-4"[^>]*>[\s\S]*?<div class="summary-box"><strong>ÖZET<\/strong>\s*([\s\S]*?)<\/div>/i) ||
@@ -1602,7 +1601,6 @@ export default {
           demand: demand,
           capacity: capacity,
           loadFactor: loadFactor,
-          spotRate: spotRate,
           summary: summary
         };
 

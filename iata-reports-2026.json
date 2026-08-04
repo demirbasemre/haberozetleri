@@ -1,5 +1,185 @@
 [
   {
+    "date": "Haziran 2026",
+    "title": "Orta Doğu Küresel Kargo Büyümesine Yeniden Katılıyor",
+    "demand": "+8.5%",
+    "capacity": "+4.4%",
+    "loadFactor": "46.9%",
+    "clf_pp": "+1.7",
+    "demand_intl": "+9.6%",
+    "capacity_intl": "+4.9%",
+    "clf_intl": "52.1%",
+    "ytd_demand": "+4.9%",
+    "ytd_capacity": "+2.1%",
+    "ytd_clf": "46.4%",
+    "cargoYield": "+34.0%",
+    "brentOil": "+19.6%",
+    "jetFuel": "+45.8%",
+    "pmi": "53.0",
+    "pmi_exports": "49.4",
+    "regions": {
+      "asiaPacific": {
+        "share": "35.8",
+        "ctk": "+7.9%",
+        "actk": "+4.3%"
+      },
+      "northAmerica": {
+        "share": "24.6",
+        "ctk": "+13.1%",
+        "actk": "+6.2%"
+      },
+      "europe": {
+        "share": "21.4",
+        "ctk": "+6.9%",
+        "actk": "+3.7%"
+      },
+      "middleEast": {
+        "share": "13.2",
+        "ctk": "+5.6%",
+        "actk": "+2.5%"
+      },
+      "latinAmerica": {
+        "share": "2.9",
+        "ctk": "+3.5%",
+        "actk": "+9.8%"
+      },
+      "africa": {
+        "share": "2.1",
+        "ctk": "+4.7%",
+        "actk": "-7.1%"
+      }
+    },
+    "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-june-2026/",
+    "pdfLink": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-june-2026/",
+    "summary": "Küresel hava kargo talebi (CTK) Haziran 2026'da yıllık %8.5 büyüyerek ivmesini Orta Doğu ağlarının kısmi toparlanmasına ve Kuzey Amerika'nın güçlü performansına dayandırdı; jeopolitik belirsizlik sürse de bölgesel kesintiler önceki aylara göre hafifledi. Uluslararası kargo trafiği yıllık %9.6 artarken, Kuzey Amerika taşıyıcıları büyümeye öncülük etti ve Orta Doğu taşıyıcıları en belirgin bölgesel iyileşmeyi kaydetti. Küresel kapasite (ACTK) talep artışının gerisinde kalarak yıllık %4.4 genişledi ve yük faktörlerini yükseltti; Afrika taşıyıcıları ise kapasitesini daralttı. Basra Körfezi'nde petrol akışının iyileşmesiyle yakıt fiyatları geriledi, kargo verimleri (yield) ise sürdürdüğü artış serisinin ardından ilk kez aylık bazda hafif geriledi ancak yıllık bazda hâlâ %34.0 yüksek seyrediyor.",
+    "data": {
+      "totalMarket": {
+        "yoy": {
+          "world": {
+            "ctk": "+8.5%",
+            "actk": "+4.4%"
+          },
+          "africa": {
+            "ctk": "+4.7%",
+            "actk": "-7.1%"
+          },
+          "asiaPacific": {
+            "ctk": "+7.9%",
+            "actk": "+4.3%"
+          },
+          "europe": {
+            "ctk": "+6.9%",
+            "actk": "+3.7%"
+          },
+          "latinAmerica": {
+            "ctk": "+3.5%",
+            "actk": "+9.8%"
+          },
+          "middleEast": {
+            "ctk": "+5.6%",
+            "actk": "+2.5%"
+          },
+          "northAmerica": {
+            "ctk": "+13.1%",
+            "actk": "+6.2%"
+          }
+        },
+        "ytd": {
+          "world": {
+            "ctk": "+4.9%",
+            "actk": "+2.1%"
+          },
+          "africa": {
+            "ctk": "+11.1%",
+            "actk": "-0.7%"
+          },
+          "asiaPacific": {
+            "ctk": "+8.8%",
+            "actk": "+5.8%"
+          },
+          "europe": {
+            "ctk": "+5.9%",
+            "actk": "+3.9%"
+          },
+          "latinAmerica": {
+            "ctk": "-0.1%",
+            "actk": "+4.8%"
+          },
+          "middleEast": {
+            "ctk": "-9.6%",
+            "actk": "-10.3%"
+          },
+          "northAmerica": {
+            "ctk": "+6.1%",
+            "actk": "+2.0%"
+          }
+        }
+      },
+      "international": {
+        "yoy": {
+          "world": {
+            "ctk": "+9.6%",
+            "actk": "+4.9%"
+          },
+          "africa": {
+            "ctk": "+4.7%",
+            "actk": "-6.9%"
+          },
+          "asiaPacific": {
+            "ctk": "+9.6%",
+            "actk": "+6.4%"
+          },
+          "europe": {
+            "ctk": "+7.2%",
+            "actk": "+1.8%"
+          },
+          "latinAmerica": {
+            "ctk": "+2.6%",
+            "actk": "+10.1%"
+          },
+          "middleEast": {
+            "ctk": "+5.6%",
+            "actk": "+2.7%"
+          },
+          "northAmerica": {
+            "ctk": "+17.1%",
+            "actk": "+8.2%"
+          }
+        },
+        "ytd": {
+          "world": {
+            "ctk": "+5.2%",
+            "actk": "+2.4%"
+          },
+          "africa": {
+            "ctk": "+11.1%",
+            "actk": "-0.5%"
+          },
+          "asiaPacific": {
+            "ctk": "+9.6%",
+            "actk": "+7.2%"
+          },
+          "europe": {
+            "ctk": "+6.2%",
+            "actk": "+3.6%"
+          },
+          "latinAmerica": {
+            "ctk": "+0.8%",
+            "actk": "+4.7%"
+          },
+          "middleEast": {
+            "ctk": "-9.6%",
+            "actk": "-10.4%"
+          },
+          "northAmerica": {
+            "ctk": "+7.3%",
+            "actk": "+3.4%"
+          }
+        }
+      }
+    }
+  },
+  {
     "date": "Mayıs 2026",
     "title": "Trans-Pasifik Gücü Küresel Kargo Büyümesini Sürüklüyor",
     "demand": "+6.0%",
@@ -12,7 +192,6 @@
     "ytd_demand": "+4.1%",
     "ytd_capacity": "+1.5%",
     "ytd_clf": "46.3%",
-    "spotRate": "3.23 $/kg",
     "cargoYield": "+37.9%",
     "jetFuel": "+93.5%",
     "pmi": "53.5",
@@ -192,7 +371,6 @@
     "ytd_demand": "+3.6%",
     "ytd_capacity": "+1.5%",
     "ytd_clf": "46.2%",
-    "spotRate": "3.40 $/kg",
     "cargoYield": "+32.2%",
     "brentOil": "+77.7%",
     "jetFuel": "+121.1%",
@@ -373,7 +551,6 @@
     "ytd_demand": "+3.5%",
     "ytd_capacity": "+2.1%",
     "ytd_clf": "46.0%",
-    "spotRate": "3.10 $/kg",
     "cargoYield": "+18.5%",
     "brentOil": "+62.3%",
     "jetFuel": "+95.4%",
@@ -554,7 +731,6 @@
     "ytd_demand": "+8.8%",
     "ytd_capacity": "+3.5%",
     "ytd_clf": "46.5%",
-    "spotRate": "3.35 $/kg",
     "cargoYield": "+24.1%",
     "brentOil": "+58.2%",
     "jetFuel": "+87.6%",
@@ -735,7 +911,6 @@
     "ytd_demand": "+5.6%",
     "ytd_capacity": "+3.6%",
     "ytd_clf": "45.0%",
-    "spotRate": "3.20 $/kg",
     "cargoYield": "-0.8%",
     "brentOil": "-5.0%",
     "jetFuel": "-6.5%",

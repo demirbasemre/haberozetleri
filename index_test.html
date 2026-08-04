@@ -3066,8 +3066,8 @@
               <span class="cargo-metric-val skeleton" id="iata-val-loadfactor">-</span>
             </div>
             <div class="cargo-metric-item">
-              <span class="cargo-metric-lbl">UR</span>
-              <span class="cargo-metric-val skeleton" id="iata-val-spotrate">-</span>
+              <span class="cargo-metric-lbl">Yield</span>
+              <span class="cargo-metric-val skeleton" id="iata-val-yield">-</span>
             </div>
           </div>
           <div class="dash-card-sub" id="dc-iata-sub" style="display:none"></div>
@@ -3571,7 +3571,6 @@
             <button class="iata-metric-toggle active" data-metric="demand" style="--metric-color:#7a64a8" onclick="toggleIataMetric('demand',this)">CTK %</button>
             <button class="iata-metric-toggle active" data-metric="capacity" style="--metric-color:#22c55e" onclick="toggleIataMetric('capacity',this)">ACTK %</button>
             <button class="iata-metric-toggle" data-metric="loadFactor" style="--metric-color:#3b82f6" onclick="toggleIataMetric('loadFactor',this)">Yük Faktörü</button>
-            <button class="iata-metric-toggle" data-metric="spotRate" style="--metric-color:#f59e0b" onclick="toggleIataMetric('spotRate',this)">Spot Rate</button>
             <button class="iata-metric-toggle" data-metric="cargoYield" style="--metric-color:#ef4444" onclick="toggleIataMetric('cargoYield',this)">Cargo Yield</button>
             <button class="iata-metric-toggle" data-metric="pmi" style="--metric-color:#64748b" onclick="toggleIataMetric('pmi',this)">PMI</button>
           </div>
@@ -14507,7 +14506,7 @@ async function loadDashboard() {
             demand: parseFloatVal(r.demand),
             capacity: parseFloatVal(r.capacity),
             loadFactor: parseFloatVal(r.loadFactor),
-            spotRate: parseFloatVal(String(r.spotRate).replace('$/kg', '').replace('$', '').trim())
+            cargoYield: parseFloatVal(r.cargoYield)
           };
         }).filter(r => r.demand !== null || r.capacity !== null);
         parsedReports.sort((a, b) => a.date.localeCompare(b.date));
@@ -14529,7 +14528,7 @@ async function loadDashboard() {
           }
         });
       } else {
-        // For capacity, loadFactor, spotRate, we plot the 2026 trend from parsed reports
+        // For capacity, loadFactor, cargoYield, we plot the 2026 trend from parsed reports
         parsedReports.forEach(r => {
           const val = r[metric];
           if (val !== null) {
@@ -14578,11 +14577,11 @@ async function loadDashboard() {
         lineColor = '#0891b2';
         bgColor = 'rgba(8,145,178,0.05)';
         fmtFn = v => v != null ? '%' + Number(v).toFixed(1) : ''; // % başta
-      } else if (metric === 'spotRate') {
-        lineLabel = 'Spot Navlun Fiyatı';
-        lineColor = '#ea580c';
-        bgColor = 'rgba(234,88,12,0.05)';
-        fmtFn = v => v != null ? Number(v).toFixed(2) + ' $/kg' : '';
+      } else if (metric === 'cargoYield') {
+        lineLabel = 'Kargo Yield (Birim Gelir)';
+        lineColor = '#ef4444';
+        bgColor = 'rgba(239,68,68,0.05)';
+        fmtFn = v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '';
       }
 
       lineChart('chart-iata', labels,
@@ -14618,7 +14617,7 @@ async function loadDashboard() {
         demand: 'IATA Küresel Hava Kargo Talebi Büyümesi (YoY)',
         capacity: 'IATA Küresel Hava Kargo Kapasite Büyümesi (YoY)',
         loadFactor: 'IATA Küresel Yük Faktörü (LF)',
-        spotRate: 'Global Spot Hava Kargo Navlun Fiyatı'
+        cargoYield: 'IATA Küresel Kargo Yield (Birim Gelir)'
       };
       if (titleEl) titleEl.textContent = titleMap[metric];
 
@@ -14828,8 +14827,8 @@ async function loadDashboard() {
         const dEl = document.getElementById('iata-val-demand');
         const cEl = document.getElementById('iata-val-capacity');
         const lfEl = document.getElementById('iata-val-loadfactor');
-        const srEl = document.getElementById('iata-val-spotrate');
-        
+        const srEl = document.getElementById('iata-val-yield');
+
         const applyMetricColor = (el, val) => {
           const num = parseFloat(String(val).replace(/[^0-9.\-]/g, ''));
           el.classList.remove('positive', 'negative');
@@ -14838,12 +14837,7 @@ async function loadDashboard() {
         if (dEl) { dEl.textContent = window.formatLF(latest.demand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, latest.demand); }
         if (cEl) { cEl.textContent = window.formatLF(latest.capacity); cEl.classList.remove('skeleton'); applyMetricColor(cEl, latest.capacity); }
         if (lfEl) { lfEl.textContent = window.formatLF(latest.loadFactor); lfEl.classList.remove('skeleton'); }
-        if (srEl) {
-          const rawSR = latest.spotRate || '';
-          const numSR = parseFloat(rawSR);
-          srEl.textContent = !isNaN(numSR) ? '$' + numSR.toFixed(2) : (rawSR || '—');
-          srEl.classList.remove('skeleton');
-        }
+        if (srEl) { srEl.textContent = latest.cargoYield ? window.formatLF(latest.cargoYield) : '—'; srEl.classList.remove('skeleton'); applyMetricColor(srEl, latest.cargoYield); }
 
         const subEl = document.getElementById('dc-iata-sub');
         if (subEl) subEl.style.display = 'none';
@@ -14858,7 +14852,7 @@ async function loadDashboard() {
         const dEl = document.getElementById('iata-val-demand');
         const cEl = document.getElementById('iata-val-capacity');
         const lfEl = document.getElementById('iata-val-loadfactor');
-        const srEl = document.getElementById('iata-val-spotrate');
+        const srEl = document.getElementById('iata-val-yield');
         if (dEl) { dEl.textContent = '—'; dEl.classList.remove('skeleton'); }
         if (cEl) { cEl.textContent = '—'; cEl.classList.remove('skeleton'); }
         if (lfEl) { lfEl.textContent = '—'; lfEl.classList.remove('skeleton'); }
@@ -14870,7 +14864,7 @@ async function loadDashboard() {
       const dEl = document.getElementById('iata-val-demand');
       const cEl = document.getElementById('iata-val-capacity');
       const lfEl = document.getElementById('iata-val-loadfactor');
-      const srEl = document.getElementById('iata-val-spotrate');
+      const srEl = document.getElementById('iata-val-yield');
       if (dEl) { dEl.textContent = '—'; dEl.classList.remove('skeleton'); }
       if (cEl) { cEl.textContent = '—'; cEl.classList.remove('skeleton'); }
       if (lfEl) { lfEl.textContent = '—'; lfEl.classList.remove('skeleton'); }
@@ -16471,13 +16465,13 @@ async function loadDashboard() {
     if (dEl && (dEl.classList.contains('skeleton') || dEl.textContent === '—' || dEl.textContent === '-')) {
       const cEl = document.getElementById('iata-val-capacity');
       const lfEl = document.getElementById('iata-val-loadfactor');
-      const srEl = document.getElementById('iata-val-spotrate');
+      const srEl = document.getElementById('iata-val-yield');
       const d = readCache('iata_full_data_v8');
       if (d?.latest?.demand) {
         if (dEl) { dEl.textContent = window.formatLF(d.latest.demand); dEl.classList.remove('skeleton'); }
         if (cEl) { cEl.textContent = window.formatLF(d.latest.capacity); cEl.classList.remove('skeleton'); }
         if (lfEl) { lfEl.textContent = window.formatLF(d.latest.loadFactor); lfEl.classList.remove('skeleton'); }
-        if (srEl) { const n = parseFloat(d.latest.spotRate); srEl.textContent = !isNaN(n) ? '$' + n.toFixed(2) : (d.latest.spotRate || '—'); srEl.classList.remove('skeleton'); }
+        if (srEl) { srEl.textContent = d.latest.cargoYield ? window.formatLF(d.latest.cargoYield) : '—'; srEl.classList.remove('skeleton'); }
         const noteEl = document.getElementById('dc-iata-note');
         if (noteEl) noteEl.innerHTML = `Son veri: ${d.latest.date}<br><a href="https://www.iata.org" target="_blank" rel="noopener">IATA Reports →</a>`;
       } else {
@@ -21579,7 +21573,7 @@ function initControls(allArticles) {
       "demand": "+6.0%",
       "capacity": "+1.9%",
       "loadFactor": "46.3%",
-      "spotRate": "3.23 $/kg",
+      "cargoYield": "+37.9%",
       "link": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-may-2026/",
       "summary": "Küresel hava kargo talebi (CTK) Mayıs 2026'da yıllık %6.0 büyüyerek ivmesini Asya-Pasifik ve Kuzey Amerika taşıyıcılarının güçlü performansına dayandırdı; Orta Doğu'daki hub aksaklıkları ağı şekillendirmeye devam etse de büyük pazarlar bu baskının çoğunu emdi. Uluslararası kargo trafiği yıllık %6.5 artarken, Orta Doğu taşıyıcıları daralmasını sürdürdü. Küresel kapasite (ACTK) talep artışının çok gerisinde kalarak yıllık %1.9 genişledi ve yük faktörlerini yükseltti."
     },
@@ -21589,7 +21583,7 @@ function initControls(allArticles) {
       "demand": "+4.0%",
       "capacity": "-0.4%",
       "loadFactor": "46.0%",
-      "spotRate": "3.40 $/kg",
+      "cargoYield": "+32.2%",
       "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-april-2026/",
       "summary": "Nisan 2026 küresel hava kargo talebi yıllık %4.0 artarak yeniden büyüme bölgesine dönmüştür. Kapasite ise yıllık %0.4 azalmıştır. Büyüme Asya çıkışlı ticari akışlarla desteklenirken, Orta Doğu jeopolitik gerilimleri kapasite kısıtlamalarına yol açmaktadır."
     },
@@ -21599,7 +21593,7 @@ function initControls(allArticles) {
       "demand": "-4.8%",
       "capacity": "-1.2%",
       "loadFactor": "44.0%",
-      "spotRate": "3.10 $/kg",
+      "cargoYield": "+18.5%",
       "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-march-2026/",
       "summary": "Mart 2026 küresel hava kargo talebinde yıllık %4.8'lik bir daralma gözlenmiştir. Bu gerilemede Orta Doğu'daki jeopolitik kısıtlamalar, operasyonel aksamalar ve Paskalya tatili nedeniyle çalışma günlerinin azalması etkili olmuştur."
     },
@@ -21609,7 +21603,7 @@ function initControls(allArticles) {
       "demand": "+11.2%",
       "capacity": "+4.5%",
       "loadFactor": "47.0%",
-      "spotRate": "3.35 $/kg",
+      "cargoYield": "+24.1%",
       "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-february-2026/",
       "summary": "Şubat 2026 küresel hava kargo talebi yıllık %11.2 artışla güçlü bir yükseliş yaşamıştır. Bu ivmede Çin Yeni Yılı (Lunar New Year) öncesindeki yoğun sevkiyat trafiği ve e-ticaret lojistiği etkili olmuştur."
     },
@@ -21622,7 +21616,6 @@ function initControls(allArticles) {
       "cargoYield": "-0.8%",
       "jetFuel": "-6.5%",
       "pmi": "52.1",
-      "spotRate": "3.20 $/kg",
       "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-january-2026/",
       "summary": "Hava kargo talebi (CTK) yıla güçlü bir başlangıç yaparak yıllık %5.6 arttı; uluslararası kargo hacimleri ise yıllık %7.2 büyümeyle daha güçlü seyretti. Küresel hava kargo kapasitesi (ACTK) yıllık %3.6 genişleyerek Ocak ayı için tarihi zirveye ulaştı; ancak kapasite artış hızında yavaşlama sinyalleri gözlemlendi. Afrika %18.2 artışla çift haneli büyümesini sürdürerek lider olurken Amerika kıtasında talep üst üste altıncı ayda da gerileme kaydetti. Küresel kargo verimleri yıllık %0.8 gerilerken jet yakıtı fiyatları %6.5 düştü; imalat PMI ise 52.1 seviyesinde gerçekleşti."
     }
@@ -21676,7 +21669,6 @@ function initControls(allArticles) {
             demand: window._iataLatest.demand,
             capacity: window._iataLatest.capacity,
             loadFactor: window._iataLatest.loadFactor,
-            spotRate: window._iataLatest.spotRate,
             link: window._iataLatest.link || window._iataLatest.pdfLink,
             pdfLink: window._iataLatest.pdfLink,
             summary: window._iataLatest.summary
@@ -21808,7 +21800,7 @@ function initControls(allArticles) {
 
     listEl.innerHTML = reports.map(r => {
       const hasRegions = r.regions && Object.keys(r.regions).length > 0;
-      const hasMacro = r.cargoYield || r.brentOil || r.pmi;
+      const hasMacro = r.jetFuel || r.brentOil || r.pmi;
 
       return `
         <div class="iata-report-card">
@@ -21819,7 +21811,7 @@ function initControls(allArticles) {
           </div>
           ${r.title ? `<div class="iata-report-title">${r.title}</div>` : ''}
 
-          <!-- Primary metrics: CTK, ACTK, LF, Spot Rate -->
+          <!-- Primary metrics: CTK, ACTK, LF, Cargo Yield -->
           <div class="iata-metrics-section-lbl">Küresel Göstergeler (Yıllık)</div>
           <div class="iata-metrics-primary">
             <div class="iata-report-metric">
@@ -21835,8 +21827,8 @@ function initControls(allArticles) {
               <span class="iata-report-metric-val" style="color:#7a64a8">${r.loadFactor || '—'}</span>
             </div>
             <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">Spot Rate</span>
-              <span class="iata-report-metric-val" style="color:var(--text)">${r.spotRate || '—'}</span>
+              <span class="iata-report-metric-lbl">Kargo Yield</span>
+              <span class="iata-report-metric-val" style="color:#f59e0b">${r.cargoYield || '—'}</span>
             </div>
           </div>
 
@@ -21865,10 +21857,6 @@ function initControls(allArticles) {
           <!-- Macro/Energy metrics -->
           <div class="iata-metrics-section-lbl">Makro & Enerji</div>
           <div class="iata-metrics-macro">
-            <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">Cargo Yield</span>
-              <span class="iata-report-metric-val" style="color:#f59e0b">${r.cargoYield || '—'}</span>
-            </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Jet Yakıt</span>
               <span class="iata-report-metric-val" style="color:#ef4444;font-size:12px">${r.jetFuel || '—'}</span>
@@ -22098,14 +22086,14 @@ function initControls(allArticles) {
 
     const parseRate = str => {
       if (!str || str === '—') return null;
-      return parseFloat(String(str).replace('$/kg', '').trim());
+      return parseFloat(String(str).replace('%', '').replace('+', '').trim());
     };
     const parseLF = str => {
       if (!str || str === '—') return null;
       return parseFloat(String(str).replace('%', '').trim());
     };
 
-    const spotData = sorted.map(r => parseRate(r.spotRate));
+    const spotData = sorted.map(r => parseRate(r.cargoYield));
     const lfData = sorted.map(r => parseLF(r.loadFactor));
 
     _iataSecondaryChart = new Chart(canvas2.getContext('2d'), {
@@ -22114,7 +22102,7 @@ function initControls(allArticles) {
         datasets: [
           {
             type: 'bar',
-            label: 'Spot Rate ($/kg)',
+            label: 'Kargo Yield (%)',
             data: spotData,
             backgroundColor: 'rgba(245,158,11,0.5)',
             borderColor: '#f59e0b',
@@ -22168,7 +22156,7 @@ function initControls(allArticles) {
           y: {
             position: 'left',
             grid: { color: gridColor },
-            ticks: { color: '#f59e0b', font: { size: 9 }, callback: v => v.toFixed(2) + '$' }
+            ticks: { color: '#f59e0b', font: { size: 9 }, callback: v => v.toFixed(1) + '%' }
           },
           y2: {
             position: 'right',
@@ -22548,7 +22536,6 @@ function initControls(allArticles) {
     demand:     { label: 'CTK YoY (%)',         color: '#7a64a8', unit: '%' },
     capacity:   { label: 'ACTK YoY (%)',        color: '#22c55e', unit: '%' },
     loadFactor: { label: 'Yük Faktörü',         color: '#3b82f6', unit: '%' },
-    spotRate:   { label: 'Spot Rate ($/kg)',    color: '#f59e0b', unit: '$' },
     cargoYield: { label: 'Cargo Yield YoY (%)', color: '#ef4444', unit: '%' },
     pmi:        { label: 'PMI',                 color: '#64748b', unit: '' }
   };
@@ -22650,8 +22637,8 @@ function initControls(allArticles) {
   function exportIataToCSV() {
     const data = window._iataReportsList || [];
     if (!data.length) return;
-    const headers = ['Tarih','CTK (%)','ACTK (%)','Yük Faktörü','Spot Rate','Cargo Yield','PMI'];
-    const rows = [...data].reverse().map(r => [r.date, r.demand||'', r.capacity||'', r.loadFactor||'', r.spotRate||'', r.cargoYield||'', r.pmi||'']);
+    const headers = ['Tarih','CTK (%)','ACTK (%)','Yük Faktörü','Cargo Yield','PMI'];
+    const rows = [...data].reverse().map(r => [r.date, r.demand||'', r.capacity||'', r.loadFactor||'', r.cargoYield||'', r.pmi||'']);
     const csv = [headers, ...rows].map(row => row.map(v => `"${v}"`).join(',')).join('\n');
     const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
