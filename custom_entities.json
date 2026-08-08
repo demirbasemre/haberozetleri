@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 2284,
-  "lastScanned": "2026-08-01T23:16:03.887Z",
-  "scannedCount": 158,
+  "lastScannedId": 2437,
+  "lastScanned": "2026-08-08T23:16:00.275Z",
+  "scannedCount": 127,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -708,6 +708,105 @@
         "africa world airlines"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=flyawa.com"
+    },
+    {
+      "id": "dyn_golden_aviation",
+      "label": "Golden Aviation",
+      "group": "charter",
+      "kw": [
+        "golden aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=goldenaviation.com"
+    },
+    {
+      "id": "dyn_raya_airways",
+      "label": "Raya Airways",
+      "group": "cargo",
+      "kw": [
+        "raya airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=rayaairways.com"
+    },
+    {
+      "id": "dyn_north_air",
+      "label": "North Air",
+      "group": "charter",
+      "kw": [
+        "north air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=northair.co.uk"
+    },
+    {
+      "id": "dyn_martinair_cargo",
+      "label": "Martinair Cargo",
+      "group": "cargo",
+      "kw": [
+        "martinair cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=martinair.com"
+    },
+    {
+      "id": "dyn_antonov_airlines",
+      "label": "Antonov Airlines",
+      "group": "cargo",
+      "kw": [
+        "antonov airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=antonov-airlines.com"
+    },
+    {
+      "id": "dyn_apoc_aviation",
+      "label": "Apoc Aviation",
+      "group": "charter",
+      "kw": [
+        "apoc aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=apocaviation.com"
+    },
+    {
+      "id": "dyn_sarla_aviation",
+      "label": "Sarla Aviation",
+      "group": "passenger",
+      "kw": [
+        "sarla aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=sarlaaviation.com"
+    },
+    {
+      "id": "dyn_delta_air_lines",
+      "label": "Delta Air Lines",
+      "group": "passenger",
+      "kw": [
+        "delta air lines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=delta.com"
+    },
+    {
+      "id": "dyn_network_aviation",
+      "label": "Network Aviation",
+      "group": "passenger",
+      "kw": [
+        "network aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=networkaviation.com.au"
+    },
+    {
+      "id": "dyn_network_cargo",
+      "label": "Network Cargo",
+      "group": "cargo",
+      "kw": [
+        "network cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=network-cargo.com"
+    },
+    {
+      "id": "dyn_air_one_aviation",
+      "label": "Air One Aviation",
+      "group": "cargo",
+      "kw": [
+        "air one aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aironeaviation.com"
     }
   ],
   "gsa": []
