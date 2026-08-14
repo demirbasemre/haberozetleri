@@ -24034,10 +24034,11 @@ let FIN_YEAR_SOURCES = null;
 let FIN_INVESTOR_URLS_STATIC = null;
 
 async function loadAppData() {
+  const _cb = '?v=' + Date.now();
   const [fleet, fin, finSrc, invUrls] = await Promise.all([
     fetch('https://api-fleet.emredemirbas.com/api/get-fleet').then(r=>r.ok?r.json():null).catch(()=>null),
-    fetch('data/financials.json').then(r=>r.json()).catch(()=>({})),
-    fetch('data/fin_sources.json').then(r=>r.json()).catch(()=>({})),
+    fetch('data/financials.json' + _cb).then(r=>r.json()).catch(()=>({})),
+    fetch('data/fin_sources.json' + _cb).then(r=>r.json()).catch(()=>({})),
 
     Promise.resolve({
       "QR": {name:"Qatar Airways",     url:"https://www.qatarairways.com/en/about-qatar-airways/annual-reports.html"},
