@@ -190,18 +190,7 @@
   #fleet-ac-table th[aria-sort="ascending"] .ac-sort-icon,
   #fleet-ac-table th[aria-sort="descending"] .ac-sort-icon { opacity: 1; }
 
-  .fin-control-bar {
-    display: flex; flex-wrap: nowrap; gap: 16px; align-items: stretch;
-    padding: 14px 18px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); box-shadow: var(--shadow-sm);
-    margin-bottom: 14px;
-  }
-  .fin-ctrl-left {
-    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
-    flex: 1; min-width: 0;
-  }
-  /* Live pulsing glow animation for airline selection beacon */
+  /* Live pulsing glow animation for selection beacon */
   @keyframes finBeaconPulse {
     0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
     70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); }
@@ -214,27 +203,42 @@
     animation: finBeaconPulse 2s infinite ease-in-out;
   }
 
-  .fin-ctrl-airlines {
-    width: 340px; flex-shrink: 0; align-self: stretch;
+  .fin-control-bar {
+    display: flex; flex-direction: column; gap: 14px;
+    padding: 16px 18px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow-sm);
+    margin-bottom: 14px;
+  }
+  .fin-ctrl-left {
+    display: flex; flex-direction: column; gap: 12px; width: 100%;
+  }
+
+  /* Vurgulu Grafik & Zaman Ayarları Şeridi */
+  .fin-controls-highlight-bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
+    padding: 10px 14px; border-radius: 10px;
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.04) 0%, rgba(99, 102, 241, 0.07) 100%);
     border: 1.5px solid rgba(37, 99, 235, 0.25);
-    border-radius: 12px;
-    padding: 12px 14px;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
-    transition: all 0.25s ease;
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.06);
+    transition: all 0.2s ease;
   }
-  .fin-ctrl-airlines:hover {
+  .fin-controls-highlight-bar:hover {
     border-color: rgba(37, 99, 235, 0.48);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.14);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.12);
   }
-  [data-theme="dark"] .fin-ctrl-airlines {
+  [data-theme="dark"] .fin-controls-highlight-bar {
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(99, 102, 241, 0.12) 100%);
     border-color: rgba(99, 102, 241, 0.35);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
   }
-  @media (max-width: 960px) {
-    .fin-control-bar { flex-wrap: wrap; }
-    .fin-ctrl-airlines { width: 100%; }
+
+  .fin-ctrl-airlines {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
   }
   .fin-atoggle-break { flex-basis: 100%; height: 0; }
   /* Mali yıl havayolları alt bölümü — uyarı barıyla aynı görsel dil */
@@ -4567,8 +4571,6 @@
         </div>
       </div>
 
-    </div><!-- /fleet-report-container -->
-
   <!-- ══════ FİNANSAL TABLOLAR ══════ -->
   <div id="finansal-report-container" class="fleet-report-container" style="display:none">
 
@@ -4591,85 +4593,121 @@
         </div>
       </div>
     </div>
-
-    <!-- Kontrol barı -->
     <div class="fin-control-bar">
       <div class="fin-ctrl-left">
-      <!-- Metrik seçici -->
-      <div class="fin-ctrl-group">
-        <span class="fin-ctrl-label">Metrik</span>
-        <div class="fin-metric-pills" id="fin-metric-pills">
-          <!-- Ana Finansal (mavi) -->
-          <span class="fin-mpill-sep fin-mpill-sep--primary">Ana Finansal</span>
-          <button class="fin-mpill fin-mpill--fin-primary fin-mpill--active" data-metric="total_revenue_musd">Toplam Gelir</button>
-          <button class="fin-mpill fin-mpill--fin-primary" data-metric="passenger_revenue_musd">Yolcu Geliri</button>
-          <button class="fin-mpill fin-mpill--fin-primary" data-metric="cargo_revenue_musd">Kargo Geliri</button>
-          <button class="fin-mpill fin-mpill--fin-primary" data-metric="other_revenue_musd">Diğer Gelir</button>
-          <button class="fin-mpill fin-mpill--fin-primary" data-metric="operating_profit_musd">Op. Kâr (EBIT)</button>
-          <button class="fin-mpill fin-mpill--fin-primary" data-metric="net_profit_musd">Net Kâr</button>
-          <button class="fin-mpill fin-mpill--fin-primary" data-metric="market_cap_musd">Piyasa Değeri</button>
-          <button class="fin-mpill fin-mpill--fin-primary" data-metric="employees">Çalışanlar</button>
-          <button class="fin-mpill fin-mpill--fin-primary" data-metric="fleet_size">Uçak Sayısı</button>
-          <!-- Hesaplanan Oran (turuncu) -->
-          <span class="fin-mpill-sep fin-mpill-sep--calc">Hesaplanan Oran<button type="button" class="fin-info-dot" aria-label="Hesaplanan oranlar nasıl hesaplanıyor?"
-            onclick="this.classList.toggle('open'); event.stopPropagation();"
-            onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Büyüme oranları</strong> (Gelir, Yolcu, Kargo, Diğer Gelir %): (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.<br><strong>Op. Marj:</strong> Operasyonel Kâr ÷ Toplam Gelir × 100<br><strong>FD / FAVÖK:</strong> Firma Değeri / EBITDA Çarpanı<br><strong>Net Borç / FAVÖK:</strong> Net Borç / EBITDA Kaldıraç Oranı</span></button></span>
-          <button class="fin-mpill fin-mpill--fin-calc" data-metric="total_revenue_growth_pct">Gelir Büyümesi</button>
-          <button class="fin-mpill fin-mpill--fin-calc" data-metric="passenger_revenue_growth_pct">Yolcu Gelir %</button>
-          <button class="fin-mpill fin-mpill--fin-calc" data-metric="cargo_revenue_growth_pct">Kargo Gelir %</button>
-          <button class="fin-mpill fin-mpill--fin-calc" data-metric="other_revenue_growth_pct">Diğer Gelir %</button>
-          <button class="fin-mpill fin-mpill--fin-calc" data-metric="operating_margin_pct">Op. Marj %</button>
-          <button class="fin-mpill fin-mpill--fin-calc" data-metric="net_margin_pct">Net Marj</button>
-          <button class="fin-mpill fin-mpill--fin-calc" data-metric="ev_ebitda">FD / FAVÖK</button>
-          <button class="fin-mpill fin-mpill--fin-calc" data-metric="net_debt_ebitda">Net Borç / FAVÖK</button>
-          <!-- Ana Yolcu (yeşil) -->
-          <span class="fin-mpill-sep fin-mpill-sep--pax">Ana Yolcu</span>
-          <button class="fin-mpill fin-mpill--pax-primary" data-metric="passengers">Yolcu Sayısı</button>
-          <button class="fin-mpill fin-mpill--pax-primary" data-metric="ask_m">ASK</button>
-          <button class="fin-mpill fin-mpill--pax-primary" data-metric="asm_m">ASM</button>
-          <button class="fin-mpill fin-mpill--pax-primary" data-metric="rpk_m">RPK</button>
-          <button class="fin-mpill fin-mpill--pax-primary" data-metric="rpm_m">RPM</button>
-          <button class="fin-mpill fin-mpill--pax-primary" data-metric="load_factor_pct">Doluluk</button>
-          <!-- Hesaplanan Yolcu (mor) -->
-          <span class="fin-mpill-sep fin-mpill-sep--pax-calc">Hesaplanan Yolcu<button type="button" class="fin-info-dot" aria-label="Hesaplanan yolcu metrikleri nasıl hesaplanıyor?"
-            onclick="this.classList.toggle('open'); event.stopPropagation();"
-            onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Yolcu / ASK / RPK Büyümesi:</strong> (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.</span></button></span>
-          <button class="fin-mpill fin-mpill--pax-calc" data-metric="passenger_growth_pct">Yolcu Büyümesi</button>
-          <button class="fin-mpill fin-mpill--pax-calc" data-metric="ask_growth_pct">ASK Büyümesi</button>
-          <button class="fin-mpill fin-mpill--pax-calc" data-metric="rpk_growth_pct">RPK Büyümesi</button>
+        <!-- Metrik seçici -->
+        <div class="fin-ctrl-group">
+          <span class="fin-ctrl-label">Metrik</span>
+          <div class="fin-metric-pills" id="fin-metric-pills">
+            <!-- Ana Finansal (mavi) -->
+            <span class="fin-mpill-sep fin-mpill-sep--primary">Ana Finansal</span>
+            <button class="fin-mpill fin-mpill--fin-primary fin-mpill--active" data-metric="total_revenue_musd">Toplam Gelir</button>
+            <button class="fin-mpill fin-mpill--fin-primary" data-metric="passenger_revenue_musd">Yolcu Geliri</button>
+            <button class="fin-mpill fin-mpill--fin-primary" data-metric="cargo_revenue_musd">Kargo Geliri</button>
+            <button class="fin-mpill fin-mpill--fin-primary" data-metric="other_revenue_musd">Diğer Gelir</button>
+            <button class="fin-mpill fin-mpill--fin-primary" data-metric="operating_profit_musd">Op. Kâr (EBIT)</button>
+            <button class="fin-mpill fin-mpill--fin-primary" data-metric="net_profit_musd">Net Kâr</button>
+            <button class="fin-mpill fin-mpill--fin-primary" data-metric="market_cap_musd">Piyasa Değeri</button>
+            <button class="fin-mpill fin-mpill--fin-primary" data-metric="employees">Çalışanlar</button>
+            <button class="fin-mpill fin-mpill--fin-primary" data-metric="fleet_size">Uçak Sayısı</button>
+            <!-- Hesaplanan Oran (turuncu) -->
+            <span class="fin-mpill-sep fin-mpill-sep--calc">Hesaplanan Oran<button type="button" class="fin-info-dot" aria-label="Hesaplanan oranlar nasıl hesaplanıyor?"
+              onclick="this.classList.toggle('open'); event.stopPropagation();"
+              onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Büyüme oranları</strong> (Gelir, Yolcu, Kargo, Diğer Gelir %): (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.<br><strong>Op. Marj:</strong> Operasyonel Kâr ÷ Toplam Gelir × 100<br><strong>FD / FAVÖK:</strong> Firma Değeri / EBITDA Çarpanı<br><strong>Net Borç / FAVÖK:</strong> Net Borç / EBITDA Kaldıraç Oranı</span></button></span>
+            <button class="fin-mpill fin-mpill--fin-calc" data-metric="total_revenue_growth_pct">Gelir Büyümesi</button>
+            <button class="fin-mpill fin-mpill--fin-calc" data-metric="passenger_revenue_growth_pct">Yolcu Gelir %</button>
+            <button class="fin-mpill fin-mpill--fin-calc" data-metric="cargo_revenue_growth_pct">Kargo Gelir %</button>
+            <button class="fin-mpill fin-mpill--fin-calc" data-metric="other_revenue_growth_pct">Diğer Gelir %</button>
+            <button class="fin-mpill fin-mpill--fin-calc" data-metric="operating_margin_pct">Op. Marj %</button>
+            <button class="fin-mpill fin-mpill--fin-calc" data-metric="net_margin_pct">Net Marj</button>
+            <button class="fin-mpill fin-mpill--fin-calc" data-metric="ev_ebitda">FD / FAVÖK</button>
+            <button class="fin-mpill fin-mpill--fin-calc" data-metric="net_debt_ebitda">Net Borç / FAVÖK</button>
+            <!-- Ana Yolcu (yeşil) -->
+            <span class="fin-mpill-sep fin-mpill-sep--pax">Ana Yolcu</span>
+            <button class="fin-mpill fin-mpill--pax-primary" data-metric="passengers">Yolcu Sayısı</button>
+            <button class="fin-mpill fin-mpill--pax-primary" data-metric="ask_m">ASK</button>
+            <button class="fin-mpill fin-mpill--pax-primary" data-metric="asm_m">ASM</button>
+            <button class="fin-mpill fin-mpill--pax-primary" data-metric="rpk_m">RPK</button>
+            <button class="fin-mpill fin-mpill--pax-primary" data-metric="rpm_m">RPM</button>
+            <button class="fin-mpill fin-mpill--pax-primary" data-metric="load_factor_pct">Doluluk</button>
+            <!-- Hesaplanan Yolcu (mor) -->
+            <span class="fin-mpill-sep fin-mpill-sep--pax-calc">Hesaplanan Yolcu<button type="button" class="fin-info-dot" aria-label="Hesaplanan yolcu metrikleri nasıl hesaplanıyor?"
+              onclick="this.classList.toggle('open'); event.stopPropagation();"
+              onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Yolcu / ASK / RPK Büyümesi:</strong> (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.</span></button></span>
+            <button class="fin-mpill fin-mpill--pax-calc" data-metric="passenger_growth_pct">Yolcu Büyümesi</button>
+            <button class="fin-mpill fin-mpill--pax-calc" data-metric="ask_growth_pct">ASK Büyümesi</button>
+            <button class="fin-mpill fin-mpill--pax-calc" data-metric="rpk_growth_pct">RPK Büyümesi</button>
+          </div>
         </div>
-      </div>
-      <!-- Grafik tipi -->
-      <div class="fin-ctrl-group">
-        <span class="fin-ctrl-label">Grafik</span>
-        <div style="display:flex;gap:4px">
-          <button class="fin-type-btn fin-type-btn--active" data-chart="line" title="Çizgi">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </button>
-          <button class="fin-type-btn" data-chart="bar" title="Bar">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>
-          </button>
+
+        <!-- VURGULU GRAFİK & ZAMAN AYARLARI ŞERİDİ -->
+        <div class="fin-controls-highlight-bar">
+          <!-- Grafik tipi -->
+          <div class="fin-ctrl-group">
+            <span class="fin-ctrl-label" style="display:flex;align-items:center;gap:5px;color:var(--accent)">
+              <span class="fin-beacon-dot"></span> GRAFİK
+            </span>
+            <div style="display:flex;gap:4px">
+              <button class="fin-type-btn fin-type-btn--active" data-chart="line" title="Çizgi">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </button>
+              <button class="fin-type-btn" data-chart="bar" title="Bar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>
+              </button>
+            </div>
+          </div>
+          <!-- Dönem -->
+          <div class="fin-ctrl-group">
+            <span class="fin-ctrl-label" style="color:var(--accent)">DÖNEM</span>
+            <div style="display:flex;gap:4px">
+              <button class="fin-range-btn" data-range="3">3Y</button>
+              <button class="fin-range-btn fin-range-btn--active" data-range="5">5Y</button>
+              <button class="fin-range-btn" data-range="99">Maks.</button>
+            </div>
+          </div>
+          <!-- Rapor Frekansı -->
+          <div class="fin-ctrl-group">
+            <span class="fin-ctrl-label" style="color:var(--accent)">RAPOR FREKANSI</span>
+            <div style="display:flex;gap:4px">
+              <button class="fin-freq-btn" data-freq="annual" onclick="setFinFreq('annual')" aria-pressed="false">Yıllık</button>
+              <button class="fin-freq-btn" data-freq="semi_annual" onclick="setFinFreq('semi_annual')" aria-pressed="false">Yarı Yıllık</button>
+              <button class="fin-freq-btn fin-freq-btn--active" data-freq="quarterly" onclick="setFinFreq('quarterly')" aria-pressed="true">Çeyreklik</button>
+            </div>
+          </div>
+          <!-- Takvim Yılı Hizalaması -->
+          <div class="fin-ctrl-group">
+            <span class="fin-ctrl-label fin-ctrl-label--info" style="color:var(--accent)">TAKVİM YILI HİZALAMASI
+              <button type="button" class="fin-info-dot" aria-label="Takvim yılı hizalaması nedir?"
+                onclick="this.classList.toggle('open'); event.stopPropagation();"
+                onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip">Nisan–Mart mali yılı kullanan 4 havayolunun finansal sonuçlarını Ocak–Aralık takvimine çevirir. Böylece tüm havayolları aynı 12 ay üzerinden karşılaştırılır.</span></button>
+            </span>
+            <div style="display:flex;gap:4px">
+              <button class="fin-cy-opt fin-cy-opt--active" data-cy="off" onclick="setFinCYMode(false)" aria-pressed="true">Kapalı</button>
+              <button class="fin-cy-opt" data-cy="on" onclick="setFinCYMode(true)" aria-pressed="false">Açık</button>
+            </div>
+          </div>
         </div>
-      </div>
-      <!-- Dönem -->
-      <div class="fin-ctrl-group">
-        <span class="fin-ctrl-label">Dönem</span>
-        <div style="display:flex;gap:4px">
-          <button class="fin-range-btn" data-range="3">3Y</button>
-          <button class="fin-range-btn fin-range-btn--active" data-range="5">5Y</button>
-          <button class="fin-range-btn" data-range="99">Maks.</button>
+      </div><!-- /fin-ctrl-left -->
+
+      <!-- Havayolu Seçim Paneli -->
+      <div class="fin-ctrl-airlines">
+        <div class="fin-airline-header">
+          <span class="fin-airline-header-label" style="font-size:11px;font-weight:800;color:var(--text-1);text-transform:uppercase;letter-spacing:0.06em">
+            Havayolları Seçimi
+          </span>
+          <div style="display:flex;gap:5px">
+            <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Tümünü Seç</button>
+            <button class="fin-deselect-btn" onclick="deselAllFinAirlines()" title="Tümünü tablodan kaldır">— Gizle</button>
+          </div>
         </div>
-      </div>
-      <!-- Rapor Frekansı -->
-      <div class="fin-ctrl-group">
-        <span class="fin-ctrl-label">Rapor Frekansı</span>
-        <div style="display:flex;gap:4px">
-          <button class="fin-freq-btn" data-freq="annual" onclick="setFinFreq('annual')" aria-pressed="false">Yıllık</button>
-          <button class="fin-freq-btn" data-freq="semi_annual" onclick="setFinFreq('semi_annual')" aria-pressed="false">Yarı Yıllık</button>
-          <button class="fin-freq-btn fin-freq-btn--active" data-freq="quarterly" onclick="setFinFreq('quarterly')" aria-pressed="true">Çeyreklik</button>
+        <div class="fin-airline-toggles" id="fin-airline-toggles"></div>
+        <div class="fin-airline-fy-divider">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Nisan–Mart mali yılı
         </div>
+        <div class="fin-airline-toggles" id="fin-airline-toggles-fy"></div>
       </div>
-      <!-- Takvim Yılı Hizalaması -->
+    </div>Takvim Yılı Hizalaması -->
       <div class="fin-ctrl-group">
         <span class="fin-ctrl-label fin-ctrl-label--info">Takvim Yılı Hizalaması
           <button type="button" class="fin-info-dot" aria-label="Takvim yılı hizalaması nedir?"
