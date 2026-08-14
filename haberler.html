@@ -271,13 +271,13 @@
   .fin-mpill--fin-calc.fin-mpill--active     { background:#d97706; color:#fff; border-color:#d97706; }
   .fin-mpill--pax-primary.fin-mpill--active  { background:#059669; color:#fff; border-color:#059669; }
   .fin-mpill--pax-calc.fin-mpill--active     { background:#7c3aed; color:#fff; border-color:#7c3aed; }
-  .fin-type-btn, .fin-range-btn {
+  .fin-type-btn, .fin-range-btn, .fin-freq-btn {
     padding: 5px 10px; border-radius: 6px; cursor: pointer;
     font-size: 11.5px; font-weight: 600; border: 1.5px solid var(--border);
     background: var(--bg); color: var(--text-3); transition: all 0.15s;
     display: flex; align-items: center; gap: 4px;
   }
-  .fin-type-btn--active, .fin-range-btn--active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .fin-type-btn--active, .fin-range-btn--active, .fin-freq-btn--active { background: var(--accent); color: #fff; border-color: var(--accent); }
   .fin-cy-opt {
     padding: 5px 12px; border-radius: 6px; cursor: pointer;
     font-size: 11.5px; font-weight: 600; border: 1.5px solid var(--border);
@@ -4492,6 +4492,15 @@
           <button class="fin-range-btn" data-range="3">3Y</button>
           <button class="fin-range-btn fin-range-btn--active" data-range="5">5Y</button>
           <button class="fin-range-btn" data-range="99">Maks.</button>
+        </div>
+      </div>
+      <!-- Rapor Frekansı -->
+      <div class="fin-ctrl-group">
+        <span class="fin-ctrl-label">Rapor Frekansı</span>
+        <div style="display:flex;gap:4px">
+          <button class="fin-freq-btn fin-freq-btn--active" data-freq="annual" onclick="setFinFreq('annual')" aria-pressed="true">Yıllık</button>
+          <button class="fin-freq-btn" data-freq="semi_annual" onclick="setFinFreq('semi_annual')" aria-pressed="false">Yarı Yıllık</button>
+          <button class="fin-freq-btn" data-freq="quarterly" onclick="setFinFreq('quarterly')" aria-pressed="false">Çeyreklik</button>
         </div>
       </div>
       <!-- Takvim Yılı Hizalaması -->
@@ -22666,12 +22675,33 @@ const FIN_FISCAL_YEAR_END = {
   'SQ': 3,   // Singapore Airlines: Nisan–Mart
   'NH': 3,   // ANA Holdings:       Nisan–Mart (Japon mali yılı)
 };
+let _finFreq = 'annual'; // 'annual' | 'semi_annual' | 'quarterly'
+
+window.setFinFreq = function(freq) {
+  _finFreq = freq;
+  document.querySelectorAll('.fin-freq-btn').forEach(b => {
+    const active = b.dataset.freq === freq;
+    b.classList.toggle('fin-freq-btn--active', active);
+    b.setAttribute('aria-pressed', String(active));
+  });
+  renderFinChart();
+  renderFinTable();
+};
+
 function getFYEnd(slug)   { return FIN_FISCAL_YEAR_END[slug] || 12; }
 function isNonDecFY(slug) { return getFYEnd(slug) !== 12; }
 
 // Yıl etiketi için takvim dönem aralığı açıklaması
 const TR_MONTHS = ['','Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
 function getFYPeriodLabel(yearStr, fyEnd) {
+  if (yearStr.includes('-Q')) {
+    const [y, q] = yearStr.split('-Q');
+    return `${y} ${q}.Çeyrek`;
+  }
+  if (yearStr.includes('-H')) {
+    const [y, h] = yearStr.split('-H');
+    return `${y} ${h}.Yarı Yıl`;
+  }
   const y = parseInt(yearStr);
   if (fyEnd === 12) return `Oca – Ara ${y}`;
   // fyEnd=3 → Nisan(y-1) – Mart(y)
@@ -22775,6 +22805,12 @@ const FIN_METRIC_MAP = Object.fromEntries(FIN_METRIC_DEFS.map(d => [d.key, d]));
 function getMetricValues(airline, key) {
   const def = FIN_METRIC_MAP[key];
   if (!def || !airline) return {};
+  if (_finFreq === 'semi_annual') {
+    return airline.semi_annual?.[def.section]?.[key] || {};
+  }
+  if (_finFreq === 'quarterly') {
+    return airline.quarterly?.[def.section]?.[key] || {};
+  }
   return airline[def.section]?.[key] || {};
 }
 
@@ -23228,6 +23264,7 @@ function getPointLabelVal(v, fmt) {
 }
 
 const finPointValuesPlugin = {
+{{ ... }}
   id: 'finPointValues',
   afterDatasetsDraw(chart) {
     if (_finChartValDisplay === 'none') return;
