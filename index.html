@@ -24668,7 +24668,15 @@ async function loadAppData() {
     Promise.resolve({
       "QR": {name:"Qatar Airways",     url:"https://www.qatarairways.com/en/about-qatar-airways/annual-reports.html"},
       "EK": {name:"Emirates",          url:"https://www.emirates.com/english/about-us/financial-transparency/annual-reports/"},
-      "TK": {name:"Turkish Airlines",  url:"https://investor.turkishairlines.com/tr/mali-ve-operasyonel-veriler/finansal-raporlar"},
+      "TK": {
+        name:"Turkish Airlines",
+        url:"https://investor.turkishairlines.com/tr/mali-ve-operasyonel-veriler/finansal-raporlar",
+        branch_urls: {
+          annual: "https://investor.turkishairlines.com/tr/mali-ve-operasyonel-veriler/yillik-raporlar",
+          semi_annual: "https://investor.turkishairlines.com/tr/mali-ve-operasyonel-veriler/faaliyet-raporlari",
+          quarterly: "https://investor.turkishairlines.com/tr/mali-ve-operasyonel-veriler/finansal-raporlar"
+        }
+      },
       "AF": {name:"Air France-KLM",    url:"https://www.airfranceklm.com/en/finance"},
       "CI": {name:"China Airlines",    url:"https://www.china-airlines.com/us/en/investor-relations/index"},
       "CX": {name:"Cathay Pacific",    url:"https://www.cathaypacific.com/cx/en_HK/investor-relations.html"},
@@ -27273,9 +27281,11 @@ function buildFinSourcesGrid() {
       if (!availablePeriods.length) availablePeriods = ['2025', '2024', '2023', '2022', '2021'];
     }
 
+    const currentUrl = d.branch_urls?.[_finSrcPeriod] || d.url;
+
     const periodChips = availablePeriods.slice(0, 5).map((p, idx) => {
       const isLatest = idx === 0;
-      const targetUrl = d.period_urls?.[p] || (typeof FIN_YEAR_SOURCES !== 'undefined' && FIN_YEAR_SOURCES[slug]?.period_urls?.[p]) || d.url;
+      const targetUrl = d.period_urls?.[p] || (typeof FIN_YEAR_SOURCES !== 'undefined' && FIN_YEAR_SOURCES[slug]?.period_urls?.[p]) || currentUrl;
       if (isLatest) {
         return `<a href="${targetUrl}" target="_blank" rel="noopener noreferrer"
            style="display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:6px;
@@ -27313,7 +27323,7 @@ function buildFinSourcesGrid() {
         ${periodChips}
       </div>
 
-      <a class="fin-src-ir" href="${d.url}" target="_blank" rel="noopener noreferrer"
+      <a class="fin-src-ir" href="${currentUrl}" target="_blank" rel="noopener noreferrer"
          title="${d.name} Resmi Yatırımcı İlişkileri Portalı">
         📄 Resmi Rapor Portalına Git ↗
       </a>
