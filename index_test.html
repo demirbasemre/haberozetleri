@@ -23232,6 +23232,101 @@ function fmtVal(v, metric) {
   return (v >= 0 ? '+' : '') + v.toLocaleString('tr-TR', {maximumFractionDigits: 0}) + 'M';
 }
 
+// ── Yıl gruplaması arka plan bantları ve yıl rozetleri eklentisi ──
+const finYearBandsPlugin = {
+  id: 'finYearBands',
+  beforeDatasetsDraw(chart) {
+    if (_finFreq === 'annual') return;
+    const { ctx, chartArea, scales } = chart;
+    const labels = chart.data.labels;
+    if (!labels || !labels.length || !scales.x) return;
+
+    const yearGroups = [];
+    let currentGroup = null;
+
+    labels.forEach((lbl, idx) => {
+      const year = String(lbl).split('-')[0];
+      if (!currentGroup || currentGroup.year !== year) {
+        currentGroup = { year, startIdx: idx, endIdx: idx };
+        yearGroups.push(currentGroup);
+      } else {
+        currentGroup.endIdx = idx;
+      }
+    });
+
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+    ctx.save();
+    yearGroups.forEach((group, gIdx) => {
+      let startX = scales.x.getPixelForTick(group.startIdx);
+      let endX = scales.x.getPixelForTick(group.endIdx);
+      
+      let leftX = startX;
+      let rightX = endX;
+
+      if (group.startIdx > 0) {
+        leftX = (scales.x.getPixelForTick(group.startIdx - 1) + startX) / 2;
+      } else {
+        leftX = chartArea.left;
+      }
+
+      if (group.endIdx < labels.length - 1) {
+        rightX = (endX + scales.x.getPixelForTick(group.endIdx + 1)) / 2;
+      } else {
+        rightX = chartArea.right;
+      }
+
+      // Alternating band background fill
+      if (gIdx % 2 === 1) {
+        ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(37, 99, 235, 0.04)';
+        ctx.fillRect(leftX, chartArea.top, rightX - leftX, chartArea.bottom - chartArea.top);
+      }
+
+      // Vertical separator line on left of each new year group (except first)
+      if (gIdx > 0) {
+        ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(37, 99, 235, 0.16)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(leftX, chartArea.top);
+        ctx.lineTo(leftX, chartArea.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Year badge header at top of group band
+      const midX = (leftX + rightX) / 2;
+      const badgeText = group.year;
+      const fs = Math.max(10, Math.min(13, _finChartFontSize));
+      ctx.font = `700 ${fs}px sans-serif`;
+      const textW = ctx.measureText(badgeText).width;
+      const bW = textW + 16;
+      const bH = fs + 8;
+      const bY = chartArea.top + 6;
+
+      ctx.fillStyle = isDark ? '#1E2433' : '#F1F5F9';
+      ctx.strokeStyle = isDark ? '#3b82f688' : '#2563eb66';
+      ctx.lineWidth = 1.2;
+
+      ctx.beginPath();
+      if (typeof ctx.roundRect === 'function') {
+        ctx.roundRect(midX - bW / 2, bY, bW, bH, 12);
+      } else {
+        ctx.rect(midX - bW / 2, bY, bW, bH);
+      }
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = isDark ? '#E2E8F0' : '#1E293B';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(badgeText, midX, bY + bH / 2 + 0.5);
+    });
+
+    ctx.restore();
+  }
+};
+
 // ── Çizgi sonu etiketleri: her serinin ucunda havayolu kodu ──
 // Yakın marka renkleri (kırmızılar, maviler) grafikte karışıyor; uç etiketi
 // + kesikli desen, rengi tek ayırt edici olmaktan çıkarır.
@@ -23566,7 +23661,7 @@ function renderFinChart() {
   _finChart = new Chart(canvas, {
     type: _finChartType,
     data: { labels: years, datasets },
-    plugins: [finEndLabelsPlugin, finPointValuesPlugin],
+    plugins: [finYearBandsPlugin, finEndLabelsPlugin, finPointValuesPlugin],
     options: {
       responsive: true,
       maintainAspectRatio: false,
