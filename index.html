@@ -27230,6 +27230,125 @@ window.setFinSrcPeriod = function(period) {
   buildFinSourcesGrid();
 };
 
+function getDirectPeriodUrl(slug, period, defaultUrl) {
+  if (!slug || !period) return defaultUrl;
+
+  const staticEntry = typeof FIN_INVESTOR_URLS_STATIC !== 'undefined' ? FIN_INVESTOR_URLS_STATIC[slug] : null;
+  if (staticEntry?.period_urls?.[period]) {
+    return staticEntry.period_urls[period];
+  }
+  const yearSrcEntry = typeof FIN_YEAR_SOURCES !== 'undefined' ? FIN_YEAR_SOURCES[slug] : null;
+  if (yearSrcEntry?.period_urls?.[period]) {
+    return yearSrcEntry.period_urls[period];
+  }
+
+  const isQuarterly = period.includes('-Q');
+  const isSemi = period.includes('-H');
+
+  // THY (TK) & AJet (A4B)
+  if (slug === 'TK' || slug === 'A4B') {
+    if (isQuarterly) {
+      const parts = period.split('-Q');
+      if (parts.length === 2) {
+        const yy = parts[0].slice(-2);
+        return `https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_${parts[1]}Q${yy}_Konsolide_Finansal_Raporu.pdf`;
+      }
+    } else if (isSemi) {
+      const parts = period.split('-H');
+      if (parts.length === 2) {
+        const yy = parts[0].slice(-2);
+        return `https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_${parts[1]}H${yy}_Konsolide_Finansal_Raporu.pdf`;
+      }
+    } else {
+      return `https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_${period}_Konsolide_Finansal_Raporu.pdf`;
+    }
+  }
+
+  // Pegasus (PGSUS)
+  if (slug === 'PGSUS') {
+    if (isQuarterly) {
+      const parts = period.split('-Q');
+      if (parts.length === 2) {
+        const yy = parts[0].slice(-2);
+        return `https://www.pegasusyatirimcieriliskileri.com/medium/file/pegasus-${parts[1].toLowerCase()}q${yy}-finansal-raporu_pdf.aspx`;
+      }
+    } else {
+      return `https://www.pegasusyatirimcieriliskileri.com/medium/file/pegasus-${period}-konsolide-finansal-raporu_pdf.aspx`;
+    }
+  }
+
+  // Lufthansa Group (LH)
+  if (slug === 'LH') {
+    if (!isQuarterly && !isSemi) {
+      return `https://investor-relations.lufthansagroup.com/fileadmin/downloads/en/financial-reports/annual-reports/LH-AR-${period}-e.pdf`;
+    }
+    return 'https://investor-relations.lufthansagroup.com/en/financial-reports-publications.html';
+  }
+
+  // Air France-KLM (AF)
+  if (slug === 'AF') {
+    if (!isQuarterly && !isSemi) {
+      return `https://www.airfranceklm.com/sites/default/files/AFKLM_Universal_Registration_Document_${period}.pdf`;
+    }
+    return 'https://www.airfranceklm.com/en/finance';
+  }
+
+  // SEC EDGAR Carriers (DAL, UAL, AAL, LUV)
+  const secCikMap = {
+    'DAL': '0000027904',
+    'UAL': '0000100517',
+    'AAL': '0000006201',
+    'LUV': '0000092380'
+  };
+  if (secCikMap[slug]) {
+    return `https://www.sec.gov/edgar/browse/?CIK=${secCikMap[slug]}`;
+  }
+
+  // Ryanair (RYA)
+  if (slug === 'RYA') {
+    if (!isQuarterly && !isSemi) {
+      return `https://investor.ryanair.com/wp-content/uploads/Ryanair-${period}-Annual-Report.pdf`;
+    }
+  }
+
+  // Singapore Airlines (SQ)
+  if (slug === 'SQ') {
+    if (!isQuarterly && !isSemi) {
+      const yr = parseInt(period);
+      if (!isNaN(yr)) {
+        const prevYrShort = String(yr - 1).slice(-2);
+        const currYrShort = String(yr).slice(-2);
+        return `https://www.singaporeair.com/saar5/pdf/Investor-Relations/Annual-Report/annualreport${prevYrShort}${currYrShort}.pdf`;
+      }
+    }
+  }
+
+  // Qatar Airways (QR)
+  if (slug === 'QR') {
+    if (!isQuarterly && !isSemi) {
+      const yr = parseInt(period);
+      if (!isNaN(yr)) {
+        const prevYrShort = String(yr - 1).slice(-2);
+        const currYrShort = String(yr).slice(-2);
+        return `https://www.qatarairways.com/content/dam/documents/annual-reports/Annual-Report-20${prevYrShort}-${currYrShort}-EN.pdf`;
+      }
+    }
+  }
+
+  // Emirates (EK)
+  if (slug === 'EK') {
+    if (!isQuarterly && !isSemi) {
+      const yr = parseInt(period);
+      if (!isNaN(yr)) {
+        return `https://www.emirates.com/english/images/Emirates-Group-Annual-Report-${yr - 1}-${yr}.pdf`;
+      }
+    }
+  }
+
+  const branchUrl = staticEntry?.branch_urls?.[_finSrcPeriod];
+  return branchUrl || defaultUrl;
+}
+
 function buildFinSourcesGrid() {
   buildFinSourcesCatTable();
   const grid = document.getElementById('fin-src-grid');
@@ -27274,13 +27393,13 @@ function buildFinSourcesGrid() {
 
     const periodChips = availablePeriods.slice(0, 5).map((p, idx) => {
       const isLatest = idx === 0;
-      const targetUrl = d.period_urls?.[p] || (typeof FIN_YEAR_SOURCES !== 'undefined' && FIN_YEAR_SOURCES[slug]?.period_urls?.[p]) || currentUrl;
+      const targetUrl = getDirectPeriodUrl(slug, p, currentUrl);
       if (isLatest) {
         return `<a href="${targetUrl}" target="_blank" rel="noopener noreferrer"
            style="display:inline-flex;align-items:center;gap:3px;padding:4px 10px;border-radius:6px;
                   background:var(--accent);color:#ffffff;font-size:11px;font-weight:700;
                   box-shadow:0 2px 6px rgba(37,99,235,0.3);text-decoration:none;transition:all 0.15s"
-           title="${d.name} ${p} Resmi Rapor Portalı">
+           title="${d.name} ${p} Resmi PDF Raporu / Portalı">
           ${p} ↗
         </a>`;
       }
@@ -27288,7 +27407,7 @@ function buildFinSourcesGrid() {
          style="display:inline-flex;align-items:center;gap:3px;padding:3.5px 8px;border-radius:6px;
                 background:var(--bg-soft);border:1px solid var(--border-color);font-size:10.5px;font-weight:600;
                 color:var(--text-2);text-decoration:none;transition:all 0.15s"
-         title="${d.name} ${p} Rapor Portalı">
+         title="${d.name} ${p} Raporu / Portalı">
         ${p} ↗
       </a>`;
     }).join('');
