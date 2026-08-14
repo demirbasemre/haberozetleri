@@ -23349,24 +23349,24 @@ const finEndLabelsPlugin = {
     for (let i = 1; i < items.length; i++) {
       if (items[i].y - items[i - 1].y < 11) items[i].y = items[i - 1].y + 11;
     }
-    ctx.save();
-    const fs = _finChartFontSize || 11;
-    ctx.font = `700 ${fs}px sans-serif`;
-    ctx.textBaseline = 'middle';
-    items.forEach(it => {
-      const y = Math.max(chartArea.top + 5, Math.min(it.y, chartArea.bottom + 8));
-      ctx.fillStyle = it.color;
-      ctx.fillText(it.code, Math.min(it.x, chartArea.right) + 5, y);
-    });
-    ctx.restore();
-  }
-};
+      ctx.save();
+      const fs = _finChartFontSize || 11;
+      ctx.font = `700 ${fs}px sans-serif`;
+      ctx.textBaseline = 'middle';
+      items.forEach(it => {
+        const y = Math.max(chartArea.top + 8, Math.min(it.y, chartArea.bottom - 6));
+        ctx.fillStyle = it.color;
+        ctx.fillText(it.code, it.x + 8, y);
+      });
+      ctx.restore();
+    }
+  };
 
-window.changeFinValDisplay = function(val) {
-  _finChartValDisplay = val;
-  localStorage.setItem('finChartValDisplay2', val);
-  renderFinChart();
-};
+  window.changeFinValDisplay = function(val) {
+    _finChartValDisplay = val;
+    localStorage.setItem('finChartValDisplay2', val);
+    renderFinChart();
+  };
 
 function getPointLabelVal(v, fmt) {
   if (v == null) return '';
@@ -23656,7 +23656,7 @@ function renderFinChart() {
     });
     chart.update('none');
   };
-  canvas.onmouseleave = () => { if (_finChart) setHoverEmphasis(_finChart, null); };
+  const rightPadding = _finChartType === 'line' ? Math.max(48, Math.round((_finChartFontSize || 11) * 4.2)) : 12;
 
   _finChart = new Chart(canvas, {
     type: _finChartType,
@@ -23665,8 +23665,7 @@ function renderFinChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      // Çizgi sonu kodları için sağda pay
-      layout: { padding: { right: _finChartType === 'line' ? 34 : 0 } },
+      layout: { padding: { right: rightPadding } },
       animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches
         ? false
         : { duration: ctx => (sameView && prevSlugs.has(datasets[ctx.datasetIndex]?.$code)) ? 0 : 1000 },
