@@ -23437,12 +23437,13 @@ const finPointValuesPlugin = {
       drawY = Math.max(chartArea.top + 6, Math.min(drawY, chartArea.bottom - 4));
       drawX = Math.max(chartArea.left + 15, Math.min(drawX, chartArea.right - 15));
       
-      ctx.font = '600 9px sans-serif';
+      const fs = _finChartFontSize || 11;
+      ctx.font = `700 ${fs}px sans-serif`;
       const textWidth = ctx.measureText(pt.label).width;
-      const bgW = textWidth + 6;
-      const bgH = 12;
+      const bgW = textWidth + 8;
+      const bgH = fs + 4;
       
-      ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(26,29,39,0.85)' : 'rgba(255,255,255,0.85)';
+      ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(26,29,39,0.88)' : 'rgba(255,255,255,0.88)';
       
       let bgX = drawX - bgW / 2;
       if (align === 'left') bgX = drawX;
