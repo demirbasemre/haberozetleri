@@ -201,13 +201,40 @@
     display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
     flex: 1; min-width: 0;
   }
+  /* Live pulsing glow animation for airline selection beacon */
+  @keyframes finBeaconPulse {
+    0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); }
+    100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+  }
+  .fin-beacon-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+    animation: finBeaconPulse 2s infinite ease-in-out;
+  }
+
   .fin-ctrl-airlines {
-    width: 330px; flex-shrink: 0; align-self: stretch;
-    border-left: 1px solid var(--border-soft); padding-left: 16px;
+    width: 340px; flex-shrink: 0; align-self: stretch;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.04) 0%, rgba(99, 102, 241, 0.07) 100%);
+    border: 1.5px solid rgba(37, 99, 235, 0.25);
+    border-radius: 12px;
+    padding: 12px 14px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+    transition: all 0.25s ease;
+  }
+  .fin-ctrl-airlines:hover {
+    border-color: rgba(37, 99, 235, 0.48);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.14);
+  }
+  [data-theme="dark"] .fin-ctrl-airlines {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(99, 102, 241, 0.12) 100%);
+    border-color: rgba(99, 102, 241, 0.35);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
   }
   @media (max-width: 960px) {
     .fin-control-bar { flex-wrap: wrap; }
-    .fin-ctrl-airlines { width: 100%; border-left: none; padding-left: 0; border-top: 1px solid var(--border-soft); padding-top: 12px; }
+    .fin-ctrl-airlines { width: 100%; }
   }
   .fin-atoggle-break { flex-basis: 100%; height: 0; }
   /* Mali yıl havayolları alt bölümü — uyarı barıyla aynı görsel dil */
@@ -4655,13 +4682,16 @@
         </div>
       </div>
       </div><!-- /fin-ctrl-left -->
-      <!-- Havayolu seçici — metriklerin sağındaki alan -->
+      <!-- Havayolu seçici — metriklerin sağındaki vurgulu alan -->
       <div class="fin-ctrl-airlines">
         <div class="fin-airline-header">
-          <span class="fin-airline-header-label">Havayolları</span>
+          <span class="fin-airline-header-label" style="font-size:11px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;display:flex;align-items:center;gap:6px">
+            <span class="fin-beacon-dot"></span>
+            Havayolu Seçimi
+          </span>
           <div style="display:flex;gap:5px">
-            <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Sıfırla</button>
-            <button class="fin-deselect-btn" onclick="deselAllFinAirlines()" title="Tümünü tablodan kaldır">— Tümünü Gizle</button>
+            <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Tümünü Seç</button>
+            <button class="fin-deselect-btn" onclick="deselAllFinAirlines()" title="Tümünü tablodan kaldır">— Gizle</button>
           </div>
         </div>
         <div class="fin-airline-toggles" id="fin-airline-toggles"></div>
