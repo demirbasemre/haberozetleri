@@ -2220,10 +2220,10 @@
       .cargo-signal-lost-dot {
         width: 7px;
         height: 7px;
-        background: #F59E0B;
+        background: #9CA3AF;
         border-radius: 50%;
         display: inline-block;
-        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+        box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.25);
       }
       @keyframes cargoLivePulse {
         0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.4); }
@@ -23213,8 +23213,9 @@ window.runFinExportToExcel = function() {
   const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   const today = new Date().toISOString().split('T')[0];
+  const freqTag = _finFreq === 'quarterly' ? '_Ceyreklik' : (_finFreq === 'semi_annual' ? '_YariYillik' : '_Yillik');
   link.href = URL.createObjectURL(blob);
-  link.download = `Finansal_Tablolar_${today}.csv`;
+  link.download = `Finansal_Tablolar${freqTag}_${today}.csv`;
   link.style.display = 'none';
   document.body.appendChild(link);
   link.click();
@@ -23604,9 +23605,7 @@ function renderFinChart() {
         y: {
           grid: { color: gridColor },
           grace: '6%',  // görünür serilerin min–max aralığına nefes payı
-          ticks: { color: textColor, font: { size: axisFontSize, weight: '700' }, maxRotation: 0, autoSkipPadding: 12 }
-        },
-      },
+          ticks: { color: textColor, font: { size: axisFontSize, weight: '700' },
             callback: v => {
               const d2 = FIN_METRIC_MAP[_finMetric];
               if (!d2) return v;
@@ -23699,7 +23698,8 @@ function renderFinTable() {
     ${years.map(y => {
       const decLabel = getFYPeriodLabel(y, 12);
       const marLabel = getFYPeriodLabel(y, 3);
-      const ttip = hasNonDec
+      const isPeriod = y.includes('-Q') || y.includes('-H');
+      const ttip = (hasNonDec && !isPeriod)
         ? `Ara-FY: ${decLabel} | Nis-Mar FY: ${marLabel}`
         : decLabel;
       return `<th aria-sort="${_ariaSort(y)}" onclick="sortFinTable('${y}')" title="${ttip}">
@@ -23712,7 +23712,8 @@ function renderFinTable() {
     ${years.map(y => {
       const decLabel = getFYPeriodLabel(y, 12);
       const marLabel = getFYPeriodLabel(y, 3);
-      return hasNonDec
+      const isPeriod = y.includes('-Q') || y.includes('-H');
+      return (hasNonDec && !isPeriod)
         ? `<td><span style="display:block">${decLabel}</span><span class="fin-period-cell--alt">${marLabel}</span></td>`
         : `<td>${decLabel}</td>`;
     }).join('')}
