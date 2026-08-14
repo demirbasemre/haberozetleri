@@ -23367,21 +23367,24 @@ const finEndLabelsPlugin = {
       if (last < 0 || !meta.data[last]) return;
       items.push({ x: meta.data[last].x, y: meta.data[last].y, color: ds.borderColor, code: ds.$code || '' });
     });
-    // Dikey çakışma önleme: y'ye göre sırala, en az 11px aralık bırak
+    // Dikey çakışma önleme: y'ye göre sırala, en az (fs + 2)px aralık bırak
     items.sort((a, b) => a.y - b.y);
+    const fs = _finChartFontSize || 11;
+    const minGap = fs + 2;
     for (let i = 1; i < items.length; i++) {
-      if (items[i].y - items[i - 1].y < 11) items[i].y = items[i - 1].y + 11;
+      if (items[i].y - items[i - 1].y < minGap) {
+        items[i].y = items[i - 1].y + minGap;
+      }
     }
-      ctx.save();
-      const fs = _finChartFontSize || 11;
-      ctx.font = `700 ${fs}px sans-serif`;
-      ctx.textBaseline = 'middle';
-      items.forEach(it => {
-        const y = Math.max(chartArea.top + 8, Math.min(it.y, chartArea.bottom - 6));
-        ctx.fillStyle = it.color;
-        ctx.fillText(it.code, it.x + 8, y);
-      });
-      ctx.restore();
+    ctx.save();
+    ctx.font = `700 ${fs}px sans-serif`;
+    ctx.textBaseline = 'middle';
+    items.forEach(it => {
+      const y = Math.max(chartArea.top + 8, Math.min(it.y, chartArea.bottom - 6));
+      ctx.fillStyle = it.color;
+      ctx.fillText(it.code, it.x + 8, y);
+    });
+    ctx.restore();
     }
   };
 
@@ -23486,10 +23489,18 @@ const finPointValuesPlugin = {
         }
         
         group.sort((a, b) => a.y - b.y);
+        const minValGap = fs + 5;
+        let lastDrawY = -999;
         
-        group.forEach((pt, i) => {
-          pt.drawY = pt.y - 8;
-          pt.drawX = pt.x;
+        group.forEach((pt) => {
+          let candidateY = pt.y - 8;
+          if (Math.abs(candidateY - lastDrawY) < minValGap) {
+            pt.skipDraw = true;
+          } else {
+            pt.drawY = candidateY;
+            pt.drawX = pt.x;
+            lastDrawY = candidateY;
+          }
         });
       });
     } else {
@@ -23500,6 +23511,7 @@ const finPointValuesPlugin = {
     }
     
     pointsToDraw.forEach(pt => {
+      if (pt.skipDraw) return;
       let drawX = pt.drawX ?? pt.x;
       let drawY = pt.drawY ?? (pt.y - 8);
       let align = 'center';
@@ -23733,9 +23745,6 @@ function renderFinChart() {
               if (d2.fmt === 'pax') return v + 'M';
               if (d2.fmt === 'munit') return v + 'B';
               if (d2.fmt === 'count') {
-                // Çalışan sayısı — para birimi gösterme
-                const abs = Math.abs(v);
-                if (abs >= 1000) return (v/1000).toFixed(0) + 'k';
                 return Math.round(v).toLocaleString('tr-TR');
               }
               const abs = Math.abs(v);
