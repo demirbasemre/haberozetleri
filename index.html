@@ -204,14 +204,15 @@
   }
 
   .fin-control-bar {
-    display: flex; flex-direction: column; gap: 14px;
+    display: flex; flex-wrap: nowrap; gap: 16px; align-items: stretch;
     padding: 16px 18px;
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); box-shadow: var(--shadow-sm);
     margin-bottom: 14px;
   }
   .fin-ctrl-left {
-    display: flex; flex-direction: column; gap: 12px; width: 100%;
+    display: flex; flex-direction: column; gap: 12px;
+    flex: 1; min-width: 0;
   }
 
   /* Vurgulu Grafik & Zaman Ayarları Şeridi */
@@ -233,12 +234,16 @@
   }
 
   .fin-ctrl-airlines {
-    width: 100%;
+    width: 330px; flex-shrink: 0; align-self: stretch;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 12px 14px;
     transition: all 0.2s ease;
+  }
+  @media (max-width: 960px) {
+    .fin-control-bar { flex-wrap: wrap; }
+    .fin-ctrl-airlines { width: 100%; }
   }
   .fin-atoggle-break { flex-basis: 100%; height: 0; }
   /* Mali yıl havayolları alt bölümü — uyarı barıyla aynı görsel dil */
@@ -4696,38 +4701,6 @@
         <div class="fin-airline-header">
           <span class="fin-airline-header-label" style="font-size:11px;font-weight:800;color:var(--text-1);text-transform:uppercase;letter-spacing:0.06em">
             Havayolları Seçimi
-          </span>
-          <div style="display:flex;gap:5px">
-            <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Tümünü Seç</button>
-            <button class="fin-deselect-btn" onclick="deselAllFinAirlines()" title="Tümünü tablodan kaldır">— Gizle</button>
-          </div>
-        </div>
-        <div class="fin-airline-toggles" id="fin-airline-toggles"></div>
-        <div class="fin-airline-fy-divider">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Nisan–Mart mali yılı
-        </div>
-        <div class="fin-airline-toggles" id="fin-airline-toggles-fy"></div>
-      </div>
-    </div>Takvim Yılı Hizalaması -->
-      <div class="fin-ctrl-group">
-        <span class="fin-ctrl-label fin-ctrl-label--info">Takvim Yılı Hizalaması
-          <button type="button" class="fin-info-dot" aria-label="Takvim yılı hizalaması nedir?"
-            onclick="this.classList.toggle('open'); event.stopPropagation();"
-            onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip">Nisan–Mart mali yılı kullanan 4 havayolunun finansal sonuçlarını Ocak–Aralık takvimine çevirir. Böylece tüm havayolları aynı 12 ay üzerinden karşılaştırılır.</span></button>
-        </span>
-        <div style="display:flex;gap:4px">
-          <button class="fin-cy-opt fin-cy-opt--active" data-cy="off" onclick="setFinCYMode(false)" aria-pressed="true">Kapalı</button>
-          <button class="fin-cy-opt" data-cy="on" onclick="setFinCYMode(true)" aria-pressed="false">Açık</button>
-        </div>
-      </div>
-      </div><!-- /fin-ctrl-left -->
-      <!-- Havayolu seçici — metriklerin sağındaki vurgulu alan -->
-      <div class="fin-ctrl-airlines">
-        <div class="fin-airline-header">
-          <span class="fin-airline-header-label" style="font-size:11px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:0.06em;display:flex;align-items:center;gap:6px">
-            <span class="fin-beacon-dot"></span>
-            Havayolu Seçimi
           </span>
           <div style="display:flex;gap:5px">
             <button class="fin-deselect-btn" onclick="resetFinAirlines()" title="Tümünü göster">↺ Tümünü Seç</button>
@@ -24675,6 +24648,22 @@ async function loadAppData() {
           annual: "https://investor.turkishairlines.com/tr/mali-ve-operasyonel-veriler/yillik-raporlar",
           semi_annual: "https://investor.turkishairlines.com/tr/mali-ve-operasyonel-veriler/faaliyet-raporlari",
           quarterly: "https://investor.turkishairlines.com/tr/mali-ve-operasyonel-veriler/finansal-raporlar"
+        },
+        period_urls: {
+          "2025": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_2025_Konsolide_Finansal_Raporu.pdf",
+          "2024": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_2024_Konsolide_Finansal_Raporu.pdf",
+          "2023": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_2023_Konsolide_Finansal_Raporu.pdf",
+          "2022": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_2022_Konsolide_Finansal_Raporu.pdf",
+          "2021": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_2021_Konsolide_Finansal_Raporu.pdf",
+          "2026-Q2": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_2Q26_Konsolide_Finansal_Raporu.pdf",
+          "2026-Q1": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_1Q26_Konsolide_Finansal_Raporu.pdf",
+          "2025-Q4": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_4Q25_Konsolide_Finansal_Raporu.pdf",
+          "2025-Q3": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_3Q25_Konsolide_Finansal_Raporu.pdf",
+          "2025-Q2": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_2Q25_Konsolide_Finansal_Raporu.pdf",
+          "2025-Q1": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_1Q25_Konsolide_Finansal_Raporu.pdf",
+          "2026-H1": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_1H26_Konsolide_Finansal_Raporu.pdf",
+          "2025-H2": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_2H25_Konsolide_Finansal_Raporu.pdf",
+          "2025-H1": "https://investor.turkishairlines.com/documents/ThyInvestorRelations/download/icerik/THY_1H25_Konsolide_Finansal_Raporu.pdf"
         }
       },
       "AF": {name:"Air France-KLM",    url:"https://www.airfranceklm.com/en/finance"},
