@@ -23241,7 +23241,7 @@ function fmtVal(v, metric) {
   return (v >= 0 ? '+' : '') + v.toLocaleString('tr-TR', {maximumFractionDigits: 0}) + 'M';
 }
 
-// ── Yıl gruplaması arka plan bantları ve yıl rozetleri eklentisi ──
+// ── Yıl gruplaması arka plan bantları ve üst başlık rozetleri eklentisi ──
 const finYearBandsPlugin = {
   id: 'finYearBands',
   beforeDatasetsDraw(chart) {
@@ -23266,6 +23266,20 @@ const finYearBandsPlugin = {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
     ctx.save();
+
+    // Üst dedicated header şeridi
+    const trackH = 26;
+    const trackY = chartArea.top - trackH - 4;
+    ctx.fillStyle = isDark ? 'rgba(26, 32, 44, 0.85)' : 'rgba(241, 245, 249, 0.85)';
+    ctx.fillRect(chartArea.left, trackY, chartArea.right - chartArea.left, trackH);
+
+    ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(chartArea.left, chartArea.top - 4);
+    ctx.lineTo(chartArea.right, chartArea.top - 4);
+    ctx.stroke();
+
     yearGroups.forEach((group, gIdx) => {
       let startX = scales.x.getPixelForTick(group.startIdx);
       let endX = scales.x.getPixelForTick(group.endIdx);
@@ -23285,41 +23299,41 @@ const finYearBandsPlugin = {
         rightX = chartArea.right;
       }
 
-      // Alternating band background fill
+      // Alternating band background fill inside plot area
       if (gIdx % 2 === 1) {
-        ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(37, 99, 235, 0.04)';
+        ctx.fillStyle = isDark ? 'rgba(255, 255, 255, 0.035)' : 'rgba(37, 99, 235, 0.035)';
         ctx.fillRect(leftX, chartArea.top, rightX - leftX, chartArea.bottom - chartArea.top);
       }
 
-      // Vertical separator line on left of each new year group (except first)
+      // Dikey ayırıcı çizgi
       if (gIdx > 0) {
         ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(37, 99, 235, 0.16)';
         ctx.lineWidth = 1;
         ctx.setLineDash([4, 4]);
         ctx.beginPath();
-        ctx.moveTo(leftX, chartArea.top);
+        ctx.moveTo(leftX, trackY);
         ctx.lineTo(leftX, chartArea.bottom);
         ctx.stroke();
         ctx.setLineDash([]);
       }
 
-      // Year badge header at top of group band
+      // Yıl rozeti - Grafiğin dışında, üst şeritte tertemiz durur
       const midX = (leftX + rightX) / 2;
       const badgeText = group.year;
-      const fs = Math.max(10, Math.min(13, _finChartFontSize));
+      const fs = Math.max(11, Math.min(13, _finChartFontSize));
       ctx.font = `700 ${fs}px sans-serif`;
       const textW = ctx.measureText(badgeText).width;
-      const bW = textW + 16;
-      const bH = fs + 8;
-      const bY = chartArea.top + 6;
+      const bW = textW + 18;
+      const bH = trackH - 6;
+      const bY = trackY + 3;
 
-      ctx.fillStyle = isDark ? '#1E2433' : '#F1F5F9';
-      ctx.strokeStyle = isDark ? '#3b82f688' : '#2563eb66';
+      ctx.fillStyle = isDark ? '#2D3748' : '#FFFFFF';
+      ctx.strokeStyle = isDark ? '#4A5568' : '#CBD5E1';
       ctx.lineWidth = 1.2;
 
       ctx.beginPath();
       if (typeof ctx.roundRect === 'function') {
-        ctx.roundRect(midX - bW / 2, bY, bW, bH, 12);
+        ctx.roundRect(midX - bW / 2, bY, bW, bH, 10);
       } else {
         ctx.rect(midX - bW / 2, bY, bW, bH);
       }
@@ -23665,6 +23679,7 @@ function renderFinChart() {
     });
     chart.update('none');
   };
+  const topPadding = _finFreq !== 'annual' ? 38 : 12;
   const rightPadding = _finChartType === 'line' ? Math.max(48, Math.round((_finChartFontSize || 11) * 4.2)) : 12;
 
   _finChart = new Chart(canvas, {
@@ -23674,7 +23689,7 @@ function renderFinChart() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      layout: { padding: { right: rightPadding } },
+      layout: { padding: { top: topPadding, right: rightPadding } },
       animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches
         ? false
         : { duration: ctx => (sameView && prevSlugs.has(datasets[ctx.datasetIndex]?.$code)) ? 0 : 1000 },
