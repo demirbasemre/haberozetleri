@@ -23061,39 +23061,51 @@ function fmtFinVal(v, fmt) {
 // Havayolu favicon domain haritası
 // Haberler'deki logos haritasıyla birebir uyumlu — doğrudan URL saklanır
 (function() {
-  const F = d => `https://www.google.com/s2/favicons?sz=32&domain=${d}`;
+  const F = d => `https://www.google.com/s2/favicons?sz=64&domain=${d}`;
   const _FIN_LOGO_MAP = {
-    'QR':  F('qatarairways.com'),
-    'EK':  'https://www.gstatic.com/flights/airline_logos/70px/EK.png',  // favicon API jenerik küre döndürüyor
-    'TK':  F('turkishairlines.com'),
-    'AF':  F('airfrance.com'),           // airfranceklm.com değil
-    'AFKLM': F('airfrance.com'),         // Air France-KLM birleşik grubu için
-    'CI':  'https://www.gstatic.com/flights/airline_logos/70px/CI.png',  // favicon 404 — Flights CDN
-    'CX':  F('cathaypacific.com'),
-    'ET':  F('ethiopianairlines.com'),
-    'LH':  F('lufthansa.com'),           // lufthansagroup.com değil
-    'LA':  F('latamairlines.com'),       // latam.com değil
-    'KE':  F('koreanair.com'),
-    'CA':  'https://www.gstatic.com/flights/airline_logos/70px/CA.png',  // favicon 404 — Haberler filtresiyle aynı kaynak
-    'SQ':  F('singaporeair.com'),
-    'OZ':  F('flyasiana.com'),
-    'SV':  F('saudia.com'),
-    'NH':  F('ana.co.jp'),               // ANA Airlines
-    'ETI': F('etihad.com'),
-    'CZ':  'https://companieslogo.com/img/orig/600029.SS-e7ea2d1d.png?t=1720244490',
-    'AV':  F('avianca.com'),
-    'CV':  F('cargolux.com'),
-    'A4B': F('ajet.com'),
-    'MU':  F('ceair.com'),
-    'EY':  'https://www.gstatic.com/flights/airline_logos/70px/EY.png',
-    '3S':  F('aerologic.aero'),
-    'ZETA': F('airzeta.com'),
-    'N8':  F('nationalairlines.com'),
-    'CC':  F('cma-cgm.com'),
-    '3U':  F('sichuanair.com'),
-    'ABD': F('airatlanta.com'),
+    'TK':    F('turkishairlines.com'),
+    'AF':    F('airfrance.com'),
+    'AFKLM': F('airfrance.com'),
+    'LH':    F('lufthansa.com'),
+    'DAL':   F('delta.com'),
+    'UAL':   F('united.com'),
+    'AAL':   F('aa.com'),
+    'LUV':   F('southwest.com'),
+    'RYA':   F('ryanair.com'),
+    'IAG':   F('britishairways.com'),
+    'PGSUS': F('flypgs.com'),
+    'WIZZ':  F('wizzair.com'),
+    'EZJ':   F('easyjet.com'),
+    'INDIGO':F('goindigo.in'),
+    'CEA':   F('ceair.com'),
+    'QAN':   F('qantas.com'),
+    'LA':    F('latamairlines.com'),
+    'KE':    F('koreanair.com'),
+    'OZ':    F('flyasiana.com'),
+    'CA':    F('airchina.com.cn'),
+    'CI':    F('china-airlines.com'),
+    'CZ':    F('csair.com'),
+    'SQ':    F('singaporeair.com'),
+    'NH':    F('ana.co.jp'),
+    'EK':    F('emirates.com'),
+    'CX':    F('cathaypacific.com'),
+    'QR':    F('qatarairways.com'),
+    'ET':    F('ethiopianairlines.com'),
+    'SV':    F('saudia.com'),
+    'CV':    F('cargolux.com'),
+    'A4B':   F('flyajet.com'),
+    'ETI':   F('etihad.com'),
+    'AV':    F('avianca.com'),
+    'MU':    F('ceair.com'),
+    'EY':    F('etihad.com'),
+    '3S':    F('aerologic.aero'),
+    'ZETA':  F('airzeta.com'),
+    'N8':    F('nationalairlines.com'),
+    'CC':    F('cma-cgm.com'),
+    '3U':    F('sichuanair.com'),
+    'ABD':   F('airatlanta.com')
   };
-  window.finLogoUrl = function(slug) { return _FIN_LOGO_MAP[slug] || ''; };
+  window.finLogoUrl = function(slug) { return _FIN_LOGO_MAP[slug] || F('flightradar24.com'); };
 })();
 
 window.initFinansalTab = function() {
