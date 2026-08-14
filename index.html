@@ -24424,11 +24424,11 @@ function getMatrixValue(air, def, period) {
 
 function renderFinMatrixTable() {
   const table = document.getElementById('fin-matrix-table');
-  const data = window.FIN_DATA || window.FINANCIAL_DATA;
+  const data = window.FIN_DATA || (typeof FIN_DATA !== 'undefined' ? FIN_DATA : null) || window.FINANCIAL_DATA;
   if (!table) { console.warn('[Matrix] #fin-matrix-table not found'); return; }
   if (!data || Object.keys(data).length === 0) {
     console.warn('[Matrix] FIN_DATA not loaded yet');
-    table.innerHTML = `<tbody><tr><td colspan="100" style="padding:32px;text-align:center;color:var(--text-2)">Finansal veri yükleniyor…</td></tr></tbody>`;
+    table.innerHTML = `<tbody><tr><td colspan="100" style="padding:32px;text-align:center;color:var(--text-2)">Finansal veriler yükleniyor, lütfen bekleyin…</td></tr></tbody>`;
     return;
   }
 
@@ -24565,35 +24565,56 @@ function renderFinMatrixTable() {
 }
 
 window.exportFinMatrixToCSV = function() {
-  const data = window.FIN_DATA || window.FINANCIAL_DATA;
-  if (!data) return;
+  const data = window.FIN_DATA || (typeof FIN_DATA !== 'undefined' ? FIN_DATA : null) || window.FINANCIAL_DATA;
+  if (!data || Object.keys(data).length === 0) {
+    alert('Finansal veriler henüz yüklenmedi, lütfen birkaç saniye sonra tekrar deneyin.');
+    return;
+  }
   
   const activeDefs = FIN_METRIC_DEFS.filter(d => _finMatrixActiveMetrics.has(d.key));
+  if (activeDefs.length === 0) {
+    alert('Dışa aktarmak için lütfen tablodan en az bir metrik seçin.');
+    return;
+  }
+
+  let slugs = Object.keys(data);
+  if (_finMatrixAlliance === 'star') {
+    const starList = ['TK', 'LH', 'SQ', 'CA', 'UA', 'UAL', 'OZ', 'NH', 'ET', 'AV'];
+    slugs = slugs.filter(s => starList.includes(s));
+  } else if (_finMatrixAlliance === 'skyteam') {
+    const skyList = ['AF', 'CZ', 'CI', 'CX', 'KE', 'DAL', 'CEA'];
+    slugs = slugs.filter(s => skyList.includes(s));
+  } else if (_finMatrixAlliance === 'oneworld') {
+    const oneList = ['QR', 'IAG', 'QAN', 'AAL'];
+    slugs = slugs.filter(s => oneList.includes(s));
+  } else if (_finMatrixAlliance === 'lowcost') {
+    const lccList = ['RYA', 'LUV', 'INDIGO', 'EZJ', 'PGSUS', 'WIZZ', 'A4B'];
+    slugs = slugs.filter(s => lccList.includes(s));
+  }
+
   const headers = ['Havayolu Kodu', 'Havayolu Adı', 'Dönem', ...activeDefs.map(d => `${d.label} (${d.unit})`)];
   
   const rows = [];
-  Object.keys(data).forEach(slug => {
+  slugs.forEach(slug => {
     const air = data[slug];
-    const isQuarterly = _finMatrixPeriod.includes('-Q');
-    const isSemi = _finMatrixPeriod.includes('-H');
-    
+    if (!air) return;
     const row = [slug, air.name || slug, _finMatrixPeriod];
     activeDefs.forEach(def => {
-      let mVals = {};
-      if (isQuarterly) mVals = air.quarterly?.[def.section]?.[def.key] || {};
-      else if (isSemi) mVals = air.semi_annual?.[def.section]?.[def.key] || {};
-      else mVals = air[def.section]?.[def.key] || {};
-      
-      const v = mVals[_finMatrixPeriod];
-      row.push(v != null ? v : '');
+      const v = getMatrixValue(air, def, _finMatrixPeriod);
+      row.push(v != null ? (typeof v === 'number' ? (Math.round(v * 100) / 100) : v) : '');
     });
     rows.push(row);
   });
 
-  const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\r\n');
   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = `havayolu-metrik-matrisi-${_finMatrixPeriod}.csv`; a.click();
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `havayolu-metrik-matrisi-${_finMatrixPeriod}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
 })();
@@ -24630,10 +24651,10 @@ function k2Breakdown(types, cat) {
 }
 
 // ── Data Loading ─────────────────────────
-let FIN_DATA = null;
-let FLEET_CMP_DATA = null;
-let FIN_YEAR_SOURCES = null;
-let FIN_INVESTOR_URLS_STATIC = null;
+var FIN_DATA = null;
+var FLEET_CMP_DATA = null;
+var FIN_YEAR_SOURCES = null;
+var FIN_INVESTOR_URLS_STATIC = null;
 
 async function loadAppData() {
   const _cb = '?v=' + Date.now();
@@ -24689,10 +24710,18 @@ async function loadAppData() {
       "A4B":{name:"AJet",              url:"https://investor.turkishairlines.com/tr/hakkimizda/ortaklik-sirketleri"},
     }),
   ]);
-  FLEET_CMP_DATA    = fleet;
-  FIN_DATA          = fin;
-  FIN_YEAR_SOURCES  = finSrc;
+  window.FLEET_CMP_DATA    = fleet;
+  FLEET_CMP_DATA           = fleet;
+  window.FIN_DATA          = fin;
+  FIN_DATA                 = fin;
+  window.FIN_YEAR_SOURCES  = finSrc;
+  FIN_YEAR_SOURCES         = finSrc;
+  window.FIN_INVESTOR_URLS_STATIC = invUrls;
   FIN_INVESTOR_URLS_STATIC = invUrls;
+
+  if (typeof _finViewMode !== 'undefined' && _finViewMode === 'matrix' && typeof renderFinMatrixTable === 'function') {
+    renderFinMatrixTable();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
