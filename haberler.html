@@ -4470,19 +4470,23 @@
           <button class="fin-mpill fin-mpill--fin-primary" data-metric="passenger_revenue_musd">Yolcu Geliri</button>
           <button class="fin-mpill fin-mpill--fin-primary" data-metric="cargo_revenue_musd">Kargo Geliri</button>
           <button class="fin-mpill fin-mpill--fin-primary" data-metric="other_revenue_musd">Diğer Gelir</button>
-          <button class="fin-mpill fin-mpill--fin-primary" data-metric="operating_profit_musd">İşletme Kârı</button>
+          <button class="fin-mpill fin-mpill--fin-primary" data-metric="operating_profit_musd">Op. Kâr (EBIT)</button>
           <button class="fin-mpill fin-mpill--fin-primary" data-metric="net_profit_musd">Net Kâr</button>
+          <button class="fin-mpill fin-mpill--fin-primary" data-metric="market_cap_musd">Piyasa Değeri</button>
           <button class="fin-mpill fin-mpill--fin-primary" data-metric="employees">Çalışanlar</button>
+          <button class="fin-mpill fin-mpill--fin-primary" data-metric="fleet_size">Uçak Sayısı</button>
           <!-- Hesaplanan Oran (turuncu) -->
           <span class="fin-mpill-sep fin-mpill-sep--calc">Hesaplanan Oran<button type="button" class="fin-info-dot" aria-label="Hesaplanan oranlar nasıl hesaplanıyor?"
             onclick="this.classList.toggle('open'); event.stopPropagation();"
-            onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Büyüme oranları</strong> (Gelir, Yolcu, Kargo, Diğer Gelir %): (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.<br><strong>İşletme Marjı:</strong> İşletme Kârı ÷ Toplam Gelir × 100<br><strong>Net Marj:</strong> Net Kâr ÷ Toplam Gelir × 100</span></button></span>
+            onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Büyüme oranları</strong> (Gelir, Yolcu, Kargo, Diğer Gelir %): (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.<br><strong>Op. Marj:</strong> Operasyonel Kâr ÷ Toplam Gelir × 100<br><strong>FD / FAVÖK:</strong> Firma Değeri / EBITDA Çarpanı<br><strong>Net Borç / FAVÖK:</strong> Net Borç / EBITDA Kaldıraç Oranı</span></button></span>
           <button class="fin-mpill fin-mpill--fin-calc" data-metric="total_revenue_growth_pct">Gelir Büyümesi</button>
           <button class="fin-mpill fin-mpill--fin-calc" data-metric="passenger_revenue_growth_pct">Yolcu Gelir %</button>
           <button class="fin-mpill fin-mpill--fin-calc" data-metric="cargo_revenue_growth_pct">Kargo Gelir %</button>
           <button class="fin-mpill fin-mpill--fin-calc" data-metric="other_revenue_growth_pct">Diğer Gelir %</button>
-          <button class="fin-mpill fin-mpill--fin-calc" data-metric="operating_margin_pct">İşletme Marjı</button>
+          <button class="fin-mpill fin-mpill--fin-calc" data-metric="operating_margin_pct">Op. Marj %</button>
           <button class="fin-mpill fin-mpill--fin-calc" data-metric="net_margin_pct">Net Marj</button>
+          <button class="fin-mpill fin-mpill--fin-calc" data-metric="ev_ebitda">FD / FAVÖK</button>
+          <button class="fin-mpill fin-mpill--fin-calc" data-metric="net_debt_ebitda">Net Borç / FAVÖK</button>
           <!-- Ana Yolcu (yeşil) -->
           <span class="fin-mpill-sep fin-mpill-sep--pax">Ana Yolcu</span>
           <button class="fin-mpill fin-mpill--pax-primary" data-metric="passengers">Yolcu Sayısı</button>
@@ -22814,15 +22818,19 @@ const FIN_METRIC_DEFS = [
   {key:'passenger_revenue_musd',       label:'Yolcu Geliri',      unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
   {key:'cargo_revenue_musd',           label:'Kargo Geliri',      unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
   {key:'other_revenue_musd',           label:'Diğer Gelir',       unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
-  {key:'operating_profit_musd',        label:'İşletme Kârı',      unit:'M$',   section:'financial',  fmt:'musd_s', group:'fin-primary'},
+  {key:'operating_profit_musd',        label:'Op. Kâr (EBIT)',    unit:'M$',   section:'financial',  fmt:'musd_s', group:'fin-primary'},
   {key:'net_profit_musd',              label:'Net Kâr',           unit:'M$',   section:'financial',  fmt:'musd_s', group:'fin-primary'},
+  {key:'market_cap_musd',              label:'Piyasa Değeri',     unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
   {key:'employees',                    label:'Çalışanlar',        unit:'kişi', section:'financial',  fmt:'count',  group:'fin-primary'},
+  {key:'fleet_size',                   label:'Uçak Sayısı',       unit:'Uçak', section:'passengers', fmt:'count',  group:'fin-primary'},
   {key:'total_revenue_growth_pct',     label:'Gelir Büyümesi',    unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
   {key:'passenger_revenue_growth_pct', label:'Yolcu Gelir %',     unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
   {key:'cargo_revenue_growth_pct',     label:'Kargo Gelir %',     unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
   {key:'other_revenue_growth_pct',     label:'Diğer Gelir %',     unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
-  {key:'operating_margin_pct',         label:'İşletme Marjı',     unit:'%',    section:'financial',  fmt:'pct',    group:'fin-calc'},
-  {key:'net_margin_pct',               label:'Net Marj',          unit:'%',    section:'financial',  fmt:'pct',    group:'fin-calc'},
+  {key:'operating_margin_pct',         label:'Op. Marj %',        unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
+  {key:'net_margin_pct',               label:'Net Marj',          unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
+  {key:'ev_ebitda',                    label:'FD / FAVÖK',        unit:'x',    section:'financial',  fmt:'multiple',group:'fin-calc'},
+  {key:'net_debt_ebitda',               label:'Net Borç / FAVÖK',  unit:'x',    section:'financial',  fmt:'multiple',group:'fin-calc'},
   {key:'passengers',                   label:'Yolcu Sayısı',      unit:'M',    section:'passengers', fmt:'pax',    group:'pax-primary'},
   {key:'ask_m',                        label:'ASK',               unit:'M km', section:'passengers', fmt:'munit',  group:'pax-primary'},
   {key:'asm_m',                        label:'ASM',               unit:'M mil',section:'passengers', fmt:'munit',  group:'pax-primary'},
@@ -22861,6 +22869,7 @@ function fmtFinVal(v, fmt) {
     }
     case 'pct':   return v.toFixed(1) + '%';
     case 'pct_s': return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+    case 'multiple': return v.toFixed(1) + 'x';
     case 'pax':   return (v/1e6).toFixed(2) + 'M';
     case 'munit': return Math.round(v).toLocaleString('tr-TR');
     case 'count': return Math.round(v).toLocaleString('tr-TR');
@@ -23705,6 +23714,7 @@ function renderFinChart() {
               const d2 = FIN_METRIC_MAP[_finMetric];
               if (!d2) return v;
               if (d2.fmt === 'pct' || d2.fmt === 'pct_s') return v + '%';
+              if (d2.fmt === 'multiple') return v + 'x';
               if (d2.fmt === 'pax') return v + 'M';
               if (d2.fmt === 'munit') return v + 'B';
               if (d2.fmt === 'count') {
