@@ -23266,19 +23266,8 @@ const finYearBandsPlugin = {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
     ctx.save();
-
-    // Üst dedicated header şeridi
     const trackH = 26;
     const trackY = chartArea.top - trackH - 4;
-    ctx.fillStyle = isDark ? 'rgba(26, 32, 44, 0.85)' : 'rgba(241, 245, 249, 0.85)';
-    ctx.fillRect(chartArea.left, trackY, chartArea.right - chartArea.left, trackH);
-
-    ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(chartArea.left, chartArea.top - 4);
-    ctx.lineTo(chartArea.right, chartArea.top - 4);
-    ctx.stroke();
 
     yearGroups.forEach((group, gIdx) => {
       let startX = scales.x.getPixelForTick(group.startIdx);
@@ -23382,7 +23371,7 @@ const finEndLabelsPlugin = {
     items.forEach(it => {
       const y = Math.max(chartArea.top + 8, Math.min(it.y, chartArea.bottom - 6));
       ctx.fillStyle = it.color;
-      ctx.fillText(it.code, it.x + 8, y);
+      ctx.fillText(it.code, it.x + 12, y);
     });
     ctx.restore();
     }
@@ -23564,6 +23553,12 @@ const finPointValuesPlugin = {
         }
       }
       
+      // Son noktada değer rozeti sola kaydırılır (sağdaki havayolu koduyla çakışmasın)
+      if (pt.x >= chartArea.right - 45) {
+        align = 'right';
+        drawX = pt.x - 10;
+      }
+      
       drawY = Math.max(chartArea.top + 6, Math.min(drawY, chartArea.bottom - 4));
       drawX = Math.max(chartArea.left + 15, Math.min(drawX, chartArea.right - 15));
       
@@ -23692,7 +23687,7 @@ function renderFinChart() {
     chart.update('none');
   };
   const topPadding = _finFreq !== 'annual' ? 38 : 12;
-  const rightPadding = _finChartType === 'line' ? Math.max(48, Math.round((_finChartFontSize || 11) * 4.2)) : 12;
+  const rightPadding = _finChartType === 'line' ? Math.max(54, Math.round((_finChartFontSize || 11) * 5.0)) : 12;
 
   _finChart = new Chart(canvas, {
     type: _finChartType,
