@@ -4634,9 +4634,9 @@
       <div class="fin-ctrl-group">
         <span class="fin-ctrl-label">Rapor Frekansı</span>
         <div style="display:flex;gap:4px">
-          <button class="fin-freq-btn fin-freq-btn--active" data-freq="annual" onclick="setFinFreq('annual')" aria-pressed="true">Yıllık</button>
+          <button class="fin-freq-btn" data-freq="annual" onclick="setFinFreq('annual')" aria-pressed="false">Yıllık</button>
           <button class="fin-freq-btn" data-freq="semi_annual" onclick="setFinFreq('semi_annual')" aria-pressed="false">Yarı Yıllık</button>
-          <button class="fin-freq-btn" data-freq="quarterly" onclick="setFinFreq('quarterly')" aria-pressed="false">Çeyreklik</button>
+          <button class="fin-freq-btn fin-freq-btn--active" data-freq="quarterly" onclick="setFinFreq('quarterly')" aria-pressed="true">Çeyreklik</button>
         </div>
       </div>
       <!-- Takvim Yılı Hizalaması -->
@@ -22943,7 +22943,7 @@ const FIN_FISCAL_YEAR_END = {
   'SQ': 3,   // Singapore Airlines: Nisan–Mart
   'NH': 3,   // ANA Holdings:       Nisan–Mart (Japon mali yılı)
 };
-let _finFreq = 'annual'; // 'annual' | 'semi_annual' | 'quarterly'
+let _finFreq = 'quarterly'; // 'annual' | 'semi_annual' | 'quarterly'
 let _finChartFontSize = parseInt(localStorage.getItem('finChartFontSize') || '11');
 
 window.setFinFreq = function(freq) {
