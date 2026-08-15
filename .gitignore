@@ -37,3 +37,11 @@ filo-veri-notlari.md
 
 # Güvenlik nedeniyle fetch-proxy klasörü GitHub'a gönderilmez (Unraid yerelinde tutulur)
 cf-proxy/fetch-proxy/
+
+# Local temporary and sqlite databases
+*.db
+*.db-shm
+*.db-wal
+.playwright-mcp/
+local-preview/
+scratch/
