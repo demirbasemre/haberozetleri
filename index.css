@@ -1,5 +1,6 @@
   :root {
     --bg: #F4F4F5;
+    --bg-soft: #F8FAFC;
     --surface: #FFFFFF;
     --navy: #0D1117;
     --navy-soft: #161B22;
@@ -7,9 +8,11 @@
     --red-muted: rgba(227,6,19,0.08);
     --accent: #1D6FE8;
     --text: #111218;
+    --text-1: #111218;
     --text-2: #4B5563;
     --text-3: #9CA3AF;
     --border: #E5E5E5;
+    --border-color: #E5E5E5;
     --border-soft: #EEEEEE;
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
@@ -38,6 +41,7 @@
 
   [data-theme="dark"] {
     --bg: #0F1117;
+    --bg-soft: #141721;
     --surface: #1A1D27;
     --navy: #070A10;
     --navy-soft: #111420;
@@ -45,9 +49,11 @@
     --red-muted: rgba(227,6,19,0.12);
     --accent: #4D8EF5;
     --text: #E8EAF0;
+    --text-1: #E8EAF0;
     --text-2: #9AA3B8;
     --text-3: #717C99; /* eski #555E78 koyu zeminde ~2.5:1 kalıyordu; ~4:1'e yükseltildi */
     --border: #252A3A;
+    --border-color: #252A3A;
     --border-soft: #1E2130;
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);

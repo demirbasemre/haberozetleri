@@ -1849,12 +1849,17 @@
     color: #93c5fd;
   }
 
+  /* ════════════════════════════════════════════════════
+     FİNANSAL MATRİS TABLOSU (PREMIUM UI/UX STICKY TABLE)
+  ════════════════════════════════════════════════════ */
   .fin-matrix-table-wrap {
+    position: relative;
     overflow-x: auto;
     border-radius: 10px;
-    border: 1.5px solid var(--border-color);
+    border: 1px solid var(--border);
     background: var(--surface);
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    -webkit-overflow-scrolling: touch;
   }
   .fin-matrix-table {
     width: 100%;
@@ -1864,74 +1869,117 @@
     background: var(--surface);
   }
   .fin-matrix-table thead th {
-    background: var(--bg-soft);
-    color: var(--text-1);
+    background: #f8fafc;
+    color: var(--text);
     font-weight: 700;
     padding: 12px 14px;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border);
     white-space: nowrap;
     text-align: right;
     user-select: none;
   }
+  [data-theme="dark"] .fin-matrix-table thead th {
+    background: #141721;
+    color: var(--text);
+    border-bottom: 2px solid var(--border);
+  }
+
+  /* İlk Başlık Sütunu: Kesinlikle Opak & En Üst Katman (Z-Index 30) */
   .fin-matrix-table thead th:first-child {
     position: sticky;
     left: 0;
-    z-index: 10;
-    background: var(--bg-soft) !important;
+    z-index: 30 !important;
+    background: #f8fafc !important;
+    color: var(--text) !important;
     text-align: left;
-    min-width: 200px;
-    border-right: 2px solid var(--border-color);
-    box-shadow: 4px 0 10px -2px rgba(0, 0, 0, 0.1);
+    min-width: 220px;
+    border-right: 2px solid var(--border);
+    box-shadow: 4px 0 12px -2px rgba(0, 0, 0, 0.12);
   }
+  [data-theme="dark"] .fin-matrix-table thead th:first-child {
+    background: #141721 !important;
+    color: var(--text) !important;
+    border-right: 2px solid var(--border);
+    box-shadow: 4px 0 12px -2px rgba(0, 0, 0, 0.35);
+  }
+
   .fin-matrix-table tbody tr {
-    transition: background 0.15s ease;
+    transition: background 0.12s ease;
     background: var(--surface);
   }
   .fin-matrix-table tbody tr:nth-child(even) {
-    background: var(--bg-soft);
+    background: #f8fafc;
+  }
+  [data-theme="dark"] .fin-matrix-table tbody tr:nth-child(even) {
+    background: #141721;
   }
   .fin-matrix-table tbody tr:hover {
-    background: rgba(37, 99, 235, 0.06);
+    background: rgba(37, 99, 235, 0.05);
   }
+  [data-theme="dark"] .fin-matrix-table tbody tr:hover {
+    background: rgba(37, 99, 235, 0.12);
+  }
+
   .fin-matrix-table tbody td {
     padding: 10px 14px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-soft);
     text-align: right;
     white-space: nowrap;
-    color: var(--text-1);
+    color: var(--text);
     font-variant-numeric: tabular-nums;
   }
-  /* İlk Sütun: Kesinlikle Opak ve Sabit (Sticky) - Arkadaki metinler ASLA gözükmez */
+
+  /* İlk Hücre Sütunu: Kesinlikle Opak, Katı Renk, Sticky ve Asla Saydam Olmayan (Z-Index 15) */
   .fin-matrix-table tbody td:first-child {
     position: sticky;
     left: 0;
-    z-index: 5;
+    z-index: 15 !important;
     text-align: left;
-    background: var(--surface);
-    border-right: 2px solid var(--border-color);
-    box-shadow: 4px 0 10px -2px rgba(0, 0, 0, 0.1);
+    min-width: 220px;
+    background: #ffffff !important;
+    border-right: 2px solid var(--border);
+    box-shadow: 4px 0 12px -2px rgba(0, 0, 0, 0.1);
     font-weight: 600;
   }
-  .fin-matrix-table tbody tr:nth-child(even) td:first-child {
-    background: var(--bg-soft);
+  [data-theme="dark"] .fin-matrix-table tbody td:first-child {
+    background: #1a1d27 !important;
+    border-right: 2px solid var(--border);
+    box-shadow: 4px 0 12px -2px rgba(0, 0, 0, 0.35);
   }
+
+  .fin-matrix-table tbody tr:nth-child(even) td:first-child {
+    background: #f8fafc !important;
+  }
+  [data-theme="dark"] .fin-matrix-table tbody tr:nth-child(even) td:first-child {
+    background: #141721 !important;
+  }
+
   .fin-matrix-table tbody tr:hover td:first-child {
-    background: #e2e8f0;
+    background: #edf2f7 !important;
   }
   [data-theme="dark"] .fin-matrix-table tbody tr:hover td:first-child {
-    background: #334155;
+    background: #1e2433 !important;
   }
+
   /* THY Vurgusu: Opak Kırmızı Arka Plan */
+  .fin-matrix-table tbody tr.fin-matrix-row--thy td {
+    background: #fff1f2 !important;
+  }
+  [data-theme="dark"] .fin-matrix-table tbody tr.fin-matrix-row--thy td {
+    background: #2a1218 !important;
+  }
   .fin-matrix-table tbody tr.fin-matrix-row--thy td:first-child {
     background: #ffe4e6 !important;
     color: #b91c1c !important;
     font-weight: 800 !important;
     border-right: 2px solid #f43f5e !important;
+    box-shadow: 4px 0 14px -2px rgba(227, 6, 19, 0.2) !important;
   }
   [data-theme="dark"] .fin-matrix-table tbody tr.fin-matrix-row--thy td:first-child {
-    background: #4c1d24 !important;
+    background: #3b141c !important;
     color: #fca5a5 !important;
     border-right: 2px solid #e11d48 !important;
+    box-shadow: 4px 0 14px -2px rgba(227, 6, 19, 0.35) !important;
   }
 
   /* ── Veri Kaynağı Dönem Animasyonları ── */
