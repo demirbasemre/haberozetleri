@@ -1,6 +1,6 @@
 {
-  "lastScannedId": 2437,
-  "lastScanned": "2026-08-08T23:16:00.275Z",
+  "lastScannedId": 2584,
+  "lastScanned": "2026-08-15T23:16:04.408Z",
   "scannedCount": 127,
   "airlines": [
     {
@@ -807,7 +807,61 @@
         "air one aviation"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aironeaviation.com"
+    },
+    {
+      "id": "dyn_vietjet_air_cargo",
+      "label": "Vietjet Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "vietjet air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=vietjetaircargo.com"
+    },
+    {
+      "id": "dyn_starlux_airlines",
+      "label": "Starlux Airlines",
+      "group": "passenger",
+      "kw": [
+        "starlux airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=starlux-airlines.com"
+    },
+    {
+      "id": "dyn_taag_angola_airlines",
+      "label": "Taag Angola Airlines",
+      "group": "passenger",
+      "kw": [
+        "taag angola airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=taag.com"
+    },
+    {
+      "id": "dyn_uzbekistan_airways",
+      "label": "Uzbekistan Airways",
+      "group": "passenger",
+      "kw": [
+        "uzbekistan airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=uzairways.com"
+    },
+    {
+      "id": "dyn_azerbaijan_airlines",
+      "label": "Azerbaijan Airlines",
+      "group": "passenger",
+      "kw": [
+        "azerbaijan airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=azal.az"
     }
   ],
-  "gsa": []
+  "gsa": [
+    {
+      "id": "dyn_menzies_aviation_cargo",
+      "label": "Menzies Aviation Cargo",
+      "kw": [
+        "menzies aviation cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=menziesaviation.com"
+    }
+  ]
 }
