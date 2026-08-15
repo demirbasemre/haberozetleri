@@ -713,6 +713,14 @@
     text-align: right; font-variant-numeric: tabular-nums;
   }
   .fin-rank--top { color: var(--accent); }
+  .fin-rank--thy {
+    color: #ffffff !important;
+    background: #e30613 !important;
+    padding: 1.5px 5.5px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 1px 4px rgba(227, 6, 19, 0.35) !important;
+    margin-right: 5px !important;
+  }
   /* Tablo header sort hint */
   .fin-table-sort-hint {
     font-size: 10px; color: var(--text-3); display: flex; align-items: center; gap: 4px;
@@ -1518,14 +1526,45 @@
   .fin-matrix-badge-top {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 3px;
     background: #10B981;
     color: #ffffff;
-    font-size: 9px;
+    font-size: 9.5px;
     font-weight: 800;
-    padding: 1px 5px;
+    padding: 1.5px 5.5px;
     border-radius: 4px;
     margin-left: 4px;
+    flex-shrink: 0;
+  }
+  .fin-matrix-badge-thy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: #e30613;
+    color: #ffffff;
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 1.5px 5.5px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(227, 6, 19, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-left: 4px;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+    vertical-align: middle;
+  }
+  [data-theme="dark"] .fin-matrix-badge-thy {
+    background: #e30613;
+    color: #ffffff;
+    box-shadow: 0 1px 6px rgba(227, 6, 19, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+  }
+  .fin-matrix-badge-thy--top {
+    background: linear-gradient(135deg, #e30613 0%, #be123c 100%) !important;
+    border: 1px solid #fecdd3 !important;
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.55) !important;
   }
   .fin-matrix-pill {
     font-size: 11px;
@@ -24629,8 +24668,9 @@ function renderFinTable() {
 
       // Sıra rozeti
       const rank = rankMap[slug];
+      const isTHY = slug === 'TK';
       const rankHtml = (isSortedCol && rank)
-        ? `<span class="fin-rank${rank <= 3 ? ' fin-rank--top' : ''}">#${rank}</span>`
+        ? `<span class="fin-rank${rank <= 3 ? ' fin-rank--top' : ''}${isTHY ? ' fin-rank--thy' : ''}">#${rank}</span>`
         : '';
 
       let cellFnHtml = '';
@@ -25206,23 +25246,27 @@ function renderFinMatrixTable() {
   });
 
   const bestPerformer = {};
+  const metricRanks = {}; // def.key -> { [slug]: { rank: number, total: number } }
+
   activeDefs.forEach(def => {
-    let bestVal = null;
-    let bestSlug = null;
-    rowsData.forEach(r => {
-      const v = r.vals[def.key];
-      if (v != null) {
-        const isLowerBetter = def.key === 'net_debt_ebitda';
-        if (bestVal == null) {
-          bestVal = v;
-          bestSlug = r.slug;
-        } else if (isLowerBetter ? v < bestVal : v > bestVal) {
-          bestVal = v;
-          bestSlug = r.slug;
-        }
-      }
+    const isLowerBetter = def.key === 'net_debt_ebitda';
+    const validRows = rowsData.filter(r => r.vals[def.key] != null);
+    validRows.sort((a, b) => {
+      const va = a.vals[def.key];
+      const vb = b.vals[def.key];
+      return isLowerBetter ? va - vb : vb - va;
     });
-    if (bestSlug != null) bestPerformer[def.key] = bestSlug;
+
+    metricRanks[def.key] = {};
+    if (validRows.length > 0) {
+      bestPerformer[def.key] = validRows[0].slug;
+      validRows.forEach((r, idx) => {
+        metricRanks[def.key][r.slug] = {
+          rank: idx + 1,
+          total: validRows.length
+        };
+      });
+    }
   });
 
   const sortCol = _finMatrixSort.col;
@@ -25292,9 +25336,24 @@ function renderFinMatrixTable() {
       const isSort = _finMatrixSort.col === def.key;
       const catColor = groupColors[def.group] || '#10b981';
       
+      let badgeHtml = '';
+      if (val != null) {
+        if (isTHY) {
+          const thyRankInfo = metricRanks[def.key]?.[r.slug];
+          if (thyRankInfo) {
+            const isThyLeader = thyRankInfo.rank === 1;
+            badgeHtml = `<span class="fin-matrix-badge-thy${isThyLeader ? ' fin-matrix-badge-thy--top' : ''}" title="Türk Hava Yolları Sıralaması: #${thyRankInfo.rank} / ${thyRankInfo.total}">#${thyRankInfo.rank}</span>`;
+          }
+        } else if (isBest) {
+          badgeHtml = `<span class="fin-matrix-badge-top" style="background:${catColor}" title="Metrik Lideri">#1</span>`;
+        }
+      }
+      
       tbHtml += `<td style="${isSort ? 'background:rgba(37, 99, 235, 0.04);' : ''}font-weight:${isBest || isTHY ? '700' : '500'}">
-        ${fmtStr != null ? fmtStr : '—'}
-        ${isBest ? `<span class="fin-matrix-badge-top" style="background:${catColor}" title="Metrik Lideri">#1</span>` : ''}
+        <div style="display:inline-flex;align-items:center;justify-content:flex-end;gap:5px;width:100%">
+          <span>${fmtStr != null ? fmtStr : '—'}</span>
+          ${badgeHtml}
+        </div>
       </td>`;
     });
 
