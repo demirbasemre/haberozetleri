@@ -23628,37 +23628,171 @@ const FIN_METRIC_DEFS = [
 ];
 const FIN_METRIC_MAP = Object.fromEntries(FIN_METRIC_DEFS.map(d => [d.key, d]));
 
+function getMatrixValue(air, def, period) {
+  if (!air || !def) return null;
+  const isQuarterly = period.includes('-Q');
+  const isSemi = period.includes('-H');
+
+  const root = isQuarterly ? (air.quarterly || {}) : (isSemi ? (air.semi_annual || {}) : air);
+
+  // 1. Doğrudan JSON içinde saklanan ham değer
+  const rawMap = root[def.section]?.[def.key];
+  if (rawMap && rawMap[period] != null) {
+    return rawMap[period];
+  }
+
+  // 2. Yarı-yıl (H1 / H2) çeyreklik toplama (Q1+Q2 / Q3+Q4)
+  if (isSemi && ['total_revenue_musd', 'passenger_revenue_musd', 'cargo_revenue_musd', 'other_revenue_musd', 'operating_profit_musd', 'net_profit_musd', 'passengers', 'ask_m', 'rpk_m', 'asm_m', 'rpm_m'].includes(def.key)) {
+    const parts = period.split('-H');
+    const yr = parts[0];
+    const isH1 = parts[1] === '1';
+    const q1K = isH1 ? yr + '-Q1' : yr + '-Q3';
+    const q2K = isH1 ? yr + '-Q2' : yr + '-Q4';
+    const qRoot = air.quarterly || {};
+    const v1 = qRoot[def.section]?.[def.key]?.[q1K];
+    const v2 = qRoot[def.section]?.[def.key]?.[q2K];
+    if (v1 != null && v2 != null) {
+      return v1 + v2;
+    }
+  }
+
+  // 3. Anlık durum (Snapshot) metriklerinin yıllık rapordan tamamlanması (Çalışan, Filo, Piyasa Değeri, Katlar)
+  if (['employees', 'fleet_size', 'market_cap_musd', 'ev_ebitda', 'net_debt_ebitda'].includes(def.key)) {
+    const yr = period.split('-')[0];
+    const parentMap = air[def.section]?.[def.key];
+    if (parentMap) {
+      if (parentMap[period] != null) return parentMap[period];
+      if (parentMap[yr] != null) return parentMap[yr];
+      if (parentMap[String(parseInt(yr) - 1)] != null) return parentMap[String(parseInt(yr) - 1)];
+      const lastYr = Object.keys(parentMap).sort().pop();
+      if (lastYr && parentMap[lastYr] != null) return parentMap[lastYr];
+    }
+  }
+
+  // 4. Dinamik kârlılık marjı hesaplamaları
+  if (def.key === 'operating_margin_pct') {
+    const op = getMatrixValue(air, { key: 'operating_profit_musd', section: 'financial' }, period);
+    const rev = getMatrixValue(air, { key: 'total_revenue_musd', section: 'financial' }, period);
+    if (op != null && rev != null && rev !== 0) {
+      return (op / rev) * 100;
+    }
+  }
+  if (def.key === 'net_margin_pct') {
+    const net = getMatrixValue(air, { key: 'net_profit_musd', section: 'financial' }, period);
+    const rev = getMatrixValue(air, { key: 'total_revenue_musd', section: 'financial' }, period);
+    if (net != null && rev != null && rev !== 0) {
+      return (net / rev) * 100;
+    }
+  }
+
+  // 5. Doluluk oranı (Load Factor) hesaplama
+  if (def.key === 'load_factor_pct') {
+    const rpk = getMatrixValue(air, { key: 'rpk_m', section: 'passengers' }, period);
+    const ask = getMatrixValue(air, { key: 'ask_m', section: 'passengers' }, period);
+    if (rpk != null && ask != null && ask !== 0) {
+      return (rpk / ask) * 100;
+    }
+    const rpm = getMatrixValue(air, { key: 'rpm_m', section: 'passengers' }, period);
+    const asm = getMatrixValue(air, { key: 'asm_m', section: 'passengers' }, period);
+    if (rpm != null && asm != null && asm !== 0) {
+      return (rpm / asm) * 100;
+    }
+  }
+
+  // 6. Dinamik yıldan yıla (YoY) büyüme hesaplamaları
+  const growthBaseMap = {
+    'total_revenue_growth_pct': { key: 'total_revenue_musd', section: 'financial' },
+    'passenger_revenue_growth_pct': { key: 'passenger_revenue_musd', section: 'financial' },
+    'cargo_revenue_growth_pct': { key: 'cargo_revenue_musd', section: 'financial' },
+    'other_revenue_growth_pct': { key: 'other_revenue_musd', section: 'financial' },
+    'passenger_growth_pct': { key: 'passengers', section: 'passengers' },
+    'ask_growth_pct': { key: 'ask_m', section: 'passengers' },
+    'rpk_growth_pct': { key: 'rpk_m', section: 'passengers' }
+  };
+
+  const baseDef = growthBaseMap[def.key];
+  if (baseDef) {
+    let prevPeriod = null;
+    if (isQuarterly) {
+      const parts = period.split('-Q');
+      if (parts.length === 2) prevPeriod = `${parseInt(parts[0]) - 1}-Q${parts[1]}`;
+    } else if (isSemi) {
+      const parts = period.split('-H');
+      if (parts.length === 2) prevPeriod = `${parseInt(parts[0]) - 1}-H${parts[1]}`;
+    } else {
+      prevPeriod = String(parseInt(period) - 1);
+    }
+
+    if (prevPeriod) {
+      const currVal = getMatrixValue(air, baseDef, period);
+      const prevVal = getMatrixValue(air, baseDef, prevPeriod);
+      if (currVal != null && prevVal != null && prevVal !== 0) {
+        return ((currVal - prevVal) / Math.abs(prevVal)) * 100;
+      }
+    }
+  }
+
+  return null;
+}
+
 function getMetricValues(airline, key) {
   const def = FIN_METRIC_MAP[key];
   if (!def || !airline) return {};
-  if (_finFreq === 'semi_annual') {
-    return airline.semi_annual?.[def.section]?.[key] || {};
+
+  const rawMap = (_finFreq === 'semi_annual')
+    ? (airline.semi_annual?.[def.section]?.[key] || {})
+    : (_finFreq === 'quarterly'
+      ? (airline.quarterly?.[def.section]?.[key] || {})
+      : (airline[def.section]?.[key] || {}));
+
+  const result = { ...rawMap };
+
+  const periods = [];
+  if (_finFreq === 'annual') {
+    for (let yr = 2011; yr <= 2026; yr++) periods.push(String(yr));
+  } else if (_finFreq === 'semi_annual') {
+    for (let yr = 2022; yr <= 2026; yr++) {
+      periods.push(yr + '-H1');
+      periods.push(yr + '-H2');
+    }
+  } else if (_finFreq === 'quarterly') {
+    for (let yr = 2022; yr <= 2026; yr++) {
+      for (let q = 1; q <= 4; q++) periods.push(yr + '-Q' + q);
+    }
   }
-  if (_finFreq === 'quarterly') {
-    return airline.quarterly?.[def.section]?.[key] || {};
-  }
-  return airline[def.section]?.[key] || {};
+
+  periods.forEach(p => {
+    if (result[p] == null) {
+      const val = getMatrixValue(airline, def, p);
+      if (val != null) {
+        result[p] = val;
+      }
+    }
+  });
+
+  return result;
 }
 
 function fmtFinVal(v, fmt) {
-  if (v == null) return null;
+  if (v == null || isNaN(v)) return null;
+  const cleanV = Math.round(v * 1000) / 1000;
   switch(fmt) {
     case 'musd': {
-      const a = Math.abs(v);
-      return a >= 1000 ? (v/1000).toFixed(2) + 'B$' : Math.round(v).toLocaleString('tr-TR') + 'M$';
+      const a = Math.abs(cleanV);
+      return a >= 1000 ? (cleanV / 1000).toFixed(2) + 'B$' : Math.round(cleanV).toLocaleString('tr-TR') + 'M$';
     }
     case 'musd_s': {
-      const sign = v >= 0 ? '+' : '';
-      const a = Math.abs(v);
-      return sign + (a >= 1000 ? (v/1000).toFixed(2) + 'B$' : Math.round(v).toLocaleString('tr-TR') + 'M$');
+      const sign = cleanV >= 0 ? '+' : '';
+      const a = Math.abs(cleanV);
+      return sign + (a >= 1000 ? (cleanV / 1000).toFixed(2) + 'B$' : Math.round(cleanV).toLocaleString('tr-TR') + 'M$');
     }
-    case 'pct':   return v.toFixed(1) + '%';
-    case 'pct_s': return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
-    case 'multiple': return v.toFixed(1) + 'x';
-    case 'pax':   return (v/1e6).toFixed(2) + 'M';
-    case 'munit': return Math.round(v).toLocaleString('tr-TR');
-    case 'count': return Math.round(v).toLocaleString('tr-TR');
-    default:      return String(v);
+    case 'pct':   return cleanV.toFixed(1) + '%';
+    case 'pct_s': return (cleanV >= 0 ? '+' : '') + cleanV.toFixed(1) + '%';
+    case 'multiple': return cleanV.toFixed(1) + 'x';
+    case 'pax':   return (cleanV >= 1e6 ? (cleanV / 1e6).toFixed(2) + 'M' : cleanV.toFixed(2) + 'M');
+    case 'munit': return Math.round(cleanV).toLocaleString('tr-TR');
+    case 'count': return Math.round(cleanV).toLocaleString('tr-TR');
+    default:      return String(cleanV);
   }
 }
 
@@ -24185,29 +24319,32 @@ const finEndLabelsPlugin = {
   };
 
 function getPointLabelVal(v, fmt) {
-  if (v == null) return '';
+  if (v == null || isNaN(v)) return '';
+  const cleanV = Math.round(v * 1000) / 1000;
   switch(fmt) {
     case 'musd': {
-      const abs = Math.abs(v);
-      if (abs >= 1000) return (v/1000).toFixed(1) + 'B$';
-      return Math.round(v) + 'M$';
+      const abs = Math.abs(cleanV);
+      if (abs >= 1000) return (cleanV / 1000).toFixed(1) + 'B$';
+      return Math.round(cleanV).toLocaleString('tr-TR') + 'M$';
     }
     case 'musd_s': {
-      const sign = v >= 0 ? '+' : '';
-      const abs = Math.abs(v);
-      if (abs >= 1000) return sign + (v/1000).toFixed(1) + 'B$';
-      return sign + Math.round(v) + 'M$';
+      const sign = cleanV >= 0 ? '+' : '';
+      const abs = Math.abs(cleanV);
+      if (abs >= 1000) return sign + (cleanV / 1000).toFixed(1) + 'B$';
+      return sign + Math.round(cleanV).toLocaleString('tr-TR') + 'M$';
     }
-    case 'pct':   return v.toFixed(1) + '%';
-    case 'pct_s': return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
-    case 'pax':   return v.toFixed(1) + 'M';
-    case 'munit': return v.toFixed(1) + 'B';
+    case 'pct':   return cleanV.toFixed(1) + '%';
+    case 'pct_s': return (cleanV >= 0 ? '+' : '') + cleanV.toFixed(1) + '%';
+    case 'multiple': return cleanV.toFixed(1) + 'x';
+    case 'pax':   return (cleanV >= 1 ? cleanV.toFixed(1) + 'M' : cleanV.toFixed(2) + 'M');
+    case 'munit': return cleanV >= 1000 ? (cleanV / 1000).toFixed(1) + 'B' : Math.round(cleanV).toLocaleString('tr-TR') + 'M';
     case 'count': {
-      const abs = Math.abs(v);
-      if (abs >= 1000) return (v/1000).toFixed(0) + 'k';
-      return Math.round(v).toLocaleString('tr-TR');
+      const abs = Math.abs(cleanV);
+      if (abs >= 1000000) return (cleanV / 1000000).toFixed(1) + 'M';
+      if (abs >= 1000) return (cleanV / 1000).toFixed(1) + 'k';
+      return Math.round(cleanV).toLocaleString('tr-TR');
     }
-    default:      return String(v);
+    default:      return String(cleanV);
   }
 }
 
@@ -24536,16 +24673,17 @@ function renderFinChart() {
             callback: v => {
               const d2 = FIN_METRIC_MAP[_finMetric];
               if (!d2) return v;
-              if (d2.fmt === 'pct' || d2.fmt === 'pct_s') return v + '%';
-              if (d2.fmt === 'multiple') return v + 'x';
-              if (d2.fmt === 'pax') return v + 'M';
-              if (d2.fmt === 'munit') return v + 'B';
+              const cleanV = Math.round(v * 1000) / 1000;
+              if (d2.fmt === 'pct' || d2.fmt === 'pct_s') return cleanV + '%';
+              if (d2.fmt === 'multiple') return cleanV + 'x';
+              if (d2.fmt === 'pax') return cleanV + 'M';
+              if (d2.fmt === 'munit') return cleanV + 'B';
               if (d2.fmt === 'count') {
                 return Math.round(v).toLocaleString('tr-TR');
               }
-              const abs = Math.abs(v);
-              if (abs >= 1000) return (v/1000).toFixed(1) + 'B$';
-              return v + 'M$';
+              const abs = Math.abs(cleanV);
+              if (abs >= 1000) return (cleanV / 1000).toFixed(1) + 'B$';
+              return cleanV + 'M$';
             }
           }
         }
@@ -25077,111 +25215,7 @@ window.sortFinMatrix = function(colKey) {
   renderFinMatrixTable();
 };
 
-function getMatrixValue(air, def, period) {
-  if (!air || !def) return null;
-  const isQuarterly = period.includes('-Q');
-  const isSemi = period.includes('-H');
 
-  const root = isQuarterly ? (air.quarterly || {}) : (isSemi ? (air.semi_annual || {}) : air);
-
-  // 1. Doğrudan JSON içinde saklanan ham değer
-  const rawMap = root[def.section]?.[def.key];
-  if (rawMap && rawMap[period] != null) {
-    return rawMap[period];
-  }
-
-  // 2. Yarı-yıl (H1 / H2) çeyreklik toplama (Q1+Q2 / Q3+Q4)
-  if (isSemi && ['total_revenue_musd', 'passenger_revenue_musd', 'cargo_revenue_musd', 'other_revenue_musd', 'operating_profit_musd', 'net_profit_musd', 'passengers', 'ask_m', 'rpk_m', 'asm_m', 'rpm_m'].includes(def.key)) {
-    const parts = period.split('-H');
-    const yr = parts[0];
-    const isH1 = parts[1] === '1';
-    const q1K = isH1 ? yr + '-Q1' : yr + '-Q3';
-    const q2K = isH1 ? yr + '-Q2' : yr + '-Q4';
-    const qRoot = air.quarterly || {};
-    const v1 = qRoot[def.section]?.[def.key]?.[q1K];
-    const v2 = qRoot[def.section]?.[def.key]?.[q2K];
-    if (v1 != null && v2 != null) {
-      return v1 + v2;
-    }
-  }
-
-  // 3. Anlık durum (Snapshot) metriklerinin yıllık rapordan tamamlanması (Çalışan, Filo, Piyasa Değeri)
-  if (['employees', 'fleet_size', 'market_cap_musd', 'ev_ebitda', 'net_debt_ebitda'].includes(def.key)) {
-    const yr = period.split('-')[0];
-    const parentMap = air[def.section]?.[def.key];
-    if (parentMap) {
-      if (parentMap[yr] != null) return parentMap[yr];
-      if (parentMap[String(parseInt(yr) - 1)] != null) return parentMap[String(parseInt(yr) - 1)];
-      const lastYr = Object.keys(parentMap).sort().pop();
-      if (lastYr && parentMap[lastYr] != null) return parentMap[lastYr];
-    }
-  }
-
-  // 4. Dinamik kârlılık marjı hesaplamaları
-  if (def.key === 'operating_margin_pct') {
-    const op = getMatrixValue(air, { key: 'operating_profit_musd', section: 'financial' }, period);
-    const rev = getMatrixValue(air, { key: 'total_revenue_musd', section: 'financial' }, period);
-    if (op != null && rev != null && rev !== 0) {
-      return (op / rev) * 100;
-    }
-  }
-  if (def.key === 'net_margin_pct') {
-    const net = getMatrixValue(air, { key: 'net_profit_musd', section: 'financial' }, period);
-    const rev = getMatrixValue(air, { key: 'total_revenue_musd', section: 'financial' }, period);
-    if (net != null && rev != null && rev !== 0) {
-      return (net / rev) * 100;
-    }
-  }
-
-  // 5. Doluluk oranı (Load Factor) hesaplama
-  if (def.key === 'load_factor_pct') {
-    const rpk = getMatrixValue(air, { key: 'rpk_m', section: 'passengers' }, period);
-    const ask = getMatrixValue(air, { key: 'ask_m', section: 'passengers' }, period);
-    if (rpk != null && ask != null && ask !== 0) {
-      return (rpk / ask) * 100;
-    }
-    const rpm = getMatrixValue(air, { key: 'rpm_m', section: 'passengers' }, period);
-    const asm = getMatrixValue(air, { key: 'asm_m', section: 'passengers' }, period);
-    if (rpm != null && asm != null && asm !== 0) {
-      return (rpm / asm) * 100;
-    }
-  }
-
-  // 6. Dinamik yıldan yıla (YoY) büyüme hesaplamaları
-  const growthBaseMap = {
-    'total_revenue_growth_pct': { key: 'total_revenue_musd', section: 'financial' },
-    'passenger_revenue_growth_pct': { key: 'passenger_revenue_musd', section: 'financial' },
-    'cargo_revenue_growth_pct': { key: 'cargo_revenue_musd', section: 'financial' },
-    'other_revenue_growth_pct': { key: 'other_revenue_musd', section: 'financial' },
-    'passenger_growth_pct': { key: 'passengers', section: 'passengers' },
-    'ask_growth_pct': { key: 'ask_m', section: 'passengers' },
-    'rpk_growth_pct': { key: 'rpk_m', section: 'passengers' }
-  };
-
-  const baseDef = growthBaseMap[def.key];
-  if (baseDef) {
-    let prevPeriod = null;
-    if (isQuarterly) {
-      const parts = period.split('-Q');
-      if (parts.length === 2) prevPeriod = `${parseInt(parts[0]) - 1}-Q${parts[1]}`;
-    } else if (isSemi) {
-      const parts = period.split('-H');
-      if (parts.length === 2) prevPeriod = `${parseInt(parts[0]) - 1}-H${parts[1]}`;
-    } else {
-      prevPeriod = String(parseInt(period) - 1);
-    }
-
-    if (prevPeriod) {
-      const currVal = getMatrixValue(air, baseDef, period);
-      const prevVal = getMatrixValue(air, baseDef, prevPeriod);
-      if (currVal != null && prevVal != null && prevVal !== 0) {
-        return ((currVal - prevVal) / Math.abs(prevVal)) * 100;
-      }
-    }
-  }
-
-  return null;
-}
 
 function renderFinMatrixTable() {
   const table = document.getElementById('fin-matrix-table');
