@@ -155,6 +155,16 @@ def main():
     dal_fin['passenger_revenue_musd']['2024'] = 53600
     dal_fin['cargo_revenue_musd']['2024'] = 780
     dal_fin['other_revenue_musd']['2024'] = 7263
+    if 'quarterly' in dal and 'financial' in dal['quarterly']:
+        q_dal = dal['quarterly']['financial']
+        q_dal['total_revenue_musd']['2024-Q1'] = 13748
+        q_dal['total_revenue_musd']['2024-Q2'] = 16658
+        q_dal['total_revenue_musd']['2024-Q3'] = 15682
+        q_dal['total_revenue_musd']['2024-Q4'] = 15555
+        q_dal['cargo_revenue_musd']['2024-Q1'] = 178
+        q_dal['cargo_revenue_musd']['2024-Q2'] = 198
+        q_dal['cargo_revenue_musd']['2024-Q3'] = 185
+        q_dal['cargo_revenue_musd']['2024-Q4'] = 219
     recalculate_margins_and_growth(dal)
 
     # ==========================================
@@ -168,6 +178,16 @@ def main():
     ual_fin['passenger_revenue_musd']['2024'] = 51800
     ual_fin['cargo_revenue_musd']['2024'] = 1650
     ual_fin['other_revenue_musd']['2024'] = 3613
+    if 'quarterly' in ual and 'financial' in ual['quarterly']:
+        q_ual = ual['quarterly']['financial']
+        q_ual['total_revenue_musd']['2024-Q1'] = 12539
+        q_ual['total_revenue_musd']['2024-Q2'] = 14986
+        q_ual['total_revenue_musd']['2024-Q3'] = 14843
+        q_ual['total_revenue_musd']['2024-Q4'] = 14695
+        q_ual['cargo_revenue_musd']['2024-Q1'] = 391
+        q_ual['cargo_revenue_musd']['2024-Q2'] = 414
+        q_ual['cargo_revenue_musd']['2024-Q3'] = 380
+        q_ual['cargo_revenue_musd']['2024-Q4'] = 465
     recalculate_margins_and_growth(ual)
 
     # ==========================================
@@ -180,6 +200,16 @@ def main():
     aal_fin['passenger_revenue_musd']['2024'] = 49450
     aal_fin['cargo_revenue_musd']['2024'] = 800
     aal_fin['other_revenue_musd']['2024'] = 3983
+    if 'quarterly' in aal and 'financial' in aal['quarterly']:
+        q_aal = aal['quarterly']['financial']
+        q_aal['total_revenue_musd']['2024-Q1'] = 12570
+        q_aal['total_revenue_musd']['2024-Q2'] = 14334
+        q_aal['total_revenue_musd']['2024-Q3'] = 13647
+        q_aal['total_revenue_musd']['2024-Q4'] = 13682
+        q_aal['cargo_revenue_musd']['2024-Q1'] = 186
+        q_aal['cargo_revenue_musd']['2024-Q2'] = 202
+        q_aal['cargo_revenue_musd']['2024-Q3'] = 191
+        q_aal['cargo_revenue_musd']['2024-Q4'] = 221
     recalculate_margins_and_growth(aal)
 
     # ==========================================
@@ -205,6 +235,12 @@ def main():
     af_fin['net_profit_musd']['2024'] = 343
     af_pax['passengers']['2023'] = 93600000
     af_pax['passengers']['2024'] = 97900000
+    if 'quarterly' in af and 'financial' in af['quarterly']:
+        q_af = af['quarterly']['financial']
+        q_af['total_revenue_musd']['2024-Q1'] = 7200
+        q_af['total_revenue_musd']['2024-Q2'] = 8600
+        q_af['total_revenue_musd']['2024-Q3'] = 9700
+        q_af['total_revenue_musd']['2024-Q4'] = 8600
     recalculate_margins_and_growth(af)
 
     # ==========================================
@@ -218,6 +254,12 @@ def main():
     lh_fin['net_profit_musd']['2024'] = 1490
     lh_pax['passengers']['2023'] = 122500000
     lh_pax['passengers']['2024'] = 131500000
+    if 'quarterly' in lh and 'financial' in lh['quarterly']:
+        q_lh = lh['quarterly']['financial']
+        q_lh['total_revenue_musd']['2024-Q1'] = 8000
+        q_lh['total_revenue_musd']['2024-Q2'] = 10800
+        q_lh['total_revenue_musd']['2024-Q3'] = 11600
+        q_lh['total_revenue_musd']['2024-Q4'] = 10200
     recalculate_margins_and_growth(lh)
 
     # ==========================================
@@ -228,6 +270,12 @@ def main():
     iag_fin['total_revenue_musd']['2024'] = 34800
     iag_fin['operating_profit_musd']['2024'] = 4820
     iag_fin['net_profit_musd']['2024'] = 2960
+    if 'quarterly' in iag and 'financial' in iag['quarterly']:
+        q_iag = iag['quarterly']['financial']
+        q_iag['total_revenue_musd']['2024-Q1'] = 6950
+        q_iag['total_revenue_musd']['2024-Q2'] = 8980
+        q_iag['total_revenue_musd']['2024-Q3'] = 10100
+        q_iag['total_revenue_musd']['2024-Q4'] = 8770
     recalculate_margins_and_growth(iag)
 
     # ==========================================
@@ -240,6 +288,12 @@ def main():
     pg_fin['net_profit_musd']['2024'] = 391
     pg_pax['passengers']['2023'] = 31.9
     pg_pax['passengers']['2024'] = 36.6
+    if 'quarterly' in pg and 'financial' in pg['quarterly']:
+        q_pg = pg['quarterly']['financial']
+        q_pg['total_revenue_musd']['2024-Q1'] = 650
+        q_pg['total_revenue_musd']['2024-Q2'] = 910
+        q_pg['total_revenue_musd']['2024-Q3'] = 1300
+        q_pg['total_revenue_musd']['2024-Q4'] = 530
     recalculate_margins_and_growth(pg)
 
     # ==========================================
