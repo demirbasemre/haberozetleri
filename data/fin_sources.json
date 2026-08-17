@@ -65,9 +65,9 @@
     "verified": true
   },
   "SV": {
-    "source": "Saudia (Saudi Arabian Airlines - %100 PIF Kamusal)",
-    "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "source": "Saudia — kamuya finansal tablo yayımlamaz (%100 PIF). Yalnızca trafik verisi: ch-aviation",
+    "type": "Trafik verisi (ch-aviation) — finansal seri yok",
+    "verified": false
   },
   "NH": {
     "source": "ANA Holdings 2010-2025 Financial Results & 2Q26 Investor Presentation (TSE: 9202)",
@@ -95,9 +95,9 @@
     "verified": true
   },
   "A4B": {
-    "source": "AJet (THY %100 İştiraki - Konsolide Finansal Rapor)",
-    "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "source": "AJet — finansal tablo yayımlamaz (THY %100 bağlı ortaklığı, THY konsolidesine dahil). Yalnızca trafik verisi: ch-aviation",
+    "type": "Trafik verisi (ch-aviation) — finansal seri yok",
+    "verified": false
   },
   "DAL": {
     "source": "Delta Air Lines 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NYSE: DAL)",

@@ -5105,21 +5105,17 @@
             <button class="fin-mpill fin-mpill--fin-primary" data-metric="other_revenue_musd">Diğer Gelir</button>
             <button class="fin-mpill fin-mpill--fin-primary" data-metric="operating_profit_musd">Op. Kâr (EBIT)</button>
             <button class="fin-mpill fin-mpill--fin-primary" data-metric="net_profit_musd">Net Kâr</button>
-            <button class="fin-mpill fin-mpill--fin-primary" data-metric="market_cap_musd">Piyasa Değeri</button>
             <button class="fin-mpill fin-mpill--fin-primary" data-metric="employees">Çalışanlar</button>
-            <button class="fin-mpill fin-mpill--fin-primary" data-metric="fleet_size">Uçak Sayısı</button>
             <!-- Hesaplanan Oran (turuncu) -->
             <span class="fin-mpill-sep fin-mpill-sep--calc">Hesaplanan Oran<button type="button" class="fin-info-dot" aria-label="Hesaplanan oranlar nasıl hesaplanıyor?"
               onclick="this.classList.toggle('open'); event.stopPropagation();"
-              onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Büyüme oranları</strong> (Gelir, Yolcu, Kargo, Diğer Gelir %): (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.<br><strong>Op. Marj:</strong> Operasyonel Kâr ÷ Toplam Gelir × 100<br><strong>FD / FAVÖK:</strong> Firma Değeri / EBITDA Çarpanı<br><strong>Net Borç / FAVÖK:</strong> Net Borç / EBITDA Kaldıraç Oranı</span></button></span>
+              onblur="this.classList.remove('open')">i<span class="fin-info-pop" role="tooltip"><strong>Büyüme oranları</strong> (Gelir, Yolcu, Kargo, Diğer Gelir %): (bu yıl − önceki yıl) ÷ önceki yıl × 100 — bir önceki yıla göre değişim.<br><strong>Op. Marj:</strong> Operasyonel Kâr ÷ Toplam Gelir × 100<br><strong>Net Marj:</strong> Net Kâr ÷ Toplam Gelir × 100</span></button></span>
             <button class="fin-mpill fin-mpill--fin-calc" data-metric="total_revenue_growth_pct">Gelir Büyümesi</button>
             <button class="fin-mpill fin-mpill--fin-calc" data-metric="passenger_revenue_growth_pct">Yolcu Gelir %</button>
             <button class="fin-mpill fin-mpill--fin-calc" data-metric="cargo_revenue_growth_pct">Kargo Gelir %</button>
             <button class="fin-mpill fin-mpill--fin-calc" data-metric="other_revenue_growth_pct">Diğer Gelir %</button>
             <button class="fin-mpill fin-mpill--fin-calc" data-metric="operating_margin_pct">Op. Marj %</button>
             <button class="fin-mpill fin-mpill--fin-calc" data-metric="net_margin_pct">Net Marj</button>
-            <button class="fin-mpill fin-mpill--fin-calc" data-metric="ev_ebitda">FD / FAVÖK</button>
-            <button class="fin-mpill fin-mpill--fin-calc" data-metric="net_debt_ebitda">Net Borç / FAVÖK</button>
             <!-- Ana Yolcu (yeşil) -->
             <span class="fin-mpill-sep fin-mpill-sep--pax">Ana Yolcu</span>
             <button class="fin-mpill fin-mpill--pax-primary" data-metric="passengers">Yolcu Sayısı</button>
@@ -5167,9 +5163,9 @@
           <div class="fin-ctrl-group">
             <span class="fin-ctrl-label" style="color:var(--accent)">RAPOR FREKANSI</span>
             <div style="display:flex;gap:4px">
-              <button class="fin-freq-btn" data-freq="annual" onclick="setFinFreq('annual')" aria-pressed="false">Yıllık</button>
+              <button class="fin-freq-btn fin-freq-btn--active" data-freq="annual" onclick="setFinFreq('annual')" aria-pressed="true">Yıllık</button>
               <button class="fin-freq-btn" data-freq="semi_annual" onclick="setFinFreq('semi_annual')" aria-pressed="false">Yarı Yıllık</button>
-              <button class="fin-freq-btn fin-freq-btn--active" data-freq="quarterly" onclick="setFinFreq('quarterly')" aria-pressed="true">Çeyreklik</button>
+              <button class="fin-freq-btn" data-freq="quarterly" onclick="setFinFreq('quarterly')" aria-pressed="false">Çeyreklik</button>
             </div>
           </div>
           <!-- Takvim Yılı Hizalaması -->
@@ -23488,7 +23484,7 @@ const FIN_FISCAL_YEAR_END = {
   'SQ': 3,   // Singapore Airlines: Nisan–Mart
   'NH': 3,   // ANA Holdings:       Nisan–Mart (Japon mali yılı)
 };
-let _finFreq = 'quarterly'; // 'annual' | 'semi_annual' | 'quarterly'
+let _finFreq = 'annual'; // 'annual' | 'semi_annual' | 'quarterly'
 let _finChartFontSize = parseInt(localStorage.getItem('finChartFontSize') || '11');
 
 window.setFinFreq = function(freq) {
@@ -23605,17 +23601,13 @@ const FIN_METRIC_DEFS = [
   {key:'other_revenue_musd',           label:'Diğer Gelir',       unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
   {key:'operating_profit_musd',        label:'Op. Kâr (EBIT)',    unit:'M$',   section:'financial',  fmt:'musd_s', group:'fin-primary'},
   {key:'net_profit_musd',              label:'Net Kâr',           unit:'M$',   section:'financial',  fmt:'musd_s', group:'fin-primary'},
-  {key:'market_cap_musd',              label:'Piyasa Değeri',     unit:'M$',   section:'financial',  fmt:'musd',   group:'fin-primary'},
   {key:'employees',                    label:'Çalışanlar',        unit:'kişi', section:'financial',  fmt:'count',  group:'fin-primary'},
-  {key:'fleet_size',                   label:'Uçak Sayısı',       unit:'Uçak', section:'passengers', fmt:'count',  group:'fin-primary'},
   {key:'total_revenue_growth_pct',     label:'Gelir Büyümesi',    unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
   {key:'passenger_revenue_growth_pct', label:'Yolcu Gelir %',     unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
   {key:'cargo_revenue_growth_pct',     label:'Kargo Gelir %',     unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
   {key:'other_revenue_growth_pct',     label:'Diğer Gelir %',     unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
   {key:'operating_margin_pct',         label:'Op. Marj %',        unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
   {key:'net_margin_pct',               label:'Net Marj',          unit:'%',    section:'financial',  fmt:'pct_s',  group:'fin-calc'},
-  {key:'ev_ebitda',                    label:'FD / FAVÖK',        unit:'x',    section:'financial',  fmt:'multiple',group:'fin-calc'},
-  {key:'net_debt_ebitda',               label:'Net Borç / FAVÖK',  unit:'x',    section:'financial',  fmt:'multiple',group:'fin-calc'},
   {key:'passengers',                   label:'Yolcu Sayısı',      unit:'M',    section:'passengers', fmt:'pax',    group:'pax-primary'},
   {key:'ask_m',                        label:'ASK',               unit:'M km', section:'passengers', fmt:'munit',  group:'pax-primary'},
   {key:'asm_m',                        label:'ASM',               unit:'M mil',section:'passengers', fmt:'munit',  group:'pax-primary'},
@@ -23657,7 +23649,7 @@ function getMatrixValue(air, def, period) {
   }
 
   // 3. Anlık durum (Snapshot) metriklerinin yıllık rapordan tamamlanması (Çalışan, Filo, Piyasa Değeri, Katlar)
-  if (['employees', 'fleet_size', 'market_cap_musd', 'ev_ebitda', 'net_debt_ebitda'].includes(def.key)) {
+  if (['employees'].includes(def.key)) {
     const yr = period.split('-')[0];
     const parentMap = air[def.section]?.[def.key];
     if (parentMap) {
@@ -25283,7 +25275,7 @@ function renderFinMatrixTable() {
   const metricRanks = {}; // def.key -> { [slug]: { rank: number, total: number } }
 
   activeDefs.forEach(def => {
-    const isLowerBetter = def.key === 'net_debt_ebitda';
+    const isLowerBetter = false;
     const validRows = rowsData.filter(r => r.vals[def.key] != null);
     validRows.sort((a, b) => {
       const va = a.vals[def.key];
@@ -28316,9 +28308,17 @@ function buildFinSourcesCatTable() {
   const container = document.getElementById('fin-src-cat-table-wrap');
   if (!container) return;
 
-  const group1 = ['TK', 'AF', 'LH', 'DAL', 'UAL', 'AAL', 'LUV', 'RYA', 'IAG', 'PGSUS', 'WIZZ', 'EZJ', 'INDIGO', 'CEA', 'QAN', 'LA', 'KE', 'OZ', 'CA', 'CI', 'CZ', 'SQ', 'NH'];
-  const group2 = ['EK', 'CX'];
-  const group3 = ['QR', 'ET', 'SV', 'CV', 'A4B', 'ETI', 'AV'];
+  // Dönemsel veri metodolojisi — 4 kategori.
+  // Sıralama önemli: her havayolu YALNIZCA bir gruba girer.
+  // 1) Dört çeyreğin tamamını resmî olarak raporlayanlar (tahmin/türetme yok)
+  const group1 = ['TK', 'PGSUS', 'AF', 'LH', 'IAG', 'RYA', 'WIZZ', 'EZJ', 'DAL', 'UAL', 'AAL', 'LUV',
+                  'LA', 'AV', 'KE', 'OZ', 'CA', 'CZ', 'CEA', 'CI', 'NH', 'INDIGO'];
+  // 2) Ara dönem raporlayanlar — yayımlanmayan dönemler çıkarımla türetilir
+  const group2 = ['SQ', 'ETI', 'EK', 'CX', 'QAN'];
+  // 3) Yalnızca yıllık raporlayanlar — alt dönemler boş bırakılır
+  const group3 = ['QR', 'ET', 'CV'];
+  // 4) Kamuya finansal tablo açıklamayanlar — yalnızca trafik verisi
+  const group4 = ['SV', 'A4B'];
 
   const renderLogos = (slugs) => {
     return `<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:2px 0">
@@ -28359,48 +28359,75 @@ function buildFinSourcesCatTable() {
         <tbody>
           <tr style="border-bottom:1px solid var(--border-color)">
             <td style="padding:10px 12px;font-weight:700;color:var(--text-1)">
-              Çeyreklik (Q1–Q4 / 3M) Yayınlayanlar
+              1 · Doğrudan raporlanan
             </td>
             <td style="padding:10px 12px;font-weight:700;color:var(--accent)">
-              23 Havayolu (%72)
+              22 Havayolu (%69)
             </td>
             <td style="padding:10px 12px">
               ${renderLogos(group1)}
             </td>
             <td style="padding:10px 12px;color:var(--text-2);line-height:1.45">
-              Borsa yükümlülükleri (BIST, Euronext, XETRA, NYSE, NASDAQ, HKEX, SGX, TSE vb.) gereği <strong>resmi 3 aylık bilançolar</strong> açıklarlar. Tahminleme uygulanmaz, %100 doğrudan borsa verisidir.
+              Borsa yükümlülükleri (BIST, Euronext, XETRA, NYSE, NASDAQ, KRX, SSE, TWSE, TSE, NSE vb.) gereği <strong>dört çeyreğin tamamı için</strong> resmî ara dönem raporu yayımlarlar. Değerler doğrudan şirket raporundan alınır — <strong>tahmin de türetme de yoktur</strong>.
+              <div style="margin-top:5px;font-size:10.5px;opacity:.8">easyJet'te Q1 ve Q3, tam IFRS bilançosu değil resmî çeyreklik işletme raporudur (hasılat + headline VÖK).</div>
             </td>
           </tr>
           <tr style="border-bottom:1px solid var(--border-color)">
             <td style="padding:10px 12px;font-weight:700;color:var(--text-1)">
-              Yarı Yıllık (H1–H2 / 6M) Yayınlayanlar
+              2 · Türetilmiş
             </td>
             <td style="padding:10px 12px;font-weight:700;color:var(--accent)">
-              2 Havayolu (%6)
+              5 Havayolu (%16)
             </td>
             <td style="padding:10px 12px">
               ${renderLogos(group2)}
             </td>
             <td style="padding:10px 12px;color:var(--text-2);line-height:1.45">
-              Finansal sonuçlarını yılda 2 kez (6 aylık periyotlarla) resmi ara rapor olarak açıklarlar. Çeyreklik kırılımda resmi H1 bilançoları (%51.2 H1 / %48.8 H2) ve pazar sezonsallığı esas alınır.
+              Yılda iki (bazıları üç) kez resmî ara dönem raporu yayımlarlar. Yayımlanmayan dönem <strong>tahmin edilmez</strong>; iki resmî kümülatif dönemin farkından <strong>aritmetik olarak türetilir</strong> — bu nedenle sonuç yine raporlanan veridir:
+              <div style="margin-top:5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;line-height:1.6">
+                H2 = Yıllık − H1 &nbsp;·&nbsp; Q4 = Yıllık − 9 Aylık &nbsp;·&nbsp; Q3 = 9 Aylık − H1 &nbsp;·&nbsp; Q1 = H1 − Q2
+              </div>
+              <div style="margin-top:5px;font-size:10.5px;opacity:.8">
+                <strong>SIA:</strong> H1 + Yıllık yayımlar, Q2 ve Q4'ü ayrıca açıklar → dört çeyrek de türetilir.
+                <strong>Etihad:</strong> H1 + 9 Aylık + Yıllık → Q3 ve Q4 türetilir, Q1/Q2 ayrışmadığı için boş kalır.
+                <strong>Emirates · Cathay · Qantas:</strong> H1 + Yıllık → H2 türetilir, çeyrek haneleri boş kalır.
+              </div>
             </td>
           </tr>
-          <tr>
+          <tr style="border-bottom:1px solid var(--border-color)">
             <td style="padding:10px 12px;font-weight:700;color:var(--text-1)">
-              Sadece Yıllık (FY) Yayınlayanlar
+              3 · Yayımlanmıyor
             </td>
             <td style="padding:10px 12px;font-weight:700;color:var(--accent)">
-              7 Havayolu (%22)
+              3 Havayolu (%9)
             </td>
             <td style="padding:10px 12px">
               ${renderLogos(group3)}
             </td>
             <td style="padding:10px 12px;color:var(--text-2);line-height:1.45">
-              Kamuya açık çeyreklik/yarı yıllık bilanço açıklamazlar. Yıllık konsolide denetim raporları IATA Ortadoğu ve bölge havacılık pazarı sezonsallık katsayıları (Q1: %23.3, Q2: %26.8, Q3: %27.3, Q4: %22.6) ile 3'er aylık takvim pencerelerine dağıtılmıştır.
+              Yalnızca yıllık denetlenmiş rapor yayımlarlar; türetilecek resmî ara dönem yoktur. Çeyreklik ve yarı yıllık haneleri <strong>boş bırakılmıştır</strong> — sezonsallık katsayısıyla dağıtım <strong>yapılmaz</strong>.
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px;font-weight:700;color:var(--text-1)">
+              4 · Finansal tablo açıklamayanlar
+            </td>
+            <td style="padding:10px 12px;font-weight:700;color:var(--accent)">
+              2 Havayolu (%6)
+            </td>
+            <td style="padding:10px 12px">
+              ${renderLogos(group4)}
+            </td>
+            <td style="padding:10px 12px;color:var(--text-2);line-height:1.45">
+              Kamuya finansal tablo açıklamazlar (Saudia %100 PIF'e ait; AJet THY'nin %100 bağlı ortaklığı olup sonuçları THY konsolidesine dahildir ve ayrı faaliyet bölümü değildir). Finansal metrikleri <strong>boştur</strong>; yalnızca <strong>trafik verisi</strong> (yolcu sayısı, ASK, RPK, doluluk) gösterilir.
             </td>
           </tr>
         </tbody>
       </table>
+      <div style="padding:11px 14px;border-top:1px solid var(--border-color);background:var(--bg-soft);font-size:11px;color:var(--text-2);line-height:1.55">
+        <div style="margin-bottom:6px"><strong style="color:var(--text-1)">Kâr kalemleri dağıtılmaz.</strong> Op. kâr ve net kâr hiçbir koşulda sezonsallık katsayısıyla alt dönemlere bölünmez. Havayollarında faaliyet kaldıracı nedeniyle kâr gelirle orantılı değildir — geliri yüksek bir çeyrek pekâlâ zarar edebilir. Dağıtılmış kâr yerine boş hane gösterilir.</div>
+        <div><strong style="color:var(--text-1)">Kur.</strong> Şirket kendi USD rakamını yayımlıyorsa o alınır; yayımlamıyorsa yerel para birimi <strong>ilgili dönemin kapanış kuruyla</strong> USD'ye çevrilir (çeyrek için çeyrek sonu, yıl için mali yıl sonu). Bu nedenle çeyrek toplamları yıllık değerden <strong>kur farkı kadar sapabilir</strong>.</div>
+      </div>
     </div>
   `;
 }
