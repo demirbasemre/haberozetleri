@@ -248,6 +248,32 @@ def main():
     rya = data.setdefault('RYA', {})
     recalculate_margins_and_growth(rya)
 
+    # ==========================================
+    # 11. SINGAPORE AIRLINES (SQ) - Annual Report
+    # ==========================================
+    sq = data.setdefault('SQ', {})
+    sq_fin = sq.setdefault('financial', {})
+    sq_fin.setdefault('cargo_revenue_musd', {})['2024'] = 1741
+    recalculate_margins_and_growth(sq)
+
+    # ==========================================
+    # 12. CATHAY PACIFIC (CX) - HKEX Annual Report
+    # ==========================================
+    cx = data.setdefault('CX', {})
+    cx_fin = cx.setdefault('financial', {})
+    cx_fin['cargo_revenue_musd']['2024'] = 3077
+    recalculate_margins_and_growth(cx)
+
+    # ==========================================
+    # 13. CARGOLUX (CV) - Annual Report
+    # ==========================================
+    cv = data.setdefault('CV', {})
+    cv_fin = cv.setdefault('financial', {})
+    cv_fin['cargo_revenue_musd']['2024'] = 3324
+    cv_fin['total_revenue_musd']['2024'] = 3324
+    cv_fin['net_profit_musd']['2024'] = 448
+    recalculate_margins_and_growth(cv)
+
     # Save finalized data
     save_data(data)
     print("Successfully corrected official financial figures and recalculations across all carriers!")
