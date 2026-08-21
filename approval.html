@@ -1007,6 +1007,7 @@ let currentAction = null;
 let resumeUrl = null;
 let n8nBase = '';
 let summaryId = null;
+let apiPath = 'approval-data';
 let activeEditEl = null;
 
 // ─── INIT ───
@@ -1014,11 +1015,12 @@ function getParams() {
   const p = new URLSearchParams(window.location.search);
   resumeUrl = decodeURIComponent(p.get('resumeUrl') || '');
   summaryId = p.get('summaryId') || '';
-  return { resumeUrl, summaryId };
+  apiPath = p.get('apiPath') || 'approval-data';
+  return { resumeUrl, summaryId, apiPath };
 }
 
 async function init() {
-  const { resumeUrl: ru, summaryId: sid } = getParams();
+  const { resumeUrl: ru, summaryId: sid, apiPath: ap } = getParams();
   if (!ru || !sid) {
     showError('URL parametreleri eksik. Bu sayfa n8n tarafından oluşturulan link üzerinden açılmalıdır.');
     return;
@@ -1034,8 +1036,8 @@ async function init() {
     return;
   }
 
-  // n8n'deki "Approval Data Webhook" node'unun path'i: approval-data
-  const apiUrl = `${n8nBase}/webhook/approval-data?summaryId=${encodeURIComponent(sid)}`;
+  // n8n'deki veri webhook'unun path'i — farklı bültenler farklı webhook path'i kullanabilir (apiPath parametresi ile), varsayılan: approval-data
+  const apiUrl = `${n8nBase}/webhook/${ap}?summaryId=${encodeURIComponent(sid)}`;
 
   try {
     const resp = await fetch(apiUrl);
