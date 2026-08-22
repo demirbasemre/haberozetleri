@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 2584,
-  "lastScanned": "2026-08-15T23:16:04.408Z",
-  "scannedCount": 127,
+  "lastScannedId": 2911,
+  "lastScanned": "2026-08-22T23:16:10.587Z",
+  "scannedCount": 171,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -852,6 +852,60 @@
         "azerbaijan airlines"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=azal.az"
+    },
+    {
+      "id": "dyn_skyways_air",
+      "label": "Skyways Air",
+      "group": "passenger",
+      "kw": [
+        "skyways air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=skyways.com"
+    },
+    {
+      "id": "dyn_one_air",
+      "label": "One Air",
+      "group": "cargo",
+      "kw": [
+        "one air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=one-air.aero"
+    },
+    {
+      "id": "dyn_amazon_prime_air",
+      "label": "Amazon Prime Air",
+      "group": "cargo",
+      "kw": [
+        "amazon prime air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=amazon.com"
+    },
+    {
+      "id": "dyn_dnepr_airlines",
+      "label": "Dnepr Airlines",
+      "group": "passenger",
+      "kw": [
+        "dnepr airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=dniproavia.com"
+    },
+    {
+      "id": "dyn_croatia_airlines",
+      "label": "Croatia Airlines",
+      "group": "passenger",
+      "kw": [
+        "croatia airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=croatiaairlines.com"
+    },
+    {
+      "id": "dyn_taag_cargo",
+      "label": "Taag Cargo",
+      "group": "cargo",
+      "kw": [
+        "taag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=taag.com"
     }
   ],
   "gsa": [
