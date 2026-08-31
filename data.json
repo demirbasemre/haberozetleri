@@ -1,5 +1,49 @@
 [
   {
+    "title": "Ethiopian Airlines Çengdu ile Afrika Arasında Doğrudan Kargo Uçağı Seferleri Başlattı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Ethiopian Airlines</span>, Çin'in Çengdu şehri ile Etiyopya'nın Addis Ababa kenti arasında doğrudan kargo uçağı seferleri başlatarak Çengdu ile Afrika arasındaki ilk direkt kargo hattını kurdu. <strong>28 Ağustos</strong> tarihinde icra edilen ilk uçuşun ardından servis, Boeing <strong>777F</strong> kargo uçaklarıyla haftada <strong>2</strong> frekans (Pazartesi ve Cuma) olarak işletilmeye başlandı. Taşıma kapasitesinin ilerleyen dönemde haftada <strong>4</strong> uçuşa çıkarılması planlanmaktadır. Addis Ababa aktarma merkezi üzerinden Çengdu çıkışlı kargolar; Lagos, Akra, Dakar, Entebbe ve Lubumbashi dahil olmak üzere <strong>54</strong> Afrika ülkesindeki ana şehirlere dağıtılacaktır.",
+    "category": "Filo & Network",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/ethiopian-airlines-starts-direct-chengdu-africa-freighter-link-1360463",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Ethiopian Cargo Çin ile Etiyopya Arasında Yeni Kargo Uçağı Seferlerine Başladı",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Ethiopian Airlines</span>'ın Çin'in Çengdu şehri ile Addis Ababa arasındaki doğrudan kargo uçağı hatlarını genişletmesi, Çin-Afrika ticaret koridorunda kapasite artışına yol açmaktadır. Bu gelişme, İstanbul aktarma merkezi üzerinden Asya ve Afrika arasında transit kargo taşıyan <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için pazar payı ve birim gelir üzerinde rekabet baskısı oluşturabilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-08-31"
+  },
+  {
+    "title": "Lojistikte Arz Alarmı: Marmara'da A Sınıfı Depo Boşluğu Yüzde 5'in Altında",
+    "summary": "E-ticaretteki büyüme ve bölgesel üretim süreçleri, Türkiye'nin ana lojistik koridorlarında nitelikli depo alanı talebini rekor seviyeye taşıdı. CBRE Türkiye verilerine göre, Marmara Bölgesi'ndeki A sınıfı depo alanlarındaki boşluk oranı yüzde <strong>5</strong>'in altına geriledi. İstanbul merkezli yüksek talebin yanı sıra Kocaeli, Gebze ve Doğu Trakya gibi ikincil lojistik pazarlarında da kaliteli depolama tesislerine olan kurumsal talep artışını sürdürüyor. Kısıtlı arsa geliştirme süreçleri ve inşaat maliyetleri pazara yeni stok girişini sınırlarken, mülk sahiplerinin elini güçlendirerek birim kiralar üzerinde yukarı yönlü baskı oluşturuyor.",
+    "category": "Diğer",
+    "source": "haberekonomi",
+    "link": "https://haberekonomi.com.tr/index.asp?sayfa=haber&icerik=31731",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-08-29"
+  },
+  {
     "title": "ABD, Kuehne+Nagel Şirketi Apex Üzerinden Yapılan AI Çip Kaçakçılığı İddialarını Soruşturuyor",
     "summary": "ABD hükümetinin, Nvidia'nın gelişmiş yapay zeka çiplerinin Çin'e yasa dışı yollarla sokulmasında Kuehne+Nagel iştiraki Apex Logistics'in rolünü araştırdığı bildirildi. İddialara göre Apex, Super Micro Computer'a ait AI sistemlerinin Tayvan'dan ABD'ye, ardından Asya'daki başka bir nokta üzerinden Hong Kong'a taşındığı bir rotayı kolaylaştırdı. Apex, Washington'ın <strong>2024</strong> yılında gerçekleşen ve kısıtlanmış bölgelere ulaşmış olabilecek az sayıdaki sevkiyata ilişkin endişelerinden haberdar olduğunu açıkladı. ABD, Çin'in askeri avantaj elde etmesini önlemek amacıyla <strong>2022</strong> yılından bu yana gelişmiş çip teknolojilerinin ihracatına kısıtlamalar uyguluyor.",
     "category": "Diğer",
@@ -41,7 +85,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-08-28"
+    "date": "2026-08-28",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/ethiopian-airlines-starts-direct-chengdu-africa-freighter-link-1360463"
+      }
+    ]
   },
   {
     "title": "Hong Kong Air Cargo Brisbane'i Charter Ağına Ekledi",
