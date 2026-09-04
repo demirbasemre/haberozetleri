@@ -2132,7 +2132,9 @@ export default {
 
       async function fetchRouteFromOpenSky(callsign) {
         const uppercaseCallsign = callsign.toUpperCase();
-        const res = await doFetch(`https://opensky-network.org/api/routes?callsign=${uppercaseCallsign}`, {}, false, 86400);
+        const token = await getOpenSkyToken(env, doFetch);
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await doFetch(`https://opensky-network.org/api/routes?callsign=${uppercaseCallsign}`, { headers }, false, 86400);
         if (res.status !== 200) return null;
         let data;
         try { data = JSON.parse(res.body); } catch { return null; }
@@ -2461,30 +2463,7 @@ export default {
           let apiRoute = null;
           let valid = false;
 
-          // Yalnızca ücretsiz ve anahtarsız kaynaklar kullanılır.
-          // 1. FlightRadar24 (FlareSolverr proxy destekli)
-          if (!valid) {
-            const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
-            if (frRoute && frRoute.dep && frRoute.arr) {
-              if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
-                apiRoute = { ...frRoute, source: "flightradar24" };
-                valid = true;
-              }
-            }
-          }
-
-          // 2. FlightAware (FlareSolverr proxy destekli)
-          if (!valid) {
-            const faRoute = await fetchRouteFromFlightAware(f.callsign);
-            if (faRoute && faRoute.dep && faRoute.arr) {
-              if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
-                apiRoute = { ...faRoute, source: "flightaware" };
-                valid = true;
-              }
-            }
-          }
-
-          // 3. ADSBDB (ücretsiz, çağrı kodundan kalkış/varış)
+          // 1. ADSBDB (Hızlı, açık JSON API, kalkış/varış kesin koordinatlarla)
           if (!valid) {
             const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
             if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
@@ -2495,18 +2474,7 @@ export default {
             }
           }
 
-          // 4. ADSBExchange (re-api canlı çağrı araması)
-          if (!valid) {
-            const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
-            if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
-              if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
-                apiRoute = { ...adsbxRoute, source: "adsbexchange" };
-                valid = true;
-              }
-            }
-          }
-
-          // 5. OpenSky'nin ücretsiz rota endpoint'i
+          // 2. OpenSky Feeder Rota API (Resmi Feeder Kimliği ile)
           if (!valid) {
             const osRoute = await fetchRouteFromOpenSky(f.callsign);
             if (osRoute && osRoute.dep && osRoute.arr) {
@@ -2517,7 +2485,18 @@ export default {
             }
           }
 
-          // 6. Yerel, doğrulanmış Turkish Cargo rota tablosu
+          // 3. ADSBExchange (re-api canlı çağrı araması)
+          if (!valid) {
+            const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
+            if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
+              if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
+                apiRoute = { ...adsbxRoute, source: "adsbexchange" };
+                valid = true;
+              }
+            }
+          }
+
+          // 4. Yerel, doğrulanmış Turkish Cargo rota tablosu
           if (!valid) {
             const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
             if (candidates) {
@@ -2535,6 +2514,28 @@ export default {
             }
           }
 
+          // 5. Fallback: FlightRadar24 (FlareSolverr proxy destekli)
+          if (!valid) {
+            const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
+            if (frRoute && frRoute.dep && frRoute.arr) {
+              if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
+                apiRoute = { ...frRoute, source: "flightradar24" };
+                valid = true;
+              }
+            }
+          }
+
+          // 6. Fallback: FlightAware (FlareSolverr proxy destekli)
+          if (!valid) {
+            const faRoute = await fetchRouteFromFlightAware(f.callsign);
+            if (faRoute && faRoute.dep && faRoute.arr) {
+              if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
+                apiRoute = { ...faRoute, source: "flightaware" };
+                valid = true;
+              }
+            }
+          }
+
           if (valid && apiRoute && apiRoute.dep && apiRoute.arr) {
             f.dep = apiRoute.dep;
             f.arr = apiRoute.arr;
@@ -2545,8 +2546,8 @@ export default {
             await saveLearnedRoute(f.callsign, apiRoute);
           }
         } catch (_) {}
-        // Dış kaynaklara nazik olmak için istek sonrası bekleme (KV hit'te bu yola girilmez)
-        await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
+        // Dış kaynaklara nazik olmak için istek sonrası kısa bekleme
+        await new Promise(r => setTimeout(r, 100));
         return updated;
       }
 
@@ -2563,7 +2564,7 @@ export default {
             updated = true;
           }
         } catch (_) {}
-        await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
+        await new Promise(r => setTimeout(r, 100));
         return updated;
       }
 
