@@ -1724,7 +1724,7 @@ export default {
     }
 
     // ── /cargo-flights Canlı THY Kargo Uçakları Rotası ──
-    if (urlObj.pathname === '/cargo-flights' || urlObj.pathname === '/cargo-flight-detail') {
+    if (urlObj.pathname === '/cargo-flights' || urlObj.pathname === '/cargo-flight-detail' || urlObj.pathname === '/cargo-flight-track') {
       const forceDirect = urlObj.searchParams.get('direct') === '1';
       const cacheKey = new Request('https://internal.cache/cargo-flights-v1');
       const kvKey = 'cargo_flights_cache_v1';
@@ -2749,6 +2749,67 @@ export default {
           }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
         } catch (err) {
           return new Response(JSON.stringify({ error: err.message }), {
+            status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+      }
+
+      // ── /cargo-flight-track: Uçağın canlı ADS-B uçuş geçmişi (OpenSky Tracks API) ──
+      // Kullanıcı bir uçuşa tıkladığında on-demand çağrılır; uçağın OpenSky
+      // Tracks API'den gerçek koordinat geçmişini döner (60-120 saniye KV cache ile).
+      if (urlObj.pathname === '/cargo-flight-track') {
+        try {
+          const icao24 = (urlObj.searchParams.get('icao24') || '').trim().toLowerCase();
+          if (!icao24) {
+            return new Response(JSON.stringify({ error: 'icao24 gerekli' }), {
+              status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+          }
+
+          const kvKey = `flight_track_${icao24}`;
+          if (env.FBX_ROUTES_KV) {
+            try {
+              const cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+              if (cached) {
+                return new Response(JSON.stringify(cached), {
+                  status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
+                });
+              }
+            } catch (_) {}
+          }
+
+          const token = await getOpenSkyToken(env, doFetch);
+          const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+          const trackRes = await doFetch(`https://opensky-network.org/api/tracks/all?icao24=${icao24}&time=0`, { headers: authHeaders }, false, 60);
+
+          if (trackRes.status === 200) {
+            try {
+              const trackData = JSON.parse(trackRes.body);
+              const result = {
+                icao24,
+                callsign: (trackData.callsign || '').trim(),
+                startTime: trackData.startTime,
+                endTime: trackData.endTime,
+                path: Array.isArray(trackData.path) ? trackData.path : [],
+              };
+              if (env.FBX_ROUTES_KV && result.path.length > 0) {
+                ctx.waitUntil(env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(result), { expirationTtl: 120 }));
+              }
+              return new Response(JSON.stringify(result), {
+                status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
+              });
+            } catch (e) {
+              return new Response(JSON.stringify({ icao24, path: [], error: 'JSON parse error' }), {
+                status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              });
+            }
+          }
+
+          return new Response(JSON.stringify({ icao24, path: [] }), {
+            status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        } catch (err) {
+          return new Response(JSON.stringify({ error: err.message, path: [] }), {
             status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }

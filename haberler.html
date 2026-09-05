@@ -15422,15 +15422,25 @@ async function loadDashboard() {
 
       const routeColor = cargoAirlineColor(f.airline);
 
+      let traveledPoints = [];
+      if (f._realTrack && f._realTrack.length > 1) {
+        traveledPoints = f._realTrack.map(pt => [pt[0], pt[1]]);
+        traveledPoints.push([targetLat, targetLon]);
+        f._realTrack.forEach(pt => bounds.push([pt[0], pt[1]]));
+      } else if (f.dep && f.dep.lat != null) {
+        traveledPoints = getArcPoints([f.dep.lat, f.dep.lon], [targetLat, targetLon]);
+      }
+
       if (f.dep && f.dep.lat != null) {
         const depMarker = L.marker([f.dep.lat, f.dep.lon], { icon: cargoAirportIcon('#16A34A') })
           .bindPopup(`<strong>Kalkış (DEP):</strong> ${f.dep.name || f.dep.icao} (${f.dep.iata || ''})<br>${f.dep.city || ''}`);
         depMarker.addTo(_cargoMap);
         _cargoRouteLayers.push(depMarker);
         bounds.push([f.dep.lat, f.dep.lon]);
+      }
 
-        const arcPointsTraveled = getArcPoints([f.dep.lat, f.dep.lon], [targetLat, targetLon]);
-        _cargoTraveledLine = L.polyline(arcPointsTraveled, { color: routeColor, weight: 2.5, opacity: 0.95 });
+      if (traveledPoints.length > 1) {
+        _cargoTraveledLine = L.polyline(traveledPoints, { color: routeColor, weight: 2.5, opacity: 0.95 });
         _cargoTraveledLine.addTo(_cargoMap);
         _cargoRouteLayers.push(_cargoTraveledLine);
       }
@@ -15449,7 +15459,7 @@ async function loadDashboard() {
       }
 
       if (pan) {
-        if (f.dep && f.dep.lat != null && f.arr && f.arr.lat != null) {
+        if (bounds.length >= 2) {
           _cargoMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 6 });
         } else {
           _cargoMap.setView([targetLat, targetLon], 6, { animate: true });
@@ -15468,6 +15478,10 @@ async function loadDashboard() {
     if (!f.dep && !f._routeLookupDone) {
       f._routeLookupDone = true; // başarısız olsa da tekrar denemesin
       fetchCargoFlightRouteOnDemand(f, idx);
+    }
+    if (!f._trackLookupDone && f.icao24) {
+      f._trackLookupDone = true;
+      fetchCargoFlightTrackOnDemand(f, idx);
     }
   }
 
@@ -15494,6 +15508,46 @@ async function loadDashboard() {
         selectCargoFlight(idx, false);
       }
     }
+  }
+
+  async function fetchCargoFlightTrackOnDemand(f, idx) {
+    try {
+      const res = await fetch(`https://haberozetleri-proxy.demirbasemre.workers.dev/cargo-flight-track?icao24=${f.icao24}`);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (data && Array.isArray(data.path) && data.path.length > 1) {
+        const pts = [];
+        if (f.dep && f.dep.lat != null) {
+          pts.push([f.dep.lat, f.dep.lon]);
+        }
+        data.path.forEach(p => {
+          const plat = p[1];
+          const plon = p[2];
+          if (plat != null && plon != null && isFinite(plat) && isFinite(plon)) {
+            pts.push([plat, plon]);
+          }
+        });
+        const pm = _cargoPlaneMarkers.get(f.icao24);
+        const curLat = (pm && pm.marker) ? pm.marker.getLatLng().lat : f.lat;
+        const curLon = (pm && pm.marker) ? pm.marker.getLatLng().lng : f.lon;
+        pts.push([curLat, curLon]);
+
+        f._realTrack = pts;
+        f._realTrackRaw = data.path;
+
+        if (_cargoSelectedIdx === idx && _cargoMap) {
+          if (_cargoTraveledLine) {
+            _cargoTraveledLine.setLatLngs(pts);
+          } else {
+            const routeColor = cargoAirlineColor(f.airline);
+            _cargoTraveledLine = L.polyline(pts, { color: routeColor, weight: 2.5, opacity: 0.95 });
+            _cargoTraveledLine.addTo(_cargoMap);
+            _cargoRouteLayers.push(_cargoTraveledLine);
+          }
+          renderCargoFlightDetail(f);
+        }
+      }
+    } catch (_) {}
   }
 
   function focusCargoFlight(idx) {
@@ -15698,6 +15752,7 @@ async function loadDashboard() {
         ${cargoDetailRow(_cargoDetailIcons.transponder, 'Transponder (ICAO)', f.icao24.toUpperCase())}
         ${cargoDetailRow(_cargoDetailIcons.squawk, 'Squawk Kodu', f.squawk || '—')}
         ${cargoDetailRow(_cargoDetailIcons.country, 'Tescil Ülkesi', f.originCountry || '—')}
+        ${cargoDetailRow(`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>`, 'Rota Kaynağı', f._realTrack ? '📡 Canlı ADS-B İzi (Feeder)' : (f.routeSource ? `Tahmini (${f.routeSource})` : 'Büyük Daire Yayı'), f._realTrack ? '#10B981' : null)}
         ${cargoDetailRow(_cargoDetailIcons.clock, 'Son İletişim', `<span id="cargo-detail-lastcontact">${secsAgo}s önce</span>`)}
       </div>
     `;
@@ -15758,8 +15813,14 @@ async function loadDashboard() {
           if (_cargoHighlightMarker) {
             _cargoHighlightMarker.setLatLng([f.currentLat, f.currentLon]);
           }
-          if (_cargoTraveledLine && f.dep && f.dep.lat != null) {
-            _cargoTraveledLine.setLatLngs(getArcPoints([f.dep.lat, f.dep.lon], [f.currentLat, f.currentLon]));
+          if (_cargoTraveledLine) {
+            if (f._realTrack && f._realTrack.length > 1) {
+              const livePts = f._realTrack.slice(0, -1);
+              livePts.push([f.currentLat, f.currentLon]);
+              _cargoTraveledLine.setLatLngs(livePts);
+            } else if (f.dep && f.dep.lat != null) {
+              _cargoTraveledLine.setLatLngs(getArcPoints([f.dep.lat, f.dep.lon], [f.currentLat, f.currentLon]));
+            }
           }
           if (_cargoRemainingLine && f.arr && f.arr.lat != null) {
             _cargoRemainingLine.setLatLngs(getArcPoints([f.currentLat, f.currentLon], [f.arr.lat, f.arr.lon]));
