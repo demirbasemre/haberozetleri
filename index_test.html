@@ -15723,14 +15723,14 @@ async function loadDashboard() {
       const freshFlights = freshList.map(f => {
         const prev = prevMap.get(f.icao24);
         if (prev) {
-          f.currentLat = prev.currentLat != null ? prev.currentLat : f.lat;
-          f.currentLon = prev.currentLon != null ? prev.currentLon : f.lon;
-          f.lastAnimMs = prev.lastAnimMs || Date.now();
-        } else {
-          f.currentLat = f.lat;
-          f.currentLon = f.lon;
-          f.lastAnimMs = Date.now();
+          if (prev._realTrack) f._realTrack = prev._realTrack;
+          if (prev._realTrackRaw) f._realTrackRaw = prev._realTrackRaw;
+          if (prev._trackLookupDone) f._trackLookupDone = prev._trackLookupDone;
+          if (prev._routeLookupDone) f._routeLookupDone = prev._routeLookupDone;
         }
+        f.currentLat = f.lat;
+        f.currentLon = f.lon;
+        f.lastAnimMs = Date.now();
         return f;
       });
 
@@ -16069,24 +16069,44 @@ async function loadDashboard() {
             pts.push([plat, plon]);
           }
         });
-        const pm = _cargoPlaneMarkers.get(f.icao24);
-        const curLat = (pm && pm.marker) ? pm.marker.getLatLng().lat : f.lat;
-        const curLon = (pm && pm.marker) ? pm.marker.getLatLng().lng : f.lon;
-        pts.push([curLat, curLon]);
 
-        f._realTrack = pts;
-        f._realTrackRaw = data.path;
+        if (pts.length > 0) {
+          // OpenSky track'inin son noktası uçağın en son bilinen gerçek koordinatıdır
+          const lastPt = pts[pts.length - 1];
+          f.currentLat = lastPt[0];
+          f.currentLon = lastPt[1];
+          f.lat = lastPt[0];
+          f.lon = lastPt[1];
 
-        if (_cargoSelectedIdx === idx && _cargoMap) {
-          if (_cargoTraveledLine) {
-            _cargoTraveledLine.setLatLngs(pts);
-          } else {
-            const routeColor = cargoAirlineColor(f.airline);
-            _cargoTraveledLine = L.polyline(pts, { color: routeColor, weight: 2.5, opacity: 0.95 });
-            _cargoTraveledLine.addTo(_cargoMap);
-            _cargoRouteLayers.push(_cargoTraveledLine);
+          // Uçak işaretçisini ve halkasını uçağın gerçek konumuna getir
+          const pm = _cargoPlaneMarkers.get(f.icao24);
+          if (pm && pm.marker) {
+            pm.marker.setLatLng([lastPt[0], lastPt[1]]);
           }
-          renderCargoFlightDetail(f);
+          if (_cargoHighlightMarker && _cargoSelectedIdx === idx) {
+            _cargoHighlightMarker.setLatLng([lastPt[0], lastPt[1]]);
+          }
+
+          f._realTrack = pts;
+          f._realTrackRaw = data.path;
+
+          if (_cargoSelectedIdx === idx && _cargoMap) {
+            if (_cargoTraveledLine) {
+              _cargoTraveledLine.setLatLngs(pts);
+            } else {
+              const routeColor = cargoAirlineColor(f.airline);
+              _cargoTraveledLine = L.polyline(pts, { color: routeColor, weight: 2.5, opacity: 0.95 });
+              _cargoTraveledLine.addTo(_cargoMap);
+              _cargoRouteLayers.push(_cargoTraveledLine);
+            }
+
+            // Kalan yolu (kesikli çizgi) uçağın en son gerçek konumundan varışa bağla
+            if (_cargoRemainingLine && f.arr && f.arr.lat != null) {
+              _cargoRemainingLine.setLatLngs(getArcPoints([lastPt[0], lastPt[1]], [f.arr.lat, f.arr.lon]));
+            }
+
+            renderCargoFlightDetail(f);
+          }
         }
       }
     } catch (_) {}
