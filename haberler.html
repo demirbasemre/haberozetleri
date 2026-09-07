@@ -22428,7 +22428,7 @@ function initControls(allArticles) {
 
     listEl.innerHTML = reports.map(r => {
       const hasRegions = (r.regions && Object.keys(r.regions).length > 0) || (r.data && r.data.totalMarket);
-      const hasMacro = r.jetFuel || r.brentOil || r.pmi;
+      const hasMacro = !isYtd && (r.jetFuel || r.brentOil || r.pmi);
 
       // Period badge label
       const periodBadge = isYtd ? 'YTD (Yıl Başı - Kümülatif)' : 'Aylık';
