@@ -1,5 +1,185 @@
 [
   {
+    "date": "Temmuz 2026",
+    "title": "Kargo Uçaklarının Gücü Hava Kargo Büyümesini Sürüklüyor",
+    "demand": "+3.9%",
+    "capacity": "+1.7%",
+    "loadFactor": "46.0%",
+    "clf_pp": "+1.0",
+    "demand_intl": "+4.7%",
+    "capacity_intl": "+1.8%",
+    "clf_intl": "51.5%",
+    "ytd_demand": "+4.6%",
+    "ytd_capacity": "+1.9%",
+    "ytd_clf": "46.3%",
+    "cargoYield": "+24.7%",
+    "jetFuel": "+56.9%",
+    "pmi": "52.7",
+    "pmi_exports": "50.02",
+    "regions": {
+      "asiaPacific": {
+        "share": "35.8",
+        "ctk": "+4.1%",
+        "actk": "+3.0%"
+      },
+      "northAmerica": {
+        "share": "24.6",
+        "ctk": "+4.8%",
+        "actk": "-1.5%"
+      },
+      "europe": {
+        "share": "21.4",
+        "ctk": "+4.4%",
+        "actk": "+1.3%"
+      },
+      "middleEast": {
+        "share": "13.2",
+        "ctk": "+1.7%",
+        "actk": "+4.0%"
+      },
+      "latinAmerica": {
+        "share": "2.9",
+        "ctk": "+4.1%",
+        "actk": "+7.0%"
+      },
+      "africa": {
+        "share": "2.1",
+        "ctk": "+1.1%",
+        "actk": "+4.1%"
+      }
+    },
+    "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-july-2026/",
+    "pdfLink": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-july-2026/",
+    "summary": "Temmuz ayında küresel hava kargo talebi (CTK) yıllık %3.9 artarak istikrarlı büyüme patikasını korudu ve genişleme tüm taşıyıcı bölgelerine yayılsa da ölçeği farklılık gösterdi. Uluslararası kargo trafiği Kuzey Amerika, Asya-Pasifik ve Avrupa taşıyıcılarının öncülüğünde %4.7 artış gösterirken; koridor düzeyinde Asya-Kuzey Amerika ana desteği sağladı ancak Orta Doğu bağlantılı bazı ticaret hatlarında keskin daralmalar yaşandı. Mevcut kargo ton-kilometre (ACTK) cinsinden ölçülen sektör kapasitesi talebin altında kalarak %1.7 arttı ve bu durum küresel kargo yük faktörünü (CLF) 1.0 yüzde puan artışla %46.0'a taşıyarak daha sıkı bir arz-talep dengesine işaret etti. Makroekonomik zemin hava kargo talebini desteklemeyi sürdürdü; imalat üretimi ve ihracat siparişleri kararlı bir şekilde büyüme bölgesinde kalırken dünya ticaret hacimleri güçlendi.",
+    "brentOil": "+17.5%",
+    "data": {
+      "totalMarket": {
+        "yoy": {
+          "world": {
+            "ctk": "+3.9%",
+            "actk": "+1.7%"
+          },
+          "africa": {
+            "ctk": "+1.1%",
+            "actk": "+4.1%"
+          },
+          "asiaPacific": {
+            "ctk": "+4.1%",
+            "actk": "+3.0%"
+          },
+          "europe": {
+            "ctk": "+4.4%",
+            "actk": "+1.3%"
+          },
+          "latinAmerica": {
+            "ctk": "+4.1%",
+            "actk": "+7.0%"
+          },
+          "middleEast": {
+            "ctk": "+1.7%",
+            "actk": "+4.0%"
+          },
+          "northAmerica": {
+            "ctk": "+4.8%",
+            "actk": "-1.5%"
+          }
+        },
+        "ytd": {
+          "world": {
+            "ctk": "+4.6%",
+            "actk": "+1.9%"
+          },
+          "africa": {
+            "ctk": "+9.4%",
+            "actk": "+0.1%"
+          },
+          "asiaPacific": {
+            "ctk": "+7.9%",
+            "actk": "+5.3%"
+          },
+          "europe": {
+            "ctk": "+5.6%",
+            "actk": "+3.5%"
+          },
+          "latinAmerica": {
+            "ctk": "+0.5%",
+            "actk": "+5.2%"
+          },
+          "middleEast": {
+            "ctk": "-7.8%",
+            "actk": "-8.1%"
+          },
+          "northAmerica": {
+            "ctk": "+5.5%",
+            "actk": "+1.0%"
+          }
+        }
+      },
+      "international": {
+        "yoy": {
+          "world": {
+            "ctk": "+4.7%",
+            "actk": "+1.8%"
+          },
+          "africa": {
+            "ctk": "+1.1%",
+            "actk": "+3.9%"
+          },
+          "asiaPacific": {
+            "ctk": "+5.2%",
+            "actk": "+3.9%"
+          },
+          "europe": {
+            "ctk": "+4.6%",
+            "actk": "-1.2%"
+          },
+          "latinAmerica": {
+            "ctk": "+3.6%",
+            "actk": "+6.1%"
+          },
+          "middleEast": {
+            "ctk": "+1.8%",
+            "actk": "+4.2%"
+          },
+          "northAmerica": {
+            "ctk": "+7.1%",
+            "actk": "-1.1%"
+          }
+        },
+        "ytd": {
+          "world": {
+            "ctk": "+5.0%",
+            "actk": "+2.2%"
+          },
+          "africa": {
+            "ctk": "+9.4%",
+            "actk": "+0.3%"
+          },
+          "asiaPacific": {
+            "ctk": "+8.7%",
+            "actk": "+6.6%"
+          },
+          "europe": {
+            "ctk": "+5.9%",
+            "actk": "+2.8%"
+          },
+          "latinAmerica": {
+            "ctk": "+1.2%",
+            "actk": "+5.0%"
+          },
+          "middleEast": {
+            "ctk": "-7.8%",
+            "actk": "-8.2%"
+          },
+          "northAmerica": {
+            "ctk": "+6.7%",
+            "actk": "+2.2%"
+          }
+        }
+      }
+    }
+  },
+  {
     "date": "Haziran 2026",
     "title": "Orta Doğu Küresel Kargo Büyümesine Yeniden Katılıyor",
     "demand": "+8.5%",
