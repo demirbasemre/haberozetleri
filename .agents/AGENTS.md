@@ -24,3 +24,9 @@
 
 ## 5. Finansal Veri Standardı ve Resmi Kaynak Zorunluluğu
 - **Resmi Şirket Finansal Raporları Zorunluluğu**: Finansal tablolardaki tüm metrikler, gelirler, kâr marjları ve rasyolar **HER ZAMAN VE KESİNLİKLE** şirketlerin resmi bağımsız denetimden geçmiş mali raporlarından (IFRS / US GAAP 10-K, 10-Q, BIST KAP / SEC / Euronext / HKEX / TWSE borsa bildirimleri ve resmi Yatırımcı İlişkileri raporları) alınmalıdır. Üçüncü taraf gayriresmi varsayım verileri kullanılamaz.
+
+## 6. Yüzde (%) Formatı Standardı
+- Sayfalardaki tüm yüzde ifadelerinde `%` işareti kesinlikle **değerin solunda (önünde)** yer almalıdır (ör. `%3.9`, `%46.0`).
+- Değer pozitif ise ayrıca `+` işareti **kullanılmamalıdır** (ör. `+3.9%` DEĞİL, doğrudan `%3.9`).
+- Değer negatif ise eksi işareti yüzdenin solunda yer almalıdır (ör. `-%4.8`).
+

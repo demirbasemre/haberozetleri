@@ -9702,9 +9702,9 @@ function barChart(id, labels, data, colors, opts = {}) {
   const fmtVal = opts.valueFormatter || (v => {
     if (v == null) return '—';
     if (isUsd) return '$' + Math.round(v).toLocaleString('tr-TR');
-    return (v > 0 ? '+' : '') + v.toFixed(1) + '%';
+    return (v < 0 ? '-%' + Math.abs(v).toFixed(1) : '%' + v.toFixed(1));
   });
-  const fmtTick = opts.tickFormatter || (v => isUsd ? '$' + Math.round(v).toLocaleString('tr-TR') : v + '%');
+  const fmtTick = opts.tickFormatter || (v => isUsd ? '$' + Math.round(v).toLocaleString('tr-TR') : (v < 0 ? '-%' + Math.abs(v) : '%' + v));
 
   const drawLabelsPlugin = {
     id: 'drawLabels',
@@ -12665,7 +12665,7 @@ async function loadDashboard() {
     const wldVal  = wldData[prevYear]  ?? wldData[currentYear]  ?? null;
     const euroVal = euroData[prevYear] ?? euroData[currentYear] ?? null;
 
-    const fmt = v => v != null ? (v > 0 ? '+' : '') + v.toFixed(1) + '%' : '—';
+    const fmt = v => v != null ? (v < 0 ? '-%' + Math.abs(v).toFixed(1) : '%' + v.toFixed(1)) : '—';
     const yearTag = turYear === prevYear ? `${prevYear} gerçekleşen` : `${currentYear} tahmini`;
 
     setCard('dc-imf',
@@ -12780,8 +12780,8 @@ async function loadDashboard() {
 
       // Update Top Summary Card for Default Group
       if (kind === 'gdp' && groupKey === 'default' && imfLatestByC.WLD) {
-        const wbWldStr = wbLatestByC.WLD ? ` · WB: ${wbLatestByC.WLD.value > 0 ? '+' : ''}${wbLatestByC.WLD.value.toFixed(1)}%` : '';
-        setCard('dc-gdp', imfLatestByC.WLD.value.toFixed(1) + '%', null,
+        const wbWldStr = wbLatestByC.WLD ? ` · WB: ${wbLatestByC.WLD.value < 0 ? '-%' + Math.abs(wbLatestByC.WLD.value).toFixed(1) : '%' + wbLatestByC.WLD.value.toFixed(1)}` : '';
+        setCard('dc-gdp', (imfLatestByC.WLD.value < 0 ? '-%' : '%') + Math.abs(imfLatestByC.WLD.value).toFixed(1), null,
           `Küresel büyüme (IMF ${imfLatestByC.WLD.year}${wbWldStr})`, 'IMF WEO & WB');
       }
 
@@ -12905,7 +12905,7 @@ async function loadDashboard() {
     const fmtVal = (v) => {
       if (v == null) return '—';
       if (isUsd) return '$' + Math.round(v).toLocaleString('tr-TR');
-      return (v > 0 ? '+' : '') + v.toFixed(1) + '%';
+      return (v < 0 ? '-%' + Math.abs(v).toFixed(1) : '%' + v.toFixed(1));
     };
 
     const rows = shown.map(y => {
@@ -15390,23 +15390,23 @@ async function loadDashboard() {
       let lineLabel = 'Hava Kargo Talebi (CTK Büyümesi)';
       let lineColor = '#7a64a8';
       let bgColor = 'rgba(122,100,168,0.08)';
-      let fmtFn = v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '';
+      let fmtFn = v => v != null ? (Number(v) < 0 ? '-%' + Math.abs(Number(v)).toFixed(1) : '%' + Number(v).toFixed(1)) : '';
 
       if (metric === 'capacity') {
         lineLabel = 'Kapasite Büyümesi (ACTK)';
         lineColor = '#22c55e';
         bgColor = 'rgba(34,197,94,0.05)';
-        fmtFn = v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '';
+        fmtFn = v => v != null ? (Number(v) < 0 ? '-%' + Math.abs(Number(v)).toFixed(1) : '%' + Number(v).toFixed(1)) : '';
       } else if (metric === 'loadFactor') {
         lineLabel = 'LF (Yük Faktörü)';
         lineColor = '#0891b2';
         bgColor = 'rgba(8,145,178,0.05)';
-        fmtFn = v => v != null ? '%' + Number(v).toFixed(1) : ''; // % başta
+        fmtFn = v => v != null ? (Number(v) < 0 ? '-%' + Math.abs(Number(v)).toFixed(1) : '%' + Number(v).toFixed(1)) : '';
       } else if (metric === 'cargoYield') {
         lineLabel = 'Kargo Yield (Birim Gelir)';
         lineColor = '#ef4444';
         bgColor = 'rgba(239,68,68,0.05)';
-        fmtFn = v => v != null ? (v > 0 ? '+' : '') + Number(v).toFixed(1) + '%' : '';
+        fmtFn = v => v != null ? (Number(v) < 0 ? '-%' + Math.abs(Number(v)).toFixed(1) : '%' + Number(v).toFixed(1)) : '';
       }
 
       lineChart('chart-iata', labels,
@@ -15629,12 +15629,17 @@ async function loadDashboard() {
     });
   }
 
-  // LF biçimlendirme fonksiyonu (% işaretini başa taşır)
-  window.formatLF = function(val) {
-    if (!val || val === '—') return '—';
-    const cleaned = String(val).replace('%', '').replace('+', '').trim();
-    return '%' + cleaned;
+  // LF ve Yüzde biçimlendirme fonksiyonu (% işaretini başa taşır, pozitifte + kaldırır, negatifte -%yapar)
+  window.formatPercent = function(val) {
+    if (val == null || val === '' || val === '—') return '—';
+    const str = String(val).trim();
+    if (str === '—' || str === '-') return '—';
+    const hasMinus = str.startsWith('-') || (str.includes('-') && !str.includes('–'));
+    const cleaned = str.replace(/[%+\s]/g, '').replace(/^-/, '');
+    if (!cleaned) return '—';
+    return (hasMinus ? '-%' : '%') + cleaned;
   };
+  window.formatLF = window.formatPercent;
 
   // IATA Verisini Çek ve Göster
   let _iataCardViewMode = 'yoy'; // 'yoy' | 'ytd'
@@ -15680,14 +15685,14 @@ async function loadDashboard() {
       const ytdLf = latest.ytd_clf || latest.loadFactor || '—';
       const yld = latest.cargoYield || '—';
 
-      if (dEl) { dEl.textContent = window.formatLF(ytdDemand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, ytdDemand); }
-      if (cEl) { cEl.textContent = window.formatLF(ytdCap); cEl.classList.remove('skeleton'); applyMetricColor(cEl, ytdCap); }
-      if (lfEl) { lfEl.textContent = window.formatLF(ytdLf); lfEl.classList.remove('skeleton'); }
-      if (srEl) { srEl.textContent = yld ? window.formatLF(yld) : '—'; srEl.classList.remove('skeleton'); applyMetricColor(srEl, yld); }
+      if (dEl) { dEl.textContent = window.formatPercent(ytdDemand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, ytdDemand); }
+      if (cEl) { cEl.textContent = window.formatPercent(ytdCap); cEl.classList.remove('skeleton'); applyMetricColor(cEl, ytdCap); }
+      if (lfEl) { lfEl.textContent = window.formatPercent(ytdLf); lfEl.classList.remove('skeleton'); }
+      if (srEl) { srEl.textContent = yld ? window.formatPercent(yld) : '—'; srEl.classList.remove('skeleton'); applyMetricColor(srEl, yld); }
 
-      if (subDEl) subDEl.textContent = `Aylık: ${latest.demand || '—'}`;
-      if (subCEl) subCEl.textContent = `Aylık: ${latest.capacity || '—'}`;
-      if (subLfEl) subLfEl.textContent = `Aylık: ${latest.loadFactor || '—'}`;
+      if (subDEl) subDEl.textContent = `Aylık: ${window.formatPercent(latest.demand)}`;
+      if (subCEl) subCEl.textContent = `Aylık: ${window.formatPercent(latest.capacity)}`;
+      if (subLfEl) subLfEl.textContent = `Aylık: ${window.formatPercent(latest.loadFactor)}`;
       if (subSrEl) subSrEl.textContent = `Yıllık Artış`;
 
       if (dateEl && latest.date) {
@@ -15699,14 +15704,14 @@ async function loadDashboard() {
       const yoyLf = latest.loadFactor || '—';
       const yld = latest.cargoYield || '—';
 
-      if (dEl) { dEl.textContent = window.formatLF(yoyDemand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, yoyDemand); }
-      if (cEl) { cEl.textContent = window.formatLF(yoyCap); cEl.classList.remove('skeleton'); applyMetricColor(cEl, yoyCap); }
-      if (lfEl) { lfEl.textContent = window.formatLF(yoyLf); lfEl.classList.remove('skeleton'); }
-      if (srEl) { srEl.textContent = yld ? window.formatLF(yld) : '—'; srEl.classList.remove('skeleton'); applyMetricColor(srEl, yld); }
+      if (dEl) { dEl.textContent = window.formatPercent(yoyDemand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, yoyDemand); }
+      if (cEl) { cEl.textContent = window.formatPercent(yoyCap); cEl.classList.remove('skeleton'); applyMetricColor(cEl, yoyCap); }
+      if (lfEl) { lfEl.textContent = window.formatPercent(yoyLf); lfEl.classList.remove('skeleton'); }
+      if (srEl) { srEl.textContent = yld ? window.formatPercent(yld) : '—'; srEl.classList.remove('skeleton'); applyMetricColor(srEl, yld); }
 
-      if (subDEl) subDEl.textContent = `YTD: ${latest.ytd_demand || '—'}`;
-      if (subCEl) subCEl.textContent = `YTD: ${latest.ytd_capacity || '—'}`;
-      if (subLfEl) subLfEl.textContent = `YTD: ${latest.ytd_clf || '—'}`;
+      if (subDEl) subDEl.textContent = `YTD: ${window.formatPercent(latest.ytd_demand)}`;
+      if (subCEl) subCEl.textContent = `YTD: ${window.formatPercent(latest.ytd_capacity)}`;
+      if (subLfEl) subLfEl.textContent = `YTD: ${window.formatPercent(latest.ytd_clf)}`;
       if (subSrEl) subSrEl.textContent = `Aylık Artış`;
 
       if (dateEl && latest.date) {
@@ -17566,7 +17571,7 @@ async function loadDashboard() {
                   const y = years[ctx.dataIndex];
                   const tag = y < currentYear ? 'Gerçekleşen' : y === currentYear ? 'Tahmini' : 'Öngörü';
                   const v = ctx.parsed.y;
-                  return ` ${v > 0 ? '+' : ''}${v.toFixed(1)}%  (${tag})`;
+                  return ` ${v < 0 ? '-%' + Math.abs(v).toFixed(1) : '%' + v.toFixed(1)}  (${tag})`;
                 }
               },
               backgroundColor: 'rgba(15,23,42,0.88)',
@@ -17582,7 +17587,7 @@ async function loadDashboard() {
             y: {
               grid: { color: () => document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.05)' }, border: { display: false },
               ticks: { font: { size: 9.5, family: 'Inter' }, color: '#9CA3AF',
-                callback: v => (isCpi ? '' : (v > 0 ? '+' : '')) + v + '%' }
+                callback: v => v < 0 ? '-%' + Math.abs(v) : '%' + v }
             }
           }
         }
@@ -17654,7 +17659,7 @@ async function loadDashboard() {
                 const y = years[ctx.dataIndex];
                 const tag = y < currentYear ? 'Gerçekleşen' : y === currentYear ? 'Tahmini' : 'Öngörü';
                 const v = ctx.parsed.y;
-                return ` ${(v>0?'+':'')}${v.toFixed(1)}%  (${tag})`;
+                return ` ${v < 0 ? '-%' + Math.abs(v).toFixed(1) : '%' + v.toFixed(1)}  (${tag})`;
               }
             },
             backgroundColor: 'rgba(15,23,42,0.85)',
@@ -17673,7 +17678,7 @@ async function loadDashboard() {
             border: { display: false, dash: [3, 3] },
             ticks: {
               font: { size: 9, family: 'Inter' }, color: '#9CA3AF',
-              callback: v => v + '%'
+              callback: v => v < 0 ? '-%' + Math.abs(v) : '%' + v
             }
           }
         }
@@ -22746,18 +22751,17 @@ function initControls(allArticles) {
       const kpiCapacity = document.getElementById('kpi-capacity');
       const kpiLF = document.getElementById('kpi-lf');
       const kpiYield = document.getElementById('kpi-yield');
-      const stripPlus = v => (v || '—').replace(/^\+/, '');
       if (kpiDemand) {
-        kpiDemand.textContent = stripPlus(latest.demand);
-        kpiDemand.style.color = (latest.demand || '').startsWith('+') ? '#22c55e' : (latest.demand || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
+        kpiDemand.textContent = window.formatPercent(latest.demand);
+        kpiDemand.style.color = (latest.demand || '').startsWith('-') ? 'var(--red)' : '#22c55e';
       }
       if (kpiCapacity) {
-        kpiCapacity.textContent = stripPlus(latest.capacity);
-        kpiCapacity.style.color = (latest.capacity || '').startsWith('+') ? '#22c55e' : (latest.capacity || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
+        kpiCapacity.textContent = window.formatPercent(latest.capacity);
+        kpiCapacity.style.color = (latest.capacity || '').startsWith('-') ? 'var(--red)' : '#22c55e';
       }
-      if (kpiLF) kpiLF.textContent = stripPlus(latest.loadFactor);
+      if (kpiLF) kpiLF.textContent = window.formatPercent(latest.loadFactor);
       if (kpiYield) {
-        kpiYield.textContent = stripPlus(latest.cargoYield);
+        kpiYield.textContent = window.formatPercent(latest.cargoYield);
         kpiYield.style.color = '#f59e0b';
       }
 
@@ -22769,9 +22773,8 @@ function initControls(allArticles) {
     const getChangeColor = val => {
       if (!val || val === '—') return 'var(--text)';
       const valStr = String(val);
-      if (valStr.startsWith('+')) return '#22c55e';
       if (valStr.startsWith('-')) return 'var(--red)';
-      return 'var(--text)';
+      return '#22c55e';
     };
 
     // Regional names mapping
@@ -22800,7 +22803,7 @@ function initControls(allArticles) {
               <div class="iata-region-bar-fill ${isPos ? 'positive' : 'negative'}"
                    style="width:${pct}%"></div>
             </div>
-            <span class="iata-region-val" style="color:${color}">${reg.ctk}</span>
+            <span class="iata-region-val" style="color:${color}">${window.formatPercent(reg.ctk)}</span>
           </div>`;
       }).join('');
     };
@@ -22823,19 +22826,19 @@ function initControls(allArticles) {
           <div class="iata-metrics-primary">
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Talep CTK</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand)}">${r.demand}</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand)}">${window.formatPercent(r.demand)}</span>
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Kapasite ACTK</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity)}">${r.capacity}</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity)}">${window.formatPercent(r.capacity)}</span>
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Load Factor</span>
-              <span class="iata-report-metric-val" style="color:#7a64a8">${r.loadFactor || '—'}</span>
+              <span class="iata-report-metric-val" style="color:#7a64a8">${window.formatPercent(r.loadFactor)}</span>
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Kargo Yield</span>
-              <span class="iata-report-metric-val" style="color:#f59e0b">${r.cargoYield || '—'}</span>
+              <span class="iata-report-metric-val" style="color:#f59e0b">${window.formatPercent(r.cargoYield)}</span>
             </div>
           </div>
 
@@ -22844,19 +22847,19 @@ function initControls(allArticles) {
           <div class="iata-metrics-secondary">
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Intl CTK</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand_intl)};font-size:12px">${r.demand_intl || '—'}</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand_intl)};font-size:12px">${window.formatPercent(r.demand_intl)}</span>
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Intl ACTK</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity_intl)};font-size:12px">${r.capacity_intl || '—'}</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity_intl)};font-size:12px">${window.formatPercent(r.capacity_intl)}</span>
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">YTD Talep</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.ytd_demand)};font-size:12px">${r.ytd_demand || '—'}</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(r.ytd_demand)};font-size:12px">${window.formatPercent(r.ytd_demand)}</span>
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">YTD Kap.</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.ytd_capacity)};font-size:12px">${r.ytd_capacity || '—'}</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(r.ytd_capacity)};font-size:12px">${window.formatPercent(r.ytd_capacity)}</span>
             </div>
           </div>
 
@@ -22866,7 +22869,7 @@ function initControls(allArticles) {
           <div class="iata-metrics-macro">
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Jet Yakıt</span>
-              <span class="iata-report-metric-val" style="color:#ef4444;font-size:12px">${r.jetFuel || '—'}</span>
+              <span class="iata-report-metric-val" style="color:#ef4444;font-size:12px">${window.formatPercent(r.jetFuel)}</span>
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">PMI (İmalat)</span>
@@ -22976,7 +22979,7 @@ function initControls(allArticles) {
                   label = cleanLabel + ': ';
                 }
                 if (context.parsed.y !== null) {
-                  label += (context.parsed.y > 0 ? '+' : '') + context.parsed.y.toFixed(1) + '%';
+                  label += (context.parsed.y < 0 ? '-%' + Math.abs(context.parsed.y).toFixed(1) : '%' + context.parsed.y.toFixed(1));
                 }
                 return label;
               }
@@ -22993,7 +22996,7 @@ function initControls(allArticles) {
             ticks: {
               color: textColor,
               font: { size: 9, family: 'Inter, system-ui, sans-serif' },
-              callback: value => (value > 0 ? '+' : '') + value + '%'
+              callback: value => (value < 0 ? '-%' + Math.abs(value) : '%' + value)
             }
           }
         }
@@ -23166,12 +23169,12 @@ function initControls(allArticles) {
           y: {
             position: 'left',
             grid: { color: gridColor },
-            ticks: { color: '#f59e0b', font: { size: 9 }, callback: v => v.toFixed(1) + '%' }
+            ticks: { color: '#f59e0b', font: { size: 9 }, callback: v => (v < 0 ? '-%' + Math.abs(v).toFixed(1) : '%' + v.toFixed(1)) }
           },
           y2: {
             position: 'right',
             grid: { display: false },
-            ticks: { color: '#7a64a8', font: { size: 9 }, callback: v => v + '%' }
+            ticks: { color: '#7a64a8', font: { size: 9 }, callback: v => (v < 0 ? '-%' + Math.abs(v) : '%' + v) }
           }
         }
       }
@@ -23590,7 +23593,7 @@ function initControls(allArticles) {
   const IATA_MAX_METRICS = 2;
 
   function formatIataTick(v, unit) {
-    if (unit === '%') return (v > 0 ? '+' : '') + v.toFixed(1) + '%';
+    if (unit === '%') return (v < 0 ? '-%' + Math.abs(v).toFixed(1) : '%' + v.toFixed(1));
     if (unit === '$') return '$' + v.toFixed(2);
     return v.toFixed(1);
   }
@@ -23686,7 +23689,16 @@ function initControls(allArticles) {
     const data = window._iataReportsList || [];
     if (!data.length) return;
     const headers = ['Tarih','CTK (%)','ACTK (%)','YTD CTK (%)','YTD ACTK (%)','Yük Faktörü','Cargo Yield','PMI'];
-    const rows = [...data].reverse().map(r => [r.date, r.demand||'', r.capacity||'', r.ytd_demand||'', r.ytd_capacity||'', r.loadFactor||'', r.cargoYield||'', r.pmi||'']);
+    const rows = [...data].reverse().map(r => [
+      r.date,
+      window.formatPercent(r.demand),
+      window.formatPercent(r.capacity),
+      window.formatPercent(r.ytd_demand),
+      window.formatPercent(r.ytd_capacity),
+      window.formatPercent(r.loadFactor),
+      window.formatPercent(r.cargoYield),
+      r.pmi||''
+    ]);
     const csv = [headers, ...rows].map(row => row.map(v => `"${v}"`).join(',')).join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
@@ -24018,8 +24030,8 @@ function fmtFinVal(v, fmt) {
       const a = Math.abs(cleanV);
       return sign + (a >= 1000 ? (cleanV / 1000).toFixed(2) + 'B$' : Math.round(cleanV).toLocaleString('tr-TR') + 'M$');
     }
-    case 'pct':   return cleanV.toFixed(1) + '%';
-    case 'pct_s': return (cleanV >= 0 ? '+' : '') + cleanV.toFixed(1) + '%';
+    case 'pct':   return (cleanV < 0 ? '-%' + Math.abs(cleanV).toFixed(1) : '%' + cleanV.toFixed(1));
+    case 'pct_s': return (cleanV < 0 ? '-%' + Math.abs(cleanV).toFixed(1) : '%' + cleanV.toFixed(1));
     case 'multiple': return cleanV.toFixed(1) + 'x';
     case 'pax':   return (cleanV >= 1e6 ? (cleanV / 1e6).toFixed(2) + 'M' : cleanV.toFixed(2) + 'M');
     case 'munit': return Math.round(cleanV).toLocaleString('tr-TR');
@@ -24403,7 +24415,7 @@ window.runFinExportToExcel = function() {
 function fmtVal(v, metric) {
   if (v == null || v === undefined) return null;
   if (metric === 'passengers') return (v / 1e6).toFixed(1) + 'M';
-  if (metric === 'load_factor' || metric === 'operating_margin') return v.toFixed(1) + '%';
+  if (metric === 'load_factor' || metric === 'operating_margin') return (v < 0 ? '-%' + Math.abs(v).toFixed(1) : '%' + v.toFixed(1));
   if (metric === 'ask' || metric === 'rpk') return (v / 1000).toFixed(0) + 'B';
   return (v >= 0 ? '+' : '') + v.toLocaleString('tr-TR', {maximumFractionDigits: 0}) + 'M';
 }
@@ -24565,8 +24577,8 @@ function getPointLabelVal(v, fmt) {
       if (abs >= 1000) return sign + (cleanV / 1000).toFixed(1) + 'B$';
       return sign + Math.round(cleanV).toLocaleString('tr-TR') + 'M$';
     }
-    case 'pct':   return cleanV.toFixed(1) + '%';
-    case 'pct_s': return (cleanV >= 0 ? '+' : '') + cleanV.toFixed(1) + '%';
+    case 'pct':
+    case 'pct_s': return cleanV < 0 ? '-%' + Math.abs(cleanV).toFixed(1) : '%' + cleanV.toFixed(1);
     case 'multiple': return cleanV.toFixed(1) + 'x';
     case 'pax':   return (cleanV >= 1 ? cleanV.toFixed(1) + 'M' : cleanV.toFixed(2) + 'M');
     case 'munit': return cleanV >= 1000 ? (cleanV / 1000).toFixed(1) + 'B' : Math.round(cleanV).toLocaleString('tr-TR') + 'M';
@@ -24906,7 +24918,7 @@ function renderFinChart() {
               const d2 = FIN_METRIC_MAP[_finMetric];
               if (!d2) return v;
               const cleanV = Math.round(v * 1000) / 1000;
-              if (d2.fmt === 'pct' || d2.fmt === 'pct_s') return cleanV + '%';
+              if (d2.fmt === 'pct' || d2.fmt === 'pct_s') return cleanV < 0 ? '-%' + Math.abs(cleanV) : '%' + cleanV;
               if (d2.fmt === 'multiple') return cleanV + 'x';
               if (d2.fmt === 'pax') return cleanV + 'M';
               if (d2.fmt === 'munit') return cleanV + 'B';
