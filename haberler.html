@@ -27,7 +27,7 @@
   } catch(e) {}
 })();
 </script>
-<link rel="stylesheet" href="index.css?v=1.0.9">
+<link rel="stylesheet" href="index.css?v=1.1.0">
 <style>
   /* ══════════════════════════════════════
      FLEET COMPARISON & Kaynak 2 STYLES
@@ -15175,10 +15175,10 @@ async function loadDashboard() {
   window.setIataCardView = setIataCardView;
 
   async function initIataCard() {
-    return fetchCached('iata_full_data_v9', async () => {
+    return fetchCached('iata_full_data_v10', async () => {
       const [history, reports2026, latest] = await Promise.all([
-        fetch('iata-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-        fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('iata-history.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('iata-reports-2026.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
         fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
       let activeLatest = null;
@@ -16907,7 +16907,7 @@ async function loadDashboard() {
       const cEl = document.getElementById('iata-val-capacity');
       const lfEl = document.getElementById('iata-val-loadfactor');
       const srEl = document.getElementById('iata-val-yield');
-      const d = readCache('iata_full_data_v9');
+      const d = readCache('iata_full_data_v10');
       if (d?.latest?.demand) {
         _iataCardData = d;
         setIataCardView(_iataCardViewMode);
@@ -22006,6 +22006,32 @@ function initControls(allArticles) {
 
   // ── IATA Raporları Tab Yükleme ve Render Mantığı ──
   window.IATA_DEFAULT_2026_REPORTS = [
+    {
+      "date": "Temmuz 2026",
+      "title": "Kargo Uçaklarının Gücü Hava Kargo Büyümesini Sürüklüyor",
+      "demand": "+3.9%",
+      "capacity": "+1.7%",
+      "loadFactor": "46.0%",
+      "ytd_demand": "+4.6%",
+      "ytd_capacity": "+1.9%",
+      "ytd_clf": "46.3%",
+      "cargoYield": "+24.7%",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-july-2026/",
+      "summary": "Temmuz ayında küresel hava kargo talebi (CTK) yıllık %3.9 artarak istikrarlı büyüme patikasını korudu. Uluslararası kargo trafiği Kuzey Amerika, Asya-Pasifik ve Avrupa taşıyıcılarının öncülüğünde %4.7 artış gösterdi. İlk 7 ayda (YTD) küresel talep %4.6, kapasite ise %1.9 artış kaydetti."
+    },
+    {
+      "date": "Haziran 2026",
+      "title": "Orta Doğu Küresel Kargo Büyümesine Yeniden Katılıyor",
+      "demand": "+8.5%",
+      "capacity": "+4.4%",
+      "loadFactor": "46.9%",
+      "ytd_demand": "+4.9%",
+      "ytd_capacity": "+2.1%",
+      "ytd_clf": "46.4%",
+      "cargoYield": "+34.0%",
+      "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-june-2026/",
+      "summary": "Haziran 2026'da küresel hava kargo talebi (CTK) yıllık %8.5 büyüyerek ivmesini korudu; mevcut kargo kapasitesi (ACTK) yıllık %4.4 genişledi."
+    },
     {
       "date": "Mayıs 2026",
       "title": "Trans-Pasifik Gücü Küresel Kargo Büyümesini Sürüklüyor",
