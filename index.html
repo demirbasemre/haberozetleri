@@ -3669,8 +3669,11 @@
           </div>
         </div>
         <div class="dash-card dash-card-clickable" id="dc-iata" onclick="openIataChartModal()">
-          <div class="dash-card-timer" id="dc-iata-timer">
-            <span class="timer-dot"></span>Aylık
+          <div class="dash-card-timer" id="dc-iata-timer" style="padding: 2px 4px;">
+            <div class="dc-period-toggle" onclick="event.stopPropagation()">
+              <button type="button" class="dc-pill-btn active" id="btn-iata-card-yoy" onclick="setIataCardView('yoy', event)">Aylık</button>
+              <button type="button" class="dc-pill-btn" id="btn-iata-card-ytd" onclick="setIataCardView('ytd', event)">YTD</button>
+            </div>
           </div>
           <div class="dash-card-header-row">
             <div class="dash-card-label">Market Analizi</div>
@@ -3679,18 +3682,22 @@
             <div class="cargo-metric-item">
               <span class="cargo-metric-lbl">Talep (CTK)</span>
               <span class="cargo-metric-val skeleton" id="iata-val-demand">-</span>
+              <span class="cargo-metric-sub" id="iata-sub-demand">YTD: —</span>
             </div>
             <div class="cargo-metric-item">
               <span class="cargo-metric-lbl">Kapasite (ACTK)</span>
               <span class="cargo-metric-val skeleton" id="iata-val-capacity">-</span>
+              <span class="cargo-metric-sub" id="iata-sub-capacity">YTD: —</span>
             </div>
             <div class="cargo-metric-item">
-              <span class="cargo-metric-lbl">LF</span>
+              <span class="cargo-metric-lbl">LF (Doluluk)</span>
               <span class="cargo-metric-val skeleton" id="iata-val-loadfactor">-</span>
+              <span class="cargo-metric-sub" id="iata-sub-loadfactor">YTD: —</span>
             </div>
             <div class="cargo-metric-item">
               <span class="cargo-metric-lbl">Yield</span>
               <span class="cargo-metric-val skeleton" id="iata-val-yield">-</span>
+              <span class="cargo-metric-sub" id="iata-sub-yield">Aylık Artış</span>
             </div>
           </div>
           <div class="dash-card-sub" id="dc-iata-sub" style="display:none"></div>
@@ -4169,22 +4176,22 @@
           <div class="iata-kpi-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
             <span class="iata-kpi-lbl" style="font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase;">Talep CTK</span>
             <span class="iata-kpi-val" style="font-size: 20px; font-weight: 800; color:#22c55e" id="kpi-demand">—</span>
-            <span class="iata-kpi-sub" style="font-size: 9px; color: var(--text-3);">Yıllık büyüme</span>
+            <span class="iata-kpi-sub" id="kpi-demand-sub" style="font-size: 9.5px; color: var(--text-3); font-weight: 600;">Yıllık büyüme</span>
           </div>
           <div class="iata-kpi-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
             <span class="iata-kpi-lbl" style="font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase;">Kapasite ACTK</span>
             <span class="iata-kpi-val" id="kpi-capacity" style="font-size: 20px; font-weight: 800; color:var(--text)">—</span>
-            <span class="iata-kpi-sub" style="font-size: 9px; color: var(--text-3);">Yıllık değişim</span>
+            <span class="iata-kpi-sub" id="kpi-capacity-sub" style="font-size: 9.5px; color: var(--text-3); font-weight: 600;">Yıllık değişim</span>
           </div>
           <div class="iata-kpi-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
             <span class="iata-kpi-lbl" style="font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase;">Load Factor</span>
             <span class="iata-kpi-val" id="kpi-lf" style="font-size: 20px; font-weight: 800; color:#7a64a8">—</span>
-            <span class="iata-kpi-sub" style="font-size: 9px; color: var(--text-3);">Doluluk oranı</span>
+            <span class="iata-kpi-sub" id="kpi-lf-sub" style="font-size: 9.5px; color: var(--text-3); font-weight: 600;">Doluluk oranı</span>
           </div>
           <div class="iata-kpi-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
             <span class="iata-kpi-lbl" style="font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase;">Cargo Yield</span>
             <span class="iata-kpi-val" id="kpi-yield" style="font-size: 20px; font-weight: 800; color:#f59e0b">—</span>
-            <span class="iata-kpi-sub" style="font-size: 9px; color: var(--text-3);">Yıllık artış</span>
+            <span class="iata-kpi-sub" id="kpi-yield-sub" style="font-size: 9.5px; color: var(--text-3); font-weight: 600;">Yıllık artış</span>
           </div>
         </div>
 
@@ -4193,6 +4200,8 @@
           <div class="iata-metric-toggles-col" id="iata-metric-toggles">
             <button class="iata-metric-toggle active" data-metric="demand" style="--metric-color:#7a64a8" onclick="toggleIataMetric('demand',this)">CTK %</button>
             <button class="iata-metric-toggle active" data-metric="capacity" style="--metric-color:#22c55e" onclick="toggleIataMetric('capacity',this)">ACTK %</button>
+            <button class="iata-metric-toggle" data-metric="ytd_demand" style="--metric-color:#a855f7" onclick="toggleIataMetric('ytd_demand',this)">YTD CTK %</button>
+            <button class="iata-metric-toggle" data-metric="ytd_capacity" style="--metric-color:#10b981" onclick="toggleIataMetric('ytd_capacity',this)">YTD ACTK %</button>
             <button class="iata-metric-toggle" data-metric="loadFactor" style="--metric-color:#3b82f6" onclick="toggleIataMetric('loadFactor',this)">Yük Faktörü</button>
             <button class="iata-metric-toggle" data-metric="cargoYield" style="--metric-color:#ef4444" onclick="toggleIataMetric('cargoYield',this)">Cargo Yield</button>
             <button class="iata-metric-toggle" data-metric="pmi" style="--metric-color:#64748b" onclick="toggleIataMetric('pmi',this)">PMI</button>
@@ -15628,32 +15637,111 @@ async function loadDashboard() {
   };
 
   // IATA Verisini Çek ve Göster
+  let _iataCardViewMode = 'yoy'; // 'yoy' | 'ytd'
+  let _iataCardData = null;
+
+  function setIataCardView(mode, evt) {
+    if (evt) evt.stopPropagation();
+    _iataCardViewMode = mode;
+
+    const btnYoy = document.getElementById('btn-iata-card-yoy');
+    const btnYtd = document.getElementById('btn-iata-card-ytd');
+    if (btnYoy && btnYtd) {
+      btnYoy.classList.toggle('active', mode === 'yoy');
+      btnYtd.classList.toggle('active', mode === 'ytd');
+    }
+
+    if (!_iataCardData) return;
+    const latest = _iataCardData.latest;
+    if (!latest) return;
+
+    const dEl = document.getElementById('iata-val-demand');
+    const cEl = document.getElementById('iata-val-capacity');
+    const lfEl = document.getElementById('iata-val-loadfactor');
+    const srEl = document.getElementById('iata-val-yield');
+    const subDEl = document.getElementById('iata-sub-demand');
+    const subCEl = document.getElementById('iata-sub-capacity');
+    const subLfEl = document.getElementById('iata-sub-loadfactor');
+    const subSrEl = document.getElementById('iata-sub-yield');
+    const dateEl = document.getElementById('dc-iata-date');
+
+    const applyMetricColor = (el, val) => {
+      const num = parseFloat(String(val).replace(/[^0-9.\-]/g, ''));
+      el.classList.remove('positive', 'negative');
+      if (!isNaN(num)) {
+        if (num > 0) el.classList.add('positive');
+        else if (num < 0) el.classList.add('negative');
+      }
+    };
+
+    if (mode === 'ytd') {
+      const ytdDemand = latest.ytd_demand || latest.demand || '—';
+      const ytdCap = latest.ytd_capacity || latest.capacity || '—';
+      const ytdLf = latest.ytd_clf || latest.loadFactor || '—';
+      const yld = latest.cargoYield || '—';
+
+      if (dEl) { dEl.textContent = window.formatLF(ytdDemand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, ytdDemand); }
+      if (cEl) { cEl.textContent = window.formatLF(ytdCap); cEl.classList.remove('skeleton'); applyMetricColor(cEl, ytdCap); }
+      if (lfEl) { lfEl.textContent = window.formatLF(ytdLf); lfEl.classList.remove('skeleton'); }
+      if (srEl) { srEl.textContent = yld ? window.formatLF(yld) : '—'; srEl.classList.remove('skeleton'); applyMetricColor(srEl, yld); }
+
+      if (subDEl) subDEl.textContent = `Aylık: ${latest.demand || '—'}`;
+      if (subCEl) subCEl.textContent = `Aylık: ${latest.capacity || '—'}`;
+      if (subLfEl) subLfEl.textContent = `Aylık: ${latest.loadFactor || '—'}`;
+      if (subSrEl) subSrEl.textContent = `Yıllık Artış`;
+
+      if (dateEl && latest.date) {
+        dateEl.textContent = `İlk 7 Ay: Ocak–${latest.date} (YTD)`;
+      }
+    } else {
+      const yoyDemand = latest.demand || '—';
+      const yoyCap = latest.capacity || '—';
+      const yoyLf = latest.loadFactor || '—';
+      const yld = latest.cargoYield || '—';
+
+      if (dEl) { dEl.textContent = window.formatLF(yoyDemand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, yoyDemand); }
+      if (cEl) { cEl.textContent = window.formatLF(yoyCap); cEl.classList.remove('skeleton'); applyMetricColor(cEl, yoyCap); }
+      if (lfEl) { lfEl.textContent = window.formatLF(yoyLf); lfEl.classList.remove('skeleton'); }
+      if (srEl) { srEl.textContent = yld ? window.formatLF(yld) : '—'; srEl.classList.remove('skeleton'); applyMetricColor(srEl, yld); }
+
+      if (subDEl) subDEl.textContent = `YTD: ${latest.ytd_demand || '—'}`;
+      if (subCEl) subCEl.textContent = `YTD: ${latest.ytd_capacity || '—'}`;
+      if (subLfEl) subLfEl.textContent = `YTD: ${latest.ytd_clf || '—'}`;
+      if (subSrEl) subSrEl.textContent = `Aylık Artış`;
+
+      if (dateEl && latest.date) {
+        dateEl.textContent = `Son veri: ${latest.date}`;
+      }
+    }
+  }
+  window.setIataCardView = setIataCardView;
+
   async function initIataCard() {
-    return fetchCached('iata_full_data_v8', async () => {
-      const [history, latest] = await Promise.all([
+    return fetchCached('iata_full_data_v9', async () => {
+      const [history, reports2026, latest] = await Promise.all([
         fetch('iata-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []),
         fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
-      return { history, latest };
+      let activeLatest = null;
+      if (reports2026 && reports2026.length > 0) {
+        activeLatest = { ...reports2026[0] };
+      }
+      if (latest && latest.demand) {
+        if (!activeLatest) {
+          activeLatest = { ...latest };
+        } else if (latest.date && latest.date !== activeLatest.date) {
+          activeLatest = { ...latest, ...activeLatest };
+        }
+      }
+      return { history, latest: activeLatest };
     }, 1 * 60 * 60 * 1000, (d) => !!(d && d.latest && d.latest.demand)).then(({ history, latest }) => {
       _iataHistory = history;
       _iataLatest = latest;
+      _iataCardData = { history, latest };
 
       if (latest && latest.demand) {
-        const dEl = document.getElementById('iata-val-demand');
-        const cEl = document.getElementById('iata-val-capacity');
-        const lfEl = document.getElementById('iata-val-loadfactor');
-        const srEl = document.getElementById('iata-val-yield');
-
-        const applyMetricColor = (el, val) => {
-          const num = parseFloat(String(val).replace(/[^0-9.\-]/g, ''));
-          el.classList.remove('positive', 'negative');
-          if (!isNaN(num)) { if (num > 0) el.classList.add('positive'); else if (num < 0) el.classList.add('negative'); }
-        };
-        if (dEl) { dEl.textContent = window.formatLF(latest.demand); dEl.classList.remove('skeleton'); applyMetricColor(dEl, latest.demand); }
-        if (cEl) { cEl.textContent = window.formatLF(latest.capacity); cEl.classList.remove('skeleton'); applyMetricColor(cEl, latest.capacity); }
-        if (lfEl) { lfEl.textContent = window.formatLF(latest.loadFactor); lfEl.classList.remove('skeleton'); }
-        if (srEl) { srEl.textContent = latest.cargoYield ? window.formatLF(latest.cargoYield) : '—'; srEl.classList.remove('skeleton'); applyMetricColor(srEl, latest.cargoYield); }
+        setIataCardView(_iataCardViewMode);
 
         const subEl = document.getElementById('dc-iata-sub');
         if (subEl) subEl.style.display = 'none';
@@ -15662,8 +15750,6 @@ async function loadDashboard() {
         if (noteEl) {
           noteEl.innerHTML = `Son veri: ${latest.date}<br><a href="https://www.iata.org/en/publications/economics/economics-library/?Search=&EconomicsL2=147&Ordering=DateDesc" target="_blank" rel="noopener">IATA Reports →</a>`;
         }
-        const iataDateEl = document.getElementById('dc-iata-date');
-        if (iataDateEl && latest.date) { iataDateEl.textContent = `Son veri: ${latest.date}`; }
       } else {
         const dEl = document.getElementById('iata-val-demand');
         const cEl = document.getElementById('iata-val-capacity');
@@ -17363,12 +17449,10 @@ async function loadDashboard() {
       const cEl = document.getElementById('iata-val-capacity');
       const lfEl = document.getElementById('iata-val-loadfactor');
       const srEl = document.getElementById('iata-val-yield');
-      const d = readCache('iata_full_data_v8');
+      const d = readCache('iata_full_data_v9');
       if (d?.latest?.demand) {
-        if (dEl) { dEl.textContent = window.formatLF(d.latest.demand); dEl.classList.remove('skeleton'); }
-        if (cEl) { cEl.textContent = window.formatLF(d.latest.capacity); cEl.classList.remove('skeleton'); }
-        if (lfEl) { lfEl.textContent = window.formatLF(d.latest.loadFactor); lfEl.classList.remove('skeleton'); }
-        if (srEl) { srEl.textContent = d.latest.cargoYield ? window.formatLF(d.latest.cargoYield) : '—'; srEl.classList.remove('skeleton'); }
+        _iataCardData = d;
+        setIataCardView(_iataCardViewMode);
         const noteEl = document.getElementById('dc-iata-note');
         if (noteEl) noteEl.innerHTML = `Son veri: ${d.latest.date}<br><a href="https://www.iata.org" target="_blank" rel="noopener">IATA Reports →</a>`;
       } else {
@@ -22915,9 +22999,12 @@ function initControls(allArticles) {
 
   window.updateIataTrendChartData = function() {
     if (!_iataChartInstance || !_iataReportsList.length) return;
-    const segment = document.getElementById('iata-filter-segment').value;
-    const region = document.getElementById('iata-filter-region').value;
-    const mode = document.querySelector('input[name="iata-chart-mode"]:checked').value;
+    const segEl = document.getElementById('iata-filter-segment');
+    const regEl = document.getElementById('iata-filter-region');
+    const modeEl = document.querySelector('input[name="iata-chart-mode"]:checked');
+    const segment = segEl ? segEl.value : 'totalMarket';
+    const region = regEl ? regEl.value : 'world';
+    const mode = modeEl ? modeEl.value : 'yoy';
 
     const sorted = [..._iataReportsList].reverse();
     const labels = sorted.map(r => r.date);
@@ -22956,7 +23043,7 @@ function initControls(allArticles) {
     });
 
     const modeText = mode === 'ytd' ? 'YTD' : 'YoY';
-    const regionText = document.getElementById('iata-filter-region').options[document.getElementById('iata-filter-region').selectedIndex].text;
+    const regionText = (regEl && regEl.selectedIndex >= 0) ? regEl.options[regEl.selectedIndex].text : 'Küresel';
     const segmentText = segment === 'international' ? 'Ulusl.' : 'Toplam';
 
     _iataChartInstance.data.labels = labels;
@@ -23413,11 +23500,47 @@ function initControls(allArticles) {
       const kpiCapacity = document.getElementById('kpi-capacity');
       const kpiLF       = document.getElementById('kpi-lf');
       const kpiYield    = document.getElementById('kpi-yield');
+      const kpiDemandSub = document.getElementById('kpi-demand-sub');
+      const kpiCapSub    = document.getElementById('kpi-capacity-sub');
+      const kpiLfSub     = document.getElementById('kpi-lf-sub');
+      const kpiYieldSub  = document.getElementById('kpi-yield-sub');
       const stripPlus2 = v => (v || '—').replace(/^\+/, '');
-      if (kpiDemand) { kpiDemand.textContent = stripPlus2(latest.demand); kpiDemand.style.color = (latest.demand||'').startsWith('+') ? '#22c55e' : (latest.demand||'').startsWith('-') ? 'var(--red)' : 'var(--text)'; }
-      if (kpiCapacity) { kpiCapacity.textContent = stripPlus2(latest.capacity); kpiCapacity.style.color = (latest.capacity||'').startsWith('+') ? '#22c55e' : (latest.capacity||'').startsWith('-') ? 'var(--red)' : 'var(--text)'; }
-      if (kpiLF) kpiLF.textContent = stripPlus2(latest.loadFactor);
-      if (kpiYield) { kpiYield.textContent = stripPlus2(latest.cargoYield); kpiYield.style.color = '#f59e0b'; }
+
+      const isYtd = _iataModalPeriod === 'ytd';
+
+      if (kpiDemand) {
+        const val = isYtd ? (latest.ytd_demand || latest.demand) : latest.demand;
+        kpiDemand.textContent = stripPlus2(val);
+        kpiDemand.style.color = (val||'').startsWith('+') ? '#22c55e' : (val||'').startsWith('-') ? 'var(--red)' : 'var(--text)';
+      }
+      if (kpiDemandSub) {
+        kpiDemandSub.textContent = isYtd ? `Aylık: ${latest.demand || '—'} · YTD Büyüme` : `Aylık: ${latest.demand || '—'} · YTD: ${latest.ytd_demand || '—'}`;
+      }
+
+      if (kpiCapacity) {
+        const val = isYtd ? (latest.ytd_capacity || latest.capacity) : latest.capacity;
+        kpiCapacity.textContent = stripPlus2(val);
+        kpiCapacity.style.color = (val||'').startsWith('+') ? '#22c55e' : (val||'').startsWith('-') ? 'var(--red)' : 'var(--text)';
+      }
+      if (kpiCapSub) {
+        kpiCapSub.textContent = isYtd ? `Aylık: ${latest.capacity || '—'} · YTD Değişim` : `Aylık: ${latest.capacity || '—'} · YTD: ${latest.ytd_capacity || '—'}`;
+      }
+
+      if (kpiLF) {
+        const val = (isYtd && latest.ytd_clf) ? latest.ytd_clf : latest.loadFactor;
+        kpiLF.textContent = stripPlus2(val);
+      }
+      if (kpiLfSub) {
+        kpiLfSub.textContent = isYtd ? `YTD Ortalama: ${latest.ytd_clf || latest.loadFactor || '—'}` : `Doluluk: ${latest.loadFactor || '—'}${latest.ytd_clf ? ' (YTD: ' + latest.ytd_clf + ')' : ''}`;
+      }
+
+      if (kpiYield) {
+        kpiYield.textContent = stripPlus2(latest.cargoYield);
+        kpiYield.style.color = '#f59e0b';
+      }
+      if (kpiYieldSub) {
+        kpiYieldSub.textContent = 'Yıllık Artış';
+      }
     }
     if (typeof window.renderIataTrendChart === 'function') window.renderIataTrendChart(reports);
     renderIataMultiChart(reports);
@@ -23430,11 +23553,13 @@ function initControls(allArticles) {
   }
 
   const IATA_METRIC_CFG = {
-    demand:     { label: 'CTK YoY (%)',         color: '#7a64a8', unit: '%' },
-    capacity:   { label: 'ACTK YoY (%)',        color: '#22c55e', unit: '%' },
-    loadFactor: { label: 'Yük Faktörü',         color: '#3b82f6', unit: '%' },
-    cargoYield: { label: 'Cargo Yield YoY (%)', color: '#ef4444', unit: '%' },
-    pmi:        { label: 'PMI',                 color: '#64748b', unit: '' }
+    demand:       { label: 'CTK YoY (%)',         color: '#7a64a8', unit: '%' },
+    capacity:     { label: 'ACTK YoY (%)',        color: '#22c55e', unit: '%' },
+    ytd_demand:   { label: 'YTD CTK (%)',         color: '#a855f7', unit: '%' },
+    ytd_capacity: { label: 'YTD ACTK (%)',        color: '#10b981', unit: '%' },
+    loadFactor:   { label: 'Yük Faktörü',         color: '#3b82f6', unit: '%' },
+    cargoYield:   { label: 'Cargo Yield YoY (%)', color: '#ef4444', unit: '%' },
+    pmi:          { label: 'PMI',                 color: '#64748b', unit: '' }
   };
   const IATA_MAX_METRICS = 2;
 
@@ -23534,10 +23659,10 @@ function initControls(allArticles) {
   function exportIataToCSV() {
     const data = window._iataReportsList || [];
     if (!data.length) return;
-    const headers = ['Tarih','CTK (%)','ACTK (%)','Yük Faktörü','Cargo Yield','PMI'];
-    const rows = [...data].reverse().map(r => [r.date, r.demand||'', r.capacity||'', r.loadFactor||'', r.cargoYield||'', r.pmi||'']);
+    const headers = ['Tarih','CTK (%)','ACTK (%)','YTD CTK (%)','YTD ACTK (%)','Yük Faktörü','Cargo Yield','PMI'];
+    const rows = [...data].reverse().map(r => [r.date, r.demand||'', r.capacity||'', r.ytd_demand||'', r.ytd_capacity||'', r.loadFactor||'', r.cargoYield||'', r.pmi||'']);
     const csv = [headers, ...rows].map(row => row.map(v => `"${v}"`).join(',')).join('\n');
-    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = `iata-hava-kargo-${new Date().toISOString().split('T')[0]}.csv`; a.click();
     URL.revokeObjectURL(url);
