@@ -8530,6 +8530,18 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEtkiPop
 </script>
 
 <script>
+// ── GLOBAL FORMATTERS ──────────────────────────────────────────
+window.formatPercent = function(val) {
+  if (val == null || val === '' || val === '—') return '—';
+  const str = String(val).trim();
+  if (str === '—' || str === '-') return '—';
+  const hasMinus = str.startsWith('-') || (str.includes('-') && !str.includes('–'));
+  const cleaned = str.replace(/[%+\s]/g, '').replace(/^-/, '');
+  if (!cleaned) return '—';
+  return (hasMinus ? '-%' : '%') + cleaned;
+};
+window.formatLF = window.formatPercent;
+
 // ── THEME LOGIC ────────────────────────────────────────────────
 function initTheme() {
   const saved = localStorage.getItem('theme');
@@ -22736,6 +22748,17 @@ function initControls(allArticles) {
   }
 
   function renderIataReportFeed(reports) {
+    if (typeof window.formatPercent !== 'function') {
+      window.formatPercent = function(val) {
+        if (val == null || val === '' || val === '—') return '—';
+        const str = String(val).trim();
+        if (str === '—' || str === '-') return '—';
+        const hasMinus = str.startsWith('-') || (str.includes('-') && !str.includes('–'));
+        const cleaned = str.replace(/[%+\s]/g, '').replace(/^-/, '');
+        if (!cleaned) return '—';
+        return (hasMinus ? '-%' : '%') + cleaned;
+      };
+    }
     const listEl = document.getElementById('iata-report-feed-list');
     if (!listEl) return;
 
