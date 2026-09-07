@@ -4965,9 +4965,21 @@
     <!-- IATA Hava Kargo Market Analizi Raporları -->
     <div id="iata-report-container" class="fleet-report-container" style="display:none">
       <div class="iata-reports-main" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 10px;">
-        <div class="iata-reports-header-bar" style="margin-bottom: 20px;">
-          <h3>IATA Hava Kargo Market Analizleri · 2026</h3>
-          <span style="font-size:11px;color:var(--text-3);">Kaynak: iata.org/economics</span>
+        <div class="iata-reports-header-bar" style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 style="margin: 0 0 4px 0;">IATA Hava Kargo Market Analizleri · 2026</h3>
+            <span style="font-size:11px;color:var(--text-3);">Kaynak: iata.org/economics</span>
+          </div>
+          <div class="iata-feed-controls" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div class="dc-period-toggle" style="margin: 0;">
+              <button type="button" class="dc-pill-btn active" id="btn-iata-feed-yoy" onclick="setIataFeedPeriodMode('yoy')">Aylık Görünüm</button>
+              <button type="button" class="dc-pill-btn" id="btn-iata-feed-ytd" onclick="setIataFeedPeriodMode('ytd')">YTD (İlk 7 Ay)</button>
+            </div>
+            <div class="dc-period-toggle" style="margin: 0;">
+              <button type="button" class="dc-pill-btn active" id="btn-iata-feed-ctk" onclick="setIataFeedRegionMetric('ctk')">Talep (CTK)</button>
+              <button type="button" class="dc-pill-btn" id="btn-iata-feed-actk" onclick="setIataFeedRegionMetric('actk')">Arz (ACTK)</button>
+            </div>
+          </div>
         </div>
 
         <div class="iata-reports-feed" id="iata-report-feed-list">
@@ -9415,8 +9427,8 @@ async function openIataChartModal() {
     if (!window._iataAllData || window._iataAllData.length === 0) {
       try {
         const [d2026, d2025] = await Promise.all([
-          fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []),
-          fetch('iata-reports-2025.json').then(r => r.ok ? r.json() : []).catch(() => [])
+          fetch('iata-reports-2026.json?t=' + Date.now()).then(r => r.ok ? r.json() : []).catch(() => []),
+          fetch('iata-reports-2025.json?t=' + Date.now()).then(r => r.ok ? r.json() : []).catch(() => [])
         ]);
         let r2026 = [...d2026];
         if (window._iataLatest && window._iataLatest.demand) {
@@ -15192,7 +15204,7 @@ async function loadDashboard() {
   window.setIataCardView = setIataCardView;
 
   async function initIataCard() {
-    return fetchCached('iata_full_data_v10', async () => {
+    return fetchCached('iata_full_data_v11', async () => {
       const [history, reports2026, latest] = await Promise.all([
         fetch('iata-history.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
         fetch('iata-reports-2026.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []),
@@ -16924,7 +16936,7 @@ async function loadDashboard() {
       const cEl = document.getElementById('iata-val-capacity');
       const lfEl = document.getElementById('iata-val-loadfactor');
       const srEl = document.getElementById('iata-val-yield');
-      const d = readCache('iata_full_data_v10');
+      const d = readCache('iata_full_data_v11');
       if (d?.latest?.demand) {
         _iataCardData = d;
         setIataCardView(_iataCardViewMode);
@@ -22029,12 +22041,71 @@ function initControls(allArticles) {
       "demand": "+3.9%",
       "capacity": "+1.7%",
       "loadFactor": "46.0%",
+      "clf_pp": "+1.0",
+      "demand_intl": "+4.7%",
+      "capacity_intl": "+1.8%",
+      "clf_intl": "51.5%",
       "ytd_demand": "+4.6%",
       "ytd_capacity": "+1.9%",
       "ytd_clf": "46.3%",
       "cargoYield": "+24.7%",
+      "jetFuel": "+56.9%",
+      "pmi": "52.7",
+      "pmi_exports": "50.02",
+      "regions": {
+        "asiaPacific": { "share": "35.8", "ctk": "+4.1%", "actk": "+3.0%" },
+        "northAmerica": { "share": "24.6", "ctk": "+4.8%", "actk": "-1.5%" },
+        "europe": { "share": "21.4", "ctk": "+4.4%", "actk": "+1.3%" },
+        "middleEast": { "share": "13.2", "ctk": "+1.7%", "actk": "+4.0%" },
+        "latinAmerica": { "share": "2.9", "ctk": "+4.1%", "actk": "+7.0%" },
+        "africa": { "share": "2.1", "ctk": "+1.1%", "actk": "+4.1%" }
+      },
       "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-july-2026/",
-      "summary": "Temmuz ayında küresel hava kargo talebi (CTK) yıllık %3.9 artarak istikrarlı büyüme patikasını korudu. Uluslararası kargo trafiği Kuzey Amerika, Asya-Pasifik ve Avrupa taşıyıcılarının öncülüğünde %4.7 artış gösterdi. İlk 7 ayda (YTD) küresel talep %4.6, kapasite ise %1.9 artış kaydetti."
+      "pdfLink": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-july-2026/",
+      "summary": "Temmuz ayında küresel hava kargo talebi (CTK) yıllık %3.9 artarak istikrarlı büyüme patikasını korudu ve genişleme tüm taşıyıcı bölgelerine yayılsa da ölçeği farklılık gösterdi. Uluslararası kargo trafiği Kuzey Amerika, Asya-Pasifik ve Avrupa taşıyıcılarının öncülüğünde %4.7 artış gösterirken; koridor düzeyinde Asya-Kuzey Amerika ana desteği sağladı ancak Orta Doğu bağlantılı bazı ticaret hatlarında keskin daralmalar yaşandı. Mevcut kargo ton-kilometre (ACTK) cinsinden ölçülen sektör kapasitesi talebin altında kalarak %1.7 arttı ve bu durum küresel kargo yük faktörünü (CLF) 1.0 yüzde puan artışla %46.0'a taşıyarak daha sıkı bir arz-talep dengesine işaret etti. Makroekonomik zemin hava kargo talebini desteklemeyi sürdürdü; imalat üretimi ve ihracat siparişleri kararlı bir şekilde büyüme bölgesinde kalırken dünya ticaret hacimleri güçlendi.",
+      "brentOil": "+17.5%",
+      "data": {
+        "totalMarket": {
+          "yoy": {
+            "world": { "ctk": "+3.9%", "actk": "+1.7%" },
+            "africa": { "ctk": "+1.1%", "actk": "+4.1%" },
+            "asiaPacific": { "ctk": "+4.1%", "actk": "+3.0%" },
+            "europe": { "ctk": "+4.4%", "actk": "+1.3%" },
+            "latinAmerica": { "ctk": "+4.1%", "actk": "+7.0%" },
+            "middleEast": { "ctk": "+1.7%", "actk": "+4.0%" },
+            "northAmerica": { "ctk": "+4.8%", "actk": "-1.5%" }
+          },
+          "ytd": {
+            "world": { "ctk": "+4.6%", "actk": "+1.9%" },
+            "africa": { "ctk": "+9.4%", "actk": "+0.1%" },
+            "asiaPacific": { "ctk": "+7.9%", "actk": "+5.3%" },
+            "europe": { "ctk": "+5.6%", "actk": "+3.5%" },
+            "latinAmerica": { "ctk": "+0.5%", "actk": "+5.2%" },
+            "middleEast": { "ctk": "-7.8%", "actk": "-8.1%" },
+            "northAmerica": { "ctk": "+5.5%", "actk": "+1.0%" }
+          }
+        },
+        "international": {
+          "yoy": {
+            "world": { "ctk": "+4.7%", "actk": "+1.8%" },
+            "africa": { "ctk": "+1.1%", "actk": "+3.9%" },
+            "asiaPacific": { "ctk": "+5.2%", "actk": "+3.9%" },
+            "europe": { "ctk": "+4.6%", "actk": "-1.2%" },
+            "latinAmerica": { "ctk": "+3.6%", "actk": "+6.1%" },
+            "middleEast": { "ctk": "+1.8%", "actk": "+4.2%" },
+            "northAmerica": { "ctk": "+7.1%", "actk": "-1.1%" }
+          },
+          "ytd": {
+            "world": { "ctk": "+5.0%", "actk": "+2.2%" },
+            "africa": { "ctk": "+9.4%", "actk": "+0.3%" },
+            "asiaPacific": { "ctk": "+8.7%", "actk": "+6.6%" },
+            "europe": { "ctk": "+5.9%", "actk": "+2.8%" },
+            "latinAmerica": { "ctk": "+1.2%", "actk": "+5.0%" },
+            "middleEast": { "ctk": "-7.8%", "actk": "-8.2%" },
+            "northAmerica": { "ctk": "+6.7%", "actk": "+2.2%" }
+          }
+        }
+      }
     },
     {
       "date": "Haziran 2026",
@@ -22105,6 +22176,32 @@ function initControls(allArticles) {
 
   window._iataReportsList = [];
   let _iataChartInstance = null;
+  let _iataFeedPeriodMode = 'yoy';
+  let _iataFeedRegionMetric = 'ctk';
+
+  function setIataFeedPeriodMode(mode) {
+    _iataFeedPeriodMode = mode;
+    const btnYoy = document.getElementById('btn-iata-feed-yoy');
+    const btnYtd = document.getElementById('btn-iata-feed-ytd');
+    if (btnYoy) btnYoy.classList.toggle('active', mode === 'yoy');
+    if (btnYtd) btnYtd.classList.toggle('active', mode === 'ytd');
+    if (window._iataReportsList && window._iataReportsList.length > 0) {
+      renderIataReportFeed(window._iataReportsList);
+    }
+  }
+  window.setIataFeedPeriodMode = setIataFeedPeriodMode;
+
+  function setIataFeedRegionMetric(metric) {
+    _iataFeedRegionMetric = metric;
+    const btnCtk = document.getElementById('btn-iata-feed-ctk');
+    const btnActk = document.getElementById('btn-iata-feed-actk');
+    if (btnCtk) btnCtk.classList.toggle('active', metric === 'ctk');
+    if (btnActk) btnActk.classList.toggle('active', metric === 'actk');
+    if (window._iataReportsList && window._iataReportsList.length > 0) {
+      renderIataReportFeed(window._iataReportsList);
+    }
+  }
+  window.setIataFeedRegionMetric = setIataFeedRegionMetric;
 
   async function initIataReportsTab() {
     const feedListEl = document.getElementById('iata-report-feed-list');
@@ -22115,7 +22212,7 @@ function initControls(allArticles) {
       // 1. Fetch static 2026 reports
       let staticReports = [];
       try {
-        staticReports = await fetch('iata-reports-2026.json').then(r => r.ok ? r.json() : []).catch(() => []);
+        staticReports = await fetch('iata-reports-2026.json?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : []).catch(() => []);
       } catch (e) {
         console.warn("CORS/file protocol issue. Falling back to local data.");
       }
@@ -22130,7 +22227,7 @@ function initControls(allArticles) {
       if (!window._iataLatest) {
         try {
           window._iataLatest = await fetchCached(
-            'iata_latest_only',
+            'iata_latest_only_v2',
             () => fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
             24 * 60 * 60 * 1000,
             (d) => !!(d && d.demand)
@@ -22220,43 +22317,55 @@ function initControls(allArticles) {
     const listEl = document.getElementById('iata-report-feed-list');
     if (!listEl) return;
 
-    if (reports.length === 0) {
+    if (!reports || reports.length === 0) {
       listEl.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-3);">Henüz rapor bulunmuyor.</div>';
       return;
     }
 
-    // Populate KPI strip with latest report
+    const isYtd = _iataFeedPeriodMode === 'ytd';
+    const isActk = _iataFeedRegionMetric === 'actk';
+
+    // Populate KPI strip with latest report according to period mode
     const latest = reports[0];
     if (latest) {
       const kpiDemand = document.getElementById('kpi-demand');
       const kpiCapacity = document.getElementById('kpi-capacity');
       const kpiLF = document.getElementById('kpi-lf');
       const kpiYield = document.getElementById('kpi-yield');
+
+      const demandVal = isYtd ? (latest.ytd_demand || latest.demand) : latest.demand;
+      const capVal = isYtd ? (latest.ytd_capacity || latest.capacity) : latest.capacity;
+      const lfVal = isYtd ? (latest.ytd_clf || latest.loadFactor) : latest.loadFactor;
+      const yieldVal = latest.cargoYield;
+
       if (kpiDemand) {
-        kpiDemand.textContent = window.formatPercent(latest.demand);
-        kpiDemand.style.color = (latest.demand || '').startsWith('+') ? '#22c55e' : (latest.demand || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
+        kpiDemand.textContent = window.formatPercent(demandVal);
+        kpiDemand.style.color = (demandVal || '').startsWith('-') ? 'var(--red)' : '#22c55e';
       }
       if (kpiCapacity) {
-        kpiCapacity.textContent = window.formatPercent(latest.capacity);
-        kpiCapacity.style.color = (latest.capacity || '').startsWith('+') ? '#22c55e' : (latest.capacity || '').startsWith('-') ? 'var(--red)' : 'var(--text)';
+        kpiCapacity.textContent = window.formatPercent(capVal);
+        kpiCapacity.style.color = (capVal || '').startsWith('-') ? 'var(--red)' : '#22c55e';
       }
-      if (kpiLF) kpiLF.textContent = window.formatPercent(latest.loadFactor);
+      if (kpiLF) kpiLF.textContent = window.formatPercent(lfVal);
       if (kpiYield) {
-        kpiYield.textContent = window.formatPercent(latest.cargoYield);
+        kpiYield.textContent = window.formatPercent(yieldVal);
         kpiYield.style.color = '#f59e0b';
       }
 
-      // Update panel section title with latest date
+      // Update panel section title with latest date and mode
       const panelTitle = document.querySelector('.iata-panel-section-title');
-      if (panelTitle) panelTitle.textContent = `Son Veri (${latest.date})`;
+      if (panelTitle) {
+        panelTitle.textContent = isYtd 
+          ? `Son Veri: YTD İlk 7 Ay (Ocak–${latest.date})` 
+          : `Son Veri (${latest.date})`;
+      }
     }
 
     const getChangeColor = val => {
       if (!val || val === '—') return 'var(--text)';
       const valStr = String(val);
-      if (valStr.startsWith('+')) return '#22c55e';
       if (valStr.startsWith('-')) return 'var(--red)';
-      return 'var(--text)';
+      return '#22c55e';
     };
 
     // Regional names mapping
@@ -22269,80 +22378,141 @@ function initControls(allArticles) {
       africa: 'Afrika'
     };
 
-    const renderRegionBars = (regions) => {
-      if (!regions) return '';
-      const maxAbs = Math.max(...Object.values(regions).map(r => Math.abs(parseFloat(r.ctk) || 0)));
-      return Object.entries(regions).map(([key, reg]) => {
-        const val = parseFloat(reg.ctk) || 0;
-        const pct = maxAbs > 0 ? Math.abs(val) / maxAbs * 45 : 0;
-        const isPos = val >= 0;
+    const renderRegionBars = (r) => {
+      const metricKey = isActk ? 'actk' : 'ctk';
+      const regionKeys = ['asiaPacific', 'northAmerica', 'europe', 'middleEast', 'latinAmerica', 'africa'];
+      const items = [];
+
+      for (const key of regionKeys) {
+        let valStr = null;
+        if (isYtd && r.data && r.data.totalMarket && r.data.totalMarket.ytd && r.data.totalMarket.ytd[key]) {
+          valStr = r.data.totalMarket.ytd[key][metricKey];
+        } else if (!isYtd && r.regions && r.regions[key] && r.regions[key][metricKey]) {
+          valStr = r.regions[key][metricKey];
+        } else if (!isYtd && r.data && r.data.totalMarket && r.data.totalMarket.yoy && r.data.totalMarket.yoy[key]) {
+          valStr = r.data.totalMarket.yoy[key][metricKey];
+        } else if (isYtd && r.regions && r.regions[key] && r.regions[key][metricKey]) {
+          valStr = r.regions[key][metricKey];
+        }
+
+        if (valStr != null) {
+          const num = parseFloat(String(valStr).replace(/[^0-9.\-]/g, '')) || 0;
+          items.push({
+            key,
+            name: regionNames[key] || key,
+            valStr,
+            num
+          });
+        }
+      }
+
+      if (items.length === 0) return '';
+      const maxAbs = Math.max(...items.map(it => Math.abs(it.num)), 1);
+
+      return items.map(it => {
+        const pct = Math.min(45, (Math.abs(it.num) / maxAbs) * 45);
+        const isPos = it.num >= 0;
         const color = isPos ? '#22c55e' : '#ef4444';
         return `
           <div class="iata-region-row">
-            <span class="iata-region-name" title="${regionNames[key] || key}">${regionNames[key] || key}</span>
+            <span class="iata-region-name" title="${it.name}">${it.name}</span>
             <div class="iata-region-bar-track">
               <div class="iata-region-bar-center"></div>
               <div class="iata-region-bar-fill ${isPos ? 'positive' : 'negative'}"
                    style="width:${pct}%"></div>
             </div>
-            <span class="iata-region-val" style="color:${color}">${window.formatPercent(reg.ctk)}</span>
+            <span class="iata-region-val" style="min-width:44px; color:${color}">${window.formatPercent(it.valStr)}</span>
           </div>`;
       }).join('');
     };
 
     listEl.innerHTML = reports.map(r => {
-      const hasRegions = r.regions && Object.keys(r.regions).length > 0;
+      const hasRegions = (r.regions && Object.keys(r.regions).length > 0) || (r.data && r.data.totalMarket);
       const hasMacro = r.jetFuel || r.brentOil || r.pmi;
+
+      // Period badge label
+      const periodBadge = isYtd ? 'YTD (Yıl Başı - Kümülatif)' : 'Aylık';
+      const periodBadgeStyle = isYtd ? 'background: rgba(59,130,246,0.15); color: #3b82f6;' : '';
+
+      // Primary metrics based on period mode
+      const primaryDemand = isYtd ? (r.ytd_demand || r.demand) : r.demand;
+      const primaryCapacity = isYtd ? (r.ytd_capacity || r.capacity) : r.capacity;
+      const primaryLF = isYtd ? (r.ytd_clf || r.loadFactor) : r.loadFactor;
+      const primaryYield = r.cargoYield;
+
+      const primaryTitle = isYtd ? 'Kümülatif YTD Göstergeleri' : 'Küresel Göstergeler (Yıllık)';
+      const secondaryTitle = isYtd ? 'Aylık Karşılaştırma & Uluslararası' : 'Uluslararası & Yıl Başından İtibaren';
+
+      const regionSectionTitle = `Bölgesel ${isActk ? 'Arz / Kapasite (ACTK)' : 'Talep (CTK)'} Değişimi · ${isYtd ? 'YTD Kümülatif' : 'Aylık'}`;
 
       return `
         <div class="iata-report-card">
           <!-- Period header -->
           <div class="iata-report-period">
             ${r.date}
-            <span class="iata-report-period-badge">Aylık</span>
+            <span class="iata-report-period-badge" style="${periodBadgeStyle}">${periodBadge}</span>
           </div>
           ${r.title ? `<div class="iata-report-title">${r.title}</div>` : ''}
 
-          <!-- Primary metrics: CTK, ACTK, LF, Cargo Yield -->
-          <div class="iata-metrics-section-lbl">Küresel Göstergeler (Yıllık)</div>
+          <!-- Primary metrics -->
+          <div class="iata-metrics-section-lbl">${primaryTitle}</div>
           <div class="iata-metrics-primary">
             <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">Talep CTK</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand)}">${window.formatPercent(r.demand)}</span>
+              <span class="iata-report-metric-lbl">${isYtd ? 'YTD Talep CTK' : 'Talep CTK'}</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(primaryDemand)}">${window.formatPercent(primaryDemand)}</span>
             </div>
             <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">Kapasite ACTK</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity)}">${window.formatPercent(r.capacity)}</span>
+              <span class="iata-report-metric-lbl">${isYtd ? 'YTD Arz ACTK' : 'Kapasite ACTK'}</span>
+              <span class="iata-report-metric-val" style="color:${getChangeColor(primaryCapacity)}">${window.formatPercent(primaryCapacity)}</span>
             </div>
             <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">Load Factor</span>
-              <span class="iata-report-metric-val" style="color:#7a64a8">${window.formatPercent(r.loadFactor)}</span>
+              <span class="iata-report-metric-lbl">${isYtd ? 'YTD Load Factor' : 'Load Factor'}</span>
+              <span class="iata-report-metric-val" style="color:#7a64a8">${window.formatPercent(primaryLF)}</span>
             </div>
             <div class="iata-report-metric">
               <span class="iata-report-metric-lbl">Kargo Yield</span>
-              <span class="iata-report-metric-val" style="color:#f59e0b">${window.formatPercent(r.cargoYield)}</span>
+              <span class="iata-report-metric-val" style="color:#f59e0b">${window.formatPercent(primaryYield)}</span>
             </div>
           </div>
 
-          <!-- Secondary metrics: International + YTD -->
-          <div class="iata-metrics-section-lbl">Uluslararası & Yıl Başından İtibaren</div>
+          <!-- Secondary metrics -->
+          <div class="iata-metrics-section-lbl">${secondaryTitle}</div>
           <div class="iata-metrics-secondary">
-            <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">Intl CTK</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand_intl)};font-size:12px">${window.formatPercent(r.demand_intl)}</span>
-            </div>
-            <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">Intl ACTK</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity_intl)};font-size:12px">${window.formatPercent(r.capacity_intl)}</span>
-            </div>
-            <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">YTD Talep</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.ytd_demand)};font-size:12px">${window.formatPercent(r.ytd_demand)}</span>
-            </div>
-            <div class="iata-report-metric">
-              <span class="iata-report-metric-lbl">YTD Kap.</span>
-              <span class="iata-report-metric-val" style="color:${getChangeColor(r.ytd_capacity)};font-size:12px">${window.formatPercent(r.ytd_capacity)}</span>
-            </div>
+            ${isYtd ? `
+              <div class="iata-report-metric">
+                <span class="iata-report-metric-lbl">Aylık CTK</span>
+                <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand)};font-size:12px">${window.formatPercent(r.demand)}</span>
+              </div>
+              <div class="iata-report-metric">
+                <span class="iata-report-metric-lbl">Aylık ACTK</span>
+                <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity)};font-size:12px">${window.formatPercent(r.capacity)}</span>
+              </div>
+              <div class="iata-report-metric">
+                <span class="iata-report-metric-lbl">Intl CTK</span>
+                <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand_intl)};font-size:12px">${window.formatPercent(r.demand_intl)}</span>
+              </div>
+              <div class="iata-report-metric">
+                <span class="iata-report-metric-lbl">Intl ACTK</span>
+                <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity_intl)};font-size:12px">${window.formatPercent(r.capacity_intl)}</span>
+              </div>
+            ` : `
+              <div class="iata-report-metric">
+                <span class="iata-report-metric-lbl">Intl CTK</span>
+                <span class="iata-report-metric-val" style="color:${getChangeColor(r.demand_intl)};font-size:12px">${window.formatPercent(r.demand_intl)}</span>
+              </div>
+              <div class="iata-report-metric">
+                <span class="iata-report-metric-lbl">Intl ACTK</span>
+                <span class="iata-report-metric-val" style="color:${getChangeColor(r.capacity_intl)};font-size:12px">${window.formatPercent(r.capacity_intl)}</span>
+              </div>
+              <div class="iata-report-metric">
+                <span class="iata-report-metric-lbl">YTD Talep</span>
+                <span class="iata-report-metric-val" style="color:${getChangeColor(r.ytd_demand)};font-size:12px">${window.formatPercent(r.ytd_demand)}</span>
+              </div>
+              <div class="iata-report-metric">
+                <span class="iata-report-metric-lbl">YTD Kap. (Arz)</span>
+                <span class="iata-report-metric-val" style="color:${getChangeColor(r.ytd_capacity)};font-size:12px">${window.formatPercent(r.ytd_capacity)}</span>
+              </div>
+            `}
           </div>
 
           ${hasMacro ? `
@@ -22362,11 +22532,11 @@ function initControls(allArticles) {
           </div>` : ''}
 
           ${hasRegions ? `
-          <!-- Regional CTK breakdown mini bars -->
-          <div class="iata-metrics-section-lbl">Bölgesel CTK Değişimi</div>
+          <!-- Regional breakdown mini bars -->
+          <div class="iata-metrics-section-lbl">${regionSectionTitle}</div>
           <div class="iata-region-chart-wrap">
             <div class="iata-region-bars">
-              ${renderRegionBars(r.regions)}
+              ${renderRegionBars(r)}
             </div>
           </div>` : ''}
 
@@ -22971,9 +23141,9 @@ function initControls(allArticles) {
     if (period === '6a') return withISO.slice(0, 6);
     if (period === '1y') return withISO.slice(0, 12);
     if (period === 'tumu') return withISO;
-    const currentYear = new Date().getFullYear().toString();
-    const ytd = withISO.filter(r => r._iso.startsWith(currentYear));
-    return ytd.length > 0 ? ytd : withISO.slice(0, 4);
+    const latestYear = (withISO[0] && withISO[0]._iso) ? withISO[0]._iso.slice(0, 4) : '2026';
+    const ytd = withISO.filter(r => r._iso.startsWith(latestYear));
+    return ytd.length > 0 ? ytd : withISO.slice(0, 7);
   }
 
   function iataModalSetPeriod(period, btnEl) {
@@ -23015,38 +23185,37 @@ function initControls(allArticles) {
       const kpiCapSub    = document.getElementById('kpi-capacity-sub');
       const kpiLfSub     = document.getElementById('kpi-lf-sub');
       const kpiYieldSub  = document.getElementById('kpi-yield-sub');
-      const stripPlus2 = v => (v || '—').replace(/^\+/, '');
 
       const isYtd = _iataModalPeriod === 'ytd';
 
       if (kpiDemand) {
         const val = isYtd ? (latest.ytd_demand || latest.demand) : latest.demand;
-        kpiDemand.textContent = stripPlus2(val);
-        kpiDemand.style.color = (val||'').startsWith('+') ? '#22c55e' : (val||'').startsWith('-') ? 'var(--red)' : 'var(--text)';
+        kpiDemand.textContent = window.formatPercent(val);
+        kpiDemand.style.color = (val||'').startsWith('-') ? 'var(--red)' : '#22c55e';
       }
       if (kpiDemandSub) {
-        kpiDemandSub.textContent = isYtd ? `Aylık: ${latest.demand || '—'} · YTD Büyüme` : `Aylık: ${latest.demand || '—'} · YTD: ${latest.ytd_demand || '—'}`;
+        kpiDemandSub.textContent = isYtd ? `Aylık: ${window.formatPercent(latest.demand)} · YTD Büyüme` : `Aylık: ${window.formatPercent(latest.demand)} · YTD: ${window.formatPercent(latest.ytd_demand)}`;
       }
 
       if (kpiCapacity) {
         const val = isYtd ? (latest.ytd_capacity || latest.capacity) : latest.capacity;
-        kpiCapacity.textContent = stripPlus2(val);
-        kpiCapacity.style.color = (val||'').startsWith('+') ? '#22c55e' : (val||'').startsWith('-') ? 'var(--red)' : 'var(--text)';
+        kpiCapacity.textContent = window.formatPercent(val);
+        kpiCapacity.style.color = (val||'').startsWith('-') ? 'var(--red)' : '#22c55e';
       }
       if (kpiCapSub) {
-        kpiCapSub.textContent = isYtd ? `Aylık: ${latest.capacity || '—'} · YTD Değişim` : `Aylık: ${latest.capacity || '—'} · YTD: ${latest.ytd_capacity || '—'}`;
+        kpiCapSub.textContent = isYtd ? `Aylık: ${window.formatPercent(latest.capacity)} · YTD Değişim` : `Aylık: ${window.formatPercent(latest.capacity)} · YTD: ${window.formatPercent(latest.ytd_capacity)}`;
       }
 
       if (kpiLF) {
         const val = (isYtd && latest.ytd_clf) ? latest.ytd_clf : latest.loadFactor;
-        kpiLF.textContent = stripPlus2(val);
+        kpiLF.textContent = window.formatPercent(val);
       }
       if (kpiLfSub) {
-        kpiLfSub.textContent = isYtd ? `YTD Ortalama: ${latest.ytd_clf || latest.loadFactor || '—'}` : `Doluluk: ${latest.loadFactor || '—'}${latest.ytd_clf ? ' (YTD: ' + latest.ytd_clf + ')' : ''}`;
+        kpiLfSub.textContent = isYtd ? `YTD Ortalama: ${window.formatPercent(latest.ytd_clf || latest.loadFactor)}` : `Doluluk: ${window.formatPercent(latest.loadFactor)}${latest.ytd_clf ? ' (YTD: ' + window.formatPercent(latest.ytd_clf) + ')' : ''}`;
       }
 
       if (kpiYield) {
-        kpiYield.textContent = stripPlus2(latest.cargoYield);
+        kpiYield.textContent = window.formatPercent(latest.cargoYield);
         kpiYield.style.color = '#f59e0b';
       }
       if (kpiYieldSub) {
