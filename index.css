@@ -9199,6 +9199,58 @@
   margin: 0;
 }
 
+/* ── IATA Feed Üst Kontrolleri (Aylık/YTD, CTK/ACTK) ── */
+.iata-feed-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.iata-feed-controls .dc-period-toggle {
+  display: inline-flex;
+  background: var(--bg-soft, rgba(0,0,0,0.06));
+  padding: 3px 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft, rgba(0,0,0,0.08));
+  gap: 2px;
+}
+.iata-feed-controls .dc-pill-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  font-size: 15px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.3;
+}
+.iata-feed-controls .dc-pill-btn:hover {
+  color: var(--text);
+}
+.iata-feed-controls .dc-pill-btn.active {
+  background: var(--surface, #fff);
+  color: #7a64a8;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+[data-theme="dark"] .iata-feed-controls .dc-period-toggle {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.1);
+}
+[data-theme="dark"] .iata-feed-controls .dc-pill-btn.active {
+  background: rgba(122,100,168,0.28);
+  color: #c4b5fd;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+@media (max-width: 640px) {
+  .iata-feed-controls .dc-pill-btn {
+    font-size: 13.5px;
+    padding: 4px 10px;
+  }
+}
+
 /* ── IATA Başlık İçi Yıl Seçici ─────────── */
 .iata-title-year-wrapper {
   position: relative;
