@@ -2984,9 +2984,10 @@
 
       /* ── Customer News Filter Dropdowns & Pills ── */
       .cust-dropdown-panel {
-        min-width: 320px;
-        max-width: 440px;
-        max-height: 380px;
+        width: max-content;
+        min-width: 340px;
+        max-width: min(640px, calc(100vw - 24px));
+        max-height: 400px;
         overflow-y: auto;
         padding: 8px;
       }
@@ -2997,16 +2998,21 @@
       }
       .cust-company-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 4px;
       }
+      .cust-company-grid.cust-grid-single {
+        grid-template-columns: 1fr;
+        min-width: 320px;
+      }
+      .cust-company-grid.cust-grid-double {
+        grid-template-columns: repeat(2, minmax(270px, 1fr));
+      }
       .cust-company-item {
-        padding: 6px 8px;
+        padding: 6px 10px;
         display: flex;
         align-items: center;
-        gap: 7px;
+        gap: 8px;
         border-radius: 6px;
-        overflow: hidden;
         min-height: 32px;
         cursor: pointer;
       }
@@ -3020,7 +3026,7 @@
       .cust-company-count {
         font-size: 10.5px;
         color: var(--text-3);
-        padding-left: 4px;
+        padding-left: 6px;
         flex-shrink: 0;
       }
       .cust-section-pill {
@@ -3057,9 +3063,11 @@
           max-width: calc(100vw - 24px) !important;
         }
       }
-      @media (max-width: 480px) {
-        .cust-company-grid {
-          grid-template-columns: 1fr;
+      @media (max-width: 580px) {
+        .cust-company-grid,
+        .cust-company-grid.cust-grid-double {
+          grid-template-columns: 1fr !important;
+          min-width: 100% !important;
         }
       }
 
@@ -6800,19 +6808,19 @@ function buildCardHTML(article) {
           if (sources.length === 1) {
             return `<div class="card-footer">
               <div class="card-source"><img class="source-favicon" src="${getFavicon(primary.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[primary.source] || primary.source || ''}</div>
-              ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+              ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Devamını oku ${linkSvg}</a>` : ''}
             </div>`;
           }
           const extra = sources.slice(1);
           const extraRows = extra.map(s => `<div class="card-source-row">
             <div class="card-source"><img class="source-favicon" src="${getFavicon(s.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[s.source] || s.source || ''}</div>
-            ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+            ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer">Devamını oku ${linkSvg}</a>` : ''}
           </div>`).join('');
           return `<div class="card-footer card-footer-multi">
             <div class="card-source-row">
               <div class="card-source"><img class="source-favicon" src="${getFavicon(primary.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[primary.source] || primary.source || ''}</div>
               <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-                ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+                ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Devamını oku ${linkSvg}</a>` : ''}
                 <button class="source-badge" onclick="toggleExtraSources(this)" aria-expanded="false" aria-label="${extra.length} kaynak daha">+${extra.length} ${chevronSvg}</button>
               </div>
             </div>
@@ -9680,6 +9688,7 @@ function buildCustomerPanels(articles) {
     const totalArticles = Object.values(sourcesObj).reduce((sum, n) => sum + n, 0);
 
     const isCatActive = _custFilterCat === sec.cat && _custFilterSource === 'all';
+    const isSingleCol = sortedSources.length <= 4;
 
     let html = `
       <div class="fdd-option cust-panel-all-opt ${isCatActive ? 'selected' : ''}" data-cat="${sec.cat}" data-source="all" role="option" aria-selected="${isCatActive}">
@@ -9688,7 +9697,7 @@ function buildCustomerPanels(articles) {
         <span style="font-weight:600;">Tüm ${sec.defaultLabel}</span>
         <span style="margin-left:auto;font-size:11px;color:var(--text-3);">${totalArticles}</span>
       </div>
-      <div class="cust-company-grid">
+      <div class="cust-company-grid ${isSingleCol ? 'cust-grid-single' : 'cust-grid-double'}">
     `;
 
     sortedSources.forEach(src => {
@@ -9887,7 +9896,7 @@ function buildCustomerCardHTML(article) {
           <img class="source-favicon" src="${getCustomerFavicon(s.source, s.link)}" alt="" loading="lazy" onerror="this.style.display='none'">
           ${s.source || ''}
         </div>
-        ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer" style="font-size:11px;">Haberi oku ${linkSvg}</a>` : ''}
+        ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer" style="font-size:11px;">Devamını oku ${linkSvg}</a>` : ''}
       </div>
     `).join('');
     extraSourcesHtml = `
@@ -9918,7 +9927,7 @@ function buildCustomerCardHTML(article) {
           </div>
           ${cleanLink !== '#' ? `
             <a class="card-link" href="${cleanLink}" target="_blank" rel="noopener noreferrer">
-              Haberi oku
+              Devamını oku
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           ` : ''}

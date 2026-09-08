@@ -6063,19 +6063,19 @@ function buildCardHTML(article) {
           if (sources.length === 1) {
             return `<div class="card-footer">
               <div class="card-source"><img class="source-favicon" src="${getFavicon(primary.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[primary.source] || primary.source || ''}</div>
-              ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+              ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Devamını oku ${linkSvg}</a>` : ''}
             </div>`;
           }
           const extra = sources.slice(1);
           const extraRows = extra.map(s => `<div class="card-source-row">
             <div class="card-source"><img class="source-favicon" src="${getFavicon(s.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[s.source] || s.source || ''}</div>
-            ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+            ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer">Devamını oku ${linkSvg}</a>` : ''}
           </div>`).join('');
           return `<div class="card-footer card-footer-multi">
             <div class="card-source-row">
               <div class="card-source"><img class="source-favicon" src="${getFavicon(primary.source)}" alt="" loading="lazy" onerror="this.style.display='none'">${SOURCE_LABELS[primary.source] || primary.source || ''}</div>
               <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-                ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Haberi oku ${linkSvg}</a>` : ''}
+                ${primary.link ? `<a class="card-link" href="${primary.link}" target="_blank" rel="noopener noreferrer">Devamını oku ${linkSvg}</a>` : ''}
                 <button class="source-badge" onclick="toggleExtraSources(this)" aria-expanded="false" aria-label="${extra.length} kaynak daha">+${extra.length} ${chevronSvg}</button>
               </div>
             </div>
