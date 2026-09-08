@@ -400,6 +400,38 @@ const CARGO_FLEET_DETAILS = {
 };
 
 const CARGO_STATIC_ROUTES = {
+  "THY6463": [
+    { dep: "LTFM", arr: "LHBP" }, // Istanbul -> Budapest
+    { dep: "LHBP", arr: "LTFM" }  // Budapest -> Istanbul
+  ],
+  "THY6464": [
+    { dep: "LHBP", arr: "LTFM" }, // Budapest -> Istanbul
+    { dep: "LTFM", arr: "LHBP" }  // Istanbul -> Budapest
+  ],
+  "THY6417": [
+    { dep: "LTFM", arr: "LEMD" }, // Istanbul -> Madrid
+    { dep: "LEMD", arr: "LTFM" }  // Madrid -> Istanbul
+  ],
+  "THY6418": [
+    { dep: "LEMD", arr: "LTFM" }, // Madrid -> Istanbul
+    { dep: "LTFM", arr: "LEMD" }  // Istanbul -> Madrid
+  ],
+  "THY6180": [
+    { dep: "LTFM", arr: "DNMM" }, // Istanbul -> Lagos
+    { dep: "DNMM", arr: "LTFM" }  // Lagos -> Istanbul
+  ],
+  "THY6181": [
+    { dep: "DNMM", arr: "LTFM" }, // Lagos -> Istanbul
+    { dep: "LTFM", arr: "DNMM" }  // Istanbul -> Lagos
+  ],
+  "THY6505": [
+    { dep: "LTFM", arr: "ENGM" }, // Istanbul -> Oslo
+    { dep: "ENGM", arr: "LTFM" }  // Oslo -> Istanbul
+  ],
+  "THY6506": [
+    { dep: "ENGM", arr: "LTFM" }, // Oslo -> Istanbul
+    { dep: "LTFM", arr: "ENGM" }  // Istanbul -> Oslo
+  ],
   "THY6116": [
     { dep: "HLLM", arr: "HECA" }, // Tripoli (Mitiga) -> Cairo
     { dep: "HECA", arr: "HLLM" }, // Cairo -> Tripoli (Mitiga)
@@ -2912,12 +2944,26 @@ export default {
 
       async function enrichInBackground(data, cachedFlights) {
         const { flights } = data;
-        const cargoFlights = flights.filter(f => f.type === 'cargo');
+        const cargoFlights = flights
+          .filter(f => f.type === 'cargo')
+          .sort((a, b) => (a.airline === 'THY' ? -1 : (b.airline === 'THY' ? 1 : 0)));
         let cacheUpdated = false;
 
+        let subreqCount = 0;
         for (const f of cargoFlights) {
-          if (await resolveFlightRoute(f)) cacheUpdated = true;
-          if (await resolveAircraftDetails(f)) cacheUpdated = true;
+          if (subreqCount > 35) break;
+          if (!f.dep) {
+            if (await resolveFlightRoute(f)) {
+              cacheUpdated = true;
+              subreqCount += 2;
+            }
+          }
+          if (!f.aircraftDetails) {
+            if (await resolveAircraftDetails(f)) {
+              cacheUpdated = true;
+              subreqCount += 1;
+            }
+          }
         }
 
         if (cacheUpdated) {
@@ -3045,6 +3091,15 @@ export default {
           });
         }
 
+        // ── THY Kargo uçuşları (havada yalnızca 5-8 adet) için rotası çözülmemiş olanları dönmeden önce proaktif olarak çöz ──
+        const unconfirmedThyCargo = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'cargo' && !f.dep);
+        if (unconfirmedThyCargo.length > 0) {
+          await Promise.allSettled(unconfirmedThyCargo.map(async (f) => {
+            await resolveFlightRoute(f);
+            await resolveAircraftDetails(f);
+          }));
+        }
+
         // Re-calculate counts in case types were corrected
         fresh.count = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'cargo').length;
         fresh.paxCount = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'pax').length;
@@ -3080,6 +3135,25 @@ export default {
           const f = { callsign, icao24, lat, lon, track, type: 'pax', airline: airlineMeta ? airlineMeta.code : null };
           await resolveFlightRoute(f);
           await resolveAircraftDetails(f);
+
+          // Rota çözüldüyse ana cache'deki ilgili kaydı da güncelle (sonraki istekler anında görsün)
+          if (f.dep && f.arr) {
+            ctx.waitUntil((async () => {
+              try {
+                const cachedData = await getCachedFlights();
+                if (cachedData && Array.isArray(cachedData.flights)) {
+                  const target = cachedData.flights.find(cf => cf.callsign === callsign);
+                  if (target) {
+                    target.dep = f.dep;
+                    target.arr = f.arr;
+                    target.routeSource = f.routeSource;
+                    if (f.aircraftDetails) target.aircraftDetails = f.aircraftDetails;
+                    await setCachedFlights(cachedData);
+                  }
+                }
+              } catch (_) {}
+            })());
+          }
 
           return new Response(JSON.stringify({
             dep: f.dep || null,
