@@ -17081,9 +17081,37 @@ async function loadDashboard() {
   let _cargoPlaneMarkers = new Map();
   const cargoAirlineColor = (code) => (CARGO_AIRLINE_META[code] && CARGO_AIRLINE_META[code].color) || '#C8102E';
 
+  // ── Sayfa ilk açıldığında localStorage'dan ANINDA yükle (0ms gecikme) ──
+  (function initCargoInstantCache() {
+    try {
+      const cached = JSON.parse(localStorage.getItem('cargo_flights_cache_v2') || 'null');
+      if (cached && Array.isArray(cached.flights) && cached.flights.length > 0) {
+        _cargoAllFlights = cached.flights;
+        _cargoFlights = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter && _cargoSelectedAirlines.has(f.airline));
+        const initCount = typeof cached.count === 'number' ? cached.count : _cargoFlights.length;
+        setCard('dc-cargo', String(initCount), null, 'Turkish Cargo',
+          `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
+        if (cached.dateStr) setDateBadge('dc-cargo-date', cached.dateStr);
+      } else {
+        const lastCount = JSON.parse(localStorage.getItem('cargo_count_last_good') || 'null');
+        if (lastCount && typeof lastCount.count === 'number') {
+          setCard('dc-cargo', String(lastCount.count), null, 'Turkish Cargo',
+            `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
+          if (lastCount.dateStr) setDateBadge('dc-cargo-date', lastCount.dateStr);
+        }
+      }
+    } catch (_) {}
+  })();
+
   async function initCargoCard() {
     try {
-      const res = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/cargo-flights?t=' + Date.now(), { cache: 'no-store' });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 7500);
+      const res = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/cargo-flights?t=' + Date.now(), {
+        cache: 'no-store',
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
       if (!res.ok) throw new Error('Proxy error ' + res.status);
       const data = await res.json();
       const freshList = (data && Array.isArray(data.flights)) ? data.flights : [];
@@ -17110,10 +17138,6 @@ async function loadDashboard() {
         return f;
       });
 
-      // Not: sinyal kaybı/tahmini konum artık worker (dead-reckoning) tarafından
-      // hesaplanıp signalLost:true olarak gönderiliyor; istemci tarafında ayrıca
-      // "seçili uçağı diri tut" yaması gerekmiyor (worker gerçekten kaybolduğuna
-      // karar verene kadar zaten listede kalıyor).
       _cargoAllFlights = freshFlights;
 
       const count = data && typeof data.count === 'number' ? data.count : _cargoAllFlights.filter(f => f.airline === 'THY' && f.type === 'cargo').length;
@@ -17128,18 +17152,30 @@ async function loadDashboard() {
       const min = String(today.getMinutes()).padStart(2, '0');
       const dateStr = `${dd}.${mm}.${yyyy} ${hh}:${min}`;
       setDateBadge('dc-cargo-date', dateStr);
-      try { localStorage.setItem('cargo_count_last_good', JSON.stringify({ count, dateStr })); } catch (e) {}
+      try {
+        localStorage.setItem('cargo_count_last_good', JSON.stringify({ count, dateStr }));
+        localStorage.setItem('cargo_flights_cache_v2', JSON.stringify({ count, dateStr, flights: freshFlights }));
+      } catch (e) {}
       if (document.getElementById('cargo-flights-modal')?.style.display === 'flex') {
         renderCargoFlightsModal(false);
       }
     } catch (_) {
-      // Canlı OpenSky verisi alınamadı: elimizdeki son gerçek anlık sayıyı göster (fake veri yerine)
+      // Canlı OpenSky verisi alınamadı veya zaman aşımına uğradı: önbellekteki veriyi koru
       let lastGood = null;
       try { lastGood = JSON.parse(localStorage.getItem('cargo_count_last_good') || 'null'); } catch (e) {}
+      if (!_cargoAllFlights.length) {
+        try {
+          const cached = JSON.parse(localStorage.getItem('cargo_flights_cache_v2') || 'null');
+          if (cached && Array.isArray(cached.flights)) {
+            _cargoAllFlights = cached.flights;
+            _cargoFlights = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter && _cargoSelectedAirlines.has(f.airline));
+          }
+        } catch (e) {}
+      }
       if (lastGood && typeof lastGood.count === 'number') {
         setCard('dc-cargo', String(lastGood.count), null, 'Turkish Cargo', `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
         setDateBadge('dc-cargo-date', lastGood.dateStr);
-      } else {
+      } else if (!_cargoAllFlights.length) {
         setCard('dc-cargo', '—', null, '', 'Veri alınamadı');
       }
     }
@@ -17520,14 +17556,74 @@ async function loadDashboard() {
     }
   }
 
+  function extractActiveFlightLeg(rawPath) {
+    if (!rawPath || !Array.isArray(rawPath) || rawPath.length < 2) {
+      return rawPath || [];
+    }
+    const validPts = [];
+    for (let i = 0; i < rawPath.length; i++) {
+      const p = rawPath[i];
+      if (p && p.length >= 3 && p[1] != null && p[2] != null && isFinite(p[1]) && isFinite(p[2])) {
+        validPts.push(p);
+      }
+    }
+    if (validPts.length < 2) return validPts;
+
+    validPts.sort((a, b) => (a[0] || 0) - (b[0] || 0));
+
+    const cleaned = [validPts[validPts.length - 1]];
+    for (let i = validPts.length - 1; i > 0; i--) {
+      const curr = validPts[i];
+      const prev = validPts[i - 1];
+
+      const tCurr = curr[0] || 0;
+      const tPrev = prev[0] || 0;
+      const dt = tCurr - tPrev;
+
+      if (dt <= 0) continue;
+      // 20 dakikadan fazla sinyal kesintisi = önceki uçuş bacağı
+      if (dt > 1200) break;
+
+      const dist = getDistance(prev[1], prev[2], curr[1], curr[2]);
+      const speedKmh = dist / (dt / 3600);
+
+      // 60 km üzeri mesafede süpersonik sıçrama (teleport/glitch)
+      if (dist > 60 && speedKmh > 1250) {
+        if (i > 1) {
+          const prevPrev = validPts[i - 2];
+          const dt2 = tCurr - (prevPrev[0] || 0);
+          if (dt2 > 0 && dt2 <= 1200) {
+            const dist2 = getDistance(prevPrev[1], prevPrev[2], curr[1], curr[2]);
+            const speed2 = dist2 / (dt2 / 3600);
+            if (speed2 <= 1250) {
+              continue; // prev tekil glitch, atla
+            }
+          }
+        }
+        break;
+      }
+
+      if (prev[5] === true) {
+        cleaned.push(prev);
+        break;
+      }
+
+      cleaned.push(prev);
+    }
+
+    cleaned.reverse();
+    return cleaned;
+  }
+
   async function fetchCargoFlightTrackOnDemand(f, idx) {
     try {
       const res = await fetch(`https://haberozetleri-proxy.demirbasemre.workers.dev/cargo-flight-track?icao24=${f.icao24}`);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       if (data && Array.isArray(data.path) && data.path.length > 1) {
+        const cleanedPath = extractActiveFlightLeg(data.path);
         let rawPts = [];
-        data.path.forEach(p => {
+        cleanedPath.forEach(p => {
           const plat = p[1];
           const plon = p[2];
           if (plat != null && plon != null && isFinite(plat) && isFinite(plon)) {
@@ -17545,14 +17641,17 @@ async function loadDashboard() {
               minIdx = i;
             }
           }
-          if (minDist < 400) {
+          if (minDist < 300) {
             rawPts = rawPts.slice(minIdx);
           }
         }
 
         const pts = [];
-        if (f.dep && f.dep.lat != null) {
-          pts.push([f.dep.lat, f.dep.lon]);
+        if (f.dep && f.dep.lat != null && rawPts.length > 0) {
+          const dToDep = getDistance(rawPts[0][0], rawPts[0][1], f.dep.lat, f.dep.lon);
+          if (dToDep < 500) {
+            pts.push([f.dep.lat, f.dep.lon]);
+          }
         }
         pts.push(...rawPts);
 
@@ -18047,6 +18146,16 @@ async function loadDashboard() {
     const btnPax = document.getElementById('cargo-filter-btn-passenger');
     if (btnCargo) btnCargo.classList.add('active');
     if (btnPax) btnPax.classList.remove('active');
+
+    // Eğer henüz arka plan ağı tamamlanmadıysa localStorage'dan son bilinen uçuşları anında çek
+    if (!_cargoAllFlights.length) {
+      try {
+        const cached = JSON.parse(localStorage.getItem('cargo_flights_cache_v2') || 'null');
+        if (cached && Array.isArray(cached.flights) && cached.flights.length > 0) {
+          _cargoAllFlights = cached.flights;
+        }
+      } catch (_) {}
+    }
 
     _cargoFlights = _cargoAllFlights.filter(f => _cargoSelectedAirlines.has(f.airline));
     m.style.display = 'flex';

@@ -1328,7 +1328,7 @@ export default {
               method: options.method || 'GET',
               headers,
               body: options.body,
-              signal: AbortSignal.timeout(15000) 
+              signal: AbortSignal.timeout(2500) 
             }
           );
           if (funnelResp.ok) {
@@ -3202,15 +3202,6 @@ export default {
           });
         }
 
-        // ── THY Kargo uçuşları (havada yalnızca 5-8 adet) için rotası çözülmemiş olanları dönmeden önce proaktif olarak çöz ──
-        const unconfirmedThyCargo = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'cargo' && !f.dep);
-        if (unconfirmedThyCargo.length > 0) {
-          await Promise.allSettled(unconfirmedThyCargo.map(async (f) => {
-            await resolveFlightRoute(f);
-            await resolveAircraftDetails(f);
-          }));
-        }
-
         // Re-calculate counts in case types were corrected
         fresh.count = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'cargo').length;
         fresh.paxCount = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'pax').length;
@@ -3305,6 +3296,66 @@ export default {
             } catch (_) {}
           }
 
+          function extractActiveFlightLeg(rawPath) {
+            if (!rawPath || !Array.isArray(rawPath) || rawPath.length < 2) {
+              return rawPath || [];
+            }
+            const validPts = [];
+            for (let i = 0; i < rawPath.length; i++) {
+              const p = rawPath[i];
+              if (p && p.length >= 3 && p[1] != null && p[2] != null && isFinite(p[1]) && isFinite(p[2])) {
+                validPts.push(p);
+              }
+            }
+            if (validPts.length < 2) return validPts;
+
+            validPts.sort((a, b) => (a[0] || 0) - (b[0] || 0));
+
+            const cleaned = [validPts[validPts.length - 1]];
+            for (let i = validPts.length - 1; i > 0; i--) {
+              const curr = validPts[i];
+              const prev = validPts[i - 1];
+
+              const tCurr = curr[0] || 0;
+              const tPrev = prev[0] || 0;
+              const dt = tCurr - tPrev;
+
+              if (dt <= 0) continue;
+              // 20 dakikadan fazla sinyal kesintisi varsa önceki uçuş bacağıdır
+              if (dt > 1200) break;
+
+              const dist = getDistance(prev[1], prev[2], curr[1], curr[2]);
+              const speedKmh = dist / (dt / 3600);
+
+              // 60 km üzeri mesafede süpersonik sıçrama (teleport/glitch)
+              if (dist > 60 && speedKmh > 1250) {
+                if (i > 1) {
+                  const prevPrev = validPts[i - 2];
+                  const dt2 = tCurr - (prevPrev[0] || 0);
+                  if (dt2 > 0 && dt2 <= 1200) {
+                    const dist2 = getDistance(prevPrev[1], prevPrev[2], curr[1], curr[2]);
+                    const speed2 = dist2 / (dt2 / 3600);
+                    if (speed2 <= 1250) {
+                      continue; // prev tekil glitch, atla
+                    }
+                  }
+                }
+                break;
+              }
+
+              // Uçak yerdeyse kalkış noktasıdır
+              if (prev[5] === true) {
+                cleaned.push(prev);
+                break;
+              }
+
+              cleaned.push(prev);
+            }
+
+            cleaned.reverse();
+            return cleaned;
+          }
+
           const token = await getOpenSkyToken(env, doFetch);
           const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
           const trackRes = await doFetch(`https://opensky-network.org/api/tracks/all?icao24=${icao24}&time=0`, { headers: authHeaders }, false, 60);
@@ -3312,12 +3363,14 @@ export default {
           if (trackRes.status === 200) {
             try {
               const trackData = JSON.parse(trackRes.body);
+              const rawPath = Array.isArray(trackData.path) ? trackData.path : [];
+              const cleanedPath = extractActiveFlightLeg(rawPath);
               const result = {
                 icao24,
                 callsign: (trackData.callsign || '').trim(),
                 startTime: trackData.startTime,
                 endTime: trackData.endTime,
-                path: Array.isArray(trackData.path) ? trackData.path : [],
+                path: cleanedPath,
               };
               if (env.FBX_ROUTES_KV && result.path.length > 0) {
                 ctx.waitUntil(env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(result), { expirationTtl: 120 }));
