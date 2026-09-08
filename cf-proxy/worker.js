@@ -513,6 +513,40 @@ const CARGO_STATIC_ROUTES = {
   "THY6111": [
     { dep: "LTFM", arr: "VABB" }, // Istanbul -> Mumbai (BOM)
     { dep: "VABB", arr: "LTFM" }  // Mumbai -> Istanbul
+  ],
+  "THY6694": [
+    { dep: "LTFM", arr: "UAAA" }, // Istanbul -> Almaty
+    { dep: "UAAA", arr: "LTFM" }  // Almaty -> Istanbul
+  ],
+  "THY6182": [
+    { dep: "LTFM", arr: "VOHS" }, // Istanbul -> Hyderabad
+    { dep: "VOHS", arr: "LTFM" }, // Hyderabad -> Istanbul
+    { dep: "OTHH", arr: "VOHS" }, // Doha -> Hyderabad
+    { dep: "VOHS", arr: "OTHH" }  // Hyderabad -> Doha
+  ],
+  "THY6350": [
+    { dep: "OERK", arr: "VHHH" }, // Riyadh -> Hong Kong
+    { dep: "VHHH", arr: "OERK" }, // Hong Kong -> Riyadh
+    { dep: "LTFM", arr: "OERK" }, // Istanbul -> Riyadh
+    { dep: "VHHH", arr: "LTFM" }  // Hong Kong -> Istanbul
+  ],
+  "THY6333": [
+    { dep: "LTFM", arr: "OMDW" }, // Istanbul -> Dubai (DWC)
+    { dep: "OMDW", arr: "LTFM" }, // Dubai (DWC) -> Istanbul
+    { dep: "LTFM", arr: "OMDB" }, // Istanbul -> Dubai (DXB)
+    { dep: "OMDB", arr: "LTFM" }  // Dubai (DXB) -> Istanbul
+  ],
+  "THY6637": [
+    { dep: "LTFM", arr: "OMDW" }, // Istanbul -> Dubai (DWC)
+    { dep: "OMDW", arr: "LTFM" }, // Dubai (DWC) -> Istanbul
+    { dep: "LTFM", arr: "OMDB" }, // Istanbul -> Dubai (DXB)
+    { dep: "OMDB", arr: "LTFM" }  // Dubai (DXB) -> Istanbul
+  ],
+  "THY6696": [
+    { dep: "OOMS", arr: "ZHCC" }, // Muscat -> Zhengzhou
+    { dep: "ZHCC", arr: "OOMS" }, // Zhengzhou -> Muscat
+    { dep: "LTFM", arr: "OOMS" }, // Istanbul -> Muscat
+    { dep: "OOMS", arr: "LTFM" }  // Muscat -> Istanbul
   ]
 };
 
@@ -1175,9 +1209,9 @@ async function fetchAndCombineEconData(env, previousCache, doFetch) {
   const inverseImf = {};
   ECON_COUNTRIES.forEach(c => { const m = IMF_MAP[c] || c; inverseImf[m] = c; });
 
-  let imfOut = { NGDP_RPCH: {}, PCPIPCH: {} };
+  let imfOut = { NGDP_RPCH: {}, PCPIPCH: {}, GGXWDG_NGDP: {} };
   if (imfRaw) {
-    ['NGDP_RPCH', 'PCPIPCH'].forEach(ind => {
+    ['NGDP_RPCH', 'PCPIPCH', 'GGXWDG_NGDP'].forEach(ind => {
       const seriesObj = imfRaw[ind] || {};
       Object.entries(seriesObj).forEach(([imfCode, years]) => {
         const orig = inverseImf[imfCode] || imfCode;
@@ -1187,6 +1221,17 @@ async function fetchAndCombineEconData(env, previousCache, doFetch) {
     });
   } else if (previousCache && previousCache.imf) {
     imfOut = previousCache.imf;
+  }
+
+  // Dünya Bankası verisi bulunmayan ülkeler için (özellikle Orta Doğu, Almanya, Fransa, Japonya, Çin)
+  // resmi IMF WEO Genel Yönetim Brüt Borcu (% GSYH) verisini tamamlayıcı olarak kullan
+  if (wbOut['GC.DOD.TOTL.GD.ZS'] && imfOut.GGXWDG_NGDP) {
+    ECON_COUNTRIES.forEach(c => {
+      const wbVal = wbOut['GC.DOD.TOTL.GD.ZS'][c];
+      if ((!wbVal || Object.keys(wbVal).length === 0) && imfOut.GGXWDG_NGDP[c]) {
+        wbOut['GC.DOD.TOTL.GD.ZS'][c] = imfOut.GGXWDG_NGDP[c];
+      }
+    });
   }
 
   return {
@@ -2257,8 +2302,8 @@ export default {
         const dArr = getDistance(f.lat, f.lon, arr.lat, arr.lon);
         const dTotal = getDistance(dep.lat, dep.lon, arr.lat, arr.lon);
         
-        // 1. Tighter distance limit (Allows up to 15% or +300km of routing detours/airspace closures)
-        const maxAllowed = Math.max(dTotal * 1.15, dTotal + 300);
+        // 1. Geopolitical airspace closure & detour allowance (Allows up to 35% or +600km)
+        const maxAllowed = Math.max(dTotal * 1.35, dTotal + 600);
         if (dDep + dArr > maxAllowed) return false;
         
         // 2. Heading to destination check
@@ -2586,7 +2631,7 @@ export default {
         return { dep, arr };
       };
 
-      async function fetchRouteFromFlightRadar24(callsign) {
+      async function fetchRouteFromFlightRadar24(callsign, f = null) {
         const uppercaseCallsign = callsign.toUpperCase();
         try {
           // Flightradar24'ün web geçmişi sayfasına istek atalım
@@ -2607,27 +2652,52 @@ export default {
             return null;
           }
           
-          // HTML içindeki havalimanı ICAO kodlarını barındıran linkleri arayalım (/data/airports/ltfm vb.)
-          const links = [...html.matchAll(/href="\/data\/airports\/([a-z]{4})"/g)].map(m => m[1].toUpperCase());
-          if (links.length >= 2) {
-            const depIcao = links[0];
-            const arrIcao = links[1];
-            const depDb = AIRPORT_DB[depIcao];
-            const arrDb = AIRPORT_DB[arrIcao];
+          // 1. IATA kodları çiftlerini topla (FR24 linkleri /data/airports/ist şeklinde 3 harfli IATA kodudur)
+          const linksIata = [...html.matchAll(/href="\/data\/airports\/([a-z]{3})"/g)].map(m => m[1].toUpperCase());
+          if (linksIata.length >= 2) {
+            if (f) {
+              for (let i = 0; i < Math.min(linksIata.length - 1, 14); i += 2) {
+                const depDb = AIRPORT_DB[linksIata[i]];
+                const arrDb = AIRPORT_DB[linksIata[i + 1]];
+                if (depDb && arrDb) {
+                  if (isRouteConsistent(f, depDb, arrDb)) {
+                    console.log(`[FlightRadar24] Consistent route found for ${uppercaseCallsign}: ${linksIata[i]} -> ${linksIata[i + 1]}`);
+                    return { dep: depDb, arr: arrDb };
+                  }
+                  if (isRouteConsistent(f, arrDb, depDb)) {
+                    console.log(`[FlightRadar24] Reverse consistent route found for ${uppercaseCallsign}: ${linksIata[i + 1]} -> ${linksIata[i]}`);
+                    return { dep: arrDb, arr: depDb };
+                  }
+                }
+              }
+            }
+            const depDb = AIRPORT_DB[linksIata[0]];
+            const arrDb = AIRPORT_DB[linksIata[1]];
             if (depDb && arrDb) {
-              console.log(`[FlightRadar24] Successfully resolved route for ${uppercaseCallsign}: ${depIcao} -> ${arrIcao}`);
               return { dep: depDb, arr: arrDb };
             }
           }
-          
-          const linksIata = [...html.matchAll(/href="\/data\/airports\/([a-z]{3})"/g)].map(m => m[1].toUpperCase());
-          if (linksIata.length >= 2) {
-            const depIata = linksIata[0];
-            const arrIata = linksIata[1];
-            const depDb = AIRPORT_DB[depIata];
-            const arrDb = AIRPORT_DB[arrIata];
+
+          // 2. ICAO kodları çiftleri (4 harfli)
+          const linksIcao = [...html.matchAll(/href="\/data\/airports\/([a-z]{4})"/g)].map(m => m[1].toUpperCase());
+          if (linksIcao.length >= 2) {
+            if (f) {
+              for (let i = 0; i < Math.min(linksIcao.length - 1, 14); i += 2) {
+                const depDb = AIRPORT_DB[linksIcao[i]];
+                const arrDb = AIRPORT_DB[linksIcao[i + 1]];
+                if (depDb && arrDb) {
+                  if (isRouteConsistent(f, depDb, arrDb)) {
+                    return { dep: depDb, arr: arrDb };
+                  }
+                  if (isRouteConsistent(f, arrDb, depDb)) {
+                    return { dep: arrDb, arr: depDb };
+                  }
+                }
+              }
+            }
+            const depDb = AIRPORT_DB[linksIcao[0]];
+            const arrDb = AIRPORT_DB[linksIcao[1]];
             if (depDb && arrDb) {
-              console.log(`[FlightRadar24] Successfully resolved route for ${uppercaseCallsign}: ${depIata} -> ${arrIata}`);
               return { dep: depDb, arr: arrDb };
             }
           }
@@ -2735,40 +2805,7 @@ export default {
           let apiRoute = null;
           let valid = false;
 
-          // 1. ADSBDB (Hızlı, açık JSON API, kalkış/varış kesin koordinatlarla)
-          if (!valid) {
-            const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
-            if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
-              if (isRouteConsistent(f, adsbRoute.dep, adsbRoute.arr)) {
-                apiRoute = { ...adsbRoute, source: "adsbdb" };
-                valid = true;
-              }
-            }
-          }
-
-          // 2. OpenSky Feeder Rota API (Resmi Feeder Kimliği ile)
-          if (!valid) {
-            const osRoute = await fetchRouteFromOpenSky(f.callsign);
-            if (osRoute && osRoute.dep && osRoute.arr) {
-              if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
-                apiRoute = { ...osRoute, source: 'opensky' };
-                valid = true;
-              }
-            }
-          }
-
-          // 3. ADSBExchange (re-api canlı çağrı araması)
-          if (!valid) {
-            const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
-            if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
-              if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
-                apiRoute = { ...adsbxRoute, source: "adsbexchange" };
-                valid = true;
-              }
-            }
-          }
-
-          // 4. Yerel, doğrulanmış Turkish Cargo rota tablosu
+          // 1. Yerel, doğrulanmış Turkish Cargo rota tablosu (0ms, yerel ve kesin)
           if (!valid) {
             const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
             if (candidates) {
@@ -2786,9 +2823,9 @@ export default {
             }
           }
 
-          // 5. Fallback: FlightRadar24 (FlareSolverr proxy destekli)
+          // 2. FlightRadar24 (Ev IP proxy / curl destekli — taze ve kesin IFR planı)
           if (!valid) {
-            const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
+            const frRoute = await fetchRouteFromFlightRadar24(f.callsign, f);
             if (frRoute && frRoute.dep && frRoute.arr) {
               if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
                 apiRoute = { ...frRoute, source: "flightradar24" };
@@ -2797,12 +2834,45 @@ export default {
             }
           }
 
-          // 6. Fallback: FlightAware (FlareSolverr proxy destekli)
+          // 3. FlightAware (Ev IP proxy / curl destekli)
           if (!valid) {
             const faRoute = await fetchRouteFromFlightAware(f.callsign);
             if (faRoute && faRoute.dep && faRoute.arr) {
               if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
                 apiRoute = { ...faRoute, source: "flightaware" };
+                valid = true;
+              }
+            }
+          }
+
+          // 4. ADSBDB (Hızlı, açık JSON API)
+          if (!valid) {
+            const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
+            if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
+              if (isRouteConsistent(f, adsbRoute.dep, adsbRoute.arr)) {
+                apiRoute = { ...adsbRoute, source: "adsbdb" };
+                valid = true;
+              }
+            }
+          }
+
+          // 5. ADSBExchange (re-api canlı çağrı araması)
+          if (!valid) {
+            const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
+            if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
+              if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
+                apiRoute = { ...adsbxRoute, source: "adsbexchange" };
+                valid = true;
+              }
+            }
+          }
+
+          // 6. OpenSky Feeder Rota API (Resmi Feeder Kimliği ile)
+          if (!valid) {
+            const osRoute = await fetchRouteFromOpenSky(f.callsign);
+            if (osRoute && osRoute.dep && osRoute.arr) {
+              if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
+                apiRoute = { ...osRoute, source: 'opensky' };
                 valid = true;
               }
             }
