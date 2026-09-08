@@ -2986,7 +2986,7 @@
 <script>
   (function() {
     const hash = window.location.hash.replace('#', '').split('/')[0];
-    const validTabs = ['news', 'dashboard', 'todo', 'stats', 'reports'];
+    const validTabs = ['news', 'customer-news', 'dashboard', 'todo', 'stats', 'reports'];
     if (validTabs.includes(hash) && hash !== 'news') {
       const style = document.createElement('style');
       style.id = 'early-tab-css';
@@ -3224,6 +3224,10 @@
         </svg>
         <span class="nsp-i" aria-hidden="true">i</span>
       </span>
+    </button>
+    <button class="main-tab" id="tab-customer-news-btn" onclick="switchTab('customer-news')">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Müşteri Haberleri
     </button>
     <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')" style="display:none" aria-hidden="true" tabindex="-1">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -3465,6 +3469,91 @@
       </div>
     </div>
 
+    <!-- Customer News filters (shown when Müşteri Haberleri tab is active) -->
+    <div id="customer-news-filter-content" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
+
+      <!-- Arama Kutusu -->
+      <div style="position:relative;display:flex;align-items:center;">
+        <input type="text" id="cust-search-input" placeholder="Müşteri haberlerinde ara…" style="height:32px;padding:0 10px 0 28px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;outline:none;width:180px;transition:all .15s ease;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="position:absolute;left:9px;color:var(--text-3);pointer-events:none;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+
+      <!-- Kategori -->
+      <div class="fdd-wrap">
+        <button class="fdd-btn" id="cust-cat-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Müşteri Kategori filtresi">
+          <span class="fdd-dot" id="cust-cat-dot" style="display:none !important;background:var(--red)"></span>
+          <span id="cust-cat-btn-label">Kategori</span>
+          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="fdd-panel" id="cust-cat-panel" role="listbox" aria-label="Kategori seç">
+          <div class="fdd-option selected" data-cat="all" role="option" aria-selected="true">
+            <div class="fdd-radio"></div>
+            <span>Tümü</span>
+          </div>
+          <div class="fdd-option" data-cat="Key Account Agent" role="option">
+            <div class="fdd-radio"></div>
+            <span>Key Account Agent</span>
+          </div>
+          <div class="fdd-option" data-cat="Key Account Shipper" role="option">
+            <div class="fdd-radio"></div>
+            <span>Key Account Shipper</span>
+          </div>
+          <div class="fdd-option" data-cat="HBSA Acenteleri" role="option">
+            <div class="fdd-radio"></div>
+            <span>HBSA Acenteleri</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Şirket / Kaynak -->
+      <div class="fdd-wrap">
+        <button class="fdd-btn" id="cust-source-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Şirket filtresi">
+          <span class="fdd-dot" id="cust-source-dot" style="display:none !important;background:var(--red)"></span>
+          <span id="cust-source-btn-label">Şirket</span>
+          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="fdd-panel" id="cust-source-panel" role="listbox" aria-label="Şirket seç" style="max-height:300px;overflow-y:auto;">
+          <div class="fdd-option selected" data-source="all" role="option" aria-selected="true">
+            <div class="fdd-radio"></div>
+            <span>Tüm Şirketler</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sıralama -->
+      <div class="fdd-wrap">
+        <button class="fdd-btn" id="cust-sort-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Sıralama filtresi">
+          <span id="cust-sort-btn-label">En Yeni</span>
+          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="fdd-panel" id="cust-sort-panel" role="listbox" aria-label="Sıralama seç">
+          <div class="fdd-option selected" data-sort="newest" role="option" aria-selected="true">
+            <div class="fdd-radio"></div>
+            <span>En Yeni</span>
+          </div>
+          <div class="fdd-option" data-sort="oldest" role="option">
+            <div class="fdd-radio"></div>
+            <span>En Eski</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtreleri Temizle -->
+      <button class="filter-clear-btn" id="cust-clear-btn" style="display:none;" onclick="clearCustomerFilters()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        Temizle
+      </button>
+
+      <!-- Aktif Sayı Rozeti -->
+      <span id="cust-count-pill" style="margin-left:auto;font-size:12px;font-weight:600;color:var(--text-3);padding:3px 10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;">0 haber</span>
+    </div>
+
     <!-- Todo tab filter area (empty — placeholder for consistent height) -->
     <div id="todo-filter-content" style="display:none;">
       <span style="font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px;">
@@ -3503,6 +3592,22 @@
       </button>
     </div>
     <div id="cards-container"></div>
+  </div>
+
+  <!-- Customer news panel -->
+  <div id="customer-news-panel" style="display:none">
+    <div class="loading" id="customer-loading">
+      <div class="spinner"></div>
+      <div>Müşteri haberleri yükleniyor…</div>
+    </div>
+    <div class="empty-state" id="customer-empty-state" style="display:none">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <h3>Sonuç bulunamadı</h3>
+      <p>Farklı bir arama veya filtre deneyin.</p>
+    </div>
+    <div id="customer-cards-container"></div>
   </div>
 
   <!-- Dashboard panel -->
@@ -9073,21 +9178,24 @@ let _tabElementsCache = null;
 function getTabElements() {
   if (!_tabElementsCache) {
     _tabElementsCache = {
-      newsPanel:    document.getElementById('news-panel'),
-      dashPanel:    document.getElementById('dashboard-panel'),
-      todoPanel:    document.getElementById('todo-panel'),
-      statsPanel:   document.getElementById('stats-panel'),
-      reportsPanel: document.getElementById('reports-panel'),
-      newsFilter:    document.getElementById('news-filter-content'),
-      dashFilter:    document.getElementById('dash-filter-content'),
-      todoFilter:    document.getElementById('todo-filter-content'),
-      statsFilter:   document.getElementById('stats-filter-content'),
-      reportsFilter: document.getElementById('reports-filter-content'),
-      newsBtn:     document.getElementById('tab-news-btn'),
-      dashBtn:     document.getElementById('tab-dash-btn'),
-      todoBtn:     document.getElementById('tab-todo-btn'),
-      statsBtn:    document.getElementById('tab-stats-btn'),
-      reportsBtn:  document.getElementById('tab-reports-btn')
+      newsPanel:          document.getElementById('news-panel'),
+      customerNewsPanel:  document.getElementById('customer-news-panel'),
+      dashPanel:          document.getElementById('dashboard-panel'),
+      todoPanel:          document.getElementById('todo-panel'),
+      statsPanel:         document.getElementById('stats-panel'),
+      reportsPanel:       document.getElementById('reports-panel'),
+      newsFilter:         document.getElementById('news-filter-content'),
+      customerNewsFilter: document.getElementById('customer-news-filter-content'),
+      dashFilter:         document.getElementById('dash-filter-content'),
+      todoFilter:         document.getElementById('todo-filter-content'),
+      statsFilter:        document.getElementById('stats-filter-content'),
+      reportsFilter:      document.getElementById('reports-filter-content'),
+      newsBtn:            document.getElementById('tab-news-btn'),
+      customerNewsBtn:    document.getElementById('tab-customer-news-btn'),
+      dashBtn:            document.getElementById('tab-dash-btn'),
+      todoBtn:            document.getElementById('tab-todo-btn'),
+      statsBtn:           document.getElementById('tab-stats-btn'),
+      reportsBtn:         document.getElementById('tab-reports-btn')
     };
   }
   return _tabElementsCache;
@@ -9099,23 +9207,26 @@ function switchTab(tab) {
 
   if (document.body.getAttribute('data-active-tab') === tab) return;
 
-  const isNews    = tab === 'news';
-  const isDash    = tab === 'dashboard';
-  const isTodo    = tab === 'todo';
-  const isStats   = tab === 'stats';
-  const isReports = tab === 'reports';
+  const isNews     = tab === 'news';
+  const isCustNews = tab === 'customer-news';
+  const isDash     = tab === 'dashboard';
+  const isTodo     = tab === 'todo';
+  const isStats    = tab === 'stats';
+  const isReports  = tab === 'reports';
 
   const el = getTabElements();
-  if (el.newsPanel)    el.newsPanel.style.display    = isNews    ? ''      : 'none';
-  if (el.dashPanel)    el.dashPanel.style.display    = isDash    ? 'block' : 'none';
-  if (el.todoPanel)    el.todoPanel.style.display    = isTodo    ? 'block' : 'none';
-  if (el.statsPanel)   el.statsPanel.style.display   = isStats   ? 'block' : 'none';
-  if (el.reportsPanel) el.reportsPanel.style.display = isReports ? 'block' : 'none';
+  if (el.newsPanel)         el.newsPanel.style.display         = isNews     ? ''      : 'none';
+  if (el.customerNewsPanel) el.customerNewsPanel.style.display = isCustNews ? 'block' : 'none';
+  if (el.dashPanel)         el.dashPanel.style.display         = isDash     ? 'block' : 'none';
+  if (el.todoPanel)         el.todoPanel.style.display         = isTodo     ? 'block' : 'none';
+  if (el.statsPanel)        el.statsPanel.style.display        = isStats    ? 'block' : 'none';
+  if (el.reportsPanel)      el.reportsPanel.style.display      = isReports  ? 'block' : 'none';
   // Toggle filter bar content
-  if (el.newsFilter)    el.newsFilter.style.display    = isNews    ? 'flex' : 'none';
-  if (el.dashFilter)    el.dashFilter.style.display    = isDash    ? 'flex' : 'none';
-  if (el.todoFilter)    el.todoFilter.style.display    = isTodo    ? 'flex' : 'none';
-  if (el.statsFilter)   el.statsFilter.style.display   = isStats   ? 'flex' : 'none';
+  if (el.newsFilter)         el.newsFilter.style.display         = isNews     ? 'flex' : 'none';
+  if (el.customerNewsFilter) el.customerNewsFilter.style.display = isCustNews ? 'flex' : 'none';
+  if (el.dashFilter)         el.dashFilter.style.display         = isDash     ? 'flex' : 'none';
+  if (el.todoFilter)         el.todoFilter.style.display         = isTodo     ? 'flex' : 'none';
+  if (el.statsFilter)        el.statsFilter.style.display        = isStats    ? 'flex' : 'none';
   if (el.reportsFilter) {
     // Giriş kartları (reports-home) görünürken pill bar gizli kalmalı —
     // aksi halde hashchange ile showReportsHome() tetiklendiğinde pill bar bir an görünüp kaybolur.
@@ -9123,11 +9234,13 @@ function switchTab(tab) {
     const reportsHomeVisible = reportsHomeEl && reportsHomeEl.style.display !== 'none';
     el.reportsFilter.style.display = (isReports && !reportsHomeVisible) ? 'flex' : 'none';
   }
-  if (el.newsBtn)    el.newsBtn.classList.toggle('main-tab-active',    isNews || isStats);
-  if (el.dashBtn)    el.dashBtn.classList.toggle('main-tab-active',    isDash);
-  if (el.todoBtn)    el.todoBtn.classList.toggle('main-tab-active',    isTodo);
-  if (el.statsBtn)   el.statsBtn.classList.toggle('main-tab-active',   isStats);
-  if (el.reportsBtn) el.reportsBtn.classList.toggle('main-tab-active', isReports);
+  if (el.newsBtn)         el.newsBtn.classList.toggle('main-tab-active',         isNews || isStats);
+  if (el.customerNewsBtn) el.customerNewsBtn.classList.toggle('main-tab-active', isCustNews);
+  if (el.dashBtn)         el.dashBtn.classList.toggle('main-tab-active',         isDash);
+  if (el.todoBtn)         el.todoBtn.classList.toggle('main-tab-active',         isTodo);
+  if (el.statsBtn)        el.statsBtn.classList.toggle('main-tab-active',        isStats);
+  if (el.reportsBtn)      el.reportsBtn.classList.toggle('main-tab-active',      isReports);
+  if (isCustNews) ensureCustomerNewsLoaded();
   if (isDash) ensureDashboardLoaded();
   if (isTodo    && !_todoInit)    { _todoInit    = true; initTodo(); }
   if (isStats   && !_statsInit)   { _statsInit   = true; initStatsTab(); }
@@ -9142,7 +9255,7 @@ function switchTab(tab) {
   if (el.todoBtn) el.todoBtn.style.display = isTodo ? '' : 'none';
   // Reflect active tab on <body> for cross-cutting CSS (e.g. stats pill highlight)
   document.body.setAttribute('data-active-tab', tab);
-  if (!isNews) {
+  if (!isNews && !isCustNews) {
     const aiPanel = document.getElementById('ai-panel');
     if (aiPanel && aiPanel.classList.contains('open')) {
       const closeB = document.getElementById('ai-close');
@@ -9158,6 +9271,461 @@ function switchTab(tab) {
   }
 
   window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+
+// ── MÜŞTERİ HABERLERİ (KEY ACCOUNT & SHIPPER) ────────────────────
+const CUSTOMER_DOMAIN_MAP = {
+  'Expeditors': 'expeditors.com',
+  'Nippon Express / NX Group': 'nipponexpress.com',
+  'Nippon Express': 'nipponexpress.com',
+  'CEVA Logistics': 'cevalogistics.com',
+  'Crane Worldwide Logistics': 'craneww.com',
+  'JAS Worldwide': 'jas.com',
+  'Yusen Logistics': 'yusen-logistics.com',
+  'Maersk': 'maersk.com',
+  'EFL Global': 'efl.global',
+  'Kintetsu World Express / KWE': 'kwe.com',
+  'UPS': 'ups.com',
+  'C.H. Robinson': 'chrobinson.com',
+  'FedEx': 'fedex.com',
+  'Rhenus Logistics': 'rhenus.com',
+  'Aramex': 'aramex.com',
+  'DSV': 'dsv.com',
+  'DSV Abd': 'dsv.com',
+  'DSV Güney Afrika': 'dsv.com',
+  'DHL / DHL Group': 'dhl.com',
+  'DHL': 'dhl.com',
+  'Kuehne+Nagel': 'kuehne-nagel.com',
+  'Hellmann Worldwide Logistics': 'hellmann.com',
+  'Scan Global Logistics': 'scangl.com',
+  'GEODIS': 'geodis.com',
+  'DACHSER': 'dachser.com',
+  'Logwin': 'logwin-logistics.com',
+  'Savino Del Bene': 'savinodelbene.com',
+  'Gebrüder Weiss': 'gw-world.com',
+  'Amazon': 'amazon.com',
+  'Cainiao': 'cainiao.com',
+  'SHEIN': 'sheingroup.com',
+  'Temu / PDD Holdings': 'temu.com',
+  'Google LLC / Alphabet': 'google.com',
+  'NVIDIA': 'nvidia.com',
+  'Intel': 'intel.com',
+  'Apple': 'apple.com',
+  'Cisco': 'cisco.com',
+  'TSMC': 'tsmc.com',
+  'ASML': 'asml.com',
+  'Samsung SDS / Samsung Electronics': 'samsung.com',
+  'Huawei': 'huawei.com',
+  'Xiaomi': 'mi.com',
+  'BYD': 'byd.com',
+  'TOGG': 'togg.com.tr',
+  'Inditex': 'inditex.com',
+  'Dyson': 'dyson.com',
+  'ASELSAN': 'aselsan.com',
+  'Baykar': 'baykartech.com',
+  'TEI': 'tei.com.tr',
+  'TUSAŞ / Turkish Aerospace / TAI': 'tusas.com',
+  'SpaceX / Starlink': 'spacex.com',
+  'Dimerco': 'dimerco.com',
+  'Skyways': 'skyways-group.com',
+  'Lx Pantos': 'lxpantos.com'
+};
+
+const CUSTOMER_CAT_COLORS = {
+  'Key Account Agent': '#003580',
+  'Key Account Shipper': '#C8102E',
+  'HBSA Acenteleri': '#00838F',
+  'Diğer': '#4A4D52'
+};
+
+let _customerNewsLoaded = false;
+let _custArticlesRaw = [];
+let _custFilterCat = 'all';
+let _custFilterSource = 'all';
+let _custFilterSort = 'newest';
+let _custSearchQuery = '';
+
+function getCustomerFavicon(source, link) {
+  if (source && CUSTOMER_DOMAIN_MAP[source]) {
+    return 'https://www.google.com/s2/favicons?domain=' + CUSTOMER_DOMAIN_MAP[source] + '&sz=32';
+  }
+  if (link) {
+    try {
+      const h = new URL(link).hostname.replace(/^www\./, '');
+      if (!h.includes('google.com')) {
+        return 'https://www.google.com/s2/favicons?domain=' + h + '&sz=32';
+      }
+    } catch(e) {}
+  }
+  return 'https://www.google.com/s2/favicons?domain=turkishcargo.com&sz=32';
+}
+
+function formatCustomerPercentage(str) {
+  if (!str) return '';
+  str = str.replace(/\+\s*(%\d+)/g, '$1');
+  str = str.replace(/([+-]?)\s*(\d+(?:[.,]\d+)?)\s*%/g, function(match, sign, num) {
+    if (sign === '-') return '-%' + num;
+    return '%' + num;
+  });
+  return str;
+}
+
+function formatCustomerDateStr(rawDate) {
+  if (!rawDate) return '';
+  const s = String(rawDate).trim();
+  const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    const d = new Date(parseInt(isoMatch[1], 10), parseInt(isoMatch[2], 10) - 1, parseInt(isoMatch[3], 10));
+    return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  const parsed = new Date(s);
+  if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 2000) {
+    return parsed.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  return s;
+}
+
+function ensureCustomerNewsLoaded() {
+  if (_customerNewsLoaded) return;
+  _customerNewsLoaded = true;
+  initCustomerNewsFilters();
+  loadCustomerNewsData();
+}
+
+async function loadCustomerNewsData() {
+  const loadingEl = document.getElementById('customer-loading');
+  const emptyEl = document.getElementById('customer-empty-state');
+  if (loadingEl) loadingEl.style.display = 'flex';
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  try {
+    const res = await fetch('data_customer.json?t=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    _custArticlesRaw = Array.isArray(data) ? data : (data.articles || []);
+    populateCustomerSourceDropdown(_custArticlesRaw);
+    filterAndRenderCustomerNews();
+  } catch(e) {
+    console.warn('Müşteri haberleri yüklenemedi:', e);
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'block';
+  }
+}
+
+function populateCustomerSourceDropdown(articles) {
+  const panel = document.getElementById('cust-source-panel');
+  if (!panel) return;
+  const sourcesSet = new Set();
+  articles.forEach(a => { if (a.source && a.source.trim()) sourcesSet.add(a.source.trim()); });
+  const sorted = Array.from(sourcesSet).sort((a, b) => a.localeCompare(b, 'tr'));
+
+  let html = `<div class="fdd-option selected" data-source="all" role="option" aria-selected="true">
+    <div class="fdd-radio"></div>
+    <span>Tüm Şirketler</span>
+  </div>`;
+  sorted.forEach(src => {
+    html += `<div class="fdd-option" data-source="${src.replace(/"/g, '&quot;')}" role="option">
+      <div class="fdd-radio"></div>
+      <span>${src}</span>
+    </div>`;
+  });
+  panel.innerHTML = html;
+
+  panel.querySelectorAll('.fdd-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      panel.querySelectorAll('.fdd-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      _custFilterSource = opt.dataset.source || 'all';
+      const labelEl = document.getElementById('cust-source-btn-label');
+      const dotEl = document.getElementById('cust-source-dot');
+      if (labelEl) labelEl.textContent = _custFilterSource === 'all' ? 'Şirket' : _custFilterSource;
+      if (dotEl) dotEl.style.display = _custFilterSource === 'all' ? 'none' : 'inline-block';
+      closeAllCustomerDropdowns();
+      filterAndRenderCustomerNews();
+    });
+  });
+}
+
+function initCustomerNewsFilters() {
+  // Category dropdown
+  const catBtn = document.getElementById('cust-cat-btn');
+  const catPanel = document.getElementById('cust-cat-panel');
+  if (catBtn && catPanel) {
+    catBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = catPanel.classList.toggle('open');
+      catBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      closeOtherCustomerDropdowns(catPanel);
+    });
+    catPanel.querySelectorAll('.fdd-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        catPanel.querySelectorAll('.fdd-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        _custFilterCat = opt.dataset.cat || 'all';
+        const labelEl = document.getElementById('cust-cat-btn-label');
+        const dotEl = document.getElementById('cust-cat-dot');
+        if (labelEl) labelEl.textContent = _custFilterCat === 'all' ? 'Kategori' : _custFilterCat;
+        if (dotEl) dotEl.style.display = _custFilterCat === 'all' ? 'none' : 'inline-block';
+        closeAllCustomerDropdowns();
+        filterAndRenderCustomerNews();
+      });
+    });
+  }
+
+  // Source dropdown button
+  const srcBtn = document.getElementById('cust-source-btn');
+  const srcPanel = document.getElementById('cust-source-panel');
+  if (srcBtn && srcPanel) {
+    srcBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = srcPanel.classList.toggle('open');
+      srcBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      closeOtherCustomerDropdowns(srcPanel);
+    });
+  }
+
+  // Sort dropdown
+  const sortBtn = document.getElementById('cust-sort-btn');
+  const sortPanel = document.getElementById('cust-sort-panel');
+  if (sortBtn && sortPanel) {
+    sortBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = sortPanel.classList.toggle('open');
+      sortBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      closeOtherCustomerDropdowns(sortPanel);
+    });
+    sortPanel.querySelectorAll('.fdd-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        sortPanel.querySelectorAll('.fdd-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        _custFilterSort = opt.dataset.sort || 'newest';
+        const labelEl = document.getElementById('cust-sort-btn-label');
+        if (labelEl) labelEl.textContent = _custFilterSort === 'newest' ? 'En Yeni' : 'En Eski';
+        closeAllCustomerDropdowns();
+        filterAndRenderCustomerNews();
+      });
+    });
+  }
+
+  // Search input
+  const searchInput = document.getElementById('cust-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      _custSearchQuery = searchInput.value.trim().toLowerCase();
+      filterAndRenderCustomerNews();
+    });
+  }
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#customer-news-filter-content')) {
+      closeAllCustomerDropdowns();
+    }
+  });
+}
+
+function closeAllCustomerDropdowns() {
+  document.querySelectorAll('#customer-news-filter-content .fdd-panel').forEach(p => p.classList.remove('open'));
+  document.querySelectorAll('#customer-news-filter-content .fdd-btn').forEach(b => b.setAttribute('aria-expanded', 'false'));
+}
+
+function closeOtherCustomerDropdowns(activePanel) {
+  document.querySelectorAll('#customer-news-filter-content .fdd-panel').forEach(p => {
+    if (p !== activePanel) p.classList.remove('open');
+  });
+}
+
+function clearCustomerFilters() {
+  _custFilterCat = 'all';
+  _custFilterSource = 'all';
+  _custFilterSort = 'newest';
+  _custSearchQuery = '';
+
+  const sInput = document.getElementById('cust-search-input');
+  if (sInput) sInput.value = '';
+
+  const catLabel = document.getElementById('cust-cat-btn-label');
+  const catDot = document.getElementById('cust-cat-dot');
+  if (catLabel) catLabel.textContent = 'Kategori';
+  if (catDot) catDot.style.display = 'none';
+  document.querySelectorAll('#cust-cat-panel .fdd-option').forEach(o => o.classList.toggle('selected', o.dataset.cat === 'all'));
+
+  const srcLabel = document.getElementById('cust-source-btn-label');
+  const srcDot = document.getElementById('cust-source-dot');
+  if (srcLabel) srcLabel.textContent = 'Şirket';
+  if (srcDot) srcDot.style.display = 'none';
+  document.querySelectorAll('#cust-source-panel .fdd-option').forEach(o => o.classList.toggle('selected', o.dataset.source === 'all'));
+
+  const sortLabel = document.getElementById('cust-sort-btn-label');
+  if (sortLabel) sortLabel.textContent = 'En Yeni';
+  document.querySelectorAll('#cust-sort-panel .fdd-option').forEach(o => o.classList.toggle('selected', o.dataset.sort === 'newest'));
+
+  closeAllCustomerDropdowns();
+  filterAndRenderCustomerNews();
+}
+
+function filterAndRenderCustomerNews() {
+  let list = [..._custArticlesRaw];
+
+  if (_custFilterCat !== 'all') {
+    list = list.filter(a => (a.category || '').toLowerCase() === _custFilterCat.toLowerCase());
+  }
+
+  if (_custFilterSource !== 'all') {
+    list = list.filter(a => (a.source || '').trim() === _custFilterSource);
+  }
+
+  if (_custSearchQuery) {
+    list = list.filter(a => {
+      const t = (a.title || '').toLowerCase();
+      const s = (a.summary || '').toLowerCase();
+      const src = (a.source || '').toLowerCase();
+      const cat = (a.category || '').toLowerCase();
+      return t.includes(_custSearchQuery) || s.includes(_custSearchQuery) || src.includes(_custSearchQuery) || cat.includes(_custSearchQuery);
+    });
+  }
+
+  // Sort
+  list.sort((a, b) => {
+    const da = new Date(a.date || 0).getTime();
+    const db = new Date(b.date || 0).getTime();
+    return _custFilterSort === 'oldest' ? da - db : db - da;
+  });
+
+  // Update pill count & clear button visibility
+  const countPill = document.getElementById('cust-count-pill');
+  if (countPill) countPill.textContent = list.length + ' haber';
+
+  const clearBtn = document.getElementById('cust-clear-btn');
+  const isFiltered = _custFilterCat !== 'all' || _custFilterSource !== 'all' || _custFilterSort !== 'newest' || _custSearchQuery !== '';
+  if (clearBtn) clearBtn.style.display = isFiltered ? 'inline-flex' : 'none';
+
+  renderCustomerCards(list);
+}
+
+function buildCustomerCardHTML(article) {
+  const cat = article.category || 'Key Account Shipper';
+  const color = CUSTOMER_CAT_COLORS[cat] || '#4A4D52';
+  const cleanLink = article.link || '#';
+  const faviconUrl = getCustomerFavicon(article.source, article.link);
+  const dateStr = formatCustomerDateStr(article.date);
+  const formattedSummary = formatCustomerPercentage(article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>');
+
+  const extraSources = Array.isArray(article.extraSources) ? article.extraSources : [];
+  let extraSourcesHtml = '';
+  if (extraSources.length > 0) {
+    const linkSvg = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+    const extraRows = extraSources.map(s => `
+      <div class="card-source-row" style="margin-top:6px;display:flex;align-items:center;justify-content:space-between;">
+        <div class="card-source" style="font-size:11px;">
+          <img class="source-favicon" src="${getCustomerFavicon(s.source, s.link)}" alt="" loading="lazy" onerror="this.style.display='none'">
+          ${s.source || ''}
+        </div>
+        ${s.link ? `<a class="card-link" href="${s.link}" target="_blank" rel="noopener noreferrer" style="font-size:11px;">Haberi oku ${linkSvg}</a>` : ''}
+      </div>
+    `).join('');
+    extraSourcesHtml = `
+      <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:11.5px;">
+        <div style="color:var(--text-3);font-weight:600;margin-bottom:4px;">Ek Kaynaklar:</div>
+        ${extraRows}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="card-inner">
+      <div class="card-left-bar" style="background:${color}"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-cat-badge" style="background:${color};color:#fff;font-weight:600;">${cat}</span>
+          <span class="card-date-badge" style="margin-left:auto;font-size:11.5px;color:var(--text-3);font-weight:500;">${dateStr}</span>
+        </div>
+        <div class="card-title">
+          <a href="${cleanLink}" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">${article.title || 'Başlık Yok'}</a>
+        </div>
+        <div class="card-summary">${formattedSummary}</div>
+        <div class="card-spacer"></div>
+        <div class="card-footer">
+          <div class="card-source">
+            <img class="source-favicon" src="${faviconUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
+            ${article.source || 'Bilinmeyen'}
+          </div>
+          ${cleanLink !== '#' ? `
+            <a class="card-link" href="${cleanLink}" target="_blank" rel="noopener noreferrer">
+              Haberi oku
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          ` : ''}
+        </div>
+        ${extraSourcesHtml}
+      </div>
+    </div>
+  `;
+}
+
+function renderCustomerCards(articles) {
+  const loadingEl = document.getElementById('customer-loading');
+  const emptyEl = document.getElementById('customer-empty-state');
+  const container = document.getElementById('customer-cards-container');
+
+  if (loadingEl) loadingEl.style.display = 'none';
+
+  if (!articles || articles.length === 0) {
+    if (container) container.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  // Group by date or render in grid
+  const byDate = {};
+  articles.forEach(a => {
+    const d = a.date ? a.date.slice(0, 10) : 'Tarihsiz';
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(a);
+  });
+
+  const dates = Object.keys(byDate).sort((a, b) => {
+    if (a === 'Tarihsiz') return 1;
+    if (b === 'Tarihsiz') return -1;
+    return b.localeCompare(a);
+  });
+
+  container.innerHTML = '';
+
+  let cardIdx = 0;
+  dates.forEach(dateKey => {
+    const section = document.createElement('div');
+    section.className = 'date-section';
+
+    const formattedDateHeading = (dateKey === 'Tarihsiz') ? 'Tarihsiz Haberler' : formatCustomerDateStr(dateKey);
+    const hdr = document.createElement('div');
+    hdr.className = 'date-section-header';
+    hdr.innerHTML = `
+      <div class="date-heading">${formattedDateHeading}</div>
+      <div class="date-count">${byDate[dateKey].length} haber</div>
+    `;
+    section.appendChild(hdr);
+
+    const grid = document.createElement('div');
+    grid.className = 'article-grid';
+
+    byDate[dateKey].forEach(article => {
+      const card = document.createElement('div');
+      card.className = 'article-card';
+      if (article.id != null) card.dataset.articleId = String(article.id);
+      if (article.link) card.dataset.articleLink = article.link;
+      card.style.animation = 'fadeUp 0.35s ease both';
+      card.style.animationDelay = `${Math.min(cardIdx, 8) * 35}ms`;
+      card.innerHTML = buildCustomerCardHTML(article);
+      grid.appendChild(card);
+      cardIdx++;
+    });
+
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
 }
 
 
@@ -26051,7 +26619,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleHashRouting = () => {
     const hash = window.location.hash.replace('#', '');
     const [tab, sub] = hash.split('/');
-    const validTabs = ['news', 'dashboard', 'todo', 'stats', 'reports'];
+    const validTabs = ['news', 'customer-news', 'dashboard', 'todo', 'stats', 'reports'];
     if (validTabs.includes(tab)) {
       switchTab(tab);
       // Alt rota: #reports/arz_talep_navlun | filo | finansal | iata_market_analizi
