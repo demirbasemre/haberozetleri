@@ -2982,48 +2982,25 @@
         letter-spacing: 0.04em;
       }
 
-      /* ── Customer News Source Dropdown Grid & Sections ── */
-      #cust-source-panel {
-        min-width: 660px;
-        max-width: 860px;
-        max-height: 480px;
+      /* ── Customer News Filter Dropdowns & Pills ── */
+      .cust-dropdown-panel {
+        min-width: 320px;
+        max-width: 440px;
+        max-height: 380px;
         overflow-y: auto;
-        padding: 10px;
+        padding: 8px;
       }
-      .cust-source-all {
-        margin-bottom: 8px;
-        padding-bottom: 8px;
+      .cust-panel-all-opt {
+        margin-bottom: 6px;
+        padding-bottom: 6px;
         border-bottom: 1px solid var(--border-soft);
       }
-      .cust-source-group {
-        margin-bottom: 12px;
-      }
-      .cust-source-group:last-child {
-        margin-bottom: 0;
-      }
-      .cust-source-group-title {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-bottom: 6px;
-        padding-left: 2px;
-      }
-      .cust-source-group-badge {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        display: inline-block;
-      }
-      .cust-source-grid {
+      .cust-company-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 4px;
       }
-      .cust-source-item {
+      .cust-company-item {
         padding: 6px 8px;
         display: flex;
         align-items: center;
@@ -3031,87 +3008,57 @@
         border-radius: 6px;
         overflow: hidden;
         min-height: 32px;
+        cursor: pointer;
       }
-      .cust-source-name {
+      .cust-company-name {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 12px;
         flex: 1;
       }
-      .cust-source-count {
+      .cust-company-count {
         font-size: 10.5px;
         color: var(--text-3);
         padding-left: 4px;
         flex-shrink: 0;
       }
-      .cust-section-pill.active {
-        background: var(--text) !important;
-        color: var(--surface) !important;
-        font-weight: 700 !important;
-      }
-      .cust-split-pill {
-        display: inline-flex;
-        align-items: stretch;
-        border-radius: 6px;
-        background: transparent;
-        border: 1px solid transparent;
-        transition: all 0.15s ease;
-        overflow: hidden;
-      }
-      .cust-split-pill:hover {
-        background: var(--surface-hover, rgba(0,0,0,0.04));
-      }
-      .cust-split-pill.active {
-        background: var(--text) !important;
-        color: var(--surface) !important;
-      }
-      .cust-split-text {
-        padding: 4px 8px;
-        font-size: 12px;
-        border: none;
-        background: transparent;
-        color: inherit;
-        cursor: pointer;
-        font-weight: 500;
+      .cust-section-pill {
         display: inline-flex;
         align-items: center;
+        padding: 6px 12px;
+        font-size: 12px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text-2);
+        transition: all 0.15s ease;
         line-height: 1.2;
       }
-      .cust-split-pill.active .cust-split-text {
-        font-weight: 700;
-        color: var(--surface) !important;
+      .cust-section-pill:hover {
+        background: var(--surface-hover, rgba(0,0,0,0.04));
+        color: var(--text);
       }
-      .cust-split-arrow {
-        padding: 4px 6px;
-        border: none;
-        background: transparent;
-        border-left: 1px solid rgba(125, 125, 125, 0.2);
-        color: inherit;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.15s ease;
+      .cust-section-pill.active {
+        background: var(--navy, #001e3d) !important;
+        color: #ffffff !important;
+        border-color: transparent !important;
+        font-weight: 600 !important;
       }
-      .cust-split-arrow:hover {
-        background: rgba(125, 125, 125, 0.2);
-      }
-      .cust-split-pill.active .cust-split-arrow {
-        border-left-color: rgba(255, 255, 255, 0.3);
-        color: var(--surface) !important;
+      [data-theme="dark"] .cust-section-pill.active {
+        background: var(--accent, #1d6fe8) !important;
+        color: #ffffff !important;
       }
       @media (max-width: 768px) {
-        #cust-source-panel {
-          min-width: calc(100vw - 20px) !important;
-          max-width: calc(100vw - 20px) !important;
-        }
-        .cust-source-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+        .cust-dropdown-panel {
+          min-width: calc(100vw - 24px) !important;
+          max-width: calc(100vw - 24px) !important;
         }
       }
       @media (max-width: 480px) {
-        .cust-source-grid {
+        .cust-company-grid {
           grid-template-columns: 1fr;
         }
       }
@@ -3606,29 +3553,53 @@
     <!-- Customer News filters (shown when Müşteri Haberleri tab is active) -->
     <div id="customer-news-filter-content" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
 
-      <!-- 3 Bölüm Filtresi (Key Account Agent, Key Account Shipper, HBSA Acenteleri) -->
-      <div class="cust-cat-pills" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface);padding:3px;border-radius:8px;border:1px solid var(--border);">
-        <button class="fdd-btn cust-section-pill active" data-cat="all" style="padding:4px 10px;font-size:12px;border-radius:6px;">Tümü</button>
+      <!-- Tümü Butonu -->
+      <button class="cust-section-pill active" id="cust-all-btn" onclick="clearCustomerFilters()">
+        Tümü
+      </button>
 
-        <div class="cust-split-pill" data-cat="Key Account Agent">
-          <button class="cust-split-text" data-cat="Key Account Agent">Key Account Agent</button>
-          <button class="cust-split-arrow" data-cat="Key Account Agent" title="Key Account Agent Şirketleri" aria-label="Key Account Agent Şirketleri">
-            <svg class="fdd-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
+      <!-- Key Account Agent Dropdown -->
+      <div class="fdd-wrap" id="cust-agent-wrap">
+        <button class="fdd-btn" id="cust-agent-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Key Account Agent filtresi">
+          <span class="fdd-dot" id="cust-agent-dot" style="display:none;background:#003580;"></span>
+          <img id="cust-agent-logo" src="" alt="" style="display:none;width:14px;height:14px;border-radius:3px;object-fit:contain;margin-right:2px;">
+          <span id="cust-agent-btn-label">Key Account Agent</span>
+          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="fdd-panel cust-dropdown-panel" id="cust-agent-panel" role="listbox" aria-label="Key Account Agent seç">
+          <!-- Populated by buildCustomerPanels() -->
         </div>
+      </div>
 
-        <div class="cust-split-pill" data-cat="Key Account Shipper">
-          <button class="cust-split-text" data-cat="Key Account Shipper">Key Account Shipper</button>
-          <button class="cust-split-arrow" data-cat="Key Account Shipper" title="Key Account Shipper Şirketleri" aria-label="Key Account Shipper Şirketleri">
-            <svg class="fdd-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
+      <!-- Key Account Shipper Dropdown -->
+      <div class="fdd-wrap" id="cust-shipper-wrap">
+        <button class="fdd-btn" id="cust-shipper-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Key Account Shipper filtresi">
+          <span class="fdd-dot" id="cust-shipper-dot" style="display:none;background:#C8102E;"></span>
+          <img id="cust-shipper-logo" src="" alt="" style="display:none;width:14px;height:14px;border-radius:3px;object-fit:contain;margin-right:2px;">
+          <span id="cust-shipper-btn-label">Key Account Shipper</span>
+          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="fdd-panel cust-dropdown-panel" id="cust-shipper-panel" role="listbox" aria-label="Key Account Shipper seç">
+          <!-- Populated by buildCustomerPanels() -->
         </div>
+      </div>
 
-        <div class="cust-split-pill" data-cat="HBSA Acenteleri">
-          <button class="cust-split-text" data-cat="HBSA Acenteleri">HBSA Acenteleri</button>
-          <button class="cust-split-arrow" data-cat="HBSA Acenteleri" title="HBSA Acenteleri Şirketleri" aria-label="HBSA Acenteleri Şirketleri">
-            <svg class="fdd-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
+      <!-- HBSA Acenteleri Dropdown -->
+      <div class="fdd-wrap" id="cust-hbsa-wrap">
+        <button class="fdd-btn" id="cust-hbsa-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="HBSA Acenteleri filtresi">
+          <span class="fdd-dot" id="cust-hbsa-dot" style="display:none;background:#00838F;"></span>
+          <img id="cust-hbsa-logo" src="" alt="" style="display:none;width:14px;height:14px;border-radius:3px;object-fit:contain;margin-right:2px;">
+          <span id="cust-hbsa-btn-label">HBSA Acenteleri</span>
+          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="fdd-panel cust-dropdown-panel" id="cust-hbsa-panel" role="listbox" aria-label="HBSA Acenteleri seç">
+          <!-- Populated by buildCustomerPanels() -->
         </div>
       </div>
 
@@ -3651,25 +3622,12 @@
         </div>
       </div>
 
-      <!-- Şirket / Kaynak (Kategoriye Göre Dinamik Filtrelenen Grid + Logolar) -->
-      <div class="fdd-wrap">
-        <button class="fdd-btn" id="cust-source-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Şirket filtresi">
-          <span class="fdd-dot" id="cust-source-dot" style="display:none !important;background:var(--red)"></span>
-          <img id="cust-source-btn-logo" src="" alt="" style="display:none;width:14px;height:14px;border-radius:3px;object-fit:contain;margin-right:2px;">
-          <span id="cust-source-btn-label">Şirket</span>
-          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-        <div class="fdd-panel" id="cust-source-panel" role="listbox" aria-label="Şirket seç">
-          <!-- Populated by populateCustomerSourceDropdown() -->
-        </div>
-      </div>
-
       <!-- Filtreleri Temizle -->
-      <button class="filter-clear-btn" id="cust-clear-btn" style="display:none;" onclick="clearCustomerFilters()">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        Temizle
+      <button class="clear-btn" id="cust-clear-btn" style="display:none;" onclick="clearCustomerFilters()" aria-label="Filtreleri temizle">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+        <span>Temizle</span>
       </button>
 
     </div>
@@ -9680,7 +9638,7 @@ async function loadCustomerNewsData() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     _custArticlesRaw = Array.isArray(data) ? data : (data.articles || []);
-    populateCustomerSourceDropdown(_custArticlesRaw);
+    buildCustomerPanels(_custArticlesRaw);
     buildCustomerDatePanel(_custArticlesRaw);
     filterAndRenderCustomerNews();
   } catch(e) {
@@ -9690,55 +9648,16 @@ async function loadCustomerNewsData() {
   }
 }
 
-function syncCustomerCatPills() {
-  const allBtn = document.querySelector('.cust-section-pill[data-cat="all"]');
-  if (allBtn) {
-    allBtn.classList.toggle('active', _custFilterCat === 'all');
-  }
-  document.querySelectorAll('.cust-split-pill').forEach(pill => {
-    const cat = pill.dataset.cat;
-    pill.classList.toggle('active', _custFilterCat === cat);
-  });
-}
+const CUSTOMER_SECTIONS = [
+  { cat: 'Key Account Agent', btnId: 'cust-agent-btn', panelId: 'cust-agent-panel', dotId: 'cust-agent-dot', logoId: 'cust-agent-logo', labelId: 'cust-agent-btn-label', defaultLabel: 'Key Account Agent', color: '#003580' },
+  { cat: 'Key Account Shipper', btnId: 'cust-shipper-btn', panelId: 'cust-shipper-panel', dotId: 'cust-shipper-dot', logoId: 'cust-shipper-logo', labelId: 'cust-shipper-btn-label', defaultLabel: 'Key Account Shipper', color: '#C8102E' },
+  { cat: 'HBSA Acenteleri', btnId: 'cust-hbsa-btn', panelId: 'cust-hbsa-panel', dotId: 'cust-hbsa-dot', logoId: 'cust-hbsa-logo', labelId: 'cust-hbsa-btn-label', defaultLabel: 'HBSA Acenteleri', color: '#00838F' }
+];
 
-function syncCustomerSourceBtn() {
-  const btn = document.getElementById('cust-source-btn');
-  const lbl = document.getElementById('cust-source-btn-label');
-  const dot = document.getElementById('cust-source-dot');
-  const logo = document.getElementById('cust-source-btn-logo');
-  if (!btn || !lbl) return;
-
-  if (_custFilterSource !== 'all') {
-    lbl.textContent = _custFilterSource;
-    if (dot) dot.style.display = 'inline-block';
-    if (logo) {
-      logo.src = getCustomerFavicon(_custFilterSource);
-      logo.style.display = 'inline-block';
-    }
-    btn.classList.add('active');
-  } else {
-    if (logo) logo.style.display = 'none';
-    if (dot) dot.style.display = 'none';
-    btn.classList.remove('active');
-    if (_custFilterCat === 'Key Account Agent') {
-      lbl.textContent = 'Agent Şirketleri';
-    } else if (_custFilterCat === 'Key Account Shipper') {
-      lbl.textContent = 'Shipper Şirketleri';
-    } else if (_custFilterCat === 'HBSA Acenteleri') {
-      lbl.textContent = 'Acente Şirketleri';
-    } else {
-      lbl.textContent = 'Şirket';
-    }
-  }
-}
-
-function populateCustomerSourceDropdown(articles) {
-  const panel = document.getElementById('cust-source-panel');
-  if (!panel) return;
+function buildCustomerPanels(articles) {
   articles = articles || _custArticlesRaw;
 
   // Group sources by category
-  const categories = ['Key Account Agent', 'Key Account Shipper', 'HBSA Acenteleri'];
   const catSources = {
     'Key Account Agent': {},
     'Key Account Shipper': {},
@@ -9752,167 +9671,120 @@ function populateCustomerSourceDropdown(articles) {
     catSources[cat][s] = (catSources[cat][s] || 0) + 1;
   });
 
-  let html = '';
+  CUSTOMER_SECTIONS.forEach(sec => {
+    const panel = document.getElementById(sec.panelId);
+    if (!panel) return;
 
-  // Eğer belirli bir kategori seçiliyse: Yalnızca o kategorinin şirketlerini ve "Tüm [Kategori] Şirketleri" başlığını göster
-  if (_custFilterCat !== 'all') {
-    const cat = _custFilterCat;
-    const sourcesObj = catSources[cat] || {};
+    const sourcesObj = catSources[sec.cat] || {};
     const sortedSources = Object.keys(sourcesObj).sort((a, b) => a.localeCompare(b, 'tr'));
-    const catColor = CUSTOMER_CAT_COLORS[cat] || 'var(--text)';
-    const totalCatArticles = Object.values(sourcesObj).reduce((sum, n) => sum + n, 0);
+    const totalArticles = Object.values(sourcesObj).reduce((sum, n) => sum + n, 0);
 
-    html += `
-      <div class="fdd-option cust-source-all ${_custFilterSource === 'all' ? 'selected' : ''}" data-source="all" data-cat="${cat}" role="option" aria-selected="${_custFilterSource === 'all'}">
+    const isCatActive = _custFilterCat === sec.cat && _custFilterSource === 'all';
+
+    let html = `
+      <div class="fdd-option cust-panel-all-opt ${isCatActive ? 'selected' : ''}" data-cat="${sec.cat}" data-source="all" role="option" aria-selected="${isCatActive}">
         <div class="fdd-radio"></div>
-        <span class="cust-source-group-badge" style="background:${catColor};width:9px;height:9px;margin-right:4px;"></span>
-        <span style="font-weight:600;">Tüm ${cat} Şirketleri</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text-3);">${totalCatArticles}</span>
+        <span style="width:8px;height:8px;border-radius:50%;background:${sec.color};margin-right:6px;flex-shrink:0;"></span>
+        <span style="font-weight:600;">Tüm ${sec.defaultLabel}</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text-3);">${totalArticles}</span>
       </div>
-      <div class="cust-source-group" style="margin-top:6px;">
-        <div class="cust-source-grid">
+      <div class="cust-company-grid">
     `;
 
     sortedSources.forEach(src => {
-      const isSel = _custFilterSource === src;
+      const isSel = _custFilterCat === sec.cat && _custFilterSource === src;
       const logoUrl = getCustomerFavicon(src);
       const c = sourcesObj[src];
       html += `
-        <div class="fdd-option cust-source-item ${isSel ? 'selected' : ''}" data-source="${src.replace(/"/g, '&quot;')}" data-cat="${cat}" role="option" aria-selected="${isSel}">
+        <div class="fdd-option cust-company-item ${isSel ? 'selected' : ''}" data-cat="${sec.cat}" data-source="${src.replace(/"/g, '&quot;')}" role="option" aria-selected="${isSel}">
           <div class="fdd-radio"></div>
           <img class="source-favicon" src="${logoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
-          <span class="cust-source-name" title="${src}">${src}</span>
-          <span class="cust-source-count">${c}</span>
+          <span class="cust-company-name" title="${src}">${src}</span>
+          <span class="cust-company-count">${c}</span>
         </div>
       `;
     });
 
-    html += `
-        </div>
-      </div>
-    `;
-  } else {
-    // "Tümü" seçiliyse: Tüm şirketler ve 3 ana kategori başlığı altında 3 sütunlu grid
-    html += `
-      <div class="fdd-option cust-source-all ${_custFilterSource === 'all' ? 'selected' : ''}" data-source="all" data-cat="all" role="option" aria-selected="${_custFilterSource === 'all'}">
-        <div class="fdd-radio"></div>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:2px;color:var(--text-3);flex-shrink:0;"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-        <span style="font-weight:600;">Tüm Şirketler</span>
-        <span style="margin-left:auto;font-size:11px;color:var(--text-3);">${articles.length}</span>
-      </div>
-    `;
+    html += `</div>`;
+    panel.innerHTML = html;
 
-    categories.forEach(cat => {
-      const sourcesObj = catSources[cat] || {};
-      const sortedSources = Object.keys(sourcesObj).sort((a, b) => a.localeCompare(b, 'tr'));
-      if (sortedSources.length === 0) return;
+    panel.querySelectorAll('.fdd-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const cat = opt.dataset.cat;
+        const source = opt.dataset.source;
 
-      const catColor = CUSTOMER_CAT_COLORS[cat] || 'var(--text)';
+        _custFilterCat = cat;
+        _custFilterSource = source;
 
-      html += `
-        <div class="cust-source-group">
-          <div class="cust-source-group-title" style="color:${catColor};">
-            <span class="cust-source-group-badge" style="background:${catColor}"></span>
-            <span>${cat}</span>
-            <span style="margin-left:auto;font-size:10.5px;color:var(--text-3);font-weight:600;">${sortedSources.length} Şirket</span>
-          </div>
-          <div class="cust-source-grid">
-      `;
-
-      sortedSources.forEach(src => {
-        const isSel = _custFilterSource === src;
-        const logoUrl = getCustomerFavicon(src);
-        const c = sourcesObj[src];
-        html += `
-          <div class="fdd-option cust-source-item ${isSel ? 'selected' : ''}" data-source="${src.replace(/"/g, '&quot;')}" data-cat="${cat}" role="option" aria-selected="${isSel}">
-            <div class="fdd-radio"></div>
-            <img class="source-favicon" src="${logoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
-            <span class="cust-source-name" title="${src}">${src}</span>
-            <span class="cust-source-count">${c}</span>
-          </div>
-        `;
+        syncCustomerButtons();
+        closeAllCustomerDropdowns();
+        filterAndRenderCustomerNews();
       });
-
-      html += `
-          </div>
-        </div>
-      `;
     });
+  });
+}
+
+function syncCustomerButtons() {
+  const allBtn = document.getElementById('cust-all-btn');
+  if (allBtn) {
+    allBtn.classList.toggle('active', _custFilterCat === 'all' && _custFilterSource === 'all');
   }
 
-  panel.innerHTML = html;
+  CUSTOMER_SECTIONS.forEach(sec => {
+    const btn = document.getElementById(sec.btnId);
+    const lbl = document.getElementById(sec.labelId);
+    const dot = document.getElementById(sec.dotId);
+    const logo = document.getElementById(sec.logoId);
+    if (!btn || !lbl) return;
 
-  panel.querySelectorAll('.fdd-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      const chosenSource = opt.dataset.source || 'all';
-      const chosenCat = opt.dataset.cat || 'all';
+    if (_custFilterCat === sec.cat) {
+      btn.classList.add('active');
+      if (dot) dot.style.display = 'inline-block';
 
-      _custFilterSource = chosenSource;
-      if (chosenSource !== 'all' && chosenCat !== 'all') {
-        _custFilterCat = chosenCat;
+      if (_custFilterSource !== 'all') {
+        lbl.textContent = _custFilterSource;
+        if (logo) {
+          logo.src = getCustomerFavicon(_custFilterSource);
+          logo.style.display = 'inline-block';
+        }
+      } else {
+        lbl.textContent = sec.defaultLabel;
+        if (logo) logo.style.display = 'none';
       }
+    } else {
+      btn.classList.remove('active');
+      lbl.textContent = sec.defaultLabel;
+      if (dot) dot.style.display = 'none';
+      if (logo) logo.style.display = 'none';
+    }
+  });
 
-      syncCustomerCatPills();
-      syncCustomerSourceBtn();
-      populateCustomerSourceDropdown(_custArticlesRaw);
-      closeAllCustomerDropdowns();
-      filterAndRenderCustomerNews();
+  // Re-sync option selected states in all panels
+  CUSTOMER_SECTIONS.forEach(sec => {
+    const panel = document.getElementById(sec.panelId);
+    if (!panel) return;
+    panel.querySelectorAll('.fdd-option').forEach(opt => {
+      const optCat = opt.dataset.cat;
+      const optSrc = opt.dataset.source;
+      const isSel = (_custFilterCat === optCat) && (_custFilterSource === optSrc);
+      opt.classList.toggle('selected', isSel);
+      opt.setAttribute('aria-selected', isSel ? 'true' : 'false');
     });
   });
 }
 
 function initCustomerNewsFilters() {
-  // "Tümü" pill
-  const allBtn = document.querySelector('.cust-section-pill[data-cat="all"]');
-  if (allBtn) {
-    allBtn.addEventListener('click', () => {
-      _custFilterCat = 'all';
-      _custFilterSource = 'all';
-      syncCustomerCatPills();
-      syncCustomerSourceBtn();
-      populateCustomerSourceDropdown(_custArticlesRaw);
-      closeAllCustomerDropdowns();
-      filterAndRenderCustomerNews();
-    });
-  }
-
-  // Kategori split buton metinleri (doğrudan tek tıkla o kategorideki tüm haberleri süzme)
-  document.querySelectorAll('.cust-split-text').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const cat = btn.dataset.cat;
-      _custFilterCat = cat;
-      _custFilterSource = 'all'; // Kategori değiştiğinde şirket filtresi sıfırlanır
-      syncCustomerCatPills();
-      syncCustomerSourceBtn();
-      populateCustomerSourceDropdown(_custArticlesRaw);
-      closeAllCustomerDropdowns();
-      filterAndRenderCustomerNews();
-    });
-  });
-
-  // Kategori split buton okları (o kategorinin altındaki şirket dropdown'ını açma)
-  document.querySelectorAll('.cust-split-arrow').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const cat = btn.dataset.cat;
-      _custFilterCat = cat;
-      if (_custFilterSource !== 'all') {
-        _custFilterSource = 'all';
-      }
-      syncCustomerCatPills();
-      syncCustomerSourceBtn();
-      populateCustomerSourceDropdown(_custArticlesRaw);
-
-      // Şirket dropdown panelini aç
-      const srcBtn = document.getElementById('cust-source-btn');
-      const srcPanel = document.getElementById('cust-source-panel');
-      if (srcBtn && srcPanel) {
-        srcPanel.classList.add('open');
-        srcBtn.setAttribute('aria-expanded', 'true');
-        closeOtherCustomerDropdowns(srcPanel);
-      }
-    });
+  CUSTOMER_SECTIONS.forEach(sec => {
+    const btn = document.getElementById(sec.btnId);
+    const panel = document.getElementById(sec.panelId);
+    if (btn && panel) {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const open = panel.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        closeOtherCustomerDropdowns(panel);
+      });
+    }
   });
 
   // Date dropdown button
@@ -9924,18 +9796,6 @@ function initCustomerNewsFilters() {
       const open = datePanel.classList.toggle('open');
       dateBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
       closeOtherCustomerDropdowns(datePanel);
-    });
-  }
-
-  // Source dropdown button
-  const srcBtn = document.getElementById('cust-source-btn');
-  const srcPanel = document.getElementById('cust-source-panel');
-  if (srcBtn && srcPanel) {
-    srcBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      const open = srcPanel.classList.toggle('open');
-      srcBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      closeOtherCustomerDropdowns(srcPanel);
     });
   }
 
@@ -9965,11 +9825,9 @@ function clearCustomerFilters() {
   activeCustDateMonth = null;
   activeCustDateDay = null;
 
-  syncCustomerCatPills();
-  syncCustomerSourceBtn();
+  syncCustomerButtons();
   syncCustomerDateBtn();
   buildCustomerDatePanel(_custArticlesRaw);
-  populateCustomerSourceDropdown(_custArticlesRaw);
 
   closeAllCustomerDropdowns();
   filterAndRenderCustomerNews();
