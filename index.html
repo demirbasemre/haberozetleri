@@ -17019,17 +17019,44 @@ async function loadDashboard() {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
       if (data && Array.isArray(data.path) && data.path.length > 1) {
-        const pts = [];
-        if (f.dep && f.dep.lat != null) {
-          pts.push([f.dep.lat, f.dep.lon]);
-        }
+        // Ham track noktalarını çıkar
+        let rawPts = [];
         data.path.forEach(p => {
           const plat = p[1];
           const plon = p[2];
           if (plat != null && plon != null && isFinite(plat) && isFinite(plon)) {
-            pts.push([plat, plon]);
+            rawPts.push([plat, plon]);
           }
         });
+
+        // ── Önceki bacak kırpma (leg trimming) ──
+        // OpenSky track verisi uçağın O GÜNÜNKÜ tüm uçuş geçmişini döner.
+        // Eğer uçak IST→MCT→CGO gibi çok bacaklı (multi-leg) uçuyorsa,
+        // track IST'den başlar ve kalkış (dep=MCT) ile uyuşmaz → zigzag çizgi.
+        // Çözüm: Track içinde kalkış havalimanına en yakın noktayı bul,
+        // sadece o noktadan sonrasını kullan (mevcut bacağın izi).
+        if (f.dep && f.dep.lat != null && rawPts.length > 2) {
+          let minDist = Infinity;
+          let minIdx = 0;
+          for (let i = 0; i < rawPts.length; i++) {
+            const d = getDistance(rawPts[i][0], rawPts[i][1], f.dep.lat, f.dep.lon);
+            if (d < minDist) {
+              minDist = d;
+              minIdx = i;
+            }
+          }
+          // Kalkış havalimanına 150km'den yakın bir nokta bulunduysa,
+          // track'i o noktadan başlat (önceki bacağı kırp)
+          if (minDist < 150) {
+            rawPts = rawPts.slice(minIdx);
+          }
+        }
+
+        const pts = [];
+        if (f.dep && f.dep.lat != null) {
+          pts.push([f.dep.lat, f.dep.lon]);
+        }
+        pts.push(...rawPts);
 
         if (pts.length > 0) {
           // OpenSky track'inin son noktası uçağın en son bilinen gerçek koordinatıdır
