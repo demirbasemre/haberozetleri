@@ -17024,6 +17024,7 @@ async function loadDashboard() {
     } catch (_) {
       f._routeLookupFailed = true;
     } finally {
+      renderCargoFlightList();
       if (_cargoSelectedIdx === idx && _cargoFlights[idx] === f) {
         selectCargoFlight(idx, false);
       }
