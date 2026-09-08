@@ -396,7 +396,29 @@ const CARGO_FLEET_DETAILS = {
   "4ba9ef": { registration: "TC-JOU", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba9f4": { registration: "TC-JOV", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba9f6": { registration: "TC-JOW", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
-  "4ba9f9": { registration: "TC-JOY", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" }
+  "4ba9f9": { registration: "TC-JOY", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  // Emirates SkyCargo Boeing 777F
+  "896173": { registration: "A6-EFA", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896174": { registration: "A6-EFB", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896175": { registration: "A6-EFC", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896176": { registration: "A6-EFD", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896177": { registration: "A6-EFE", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896178": { registration: "A6-EFF", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896179": { registration: "A6-EFG", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617a": { registration: "A6-EFH", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617b": { registration: "A6-EFI", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617d": { registration: "A6-EFK", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617e": { registration: "A6-EFL", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617f": { registration: "A6-EFM", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896180": { registration: "A6-EFN", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896181": { registration: "A6-EFO", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896182": { registration: "A6-EFP", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896184": { registration: "A6-EFR", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896185": { registration: "A6-EFS", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896186": { registration: "A6-EFT", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896187": { registration: "A6-EFU", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896188": { registration: "A6-EFV", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896189": { registration: "A6-EFW", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" }
 };
 
 const CARGO_STATIC_ROUTES = {
@@ -2118,6 +2140,13 @@ export default {
         'a54535'  // N439GT (B747-400F - Atlas Air)
       ]);
 
+      const EMIRATES_CARGO_HEX = new Set([
+        // Emirates SkyCargo Boeing 777F filosundaki tüm uçaklar (A6-EFA ... A6-EFW)
+        '896173', '896174', '896175', '896176', '896177', '896178', '896179', '89617a',
+        '89617b', '89617d', '89617e', '89617f', '896180', '896181', '896182', '896184',
+        '896185', '896186', '896187', '896188', '896189'
+      ]);
+
       // Takip edilen kargo havayolları. `prefix` = OpenSky ATC çağrı kodu öneki,
       // `allCargo` = true ise o önekle uçan HER uçuş kargodur (ayrı uçak tipi
       // kontrolüne gerek yok); false ise (THY, Emirates) yolcu filosuyla karışık
@@ -2169,16 +2198,29 @@ export default {
           if (TURKISH_CARGO_HEX.has(hex)) {
             return 'cargo';
           }
+          return 'pax';
+        } else if (airline === 'UAE') {
+          // Emirates SkyCargo: 9000-9999 aralığındaki kargo uçuşları veya tescilli B777F filosu
+          const numMatch = cs.match(/^UAE(\d+)/i);
+          if (numMatch) {
+            const flightNum = parseInt(numMatch[1], 10);
+            if (flightNum >= 9000 && flightNum <= 9999) {
+              return 'cargo';
+            }
+          }
+          if (EMIRATES_CARGO_HEX.has(hex)) {
+            return 'cargo';
+          }
+          return 'pax';
         } else {
-          // Dedicated all-cargo carriers: her uçuş kargo (ayrı yolcu filosu yok/karışmaz)
+          // Dedicated all-cargo carriers (GEC, CKK, MNB): her uçuş kargo
           const meta = CARGO_AIRLINE_BY_CODE.get(airline);
           if (meta && meta.allCargo) {
             return 'cargo';
           }
         }
 
-        // 4. Karışık filolu havayolları (THY tip tespiti başarısız olursa, Emirates vb.):
-        // uçak tipi/açıklaması "freighter" ise kargo kabul et.
+        // 4. Karışık filolu havayolları (tip tespiti başarısız olursa):
         if (details) {
           const type = (details.icaoType || details.type || '').toUpperCase();
           if (type.endsWith('F') && type !== 'B38M' && type !== 'B39M') {
@@ -2220,6 +2262,12 @@ export default {
           if (!meta) continue;
           const [icao24, , origin_country, , last_contact, longitude, latitude, baro_altitude, on_ground, velocity, true_track, vertical_rate, , geo_altitude, squawk] = s;
           if (on_ground || latitude == null || longitude == null) continue;
+
+          // SADECE KARGO: Kullanıcı yalnızca kargo uçaklarını takip eder.
+          // Havadaki yüzlerce yolcu uçağını en başta eleyerek Worker KV ve CPU limitlerini koruyoruz.
+          const type = determineFlightType(icao24, callsign, null, meta.code);
+          if (type !== 'cargo') continue;
+
           allFlights.push({
             icao24, callsign, lat: latitude, lon: longitude,
             airline: meta.code,
@@ -2227,14 +2275,13 @@ export default {
             altitude: baro_altitude, geoAltitude: geo_altitude, velocity, track: true_track,
             verticalRate: vertical_rate, squawk: squawk || null, originCountry: origin_country || null,
             lastContact: last_contact,
-            type: determineFlightType(icao24, callsign, null, meta.code),
+            type: 'cargo',
           });
         }
 
         return {
-          count: allFlights.filter(f => f.airline === 'THY' && f.type === 'cargo').length,
-          paxCount: allFlights.filter(f => f.airline === 'THY' && f.type === 'pax').length,
-          countByAirline: Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, allFlights.filter(f => f.airline === a.code && f.type === 'cargo').length])),
+          count: allFlights.filter(f => f.airline === 'THY').length,
+          countByAirline: Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, allFlights.filter(f => f.airline === a.code).length])),
           airlines: CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata })),
           flights: allFlights,
           updated: Math.floor(Date.now() / 1000),
