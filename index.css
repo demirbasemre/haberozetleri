@@ -8974,6 +8974,7 @@
   flex: 1;
   align-content: center;
   margin: 10px 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 #dc-iata .dash-card-footer {
@@ -9037,11 +9038,15 @@
   color: var(--text-3);
   font-weight: 600;
   margin-top: 1px;
+  min-height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cargo-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 10px 0;
 }
 .cargo-metric-item {
@@ -9050,7 +9055,7 @@
   align-items: center;
   text-align: center;
   gap: 2.5px;
-  padding: 8px 10px;
+  padding: 8px 6px;
 }
 .cargo-metric-item:nth-child(1),
 .cargo-metric-item:nth-child(2) {
@@ -9072,12 +9077,24 @@
   color: var(--text-3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
 }
 .cargo-metric-val {
   font-size: 22px;
   font-weight: 700;
   color: var(--text);
-  font-family: var(--font-mono, monospace);
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 .cargo-metric-val.positive { color: #059669; }
 .cargo-metric-val.negative { color: var(--red); }
@@ -9089,6 +9106,7 @@
   border-radius: 4px;
   width: 50px;
   height: 18px;
+  min-height: 18px;
 }
 
 /* ── IATA RAPORLARI SEKME TASARIMI ── */
