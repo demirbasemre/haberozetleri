@@ -2355,12 +2355,13 @@
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 16px;
-        padding: 16px 14px;
+        padding: 14px 10px;
         margin-bottom: 14px;
         position: relative;
         overflow: hidden;
         box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.06), var(--shadow-sm);
         transition: all 0.2s ease;
+        box-sizing: border-box;
       }
       .ticket-cutout-left, .ticket-cutout-right {
         position: absolute;
@@ -2383,47 +2384,53 @@
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 6px;
+        gap: 4px;
+        width: 100%;
+        box-sizing: border-box;
       }
       .ticket-airport-block {
         display: flex;
         flex-direction: column;
+        flex-shrink: 0;
+        max-width: 80px;
       }
       .ticket-airport-code {
         font-family: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
-        font-size: 22px;
+        font-size: 21px;
         font-weight: 800;
         color: var(--text);
         letter-spacing: -0.02em;
         line-height: 1;
       }
       .ticket-airport-time {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
         color: var(--red);
         margin-top: 5px;
         display: flex;
         align-items: center;
         gap: 3px;
+        white-space: nowrap;
       }
       .ticket-airport-city {
-        font-size: 10.5px;
+        font-size: 10px;
         color: var(--text-2);
         margin-top: 2px;
         font-weight: 500;
-        max-width: 85px;
+        max-width: 78px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
       .ticket-route-graphic {
         flex: 1;
+        min-width: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         position: relative;
-        padding: 0 4px;
-        margin: 0 2px;
+        padding: 0 2px;
+        margin: 0 1px;
       }
       .ticket-route-svg-wrap {
         width: 100%;
@@ -2436,15 +2443,15 @@
         overflow: visible;
       }
       .ticket-badge-pill {
-        font-size: 9.5px;
+        font-size: 9px;
         font-weight: 700;
         color: var(--red);
         background: color-mix(in srgb, var(--red) 10%, transparent);
         border: 1px solid color-mix(in srgb, var(--red) 22%, transparent);
         border-radius: 12px;
-        padding: 1.5px 7px;
+        padding: 1.5px 6px;
         letter-spacing: 0.02em;
-        margin-top: -2px;
+        margin-top: 2px;
         white-space: nowrap;
       }
       .ticket-perforation {
@@ -16147,6 +16154,11 @@ async function loadDashboard() {
           if (prev._realTrackRaw) f._realTrackRaw = prev._realTrackRaw;
           if (prev._trackLookupDone) f._trackLookupDone = prev._trackLookupDone;
           if (prev._routeLookupDone) f._routeLookupDone = prev._routeLookupDone;
+          if (prev._routeLookupFailed) f._routeLookupFailed = prev._routeLookupFailed;
+          if (!f.dep && prev.dep) f.dep = prev.dep;
+          if (!f.arr && prev.arr) f.arr = prev.arr;
+          if (!f.aircraftDetails && prev.aircraftDetails) f.aircraftDetails = prev.aircraftDetails;
+          if (!f.routeSource && prev.routeSource) f.routeSource = prev.routeSource;
         }
         f.currentLat = f.lat;
         f.currentLon = f.lon;
