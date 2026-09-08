@@ -17045,9 +17045,9 @@ async function loadDashboard() {
               minIdx = i;
             }
           }
-          // Kalkış havalimanına 150km'den yakın bir nokta bulunduysa,
+          // Kalkış havalimanına 400km'den yakın bir nokta bulunduysa,
           // track'i o noktadan başlat (önceki bacağı kırp)
-          if (minDist < 150) {
+          if (minDist < 400) {
             rawPts = rawPts.slice(minIdx);
           }
         }
