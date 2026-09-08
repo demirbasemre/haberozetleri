@@ -16284,7 +16284,9 @@ async function loadDashboard() {
         : '';
       const routeLine = (f.dep || f.arr)
         ? `<div style="color:var(--text-2); margin-top:2px; font-weight:500;">${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}</div>`
-        : `<div style="color:var(--text-3); margin-top:2px; font-size:11px;">Rota doğrulanıyor…</div>`;
+        : (f._routeLookupFailed
+            ? `<div style="color:var(--text-3); margin-top:2px; font-size:11px;">Rota tespit edilemedi</div>`
+            : `<div style="color:var(--text-3); margin-top:2px; font-size:11px;">Rota doğrulanıyor…</div>`);
       const regBadge = f.aircraftDetails?.registration
         ? `<span style="font-family:monospace; font-size:10px; color:var(--text-3); background:var(--surface-3, rgba(0,0,0,0.06)); padding:1px 4px; border-radius:3px; font-weight:normal;">${f.aircraftDetails.registration}</span>`
         : '';
@@ -16478,6 +16480,7 @@ async function loadDashboard() {
     } catch (_) {
       f._routeLookupFailed = true;
     } finally {
+      renderCargoFlightList();
       if (_cargoSelectedIdx === idx && _cargoFlights[idx] === f) {
         selectCargoFlight(idx, false);
       }
