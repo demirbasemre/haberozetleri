@@ -8972,8 +8972,8 @@
 
 #dc-iata .cargo-metrics-grid {
   flex: 1;
-  align-content: center;
-  margin: 10px 0;
+  align-content: flex-start;
+  margin: 0;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -9047,7 +9047,7 @@
 .cargo-metrics-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin: 10px 0;
+  margin: 0;
 }
 .cargo-metric-item {
   display: flex;
@@ -9060,11 +9060,13 @@
 .cargo-metric-item:nth-child(1),
 .cargo-metric-item:nth-child(2) {
   border-bottom: 1px dashed var(--border-soft);
-  padding-bottom: 9px;
+  padding-top: 0;
+  padding-bottom: 8px;
 }
 .cargo-metric-item:nth-child(3),
 .cargo-metric-item:nth-child(4) {
-  padding-top: 9px;
+  padding-top: 8px;
+  padding-bottom: 4px;
 }
 .cargo-metric-item:nth-child(odd) {
   border-right: 1px dashed var(--border-soft);
@@ -9084,13 +9086,13 @@
   line-height: 1.2;
 }
 .cargo-metric-val {
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--text);
   font-family: inherit;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
-  min-height: 28px;
+  min-height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
