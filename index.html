@@ -9438,13 +9438,32 @@ let activeCustDateYear = null;
 let activeCustDateMonth = null;
 let activeCustDateDay = null;
 
+const CUSTOMER_FAVICON_OVERRIDES = {
+  'Savino Del Bene': 'https://www.savinodelbene.com/wp-content/uploads/2022/05/Vector-1.png',
+  'Crane Worldwide Logistics': 'https://www.craneww.com/favicon.ico',
+  'TUSAŞ / Turkish Aerospace / TAI': 'https://www.tusas.com/favicon.ico',
+  'Nippon Express / NX Group': 'https://www.nipponexpress.com/favicon.ico',
+  'Nippon Express': 'https://www.nipponexpress.com/favicon.ico',
+  'Kintetsu World Express / KWE': 'https://www.kwe.com/favicon/favicon-32x32.png',
+  'EFL Global': 'https://efl.global/themes/custom/efl/favicon.ico',
+  'TEI': 'https://www.tei.com.tr/frontend/manifest/images/apple-icon-57x57.png'
+};
+
 function getCustomerFavicon(source, link) {
   if (source) {
     const s = String(source).trim();
+    if (CUSTOMER_FAVICON_OVERRIDES[s]) {
+      return CUSTOMER_FAVICON_OVERRIDES[s];
+    }
+    const sLower = s.toLowerCase();
+    for (const [k, url] of Object.entries(CUSTOMER_FAVICON_OVERRIDES)) {
+      if (k.toLowerCase() === sLower) {
+        return url;
+      }
+    }
     if (CUSTOMER_DOMAIN_MAP[s]) {
       return 'https://www.google.com/s2/favicons?domain=' + CUSTOMER_DOMAIN_MAP[s] + '&sz=32';
     }
-    const sLower = s.toLowerCase();
     for (const [k, domain] of Object.entries(CUSTOMER_DOMAIN_MAP)) {
       if (k.toLowerCase() === sLower) {
         return 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=32';
