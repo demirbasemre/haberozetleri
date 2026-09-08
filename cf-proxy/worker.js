@@ -2404,39 +2404,103 @@ export default {
         } catch (_) {}
       }
 
+      async function fetchAircraftPhotoFromPlanespotters(icao24, registration) {
+        const headers = {
+          'User-Agent': 'HaberozetleriFlightTracker/1.0 (contact: demirbasemre@gmail.com)'
+        };
+        try {
+          // 1. Önce transponder hex (ICAO24) ile sorgula (forceDirect=true, CF doğrudan atar)
+          if (icao24) {
+            const hex = icao24.toLowerCase();
+            const res = await doFetch(`https://api.planespotters.net/pub/photos/hex/${hex}`, { headers }, true, 86400);
+            if (res.status === 200) {
+              const data = JSON.parse(res.body);
+              const p = data?.photos?.[0];
+              if (p) {
+                return {
+                  photoUrl: p.thumbnail_large?.src || p.thumbnail?.src || null,
+                  photoThumb: p.thumbnail?.src || null,
+                  photographer: p.photographer || null,
+                  photoPage: p.link || null,
+                };
+              }
+            }
+          }
+
+          // 2. Hex'te yoksa ve tescil (registration) biliniyorsa tescille sorgula
+          if (registration) {
+            const regClean = registration.trim().toUpperCase();
+            const res = await doFetch(`https://api.planespotters.net/pub/photos/reg/${encodeURIComponent(regClean)}`, { headers }, true, 86400);
+            if (res.status === 200) {
+              const data = JSON.parse(res.body);
+              const p = data?.photos?.[0];
+              if (p) {
+                return {
+                  photoUrl: p.thumbnail_large?.src || p.thumbnail?.src || null,
+                  photoThumb: p.thumbnail?.src || null,
+                  photographer: p.photographer || null,
+                  photoPage: p.link || null,
+                };
+              }
+            }
+          }
+        } catch (_) {}
+        return null;
+      }
+
       async function fetchAircraftDetailsFromAdsbdb(icao24) {
         const uppercaseIcao = icao24.toUpperCase();
         const lowercaseIcao = icao24.toLowerCase();
         
-        // Fleet details check first to bypass external API for our own cargo planes
-        if (CARGO_FLEET_DETAILS[lowercaseIcao]) {
-          return CARGO_FLEET_DETAILS[lowercaseIcao];
-        }
-        
         const kvKey = `aircraft_details_${uppercaseIcao}`;
+        let cached = null;
         if (env.FBX_ROUTES_KV) {
           try {
-            const cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
-            if (cached) return cached;
+            cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+            // Eğer önbellekte detaylar varsa ve fotoğrafı da mevcutsa doğrudan kullan
+            if (cached && cached.photoUrl) return cached;
           } catch (_) {}
         }
+
+        let details = null;
+        // Önbellekte detaylar var ama fotoğrafı yoksa mevcut detayları temel al
+        if (cached) {
+          details = { ...cached };
+        } else if (CARGO_FLEET_DETAILS[lowercaseIcao]) {
+          // Filo detayları (THY Kargo için yerel hızlı eşleme)
+          details = { ...CARGO_FLEET_DETAILS[lowercaseIcao] };
+        } else {
+          const res = await doFetch(`https://api.adsbdb.com/v0/aircraft/${uppercaseIcao}`, {}, false, 86400);
+          if (res.status === 200) {
+            let data;
+            try { data = JSON.parse(res.body); } catch {}
+            const ac = data?.response?.aircraft;
+            if (ac) {
+              details = {
+                registration: ac.registration || null,
+                type: ac.type || null,
+                icaoType: ac.icao_type || null,
+                manufacturer: ac.manufacturer || null,
+                owner: ac.registered_owner || null,
+                photoUrl: ac.url_photo || null,
+                photoThumb: ac.url_photo_thumbnail || null,
+              };
+            }
+          }
+        }
         
-        const res = await doFetch(`https://api.adsbdb.com/v0/aircraft/${uppercaseIcao}`, {}, false, 86400);
-        if (res.status !== 200) return null;
-        let data;
-        try { data = JSON.parse(res.body); } catch { return null; }
-        const ac = data?.response?.aircraft;
-        if (!ac) return null;
-        
-        const details = {
-          registration: ac.registration || null,
-          type: ac.type || null,
-          icaoType: ac.icao_type || null,
-          manufacturer: ac.manufacturer || null,
-          owner: ac.registered_owner || null,
-          photoUrl: ac.url_photo || null,
-          photoThumb: ac.url_photo_thumbnail || null,
-        };
+        if (!details) return null;
+
+        // Fotoğraf ADSBdb/Airport-Data'da yoksa veya yerel filodan geldiyse Planespotters'tan çek
+        if (!details.photoUrl) {
+          const ps = await fetchAircraftPhotoFromPlanespotters(lowercaseIcao, details.registration);
+          if (ps && ps.photoUrl) {
+            details.photoUrl = ps.photoUrl;
+            details.photoThumb = ps.photoThumb;
+            details.photographer = ps.photographer;
+            details.photoPage = ps.photoPage;
+          }
+        }
         
         if (env.FBX_ROUTES_KV && details.registration) {
           try {
@@ -2928,7 +2992,7 @@ export default {
       // Uçak detaylarını (tescil, model, fotoğraf) çeker. Aynı şekilde cargo için
       // arka planda proaktif, yolcu için /cargo-flight-detail'den isteğe bağlı çağrılır.
       async function resolveAircraftDetails(f) {
-        if (f.aircraftDetails) return false;
+        if (f.aircraftDetails && f.aircraftDetails.photoUrl) return false;
         let updated = false;
         try {
           const acDetails = await fetchAircraftDetailsFromAdsbdb(f.icao24);
@@ -2958,7 +3022,7 @@ export default {
               subreqCount += 2;
             }
           }
-          if (!f.aircraftDetails) {
+          if (!f.aircraftDetails || !f.aircraftDetails.photoUrl) {
             if (await resolveAircraftDetails(f)) {
               cacheUpdated = true;
               subreqCount += 1;
