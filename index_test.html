@@ -2982,11 +2982,11 @@
         letter-spacing: 0.04em;
       }
 
-      /* ── Customer News Source Dropdown Grid (3 Sütunlu) ── */
+      /* ── Customer News Source Dropdown Grid & Sections ── */
       #cust-source-panel {
         min-width: 660px;
         max-width: 860px;
-        max-height: 440px;
+        max-height: 480px;
         overflow-y: auto;
         padding: 10px;
       }
@@ -2994,6 +2994,29 @@
         margin-bottom: 8px;
         padding-bottom: 8px;
         border-bottom: 1px solid var(--border-soft);
+      }
+      .cust-source-group {
+        margin-bottom: 12px;
+      }
+      .cust-source-group:last-child {
+        margin-bottom: 0;
+      }
+      .cust-source-group-title {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 6px;
+        padding-left: 2px;
+      }
+      .cust-source-group-badge {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
       }
       .cust-source-grid {
         display: grid;
@@ -3021,6 +3044,11 @@
         color: var(--text-3);
         padding-left: 4px;
         flex-shrink: 0;
+      }
+      .cust-section-pill.active {
+        background: var(--text) !important;
+        color: var(--surface) !important;
+        font-weight: 700 !important;
       }
       @media (max-width: 768px) {
         #cust-source-panel {
@@ -3527,34 +3555,15 @@
     <!-- Customer News filters (shown when Müşteri Haberleri tab is active) -->
     <div id="customer-news-filter-content" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;">
 
-      <!-- Kategori -->
-      <div class="fdd-wrap">
-        <button class="fdd-btn" id="cust-cat-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Müşteri Kategori filtresi">
-          <span class="fdd-dot" id="cust-cat-dot" style="display:none !important;background:var(--red)"></span>
-          <span id="cust-cat-btn-label">Kategori</span>
-          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-        <div class="fdd-panel" id="cust-cat-panel" role="listbox" aria-label="Kategori seç">
-          <div class="fdd-option selected" data-cat="all" role="option" aria-selected="true">
-            <div class="fdd-radio"></div>
-            <span>Tümü</span>
-          </div>
-          <div class="fdd-option" data-cat="Key Account Agent" role="option">
-            <div class="fdd-radio"></div>
-            <span>Key Account Agent</span>
-          </div>
-          <div class="fdd-option" data-cat="Key Account Shipper" role="option">
-            <div class="fdd-radio"></div>
-            <span>Key Account Shipper</span>
-          </div>
-          <div class="fdd-option" data-cat="HBSA Acenteleri" role="option">
-            <div class="fdd-radio"></div>
-            <span>HBSA Acenteleri</span>
-          </div>
-        </div>
+      <!-- 3 Bölüm Filtresi (Key Account Agent, Key Account Shipper, HBSA Acenteleri) -->
+      <div class="cust-cat-pills" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface);padding:3px;border-radius:8px;border:1px solid var(--border);">
+        <button class="fdd-btn cust-section-pill active" data-cat="all" style="padding:4px 10px;font-size:12px;border-radius:6px;">Tümü</button>
+        <button class="fdd-btn cust-section-pill" data-cat="Key Account Agent" style="padding:4px 10px;font-size:12px;border-radius:6px;">Key Account Agent</button>
+        <button class="fdd-btn cust-section-pill" data-cat="Key Account Shipper" style="padding:4px 10px;font-size:12px;border-radius:6px;">Key Account Shipper</button>
+        <button class="fdd-btn cust-section-pill" data-cat="HBSA Acenteleri" style="padding:4px 10px;font-size:12px;border-radius:6px;">HBSA Acenteleri</button>
       </div>
+
+      <div class="filter-sep"></div>
 
       <!-- Tarih (Haberler sekmesine benzer) -->
       <div class="fdd-wrap">
@@ -3573,7 +3582,7 @@
         </div>
       </div>
 
-      <!-- Şirket / Kaynak (3 Sütunlu Grid + Logolar) -->
+      <!-- Şirket / Kaynak (3 Bölümlü & 3 Sütunlu Grid + Logolar) -->
       <div class="fdd-wrap">
         <button class="fdd-btn" id="cust-source-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Şirket filtresi">
           <span class="fdd-dot" id="cust-source-dot" style="display:none !important;background:var(--red)"></span>
@@ -3583,27 +3592,7 @@
           </svg>
         </button>
         <div class="fdd-panel" id="cust-source-panel" role="listbox" aria-label="Şirket seç">
-          <!-- Populated by populateCustomerSourceDropdown() in 3-column grid -->
-        </div>
-      </div>
-
-      <!-- Sıralama -->
-      <div class="fdd-wrap">
-        <button class="fdd-btn" id="cust-sort-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Sıralama filtresi">
-          <span id="cust-sort-btn-label">En Yeni</span>
-          <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-        <div class="fdd-panel" id="cust-sort-panel" role="listbox" aria-label="Sıralama seç">
-          <div class="fdd-option selected" data-sort="newest" role="option" aria-selected="true">
-            <div class="fdd-radio"></div>
-            <span>En Yeni</span>
-          </div>
-          <div class="fdd-option" data-sort="oldest" role="option">
-            <div class="fdd-radio"></div>
-            <span>En Eski</span>
-          </div>
+          <!-- Populated by populateCustomerSourceDropdown() in 3 sections & 3-column grid -->
         </div>
       </div>
 
@@ -3613,8 +3602,6 @@
         Temizle
       </button>
 
-      <!-- Aktif Sayı Rozeti -->
-      <span id="cust-count-pill" style="margin-left:auto;font-size:12px;font-weight:600;color:var(--text-3);padding:3px 10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;">0 haber</span>
     </div>
 
     <!-- Todo tab filter area (empty — placeholder for consistent height) -->
@@ -9391,8 +9378,13 @@ const CUSTOMER_DOMAIN_MAP = {
   'TUSAŞ / Turkish Aerospace / TAI': 'tusas.com',
   'SpaceX / Starlink': 'spacex.com',
   'Dimerco': 'dimerco.com',
+  'DIMERCO': 'dimerco.com',
   'Skyways': 'skyways-group.com',
-  'Lx Pantos': 'lxpantos.com'
+  'SKYWAYS': 'skyways-group.com',
+  'Lx Pantos': 'lxpantos.com',
+  'LX PANTOS': 'lxpantos.com',
+  'DSV ABD': 'dsv.com',
+  'DSV Güney Afrika': 'dsv.com'
 };
 
 const CUSTOMER_CAT_COLORS = {
@@ -9406,24 +9398,33 @@ let _customerNewsLoaded = false;
 let _custArticlesRaw = [];
 let _custFilterCat = 'all';
 let _custFilterSource = 'all';
-let _custFilterSort = 'newest';
 let activeCustDateYear = null;
 let activeCustDateMonth = null;
 let activeCustDateDay = null;
 
 function getCustomerFavicon(source, link) {
-  if (source && CUSTOMER_DOMAIN_MAP[source]) {
-    return 'https://www.google.com/s2/favicons?domain=' + CUSTOMER_DOMAIN_MAP[source] + '&sz=32';
+  if (source) {
+    const s = String(source).trim();
+    if (CUSTOMER_DOMAIN_MAP[s]) {
+      return 'https://www.google.com/s2/favicons?domain=' + CUSTOMER_DOMAIN_MAP[s] + '&sz=32';
+    }
+    const sLower = s.toLowerCase();
+    for (const [k, domain] of Object.entries(CUSTOMER_DOMAIN_MAP)) {
+      if (k.toLowerCase() === sLower) {
+        return 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=32';
+      }
+    }
   }
   if (link) {
     try {
       const h = new URL(link).hostname.replace(/^www\./, '');
-      if (!h.includes('google.com')) {
+      if (!h.includes('google.com') && !h.includes('googleusercontent.com')) {
         return 'https://www.google.com/s2/favicons?domain=' + h + '&sz=32';
       }
     } catch(e) {}
   }
-  return 'https://www.google.com/s2/favicons?domain=turkishcargo.com&sz=32';
+  // Nötr şirket ikonu SVG Data URI (asla Turkish Cargo fallback çıkmaz)
+  return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2364748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Crect width="16" height="20" x="4" y="2" rx="2" ry="2"/%3E%3Cpath d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01"/%3E%3C/svg%3E';
 }
 
 function formatCustomerPercentage(str) {
@@ -9622,12 +9623,21 @@ async function loadCustomerNewsData() {
 function populateCustomerSourceDropdown(articles) {
   const panel = document.getElementById('cust-source-panel');
   if (!panel) return;
-  const counts = {};
+
+  // Group sources by category
+  const categories = ['Key Account Agent', 'Key Account Shipper', 'HBSA Acenteleri'];
+  const catSources = {
+    'Key Account Agent': {},
+    'Key Account Shipper': {},
+    'HBSA Acenteleri': {}
+  };
+
   articles.forEach(a => {
     const s = (a.source || '').trim();
-    if (s) counts[s] = (counts[s] || 0) + 1;
+    if (!s) return;
+    const cat = a.category && catSources[a.category] ? a.category : 'Key Account Shipper';
+    catSources[cat][s] = (catSources[cat][s] || 0) + 1;
   });
-  const sorted = Object.keys(counts).sort((a, b) => a.localeCompare(b, 'tr'));
 
   let html = `
     <div class="fdd-option cust-source-all ${_custFilterSource === 'all' ? 'selected' : ''}" data-source="all" role="option" aria-selected="${_custFilterSource === 'all'}">
@@ -9636,24 +9646,45 @@ function populateCustomerSourceDropdown(articles) {
       <span style="font-weight:600;">Tüm Şirketler</span>
       <span style="margin-left:auto;font-size:11px;color:var(--text-3);">${articles.length}</span>
     </div>
-    <div class="cust-source-grid">
   `;
 
-  sorted.forEach(src => {
-    const isSel = _custFilterSource === src;
-    const logoUrl = getCustomerFavicon(src);
-    const c = counts[src];
+  categories.forEach(cat => {
+    const sourcesObj = catSources[cat] || {};
+    const sortedSources = Object.keys(sourcesObj).sort((a, b) => a.localeCompare(b, 'tr'));
+    if (sortedSources.length === 0) return;
+
+    const catColor = CUSTOMER_CAT_COLORS[cat] || 'var(--text)';
+
     html += `
-      <div class="fdd-option cust-source-item ${isSel ? 'selected' : ''}" data-source="${src.replace(/"/g, '&quot;')}" role="option" aria-selected="${isSel}">
-        <div class="fdd-radio"></div>
-        <img class="source-favicon" src="${logoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
-        <span class="cust-source-name" title="${src}">${src}</span>
-        <span class="cust-source-count">${c}</span>
+      <div class="cust-source-group">
+        <div class="cust-source-group-title" style="color:${catColor};">
+          <span class="cust-source-group-badge" style="background:${catColor}"></span>
+          <span>${cat}</span>
+          <span style="margin-left:auto;font-size:10.5px;color:var(--text-3);font-weight:600;">${sortedSources.length} Şirket</span>
+        </div>
+        <div class="cust-source-grid">
+    `;
+
+    sortedSources.forEach(src => {
+      const isSel = _custFilterSource === src;
+      const logoUrl = getCustomerFavicon(src);
+      const c = sourcesObj[src];
+      html += `
+        <div class="fdd-option cust-source-item ${isSel ? 'selected' : ''}" data-source="${src.replace(/"/g, '&quot;')}" role="option" aria-selected="${isSel}">
+          <div class="fdd-radio"></div>
+          <img class="source-favicon" src="${logoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
+          <span class="cust-source-name" title="${src}">${src}</span>
+          <span class="cust-source-count">${c}</span>
+        </div>
+      `;
+    });
+
+    html += `
+        </div>
       </div>
     `;
   });
 
-  html += `</div>`;
   panel.innerHTML = html;
 
   panel.querySelectorAll('.fdd-option').forEach(opt => {
@@ -9672,30 +9703,15 @@ function populateCustomerSourceDropdown(articles) {
 }
 
 function initCustomerNewsFilters() {
-  // Category dropdown
-  const catBtn = document.getElementById('cust-cat-btn');
-  const catPanel = document.getElementById('cust-cat-panel');
-  if (catBtn && catPanel) {
-    catBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      const open = catPanel.classList.toggle('open');
-      catBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      closeOtherCustomerDropdowns(catPanel);
+  // 3 Section pills (Tümü, Key Account Agent, Key Account Shipper, HBSA Acenteleri)
+  document.querySelectorAll('.cust-section-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cust-section-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _custFilterCat = btn.dataset.cat || 'all';
+      filterAndRenderCustomerNews();
     });
-    catPanel.querySelectorAll('.fdd-option').forEach(opt => {
-      opt.addEventListener('click', () => {
-        catPanel.querySelectorAll('.fdd-option').forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        _custFilterCat = opt.dataset.cat || 'all';
-        const labelEl = document.getElementById('cust-cat-btn-label');
-        const dotEl = document.getElementById('cust-cat-dot');
-        if (labelEl) labelEl.textContent = _custFilterCat === 'all' ? 'Kategori' : _custFilterCat;
-        if (dotEl) dotEl.style.display = _custFilterCat === 'all' ? 'none' : 'inline-block';
-        closeAllCustomerDropdowns();
-        filterAndRenderCustomerNews();
-      });
-    });
-  }
+  });
 
   // Date dropdown button
   const dateBtn = document.getElementById('cust-date-btn');
@@ -9721,29 +9737,6 @@ function initCustomerNewsFilters() {
     });
   }
 
-  // Sort dropdown
-  const sortBtn = document.getElementById('cust-sort-btn');
-  const sortPanel = document.getElementById('cust-sort-panel');
-  if (sortBtn && sortPanel) {
-    sortBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      const open = sortPanel.classList.toggle('open');
-      sortBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      closeOtherCustomerDropdowns(sortPanel);
-    });
-    sortPanel.querySelectorAll('.fdd-option').forEach(opt => {
-      opt.addEventListener('click', () => {
-        sortPanel.querySelectorAll('.fdd-option').forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        _custFilterSort = opt.dataset.sort || 'newest';
-        const labelEl = document.getElementById('cust-sort-btn-label');
-        if (labelEl) labelEl.textContent = _custFilterSort === 'newest' ? 'En Yeni' : 'En Eski';
-        closeAllCustomerDropdowns();
-        filterAndRenderCustomerNews();
-      });
-    });
-  }
-
   // Close dropdowns on outside click
   document.addEventListener('click', e => {
     if (!e.target.closest('#customer-news-filter-content')) {
@@ -9766,16 +9759,13 @@ function closeOtherCustomerDropdowns(activePanel) {
 function clearCustomerFilters() {
   _custFilterCat = 'all';
   _custFilterSource = 'all';
-  _custFilterSort = 'newest';
   activeCustDateYear = null;
   activeCustDateMonth = null;
   activeCustDateDay = null;
 
-  const catLabel = document.getElementById('cust-cat-btn-label');
-  const catDot = document.getElementById('cust-cat-dot');
-  if (catLabel) catLabel.textContent = 'Kategori';
-  if (catDot) catDot.style.display = 'none';
-  document.querySelectorAll('#cust-cat-panel .fdd-option').forEach(o => o.classList.toggle('selected', o.dataset.cat === 'all'));
+  document.querySelectorAll('.cust-section-pill').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === 'all');
+  });
 
   syncCustomerDateBtn();
   buildCustomerDatePanel(_custArticlesRaw);
@@ -9785,10 +9775,6 @@ function clearCustomerFilters() {
   if (srcLabel) srcLabel.textContent = 'Şirket';
   if (srcDot) srcDot.style.display = 'none';
   document.querySelectorAll('#cust-source-panel .fdd-option').forEach(o => o.classList.toggle('selected', o.dataset.source === 'all'));
-
-  const sortLabel = document.getElementById('cust-sort-btn-label');
-  if (sortLabel) sortLabel.textContent = 'En Yeni';
-  document.querySelectorAll('#cust-sort-panel .fdd-option').forEach(o => o.classList.toggle('selected', o.dataset.sort === 'newest'));
 
   closeAllCustomerDropdowns();
   filterAndRenderCustomerNews();
@@ -9816,19 +9802,15 @@ function filterAndRenderCustomerNews() {
     });
   }
 
-  // Sort
+  // Her zaman en yeniden en eskiye sırala
   list.sort((a, b) => {
     const da = new Date(a.date || 0).getTime();
     const db = new Date(b.date || 0).getTime();
-    return _custFilterSort === 'oldest' ? da - db : db - da;
+    return db - da;
   });
 
-  // Update pill count & clear button visibility
-  const countPill = document.getElementById('cust-count-pill');
-  if (countPill) countPill.textContent = list.length + ' haber';
-
   const clearBtn = document.getElementById('cust-clear-btn');
-  const isFiltered = _custFilterCat !== 'all' || _custFilterSource !== 'all' || _custFilterSort !== 'newest' || activeCustDateYear || activeCustDateMonth || activeCustDateDay;
+  const isFiltered = _custFilterCat !== 'all' || _custFilterSource !== 'all' || activeCustDateYear || activeCustDateMonth || activeCustDateDay;
   if (clearBtn) clearBtn.style.display = isFiltered ? 'inline-flex' : 'none';
 
   renderCustomerCards(list);
