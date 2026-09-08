@@ -3050,6 +3050,57 @@
         color: var(--surface) !important;
         font-weight: 700 !important;
       }
+      .cust-split-pill {
+        display: inline-flex;
+        align-items: stretch;
+        border-radius: 6px;
+        background: transparent;
+        border: 1px solid transparent;
+        transition: all 0.15s ease;
+        overflow: hidden;
+      }
+      .cust-split-pill:hover {
+        background: var(--surface-hover, rgba(0,0,0,0.04));
+      }
+      .cust-split-pill.active {
+        background: var(--text) !important;
+        color: var(--surface) !important;
+      }
+      .cust-split-text {
+        padding: 4px 8px;
+        font-size: 12px;
+        border: none;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        line-height: 1.2;
+      }
+      .cust-split-pill.active .cust-split-text {
+        font-weight: 700;
+        color: var(--surface) !important;
+      }
+      .cust-split-arrow {
+        padding: 4px 6px;
+        border: none;
+        background: transparent;
+        border-left: 1px solid rgba(125, 125, 125, 0.2);
+        color: inherit;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s ease;
+      }
+      .cust-split-arrow:hover {
+        background: rgba(125, 125, 125, 0.2);
+      }
+      .cust-split-pill.active .cust-split-arrow {
+        border-left-color: rgba(255, 255, 255, 0.3);
+        color: var(--surface) !important;
+      }
       @media (max-width: 768px) {
         #cust-source-panel {
           min-width: calc(100vw - 20px) !important;
@@ -3558,9 +3609,27 @@
       <!-- 3 Bölüm Filtresi (Key Account Agent, Key Account Shipper, HBSA Acenteleri) -->
       <div class="cust-cat-pills" style="display:inline-flex;align-items:center;gap:4px;background:var(--surface);padding:3px;border-radius:8px;border:1px solid var(--border);">
         <button class="fdd-btn cust-section-pill active" data-cat="all" style="padding:4px 10px;font-size:12px;border-radius:6px;">Tümü</button>
-        <button class="fdd-btn cust-section-pill" data-cat="Key Account Agent" style="padding:4px 10px;font-size:12px;border-radius:6px;">Key Account Agent</button>
-        <button class="fdd-btn cust-section-pill" data-cat="Key Account Shipper" style="padding:4px 10px;font-size:12px;border-radius:6px;">Key Account Shipper</button>
-        <button class="fdd-btn cust-section-pill" data-cat="HBSA Acenteleri" style="padding:4px 10px;font-size:12px;border-radius:6px;">HBSA Acenteleri</button>
+
+        <div class="cust-split-pill" data-cat="Key Account Agent">
+          <button class="cust-split-text" data-cat="Key Account Agent">Key Account Agent</button>
+          <button class="cust-split-arrow" data-cat="Key Account Agent" title="Key Account Agent Şirketleri" aria-label="Key Account Agent Şirketleri">
+            <svg class="fdd-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+
+        <div class="cust-split-pill" data-cat="Key Account Shipper">
+          <button class="cust-split-text" data-cat="Key Account Shipper">Key Account Shipper</button>
+          <button class="cust-split-arrow" data-cat="Key Account Shipper" title="Key Account Shipper Şirketleri" aria-label="Key Account Shipper Şirketleri">
+            <svg class="fdd-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+
+        <div class="cust-split-pill" data-cat="HBSA Acenteleri">
+          <button class="cust-split-text" data-cat="HBSA Acenteleri">HBSA Acenteleri</button>
+          <button class="cust-split-arrow" data-cat="HBSA Acenteleri" title="HBSA Acenteleri Şirketleri" aria-label="HBSA Acenteleri Şirketleri">
+            <svg class="fdd-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
       </div>
 
       <div class="filter-sep"></div>
@@ -3582,17 +3651,18 @@
         </div>
       </div>
 
-      <!-- Şirket / Kaynak (3 Bölümlü & 3 Sütunlu Grid + Logolar) -->
+      <!-- Şirket / Kaynak (Kategoriye Göre Dinamik Filtrelenen Grid + Logolar) -->
       <div class="fdd-wrap">
         <button class="fdd-btn" id="cust-source-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Şirket filtresi">
           <span class="fdd-dot" id="cust-source-dot" style="display:none !important;background:var(--red)"></span>
+          <img id="cust-source-btn-logo" src="" alt="" style="display:none;width:14px;height:14px;border-radius:3px;object-fit:contain;margin-right:2px;">
           <span id="cust-source-btn-label">Şirket</span>
           <svg class="fdd-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="6 9 12 15 18 9"/>
           </svg>
         </button>
         <div class="fdd-panel" id="cust-source-panel" role="listbox" aria-label="Şirket seç">
-          <!-- Populated by populateCustomerSourceDropdown() in 3 sections & 3-column grid -->
+          <!-- Populated by populateCustomerSourceDropdown() -->
         </div>
       </div>
 
@@ -9620,9 +9690,52 @@ async function loadCustomerNewsData() {
   }
 }
 
+function syncCustomerCatPills() {
+  const allBtn = document.querySelector('.cust-section-pill[data-cat="all"]');
+  if (allBtn) {
+    allBtn.classList.toggle('active', _custFilterCat === 'all');
+  }
+  document.querySelectorAll('.cust-split-pill').forEach(pill => {
+    const cat = pill.dataset.cat;
+    pill.classList.toggle('active', _custFilterCat === cat);
+  });
+}
+
+function syncCustomerSourceBtn() {
+  const btn = document.getElementById('cust-source-btn');
+  const lbl = document.getElementById('cust-source-btn-label');
+  const dot = document.getElementById('cust-source-dot');
+  const logo = document.getElementById('cust-source-btn-logo');
+  if (!btn || !lbl) return;
+
+  if (_custFilterSource !== 'all') {
+    lbl.textContent = _custFilterSource;
+    if (dot) dot.style.display = 'inline-block';
+    if (logo) {
+      logo.src = getCustomerFavicon(_custFilterSource);
+      logo.style.display = 'inline-block';
+    }
+    btn.classList.add('active');
+  } else {
+    if (logo) logo.style.display = 'none';
+    if (dot) dot.style.display = 'none';
+    btn.classList.remove('active');
+    if (_custFilterCat === 'Key Account Agent') {
+      lbl.textContent = 'Agent Şirketleri';
+    } else if (_custFilterCat === 'Key Account Shipper') {
+      lbl.textContent = 'Shipper Şirketleri';
+    } else if (_custFilterCat === 'HBSA Acenteleri') {
+      lbl.textContent = 'Acente Şirketleri';
+    } else {
+      lbl.textContent = 'Şirket';
+    }
+  }
+}
+
 function populateCustomerSourceDropdown(articles) {
   const panel = document.getElementById('cust-source-panel');
   if (!panel) return;
+  articles = articles || _custArticlesRaw;
 
   // Group sources by category
   const categories = ['Key Account Agent', 'Key Account Shipper', 'HBSA Acenteleri'];
@@ -9639,29 +9752,24 @@ function populateCustomerSourceDropdown(articles) {
     catSources[cat][s] = (catSources[cat][s] || 0) + 1;
   });
 
-  let html = `
-    <div class="fdd-option cust-source-all ${_custFilterSource === 'all' ? 'selected' : ''}" data-source="all" role="option" aria-selected="${_custFilterSource === 'all'}">
-      <div class="fdd-radio"></div>
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:2px;color:var(--text-3);flex-shrink:0;"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      <span style="font-weight:600;">Tüm Şirketler</span>
-      <span style="margin-left:auto;font-size:11px;color:var(--text-3);">${articles.length}</span>
-    </div>
-  `;
+  let html = '';
 
-  categories.forEach(cat => {
+  // Eğer belirli bir kategori seçiliyse: Yalnızca o kategorinin şirketlerini ve "Tüm [Kategori] Şirketleri" başlığını göster
+  if (_custFilterCat !== 'all') {
+    const cat = _custFilterCat;
     const sourcesObj = catSources[cat] || {};
     const sortedSources = Object.keys(sourcesObj).sort((a, b) => a.localeCompare(b, 'tr'));
-    if (sortedSources.length === 0) return;
-
     const catColor = CUSTOMER_CAT_COLORS[cat] || 'var(--text)';
+    const totalCatArticles = Object.values(sourcesObj).reduce((sum, n) => sum + n, 0);
 
     html += `
-      <div class="cust-source-group">
-        <div class="cust-source-group-title" style="color:${catColor};">
-          <span class="cust-source-group-badge" style="background:${catColor}"></span>
-          <span>${cat}</span>
-          <span style="margin-left:auto;font-size:10.5px;color:var(--text-3);font-weight:600;">${sortedSources.length} Şirket</span>
-        </div>
+      <div class="fdd-option cust-source-all ${_custFilterSource === 'all' ? 'selected' : ''}" data-source="all" data-cat="${cat}" role="option" aria-selected="${_custFilterSource === 'all'}">
+        <div class="fdd-radio"></div>
+        <span class="cust-source-group-badge" style="background:${catColor};width:9px;height:9px;margin-right:4px;"></span>
+        <span style="font-weight:600;">Tüm ${cat} Şirketleri</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text-3);">${totalCatArticles}</span>
+      </div>
+      <div class="cust-source-group" style="margin-top:6px;">
         <div class="cust-source-grid">
     `;
 
@@ -9670,7 +9778,7 @@ function populateCustomerSourceDropdown(articles) {
       const logoUrl = getCustomerFavicon(src);
       const c = sourcesObj[src];
       html += `
-        <div class="fdd-option cust-source-item ${isSel ? 'selected' : ''}" data-source="${src.replace(/"/g, '&quot;')}" role="option" aria-selected="${isSel}">
+        <div class="fdd-option cust-source-item ${isSel ? 'selected' : ''}" data-source="${src.replace(/"/g, '&quot;')}" data-cat="${cat}" role="option" aria-selected="${isSel}">
           <div class="fdd-radio"></div>
           <img class="source-favicon" src="${logoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
           <span class="cust-source-name" title="${src}">${src}</span>
@@ -9683,19 +9791,70 @@ function populateCustomerSourceDropdown(articles) {
         </div>
       </div>
     `;
-  });
+  } else {
+    // "Tümü" seçiliyse: Tüm şirketler ve 3 ana kategori başlığı altında 3 sütunlu grid
+    html += `
+      <div class="fdd-option cust-source-all ${_custFilterSource === 'all' ? 'selected' : ''}" data-source="all" data-cat="all" role="option" aria-selected="${_custFilterSource === 'all'}">
+        <div class="fdd-radio"></div>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:2px;color:var(--text-3);flex-shrink:0;"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <span style="font-weight:600;">Tüm Şirketler</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text-3);">${articles.length}</span>
+      </div>
+    `;
+
+    categories.forEach(cat => {
+      const sourcesObj = catSources[cat] || {};
+      const sortedSources = Object.keys(sourcesObj).sort((a, b) => a.localeCompare(b, 'tr'));
+      if (sortedSources.length === 0) return;
+
+      const catColor = CUSTOMER_CAT_COLORS[cat] || 'var(--text)';
+
+      html += `
+        <div class="cust-source-group">
+          <div class="cust-source-group-title" style="color:${catColor};">
+            <span class="cust-source-group-badge" style="background:${catColor}"></span>
+            <span>${cat}</span>
+            <span style="margin-left:auto;font-size:10.5px;color:var(--text-3);font-weight:600;">${sortedSources.length} Şirket</span>
+          </div>
+          <div class="cust-source-grid">
+      `;
+
+      sortedSources.forEach(src => {
+        const isSel = _custFilterSource === src;
+        const logoUrl = getCustomerFavicon(src);
+        const c = sourcesObj[src];
+        html += `
+          <div class="fdd-option cust-source-item ${isSel ? 'selected' : ''}" data-source="${src.replace(/"/g, '&quot;')}" data-cat="${cat}" role="option" aria-selected="${isSel}">
+            <div class="fdd-radio"></div>
+            <img class="source-favicon" src="${logoUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
+            <span class="cust-source-name" title="${src}">${src}</span>
+            <span class="cust-source-count">${c}</span>
+          </div>
+        `;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+    });
+  }
 
   panel.innerHTML = html;
 
   panel.querySelectorAll('.fdd-option').forEach(opt => {
     opt.addEventListener('click', () => {
-      panel.querySelectorAll('.fdd-option').forEach(o => o.classList.remove('selected'));
-      opt.classList.add('selected');
-      _custFilterSource = opt.dataset.source || 'all';
-      const labelEl = document.getElementById('cust-source-btn-label');
-      const dotEl = document.getElementById('cust-source-dot');
-      if (labelEl) labelEl.textContent = _custFilterSource === 'all' ? 'Şirket' : _custFilterSource;
-      if (dotEl) dotEl.style.display = _custFilterSource === 'all' ? 'none' : 'inline-block';
+      const chosenSource = opt.dataset.source || 'all';
+      const chosenCat = opt.dataset.cat || 'all';
+
+      _custFilterSource = chosenSource;
+      if (chosenSource !== 'all' && chosenCat !== 'all') {
+        _custFilterCat = chosenCat;
+      }
+
+      syncCustomerCatPills();
+      syncCustomerSourceBtn();
+      populateCustomerSourceDropdown(_custArticlesRaw);
       closeAllCustomerDropdowns();
       filterAndRenderCustomerNews();
     });
@@ -9703,13 +9862,56 @@ function populateCustomerSourceDropdown(articles) {
 }
 
 function initCustomerNewsFilters() {
-  // 3 Section pills (Tümü, Key Account Agent, Key Account Shipper, HBSA Acenteleri)
-  document.querySelectorAll('.cust-section-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.cust-section-pill').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      _custFilterCat = btn.dataset.cat || 'all';
+  // "Tümü" pill
+  const allBtn = document.querySelector('.cust-section-pill[data-cat="all"]');
+  if (allBtn) {
+    allBtn.addEventListener('click', () => {
+      _custFilterCat = 'all';
+      _custFilterSource = 'all';
+      syncCustomerCatPills();
+      syncCustomerSourceBtn();
+      populateCustomerSourceDropdown(_custArticlesRaw);
+      closeAllCustomerDropdowns();
       filterAndRenderCustomerNews();
+    });
+  }
+
+  // Kategori split buton metinleri (doğrudan tek tıkla o kategorideki tüm haberleri süzme)
+  document.querySelectorAll('.cust-split-text').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const cat = btn.dataset.cat;
+      _custFilterCat = cat;
+      _custFilterSource = 'all'; // Kategori değiştiğinde şirket filtresi sıfırlanır
+      syncCustomerCatPills();
+      syncCustomerSourceBtn();
+      populateCustomerSourceDropdown(_custArticlesRaw);
+      closeAllCustomerDropdowns();
+      filterAndRenderCustomerNews();
+    });
+  });
+
+  // Kategori split buton okları (o kategorinin altındaki şirket dropdown'ını açma)
+  document.querySelectorAll('.cust-split-arrow').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const cat = btn.dataset.cat;
+      _custFilterCat = cat;
+      if (_custFilterSource !== 'all') {
+        _custFilterSource = 'all';
+      }
+      syncCustomerCatPills();
+      syncCustomerSourceBtn();
+      populateCustomerSourceDropdown(_custArticlesRaw);
+
+      // Şirket dropdown panelini aç
+      const srcBtn = document.getElementById('cust-source-btn');
+      const srcPanel = document.getElementById('cust-source-panel');
+      if (srcBtn && srcPanel) {
+        srcPanel.classList.add('open');
+        srcBtn.setAttribute('aria-expanded', 'true');
+        closeOtherCustomerDropdowns(srcPanel);
+      }
     });
   });
 
@@ -9763,18 +9965,11 @@ function clearCustomerFilters() {
   activeCustDateMonth = null;
   activeCustDateDay = null;
 
-  document.querySelectorAll('.cust-section-pill').forEach(b => {
-    b.classList.toggle('active', b.dataset.cat === 'all');
-  });
-
+  syncCustomerCatPills();
+  syncCustomerSourceBtn();
   syncCustomerDateBtn();
   buildCustomerDatePanel(_custArticlesRaw);
-
-  const srcLabel = document.getElementById('cust-source-btn-label');
-  const srcDot = document.getElementById('cust-source-dot');
-  if (srcLabel) srcLabel.textContent = 'Şirket';
-  if (srcDot) srcDot.style.display = 'none';
-  document.querySelectorAll('#cust-source-panel .fdd-option').forEach(o => o.classList.toggle('selected', o.dataset.source === 'all'));
+  populateCustomerSourceDropdown(_custArticlesRaw);
 
   closeAllCustomerDropdowns();
   filterAndRenderCustomerNews();
