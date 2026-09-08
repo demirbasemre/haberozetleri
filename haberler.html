@@ -9358,6 +9358,9 @@ function filterAndRenderCustomerNews() {
 function buildCustomerCardHTML(article) {
   const cat = article.category || 'Key Account Shipper';
   const color = CUSTOMER_CAT_COLORS[cat] || '#4A4D52';
+  const isEnCat = cat === 'Key Account Shipper' || cat === 'Key Account Agent';
+  const catLabel = isEnCat ? cat.toUpperCase() : cat;
+  const catLangAttr = isEnCat ? 'lang="en"' : '';
   const cleanLink = article.link || '#';
   const faviconUrl = getCustomerFavicon(article.source, article.link);
   const dateStr = formatCustomerDateStr(article.date);
@@ -9389,7 +9392,7 @@ function buildCustomerCardHTML(article) {
       <div class="card-left-bar" style="background:${color}"></div>
       <div class="card-body">
         <div class="card-meta">
-          <span class="card-cat-badge" style="background:${color};color:#fff;font-weight:600;">${cat}</span>
+          <span class="card-cat-badge" ${catLangAttr} style="background:${color};color:#fff;font-weight:600;">${catLabel}</span>
           <span class="card-date-badge" style="margin-left:auto;font-size:11.5px;color:var(--text-3);font-weight:500;">${dateStr}</span>
         </div>
         <div class="card-title">
@@ -9574,80 +9577,59 @@ const WB_REPORT_FORECASTS = {
   }
 };
 
+// ── DASHBOARD EKONOMİK VERİLER (Cloudflare Worker & KV Önbelleği) ────
+let _econDataCache = null;
+let _econDataPromise = null;
+
+async function fetchEconData() {
+  if (_econDataCache) return _econDataCache;
+  if (_econDataPromise) return _econDataPromise;
+
+  _econDataPromise = fetchCached('econ_data_cache_v2', async () => {
+    try {
+      const r = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/econ-data', {
+        headers: { 'Accept': 'application/json' }
+      });
+      if (r.ok) {
+        const j = await r.json();
+        if (j && (j.wb || j.imf)) return j;
+      }
+    } catch (e) {
+      console.warn('[fetchEconData worker fetch failed, fallback to n8n]', e);
+    }
+    // Fallback: Eski n8n webhook doğrudan çağrısı
+    const imfFallback = await _fetchN8nImf().catch(() => ({}));
+    return {
+      updatedAt: new Date().toISOString(),
+      imf: {
+        NGDP_RPCH: imfFallback.NGDP_RPCH || {},
+        PCPIPCH: imfFallback.PCPIPCH || {}
+      },
+      wb: {}
+    };
+  }, 12 * 60 * 60 * 1000, data => data && (Object.keys(data.wb || {}).length > 0 || Object.keys(data.imf || {}).length > 0))
+  .then(data => {
+    _econDataCache = data;
+    return data;
+  });
+
+  return _econDataPromise;
+}
+
 // Multi-country, multi-year World Bank series. Returns { CODE: { year: value, ... } }
 async function wbSeriesFetch(indicator, countries) {
-  const WB_MAP = { EMU: 'EMU', WLD: 'WLD' };
-  const mapped = countries.map(c => WB_MAP[c] || c);
-  const cacheKey = `wb_series_v5_${indicator}_${mapped.join('_')}`;
-
-  return fetchCached(cacheKey, async () => {
-    let d = null;
-    const url = `${WB_BASE}/${mapped.join(';')}/indicator/${indicator}?format=json&per_page=1000&date=2015:2026`;
-    try {
-      const r = await fetch(url);
-      if (r.ok) d = await r.json();
-    } catch (err) {
-      console.warn('[WB direct fetch failed]', indicator, err);
+  const econ = await fetchEconData();
+  const wbIndData = (econ.wb && econ.wb[indicator]) || {};
+  const out = {};
+  countries.forEach(c => {
+    if (wbIndData[c]) {
+      out[c] = wbIndData[c];
+    } else {
+      const fc = WB_REPORT_FORECASTS[indicator]?.[c];
+      if (fc) out[c] = fc;
     }
-
-    const out = {};
-
-    if (d && d[1] && d[1].length) {
-      const rows = d[1];
-      rows.forEach(x => {
-        if (!x || x.value === null || x.value === undefined) return;
-        const code = x.countryiso3code || x.country?.id;
-        const yr = x.date;
-        if (!code || !yr) return;
-        const stdCode = countries.find(c =>
-          c === code ||
-          (c === 'EMU' && (code === 'EMU' || code === 'EUU' || code === 'XC')) ||
-          (c === 'WLD' && (code === 'WLD' || code === '1W'))
-        ) || code;
-        if (!out[stdCode]) out[stdCode] = {};
-        out[stdCode][yr] = Number(x.value);
-      });
-    }
-
-    // Fallback: missing countries try individual fetch
-    const missing = countries.filter(c => !out[c] || !Object.keys(out[c]).length);
-    if (missing.length) {
-      await Promise.all(missing.map(async c => {
-        try {
-          const cUrl = `${WB_BASE}/${c}/indicator/${indicator}?format=json&mrv=10&per_page=50`;
-          const r = await fetch(cUrl);
-          if (!r.ok) return;
-          const res = await r.json();
-          const rows = res[1] || [];
-          rows.forEach(x => {
-            if (!x || x.value === null || x.value === undefined) return;
-            const yr = x.date;
-            if (!yr) return;
-            if (!out[c]) out[c] = {};
-            out[c][yr] = Number(x.value);
-          });
-        } catch (_) {}
-      }));
-    }
-
-    // Merge World Bank Official Report Forecasts (GEP Projections) for future years
-    const fcDict = WB_REPORT_FORECASTS[indicator];
-    if (fcDict) {
-      countries.forEach(c => {
-        const cFc = fcDict[c] || (c === 'EMU' ? fcDict['EUU'] : null);
-        if (cFc) {
-          if (!out[c]) out[c] = {};
-          Object.keys(cFc).forEach(y => {
-            if (out[c][y] === undefined || out[c][y] === null) {
-              out[c][y] = cFc[y];
-            }
-          });
-        }
-      });
-    }
-
-    return out;
-  }, 24 * 60 * 60 * 1000, data => data && Object.keys(data).length > 0);
+  });
+  return out;
 }
 
 async function fxFetch() {
@@ -9659,14 +9641,11 @@ async function fxFetch() {
 }
 
 async function imfFetch() {
-  // n8n webhook üzerinden çek (IMF API CORS engelliyor)
-  const j = await _fetchN8nImf();
-  // n8n formatı: { NGDP_RPCH: { WEOWORLD: { "2025": 3.2, ... } } }
-  // Eski imf.values.NGDP_RPCH.WEOWORLD formatıyla uyumlu hale getir
-  return { values: j };
+  const econ = await fetchEconData();
+  return { values: econ.imf || {} };
 }
 
-// n8n webhook'tan gelen IMF verisi cache'i (tek fetch, hem GDP hem CPI)
+// n8n webhook'tan gelen IMF verisi cache'i (yedek fallback için tutulur)
 let _n8nImfCache = null;
 let _n8nImfFetchPromise = null;
 
@@ -9684,19 +9663,16 @@ async function _fetchN8nImf() {
 
 // Multi-country, multi-year IMF WEO series. Returns { CODE: { year: value, ... } }
 async function imfSeriesFetch(indicator, countries) {
-  // IMF country code mapping (WB → IMF)
   const IMF_MAP = { WLD: 'WEOWORLD', EMU: 'EURO' };
   const inverse = {};
   countries.forEach(c => { const m = IMF_MAP[c] || c; inverse[m] = c; });
 
-  const j = await _fetchN8nImf();
-  const raw = j[indicator] || {};
+  const econ = await fetchEconData();
+  const raw = (econ.imf && econ.imf[indicator]) || {};
   const out = {};
   Object.entries(raw).forEach(([imfCode, years]) => {
     const orig = inverse[imfCode] || imfCode;
-    // sadece istenen ülkeleri döndür
     if (!countries.includes(orig) && !Object.values(IMF_MAP).includes(imfCode)) return;
-    // eğer inverse'te varsa orijinal koda map et
     if (inverse[imfCode]) out[inverse[imfCode]] = years;
     else if (countries.includes(imfCode)) out[imfCode] = years;
   });
@@ -11271,6 +11247,9 @@ function buildReleaseCalendar() {
 
 // ── MAIN LOAD ─────────────────────────────────────────────────
 async function loadDashboard() {
+  // Arka planda ekonomik veriyi erkenden önbelleğe yükle
+  fetchEconData().catch(() => {});
+
   buildReleaseCalendar();
 
   // Reset skeletons and loading states (except for in-progress cards)
