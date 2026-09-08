@@ -28,6 +28,9 @@ const PROXY_ALLOWED_HOSTS = new Set([
   'www.freightos.com',
   'planespotters.net',
   'www.planespotters.net',
+  'api.worldbank.org',
+  'www.imf.org',
+  'imf.org',
 ]);
 
 const AIRPORT_DB = {
@@ -996,6 +999,203 @@ async function getOpenSkyToken(env, doFetch, debug) {
   return _openSkyToken.accessToken;
 }
 
+// ── EKONOMİK VERİLER (IMF WEO & DÜNYA BANKASI) ──────────────────────
+const ECON_COUNTRIES = [
+  'WLD','USA','CHN','EMU','TUR',
+  'GBR','FRA','DEU','JPN','CAN','ITA',
+  'BRA','RUS','IND','ZAF',
+  'ESP','SAU','ARE','QAT','ISR','EGY',
+  'KOR','IDN','VNM','SGP','IRN'
+];
+
+const WB_INDICATORS = [
+  'NY.GDP.MKTP.KD.ZG',   // GDP Büyümesi (%)
+  'FP.CPI.TOTL.ZG',      // Enflasyon / TÜFE (%)
+  'SL.UEM.TOTL.ZS',      // İşsizlik Oranı (%)
+  'BN.CAB.XOKA.GD.ZS',   // Cari Denge (% GSYH)
+  'NY.GDP.PCAP.CD',      // Kişi Başı GSYH ($)
+  'GC.DOD.TOTL.GD.ZS'    // Merkezi Yönetim Borcu (% GSYH)
+];
+
+const WB_REPORT_FORECASTS = {
+  'NY.GDP.MKTP.KD.ZG': {
+    WLD: { 2025: 2.7, 2026: 2.7, 2027: 2.8 },
+    USA: { 2025: 2.5, 2026: 2.0, 2027: 2.1 },
+    CHN: { 2025: 4.5, 2026: 4.3, 2027: 4.2 },
+    EMU: { 2025: 1.1, 2026: 1.3, 2027: 1.4 },
+    EUU: { 2025: 1.1, 2026: 1.3, 2027: 1.4 },
+    TUR: { 2025: 3.8, 2026: 4.2, 2027: 4.3 },
+    DEU: { 2025: 1.0, 2026: 1.4, 2027: 1.5 },
+    FRA: { 2025: 1.3, 2026: 1.4, 2027: 1.5 },
+    GBR: { 2025: 1.5, 2026: 1.5, 2027: 1.6 },
+    JPN: { 2025: 1.2, 2026: 1.0, 2027: 1.0 },
+    CAN: { 2025: 1.8, 2026: 2.0, 2027: 2.1 },
+    ITA: { 2025: 0.9, 2026: 1.1, 2027: 1.2 },
+    BRA: { 2025: 2.2, 2026: 2.2, 2027: 2.3 },
+    RUS: { 2025: 1.6, 2026: 1.1, 2027: 1.2 },
+    IND: { 2025: 6.7, 2026: 6.8, 2027: 6.7 },
+    ZAF: { 2025: 1.5, 2026: 1.7, 2027: 1.8 },
+    ESP: { 2025: 2.1, 2026: 1.9, 2027: 1.8 },
+    SAU: { 2025: 3.8, 2026: 4.3, 2027: 4.1 },
+    ARE: { 2025: 4.1, 2026: 4.4, 2027: 4.5 },
+    QAT: { 2025: 2.4, 2026: 3.0, 2027: 3.2 },
+    ISR: { 2025: 3.2, 2026: 4.0, 2027: 4.2 },
+    EGY: { 2025: 3.5, 2026: 4.2, 2027: 4.6 },
+    KOR: { 2025: 2.2, 2026: 2.1, 2027: 2.0 },
+    IDN: { 2025: 5.1, 2026: 5.1, 2027: 5.0 },
+    VNM: { 2025: 6.5, 2026: 6.5, 2027: 6.4 },
+    SGP: { 2025: 2.4, 2026: 2.5, 2027: 2.5 },
+    IRN: { 2025: 3.1, 2026: 2.9, 2027: 2.8 }
+  },
+  'FP.CPI.TOTL.ZG': {
+    WLD: { 2025: 3.4, 2026: 3.0, 2027: 2.8 },
+    USA: { 2025: 2.3, 2026: 2.1, 2027: 2.0 },
+    CHN: { 2025: 1.2, 2026: 1.5, 2027: 1.7 },
+    EMU: { 2025: 2.1, 2026: 2.0, 2027: 1.9 },
+    EUU: { 2025: 2.1, 2026: 2.0, 2027: 1.9 },
+    TUR: { 2025: 28.5, 2026: 18.0, 2027: 12.5 },
+    DEU: { 2025: 2.2, 2026: 2.0, 2027: 1.9 },
+    FRA: { 2025: 2.0, 2026: 1.9, 2027: 1.8 },
+    GBR: { 2025: 2.3, 2026: 2.1, 2027: 2.0 },
+    JPN: { 2025: 2.1, 2026: 1.9, 2027: 1.8 },
+    CAN: { 2025: 2.2, 2026: 2.0, 2027: 2.0 },
+    ITA: { 2025: 1.9, 2026: 1.8, 2027: 1.8 },
+    BRA: { 2025: 3.8, 2026: 3.5, 2027: 3.2 },
+    RUS: { 2025: 6.2, 2026: 4.8, 2027: 4.2 },
+    IND: { 2025: 4.5, 2026: 4.2, 2027: 4.0 },
+    ZAF: { 2025: 4.4, 2026: 4.2, 2027: 4.0 }
+  }
+};
+
+async function fetchAndCombineEconData(env, previousCache, doFetch) {
+  const WB_BASE = 'https://api.worldbank.org/v2/country';
+  const WB_MAP = { EMU: 'EMU', WLD: 'WLD' };
+
+  // World Bank API max 5 ülkeyi güvenle destekler (daha fazlası 502 verir)
+  const WB_QUERY_BATCHES = [
+    ['WLD','USA','CHN','EMU','TUR'],
+    ['GBR','FRA','DEU','JPN','CAN'],
+    ['ITA','BRA','RUS','IND','ZAF'],
+    ['ESP','SAU','ARE','QAT','ISR'],
+    ['EGY','IRN','KOR','IDN'],
+    ['VNM','SGP']
+  ];
+
+  // 1. Dünya Bankası verilerini 6 gösterge için çek
+  const wbOut = previousCache?.wb ? JSON.parse(JSON.stringify(previousCache.wb)) : {};
+  WB_INDICATORS.forEach(ind => { if (!wbOut[ind]) wbOut[ind] = {}; });
+
+  const wbPromises = WB_INDICATORS.map(async indicator => {
+    // Tüm batch'leri paralel çek (doFetch varsa ev proxy'si, yoksa direkt CF)
+    await Promise.all(WB_QUERY_BATCHES.map(async batch => {
+      const mapped = batch.map(c => WB_MAP[c] || c);
+      const url = `${WB_BASE}/${mapped.join(';')}/indicator/${indicator}?format=json&per_page=1000&date=2015:2026`;
+      try {
+        let d = null;
+        if (typeof doFetch === 'function') {
+          const res = await doFetch(url, { headers: { 'Accept': 'application/json' } }, false, 86400);
+          if (res.status === 200 && res.body) {
+            try { d = JSON.parse(res.body); } catch (_) {}
+          }
+        } else {
+          const resp = await fetch(url, {
+            headers: { 'User-Agent': 'HaberOzetleri-Worker/1.0', 'Accept': 'application/json' },
+            signal: AbortSignal.timeout(3500),
+            cf: { cacheTtl: 86400, cacheEverything: true }
+          });
+          if (resp.ok) d = await resp.json();
+        }
+
+        if (d && d[1] && d[1].length) {
+          d[1].forEach(x => {
+            if (!x || x.value === null || x.value === undefined) return;
+            const code = x.countryiso3code || x.country?.id;
+            const yr = x.date;
+            if (!code || !yr) return;
+            const stdCode = ECON_COUNTRIES.find(c =>
+              c === code ||
+              (c === 'EMU' && (code === 'EMU' || code === 'EUU' || code === 'XC')) ||
+              (c === 'WLD' && (code === 'WLD' || code === '1W'))
+            ) || code;
+            if (!wbOut[indicator][stdCode]) wbOut[indicator][stdCode] = {};
+            wbOut[indicator][stdCode][yr] = Number(x.value);
+          });
+        }
+      } catch (err) {
+        // Timeout veya 502 durumunda sessizce geç; önceki cache veya tahmin devreye girecek
+      }
+    }));
+
+    // GEP Raporu Resmi Tahminlerini birleştir
+    const fcDict = WB_REPORT_FORECASTS[indicator];
+    if (fcDict) {
+      ECON_COUNTRIES.forEach(c => {
+        const cFc = fcDict[c] || (c === 'EMU' ? fcDict['EUU'] : null);
+        if (cFc) {
+          if (!wbOut[indicator][c]) wbOut[indicator][c] = {};
+          Object.keys(cFc).forEach(y => {
+            if (wbOut[indicator][c][y] === undefined || wbOut[indicator][c][y] === null) {
+              wbOut[indicator][c][y] = cFc[y];
+            }
+          });
+        }
+      });
+    }
+  });
+
+  // 2. IMF verisini n8n webhook'tan çek
+  const imfPromise = (async () => {
+    try {
+      const imfUrl = 'https://n8n.emredemirbas.com/webhook/imf-data?t=' + Date.now();
+      if (typeof doFetch === 'function') {
+        const res = await doFetch(imfUrl, { headers: { 'Accept': 'application/json' } }, false, 3600);
+        if (res.status === 200 && res.body) {
+          try { return JSON.parse(res.body); } catch (_) {}
+        }
+      }
+      const imfResp = await fetch(imfUrl, {
+        headers: { 'User-Agent': 'HaberOzetleri-Worker/1.0', 'Accept': 'application/json' },
+        signal: AbortSignal.timeout(4000)
+      });
+      if (!imfResp.ok) throw new Error('IMF webhook HTTP ' + imfResp.status);
+      return await imfResp.json();
+    } catch (err) {
+      console.warn('[IMF Fetch Warning]:', err.message || err);
+      return null;
+    }
+  })();
+
+  const [, imfRaw] = await Promise.all([
+    Promise.all(wbPromises),
+    imfPromise
+  ]);
+
+  // IMF verisini standart ülke kodlarıyla formatla
+  const IMF_MAP = { WLD: 'WEOWORLD', EMU: 'EURO' };
+  const inverseImf = {};
+  ECON_COUNTRIES.forEach(c => { const m = IMF_MAP[c] || c; inverseImf[m] = c; });
+
+  let imfOut = { NGDP_RPCH: {}, PCPIPCH: {} };
+  if (imfRaw) {
+    ['NGDP_RPCH', 'PCPIPCH'].forEach(ind => {
+      const seriesObj = imfRaw[ind] || {};
+      Object.entries(seriesObj).forEach(([imfCode, years]) => {
+        const orig = inverseImf[imfCode] || imfCode;
+        if (inverseImf[imfCode]) imfOut[ind][inverseImf[imfCode]] = years;
+        else if (ECON_COUNTRIES.includes(imfCode)) imfOut[ind][imfCode] = years;
+      });
+    });
+  } else if (previousCache && previousCache.imf) {
+    imfOut = previousCache.imf;
+  }
+
+  return {
+    updatedAt: new Date().toISOString(),
+    wb: wbOut,
+    imf: imfOut
+  };
+}
+
 export default {
   async fetch(request, env, ctx) {
     const origin = request.headers.get('Origin') || '';
@@ -1069,6 +1269,78 @@ export default {
         status: response.status,
         contentType: response.headers.get('content-type') || 'text/html'
       };
+    }
+
+    // ── /econ-data Özel Rotası (IMF WEO & Dünya Bankası Önbelleği) ──
+    if (urlObj.pathname === '/econ-data') {
+      const kvKey = 'econ_data_cache_v1';
+      const forceRefresh = urlObj.searchParams.get('refresh') === '1';
+
+      let cached = null;
+      if (env.FBX_ROUTES_KV) {
+        try {
+          cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+        } catch (e) {
+          console.warn('[EconData] KV read error:', e);
+        }
+      }
+
+      const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 saat
+      const isFresh = cached && cached.updatedAt && (Date.now() - new Date(cached.updatedAt).getTime() < CACHE_TTL_MS);
+
+      if (cached && isFresh && !forceRefresh) {
+        return new Response(JSON.stringify(cached), {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+            'X-Data-Source': 'kv-cache',
+            'X-Updated-At': cached.updatedAt || ''
+          }
+        });
+      }
+
+      // Taze veri çek ve birleştir
+      try {
+        const freshData = await fetchAndCombineEconData(env, cached, doFetch);
+        if (freshData && Object.keys(freshData.wb || {}).length > 0) {
+          if (env.FBX_ROUTES_KV) {
+            ctx.waitUntil(env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(freshData)));
+          }
+          return new Response(JSON.stringify(freshData), {
+            status: 200,
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json',
+              'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+              'X-Data-Source': 'fresh-fetch',
+              'X-Updated-At': freshData.updatedAt
+            }
+          });
+        }
+      } catch (err) {
+        console.error('[EconData] Fetch failed:', err);
+      }
+
+      // Canlı çekim başarısız olursa ve elimizde eski de olsa cache varsa onu dön
+      if (cached) {
+        return new Response(JSON.stringify(cached), {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=300',
+            'X-Data-Source': 'kv-stale-fallback',
+            'X-Updated-At': cached.updatedAt || ''
+          }
+        });
+      }
+
+      return new Response(JSON.stringify({ error: 'Failed to fetch economic data' }), {
+        status: 502,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     // ── /wci Özel Rotası ──
@@ -2915,13 +3187,19 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    const url = 'http://localhost/cargo-flights?cron=1';
-    const request = new Request(url);
+    const cargoUrl = 'http://localhost/cargo-flights?cron=1';
+    const econUrl = 'http://localhost/econ-data';
     ctx.waitUntil(
-      this.fetch(request, env, ctx)
-        .then(res => res.text())
-        .then(() => console.log("Cron cache refresh completed successfully"))
-        .catch(err => console.error("Cron cache refresh failed:", err))
+      Promise.all([
+        this.fetch(new Request(cargoUrl), env, ctx)
+          .then(res => res.text())
+          .then(() => console.log("Cron cargo cache refresh completed"))
+          .catch(err => console.error("Cron cargo cache refresh failed:", err)),
+        this.fetch(new Request(econUrl), env, ctx)
+          .then(res => res.text())
+          .then(() => console.log("Cron econ-data cache refresh checked"))
+          .catch(err => console.error("Cron econ-data cache refresh failed:", err))
+      ])
     );
   }
 };
