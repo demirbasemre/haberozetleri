@@ -464,6 +464,10 @@ const CARGO_STATIC_ROUTES = {
     { dep: "GOBD", arr: "LTFM" }, // Dakar -> Istanbul
     { dep: "LTFM", arr: "GOBD" }  // Istanbul -> Dakar
   ],
+  "THY6053": [
+    { dep: "LTFM", arr: "SBGR" }, // Istanbul -> São Paulo
+    { dep: "SBGR", arr: "LTFM" }  // São Paulo -> Istanbul
+  ],
   "THY6112": [
     { dep: "LTFM", arr: "VABB" }, // Istanbul -> Mumbai
     { dep: "VABB", arr: "LTFM" }  // Mumbai -> Istanbul
@@ -2361,6 +2365,10 @@ export default {
         const uDep = depIcao ? depIcao.toUpperCase() : '';
         const uArr = arrIcao ? arrIcao.toUpperCase() : '';
 
+        // Havalimanı kodlarının koordinat (42.25N/25.60E vb.) veya geçersiz formatta olmadığını doğrula
+        if (uDep && !/^[A-Z]{3,4}$/.test(uDep)) return false;
+        if (uArr && !/^[A-Z]{3,4}$/.test(uArr)) return false;
+
         if (uCallsign === 'THY6058' && uDep !== 'GOBD') {
           return false;
         }
@@ -2432,6 +2440,9 @@ export default {
           }
           for (const r of routes) {
             if (r.dep && r.dep.lat != null && r.arr && r.arr.lat != null) {
+              const depCode = r.dep.icao || r.dep.iata || '';
+              const arrCode = r.arr.icao || r.arr.iata || '';
+              if (!/^[A-Z]{3,4}$/.test(depCode) || !/^[A-Z]{3,4}$/.test(arrCode)) continue;
               if (isRouteConsistent({ callsign: uppercaseCallsign, lat, lon, track }, r.dep, r.arr)) {
                 return cleanRouteCities(r); // Rota eşleşti ve şehirler temizlendi!
               }
@@ -2443,6 +2454,9 @@ export default {
 
       async function saveLearnedRoute(callsign, route) {
         if (!env.FBX_ROUTES_KV || !route || !route.dep || !route.arr) return;
+        const depCode = route.dep.icao || route.dep.iata || '';
+        const arrCode = route.arr.icao || route.arr.iata || '';
+        if (!/^[A-Z]{3,4}$/.test(depCode) || !/^[A-Z]{3,4}$/.test(arrCode)) return;
         const kvKey = `learned_routes_${callsign}`;
         try {
           const routes = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' }) || [];
@@ -2893,7 +2907,13 @@ export default {
               const f = actFlights[0];
               const orig = f.origin;
               const dest = f.destination;
-              if (orig && dest && (orig.icao || orig.iata) && (dest.icao || dest.iata)) {
+              
+              const origIcao = (orig?.icao && /^[A-Z]{4}$/i.test(orig.icao.trim())) ? orig.icao.trim().toUpperCase() : null;
+              const origIata = (orig?.iata && /^[A-Z]{3}$/i.test(orig.iata.trim())) ? orig.iata.trim().toUpperCase() : null;
+              const destIcao = (dest?.icao && /^[A-Z]{4}$/i.test(dest.icao.trim())) ? dest.icao.trim().toUpperCase() : null;
+              const destIata = (dest?.iata && /^[A-Z]{3}$/i.test(dest.iata.trim())) ? dest.iata.trim().toUpperCase() : null;
+
+              if (orig && dest && (origIcao || origIata) && (destIcao || destIata)) {
                 const depLat = orig.coord ? orig.coord[1] : null;
                 const depLon = orig.coord ? orig.coord[0] : null;
                 const arrLat = dest.coord ? dest.coord[1] : null;
@@ -2904,24 +2924,21 @@ export default {
                 let arrCity = dest.friendlyLocation || 'Bilinmiyor';
                 if (arrCity.includes(',')) arrCity = arrCity.split(',')[0].trim();
                 
-                const depIcao = orig.icao ? orig.icao.toUpperCase() : null;
-                const arrIcao = dest.icao ? dest.icao.toUpperCase() : null;
-                
-                const depDb = (depIcao && AIRPORT_DB[depIcao]) || {};
-                const arrDb = (arrIcao && AIRPORT_DB[arrIcao]) || {};
+                const depDb = (origIcao && AIRPORT_DB[origIcao]) || (origIata && AIRPORT_DB[origIata]) || {};
+                const arrDb = (destIcao && AIRPORT_DB[destIcao]) || (destIata && AIRPORT_DB[destIata]) || {};
                 
                 return {
                   dep: {
-                    icao: depIcao || depDb.icao || null,
-                    iata: orig.iata ? orig.iata.toUpperCase() : depDb.iata || null,
+                    icao: origIcao || depDb.icao || null,
+                    iata: origIata || depDb.iata || null,
                     name: orig.friendlyName || depDb.name || null,
                     city: depCity || depDb.city || 'Bilinmiyor',
                     lat: depLat || depDb.lat || null,
                     lon: depLon || depDb.lon || null
                   },
                   arr: {
-                    icao: arrIcao || arrDb.icao || null,
-                    iata: dest.iata ? dest.iata.toUpperCase() : arrDb.iata || null,
+                    icao: destIcao || arrDb.icao || null,
+                    iata: destIata || arrDb.iata || null,
                     name: dest.friendlyName || arrDb.name || null,
                     city: arrCity || arrDb.city || 'Bilinmiyor',
                     lat: arrLat || arrDb.lat || null,

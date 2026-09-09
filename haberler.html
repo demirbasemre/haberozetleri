@@ -16806,8 +16806,14 @@ async function loadDashboard() {
         : `<span class="cargo-live-dot" title="Canlı Sinyal"></span>`;
       const signalLostLabel = f.signalLost ? `<span style="font-size:9.5px; color:#9CA3AF; font-weight:700;">(Tahmini)</span>` : '';
 
-      const depCode = f.dep?.iata || f.dep?.icao || (f._routeLookupFailed ? '?' : '…');
-      const arrCode = f.arr?.iata || f.arr?.icao || (f._routeLookupFailed ? '?' : '…');
+      const formatAirportCode = (code) => {
+        if (!code || typeof code !== 'string') return null;
+        const clean = code.trim().toUpperCase();
+        return /^[A-Z]{3,4}$/.test(clean) ? clean : null;
+      };
+
+      const depCode = formatAirportCode(f.dep?.iata) || formatAirportCode(f.dep?.icao) || (f._routeLookupFailed ? '?' : '…');
+      const arrCode = formatAirportCode(f.arr?.iata) || formatAirportCode(f.arr?.icao) || (f._routeLookupFailed ? '?' : '…');
       const depCity = f.dep?.city || '';
       const arrCity = f.arr?.city || '';
 
@@ -17263,7 +17269,7 @@ async function loadDashboard() {
         
         <div class="ticket-header-row">
           <div class="ticket-airport-block">
-            <div class="ticket-airport-code">${routeKnown ? (f.dep.iata || f.dep.icao || '—') : '—'}</div>
+            <div class="ticket-airport-code">${routeKnown ? (formatAirportCode(f.dep.iata) || formatAirportCode(f.dep.icao) || '—') : '—'}</div>
             ${depTimeStr ? `<div class="ticket-airport-time">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               ${depTimeStr}
@@ -17301,7 +17307,7 @@ async function loadDashboard() {
           </div>
 
           <div class="ticket-airport-block" style="text-align:right;">
-            <div class="ticket-airport-code">${routeKnown ? (f.arr.iata || f.arr.icao || '—') : '—'}</div>
+            <div class="ticket-airport-code">${routeKnown ? (formatAirportCode(f.arr.iata) || formatAirportCode(f.arr.icao) || '—') : '—'}</div>
             ${arrTimeStr ? `<div class="ticket-airport-time" style="justify-content:flex-end;">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               ${arrTimeStr}
