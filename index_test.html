@@ -17125,12 +17125,21 @@ async function loadDashboard() {
           if (prev._realTrack) f._realTrack = prev._realTrack;
           if (prev._realTrackRaw) f._realTrackRaw = prev._realTrackRaw;
           if (prev._trackLookupDone) f._trackLookupDone = prev._trackLookupDone;
-          if (prev._routeLookupDone) f._routeLookupDone = prev._routeLookupDone;
-          if (prev._routeLookupFailed) f._routeLookupFailed = prev._routeLookupFailed;
           if (!f.dep && prev.dep) f.dep = prev.dep;
           if (!f.arr && prev.arr) f.arr = prev.arr;
           if (!f.aircraftDetails && prev.aircraftDetails) f.aircraftDetails = prev.aircraftDetails;
           if (!f.routeSource && prev.routeSource) f.routeSource = prev.routeSource;
+          
+          if (f.dep && f.arr) {
+            f._routeLookupFailed = false;
+            f._routeLookupDone = true;
+          } else {
+            if (prev._routeLookupDone) f._routeLookupDone = prev._routeLookupDone;
+            if (prev._routeLookupFailed) f._routeLookupFailed = prev._routeLookupFailed;
+          }
+        }
+        if (f.dep && f.arr) {
+          f._routeLookupFailed = false;
         }
         f.currentLat = f.lat;
         f.currentLon = f.lon;
@@ -17541,6 +17550,7 @@ async function loadDashboard() {
         f.dep = data.dep;
         f.arr = data.arr;
         f.routeSource = data.routeSource;
+        f._routeLookupFailed = false;
       } else {
         f._routeLookupFailed = true;
       }
@@ -17656,18 +17666,14 @@ async function loadDashboard() {
         pts.push(...rawPts);
 
         if (pts.length > 0) {
-          const lastPt = pts[pts.length - 1];
-          f.currentLat = lastPt[0];
-          f.currentLon = lastPt[1];
-          f.lat = lastPt[0];
-          f.lon = lastPt[1];
-
-          const pm = _cargoPlaneMarkers.get(f.icao24);
-          if (pm && pm.marker) {
-            pm.marker.setLatLng([lastPt[0], lastPt[1]]);
-          }
-          if (_cargoHighlightMarker && _cargoSelectedIdx === idx) {
-            _cargoHighlightMarker.setLatLng([lastPt[0], lastPt[1]]);
+          // Uçağın canlı konumunu koru, geçmiş iz noktasıyla geriye fırlatma!
+          const liveLat = f.currentLat != null ? f.currentLat : f.lat;
+          const liveLon = f.currentLon != null ? f.currentLon : f.lon;
+          if (liveLat != null && liveLon != null) {
+            const lastPt = pts[pts.length - 1];
+            if (Math.abs(lastPt[0] - liveLat) > 0.001 || Math.abs(lastPt[1] - liveLon) > 0.001) {
+              pts.push([liveLat, liveLon]);
+            }
           }
 
           f._realTrack = pts;

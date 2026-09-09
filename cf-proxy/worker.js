@@ -2386,7 +2386,11 @@ export default {
         if (dDep + dArr > maxAllowed) return false;
         
         // 2. Heading to destination check
-        if (f.track != null) {
+        // Kalkış manevrası (SID / pist yönü) veya iniş yaklaşma paterninde (holding / base leg)
+        // uçağın anlık burnunun dönük olduğu yön (track) varış meydanından farklı olabilir.
+        const isNearDep = dDep <= 50 || (f.altitude != null && f.altitude < 3500 && dDep <= 80);
+        const isNearArr = dArr <= 50;
+        if (f.track != null && !isNearDep && !isNearArr) {
           const bearing = getBearing(f.lat, f.lon, arr.lat, arr.lon);
           let diff = Math.abs(f.track - bearing);
           if (diff > 180) diff = 360 - diff;
@@ -2775,79 +2779,80 @@ export default {
       };
 
       async function fetchRouteFromFlightRadar24(callsign, f = null) {
-        const uppercaseCallsign = callsign.toUpperCase();
-        try {
-          // Flightradar24'ün web geçmişi sayfasına istek atalım
-          const res = await doFetch(`https://www.flightradar24.com/data/flights/${uppercaseCallsign.toLowerCase()}`, {}, false, 86400);
-          if (res.status !== 200) {
-            if (res.status === 403) {
-              console.error(`[FlightRadar24] CAPTCHA / Cloudflare Challenge (403) detected on home IP for ${uppercaseCallsign}!`);
-            } else {
-              console.warn(`[FlightRadar24] HTTP status ${res.status} returned for ${uppercaseCallsign}`);
-            }
-            return null;
-          }
-          const html = res.body;
-          if (!html) return null;
-          
-          if (html.includes("cf-challenge") || html.includes("hCaptcha") || html.includes("g-recaptcha") || html.includes("Attention Required! | Cloudflare")) {
-            console.error(`[FlightRadar24] CAPTCHA / Cloudflare Challenge detected on home IP for ${uppercaseCallsign}!`);
-            return null;
-          }
-          
-          // 1. IATA kodları çiftlerini topla (FR24 linkleri /data/airports/ist şeklinde 3 harfli IATA kodudur)
-          const linksIata = [...html.matchAll(/href="\/data\/airports\/([a-z]{3})"/g)].map(m => m[1].toUpperCase());
-          if (linksIata.length >= 2) {
-            if (f) {
-              for (let i = 0; i < Math.min(linksIata.length - 1, 14); i += 2) {
-                const depDb = AIRPORT_DB[linksIata[i]];
-                const arrDb = AIRPORT_DB[linksIata[i + 1]];
-                if (depDb && arrDb) {
-                  if (isRouteConsistent(f, depDb, arrDb)) {
-                    console.log(`[FlightRadar24] Consistent route found for ${uppercaseCallsign}: ${linksIata[i]} -> ${linksIata[i + 1]}`);
-                    return { dep: depDb, arr: arrDb };
-                  }
-                  if (isRouteConsistent(f, arrDb, depDb)) {
-                    console.log(`[FlightRadar24] Reverse consistent route found for ${uppercaseCallsign}: ${linksIata[i + 1]} -> ${linksIata[i]}`);
-                    return { dep: arrDb, arr: depDb };
-                  }
-                }
-              }
-            }
-            const depDb = AIRPORT_DB[linksIata[0]];
-            const arrDb = AIRPORT_DB[linksIata[1]];
-            if (depDb && arrDb) {
-              return { dep: depDb, arr: arrDb };
-            }
-          }
+        const commNumber = toCommercialFlightNumber(callsign);
+        const candidates = [];
+        if (commNumber) candidates.push(commNumber.toUpperCase());
+        if (!candidates.includes(callsign.toUpperCase())) candidates.push(callsign.toUpperCase());
 
-          // 2. ICAO kodları çiftleri (4 harfli)
-          const linksIcao = [...html.matchAll(/href="\/data\/airports\/([a-z]{4})"/g)].map(m => m[1].toUpperCase());
-          if (linksIcao.length >= 2) {
-            if (f) {
-              for (let i = 0; i < Math.min(linksIcao.length - 1, 14); i += 2) {
-                const depDb = AIRPORT_DB[linksIcao[i]];
-                const arrDb = AIRPORT_DB[linksIcao[i + 1]];
-                if (depDb && arrDb) {
-                  if (isRouteConsistent(f, depDb, arrDb)) {
-                    return { dep: depDb, arr: arrDb };
-                  }
-                  if (isRouteConsistent(f, arrDb, depDb)) {
-                    return { dep: arrDb, arr: depDb };
+        for (const targetCall of candidates) {
+          try {
+            // Flightradar24'ün web geçmişi sayfasına istek atalım (IATA/ICAO)
+            const res = await doFetch(`https://www.flightradar24.com/data/flights/${targetCall.toLowerCase()}`, {}, false, 86400);
+            if (res.status !== 200) {
+              if (res.status === 403) {
+                console.error(`[FlightRadar24] CAPTCHA / Cloudflare Challenge (403) detected for ${targetCall}!`);
+              } else {
+                console.warn(`[FlightRadar24] HTTP status ${res.status} returned for ${targetCall}`);
+              }
+              continue;
+            }
+            const html = res.body;
+            if (!html || html.includes("cf-challenge") || html.includes("hCaptcha") || html.includes("g-recaptcha") || html.includes("Attention Required! | Cloudflare")) {
+              continue;
+            }
+            
+            // 1. IATA kodları çiftlerini topla (FR24 linkleri /data/airports/ist şeklinde 3 harfli IATA kodudur)
+            const linksIata = [...html.matchAll(/href="\/data\/airports\/([a-z]{3})"/g)].map(m => m[1].toUpperCase());
+            if (linksIata.length >= 2) {
+              if (f) {
+                for (let i = 0; i < Math.min(linksIata.length - 1, 14); i += 2) {
+                  const depDb = AIRPORT_DB[linksIata[i]];
+                  const arrDb = AIRPORT_DB[linksIata[i + 1]];
+                  if (depDb && arrDb) {
+                    if (isRouteConsistent(f, depDb, arrDb)) {
+                      console.log(`[FlightRadar24] Consistent route found for ${targetCall}: ${linksIata[i]} -> ${linksIata[i + 1]}`);
+                      return { dep: depDb, arr: arrDb };
+                    }
+                    if (isRouteConsistent(f, arrDb, depDb)) {
+                      console.log(`[FlightRadar24] Reverse consistent route found for ${targetCall}: ${linksIata[i + 1]} -> ${linksIata[i]}`);
+                      return { dep: arrDb, arr: depDb };
+                    }
                   }
                 }
               }
+              const depDb = AIRPORT_DB[linksIata[0]];
+              const arrDb = AIRPORT_DB[linksIata[1]];
+              if (depDb && arrDb) {
+                return { dep: depDb, arr: arrDb };
+              }
             }
-            const depDb = AIRPORT_DB[linksIcao[0]];
-            const arrDb = AIRPORT_DB[linksIcao[1]];
-            if (depDb && arrDb) {
-              return { dep: depDb, arr: arrDb };
+
+            // 2. ICAO kodları çiftleri (4 harfli)
+            const linksIcao = [...html.matchAll(/href="\/data\/airports\/([a-z]{4})"/g)].map(m => m[1].toUpperCase());
+            if (linksIcao.length >= 2) {
+              if (f) {
+                for (let i = 0; i < Math.min(linksIcao.length - 1, 14); i += 2) {
+                  const depDb = AIRPORT_DB[linksIcao[i]];
+                  const arrDb = AIRPORT_DB[linksIcao[i + 1]];
+                  if (depDb && arrDb) {
+                    if (isRouteConsistent(f, depDb, arrDb)) {
+                      return { dep: depDb, arr: arrDb };
+                    }
+                    if (isRouteConsistent(f, arrDb, depDb)) {
+                      return { dep: arrDb, arr: depDb };
+                    }
+                  }
+                }
+              }
+              const depDb = AIRPORT_DB[linksIcao[0]];
+              const arrDb = AIRPORT_DB[linksIcao[1]];
+              if (depDb && arrDb) {
+                return { dep: depDb, arr: arrDb };
+              }
             }
+          } catch (err) {
+            console.error(`[FlightRadar24] Request error for ${targetCall}: ${err.message || err}`);
           }
-          
-          console.warn(`[FlightRadar24] HTML parsing failed. Route links not found in history for ${uppercaseCallsign}.`);
-        } catch (err) {
-          console.error(`[FlightRadar24] Request error for ${uppercaseCallsign}: ${err.message || err}`);
         }
         return null;
       }
