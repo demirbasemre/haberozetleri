@@ -16997,8 +16997,7 @@ async function loadDashboard() {
       f._routeLookupDone = true;
       fetchCargoFlightRouteOnDemand(f, idx);
     }
-    if (!f._trackLookupDone && f.icao24) {
-      f._trackLookupDone = true;
+    if ((!f._realTrack || f._realTrack.length < 2) && f.icao24) {
       fetchCargoFlightTrackOnDemand(f, idx);
     }
   }
@@ -17134,8 +17133,8 @@ async function loadDashboard() {
           const liveLat = f.currentLat != null ? f.currentLat : f.lat;
           const liveLon = f.currentLon != null ? f.currentLon : f.lon;
           if (liveLat != null && liveLon != null) {
-            const lastPt = pts[pts.length - 1];
-            if (Math.abs(lastPt[0] - liveLat) > 0.001 || Math.abs(lastPt[1] - liveLon) > 0.001) {
+            const tailPt = pts[pts.length - 1];
+            if (Math.abs(tailPt[0] - liveLat) > 0.001 || Math.abs(tailPt[1] - liveLon) > 0.001) {
               pts.push([liveLat, liveLon]);
             }
           }
@@ -17153,8 +17152,9 @@ async function loadDashboard() {
               _cargoRouteLayers.push(_cargoTraveledLine);
             }
 
+            const currentPoint = pts[pts.length - 1];
             if (_cargoRemainingLine && f.arr && f.arr.lat != null) {
-              _cargoRemainingLine.setLatLngs(getArcPoints([lastPt[0], lastPt[1]], [f.arr.lat, f.arr.lon]));
+              _cargoRemainingLine.setLatLngs(getArcPoints([currentPoint[0], currentPoint[1]], [f.arr.lat, f.arr.lon]));
             }
 
             renderCargoFlightDetail(f);
