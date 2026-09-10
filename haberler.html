@@ -16988,6 +16988,97 @@ async function loadDashboard() {
     return points;
   }
 
+  function destinationPoint(lat, lon, bearingDeg, distKm) {
+    const R = 6371;
+    const rad = Math.PI / 180;
+    const latRad = lat * rad;
+    const lonRad = lon * rad;
+    const brngRad = bearingDeg * rad;
+    const dByR = distKm / R;
+
+    const lat2 = Math.asin(
+      Math.sin(latRad) * Math.cos(dByR) +
+      Math.cos(latRad) * Math.sin(dByR) * Math.cos(brngRad)
+    );
+    const lon2 = lonRad + Math.atan2(
+      Math.sin(brngRad) * Math.sin(dByR) * Math.cos(latRad),
+      Math.cos(dByR) - Math.sin(latRad) * Math.sin(lat2)
+    );
+    return [lat2 / rad, ((lon2 / rad + 180) % 360 + 360) % 360 - 180];
+  }
+
+  function getInitialBearing(lat1, lon1, lat2, lon2) {
+    const rad = Math.PI / 180;
+    const y = Math.sin((lon2 - lon1) * rad) * Math.cos(lat2 * rad);
+    const x = Math.cos(lat1 * rad) * Math.sin(lat2 * rad) -
+              Math.sin(lat1 * rad) * Math.cos(lat2 * rad) * Math.cos((lon2 - lon1) * rad);
+    return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+  }
+
+  function getHeadingAlignedArc(p1, p2, options = {}) {
+    if (!p1 || !p2 || p1[0] == null || p1[1] == null || p2[0] == null || p2[1] == null) return [];
+    const numPoints = options.numPoints || 50;
+    const dist = getDistance(p1[0], p1[1], p2[0], p2[1]);
+    if (dist < 1) return [[p1[0], p1[1]], [p2[0], p2[1]]];
+
+    const hasStartBearing = options.startBearing != null && isFinite(options.startBearing);
+    const hasEndBearing = options.endBearing != null && isFinite(options.endBearing);
+
+    if (!hasStartBearing && !hasEndBearing) {
+      return getArcPoints(p1, p2, numPoints);
+    }
+
+    const ctrlDist1 = Math.min(dist * 0.38, 400);
+    const ctrlDist2 = Math.min(dist * 0.38, 400);
+
+    let cp1;
+    if (hasStartBearing) {
+      cp1 = destinationPoint(p1[0], p1[1], options.startBearing, ctrlDist1);
+    } else {
+      const brngToP2 = getInitialBearing(p1[0], p1[1], p2[0], p2[1]);
+      cp1 = destinationPoint(p1[0], p1[1], brngToP2, ctrlDist1);
+    }
+
+    let cp2;
+    if (hasEndBearing) {
+      cp2 = destinationPoint(p2[0], p2[1], (options.endBearing + 180) % 360, ctrlDist2);
+    } else {
+      const brngFromP1 = (getInitialBearing(p2[0], p2[1], p1[0], p1[1]) + 180) % 360;
+      cp2 = destinationPoint(p2[0], p2[1], (brngFromP1 + 180) % 360, ctrlDist2);
+    }
+
+    let lon1 = p1[1];
+    let lonCp1 = cp1[1];
+    let lonCp2 = cp2[1];
+    let lon2 = p2[1];
+
+    function unwrap(val, ref) {
+      let diff = val - ref;
+      while (diff > 180) { val -= 360; diff = val - ref; }
+      while (diff < -180) { val += 360; diff = val - ref; }
+      return val;
+    }
+    lonCp1 = unwrap(lonCp1, lon1);
+    lonCp2 = unwrap(lonCp2, lonCp1);
+    lon2 = unwrap(lon2, lonCp2);
+
+    const pts = [];
+    for (let i = 0; i <= numPoints; i++) {
+      const t = i / numPoints;
+      const u = 1 - t;
+      const tt = t * t;
+      const uu = u * u;
+      const uuu = uu * u;
+      const ttt = tt * t;
+
+      const lat = uuu * p1[0] + 3 * uu * t * cp1[0] + 3 * u * tt * cp2[0] + ttt * p2[0];
+      let lon = uuu * lon1 + 3 * uu * t * lonCp1 + 3 * u * tt * lonCp2 + ttt * lon2;
+      lon = ((lon + 180) % 360 + 360) % 360 - 180;
+      pts.push([lat, lon]);
+    }
+    return pts;
+  }
+
   function selectCargoFlight(idx, pan) {
     const f = _cargoFlights[idx];
     if (!f) return;
@@ -17021,7 +17112,7 @@ async function loadDashboard() {
         traveledPoints.push([targetLat, targetLon]);
         f._realTrack.forEach(pt => bounds.push([pt[0], pt[1]]));
       } else if (f.dep && f.dep.lat != null) {
-        traveledPoints = getArcPoints([f.dep.lat, f.dep.lon], [targetLat, targetLon]);
+        traveledPoints = getHeadingAlignedArc([f.dep.lat, f.dep.lon], [targetLat, targetLon], { endBearing: f.track });
       }
 
       if (f.dep && f.dep.lat != null) {
@@ -17046,7 +17137,7 @@ async function loadDashboard() {
         _cargoRouteLayers.push(arrMarker);
         bounds.push([f.arr.lat, f.arr.lon]);
 
-        const arcPointsRemaining = splitAntimeridian(getArcPoints([targetLat, targetLon], [f.arr.lat, f.arr.lon]));
+        const arcPointsRemaining = splitAntimeridian(getHeadingAlignedArc([targetLat, targetLon], [f.arr.lat, f.arr.lon], { startBearing: f.track }));
         _cargoRemainingLine = L.polyline(arcPointsRemaining, { color: routeColor, weight: 2.2, opacity: 0.45, dashArray: '6,6' });
         _cargoRemainingLine.addTo(_cargoMap);
         _cargoRouteLayers.push(_cargoRemainingLine);
@@ -17203,12 +17294,17 @@ async function loadDashboard() {
         const pts = [];
         if (f.dep && f.dep.lat != null && rawPts.length > 0) {
           const dToDep = getDistance(rawPts[0][0], rawPts[0][1], f.dep.lat, f.dep.lon);
-          if (dToDep < 150) {
+          const initialBearing = rawPts.length > 1 ? getInitialBearing(rawPts[0][0], rawPts[0][1], rawPts[1][0], rawPts[1][1]) : null;
+          if (dToDep < 15) {
             pts.push([f.dep.lat, f.dep.lon]);
           } else {
             // Kalkış havalimanından ilk yakalanan radar noktasına kadar olan kör noktayı
-            // küresel yay ile bağla, böylece kalkıştan itibaren kopukluk olmaz
-            const leadArc = getArcPoints([f.dep.lat, f.dep.lon], [rawPts[0][0], rawPts[0][1]]);
+            // uçağın ilk radar noktasındaki uçuş başı açısına (initialBearing) teğet yay ile bağla.
+            // Böylece meydandan ilk noktaya geriye doğru katlanan ters U dönüşü / kanca kalkar!
+            const leadArc = getHeadingAlignedArc([f.dep.lat, f.dep.lon], [rawPts[0][0], rawPts[0][1]], {
+              endBearing: initialBearing,
+              numPoints: Math.min(30, Math.max(10, Math.round(dToDep / 8)))
+            });
             if (leadArc && leadArc.length > 1) {
               pts.push(...leadArc.slice(0, -1));
             }
@@ -17222,8 +17318,19 @@ async function loadDashboard() {
           const liveLon = f.currentLon != null ? f.currentLon : f.lon;
           if (liveLat != null && liveLon != null) {
             const tailPt = pts[pts.length - 1];
-            if (Math.abs(tailPt[0] - liveLat) > 0.001 || Math.abs(tailPt[1] - liveLon) > 0.001) {
-              pts.push([liveLat, liveLon]);
+            const distToLive = getDistance(tailPt[0], tailPt[1], liveLat, liveLon);
+            if (distToLive > 0.05) {
+              if (distToLive > 15 && f.track != null) {
+                const tailArc = getHeadingAlignedArc([tailPt[0], tailPt[1]], [liveLat, liveLon], {
+                  endBearing: f.track,
+                  numPoints: Math.min(20, Math.max(5, Math.round(distToLive / 5)))
+                });
+                if (tailArc && tailArc.length > 1) {
+                  pts.push(...tailArc.slice(1));
+                }
+              } else {
+                pts.push([liveLat, liveLon]);
+              }
             }
           }
 
@@ -17231,6 +17338,7 @@ async function loadDashboard() {
           f._realTrackRaw = data.path;
 
           const isCurrentlySelected = _cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx] && (_cargoFlights[_cargoSelectedIdx].icao24 === f.icao24 || _cargoFlights[_cargoSelectedIdx].callsign === f.callsign);
+          if (isCurrentlySelected && _cargoMap) {
             const segmentedTraveled = splitAntimeridian(pts);
             if (_cargoTraveledLine) {
               _cargoTraveledLine.setLatLngs(segmentedTraveled);
@@ -17243,7 +17351,8 @@ async function loadDashboard() {
 
             const currentPoint = pts[pts.length - 1];
             if (_cargoRemainingLine && f.arr && f.arr.lat != null) {
-              const segmentedRemaining = splitAntimeridian(getArcPoints([currentPoint[0], currentPoint[1]], [f.arr.lat, f.arr.lon]));
+              const currentTrack = f.track != null ? f.track : (f._realTrackRaw && f._realTrackRaw.length > 0 ? f._realTrackRaw[f._realTrackRaw.length - 1][4] : null);
+              const segmentedRemaining = splitAntimeridian(getHeadingAlignedArc([currentPoint[0], currentPoint[1]], [f.arr.lat, f.arr.lon], { startBearing: currentTrack }));
               _cargoRemainingLine.setLatLngs(segmentedRemaining);
             }
 
@@ -17593,11 +17702,11 @@ async function loadDashboard() {
               livePts.push([f.currentLat, f.currentLon]);
               _cargoTraveledLine.setLatLngs(splitAntimeridian(livePts));
             } else if (f.dep && f.dep.lat != null) {
-              _cargoTraveledLine.setLatLngs(splitAntimeridian(getArcPoints([f.dep.lat, f.dep.lon], [f.currentLat, f.currentLon])));
+              _cargoTraveledLine.setLatLngs(splitAntimeridian(getHeadingAlignedArc([f.dep.lat, f.dep.lon], [f.currentLat, f.currentLon], { endBearing: f.track })));
             }
           }
           if (_cargoRemainingLine && f.arr && f.arr.lat != null) {
-            _cargoRemainingLine.setLatLngs(splitAntimeridian(getArcPoints([f.currentLat, f.currentLon], [f.arr.lat, f.arr.lon])));
+            _cargoRemainingLine.setLatLngs(splitAntimeridian(getHeadingAlignedArc([f.currentLat, f.currentLon], [f.arr.lat, f.arr.lon], { startBearing: f.track })));
           }
         }
       });
