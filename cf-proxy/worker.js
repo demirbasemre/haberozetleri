@@ -3203,9 +3203,9 @@ export default {
           const distRemaining = getDistance(baseLat, baseLon, prev.arr.lat, prev.arr.lon);
           const etaSec = (distRemaining / speedKmh) * 3600;
           const elapsed = nowSec - prev.lastContact;
-
-          if (!isFinite(etaSec) || etaSec <= 0 || elapsed >= etaSec) {
-            continue; // En iyi ihtimalle varmış/inmiş olması gerekir: artık gösterme
+          const MAX_DEAD_RECKONING_SEC = 7200; // En fazla 2 saat sinyal kaybı tahmini yapılabilir (günler öncesinden kalan hayalet uçuşları engelle)
+          if (!isFinite(etaSec) || etaSec <= 0 || elapsed >= etaSec || elapsed > MAX_DEAD_RECKONING_SEC) {
+            continue; // En iyi ihtimalle varmış/inmiş olması gerekir veya sinyal çok uzun süredir kesik: artık gösterme
           }
 
           const fraction = Math.max(0, Math.min(1, elapsed / etaSec));

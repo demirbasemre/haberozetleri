@@ -17192,17 +17192,8 @@ async function loadDashboard() {
 
   let _cargoSearchQuery = '';
 
-  window.setCargoFlightsFilter = function(type) {
-    _cargoActiveFilter = type;
-    const btnCargo = document.getElementById('cargo-filter-btn-cargo');
-    const btnPax = document.getElementById('cargo-filter-btn-passenger');
-    if (btnCargo) btnCargo.classList.toggle('active', type === 'cargo');
-    if (btnPax) btnPax.classList.toggle('active', type === 'passenger');
-    applyCargoFlightFilters(true);
-  };
-
   function applyCargoFlightFilters(fitBounds = true) {
-    let filtered = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter && _cargoSelectedAirlines.has(f.airline));
+    let filtered = _cargoAllFlights.filter(f => f.type === 'cargo' && _cargoSelectedAirlines.has(f.airline));
     if (_cargoSearchQuery) {
       const q = _cargoSearchQuery.toLowerCase().trim();
       filtered = filtered.filter(f => {
@@ -17222,7 +17213,7 @@ async function loadDashboard() {
     
     const countPill = document.getElementById('cargo-active-count-pill');
     if (countPill) {
-      const totalInFleet = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter && _cargoSelectedAirlines.has(f.airline)).length;
+      const totalInFleet = _cargoAllFlights.filter(f => f.type === 'cargo' && _cargoSelectedAirlines.has(f.airline)).length;
       countPill.textContent = _cargoSearchQuery 
         ? `${_cargoFlights.length} / ${totalInFleet} Uçak Filtrelendi`
         : `${_cargoFlights.length} Uçak Havada`;
@@ -17273,7 +17264,7 @@ async function loadDashboard() {
     cont.innerHTML = Object.keys(CARGO_AIRLINE_META).map(code => {
       const meta = CARGO_AIRLINE_META[code];
       const isSelected = _cargoSelectedAirlines.has(code);
-      const n = _cargoAllFlights.filter(f => f.airline === code && f.type === _cargoActiveFilter).length;
+      const n = _cargoAllFlights.filter(f => f.airline === code && f.type === 'cargo').length;
       return `<button type="button" class="radar-chip${isSelected ? ' active' : ''}" data-code="${code}" aria-pressed="${isSelected}"
         onclick="toggleCargoAirline('${code}')" title="${meta.name}">
         <span class="radar-chip-dot" style="background:${meta.color}"></span>
@@ -17322,9 +17313,7 @@ async function loadDashboard() {
       msg.style.cssText = 'color:var(--text-3); font-size:12px; padding:16px 8px; text-align:center; background:var(--bg); border:1px dashed var(--border-soft); border-radius:10px; line-height:1.5;';
       msg.textContent = _cargoSearchQuery
         ? `"${_cargoSearchQuery}" kriterine uygun uçuş bulunamadı.`
-        : (_cargoActiveFilter === 'cargo'
-            ? 'Seçili havayollarında şu anda havada kargo uçuşu tespit edilemedi.'
-            : 'Seçili havayollarında şu anda havada yolcu uçuşu tespit edilemedi.');
+        : 'Seçili havayollarında şu anda havada kargo uçuşu tespit edilemedi.';
       listEl.appendChild(msg);
       return;
     }
@@ -17439,6 +17428,9 @@ async function loadDashboard() {
     }
 
     const sinOmega = Math.sin(omega);
+    let prevLon = p1[1];
+    let offset = 0;
+
     for (let i = 0; i <= numPoints; i++) {
       const t = i / numPoints;
       const w1 = Math.sin((1 - t) * omega) / sinOmega;
@@ -17449,8 +17441,18 @@ async function loadDashboard() {
       const z = w1 * z1 + w2 * z2;
 
       const lat = Math.atan2(z, Math.sqrt(x*x + y*y)) * 180 / Math.PI;
-      const lon = Math.atan2(y, x) * 180 / Math.PI;
-      points.push([lat, lon]);
+      let lon = Math.atan2(y, x) * 180 / Math.PI;
+
+      let testLon = lon + offset;
+      if (testLon - prevLon > 180) {
+        offset -= 360;
+        testLon -= 360;
+      } else if (testLon - prevLon < -180) {
+        offset += 360;
+        testLon += 360;
+      }
+      prevLon = testLon;
+      points.push([lat, testLon]);
     }
     return points;
   }
@@ -17874,8 +17876,8 @@ async function loadDashboard() {
             <div class="ticket-val" style="font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}">${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || '—'}</div>
           </div>
           <div class="ticket-grid-item" style="text-align:right;">
-            <div class="ticket-label">FİLO SEGMENTİ</div>
-            <div style="margin-top:2px;"><span class="ticket-type-badge">${typeLabel}</span></div>
+            <div class="ticket-label">TESCİL ÜLKESİ</div>
+            <div style="margin-top:2px;"><span class="ticket-type-badge">${f.originCountry || 'Türkiye'}</span></div>
           </div>
         </div>
 
@@ -18153,11 +18155,6 @@ async function loadDashboard() {
     if (input) input.value = '';
     const clearBtn = document.getElementById('cargo-flight-search-clear');
     if (clearBtn) clearBtn.style.display = 'none';
-
-    const btnCargo = document.getElementById('cargo-filter-btn-cargo');
-    const btnPax = document.getElementById('cargo-filter-btn-passenger');
-    if (btnCargo) btnCargo.classList.add('active');
-    if (btnPax) btnPax.classList.remove('active');
 
     // Eğer henüz arka plan ağı tamamlanmadıysa localStorage'dan son bilinen uçuşları anında çek
     if (!_cargoAllFlights.length) {
@@ -30816,7 +30813,7 @@ window.resetIndicatorsConfig = function() {
       <div class="chart-modal-card" style="max-width: 1380px; width: 97vw; max-height: 94vh;">
         <div class="rel-add-head" style="padding-bottom: 12px; border-bottom: 1px solid var(--border-soft);">
           <div style="display:flex; align-items:center; gap:10px;">
-            <div id="cargo-flights-title" class="rel-add-title" style="font-size:17px; font-weight:800; letter-spacing:-0.02em;">Canlı Filo &amp; Kargo Radarı</div>
+            <div id="cargo-flights-title" class="rel-add-title" style="font-size:17px; font-weight:800; letter-spacing:-0.02em;">Filo Radarı</div>
             <span class="radar-head-badge"><span class="radar-head-beacon"></span>CANLI ADS-B</span>
             <span id="cargo-active-count-pill" class="radar-count-pill">Yükleniyor…</span>
           </div>
@@ -30825,16 +30822,7 @@ window.resetIndicatorsConfig = function() {
 
         <!-- Radar Controls Bar -->
         <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:10px; flex-wrap:wrap;">
-          <div class="radar-segmented-pill" role="tablist">
-            <button type="button" class="radar-seg-btn active" id="cargo-filter-btn-cargo" onclick="setCargoFlightsFilter('cargo')">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
-              <span>Kargo Filosu</span>
-            </button>
-            <button type="button" class="radar-seg-btn" id="cargo-filter-btn-passenger" onclick="setCargoFlightsFilter('passenger')">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="7" r="4"/><path d="M5.5 21v-2a6.5 6.5 0 0 1 13 0v2"/></svg>
-              <span>Yolcu Filosu</span>
-            </button>
-          </div>
+          <div id="cargo-airline-filter" class="radar-airline-chips" style="margin-top:0;"></div>
 
           <label class="radar-switch-label">
             <div class="radar-switch">
@@ -30844,9 +30832,6 @@ window.resetIndicatorsConfig = function() {
             <span>THY Küresel Uçuş Ağı Noktaları</span>
           </label>
         </div>
-
-        <!-- Airline Filter Chips -->
-        <div id="cargo-airline-filter" class="radar-airline-chips" style="margin-top:10px;"></div>
 
         <!-- Main Body: Stream / Map / Boarding Pass -->
         <div id="cargo-flights-body" style="display:flex; gap:14px; margin-top:10px; height:560px;">
