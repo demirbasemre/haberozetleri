@@ -376,7 +376,7 @@ const AIRPORT_DB = {
 };
 
 const CARGO_FLEET_DETAILS = {
-  // Boeing 777F
+  // Boeing 777F (12 Adet)
   "4bb14c": { registration: "TC-LJL", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
   "4bb14d": { registration: "TC-LJM", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
   "4bb14e": { registration: "TC-LJN", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
@@ -389,17 +389,26 @@ const CARGO_FLEET_DETAILS = {
   "4bb156": { registration: "TC-LJV", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
   "4bb159": { registration: "TC-LJY", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
   "4bb15a": { registration: "TC-LJZ", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
-  // Airbus A330F
+  // Airbus A330F / A330-200F & Wet-Lease P2F
   "4ba88f": { registration: "TC-JDO", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
-  "4ba9fa": { registration: "TC-JOZ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba890": { registration: "TC-JDP", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
-  "4ba891": { registration: "TC-JDQ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9ef": { registration: "TC-JOO", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba892": { registration: "TC-JDR", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba893": { registration: "TC-JDS", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
-  "4ba9ef": { registration: "TC-JOU", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba869": { registration: "TC-JCI", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9f5": { registration: "TC-JOU", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba9f4": { registration: "TC-JOV", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
-  "4ba9f6": { registration: "TC-JOW", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba9f9": { registration: "TC-JOY", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9fa": { registration: "TC-JOZ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba891": { registration: "TC-JDQ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9f6": { registration: "TC-JOW", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  // Wet-Lease Kargo Filosu (ULS Cargo, BBN, Atlas Air)
+  "4bd8ac": { registration: "TC-VEL", type: "Airbus A310-300F", icaoType: "A310", manufacturer: "Airbus", owner: "ULS Cargo (Turkish Cargo WL)" },
+  "4bb0b2": { registration: "TC-LER", type: "Airbus A310-300F", icaoType: "A310", manufacturer: "Airbus", owner: "ULS Cargo (Turkish Cargo WL)" },
+  "4b9c63": { registration: "TC-GCC", type: "Airbus A321-200 P2F", icaoType: "A21N", manufacturer: "Airbus", owner: "BBN Airlines (Turkish Cargo WL)" },
+  "4b9df5": { registration: "TC-GOU", type: "Airbus A330-300 P2F", icaoType: "A333", manufacturer: "Airbus", owner: "ULS Cargo (Turkish Cargo WL)" },
+  "4b9dec": { registration: "TC-GOL", type: "Airbus A330-300 P2F", icaoType: "A333", manufacturer: "Airbus", owner: "ULS Cargo (Turkish Cargo WL)" },
+  "a54535": { registration: "N439GT", type: "Boeing 747-400F", icaoType: "B744", manufacturer: "Boeing", owner: "Atlas Air (Turkish Cargo WL)" },
   // Emirates SkyCargo Boeing 777F
   "896173": { registration: "A6-EFA", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
   "896174": { registration: "A6-EFB", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
@@ -2186,17 +2195,34 @@ export default {
         } catch (_) {}
       }
 
+      // Resmi Turkish Cargo Filosu (28 Uçak - Mode-S Hex Kodları)
       const TURKISH_CARGO_HEX = new Set([
-        // Boeing 777F
+        // Boeing 777F (12 Adet)
         '4bb14c', '4bb14d', '4bb14e', '4bb14f', '4bb150', '4bb152', '4bb153', '4bb154', '4bb155', '4bb156', '4bb159', '4bb15a',
-        // Airbus A330F
-        '4ba88f', '4ba890', '4ba891', '4ba892', '4ba893', '4ba9ef', '4ba9f4', '4ba9f6', '4ba9f9', '4ba9fa',
-        // Dedicated wet-leased freighters (ULS Cargo, BBN Airlines, Atlas Air)
-        '4bb0b2', // TC-LER (A310-300F - ULS Cargo)
-        '4b9c63', // TC-GCC (A321-200 P2F - BBN Airlines)
-        '4b9df5', // TC-GOU (A330-300 P2F - ULS Cargo)
-        '4b9dec', // TC-GOL (A330-300 P2F - ULS Cargo)
-        'a54535'  // N439GT (B747-400F - Atlas Air)
+        // Airbus A330F / A330-200F / A330-300 P2F
+        '4ba88f', '4ba890', '4ba9ef', '4ba892', '4ba893', '4ba869', '4ba9f5', '4ba9f4', '4ba9f9', '4ba9fa', '4ba891', '4ba9f6',
+        '4b9df5', '4b9dec',
+        // Airbus A310-300F (ULS Cargo Wet-Lease)
+        '4bd8ac', '4bb0b2',
+        // Airbus A321-200 P2F (BBN Airlines Wet-Lease)
+        '4b9c63',
+        // Boeing 747-400F (Atlas Air Wet-Lease)
+        'a54535'
+      ]);
+
+      // Resmi Turkish Cargo Filosu (Kuyruk Tescilleri - Registration)
+      const TURKISH_CARGO_REGS = new Set([
+        // Boeing 777F
+        'TC-LJL', 'TC-LJM', 'TC-LJN', 'TC-LJO', 'TC-LJP', 'TC-LJR', 'TC-LJS', 'TC-LJT', 'TC-LJU', 'TC-LJV', 'TC-LJY', 'TC-LJZ',
+        // Airbus A330-200F / P2F
+        'TC-JDO', 'TC-JDP', 'TC-JOO', 'TC-JDR', 'TC-JDS', 'TC-JCI', 'TC-JOU', 'TC-JOV', 'TC-JOY', 'TC-JOZ', 'TC-JDQ', 'TC-JOW',
+        'TC-GOU', 'TC-GOL',
+        // Airbus A310-300F
+        'TC-VEL', 'TC-LER',
+        // Airbus A321-200 P2F
+        'TC-GCC',
+        // Boeing 747-400F
+        'N439GT'
       ]);
 
       const EMIRATES_CARGO_HEX = new Set([
@@ -2227,21 +2253,32 @@ export default {
         return null;
       }
 
-      function isPassengerAircraftModel(details) {
+      // Dinamik Kargo Modeli Tanıma (Kullanıcı yeni uçak eklemeyi unutsa bile gövde/tip üzerinden otomatik algılar)
+      function isCargoAircraftModel(details) {
         if (!details) return false;
         const typeStr = (details.type || '').toUpperCase();
         const icaoType = (details.icaoType || '').toUpperCase();
-        
-        // Açıkça kargo/freighter ise
-        if (typeStr.includes('FREIGHTER') || typeStr.includes('CARGO') || typeStr.includes('P2F') || typeStr.includes('BCF') || typeStr.includes('BDSF') || typeStr.endsWith('F')) {
-          return false;
+        if (typeStr.includes('FREIGHTER') || typeStr.includes('CARGO') || typeStr.includes('P2F') || typeStr.includes('BCF') || typeStr.includes('BDSF') || typeStr.endsWith('F') || typeStr.endsWith('-F')) {
+          return true;
         }
-        if (['B77L', 'B77F', 'A332F', 'A306F', 'A310F', 'B744F', 'B748F', 'B763F'].includes(icaoType)) {
-          return false;
+        if (['B77L', 'B77F', 'A332F', 'A333F', 'A306F', 'A310F', 'B744F', 'B748F', 'B763F', 'B752F', 'A321F', 'A35F'].includes(icaoType)) {
+          return true;
         }
+        return false;
+      }
 
-        // Açık yolcu modelleri (Airbus A320/A321 ailesi, Boeing 737, 777-300ER, 787 vb.)
-        if (/^(A318|A319|A320|A321|A20N|A21N|A359|A35K|A333|B737|B738|B739|B38M|B39M|B788|B789|B78X|B77W|B772|B773)$/i.test(icaoType)) {
+      // Belirgin Yolcu Uçağı Filtresi (A321, B738 vb. yolcu modellerinin kargo radarında görünmesini kesin engeller)
+      function isPassengerAircraftModel(details) {
+        if (!details) return false;
+        // Kargo modifikasyonu (P2F, Freighter vb.) varsa yolcu uçağı sayma!
+        if (isCargoAircraftModel(details)) {
+          return false;
+        }
+        const typeStr = (details.type || '').toUpperCase();
+        const icaoType = (details.icaoType || '').toUpperCase();
+
+        // Açık yolcu modelleri (Airbus A320/A321 ailesi, Boeing 737, 777-300ER, 787, A350 yolcu tipleri)
+        if (/^(A318|A319|A320|A321|A20N|A21N|A359|A35K|A333|A332|B737|B738|B739|B38M|B39M|B788|B789|B78X|B77W|B772|B773)$/i.test(icaoType)) {
           return true;
         }
         if (/(A321|A320|A319|737-800|737 MAX|787-9|A350|777-300ER)/i.test(typeStr)) {
@@ -2253,26 +2290,33 @@ export default {
       function determineFlightType(icao24, callsign, details, airlineCode) {
         const hex = (icao24 || '').toLowerCase();
         const cs = (callsign || '').trim().toUpperCase();
+        const reg = (details && details.registration ? details.registration.toUpperCase() : '');
         const airline = airlineCode || (matchCargoAirline(cs) || {}).code;
 
-        // Uçak detayları biliniyorsa ve belirgin bir yolcu uçağıysa (A321, B737 vb.) ASLA kargo olamaz!
+        // 1. Güvenlik: Uçak detayları biliniyorsa ve belirgin bir yolcu uçağıysa ASLA kargo olamaz!
         if (isPassengerAircraftModel(details)) {
           return 'pax';
         }
 
+        // 2. Resmi Turkish Cargo Filo Eşleşmesi (Hem Hex hem Kuyruk Tescili)
+        if (TURKISH_CARGO_HEX.has(hex) || (reg && TURKISH_CARGO_REGS.has(reg))) {
+          return 'cargo';
+        }
+
         if (airline === 'THY') {
-          // 1. Tescilli Turkish Cargo kargo uçağı mı? (B777F, A330F, P2F, wet-leased)
-          if (TURKISH_CARGO_HEX.has(hex)) {
+          // 3. Dinamik Kargo Uçağı Tanıma: Filoda henüz tanımlı olmasa bile (örn. filoya yeni katılan kargo uçağı)
+          // gövde modeli açıkça kargo ise (B77L, A330F, P2F vb.) otomatik kargo kabul edilir!
+          if (isCargoAircraftModel(details)) {
             return 'cargo';
           }
 
-          // 2. Eurocontrol ATC alfa-sayısal yolcu çağrı kodları (THY9UG, THY12A vb.)
+          // 4. Eurocontrol ATC alfa-sayısal yolcu çağrı kodları (THY9UG, THY12A vb.) -> Yolcu
           if (/^THY\d+[A-Z]+$/i.test(cs)) {
             return 'pax';
           }
 
-          // 3. Turkish Cargo ana kargo uçuş blok aralığı (6000 - 6699)
-          // Not: 6700-6999 aralığı THY'de hac/umre, charter ve özel yolcu uçuşlarıdır!
+          // 5. Turkish Cargo ana kargo uçuş blok aralığı (6000 - 6699)
+          // Not: 6700-6999 aralığı THY'de hac/umre, charter ve ek yolcu uçuşlarıdır!
           const numMatch = cs.match(/^THY(\d+)$/i);
           if (numMatch) {
             const flightNum = parseInt(numMatch[1], 10);
