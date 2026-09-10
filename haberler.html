@@ -16816,7 +16816,6 @@ async function loadDashboard() {
       const dotHtml = f.signalLost 
         ? `<span class="cargo-signal-lost-dot" title="Sinyal Kaybı (Tahmini Konum)"></span>`
         : `<span class="cargo-live-dot" title="Canlı Sinyal"></span>`;
-      const signalLostLabel = f.signalLost ? `<span style="font-size:9.5px; color:#9CA3AF; font-weight:700;">(Tahmini)</span>` : '';
 
       const formatAirportCode = (code) => {
         if (!code || typeof code !== 'string') return null;
@@ -16853,7 +16852,6 @@ async function loadDashboard() {
           <div class="cf-callsign-box">
             ${dotHtml}
             <span class="cf-callsign">${flightNumber}</span>
-            ${signalLostLabel}
           </div>
           ${regBadge}
         </div>
@@ -17148,8 +17146,15 @@ async function loadDashboard() {
         const pts = [];
         if (f.dep && f.dep.lat != null && rawPts.length > 0) {
           const dToDep = getDistance(rawPts[0][0], rawPts[0][1], f.dep.lat, f.dep.lon);
-          if (dToDep < 500) {
+          if (dToDep < 150) {
             pts.push([f.dep.lat, f.dep.lon]);
+          } else {
+            // Kalkış havalimanından ilk yakalanan radar noktasına kadar olan kör noktayı
+            // küresel yay ile bağla, böylece kalkıştan itibaren kopukluk olmaz
+            const leadArc = getArcPoints([f.dep.lat, f.dep.lon], [rawPts[0][0], rawPts[0][1]]);
+            if (leadArc && leadArc.length > 1) {
+              pts.push(...leadArc.slice(0, -1));
+            }
           }
         }
         pts.push(...rawPts);
@@ -17168,7 +17173,8 @@ async function loadDashboard() {
           f._realTrack = pts;
           f._realTrackRaw = data.path;
 
-          if (_cargoSelectedIdx === idx && _cargoMap) {
+          const isCurrentlySelected = _cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx] && (_cargoFlights[_cargoSelectedIdx].icao24 === f.icao24 || _cargoFlights[_cargoSelectedIdx].callsign === f.callsign);
+          if (isCurrentlySelected && _cargoMap) {
             if (_cargoTraveledLine) {
               _cargoTraveledLine.setLatLngs(pts);
             } else {

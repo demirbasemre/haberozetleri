@@ -2372,6 +2372,84 @@ export default {
         return meta.iata + cs.slice(meta.prefix.length);
       }
 
+      // Flightradar24 Canlı Radar Feed Entegrasyonu:
+      // data-cloud.flightradar24.com üzerinden anlık olarak havadaki (on_ground === 0)
+      // kargo uçaklarını çeker, rota ve canlı uçuş doğrulaması sağlar.
+      async function fetchFlightRadar24LiveFlights() {
+        const frFlights = [];
+        const promises = CARGO_AIRLINES.map(async (airlineMeta) => {
+          try {
+            const url = `https://data-cloud.flightradar24.com/zones/fcgi/feed.js?airline=${airlineMeta.code}`;
+            const res = await doFetch(url, {
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+                'Accept': 'application/json'
+              }
+            }, false, 45);
+
+            if (res.status !== 200 || !res.body) return;
+            let data = null;
+            try {
+              data = JSON.parse(res.body);
+            } catch (_) {
+              return;
+            }
+
+            for (const [key, v] of Object.entries(data)) {
+              if (!Array.isArray(v) || v.length < 15) continue;
+              const [hex, lat, lon, track, alt, spd, sq, radar, model, reg, ts, orig, dest, flight_no, on_ground] = v;
+              const callsign = (v[16] || '').trim();
+
+              // Kesin filtre: Yerde olan (on_ground === 1) veya hızı/irtifası sıfır olan uçakları havada sayma!
+              if (on_ground === 1 || (alt === 0 && spd < 40)) continue;
+              if (lat == null || lon == null) continue;
+
+              const details = {
+                registration: reg ? reg.toUpperCase() : null,
+                model: model || null,
+                icaoType: model || null,
+                type: model || null
+              };
+
+              const type = determineFlightType(hex, callsign, details, airlineMeta.code);
+              if (type !== 'cargo') continue;
+
+              const cleanOrig = orig ? orig.trim().toUpperCase() : null;
+              const cleanDest = dest ? dest.trim().toUpperCase() : null;
+              const depDb = cleanOrig && AIRPORT_DB[cleanOrig] ? AIRPORT_DB[cleanOrig] : null;
+              const arrDb = cleanDest && AIRPORT_DB[cleanDest] ? AIRPORT_DB[cleanDest] : null;
+
+              frFlights.push({
+                icao24: (hex || '').toLowerCase(),
+                callsign: callsign || (airlineMeta.prefix + (flight_no || '').replace(/\D/g, '')),
+                lat,
+                lon,
+                airline: airlineMeta.code,
+                flightNumber: flight_no || toCommercialFlightNumber(callsign),
+                altitude: alt ? Math.round(alt * 0.3048) : null,
+                altitudeFeet: alt || null,
+                velocity: spd ? Math.round(spd * 0.514444) : null,
+                speedKts: spd || null,
+                track: track || 0,
+                squawk: sq || null,
+                aircraftDetails: details,
+                dep: depDb,
+                arr: arrDb,
+                routeSource: depDb && arrDb ? 'flightradar24' : null,
+                lastContact: ts || Math.floor(Date.now() / 1000),
+                type: 'cargo',
+                fr24Live: true
+              });
+            }
+          } catch (err) {
+            console.warn(`[FR24 Live] ${airlineMeta.code} fetch error:`, err.message || err);
+          }
+        });
+
+        await Promise.all(promises);
+        return frFlights;
+      }
+
       async function computeBaseCargoFlights() {
         const token = await getOpenSkyToken(env, doFetch);
         const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
@@ -3227,8 +3305,84 @@ export default {
       }
 
       async function refreshAndCache() {
-        const fresh = await computeBaseCargoFlights();
-        
+        // OpenSky ve Flightradar24 canlı feed'ini paralel çekelim
+        const [freshRes, fr24Flights] = await Promise.all([
+          computeBaseCargoFlights().catch(err => {
+            console.warn('[OpenSky] fetch error:', err.message || err);
+            return null;
+          }),
+          fetchFlightRadar24LiveFlights().catch(err => {
+            console.warn('[FR24 Live] fetch error:', err.message || err);
+            return [];
+          })
+        ]);
+
+        let fresh = freshRes;
+        if (!fresh) {
+          fresh = {
+            count: 0,
+            countByAirline: Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, 0])),
+            airlines: CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata })),
+            flights: [],
+            updated: Math.floor(Date.now() / 1000)
+          };
+        }
+
+        // FR24 canlı kargo uçuşları hızlı erişim indeksleri
+        const frByCallsign = new Map();
+        const frByHex = new Map();
+        const frByReg = new Map();
+        const frLiveAirborneCallsigns = new Set();
+        const frLiveAirborneRegs = new Set();
+        const frLiveAirborneHexes = new Set();
+
+        for (const fr of (fr24Flights || [])) {
+          const cs = (fr.callsign || '').toUpperCase();
+          const hex = (fr.icao24 || '').toLowerCase();
+          const reg = (fr.aircraftDetails?.registration || '').toUpperCase();
+          if (cs) {
+            frByCallsign.set(cs, fr);
+            frLiveAirborneCallsigns.add(cs);
+          }
+          if (hex) {
+            frByHex.set(hex, fr);
+            frLiveAirborneHexes.add(hex);
+          }
+          if (reg) {
+            frByReg.set(reg, fr);
+            frLiveAirborneRegs.add(reg);
+          }
+        }
+
+        // OpenSky'den gelen uçuşları FR24 canlı verisiyle teyit et ve zenginleştir
+        const matchedFrCallsigns = new Set();
+        for (const f of fresh.flights) {
+          const cs = (f.callsign || '').toUpperCase();
+          const hex = (f.icao24 || '').toLowerCase();
+          const frMatch = frByCallsign.get(cs) || frByHex.get(hex);
+          if (frMatch) {
+            matchedFrCallsigns.add((frMatch.callsign || '').toUpperCase());
+            if (frMatch.flightNumber) f.flightNumber = frMatch.flightNumber;
+            if (frMatch.dep && frMatch.arr) {
+              f.dep = frMatch.dep;
+              f.arr = frMatch.arr;
+              f.routeSource = 'flightradar24';
+            }
+            if (frMatch.aircraftDetails && (!f.aircraftDetails || !f.aircraftDetails.registration)) {
+              f.aircraftDetails = frMatch.aircraftDetails;
+            }
+            f.fr24Verified = true;
+          }
+        }
+
+        // FR24'te havada olan fakat OpenSky'de henüz listelenmemiş kargo uçuşlarını da ekle
+        for (const fr of (fr24Flights || [])) {
+          const cs = (fr.callsign || '').toUpperCase();
+          if (!matchedFrCallsigns.has(cs) && !fresh.flights.some(f => (f.callsign || '').toUpperCase() === cs)) {
+            fresh.flights.push(fr);
+          }
+        }
+
         let cachedFlights = [];
         try {
           const cachedData = await getCachedFlights();
@@ -3245,7 +3399,7 @@ export default {
               prev.dep = null;
               prev.arr = null;
             }
-            if (prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null) {
+            if (!f.dep && prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null) {
               // Verify that the aircraft is still flying along the cached route
               if (isRouteConsistent(f, prev.dep, prev.arr)) {
                 f.dep = prev.dep;
@@ -3255,7 +3409,7 @@ export default {
                 cleanRouteCities(f);
               }
             }
-            if (prev.aircraftDetails) {
+            if (!f.aircraftDetails && prev.aircraftDetails) {
               f.aircraftDetails = prev.aircraftDetails;
             }
           }
@@ -3306,21 +3460,29 @@ export default {
         fresh.count = fresh.flights.filter(f => f.airline === 'THY').length;
 
         // ── Sinyal kaybı: rota biliniyorsa "en iyi ihtimalle" dead-reckoning ──
-        // OpenSky'den kaybolan bir uçak için son GERÇEK konum + rota + hız kullanılarak
-        // varışa ne kadar sürede ulaşacağı hesaplanır; bu süre boyunca büyük daire rotası
-        // üzerinde ilerletilir (signalLost:true). Süre dolduğunda (muhtemelen inmiştir)
-        // artık listede gösterilmez — donmuş/hayalet uçak yerine sessizce kaybolur.
-        const freshCallsigns = new Set(fresh.flights.map(f => f.callsign));
+        // HAYALET UÇUŞ KORUMASI: Bir uçak OpenSky'dan düştüyse VE Flightradar24 canlı feed'inde de
+        // havada DEĞİLSE, kesinlikle uçuş bitmiş/inmiştir! Asla 2 saat haritada yürütülmez, hemen elenir!
+        const freshCallsigns = new Set(fresh.flights.map(f => (f.callsign || '').toUpperCase()));
         const nowSec = Math.floor(Date.now() / 1000);
         for (const prev of cachedFlights) {
-          if (freshCallsigns.has(prev.callsign)) continue;
+          const pCs = (prev.callsign || '').toUpperCase();
+          if (freshCallsigns.has(pCs)) continue;
           if (prev.type !== 'cargo' || isPassengerAircraftModel(prev.aircraftDetails)) continue;
-          if (prev.callsign && prev.callsign.startsWith('THY')) {
-            const fnMatch = prev.callsign.match(/^THY(\d+)$/);
+          if (pCs.startsWith('THY')) {
+            const fnMatch = pCs.match(/^THY(\d+)$/);
             if (fnMatch) {
               const num = parseInt(fnMatch[1], 10);
               if (num >= 6700) continue;
             }
+          }
+
+          // Flightradar24 Canlı Doğrulaması: FR24 feed'i geldiyse ve uçak FR24'te havada değilse -> İNMİŞTİR!
+          const pReg = (prev.aircraftDetails?.registration || '').toUpperCase();
+          const pHex = (prev.icao24 || '').toLowerCase();
+          const isAirborneInFr24 = frLiveAirborneCallsigns.has(pCs) || (pReg && frLiveAirborneRegs.has(pReg)) || frLiveAirborneHexes.has(pHex);
+          if (fr24Flights && fr24Flights.length > 0 && !isAirborneInFr24) {
+            // Kesinlikle havada değil (örneğin TK6039 inmiştir). ASLA hayalet uçuş olarak ekleme!
+            continue;
           }
 
           const baseLat = prev.lastRealLat != null ? prev.lastRealLat : prev.lat;
@@ -3336,9 +3498,9 @@ export default {
           const distRemaining = getDistance(baseLat, baseLon, prev.arr.lat, prev.arr.lon);
           const etaSec = (distRemaining / speedKmh) * 3600;
           const elapsed = nowSec - prev.lastContact;
-          const MAX_DEAD_RECKONING_SEC = 7200; // En fazla 2 saat sinyal kaybı tahmini yapılabilir (günler öncesinden kalan hayalet uçuşları engelle)
+          const MAX_DEAD_RECKONING_SEC = 900; // En fazla 15 dakika sinyal kaybı tahmini yapılabilir (hayalet uçuşları engelle)
           if (!isFinite(etaSec) || etaSec <= 0 || elapsed >= etaSec || elapsed > MAX_DEAD_RECKONING_SEC) {
-            continue; // En iyi ihtimalle varmış/inmiş olması gerekir veya sinyal çok uzun süredir kesik: artık gösterme
+            continue; // İndi veya süre doldu: gösterme
           }
 
           const fraction = Math.max(0, Math.min(1, elapsed / etaSec));
