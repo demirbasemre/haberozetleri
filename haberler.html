@@ -16761,6 +16761,29 @@ async function loadDashboard() {
     iconAnchor: [8, 8],
   });
 
+  function formatAircraftModel(rawType, icaoType, manufacturer) {
+    if (!rawType && !icaoType) return '';
+    let str = (rawType || icaoType).trim();
+    if (/A321.*(271|251|NX|NEO)/i.test(str) || icaoType === 'A21N') return 'Airbus A321neo';
+    if (/A320.*(271|251|neo)/i.test(str) || icaoType === 'A20N') return 'Airbus A320neo';
+    if (/A321/i.test(str) || icaoType === 'A321') return 'Airbus A321';
+    if (/A320/i.test(str) || icaoType === 'A320') return 'Airbus A320';
+    if (/A330-?200F|A332F/i.test(str) || icaoType === 'A332') return 'Airbus A330-200F';
+    if (/B?777-?F|B77L/i.test(str) || icaoType === 'B77L') return 'Boeing 777F';
+    if (/B?777-?300ER|B77W/i.test(str) || icaoType === 'B77W') return 'Boeing 777-300ER';
+    if (/B?747-?400F|B744/i.test(str) || icaoType === 'B744') return 'Boeing 747-400F';
+    if (/B?747-?8F|B748/i.test(str) || icaoType === 'B748') return 'Boeing 747-8F';
+    if (/B?737-?800|B738/i.test(str) || icaoType === 'B738') return 'Boeing 737-800';
+    if (/B?737.*MAX|B38M/i.test(str) || icaoType === 'B38M') return 'Boeing 737 MAX';
+    if (/B?787-?9|B789/i.test(str) || icaoType === 'B789') return 'Boeing 787-9 Dreamliner';
+    if (/A350-?900|A359/i.test(str) || icaoType === 'A359') return 'Airbus A350-900';
+    let clean = str;
+    if (manufacturer && clean.toLowerCase().startsWith(manufacturer.toLowerCase())) {
+      return clean;
+    }
+    return manufacturer ? `${manufacturer} ${clean}` : clean;
+  }
+
   function renderCargoFlightList() {
     const listEl = document.getElementById('cargo-flight-list');
     if (!listEl) return;
@@ -16817,8 +16840,9 @@ async function loadDashboard() {
             ? `<div style="color:var(--text-3); font-size:10.5px; margin:2px 0;">Rota tespit edilemedi</div>`
             : `<div style="color:var(--text-3); font-size:10.5px; margin:2px 0;">Rota doğrulanıyor…</div>`);
 
-      const modelText = f.aircraftDetails?.type || f.aircraftDetails?.icaoType
-        ? `<div style="color:var(--text-3); font-size:10.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType}</div>`
+      const formattedModel = formatAircraftModel(f.aircraftDetails?.type, f.aircraftDetails?.icaoType, f.aircraftDetails?.manufacturer);
+      const modelText = formattedModel
+        ? `<div style="color:var(--text-3); font-size:10.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${formattedModel}</div>`
         : '';
 
       const altFt = Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR');
@@ -17331,7 +17355,7 @@ async function loadDashboard() {
           </div>
           <div class="ticket-grid-item">
             <div class="ticket-label">UÇAK MODELİ</div>
-            <div class="ticket-val" style="font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}">${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || '—'}</div>
+            <div class="ticket-val" style="font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}">${formatAircraftModel(f.aircraftDetails?.type, f.aircraftDetails?.icaoType, f.aircraftDetails?.manufacturer) || '—'}</div>
           </div>
           <div class="ticket-grid-item" style="text-align:right;">
             <div class="ticket-label">TESCİL ÜLKESİ</div>

@@ -2227,36 +2227,60 @@ export default {
         return null;
       }
 
+      function isPassengerAircraftModel(details) {
+        if (!details) return false;
+        const typeStr = (details.type || '').toUpperCase();
+        const icaoType = (details.icaoType || '').toUpperCase();
+        
+        // Açıkça kargo/freighter ise
+        if (typeStr.includes('FREIGHTER') || typeStr.includes('CARGO') || typeStr.includes('P2F') || typeStr.includes('BCF') || typeStr.includes('BDSF') || typeStr.endsWith('F')) {
+          return false;
+        }
+        if (['B77L', 'B77F', 'A332F', 'A306F', 'A310F', 'B744F', 'B748F', 'B763F'].includes(icaoType)) {
+          return false;
+        }
+
+        // Açık yolcu modelleri (Airbus A320/A321 ailesi, Boeing 737, 777-300ER, 787 vb.)
+        if (/^(A318|A319|A320|A321|A20N|A21N|A359|A35K|A333|B737|B738|B739|B38M|B39M|B788|B789|B78X|B77W|B772|B773)$/i.test(icaoType)) {
+          return true;
+        }
+        if (/(A321|A320|A319|737-800|737 MAX|787-9|A350|777-300ER)/i.test(typeStr)) {
+          return true;
+        }
+        return false;
+      }
+
       function determineFlightType(icao24, callsign, details, airlineCode) {
         const hex = (icao24 || '').toLowerCase();
         const cs = (callsign || '').trim().toUpperCase();
         const airline = airlineCode || (matchCargoAirline(cs) || {}).code;
 
+        // Uçak detayları biliniyorsa ve belirgin bir yolcu uçağıysa (A321, B737 vb.) ASLA kargo olamaz!
+        if (isPassengerAircraftModel(details)) {
+          return 'pax';
+        }
+
         if (airline === 'THY') {
-          // 1. THY passenger flights use Eurocontrol ATC alphanumeric callsigns (e.g. THY9UG, THY12A, THY72X).
-          // Turkish Cargo flights NEVER use trailing letters in ATC callsigns (they always use THY6xxx).
+          // 1. Tescilli Turkish Cargo kargo uçağı mı? (B777F, A330F, P2F, wet-leased)
+          if (TURKISH_CARGO_HEX.has(hex)) {
+            return 'cargo';
+          }
+
+          // 2. Eurocontrol ATC alfa-sayısal yolcu çağrı kodları (THY9UG, THY12A vb.)
           if (/^THY\d+[A-Z]+$/i.test(cs)) {
             return 'pax';
           }
 
-          // 2. Turkish Cargo commercial flight number block range (6000 - 6999)
+          // 3. Turkish Cargo ana kargo uçuş blok aralığı (6000 - 6699)
+          // Not: 6700-6999 aralığı THY'de hac/umre, charter ve özel yolcu uçuşlarıdır!
           const numMatch = cs.match(/^THY(\d+)$/i);
           if (numMatch) {
             const flightNum = parseInt(numMatch[1], 10);
-            if (flightNum >= 6000 && flightNum <= 6999) {
+            if (flightNum >= 6000 && flightNum <= 6699) {
               return 'cargo';
-            }
-            if (flightNum < 6000 || flightNum >= 7000) {
-              if (!TURKISH_CARGO_HEX.has(hex)) {
-                return 'pax';
-              }
             }
           }
 
-          // 3. Known dedicated freighter aircraft hex codes (Boeing 777F, Airbus A330F, wet-leased freighters)
-          if (TURKISH_CARGO_HEX.has(hex)) {
-            return 'cargo';
-          }
           return 'pax';
         } else if (airline === 'UAE') {
           // Emirates SkyCargo: 9000-9999 aralığındaki kargo uçuşları veya tescilli B777F filosu
@@ -2441,8 +2465,12 @@ export default {
         const dArr = getDistance(f.lat, f.lon, arr.lat, arr.lon);
         const dTotal = getDistance(dep.lat, dep.lon, arr.lat, arr.lon);
         
-        // 1. Jeopolitik kapalı hava sahaları & detour payı (uluslararası kargo koridorları için %40 veya +900km)
-        const maxAllowed = Math.max(dTotal * 1.40, dTotal + 900);
+        // 1. Detour payı:
+        // Kısa/bölgesel rotalarda (< 3000 km) azami %25 veya +350 km sapmaya izin ver.
+        // Kıtalararası uzun menzilli kargo koridorlarında (> 3000 km) Rusya/Ortadoğu bypass payı için %35 veya +900 km izin ver.
+        const detourAdd = dTotal < 3000 ? Math.min(350, dTotal * 0.25) : 900;
+        const detourRatio = dTotal < 3000 ? 1.25 : 1.35;
+        const maxAllowed = Math.max(dTotal * detourRatio, dTotal + detourAdd);
         if (dDep + dArr > maxAllowed) return false;
         
         // 2. Kalkış / Varış ve Heading (Burnun dönük olduğu yön) doğrulaması
@@ -2465,9 +2493,10 @@ export default {
             if (diffFromDep > 110) return false;
           }
 
-          // Açık seyir (cruise) fazı: Uçağın yönü varış meydanından 95 dereceden fazla sapamaz
+          // Açık seyir (cruise) fazı: Uçağın burnu varış istikametinden bölgeselde 75°, uzun hatta 90°'den fazla sapamaz
           if (dDep > 180 && dArr > 180) {
-            if (diffToArr > 95) return false;
+            const maxCruiseDiff = dTotal < 3000 ? 75 : 90;
+            if (diffToArr > maxCruiseDiff) return false;
           }
         }
         
@@ -3143,6 +3172,10 @@ export default {
           }
         }
 
+        // Arka planda uçak modeli yolcu çıkanları nihai listeden temizle
+        data.flights = data.flights.filter(f => f.type === 'cargo');
+        data.count = data.flights.filter(f => f.airline === 'THY').length;
+
         if (cacheUpdated) {
           const { token: _t, authHeaders: _a, ...publicData } = data;
           await setCachedFlights(publicData);
@@ -3224,6 +3257,10 @@ export default {
           f.type = determineFlightType(f.icao24, f.callsign, f.aircraftDetails, f.airline);
         }
 
+        // Kesin kargo filtresi: Uçak modeli yolcu uçağı (A321, B737 vb.) çıkanları anında ele
+        fresh.flights = fresh.flights.filter(f => f.type === 'cargo');
+        fresh.count = fresh.flights.filter(f => f.airline === 'THY').length;
+
         // ── Sinyal kaybı: rota biliniyorsa "en iyi ihtimalle" dead-reckoning ──
         // OpenSky'den kaybolan bir uçak için son GERÇEK konum + rota + hız kullanılarak
         // varışa ne kadar sürede ulaşacağı hesaplanır; bu süre boyunca büyük daire rotası
@@ -3233,6 +3270,14 @@ export default {
         const nowSec = Math.floor(Date.now() / 1000);
         for (const prev of cachedFlights) {
           if (freshCallsigns.has(prev.callsign)) continue;
+          if (prev.type !== 'cargo' || isPassengerAircraftModel(prev.aircraftDetails)) continue;
+          if (prev.callsign && prev.callsign.startsWith('THY')) {
+            const fnMatch = prev.callsign.match(/^THY(\d+)$/);
+            if (fnMatch) {
+              const num = parseInt(fnMatch[1], 10);
+              if (num >= 6700) continue;
+            }
+          }
 
           const baseLat = prev.lastRealLat != null ? prev.lastRealLat : prev.lat;
           const baseLon = prev.lastRealLon != null ? prev.lastRealLon : prev.lon;
@@ -3268,10 +3313,13 @@ export default {
           });
         }
 
+        // Kesin kargo garantisi: Yolcu uçaklarını (A321, B737 vb.) listeden tamamen süpür
+        fresh.flights = fresh.flights.filter(f => f.type === 'cargo' && !isPassengerAircraftModel(f.aircraftDetails));
+
         // Re-calculate counts in case types were corrected
-        fresh.count = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'cargo').length;
-        fresh.paxCount = fresh.flights.filter(f => f.airline === 'THY' && f.type === 'pax').length;
-        fresh.countByAirline = Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, fresh.flights.filter(f => f.airline === a.code && f.type === 'cargo').length]));
+        fresh.count = fresh.flights.filter(f => f.airline === 'THY').length;
+        fresh.paxCount = 0;
+        fresh.countByAirline = Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, fresh.flights.filter(f => f.airline === a.code).length]));
         fresh.airlines = CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata }));
 
         const { token: _t, authHeaders: _a, ...publicData } = fresh;
