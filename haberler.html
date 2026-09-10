@@ -16881,11 +16881,79 @@ async function loadDashboard() {
     iconAnchor: [19, 19],
   });
 
-  function getArcPoints(p1, p2, numPoints = 40) {
+  // Flightradar24 standardında 180° Meridyeni (Antimeridyen / Tarih Değiştirme Çizgisi)
+  // geçişlerini tespit edip rotayı harita sınırında bölen ve dünyayı yarmayı önleyen fonksiyon
+  function splitAntimeridian(pts) {
+    if (!pts || !Array.isArray(pts) || pts.length === 0) return [];
+    if (Array.isArray(pts[0]) && Array.isArray(pts[0][0])) return pts; // zaten çok parçalı
+
+    const segments = [];
+    let currentSegment = [];
+
+    for (let i = 0; i < pts.length; i++) {
+      const pt = pts[i];
+      if (!pt || pt[0] == null || pt[1] == null) continue;
+      const lat = Number(pt[0]);
+      let lon = Number(pt[1]);
+      if (!isFinite(lat) || !isFinite(lon)) continue;
+
+      // Boylamı [-180, 180] aralığına normalize et
+      lon = ((lon + 180) % 360 + 360) % 360 - 180;
+
+      if (currentSegment.length === 0) {
+        currentSegment.push([lat, lon]);
+        continue;
+      }
+
+      const prev = currentSegment[currentSegment.length - 1];
+      const prevLat = prev[0];
+      const prevLon = prev[1];
+      const dLon = lon - prevLon;
+
+      if (Math.abs(dLon) > 180) {
+        // 180° meridyenini kesiyor! (Örn: +179 -> -179 veya tersi)
+        let latCross;
+        let cross1, cross2;
+
+        if (dLon < 0) {
+          // Doğu yarımküreden Batı yarımküreye geçiş (örn. +175 -> -175)
+          const adjustedLon2 = lon + 360;
+          const t = (180 - prevLon) / (adjustedLon2 - prevLon);
+          latCross = prevLat + t * (lat - prevLat);
+          cross1 = [latCross, 180];
+          cross2 = [latCross, -180];
+        } else {
+          // Batı yarımküreden Doğu yarımküreye geçiş (örn. -175 -> +175)
+          const adjustedLon2 = lon - 360;
+          const t = (-180 - prevLon) / (adjustedLon2 - prevLon);
+          latCross = prevLat + t * (lat - prevLat);
+          cross1 = [latCross, -180];
+          cross2 = [latCross, 180];
+        }
+
+        currentSegment.push(cross1);
+        segments.push(currentSegment);
+        currentSegment = [cross2, [lat, lon]];
+      } else {
+        currentSegment.push([lat, lon]);
+      }
+    }
+
+    if (currentSegment.length > 0) {
+      segments.push(currentSegment);
+    }
+
+    return segments.length > 0 ? segments : [pts];
+  }
+
+  function getArcPoints(p1, p2, numPoints = 50) {
+    if (!p1 || !p2 || p1[0] == null || p1[1] == null || p2[0] == null || p2[1] == null) return [];
     const lat1 = p1[0] * Math.PI / 180;
-    const lon1 = p1[1] * Math.PI / 180;
+    const lon1Raw = ((p1[1] + 180) % 360 + 360) % 360 - 180;
+    const lon1 = lon1Raw * Math.PI / 180;
     const lat2 = p2[0] * Math.PI / 180;
-    const lon2 = p2[1] * Math.PI / 180;
+    const lon2Raw = ((p2[1] + 180) % 360 + 360) % 360 - 180;
+    const lon2 = lon2Raw * Math.PI / 180;
 
     const x1 = Math.cos(lat1) * Math.cos(lon1);
     const y1 = Math.cos(lat1) * Math.sin(lon1);
@@ -16895,22 +16963,15 @@ async function loadDashboard() {
     const y2 = Math.cos(lat2) * Math.sin(lon2);
     const z2 = Math.sin(lat2);
 
-    const dot = x1*x2 + y1*y2 + z1*z2;
-    const omega = Math.acos(Math.min(1.0, Math.max(-1.0, dot)));
+    const dot = Math.min(1.0, Math.max(-1.0, x1*x2 + y1*y2 + z1*z2));
+    const omega = Math.acos(dot);
 
     const points = [];
     if (omega < 0.001) {
-      for (let i = 0; i <= numPoints; i++) {
-        const t = i / numPoints;
-        points.push([p1[0] + (p2[0] - p1[0]) * t, p1[1] + (p2[1] - p1[1]) * t]);
-      }
-      return points;
+      return [[p1[0], lon1Raw], [p2[0], lon2Raw]];
     }
 
     const sinOmega = Math.sin(omega);
-    let prevLon = p1[1];
-    let offset = 0;
-
     for (let i = 0; i <= numPoints; i++) {
       const t = i / numPoints;
       const w1 = Math.sin((1 - t) * omega) / sinOmega;
@@ -16922,17 +16983,7 @@ async function loadDashboard() {
 
       const lat = Math.atan2(z, Math.sqrt(x*x + y*y)) * 180 / Math.PI;
       let lon = Math.atan2(y, x) * 180 / Math.PI;
-
-      let testLon = lon + offset;
-      if (testLon - prevLon > 180) {
-        offset -= 360;
-        testLon -= 360;
-      } else if (testLon - prevLon < -180) {
-        offset += 360;
-        testLon += 360;
-      }
-      prevLon = testLon;
-      points.push([lat, testLon]);
+      points.push([lat, ((lon + 180) % 360 + 360) % 360 - 180]);
     }
     return points;
   }
@@ -16982,7 +17033,8 @@ async function loadDashboard() {
       }
 
       if (traveledPoints.length > 1) {
-        _cargoTraveledLine = L.polyline(traveledPoints, { color: routeColor, weight: 3, opacity: 0.95 });
+        const segmentedTraveled = splitAntimeridian(traveledPoints);
+        _cargoTraveledLine = L.polyline(segmentedTraveled, { color: routeColor, weight: 3, opacity: 0.95 });
         _cargoTraveledLine.addTo(_cargoMap);
         _cargoRouteLayers.push(_cargoTraveledLine);
       }
@@ -16994,17 +17046,22 @@ async function loadDashboard() {
         _cargoRouteLayers.push(arrMarker);
         bounds.push([f.arr.lat, f.arr.lon]);
 
-        const arcPointsRemaining = getArcPoints([targetLat, targetLon], [f.arr.lat, f.arr.lon]);
+        const arcPointsRemaining = splitAntimeridian(getArcPoints([targetLat, targetLon], [f.arr.lat, f.arr.lon]));
         _cargoRemainingLine = L.polyline(arcPointsRemaining, { color: routeColor, weight: 2.2, opacity: 0.45, dashArray: '6,6' });
         _cargoRemainingLine.addTo(_cargoMap);
         _cargoRouteLayers.push(_cargoRemainingLine);
       }
 
       if (pan) {
-        if (bounds.length >= 2) {
+        // Antimeridyen geçişi kontrolü: Boylam farkı > 180° ise tüm dünyayı zoom-out yapmak yerine
+        // Flightradar24 gibi uçağın canlı konumuna odaklan
+        const allLons = bounds.map(b => ((b[1] + 180) % 360 + 360) % 360 - 180);
+        const crossesAntimeridian = (Math.max(...allLons) - Math.min(...allLons)) > 180;
+        
+        if (!crossesAntimeridian && bounds.length >= 2) {
           _cargoMap.fitBounds(bounds, { padding: [60, 60], maxZoom: 6 });
         } else {
-          _cargoMap.setView([targetLat, targetLon], 6, { animate: true });
+          _cargoMap.setView([targetLat, targetLon], 5, { animate: true });
         }
       }
     }
@@ -17174,19 +17231,20 @@ async function loadDashboard() {
           f._realTrackRaw = data.path;
 
           const isCurrentlySelected = _cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx] && (_cargoFlights[_cargoSelectedIdx].icao24 === f.icao24 || _cargoFlights[_cargoSelectedIdx].callsign === f.callsign);
-          if (isCurrentlySelected && _cargoMap) {
+            const segmentedTraveled = splitAntimeridian(pts);
             if (_cargoTraveledLine) {
-              _cargoTraveledLine.setLatLngs(pts);
+              _cargoTraveledLine.setLatLngs(segmentedTraveled);
             } else {
               const routeColor = cargoAirlineColor(f.airline);
-              _cargoTraveledLine = L.polyline(pts, { color: routeColor, weight: 3, opacity: 0.95 });
+              _cargoTraveledLine = L.polyline(segmentedTraveled, { color: routeColor, weight: 3, opacity: 0.95 });
               _cargoTraveledLine.addTo(_cargoMap);
               _cargoRouteLayers.push(_cargoTraveledLine);
             }
 
             const currentPoint = pts[pts.length - 1];
             if (_cargoRemainingLine && f.arr && f.arr.lat != null) {
-              _cargoRemainingLine.setLatLngs(getArcPoints([currentPoint[0], currentPoint[1]], [f.arr.lat, f.arr.lon]));
+              const segmentedRemaining = splitAntimeridian(getArcPoints([currentPoint[0], currentPoint[1]], [f.arr.lat, f.arr.lon]));
+              _cargoRemainingLine.setLatLngs(segmentedRemaining);
             }
 
             renderCargoFlightDetail(f);
@@ -17203,7 +17261,9 @@ async function loadDashboard() {
   function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
+    let diffLon = Math.abs(lon2 - lon1);
+    if (diffLon > 180) diffLon = 360 - diffLon;
+    const dLon = diffLon * Math.PI / 180;
     const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
               Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
               Math.sin(dLon / 2) * Math.sin(dLon / 2);
@@ -17516,7 +17576,7 @@ async function loadDashboard() {
         );
 
         f.currentLat = newLatRad * 180 / Math.PI;
-        f.currentLon = newLonRad * 180 / Math.PI;
+        f.currentLon = ((newLonRad * 180 / Math.PI + 180) % 360 + 360) % 360 - 180;
 
         const pm = _cargoPlaneMarkers.get(f.icao24);
         if (pm && pm.marker) {
@@ -17531,13 +17591,13 @@ async function loadDashboard() {
             if (f._realTrack && f._realTrack.length > 1) {
               const livePts = f._realTrack.slice(0, -1);
               livePts.push([f.currentLat, f.currentLon]);
-              _cargoTraveledLine.setLatLngs(livePts);
+              _cargoTraveledLine.setLatLngs(splitAntimeridian(livePts));
             } else if (f.dep && f.dep.lat != null) {
-              _cargoTraveledLine.setLatLngs(getArcPoints([f.dep.lat, f.dep.lon], [f.currentLat, f.currentLon]));
+              _cargoTraveledLine.setLatLngs(splitAntimeridian(getArcPoints([f.dep.lat, f.dep.lon], [f.currentLat, f.currentLon])));
             }
           }
           if (_cargoRemainingLine && f.arr && f.arr.lat != null) {
-            _cargoRemainingLine.setLatLngs(getArcPoints([f.currentLat, f.currentLon], [f.arr.lat, f.arr.lon]));
+            _cargoRemainingLine.setLatLngs(splitAntimeridian(getArcPoints([f.currentLat, f.currentLon], [f.arr.lat, f.arr.lon])));
           }
         }
       });
@@ -17618,7 +17678,13 @@ async function loadDashboard() {
         if (selectedFlight.arr && selectedFlight.arr.lat != null) {
           flightBounds.push([selectedFlight.arr.lat, selectedFlight.arr.lon]);
         }
-        _cargoMap.fitBounds(flightBounds, { padding: [50, 50], maxZoom: 6 });
+        const allLons = flightBounds.map(b => ((b[1] + 180) % 360 + 360) % 360 - 180);
+        const crossesAntimeridian = (Math.max(...allLons) - Math.min(...allLons)) > 180;
+        if (!crossesAntimeridian && flightBounds.length >= 2) {
+          _cargoMap.fitBounds(flightBounds, { padding: [50, 50], maxZoom: 6 });
+        } else {
+          _cargoMap.setView([selectedFlight.lat, selectedFlight.lon], 5);
+        }
       }
     } else {
       _cargoSelectedIdx = null;
