@@ -17326,6 +17326,12 @@ async function loadDashboard() {
     return manufacturer ? `${manufacturer} ${clean}` : clean;
   }
 
+  function formatAirportCode(code) {
+    if (!code || typeof code !== 'string') return null;
+    const clean = code.trim().toUpperCase();
+    return /^[A-Z]{3,4}$/.test(clean) ? clean : null;
+  }
+
   function renderCargoFlightList() {
     const listEl = document.getElementById('cargo-flight-list');
     if (!listEl) return;
@@ -17358,12 +17364,6 @@ async function loadDashboard() {
       const dotHtml = f.signalLost 
         ? `<span class="cargo-signal-lost-dot" title="Sinyal Kaybı (Tahmini Konum)"></span>`
         : `<span class="cargo-live-dot" title="Canlı Sinyal"></span>`;
-
-      const formatAirportCode = (code) => {
-        if (!code || typeof code !== 'string') return null;
-        const clean = code.trim().toUpperCase();
-        return /^[A-Z]{3,4}$/.test(clean) ? clean : null;
-      };
 
       const depCode = formatAirportCode(f.dep?.iata) || formatAirportCode(f.dep?.icao) || (f._routeLookupFailed ? '?' : '…');
       const arrCode = formatAirportCode(f.arr?.iata) || formatAirportCode(f.arr?.icao) || (f._routeLookupFailed ? '?' : '…');
@@ -17761,7 +17761,6 @@ async function loadDashboard() {
         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; text-align:center; color:var(--text-3); font-size:12px; gap:8px; padding:20px;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.45; transform:rotate(45deg);"><path d="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
           <div style="font-weight:600; color:var(--text-2);">Uçuş Seçilmedi</div>
-          <div style="font-size:11px; line-height:1.4;">Canlı radar haritasından veya sol listeden bir uçuş seçerek VIP biniş kartını ve kokpit aviyonik telemetrisini görüntüleyin.</div>
         </div>
       `;
       return;
