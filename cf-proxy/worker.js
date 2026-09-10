@@ -142,6 +142,9 @@ const AIRPORT_DB = {
   "LGG": { icao: "EBLG", iata: "LGG", name: "Liège Airport", city: "Liège", lat: 50.637, lon: 5.443 },
   "KCMH": { icao: "KCMH", iata: "CMH", name: "John Glenn Columbus International Airport", city: "Columbus", lat: 39.998, lon: -82.892 },
   "CMH": { icao: "KCMH", iata: "CMH", name: "John Glenn Columbus International Airport", city: "Columbus", lat: 39.998, lon: -82.892 },
+  "KLCK": { icao: "KLCK", iata: "LCK", name: "Rickenbacker International Airport", city: "Columbus", lat: 39.8138, lon: -82.9278 },
+  "LCK": { icao: "KLCK", iata: "LCK", name: "Rickenbacker International Airport", city: "Columbus", lat: 39.8138, lon: -82.9278 },
+  "FRU": { icao: "UCFM", iata: "FRU", name: "Manas International Airport", city: "Bishkek", lat: 43.061, lon: 74.478 },
   "VOMM": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 },
   "MAA": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 },
   "RCTP": { icao: "RCTP", iata: "TPE", name: "Taiwan Taoyuan International Airport", city: "Taipei", lat: 25.080, lon: 121.234 },
@@ -461,8 +464,14 @@ const CARGO_STATIC_ROUTES = {
     { dep: "LTFM", arr: "LEMD" }  // Istanbul -> Madrid
   ],
   "THY6058": [
+    { dep: "KLCK", arr: "LTFM" }, // Columbus (LCK) -> Istanbul
+    { dep: "LTFM", arr: "KLCK" }, // Istanbul -> Columbus (LCK)
     { dep: "GOBD", arr: "LTFM" }, // Dakar -> Istanbul
     { dep: "LTFM", arr: "GOBD" }  // Istanbul -> Dakar
+  ],
+  "THY6034": [
+    { dep: "KIAH", arr: "LTFM" }, // Houston -> Istanbul
+    { dep: "LTFM", arr: "KIAH" }  // Istanbul -> Houston
   ],
   "THY6053": [
     { dep: "LTFM", arr: "SBGR" }, // Istanbul -> São Paulo
@@ -473,6 +482,8 @@ const CARGO_STATIC_ROUTES = {
     { dep: "VABB", arr: "LTFM" }  // Mumbai -> Istanbul
   ],
   "THY6421": [
+    { dep: "LFSB", arr: "GMMN" }, // Basel -> Casablanca
+    { dep: "GMMN", arr: "LFSB" }, // Casablanca -> Basel
     { dep: "LTFM", arr: "LFPG" }, // Istanbul -> Paris
     { dep: "LFPG", arr: "LTFM" }, // Paris -> Istanbul
     { dep: "LFSB", arr: "LTFM" }, // Basel -> Istanbul
@@ -485,6 +496,14 @@ const CARGO_STATIC_ROUTES = {
   "THY6118": [
     { dep: "LTFM", arr: "VOMM" }, // Istanbul -> Chennai (MAA)
     { dep: "VOMM", arr: "LTFM" }  // Chennai -> Istanbul
+  ],
+  "THY6246": [
+    { dep: "LTFM", arr: "RCTP" }, // Istanbul -> Taipei
+    { dep: "RCTP", arr: "LTFM" }  // Taipei -> Istanbul
+  ],
+  "THY6247": [
+    { dep: "RCTP", arr: "LTFM" }, // Taipei -> Istanbul
+    { dep: "LTFM", arr: "RCTP" }  // Istanbul -> Taipei
   ],
   "THY6251": [
     { dep: "RCTP", arr: "LTFM" }, // Taipei -> Istanbul
@@ -605,6 +624,42 @@ const CARGO_STATIC_ROUTES = {
     { dep: "ZHCC", arr: "OOMS" }, // Zhengzhou -> Muscat
     { dep: "LTFM", arr: "OOMS" }, // Istanbul -> Muscat
     { dep: "OOMS", arr: "LTFM" }  // Muscat -> Istanbul
+  ],
+  "THY6576": [
+    { dep: "LTFM", arr: "UCFM" }, // Istanbul -> Bishkek
+    { dep: "UCFM", arr: "LTFM" }  // Bishkek -> Istanbul
+  ],
+  "THY6409": [
+    { dep: "LTFM", arr: "EHAM" }, // Istanbul -> Amsterdam
+    { dep: "EHAM", arr: "LTFM" }  // Amsterdam -> Istanbul
+  ],
+  "THY6140": [
+    { dep: "LTFM", arr: "VOHS" }, // Istanbul -> Hyderabad
+    { dep: "VOHS", arr: "LTFM" }  // Hyderabad -> Istanbul
+  ],
+  "THY6550": [
+    { dep: "LTFM", arr: "EDDF" }, // Istanbul -> Frankfurt
+    { dep: "EDDF", arr: "LTFM" }  // Frankfurt -> Istanbul
+  ],
+  "THY6213": [
+    { dep: "OTHH", arr: "ZGSZ" }, // Doha -> Shenzhen
+    { dep: "ZGSZ", arr: "OTHH" }  // Shenzhen -> Doha
+  ],
+  "THY6283": [
+    { dep: "UBBB", arr: "LTFM" }, // Baku -> Istanbul
+    { dep: "UAII", arr: "LTFM" }  // Shymkent -> Istanbul
+  ],
+  "THY6269": [
+    { dep: "VVNB", arr: "LTFM" }, // Hanoi -> Istanbul
+    { dep: "LTFM", arr: "VVNB" }  // Istanbul -> Hanoi
+  ],
+  "THY6589": [
+    { dep: "ZSPD", arr: "LTFM" }, // Shanghai -> Istanbul
+    { dep: "LTFM", arr: "ZSPD" }  // Istanbul -> Shanghai
+  ],
+  "THY6045": [
+    { dep: "KATL", arr: "LTFM" }, // Atlanta -> Istanbul
+    { dep: "LTFM", arr: "KATL" }  // Istanbul -> Atlanta
   ]
 };
 
@@ -2359,25 +2414,22 @@ export default {
         return { lat: toDeg(Math.atan2(z, Math.sqrt(x * x + y * y))), lon: toDeg(Math.atan2(y, x)) };
       }
 
+      function angleDiff(a, b) {
+        let diff = Math.abs(a - b);
+        if (diff > 180) diff = 360 - diff;
+        return diff;
+      }
+
       function isValidRouteForCallsign(callsign, depIcao, arrIcao) {
         if (!callsign) return true;
-        const uCallsign = callsign.toUpperCase();
         const uDep = depIcao ? depIcao.toUpperCase() : '';
         const uArr = arrIcao ? arrIcao.toUpperCase() : '';
 
         // Havalimanı kodlarının koordinat (42.25N/25.60E vb.) veya geçersiz formatta olmadığını doğrula
         if (uDep && !/^[A-Z]{3,4}$/.test(uDep)) return false;
         if (uArr && !/^[A-Z]{3,4}$/.test(uArr)) return false;
+        if (uDep && uArr && uDep === uArr) return false;
 
-        if (uCallsign === 'THY6058' && uDep !== 'GOBD') {
-          return false;
-        }
-        if (uCallsign === 'THY6261' && uDep === 'VIDP' && uArr === 'VVNB') {
-          return false;
-        }
-        if (uCallsign === 'THY6259' && uDep !== 'VHHH') {
-          return false;
-        }
         return true;
       }
 
@@ -2389,30 +2441,34 @@ export default {
         const dArr = getDistance(f.lat, f.lon, arr.lat, arr.lon);
         const dTotal = getDistance(dep.lat, dep.lon, arr.lat, arr.lon);
         
-        // 1. Geopolitical airspace closure & detour allowance (Allows up to 35% or +600km)
-        const maxAllowed = Math.max(dTotal * 1.35, dTotal + 600);
+        // 1. Jeopolitik kapalı hava sahaları & detour payı (uluslararası kargo koridorları için %40 veya +900km)
+        const maxAllowed = Math.max(dTotal * 1.40, dTotal + 900);
         if (dDep + dArr > maxAllowed) return false;
         
-        // 2. Heading to destination check
-        // Kalkış manevrası (SID / pist yönü) veya iniş yaklaşma paterninde (holding / base leg)
-        // uçağın anlık burnunun dönük olduğu yön (track) varış meydanından farklı olabilir.
-        const isNearDep = dDep <= 50 || (f.altitude != null && f.altitude < 3500 && dDep <= 80);
-        const isNearArr = dArr <= 50;
-        if (f.track != null && !isNearDep && !isNearArr) {
-          const bearing = getBearing(f.lat, f.lon, arr.lat, arr.lon);
-          let diff = Math.abs(f.track - bearing);
-          if (diff > 180) diff = 360 - diff;
-          if (diff > 90) return false;
-        }
-        
-        // 3. Sector check: Plane must approach from the origin side of the destination.
-        // We disable this when close to the destination (dArr <= 50) to allow landing patterns.
-        if (dArr > 50) {
-          const bearingToPlane = getBearing(arr.lat, arr.lon, f.lat, f.lon);
-          const bearingToOrigin = getBearing(arr.lat, arr.lon, dep.lat, dep.lon);
-          let diffSector = Math.abs(bearingToPlane - bearingToOrigin);
-          if (diffSector > 180) diffSector = 360 - diffSector;
-          if (diffSector > 60) return false;
+        // 2. Kalkış / Varış ve Heading (Burnun dönük olduğu yön) doğrulaması
+        if (f.track != null) {
+          const bearingToArr = getBearing(f.lat, f.lon, arr.lat, arr.lon);
+          const diffToArr = angleDiff(f.track, bearingToArr);
+
+          const bearingFromDep = getBearing(dep.lat, dep.lon, f.lat, f.lon);
+          const diffFromDep = angleDiff(f.track, bearingFromDep);
+
+          // Varış meydanına yakınken (dArr <= 180 km / ~100 NM):
+          // Uçak varış meydanına doğru iniş yaklaşmasında olmalıdır; varış meydanından ters yöne KAÇAMAZ!
+          if (dArr <= 180) {
+            if (diffToArr > 110) return false;
+          }
+
+          // Kalkış meydanına yakınken (dDep <= 180 km / ~100 NM):
+          // Yeni kalkan uçak kalkış meydanından uzaklaşıyor olmalıdır; kalkış meydanına geri dönemez!
+          if (dDep <= 180) {
+            if (diffFromDep > 110) return false;
+          }
+
+          // Açık seyir (cruise) fazı: Uçağın yönü varış meydanından 95 dereceden fazla sapamaz
+          if (dDep > 180 && dArr > 180) {
+            if (diffToArr > 95) return false;
+          }
         }
         
         return true;
@@ -2424,20 +2480,6 @@ export default {
         const kvKey = `learned_routes_${uppercaseCallsign}`;
         try {
           let routes = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' }) || [];
-          if (uppercaseCallsign === 'THY6058') {
-            const filtered = routes.filter(r => r.dep && r.dep.icao === 'GOBD');
-            if (filtered.length !== routes.length) {
-              routes = filtered;
-              await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(routes));
-            }
-          }
-          if (uppercaseCallsign === 'THY6259') {
-            const filtered = routes.filter(r => r.dep && r.dep.icao === 'VHHH');
-            if (filtered.length !== routes.length) {
-              routes = filtered;
-              await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(routes));
-            }
-          }
           for (const r of routes) {
             if (r.dep && r.dep.lat != null && r.arr && r.arr.lat != null) {
               const depCode = r.dep.icao || r.dep.iata || '';
@@ -2833,11 +2875,12 @@ export default {
                     }
                   }
                 }
-              }
-              const depDb = AIRPORT_DB[linksIata[0]];
-              const arrDb = AIRPORT_DB[linksIata[1]];
-              if (depDb && arrDb) {
-                return { dep: depDb, arr: arrDb };
+              } else {
+                const depDb = AIRPORT_DB[linksIata[0]];
+                const arrDb = AIRPORT_DB[linksIata[1]];
+                if (depDb && arrDb) {
+                  return { dep: depDb, arr: arrDb };
+                }
               }
             }
 
@@ -2857,11 +2900,12 @@ export default {
                     }
                   }
                 }
-              }
-              const depDb = AIRPORT_DB[linksIcao[0]];
-              const arrDb = AIRPORT_DB[linksIcao[1]];
-              if (depDb && arrDb) {
-                return { dep: depDb, arr: arrDb };
+              } else {
+                const depDb = AIRPORT_DB[linksIcao[0]];
+                const arrDb = AIRPORT_DB[linksIcao[1]];
+                if (depDb && arrDb) {
+                  return { dep: depDb, arr: arrDb };
+                }
               }
             }
           } catch (err) {
