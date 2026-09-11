@@ -3672,12 +3672,32 @@ export default {
             });
           }
 
+          const depLat = parseFloat(urlObj.searchParams.get('dep_lat'));
+          const depLon = parseFloat(urlObj.searchParams.get('dep_lon'));
+          const hasDep = isFinite(depLat) && isFinite(depLon);
+
           const kvKey = `flight_track_${icao24}`;
           if (env.FBX_ROUTES_KV) {
             try {
               const cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
-              if (cached) {
-                return new Response(JSON.stringify(cached), {
+              if (cached && Array.isArray(cached.path)) {
+                let outPath = cached.path;
+                if (hasDep && outPath.length > 2) {
+                  let minDist = Infinity;
+                  let minIdx = 0;
+                  for (let i = 0; i < outPath.length; i++) {
+                    const d = getDistance(outPath[i][1], outPath[i][2], depLat, depLon);
+                    if (d < minDist) {
+                      minDist = d;
+                      minIdx = i;
+                    }
+                  }
+                  const distStartToDep = getDistance(outPath[0][1], outPath[0][2], depLat, depLon);
+                  if (minIdx > 0 && (distStartToDep > minDist + 150 || distStartToDep > 450 || minDist < 650)) {
+                    outPath = outPath.slice(minIdx);
+                  }
+                }
+                return new Response(JSON.stringify({ ...cached, path: outPath }), {
                   status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
                 });
               }
@@ -3752,7 +3772,24 @@ export default {
             try {
               const trackData = JSON.parse(trackRes.body);
               const rawPath = Array.isArray(trackData.path) ? trackData.path : [];
-              const cleanedPath = extractActiveFlightLeg(rawPath);
+              let cleanedPath = extractActiveFlightLeg(rawPath);
+
+              if (hasDep && cleanedPath.length > 2) {
+                let minDist = Infinity;
+                let minIdx = 0;
+                for (let i = 0; i < cleanedPath.length; i++) {
+                  const d = getDistance(cleanedPath[i][1], cleanedPath[i][2], depLat, depLon);
+                  if (d < minDist) {
+                    minDist = d;
+                    minIdx = i;
+                  }
+                }
+                const distStartToDep = getDistance(cleanedPath[0][1], cleanedPath[0][2], depLat, depLon);
+                if (minIdx > 0 && (distStartToDep > minDist + 150 || distStartToDep > 450 || minDist < 650)) {
+                  cleanedPath = cleanedPath.slice(minIdx);
+                }
+              }
+
               const result = {
                 icao24,
                 callsign: (trackData.callsign || '').trim(),
