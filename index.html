@@ -4453,6 +4453,7 @@
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-unemployment"></canvas></div>
           <div class="chart-legend">
+            <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(180,83,9,0.85)"></span>IMF WEO<span class="cl-yr" id="chart-unemployment-yr-imf"></span> ↗</a>
             <a href="https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(245,158,11,0.85)"></span>Dünya Bankası (Resmi Veri)<span class="cl-yr" id="chart-unemployment-yr-wb"></span> ↗</a>
           </div>
         </div>
@@ -4493,6 +4494,7 @@
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-gdp-per-capita"></canvas></div>
           <div class="chart-legend">
+            <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(30,64,175,0.85)"></span>IMF WEO<span class="cl-yr" id="chart-gdp-per-capita-yr-imf"></span> ↗</a>
             <a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(59,130,246,0.85)"></span>Dünya Bankası (Resmi Veri)<span class="cl-yr" id="chart-gdp-per-capita-yr-wb"></span> ↗</a>
           </div>
         </div>
@@ -10537,10 +10539,11 @@ async function fetchEconData() {
   if (_econDataCache) return _econDataCache;
   if (_econDataPromise) return _econDataPromise;
 
-  _econDataPromise = fetchCached('econ_data_cache_v2', async () => {
+  _econDataPromise = fetchCached('econ_data_cache_v3', async () => {
     try {
       const r = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/econ-data', {
-        headers: { 'Accept': 'application/json' }
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store'
       });
       if (r.ok) {
         const j = await r.json();
@@ -14004,7 +14007,7 @@ async function loadDashboard() {
     if (el) el.textContent = txt ? ' ' + txt : '';
   }
 
-  async function updateEconChart(imfIndicator, wbIndicator, selId, chartId, metaId, kind) {
+  async function updateEconChart(imfIndicator, wbIndicator, selId, chartId, metaId, kind, unit = '') {
     const groupKey = document.getElementById(selId).value;
     const countries = WB_GROUPS[groupKey];
     const currentYear = new Date().getFullYear();
@@ -14039,9 +14042,14 @@ async function loadDashboard() {
       const imfVals = dataC.map(c => imfLatestByC[c]?.value ?? null);
       const wbVals  = dataC.map(c => wbLatestByC[c]?.value ?? null);
 
-      // Colors for datasets
-      const imfColor = kind === 'gdp' ? 'rgba(29, 111, 232, 0.85)' : 'rgba(230, 57, 70, 0.85)';
-      const wbColor  = kind === 'gdp' ? 'rgba(16, 185, 129, 0.85)' : 'rgba(245, 158, 11, 0.85)';
+      // Colors for datasets (IMF koyu ton, WB açık ton)
+      const ECON_COLORS = {
+        gdp:    ['rgba(29, 111, 232, 0.85)', 'rgba(16, 185, 129, 0.85)'],
+        cpi:    ['rgba(230, 57, 70, 0.85)',  'rgba(245, 158, 11, 0.85)'],
+        unemp:  ['rgba(180, 83, 9, 0.85)',   'rgba(245, 158, 11, 0.85)'],
+        gdpcap: ['rgba(30, 64, 175, 0.85)',  'rgba(59, 130, 246, 0.85)']
+      };
+      const [imfColor, wbColor] = ECON_COLORS[kind] || ECON_COLORS.gdp;
 
       const imfTag = yearTagTr(imfYear, currentYear);
       const wbTag  = yearTagTr(wbYear, currentYear);
@@ -14074,10 +14082,11 @@ async function loadDashboard() {
       }
 
       // Cache for popover
-      _imfCache[chartId] = { imfSeries: imfData, wbSeries: wbData, dataC, kind, imfIndicator, wbIndicator, imfLatestByC, wbLatestByC, imfYear, wbYear };
+      _imfCache[chartId] = { imfSeries: imfData, wbSeries: wbData, dataC, kind, imfIndicator, wbIndicator, imfLatestByC, wbLatestByC, imfYear, wbYear, unit };
 
       barChart(chartId, dataC.map(c => WB_LABELS[c] || c), null, null, {
         datasets,
+        unit,
         onClick: (itemIdx) => openForecastPopover(chartId, dataC[itemIdx]),
         tooltipFooter: (dsIdx, itemIdx) => {
           const c = dataC[itemIdx];
@@ -14098,7 +14107,7 @@ async function loadDashboard() {
       // Section note update
       const noteEl = document.getElementById('imf-section-note');
       if (noteEl) {
-        noteEl.innerHTML = `ⓘ Karşılaştırmalar tek referans yıl üzerinden yapılır; tüm ülkeler aynı yılı gösterir. <strong>IMF WEO ${imfYear ?? '—'}</strong> (${imfTag}) ve <strong>Dünya Bankası ${wbYear ?? '—'}</strong> (${wbTag}). Takvim yılı ilerlediğinde ilgili yılın verisi yayınlanmışsa grafikler otomatik güncellenir. Çubuklara tıklayarak detaylı yıllık serileri görüntüleyebilirsiniz.`;
+        noteEl.innerHTML = `ⓘ Her grafik tek referans yıl üzerinden karşılaştırılır; tüm ülkeler aynı yılı gösterir. <strong>IMF WEO</strong> içinde bulunulan yılın tahminini, <strong>Dünya Bankası</strong> son gerçekleşen yılı verir — referans yıllar her grafiğin başlığı altında yazılıdır. Takvim yılı ilerlediğinde ilgili yılın verisi yayınlanmışsa grafikler otomatik güncellenir. Çubuklara tıklayarak detaylı yıllık serileri görüntüleyebilirsiniz.`;
       }
     } catch (e) {
       console.error('[Econ chart error]', chartId, e?.message || e);
@@ -14183,7 +14192,7 @@ async function loadDashboard() {
     else if (cache.kind === 'cpi') indicatorLabel = 'TÜFE Enflasyon (%)';
     else if (cache.kind === 'unemp') indicatorLabel = 'İşsizlik Oranı (%)';
     else if (cache.kind === 'ca') indicatorLabel = 'Cari Denge / GSYH (%)';
-    else if (cache.unit === '$') indicatorLabel = 'Kişi Başı Gelir (USD)';
+    else if (cache.kind === 'gdpcap' || cache.unit === '$') indicatorLabel = 'Kişi Başı Gelir (USD)';
     else indicatorLabel = 'Kamu Borcu / GSYH (%)';
 
     const fmtVal = (v) => {
@@ -14263,16 +14272,16 @@ async function loadDashboard() {
   // Event listener bindings & Initial calls for 6 Economic Charts
   document.getElementById('sel-gdp-group')?.addEventListener('change', () => updateEconChart('NGDP_RPCH', 'NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp'));
   document.getElementById('sel-cpi-group')?.addEventListener('change', () => updateEconChart('PCPIPCH',  'FP.CPI.TOTL.ZG',     'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi'));
-  document.getElementById('sel-unemp-group')?.addEventListener('change', () => updateWbSingleChart('SL.UEM.TOTL.ZS', 'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', '%', 'rgba(245,158,11,0.85)'));
+  document.getElementById('sel-unemp-group')?.addEventListener('change', () => updateEconChart('LUR', 'SL.UEM.TOTL.ZS', 'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', 'unemp', '%'));
   document.getElementById('sel-ca-group')?.addEventListener('change', () => updateWbSingleChart('BN.CAB.XOKA.GD.ZS', 'sel-ca-group', 'chart-current-account', 'ca-meta-note', '%', 'rgba(139,92,246,0.85)'));
-  document.getElementById('sel-gdpcap-group')?.addEventListener('change', () => updateWbSingleChart('NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', '$', 'rgba(59,130,246,0.85)'));
+  document.getElementById('sel-gdpcap-group')?.addEventListener('change', () => updateEconChart('NGDPDPC', 'NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', 'gdpcap', '$'));
   document.getElementById('sel-debt-group')?.addEventListener('change', () => updateWbSingleChart('GC.DOD.TOTL.GD.ZS', 'sel-debt-group', 'chart-gov-debt', 'debt-meta-note', '%', 'rgba(239,68,68,0.85)'));
 
   updateEconChart('NGDP_RPCH', 'NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
   updateEconChart('PCPIPCH',  'FP.CPI.TOTL.ZG',     'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
-  updateWbSingleChart('SL.UEM.TOTL.ZS', 'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', '%', 'rgba(245,158,11,0.85)');
+  updateEconChart('LUR', 'SL.UEM.TOTL.ZS', 'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', 'unemp', '%');
   updateWbSingleChart('BN.CAB.XOKA.GD.ZS', 'sel-ca-group', 'chart-current-account', 'ca-meta-note', '%', 'rgba(139,92,246,0.85)');
-  updateWbSingleChart('NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', '$', 'rgba(59,130,246,0.85)');
+  updateEconChart('NGDPDPC', 'NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', 'gdpcap', '$');
   updateWbSingleChart('GC.DOD.TOTL.GD.ZS', 'sel-debt-group', 'chart-gov-debt', 'debt-meta-note', '%', 'rgba(239,68,68,0.85)');
 
   // ── WCI (Drewry) Verisini Çek ───────────────────────────────────

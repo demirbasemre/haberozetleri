@@ -1164,6 +1164,62 @@ const ECON_COUNTRIES = [
   'KOR','IDN','VNM','SGP','IRN'
 ];
 
+// Dünya Bankası sorgularında üst yıl sınırı — takvim yılı ilerledikçe otomatik kayar
+const ECON_MAX_YEAR = () => new Date().getFullYear() + 1;
+
+// IMF DataMapper'dan doğrudan çekilen ek göstergeler (n8n webhook'unda bulunmayanlar)
+// LUR: İşsizlik Oranı (%), NGDPDPC: Kişi Başı GSYH (cari $)
+const IMF_DM_INDICATORS = ['LUR', 'NGDPDPC'];
+
+async function fetchImfDatamapper(indicator, doFetch) {
+  const url = `https://www.imf.org/external/datamapper/api/v1/${indicator}`;
+  let json = null;
+  // NOT: IMF DataMapper (Akamai) tarayıcı taklidi User-Agent'lara 403 veriyor;
+  // sade bir istemci UA'sı ile 200 dönüyor. Ev proxy'si gelen UA'yı upstream'e
+  // aynen ilettiği için aynı başlık proxy dalında da kullanılıyor.
+  const IMF_DM_HEADERS = { 'Accept': 'application/json', 'User-Agent': 'curl/8.7.1' };
+  try {
+    const resp = await fetch(url, {
+      headers: IMF_DM_HEADERS,
+      signal: AbortSignal.timeout(8000),
+      cf: { cacheTtl: 86400, cacheEverything: true }
+    });
+    if (resp.ok) json = await resp.json();
+    else console.warn('[IMF DataMapper] direct HTTP', indicator, resp.status);
+  } catch (err) {
+    console.warn('[IMF DataMapper Warning]', indicator, err.message || err);
+  }
+  if (!json && typeof doFetch === 'function') {
+    try {
+      const res = await doFetch(url, { headers: IMF_DM_HEADERS }, false, 86400);
+      if (res.status === 200 && res.body) {
+        try { json = JSON.parse(res.body); } catch (_) {}
+      } else {
+        console.warn('[IMF DataMapper] proxy HTTP', indicator, res.status);
+      }
+    } catch (err) {
+      console.warn('[IMF DataMapper proxy Warning]', indicator, err.message || err);
+    }
+  }
+  const raw = (json && json.values && json.values[indicator]) || null;
+  if (!raw) return null;
+
+  // Sadece takip edilen ülkeler ve 2015 sonrası yıllar (payload'ı küçült)
+  const IMF_MAP_DM = { WLD: 'WEOWORLD', EMU: 'EURO' };
+  const out = {};
+  ECON_COUNTRIES.forEach(c => {
+    const series = raw[IMF_MAP_DM[c] || c];
+    if (!series) return;
+    const trimmed = {};
+    Object.keys(series).forEach(y => {
+      const n = Number(y);
+      if (n >= 2015 && series[y] != null) trimmed[y] = Number(series[y]);
+    });
+    if (Object.keys(trimmed).length) out[c] = trimmed;
+  });
+  return Object.keys(out).length ? out : null;
+}
+
 const WB_INDICATORS = [
   'NY.GDP.MKTP.KD.ZG',   // GDP Büyümesi (%)
   'FP.CPI.TOTL.ZG',      // Enflasyon / TÜFE (%)
@@ -1245,7 +1301,7 @@ async function fetchAndCombineEconData(env, previousCache, doFetch) {
     // Tüm batch'leri paralel çek (doFetch varsa ev proxy'si, yoksa direkt CF)
     await Promise.all(WB_QUERY_BATCHES.map(async batch => {
       const mapped = batch.map(c => WB_MAP[c] || c);
-      const url = `${WB_BASE}/${mapped.join(';')}/indicator/${indicator}?format=json&per_page=1000&date=2015:2026`;
+      const url = `${WB_BASE}/${mapped.join(';')}/indicator/${indicator}?format=json&per_page=1000&date=2015:${ECON_MAX_YEAR()}`;
       try {
         let d = null;
         if (typeof doFetch === 'function') {
@@ -1331,7 +1387,7 @@ async function fetchAndCombineEconData(env, previousCache, doFetch) {
   const inverseImf = {};
   ECON_COUNTRIES.forEach(c => { const m = IMF_MAP[c] || c; inverseImf[m] = c; });
 
-  let imfOut = { NGDP_RPCH: {}, PCPIPCH: {}, GGXWDG_NGDP: {} };
+  let imfOut = { NGDP_RPCH: {}, PCPIPCH: {}, GGXWDG_NGDP: {}, LUR: {}, NGDPDPC: {} };
   if (imfRaw) {
     ['NGDP_RPCH', 'PCPIPCH', 'GGXWDG_NGDP'].forEach(ind => {
       const seriesObj = imfRaw[ind] || {};
@@ -1342,8 +1398,18 @@ async function fetchAndCombineEconData(env, previousCache, doFetch) {
       });
     });
   } else if (previousCache && previousCache.imf) {
-    imfOut = previousCache.imf;
+    imfOut = { ...previousCache.imf };
   }
+
+  // IMF DataMapper: işsizlik (LUR) ve kişi başı gelir (NGDPDPC) tahmin serileri
+  const dmResults = await Promise.all(
+    IMF_DM_INDICATORS.map(ind => fetchImfDatamapper(ind, doFetch))
+  );
+  IMF_DM_INDICATORS.forEach((ind, i) => {
+    if (dmResults[i]) imfOut[ind] = dmResults[i];
+    else if (previousCache?.imf?.[ind]) imfOut[ind] = previousCache.imf[ind];
+    else if (!imfOut[ind]) imfOut[ind] = {};
+  });
 
   // Dünya Bankası verisi bulunmayan ülkeler için (özellikle Orta Doğu, Almanya, Fransa, Japonya, Çin)
   // resmi IMF WEO Genel Yönetim Brüt Borcu (% GSYH) verisini tamamlayıcı olarak kullan
@@ -1440,7 +1506,7 @@ export default {
 
     // ── /econ-data Özel Rotası (IMF WEO & Dünya Bankası Önbelleği) ──
     if (urlObj.pathname === '/econ-data') {
-      const kvKey = 'econ_data_cache_v1';
+      const kvKey = 'econ_data_cache_v2';
       const forceRefresh = urlObj.searchParams.get('refresh') === '1';
 
       let cached = null;
