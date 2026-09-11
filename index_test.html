@@ -4414,6 +4414,7 @@
             <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(29,111,232,0.85)"></span>IMF WEO<span class="cl-yr" id="chart-gdp-yr-imf"></span> ↗</a>
             <a href="https://www.worldbank.org/en/publication/global-economic-prospects" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(16,185,129,0.85)"></span>Dünya Bankası GEP<span class="cl-yr" id="chart-gdp-yr-wb"></span> ↗</a>
           </div>
+          <div class="dash-chart-note" id="chart-gdp-note" hidden></div>
         </div>
         <div class="dash-chart-card" id="dc-cpi-chart">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -4435,6 +4436,7 @@
             <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(230,57,70,0.85)"></span>IMF WEO<span class="cl-yr" id="chart-cpi-yr-imf"></span> ↗</a>
             <a href="https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(245,158,11,0.85)"></span>Dünya Bankası<span class="cl-yr" id="chart-cpi-yr-wb"></span> ↗</a>
           </div>
+          <div class="dash-chart-note" id="chart-cpi-note" hidden></div>
         </div>
         <div class="dash-chart-card" id="dc-unemp-chart">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -4456,6 +4458,7 @@
             <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(180,83,9,0.85)"></span>IMF WEO<span class="cl-yr" id="chart-unemployment-yr-imf"></span> ↗</a>
             <a href="https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(245,158,11,0.85)"></span>Dünya Bankası (Resmi Veri)<span class="cl-yr" id="chart-unemployment-yr-wb"></span> ↗</a>
           </div>
+          <div class="dash-chart-note" id="chart-unemployment-note" hidden></div>
         </div>
         <div class="dash-chart-card" id="dc-ca-chart">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -4497,6 +4500,7 @@
             <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(30,64,175,0.85)"></span>IMF WEO<span class="cl-yr" id="chart-gdp-per-capita-yr-imf"></span> ↗</a>
             <a href="https://data.worldbank.org/indicator/NY.GDP.PCAP.CD" target="_blank" rel="noopener" class="cl-item" style="color:inherit; text-decoration:none;"><span class="cl-dot" style="background:rgba(59,130,246,0.85)"></span>Dünya Bankası (Resmi Veri)<span class="cl-yr" id="chart-gdp-per-capita-yr-wb"></span> ↗</a>
           </div>
+          <div class="dash-chart-note" id="chart-gdp-per-capita-note" hidden></div>
         </div>
         <div class="dash-chart-card" id="dc-debt-chart">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -14100,10 +14104,21 @@ async function loadDashboard() {
       });
 
       // Metadata note update
-      const missingCount = dataC.filter(c => !imfLatestByC[c]).length + dataC.filter(c => !wbLatestByC[c]).length;
       document.getElementById(metaId).textContent =
-        `Referans yıl — IMF WEO: ${imfYear ?? '—'}${imfYear ? ` (${imfTag})` : ''} · Dünya Bankası: ${wbYear ?? '—'}${wbYear ? ` (${wbTag})` : ''}` +
-        (missingCount ? ` · ${missingCount} seride o yıl verisi yok` : '');
+        `Referans yıl — IMF WEO: ${imfYear ?? '—'}${imfYear ? ` (${imfTag})` : ''} · Dünya Bankası: ${wbYear ?? '—'}${wbYear ? ` (${wbTag})` : ''}`;
+
+      // Eksik seri açıklaması — grafiğin hemen altında
+      const chartNoteEl = document.getElementById(`${chartId}-note`);
+      if (chartNoteEl) {
+        const nameOf = c => WB_LABELS[c] || c;
+        const imfMissing = dataC.filter(c => !imfLatestByC[c]).map(nameOf);
+        const wbMissing  = dataC.filter(c => !wbLatestByC[c]).map(nameOf);
+        const parts = [];
+        if (imfMissing.length) parts.push(`IMF WEO bu göstergede <strong>${imfMissing.join(', ')}</strong> için tahmin yayınlamıyor; bu satırlarda yalnızca Dünya Bankası verisi gösterilir.`);
+        if (wbMissing.length)  parts.push(`Dünya Bankası <strong>${wbMissing.join(', ')}</strong> için ${wbYear ?? '—'} verisi yayınlamadı; bu satırlarda yalnızca IMF WEO verisi gösterilir.`);
+        chartNoteEl.innerHTML = parts.length ? 'ⓘ ' + parts.join(' ') : '';
+        chartNoteEl.hidden = !parts.length;
+      }
 
       // Section note update
       const noteEl = document.getElementById('imf-section-note');
