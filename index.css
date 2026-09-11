@@ -3195,6 +3195,9 @@
     display: flex; align-items: center; gap: 5px;
     font-size: 10.5px; color: var(--text-2); font-weight: 500;
   }
+  .chart-legend .cl-yr {
+    color: var(--text-3); font-weight: 500; font-variant-numeric: tabular-nums;
+  }
   .chart-legend .cl-dot {
     display: inline-block; width: 9px; height: 9px;
     border-radius: 3px; flex-shrink: 0;
