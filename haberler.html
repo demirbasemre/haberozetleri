@@ -6839,9 +6839,18 @@ function updateStats(filteredArticles, totalCount) {
       return `${sep}<span class="stat-reg"${subDetail ? ` title="${subDetail}"` : ''}>${TK_SHORT[tk.id]} <b>${tkCounts[tk.id]}</b></span>`;
     }).join('');
 
-  const metricsCount = (typeof SEARCHABLE_METRICS !== 'undefined') ? SEARCHABLE_METRICS.length : 22;
+  el.innerHTML = `${line1}${analysisCount ? ` · <b>${analysisCount}</b> analiz` : ''} içinde ara`;
+}
 
-  el.innerHTML = `${line1}${analysisCount ? ` · <b>${analysisCount}</b> analiz` : ''} · <b>${metricsCount}</b> metrik içinde ara`;
+function updateCustomerHeaderStats(filteredList) {
+  const el = document.getElementById('header-stats');
+  if (!el) return;
+  const total = _custArticlesRaw.length;
+  const filtered = filteredList.length;
+  const line = filtered < total
+    ? `<b>${filtered}</b>/<b>${total}</b> müşteri gündemi`
+    : `<b>${total}</b> müşteri gündemi`;
+  el.innerHTML = `${line} içinde ara`;
 }
 
 const CAT_SHORT = {
@@ -9208,6 +9217,12 @@ function switchTab(tab) {
   if (el.todoBtn) el.todoBtn.style.display = isTodo ? '' : 'none';
   // Reflect active tab on <body> for cross-cutting CSS (e.g. stats pill highlight)
   document.body.setAttribute('data-active-tab', tab);
+  // Arama çerçevesindeki istatistik metnini aktif sekmeye göre güncelle
+  if (isNews && typeof allArticles !== 'undefined') {
+    updateStats(getFilteredArticles(), allArticles.length);
+  } else if (isCustNews && Array.isArray(_custArticlesRaw)) {
+    filterAndRenderCustomerNews();
+  }
   if (!isNews) {
     const aiPanel = document.getElementById('ai-panel');
     if (aiPanel && aiPanel.classList.contains('open')) {
@@ -9761,6 +9776,9 @@ function filterAndRenderCustomerNews() {
   const isFiltered = _custFilterCat !== 'all' || _custFilterSource !== 'all' || activeCustDateYear || activeCustDateMonth || activeCustDateDay;
   if (clearBtn) clearBtn.style.display = isFiltered ? 'inline-flex' : 'none';
 
+  if (document.body.getAttribute('data-active-tab') === 'customer-news') {
+    updateCustomerHeaderStats(list);
+  }
   renderCustomerCards(list);
 }
 
