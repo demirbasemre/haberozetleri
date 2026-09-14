@@ -3,11 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Hava Kargo Bülteni</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg transform='rotate(15, 12, 12)'%3E%3Cpath fill='%23e30613' d='M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Lato:wght@400;700;900&family=DM+Sans:wght@400;500;700&family=Manrope:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 <!-- FOUC prevention — apply saved prefs to <html> before render -->
 <script>
 (function() {
@@ -2167,6 +2172,193 @@
     white-space: nowrap;
   }
   @media (max-width: 600px) { .cs-hint { display: none; } }
+
+      /* Cargo Flight Ticket & Route Visual Styles */
+      .cargo-flight-item {
+        padding: 10px 12px;
+        border: 1px solid var(--border-soft);
+        background: var(--surface);
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        border-left: 3px solid transparent;
+      }
+      .cargo-flight-item:hover {
+        border-color: var(--border);
+        background: var(--bg);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+      .cargo-flight-item.selected {
+        background: var(--bg);
+        border-color: var(--border);
+        border-left-color: var(--accent);
+        box-shadow: var(--shadow-sm);
+      }
+      .cargo-live-dot {
+        width: 7px;
+        height: 7px;
+        background: #10B981;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        animation: cargoLivePulse 2s infinite;
+      }
+      .cargo-signal-lost-dot {
+        width: 7px;
+        height: 7px;
+        background: #9CA3AF;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.25);
+      }
+      @keyframes cargoLivePulse {
+        0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.4); }
+        70% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+        100% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0); }
+      }
+      
+      /* Premium Ticket Styles */
+      .ticket-container {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px 14px;
+        margin-bottom: 14px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.06), var(--shadow-sm);
+        transition: all 0.2s ease;
+      }
+      .ticket-cutout-left, .ticket-cutout-right {
+        position: absolute;
+        top: 68px;
+        width: 14px;
+        height: 14px;
+        background: var(--bg);
+        border-radius: 50%;
+        z-index: 2;
+      }
+      .ticket-cutout-left {
+        left: -8px;
+        border-right: 1px solid var(--border);
+      }
+      .ticket-cutout-right {
+        right: -8px;
+        border-left: 1px solid var(--border);
+      }
+      .ticket-header-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .ticket-airport-block {
+        display: flex;
+        flex-direction: column;
+      }
+      .ticket-airport-code {
+        font-family: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        line-height: 1;
+      }
+      .ticket-airport-time {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--red);
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+      }
+      .ticket-airport-city {
+        font-size: 10.5px;
+        color: var(--text-2);
+        margin-top: 2px;
+        font-weight: 500;
+        max-width: 85px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ticket-route-graphic {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        padding: 0 4px;
+        margin: 0 2px;
+      }
+      .ticket-route-svg-wrap {
+        width: 100%;
+        height: 38px;
+        position: relative;
+      }
+      .ticket-route-svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .ticket-badge-pill {
+        font-size: 9.5px;
+        font-weight: 700;
+        color: var(--red);
+        background: color-mix(in srgb, var(--red) 10%, transparent);
+        border: 1px solid color-mix(in srgb, var(--red) 22%, transparent);
+        border-radius: 12px;
+        padding: 1.5px 7px;
+        letter-spacing: 0.02em;
+        margin-top: -2px;
+        white-space: nowrap;
+      }
+      .ticket-perforation {
+        position: relative;
+        border-top: 1px dashed var(--border-soft);
+        margin: 14px 0 12px;
+      }
+      .ticket-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px 12px;
+      }
+      .ticket-grid-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .ticket-label {
+        font-size: 9px;
+        color: var(--text-3);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 700;
+      }
+      .ticket-val {
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--text);
+        margin-top: 2px;
+      }
+      .ticket-type-badge {
+        display: inline-block;
+        font-size: 9.5px;
+        font-weight: 800;
+        color: var(--red);
+        background: color-mix(in srgb, var(--red) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--red) 25%, transparent);
+        border-radius: 5px;
+        padding: 2px 7px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
 </style>
 <script>
   (function() {
@@ -2401,7 +2593,7 @@
     <button class="main-tab main-tab-active" id="tab-news-btn" onclick="switchTab('news')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
       Haberler
-      <span class="news-stats-pill" id="news-stats-pill" role="button" tabindex="0" aria-label="Haber istatistiklerini aç" title="Haber istatistikleri">
+      <span class="news-stats-pill" id="news-stats-pill" role="button" tabindex="0" aria-label="Haber istatistiklerini aç" title="Haber istatistikleri" style="display:none !important">
         <svg class="nsp-bars" viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
           <rect x="0.5"  y="7"   width="2.5" height="4.5"  rx="0.6"/>
           <rect x="4.75" y="4"   width="2.5" height="7.5"  rx="0.6"/>
@@ -2410,7 +2602,7 @@
         <span class="nsp-i" aria-hidden="true">i</span>
       </span>
     </button>
-    <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')" style="display:none">
+    <button class="main-tab" id="tab-reports-btn" onclick="switchTab('reports')">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       Raporlar
     </button>
@@ -2632,17 +2824,20 @@
     <div id="reports-filter-content" style="display:none; justify-content: space-between; align-items: center; width: 100%;">
       <div style="display:flex;gap:8px;align-items:center;">
         <button class="fdd-btn fdd-btn--active report-type-pill" data-report-type="arz_talep_navlun" id="report-pill-arz">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           Arz &amp; Talep &amp; Navlun Analizi
         </button>
         <button class="fdd-btn report-type-pill" data-report-type="iata_market_analizi" id="report-pill-iata">
-          IATA Hava Kargo Analizi <span style="display:inline-flex;align-items:center;gap:3px;font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:2px 7px;border-radius:20px;vertical-align:middle;box-shadow:0 1px 6px rgba(16,185,129,.4)">✦ Yeni</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-2.9 2.9-2.9-2.9"/><path d="M9 12h6"/><path d="m16.2 16.2-2.9-2.9-2.9 2.9"/></svg>
+          IATA Hava Kargo Analizi
         </button>
         <button class="fdd-btn report-type-pill" data-report-type="finansal" id="report-pill-finansal">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           Finansal Tablolar
         </button>
         <button class="fdd-btn report-type-pill" data-report-type="filo" id="report-pill-filo">
-          Filo <span style="font-size:9px;font-weight:700;background:#F59E0B;color:#fff;padding:1px 5px;border-radius:4px;vertical-align:middle;letter-spacing:0.03em">TEST</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+          Filo <span style="display:inline-flex;align-items:center;gap:3px;font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;background:linear-gradient(135deg,#10B981,#059669);color:#fff;padding:2px 7px;border-radius:20px;vertical-align:middle;box-shadow:0 1px 6px rgba(16,185,129,.4)">✦ Yeni</span>
         </button>
       </div>
     </div>
@@ -2900,6 +3095,26 @@
             <div id="dc-fbx-date" class="dash-card-date-badge"></div>
           </div>
         </div>
+        
+        <div class="dash-card dash-card-clickable" id="dc-cargo" onclick="openCargoFlightsModal()">
+          <div class="dash-card-timer" id="dc-cargo-timer">
+            <span class="timer-dot"></span>
+            <span class="timer-secs">60s</span>
+          </div>
+          <div class="dash-card-header-row">
+            <div class="dash-card-label dash-card-label--wrap">Havadaki Kargo Uçağı Sayısı <span class="dash-card-test-badge">Test</span></div>
+          </div>
+          <div class="dash-card-value skeleton">&nbsp;</div>
+          <div class="dash-card-change"></div>
+          <div class="dash-card-sub">Turkish Cargo</div>
+          <div class="dash-card-footer">
+            <div class="dash-card-note">OpenSky Network · <a href="https://opensky-network.org" target="_blank" rel="noopener">opensky-network.org →</a></div>
+          </div>
+          <div class="dc-date-footer">
+            <div id="dc-cargo-date" class="dash-card-date-badge"></div>
+          </div>
+        </div>
+
         <div class="dash-card dash-card-clickable" id="dc-licargo" onclick="openLinkedinChartModal()">
           <div class="dash-card-timer" id="dc-licargo-timer">
             <span class="timer-dot"></span>Haftalık
@@ -2946,7 +3161,7 @@
 
     <!-- Ekonomik göstergeler -->
     <section class="dash-section" id="dash-sec-ekonomi">
-      <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">IMF WEO</span></h2>
+      <h2 class="dash-section-title">Büyüme ve Enflasyon <span class="dash-section-badge">IMF WEO & Dünya Bankası</span></h2>
       <div class="dash-charts">
         <div class="dash-chart-card" id="dc-gdp-chart">
           <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -2965,8 +3180,8 @@
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-gdp"></canvas></div>
           <div class="chart-legend">
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(29,111,232,0.72)"></span>Büyüme</span>
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.72)"></span>Küçülme</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(29,111,232,0.85)"></span>IMF WEO<span class="cl-yr" id="chart-gdp-yr-imf"></span></span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(16,185,129,0.85)"></span>Dünya Bankası<span class="cl-yr" id="chart-gdp-yr-wb"></span></span>
             <span class="cl-item" id="gdp-legend-forecast" style="display:none"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
           </div>
         </div>
@@ -2987,14 +3202,93 @@
           </div>
           <div class="dash-chart-wrap short loading"><canvas id="chart-cpi"></canvas></div>
           <div class="chart-legend">
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(5,150,105,0.72)"></span>≤ %3 Düşük</span>
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(234,88,12,0.72)"></span>%3–%6 Orta</span>
-            <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.72)"></span>> %6 Yüksek</span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(230,57,70,0.85)"></span>IMF WEO<span class="cl-yr" id="chart-cpi-yr-imf"></span></span>
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(245,158,11,0.85)"></span>Dünya Bankası<span class="cl-yr" id="chart-cpi-yr-wb"></span></span>
             <span class="cl-item" id="cpi-legend-forecast" style="display:none"><span class="cl-dot cl-dot-forecast"></span>Tahmin / Öngörü</span>
           </div>
         </div>
+        <div class="dash-chart-card" id="dc-unemp-chart">
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            İşsizlik Oranı (%)
+            <select id="sel-unemp-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
+          <div class="dash-chart-meta">
+            <span id="unemp-meta-note">Yükleniyor…</span>
+          </div>
+          <div class="dash-chart-wrap short loading"><canvas id="chart-unemployment"></canvas></div>
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(245,158,11,0.85)"></span>Dünya Bankası (Resmi Veri)<span class="cl-yr" id="chart-unemployment-yr-wb"></span></span>
+          </div>
+        </div>
+        <div class="dash-chart-card" id="dc-ca-chart">
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            Cari Denge / GSYH (%)
+            <select id="sel-ca-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
+          <div class="dash-chart-meta">
+            <span id="ca-meta-note">Yükleniyor…</span>
+          </div>
+          <div class="dash-chart-wrap short loading"><canvas id="chart-current-account"></canvas></div>
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(139,92,246,0.85)"></span>Dünya Bankası (Resmi Veri)<span class="cl-yr" id="chart-current-account-yr-wb"></span></span>
+          </div>
+        </div>
+        <div class="dash-chart-card" id="dc-gdpcap-chart">
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            Kişi Başı Gelir ($ USD)
+            <select id="sel-gdpcap-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
+          <div class="dash-chart-meta">
+            <span id="gdpcap-meta-note">Yükleniyor…</span>
+          </div>
+          <div class="dash-chart-wrap short loading"><canvas id="chart-gdp-per-capita"></canvas></div>
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(59,130,246,0.85)"></span>Dünya Bankası (Resmi Veri)<span class="cl-yr" id="chart-gdp-per-capita-yr-wb"></span></span>
+          </div>
+        </div>
+        <div class="dash-chart-card" id="dc-debt-chart">
+          <div class="dash-chart-title" style="display:flex; justify-content:space-between; align-items:center;">
+            Kamu Borcu / GSYH (%)
+            <select id="sel-debt-group" style="font-size:11px; padding:2px 4px; border-radius:4px; border:1px solid var(--border); background:var(--surface); color:var(--text); cursor:pointer;">
+              <option value="default">Varsayılan</option>
+              <option value="g7">G7 Ülkeleri</option>
+              <option value="brics">BRICS</option>
+              <option value="europe">Avrupa</option>
+              <option value="middle_east">Orta Doğu</option>
+              <option value="asia">Asya</option>
+            </select>
+          </div>
+          <div class="dash-chart-meta">
+            <span id="debt-meta-note">Yükleniyor…</span>
+          </div>
+          <div class="dash-chart-wrap short loading"><canvas id="chart-gov-debt"></canvas></div>
+          <div class="chart-legend">
+            <span class="cl-item"><span class="cl-dot" style="background:rgba(239,68,68,0.85)"></span>Dünya Bankası (Resmi Veri)<span class="cl-yr" id="chart-gov-debt-yr-wb"></span></span>
+          </div>
+        </div>
       </div>
-      <div class="dash-section-note" id="imf-section-note">ⓘ IMF World Economic Outlook verileri yükleniyor… Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a></div>
+      <div class="dash-section-note" id="imf-section-note">ⓘ IMF WEO ve Dünya Bankası verileri yükleniyor… Kaynaklar: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a> & <a href="https://data.worldbank.org/" target="_blank" rel="noopener">data.worldbank.org</a></div>
     </section>
 
     <!-- Takip gereken endeksler -->
@@ -3660,7 +3954,7 @@
             <span class="rhome-icon rhome-icon--iata" style="background-color:rgba(122,100,168,0.1);color:#7a64a8">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16.2 7.8-2.9 2.9-2.9-2.9"/><path d="M9 12h6"/><path d="m16.2 16.2-2.9-2.9-2.9 2.9"/></svg>
             </span>
-            <span class="rhome-title">IATA Hava Kargo Market Analizi <span class="rhome-badge rhome-badge--new">Yeni</span></span>
+            <span class="rhome-title">IATA Hava Kargo Market Analizi</span>
           </div>
           <p class="rhome-desc">Küresel kargo ton-kilometre (CTK) talebi, mevcut kapasite (ACTK), yük faktörleri ve spot navlun fiyatlarındaki aylık değişimler ve bölgesel analizler.</p>
           <span class="rhome-meta" id="rhome-iata-meta">Yükleniyor...</span>
@@ -3703,7 +3997,7 @@
             <span class="rhome-icon rhome-icon--filo">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
             </span>
-            <span class="rhome-title">Filo <span class="rhome-badge">TEST</span></span>
+            <span class="rhome-title">Filo <span class="rhome-badge rhome-badge--new">Yeni</span></span>
           </div>
           <p class="rhome-desc">Havayollarının filo büyüklüğü ve gelişimi — iki bağımsız kaynaktan karşılaştırmalı grafikler, gövde tipi kırılımı ve sipariş verileri.</p>
           <span class="rhome-meta">Kaynak 1 &amp; Kaynak 2 karşılaştırması</span>
@@ -4420,14 +4714,16 @@
 
 <script>
 async function fetchCached(key, fetchFn, ttlMs, shouldCacheFn) {
+  let lastGood = null;
   try {
     const cached = localStorage.getItem(key);
     if (cached) {
       const { timestamp, data } = JSON.parse(cached);
-      const isFresh = Date.now() - timestamp < ttlMs;
       const isValid = typeof shouldCacheFn !== 'function' || shouldCacheFn(data);
-      if (isFresh && isValid) {
-        return data;
+      if (isValid) {
+        lastGood = data;
+        const isFresh = Date.now() - timestamp < ttlMs;
+        if (isFresh) return data;
       }
     }
   } catch (e) {
@@ -4440,7 +4736,11 @@ async function fetchCached(key, fetchFn, ttlMs, shouldCacheFn) {
     } catch (e) {
       console.warn('Cache write error for ' + key + ':', e);
     }
+    return data;
   }
+  // Canlı veri geçersiz/başarısız: elimizde önceden doğrulanmış gerçek veri varsa
+  // onu koru (fake/statik yedek yerine son bilinen gerçek veriyi göster)
+  if (lastGood !== null) return lastGood;
   return data;
 }
 
@@ -4456,10 +4756,7 @@ function hasAnalysis(a) {
   if (!a) return false;
   const imp = a.impact || a.thyImpact;
   const ana = a.analysis || a.thyAnalysis;
-  const ger = a.etkiAlaniGerekce;
-  return (imp && imp !== 'notr') || 
-         (ana && String(ana).trim() !== '') || 
-         (ger && String(ger).trim() !== '');
+  return !!(imp && imp !== 'notr' && ana && String(ana).trim() !== '');
 }
 
 
@@ -5467,7 +5764,7 @@ function buildCardHTML(article) {
         ${etkiHtml}
         <div class="card-spacer"></div>
         ${hasAnalysis ? `
-          <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(analysisVal||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
+          <button class="analysis-toggle" onclick="openAnalysisDrawer(this)" data-analysis="${(analysisVal||'').replace(/"/g,'&quot;')}" data-used-web-search="${article.usedWebSearch ? '1' : ''}" data-web-search-details="${(article.webSearchDetails||'').replace(/"/g,'&quot;')}" data-web-search-source="${(article.webSearchSource||'').replace(/"/g,'&quot;')}" aria-label="Analizi göster">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 3v18h18"/>
               <path d="M7 14l4-4 3 3 5-6"/>
@@ -6959,17 +7256,22 @@ function navigateToMetric(item) {
   }, 120);
 }
 
-// Arama kutusunun genişliğini alttaki sekme grubuyla (Haberler/Raporlar/Dashboard) hizalar
+// Arama kutusunun genişliğini alttaki sekme grubuyla (Haberler/Raporlar/Dashboard) hizalar,
+// ama içindeki istatistik metnini (#header-stats) asla kısacak kadar daraltmaz.
 (function syncSearchWidthToTabs() {
   const tabs = document.querySelector('.main-tabs');
+  const stats = document.getElementById('header-stats');
   if (!tabs) return;
   const sync = () => {
-    const w = tabs.getBoundingClientRect().width;
+    const tabsWidth = tabs.getBoundingClientRect().width;
+    const statsWidth = stats ? (34 + stats.scrollWidth + 16) : 0;
+    const w = Math.max(tabsWidth, statsWidth);
     if (w > 0) document.documentElement.style.setProperty('--tabs-width', w + 'px');
   };
   sync();
   if (window.ResizeObserver) {
     new ResizeObserver(sync).observe(tabs);
+    if (stats) new ResizeObserver(sync).observe(stats);
   } else {
     window.addEventListener('resize', sync);
   }
@@ -7069,11 +7371,11 @@ document.addEventListener('click', e => {
 buildRegionDropdown();
 
 // Load data
-const DATA_URL = 'data.json';
-const CUSTOM_ENTITIES_URL = './custom_entities.json';
+const DATA_URL = 'data.json?t=' + Date.now();
+const CUSTOM_ENTITIES_URL = './custom_entities.json?t=' + Date.now();
 
 function loadCustomEntities() {
-  return fetch(CUSTOM_ENTITIES_URL)
+  return fetch(CUSTOM_ENTITIES_URL, { cache: 'no-store' })
     .then(r => r.ok ? r.json() : null)
     .catch(() => null)
     .then(entities => {
@@ -7100,8 +7402,8 @@ window.mainDataPromise = Promise.all([
     let lastErr;
     for (let attempt = 0; attempt < 5; attempt++) {
       try {
-        const url = attempt === 0 ? DATA_URL : ('data.json?retry=' + attempt);
-        const r = await fetch(url);
+        const url = 'data.json?t=' + Date.now() + (attempt > 0 ? ('&retry=' + attempt) : '');
+        const r = await fetch(url, { cache: 'no-store' });
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return await r.json();
       } catch (e) {
@@ -7265,7 +7567,20 @@ function toggleExtraSources(btn) {
 
 function openAnalysisDrawer(btn) {
   const text = btn.getAttribute('data-analysis') || '';
-  document.getElementById('analysisDrawerBody').innerHTML = text;
+  const usedWebSearch = btn.getAttribute('data-used-web-search') === '1';
+  const webSearchDetails = btn.getAttribute('data-web-search-details') || '';
+  let html = text;
+  if (usedWebSearch && webSearchDetails.trim()) {
+    const srcRaw = (btn.getAttribute('data-web-search-source') || '').trim();
+    const srcUrl = srcRaw ? (/^https?:\/\//i.test(srcRaw) ? srcRaw : 'https://' + srcRaw) : '';
+    const srcDisp = srcRaw ? srcRaw.replace(/^https?:\/\/(www\.)?/i, '').split('/')[0] : '';
+    html += `
+      <div class="web-search-box">
+        <span class="web-search-label">🔎 Canlı Web Araması</span>${webSearchDetails}
+        ${srcRaw ? `<span class="web-search-source">(Kaynak: <a href="${srcUrl}" target="_blank" rel="noopener">${srcDisp}</a>)</span>` : ''}
+      </div>`;
+  }
+  document.getElementById('analysisDrawerBody').innerHTML = html;
   document.getElementById('analysisDrawer').classList.add('open');
   document.getElementById('analysisBd').classList.add('open');
   document.getElementById('analysisDrawer').focus();
@@ -8007,8 +8322,8 @@ async function fredFetch(seriesId, limit) {
   return fetchCached(cacheKey, async () => {
     // n8n server-side proxy routed via Cloudflare Workers
     const n8nUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
-    const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}`;
-    const res = await fetch(proxyUrl);
+    const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}&_t=${Date.now()}`;
+    const res = await fetch(proxyUrl, { cache: 'no-store' });
     if (!res.ok) throw new Error('FRED proxy via CF ' + res.status);
     const d = await res.json();
     if (d.error_message) throw new Error(d.error_message);
@@ -8034,9 +8349,69 @@ async function wbFetch(indicator, countries) {
   return results;
 }
 
+// Multi-country, multi-year World Bank series. Returns { CODE: { year: value, ... } }
+async function wbSeriesFetch(indicator, countries) {
+  const WB_MAP = { EMU: 'EMU', WLD: 'WLD' };
+  const mapped = countries.map(c => WB_MAP[c] || c);
+  const cacheKey = `wb_series_v4_${indicator}_${mapped.join('_')}`;
+
+  return fetchCached(cacheKey, async () => {
+    let d = null;
+    const url = `${WB_BASE}/${mapped.join(';')}/indicator/${indicator}?format=json&per_page=1000&date=2015:2026`;
+    try {
+      const r = await fetch(url);
+      if (r.ok) d = await r.json();
+    } catch (err) {
+      console.warn('[WB direct fetch failed]', indicator, err);
+    }
+
+    const out = {};
+
+    if (d && d[1] && d[1].length) {
+      const rows = d[1];
+      rows.forEach(x => {
+        if (!x || x.value === null || x.value === undefined) return;
+        const code = x.countryiso3code || x.country?.id;
+        const yr = x.date;
+        if (!code || !yr) return;
+        const stdCode = countries.find(c =>
+          c === code ||
+          (c === 'EMU' && (code === 'EMU' || code === 'EUU' || code === 'XC')) ||
+          (c === 'WLD' && (code === 'WLD' || code === '1W'))
+        ) || code;
+        if (!out[stdCode]) out[stdCode] = {};
+        out[stdCode][yr] = Number(x.value);
+      });
+    }
+
+    // Fallback: missing countries try individual fetch
+    const missing = countries.filter(c => !out[c] || !Object.keys(out[c]).length);
+    if (missing.length) {
+      await Promise.all(missing.map(async c => {
+        try {
+          const cUrl = `${WB_BASE}/${c}/indicator/${indicator}?format=json&mrv=10&per_page=50`;
+          const r = await fetch(cUrl);
+          if (!r.ok) return;
+          const res = await r.json();
+          const rows = res[1] || [];
+          rows.forEach(x => {
+            if (!x || x.value === null || x.value === undefined) return;
+            const yr = x.date;
+            if (!yr) return;
+            if (!out[c]) out[c] = {};
+            out[c][yr] = Number(x.value);
+          });
+        } catch (_) {}
+      }));
+    }
+
+    return out;
+  }, 24 * 60 * 60 * 1000, data => data && Object.keys(data).length > 0);
+}
+
 async function fxFetch() {
   return fetchCached('fx_rates_cache', async () => {
-    const r = await fetch('https://open.er-api.com/v6/latest/USD');
+    const r = await fetch('https://open.er-api.com/v6/latest/USD?t=' + Date.now(), { cache: 'no-store' });
     if (!r.ok) throw new Error('FX ' + r.status);
     return r.json();
   }, 12 * 60 * 60 * 1000); // 12 hours TTL
@@ -8058,7 +8433,7 @@ async function _fetchN8nImf() {
   if (_n8nImfCache) return _n8nImfCache;
   if (_n8nImfFetchPromise) return _n8nImfFetchPromise;
   _n8nImfFetchPromise = fetchCached('imf_data_cache', async () => {
-    const r = await fetch('https://n8n.emredemirbas.com/webhook/imf-data');
+    const r = await fetch('https://n8n.emredemirbas.com/webhook/imf-data?t=' + Date.now(), { cache: 'no-store' });
     if (!r.ok) throw new Error('n8n IMF ' + r.status);
     return r.json();
   }, 7 * 24 * 60 * 60 * 1000) // 7 days TTL
@@ -8414,17 +8789,24 @@ function barChart(id, labels, data, colors, opts = {}) {
   if (wrap) wrap.classList.remove('loading');
   if (wrap) wrap.querySelectorAll('.dash-chart-error').forEach(el => el.remove());
 
+  const chartDatasets = opts.datasets || [{ label: opts.label || '', data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }];
+
   if (existingChart && !opts.forceRecreate) {
     existingChart.data.labels = labels;
-    if (existingChart.data.datasets && existingChart.data.datasets[0]) {
-      existingChart.data.datasets[0].data = data;
-      if (colors) existingChart.data.datasets[0].backgroundColor = colors;
-    }
+    existingChart.data.datasets = chartDatasets;
     existingChart.update();
     return;
   }
   if (existingChart) existingChart.destroy();
   ctx.style.display = 'block';
+
+  const isUsd = opts.unit === '$';
+  const fmtVal = opts.valueFormatter || (v => {
+    if (v == null) return '—';
+    if (isUsd) return '$' + Math.round(v).toLocaleString('tr-TR');
+    return (v > 0 ? '+' : '') + v.toFixed(1) + '%';
+  });
+  const fmtTick = opts.tickFormatter || (v => isUsd ? '$' + Math.round(v).toLocaleString('tr-TR') : v + '%');
 
   const drawLabelsPlugin = {
     id: 'drawLabels',
@@ -8432,50 +8814,55 @@ function barChart(id, labels, data, colors, opts = {}) {
       const c = chart.ctx;
       chart.data.datasets.forEach((dataset, i) => {
         const meta = chart.getDatasetMeta(i);
+        if (meta.hidden) return;
         meta.data.forEach((bar, index) => {
           const val = dataset.data[index];
           if (val === null || val === undefined) return;
           c.fillStyle = document.documentElement.getAttribute('data-theme') === 'dark' ? '#E5E7EB' : '#374151';
-          c.font = '600 10.5px Inter, sans-serif';
+          c.font = '600 10px Inter, sans-serif';
           c.textBaseline = 'middle';
           
           const isNeg = val < 0;
-          const pad = 6;
+          const pad = 5;
           // Position relative to bar end
           c.textAlign = isNeg ? 'right' : 'left';
           const x = isNeg ? bar.x - pad : bar.x + pad;
           
-          c.fillText((val > 0 ? '+' : '') + val.toFixed(1) + '%', x, bar.y);
+          c.fillText(fmtVal(val), x, bar.y);
         });
       });
     }
   };
 
-  const tooltipFooter = opts.tooltipFooter; // (index) => string|null
-  const onBarClick = opts.onClick;          // (index, event) => void
+  const tooltipFooter = opts.tooltipFooter; // (dsIdx, itemIdx) => string|null
+  const onBarClick = opts.onClick;          // (itemIdx, dsIdx, event) => void
   if (onBarClick) ctx.style.cursor = 'pointer';
 
   new Chart(ctx, {
     type: 'bar',
-    data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
+    data: { labels, datasets: chartDatasets },
     options: {
       ...CHART_DEFAULTS,
       indexAxis: 'y',
       interaction: { mode: 'nearest', axis: 'y', intersect: true },
-      layout: { padding: { left: 80, right: 60, top: 10, bottom: 10 } },
+      layout: { padding: { left: 80, right: 65, top: 10, bottom: 10 } },
       onClick: onBarClick ? (evt, els) => {
-        if (els && els.length) onBarClick(els[0].index, evt);
+        if (els && els.length) onBarClick(els[0].index, els[0].datasetIndex, evt);
       } : undefined,
       plugins: {
         ...CHART_DEFAULTS.plugins,
         tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: {
-          label: c => ' ' + (c.raw > 0 ? '+' : '') + c.raw.toFixed(1) + '%',
-          footer: tooltipFooter ? (items) => tooltipFooter(items[0]?.dataIndex) : undefined
+          title: items => {
+            const item = items[0];
+            return item ? `${item.label}${item.dataset.label ? ' (' + item.dataset.label + ')' : ''}` : '';
+          },
+          label: c => ' ' + (c.dataset.label ? c.dataset.label + ': ' : '') + (c.raw != null ? fmtVal(c.raw) : '—'),
+          footer: tooltipFooter ? (items) => tooltipFooter(items[0]?.datasetIndex, items[0]?.dataIndex) : undefined
         } }
       },
       scales: {
         x: { 
-          ticks: { callback: v => v + '%', font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, 
+          ticks: { callback: fmtTick, font: { size: 10, family: 'Inter' }, color: '#9CA3AF' }, 
           grid: { color: () => document.documentElement.getAttribute('data-theme') === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0,0,0,0.04)' }, 
           border: { display: false } 
         },
@@ -9146,7 +9533,7 @@ function buildReleaseCalendar() {
   });
 
   if (needsIataFetch) {
-    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now()).then(r => r.ok ? r.json() : null).then(data => {
+    fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(data => {
       if (data && data.date) {
         const parsed = parseTrMonthYearIata(data.date);
         if (parsed) {
@@ -9905,7 +10292,7 @@ async function loadDashboard() {
     const staticLastDate = PLATTS_JET_DATA.dates[n - 1];
     const jetfuelTtl = 1 * 60 * 60 * 1000;
     fetchCached('jetfuel_live_v2', () =>
-      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/jetfuel')
+      fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/jetfuel?t=' + Date.now(), { cache: 'no-store' })
         .then(r => r.ok ? r.json() : null)
         .catch(() => null),
       jetfuelTtl
@@ -10014,7 +10401,7 @@ async function loadDashboard() {
     updateLinkedinCard();
     // 2. KV'deki günlük seriyi üstüne merge et (1 saat önbellek; boş seri önbelleğe yazılmaz)
     const live = await fetchCached('linkedin_followers_v1', () =>
-      fetch('https://api-fleet.emredemirbas.com/api/get-linkedin')
+      fetch('https://api-fleet.emredemirbas.com/api/get-linkedin?t=' + Date.now(), { cache: 'no-store' })
         .then(r => r.ok ? r.json() : null)
         .catch(() => null),
       60 * 60 * 1000,
@@ -10216,9 +10603,9 @@ async function loadDashboard() {
       }
 
       const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
-      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}&_t=${Date.now()}`;
       
-      const res = await fetch(proxyUrl);
+      const res = await fetch(proxyUrl, { cache: 'no-store' });
       if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
       const d = await res.json();
       if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
@@ -10732,8 +11119,8 @@ async function loadDashboard() {
       }
 
       const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
-      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
-      const res = await fetch(proxyUrl);
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}&_t=${Date.now()}`;
+      const res = await fetch(proxyUrl, { cache: 'no-store' });
       if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
       const d = await res.json();
       if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
@@ -11106,8 +11493,8 @@ async function loadDashboard() {
 
     return fetchCached(cacheKey, async () => {
       const n8nUrl = `https://n8n.emredemirbas.com/webhook/fred-proxy?series_id=${seriesId}&limit=${limit}&start=${s}`;
-      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}`;
-      const res = await fetch(proxyUrl);
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(n8nUrl)}&_t=${Date.now()}`;
+      const res = await fetch(proxyUrl, { cache: 'no-store' });
       if (!res.ok) throw new Error('FRED proxy via CF ' + res.status);
       const d = await res.json();
       if (d.error_message) throw new Error(d.error_message);
@@ -11407,111 +11794,177 @@ async function loadDashboard() {
   // Cache last fetched IMF series per chart so popover can read it
   const _imfCache = {};
 
-  async function updateImfChart(indicator, selId, chartId, metaId, kind) {
+  // ── Ortak referans yıl seçimi ─────────────────────────────────
+  // Karşılaştırmada tüm ülkeler aynı yılı gösterir: cap yılından geriye
+  // tarayıp tüm ülkelerde verisi olan en güncel yılı seçer. cap dinamik
+  // (içinde bulunduğumuz yıl) olduğu için yıl dönünce veri varsa otomatik ilerler.
+  function pickCommonYear(seriesByC, countries, cap, depth = 25) {
+    let best = null, bestN = 0;
+    for (let y = cap; y > cap - depth; y--) {
+      const n = countries.reduce((a, c) => a + (seriesByC?.[c]?.[y] != null ? 1 : 0), 0);
+      if (n === countries.length) return y;
+      if (n > bestN) { bestN = n; best = y; }
+    }
+    return bestN ? best : null;
+  }
+
+  function setLegendYear(id, txt) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = txt ? ' ' + txt : '';
+  }
+
+  const yearTagTr = (y, cy) => y == null ? '' : (y > cy ? 'öngörü' : (y === cy ? 'tahmin' : 'gerçekleşen'));
+
+  async function updateEconChart(imfIndicator, wbIndicator, selId, chartId, metaId, kind) {
     const groupKey = document.getElementById(selId).value;
     const countries = WB_GROUPS[groupKey];
     const currentYear = new Date().getFullYear();
     try {
-      const data = await imfSeriesFetch(indicator, countries);
-      // For each country: pick the most recent year with a value, capped at currentYear (actual zone)
-      const latestByC = {};
-      const actualCap = currentYear - 1; // IMF WEO'da önceki yıl gerçekleşen, bu yıl tahmini
+      const [imfData, wbData] = await Promise.all([
+        imfSeriesFetch(imfIndicator, countries).catch(() => ({})),
+        wbSeriesFetch(wbIndicator, countries).catch(() => ({}))
+      ]);
+
+      // Referans yıllar — her kaynak için tüm ülkelerde ortak, gelecek öngörüler hariç
+      let imfYear = pickCommonYear(imfData, countries, currentYear);
+      let wbYear  = pickCommonYear(wbData,  countries, currentYear);
+
+      // Kural: IMF'de bu yılın tahmini yoksa ve IMF yılı WB'nin gerisindeyse
+      // WB'yi de IMF yılına çek → iki çubuk da aynı yıl
+      if (imfYear != null && wbYear != null && imfYear < wbYear) {
+        wbYear = imfYear;
+      }
+
+      const imfLatestByC = {};
+      const wbLatestByC = {};
       countries.forEach(c => {
-        const series = data[c];
-        if (!series) return;
-        const yrs = Object.keys(series).map(Number).sort((a,b) => a - b);
-        // Önce actualCap (2025) veya öncesindeki en güncel gerçekleşeni ara
-        let chosen = null;
-        for (let i = yrs.length - 1; i >= 0; i--) {
-          if (yrs[i] <= actualCap && series[yrs[i]] != null) { chosen = yrs[i]; break; }
-        }
-        // Bulamazsan currentYear (tahmini) dene
-        if (chosen == null && series[currentYear] != null) chosen = currentYear;
-        // Hâlâ yoksa herhangi bir değer al
-        if (chosen == null) {
-          for (const y of yrs) { if (series[y] != null) { chosen = y; break; } }
-        }
-        if (chosen != null) latestByC[c] = { year: chosen, value: series[chosen] };
+        if (imfYear != null && imfData?.[c]?.[imfYear] != null) imfLatestByC[c] = { year: imfYear, value: imfData[c][imfYear] };
+        if (wbYear  != null && wbData?.[c]?.[wbYear]   != null) wbLatestByC[c]  = { year: wbYear,  value: wbData[c][wbYear] };
       });
 
-      const dataC = countries.filter(c => latestByC[c]);
+      const dataC = countries.filter(c => imfLatestByC[c] || wbLatestByC[c]);
       if (!dataC.length) {
         chartErr(chartId, 'Veri alınamadı');
         document.getElementById(metaId).textContent = 'Veri alınamadı';
         return;
       }
 
-      const vals = dataC.map(c => latestByC[c].value);
-      let colors;
-      if (kind === 'gdp') {
-        colors = vals.map(v => v >= 0 ? 'rgba(29,111,232,0.72)' : 'rgba(230,57,70,0.72)');
-        if (groupKey === 'default' && latestByC.WLD) {
-          setCard('dc-gdp', latestByC.WLD.value.toFixed(1) + '%', null,
-            `Küresel büyüme (${latestByC.WLD.year})`, 'IMF WEO · Yıllık');
-        }
-      } else {
-        colors = vals.map(v => v > 6 ? 'rgba(230,57,70,0.72)' : v > 3 ? 'rgba(234,88,12,0.72)' : 'rgba(5,150,105,0.72)');
-      }
+      const imfVals = dataC.map(c => imfLatestByC[c]?.value ?? null);
+      const wbVals  = dataC.map(c => wbLatestByC[c]?.value ?? null);
 
-      // Hint for tooltip: indicate whether each bar has future forecasts
-      const futureCount = dataC.map(c => {
-        const s = data[c] || {};
-        return Object.keys(s).filter(y => Number(y) > currentYear && s[y] != null).length;
-      });
+      // Colors for datasets
+      const imfColor = kind === 'gdp' ? 'rgba(29, 111, 232, 0.85)' : 'rgba(230, 57, 70, 0.85)';
+      const wbColor  = kind === 'gdp' ? 'rgba(16, 185, 129, 0.85)' : 'rgba(245, 158, 11, 0.85)';
+
+      const imfTag = yearTagTr(imfYear, currentYear);
+      const wbTag  = yearTagTr(wbYear, currentYear);
+
+      const datasets = [
+        {
+          label: imfYear ? `IMF WEO ${imfYear} (${imfTag})` : 'IMF WEO',
+          data: imfVals,
+          backgroundColor: imfColor,
+          borderRadius: 4,
+          borderSkipped: false
+        },
+        {
+          label: wbYear ? `Dünya Bankası ${wbYear} (${wbTag})` : 'Dünya Bankası',
+          data: wbVals,
+          backgroundColor: wbColor,
+          borderRadius: 4,
+          borderSkipped: false
+        }
+      ];
+
+      setLegendYear(`${chartId}-yr-imf`, imfYear ? `· ${imfYear}${imfYear >= currentYear ? ' (tahmin)' : ''}` : '');
+      setLegendYear(`${chartId}-yr-wb`,  wbYear  ? `· ${wbYear}` : '');
+
+      // Update Top Summary Card for Default Group
+      if (kind === 'gdp' && groupKey === 'default' && imfLatestByC.WLD) {
+        const wbWldStr = wbLatestByC.WLD ? ` · WB ${wbLatestByC.WLD.year}: ${wbLatestByC.WLD.value > 0 ? '+' : ''}${wbLatestByC.WLD.value.toFixed(1)}%` : '';
+        setCard('dc-gdp', imfLatestByC.WLD.value.toFixed(1) + '%', null,
+          `Küresel büyüme (IMF ${imfLatestByC.WLD.year}${wbWldStr})`, `IMF WEO & WB · ${imfYear} ${imfTag}`);
+      }
 
       // Cache for popover
-      _imfCache[chartId] = { series: data, countries: dataC, kind, indicator };
+      _imfCache[chartId] = { imfSeries: imfData, wbSeries: wbData, dataC, kind, imfIndicator, wbIndicator, imfLatestByC, wbLatestByC, imfYear, wbYear };
 
-      barChart(chartId, dataC.map(c => WB_LABELS[c] || c), vals, colors, {
-        onClick: (idx) => openForecastPopover(chartId, dataC[idx]),
-        tooltipFooter: (idx) => {
-          if (idx == null) return null;
-          return futureCount[idx] > 0
-            ? `Tıkla → ${futureCount[idx]} yıl tahmin`
-            : 'Tıkla → tüm yıllar';
+      barChart(chartId, dataC.map(c => WB_LABELS[c] || c), null, null, {
+        datasets,
+        onClick: (itemIdx) => openForecastPopover(chartId, dataC[itemIdx]),
+        tooltipFooter: (dsIdx, itemIdx) => {
+          const c = dataC[itemIdx];
+          if (!c) return null;
+          const yrs = [];
+          if (imfLatestByC[c]) yrs.push(`IMF: ${imfLatestByC[c].year}`);
+          if (wbLatestByC[c])  yrs.push(`WB: ${wbLatestByC[c].year}`);
+          return yrs.length ? `Tıkla → Detay serisi (${yrs.join(' | ')})` : 'Tıkla → Detaylar';
         }
       });
 
-      // Latest year label: use the most common year across countries
-      const yearCounts = {};
-      dataC.forEach(c => { const y = latestByC[c].year; yearCounts[y] = (yearCounts[y]||0)+1; });
-      const dominantYear = Object.entries(yearCounts).sort((a,b) => b[1]-a[1])[0][0];
-      const domYearNum = Number(dominantYear);
-      const domLabel = domYearNum < currentYear ? 'gerçekleşen' : domYearNum === currentYear ? 'tahmini' : 'öngörü';
-      document.getElementById(metaId).textContent = `Son veri: ${dominantYear} (${domLabel}) · IMF WEO`;
+      // Metadata note update
+      const imfMissing = dataC.filter(c => !imfLatestByC[c]).length;
+      const wbMissing  = dataC.filter(c => !wbLatestByC[c]).length;
+      document.getElementById(metaId).textContent =
+        `Referans yıl — IMF WEO: ${imfYear ?? '—'}${imfYear ? ` (${imfTag})` : ''} · Dünya Bankası: ${wbYear ?? '—'}${wbYear ? ` (${wbTag})` : ''}` +
+        (imfMissing || wbMissing ? ` · ${imfMissing + wbMissing} ülkede o yıl verisi yok` : '');
 
-      // Tahmin/Öngörü legend: sadece gösterilen yıllar gerçekleşen değilse göster
-      const legendId = kind === 'gdp' ? 'gdp-legend-forecast' : 'cpi-legend-forecast';
-      const legendEl = document.getElementById(legendId);
-      if (legendEl) legendEl.style.display = domYearNum >= currentYear ? '' : 'none';
-
-      // ── Update section note dynamically (runs after both charts load) ──
+      // Section note update
       const noteEl = document.getElementById('imf-section-note');
       if (noteEl) {
-        // Detect forecast years from the loaded data (any year > dominantYear with values)
-        let forecastMin = null, forecastMax = null;
-        Object.values(data).forEach(s => {
-          Object.keys(s).forEach(y => {
-            const n = Number(y);
-            if (s[y] != null && n > Number(dominantYear)) {
-              if (forecastMin == null || n < forecastMin) forecastMin = n;
-              if (forecastMax == null || n > forecastMax) forecastMax = n;
-            }
-          });
-        });
-        const forecastPart = forecastMin
-          ? `; <strong>${forecastMin}–${forecastMax}</strong> yılları IMF tahmini`
-          : '';
-        noteEl.innerHTML = `ⓘ Gösterilen değer <strong>${dominantYear}</strong> yılına aittir · ≤${currentYear-1} gerçekleşen, ${currentYear} tahmini${forecastMin ? `, ${forecastMin}–${forecastMax} öngörü` : ''}. Tüm veriler <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>'dan alınmaktadır. Çubuğa tıklayarak yıllık dizi görüntülenebilir.`;
+        noteEl.innerHTML = `ⓘ Karşılaştırmalar tek referans yıl üzerinden yapılır: tüm ülkeler aynı yılı gösterir. <strong>IMF WEO</strong> ${imfYear ?? '—'} ${imfTag} · <strong>Dünya Bankası</strong> ${wbYear ?? '—'} ${wbTag} (resmi veri). Takvim yılı ilerlediğinde ilgili yılın verisi yayınlanmışsa grafikler otomatik güncellenir. Çubuklara tıklayarak detaylı yıllık serileri görüntüleyebilirsiniz.`;
       }
     } catch (e) {
-      console.error('[IMF chart error]', chartId, e?.message || e);
+      console.error('[Econ chart error]', chartId, e?.message || e);
       chartErr(chartId, 'Veri alınamadı');
       document.getElementById(metaId).textContent = 'Veri alınamadı';
-      const noteEl = document.getElementById('imf-section-note');
-      if (noteEl && noteEl.innerHTML.includes('yükleniyor')) {
-        noteEl.innerHTML = `ⓘ IMF WEO verileri yüklenemedi (${e?.message || 'ağ hatası'}). Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">imf.org/WEO</a>`;
+    }
+  }
+
+  async function updateWbSingleChart(indicator, selId, chartId, metaId, unit = '', color = 'rgba(59,130,246,0.85)') {
+    const groupKey = document.getElementById(selId).value;
+    const countries = WB_GROUPS[groupKey];
+    const currentYear = new Date().getFullYear();
+    try {
+      const wbData = await wbSeriesFetch(indicator, countries).catch(() => ({}));
+      // Sadece WB grafiklerinde: içinde bulunduğumuz yılın verisi varsa onu,
+      // yoksa tüm ülkelerde verisi olan en güncel yılı al (gelecek projeksiyonlar hariç)
+      const wbYear = pickCommonYear(wbData, countries, currentYear);
+      const wbLatestByC = {};
+      countries.forEach(c => {
+        if (wbYear != null && wbData?.[c]?.[wbYear] != null) wbLatestByC[c] = { year: wbYear, value: wbData[c][wbYear] };
+      });
+
+      const dataC = countries.filter(c => wbLatestByC[c]);
+      if (!dataC.length) {
+        chartErr(chartId, 'Veri alınamadı');
+        document.getElementById(metaId).textContent = 'Veri alınamadı';
+        return;
       }
+
+      const vals = dataC.map(c => wbLatestByC[c].value);
+
+      _imfCache[chartId] = { wbSeries: wbData, dataC, indicator, wbLatestByC, unit, single: true, wbYear };
+
+      barChart(chartId, dataC.map(c => WB_LABELS[c] || c), vals, color, {
+        unit,
+        onClick: (itemIdx) => openForecastPopover(chartId, dataC[itemIdx]),
+        tooltipFooter: (dsIdx, itemIdx) => {
+          const c = dataC[itemIdx];
+          const wbObj = wbLatestByC[c];
+          return wbObj ? `Tıkla → Detay serisi (${wbObj.year})` : 'Tıkla → Detaylar';
+        }
+      });
+
+      setLegendYear(`${chartId}-yr-wb`, wbYear ? `· ${wbYear}` : '');
+      const missing = countries.length - dataC.length;
+      document.getElementById(metaId).textContent =
+        `Referans yıl: ${wbYear ?? '—'}${wbYear ? ` (${yearTagTr(wbYear, currentYear)})` : ''} · Dünya Bankası` +
+        (missing ? ` · ${missing} ülkede veri yok` : '');
+    } catch (e) {
+      console.error('[WB single chart error]', chartId, e?.message || e);
+      chartErr(chartId, 'Veri alınamadı');
+      document.getElementById(metaId).textContent = 'Veri alınamadı';
     }
   }
 
@@ -11519,76 +11972,74 @@ async function loadDashboard() {
   function openForecastPopover(chartId, countryCode) {
     const cache = _imfCache[chartId];
     if (!cache) return;
-    const series = cache.series[countryCode] || {};
+    const imfSeries = (cache.imfSeries && cache.imfSeries[countryCode]) || {};
+    const wbSeries  = (cache.wbSeries  && cache.wbSeries[countryCode])  || {};
     const currentYear = new Date().getFullYear();
-    const allYears = Object.keys(series).map(Number).filter(y => series[y] != null).sort((a,b) => a-b);
+
+    const allYears = Array.from(new Set([
+      ...Object.keys(imfSeries).map(Number),
+      ...Object.keys(wbSeries).map(Number)
+    ])).filter(y => imfSeries[y] != null || wbSeries[y] != null).sort((a,b) => a-b);
+
     if (!allYears.length) return;
-    // Limit to a reasonable window: last 5 actual + all future
     const past = allYears.filter(y => y <= currentYear).slice(-5);
     const future = allYears.filter(y => y > currentYear);
     const shown = [...past, ...future];
 
     const name = WB_LABELS[countryCode] || countryCode;
-    const indicatorLabel = cache.kind === 'gdp' ? 'GDP Büyüme Oranı' : 'TÜFE Enflasyon';
-    const colorFor = (v) => {
-      if (cache.kind === 'gdp') return v >= 0 ? '#1D6FE8' : '#E63946';
-      if (v > 6) return '#E63946';
-      if (v > 3) return '#EA580C';
-      return '#059669';
+    const isSingle = cache.single;
+    const isUsd = cache.unit === '$';
+
+    let indicatorLabel = 'Ekonomik Gösterge';
+    if (cache.kind === 'gdp') indicatorLabel = 'GDP Büyüme Oranı (%)';
+    else if (cache.kind === 'cpi') indicatorLabel = 'TÜFE Enflasyon (%)';
+    else if (cache.kind === 'unemp') indicatorLabel = 'İşsizlik Oranı (%)';
+    else if (cache.kind === 'ca') indicatorLabel = 'Cari Denge / GSYH (%)';
+    else if (cache.unit === '$') indicatorLabel = 'Kişi Başı Gelir (USD)';
+    else indicatorLabel = 'Kamu Borcu / GSYH (%)';
+
+    const fmtVal = (v) => {
+      if (v == null) return '—';
+      if (isUsd) return '$' + Math.round(v).toLocaleString('tr-TR');
+      return (v > 0 ? '+' : '') + v.toFixed(1) + '%';
     };
 
-    // IMF WEO Nisan 2026: ≤2025 gerçekleşen/tahmin, 2026 tahmini, ≥2027 öngörü
-    // Mayıs 2026 itibarıyla 2025 verileri büyük ölçüde kesinleşmiştir
-    const ACTUAL_MAX = currentYear - 1;   // 2025
-    const ESTIMATE_YEAR = currentYear;    // 2026
-
-    const maxAbs = Math.max(...shown.map(y => Math.abs(series[y])), 1);
     const rows = shown.map(y => {
-      const v = series[y];
-      const isForecast = y >= ESTIMATE_YEAR;
-      const barW = (Math.abs(v) / maxAbs) * 100;
-      const sign = v > 0 ? '+' : '';
-      let yearLabel;
-      if (y <= ACTUAL_MAX)       yearLabel = `${y} <em class="fpop-tag actual">Gerçekleşen</em>`;
-      else if (y === ESTIMATE_YEAR) yearLabel = `${y} <em class="fpop-tag estimate">Tahmini</em>`;
-      else                       yearLabel = `${y} <em class="fpop-tag forecast">Öngörü</em>`;
-      return `<div class="fpop-row${isForecast ? ' fpop-future' : ''}">
-        <span class="fpop-year">${yearLabel}</span>
-        <span class="fpop-bar-track"><span class="fpop-bar-fill" style="width:${barW.toFixed(1)}%; background:${colorFor(v)}"></span></span>
-        <span class="fpop-val" style="color:${colorFor(v)}">${sign}${v.toFixed(1)}%</span>
+      const imfVal = imfSeries[y];
+      const wbVal  = wbSeries[y];
+      const isForecast = y >= currentYear;
+
+      let yearTag;
+      if (y < currentYear)       yearTag = `${y} <em class="fpop-tag actual">Gerçekleşen</em>`;
+      else if (y === currentYear) yearTag = `${y} <em class="fpop-tag estimate">Tahmini</em>`;
+      else                       yearTag = `${y} <em class="fpop-tag forecast">Öngörü</em>`;
+
+      if (isSingle) {
+        return `<div class="fpop-row${isForecast ? ' fpop-future' : ''}" style="grid-template-columns: 100px 1fr; font-size: 11.5px; padding: 3px 0;">
+          <span class="fpop-year">${yearTag}</span>
+          <span style="color:#1D6FE8; font-weight:600;">WB: ${fmtVal(wbVal)}</span>
+        </div>`;
+      }
+
+      return `<div class="fpop-row${isForecast ? ' fpop-future' : ''}" style="grid-template-columns: 100px 1fr 1fr; font-size: 11.5px; padding: 3px 0;">
+        <span class="fpop-year">${yearTag}</span>
+        <span style="color:${imfVal != null ? '#1D6FE8' : 'var(--text-3)'}; font-weight:600;">IMF: ${fmtVal(imfVal)}</span>
+        <span style="color:${wbVal  != null ? '#10B981' : 'var(--text-3)'}; font-weight:600;">WB: ${fmtVal(wbVal)}</span>
       </div>`;
     }).join('');
-
-    // Çizgi grafik düğmesi — hem GDP hem CPI için
-    const chartIconSvg = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="1,12 5,7 8,9 12,4 15,6"/>
-        <line x1="1" y1="15" x2="15" y2="15"/>
-      </svg>`;
-    const chartBtnHtml = `<button class="fpop-chart-btn" id="fpop-chart-trigger" aria-label="Çizgi grafik">${chartIconSvg} Çizgi grafik</button>`;
-
-    const futureNote = `
-      <div class="fpop-foot fpop-foot-row">
-        <span>Kaynak: <a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO Nisan 2026</a>${future.length ? ' · ' + future.length + ' yıl öngörü' : ''}</span>
-        ${chartBtnHtml}
-      </div>`;
 
     const pop = document.getElementById('forecast-popover');
     pop.innerHTML = `
       <button class="fpop-close" aria-label="Kapat" onclick="document.getElementById('forecast-popover').classList.remove('open')">×</button>
       <div class="fpop-head">
         <div class="fpop-country">${name}</div>
-        <div class="fpop-indicator">${indicatorLabel}</div>
+        <div class="fpop-indicator">${indicatorLabel} ${isSingle ? '· Dünya Bankası' : '· IMF WEO vs Dünya Bankası'}</div>
       </div>
       <div class="fpop-rows">${rows}</div>
-      ${futureNote}`;
+      <div class="fpop-foot">
+        <span>Kaynaklar: ${isSingle ? '<a href="https://data.worldbank.org/" target="_blank" rel="noopener">Dünya Bankası API</a>' : '<a href="https://www.imf.org/en/Publications/WEO" target="_blank" rel="noopener">IMF WEO</a> · <a href="https://data.worldbank.org/" target="_blank" rel="noopener">Dünya Bankası API</a>'}</span>
+      </div>`;
     pop.classList.add('open');
-
-    // Grafik düğmesine tıklanınca popup içinde çizgi grafiğe geç
-    document.getElementById('fpop-chart-trigger')?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showPopoverLineChart(pop, chartId, countryCode, series, name, indicatorLabel, cache.kind);
-    });
   }
 
   document.addEventListener('click', (e) => {
@@ -11607,11 +12058,20 @@ async function loadDashboard() {
     }
   });
 
-  document.getElementById('sel-gdp-group').addEventListener('change', () => updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp'));
-  document.getElementById('sel-cpi-group').addEventListener('change', () => updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi'));
+  // Event listener bindings & Initial calls for 6 Economic Charts
+  document.getElementById('sel-gdp-group')?.addEventListener('change', () => updateEconChart('NGDP_RPCH', 'NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp'));
+  document.getElementById('sel-cpi-group')?.addEventListener('change', () => updateEconChart('PCPIPCH',  'FP.CPI.TOTL.ZG',     'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi'));
+  document.getElementById('sel-unemp-group')?.addEventListener('change', () => updateWbSingleChart('SL.UEM.TOTL.ZS', 'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', '%', 'rgba(245,158,11,0.85)'));
+  document.getElementById('sel-ca-group')?.addEventListener('change', () => updateWbSingleChart('BN.CAB.XOKA.GD.ZS', 'sel-ca-group', 'chart-current-account', 'ca-meta-note', '%', 'rgba(139,92,246,0.85)'));
+  document.getElementById('sel-gdpcap-group')?.addEventListener('change', () => updateWbSingleChart('NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', '$', 'rgba(59,130,246,0.85)'));
+  document.getElementById('sel-debt-group')?.addEventListener('change', () => updateWbSingleChart('GC.DOD.TOTL.GD.ZS', 'sel-debt-group', 'chart-gov-debt', 'debt-meta-note', '%', 'rgba(239,68,68,0.85)'));
 
-  updateImfChart('NGDP_RPCH', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
-  updateImfChart('PCPIPCH',  'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
+  updateEconChart('NGDP_RPCH', 'NY.GDP.MKTP.KD.ZG', 'sel-gdp-group', 'chart-gdp', 'gdp-meta-note', 'gdp');
+  updateEconChart('PCPIPCH',  'FP.CPI.TOTL.ZG',     'sel-cpi-group', 'chart-cpi', 'cpi-meta-note', 'cpi');
+  updateWbSingleChart('SL.UEM.TOTL.ZS', 'sel-unemp-group', 'chart-unemployment', 'unemp-meta-note', '%', 'rgba(245,158,11,0.85)');
+  updateWbSingleChart('BN.CAB.XOKA.GD.ZS', 'sel-ca-group', 'chart-current-account', 'ca-meta-note', '%', 'rgba(139,92,246,0.85)');
+  updateWbSingleChart('NY.GDP.PCAP.CD', 'sel-gdpcap-group', 'chart-gdp-per-capita', 'gdpcap-meta-note', '$', 'rgba(59,130,246,0.85)');
+  updateWbSingleChart('GC.DOD.TOTL.GD.ZS', 'sel-debt-group', 'chart-gov-debt', 'debt-meta-note', '%', 'rgba(239,68,68,0.85)');
 
   // ── WCI (Drewry) Verisini Çek ───────────────────────────────────
   const WCI_DEFAULT_HISTORY = [
@@ -14126,7 +14586,7 @@ async function loadDashboard() {
     const wciTtl = (day === 3 || day === 4 || day === 5) ? (1 * 60 * 60 * 1000) : (24 * 60 * 60 * 1000);
 
     return fetchCached('wci_full_data_v8', async () => {
-      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci?t=' + Date.now()).then(r => r.ok ? r.json() : null).catch(() => null);
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/wci?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
       const history = (latest && Array.isArray(latest.history) && latest.history.length) ? latest.history : WCI_DEFAULT_HISTORY;
 
       // Eğer yeni çekilen veri başarısız (null veya fiyatsız) ise, localStorage'daki eski geçerli veriyi koruyup geri dönelim
@@ -14188,11 +14648,11 @@ async function loadDashboard() {
 
   // BAFI Verisini Çek ve Göster (veri tümüyle worker/KV üzerinden gelir)
   async function initBafiCard() {
-    return fetchCached('bafi_v6', async () => {
-      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi')
+    return fetchCached('bafi_v8', async () => {
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/bafi?t=' + Date.now(), { cache: 'no-store' })
         .then(r => r.ok ? r.json() : null).catch(() => null);
       return { latest };
-    }, 1 * 60 * 60 * 1000).then(({ latest }) => {
+    }, 1 * 60 * 60 * 1000, d => !!(d && d.latest && d.latest.price)).then(({ latest }) => {
       _bafiLatest = latest;
 
       if (latest?.history?.dates) {
@@ -14211,15 +14671,17 @@ async function loadDashboard() {
       } else {
         setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
       }
+    }).catch(() => {
+      setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
     });
   }
 
   // FBX Verisini Çek ve Göster (veri tümüyle worker/KV üzerinden gelir)
   async function initFbxCard() {
-    return fetchCached('fbx_v3', async () => {
-      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx').then(r => r.ok ? r.json() : null).catch(() => null);
+    return fetchCached('fbx_v8', async () => {
+      const latest = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/fbx?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null);
       return { latest };
-    }, 1 * 60 * 60 * 1000).then(({ latest }) => {
+    }, 1 * 60 * 60 * 1000, d => !!(d && d.latest && d.latest.price)).then(({ latest }) => {
       if (latest && Array.isArray(latest.history)) {
         _fbxHistory = latest.history.slice().sort((a, b) => a.date.localeCompare(b.date));
       }
@@ -14244,6 +14706,8 @@ async function loadDashboard() {
       if (latest && latest.routes && typeof window.renderFbxRouteOptions === 'function') {
         window.renderFbxRouteOptions();
       }
+    }).catch(() => {
+      setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
     });
   }
 
@@ -14256,10 +14720,10 @@ async function loadDashboard() {
 
   // IATA Verisini Çek ve Göster
   async function initIataCard() {
-    return fetchCached('iata_full_data_v2', async () => {
+    return fetchCached('iata_full_data_v8', async () => {
       const [history, latest] = await Promise.all([
         fetch('iata-history.json').then(r => r.ok ? r.json() : []).catch(() => []),
-        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null)
+        fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
       return { history, latest };
     }, 1 * 60 * 60 * 1000, (d) => !!(d && d.latest && d.latest.demand)).then(({ history, latest }) => {
@@ -14298,25 +14762,694 @@ async function loadDashboard() {
         if (iataDateEl && latest.date) { iataDateEl.textContent = `Son veri: ${latest.date}`; }
       } else {
         const dEl = document.getElementById('iata-val-demand');
-        if (dEl) {
-          dEl.textContent = '—'; dEl.classList.remove('skeleton');
-          document.getElementById('iata-val-capacity').textContent = '—'; document.getElementById('iata-val-capacity').classList.remove('skeleton');
-          document.getElementById('iata-val-loadfactor').textContent = '—'; document.getElementById('iata-val-loadfactor').classList.remove('skeleton');
-          document.getElementById('iata-val-spotrate').textContent = '—'; document.getElementById('iata-val-spotrate').classList.remove('skeleton');
-        }
+        const cEl = document.getElementById('iata-val-capacity');
+        const lfEl = document.getElementById('iata-val-loadfactor');
+        const srEl = document.getElementById('iata-val-spotrate');
+        if (dEl) { dEl.textContent = '—'; dEl.classList.remove('skeleton'); }
+        if (cEl) { cEl.textContent = '—'; cEl.classList.remove('skeleton'); }
+        if (lfEl) { lfEl.textContent = '—'; lfEl.classList.remove('skeleton'); }
+        if (srEl) { srEl.textContent = '—'; srEl.classList.remove('skeleton'); }
+        const noteEl = document.getElementById('dc-iata-note');
+        if (noteEl) noteEl.innerHTML = 'Veri alınamadı';
       }
+    }).catch(() => {
+      const dEl = document.getElementById('iata-val-demand');
+      const cEl = document.getElementById('iata-val-capacity');
+      const lfEl = document.getElementById('iata-val-loadfactor');
+      const srEl = document.getElementById('iata-val-spotrate');
+      if (dEl) { dEl.textContent = '—'; dEl.classList.remove('skeleton'); }
+      if (cEl) { cEl.textContent = '—'; cEl.classList.remove('skeleton'); }
+      if (lfEl) { lfEl.textContent = '—'; lfEl.classList.remove('skeleton'); }
+      if (srEl) { srEl.textContent = '—'; srEl.classList.remove('skeleton'); }
+      const noteEl = document.getElementById('dc-iata-note');
+      if (noteEl) noteEl.innerHTML = 'Veri alınamadı';
     });
   }
 
   // Expose to window scope
   window.initBafiCard = initBafiCard;
   window.initFbxCard = initFbxCard;
+  
+  // ── CARGO FLIGHTS (Havadaki THY Uçakları) ──────────────────────────
+  let _cargoAllFlights = [];
+  let _cargoFlights = [];
+  let _cargoActiveFilter = 'cargo';
+  let _cargoAnimInterval = null;
+  let _cargoPlaneMarkers = new Map();
+
+  async function initCargoCard() {
+    try {
+      const res = await fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/cargo-flights?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('Proxy error ' + res.status);
+      const data = await res.json();
+      const freshList = (data && Array.isArray(data.flights)) ? data.flights : [];
+
+      const prevMap = new Map();
+      _cargoAllFlights.forEach(f => prevMap.set(f.icao24, f));
+
+      const freshFlights = freshList.map(f => {
+        const prev = prevMap.get(f.icao24);
+        if (prev) {
+          f.currentLat = prev.currentLat != null ? prev.currentLat : f.lat;
+          f.currentLon = prev.currentLon != null ? prev.currentLon : f.lon;
+          f.lastAnimMs = prev.lastAnimMs || Date.now();
+        } else {
+          f.currentLat = f.lat;
+          f.currentLon = f.lon;
+          f.lastAnimMs = Date.now();
+        }
+        return f;
+      });
+
+      let prevSelected = null;
+      if (_cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx]) {
+        prevSelected = _cargoFlights[_cargoSelectedIdx];
+      }
+
+      if (prevSelected && prevSelected.signalLost) {
+        const found = freshFlights.find(f => f.icao24 === prevSelected.icao24);
+        if (!found) {
+          freshFlights.push(prevSelected);
+        } else {
+          found.signalLost = false;
+        }
+      }
+
+      _cargoAllFlights = freshFlights;
+
+      const count = data && typeof data.count === 'number' ? data.count : _cargoAllFlights.filter(f => f.type === 'cargo').length;
+      _cargoFlights = _cargoAllFlights.filter(f => f.type === _cargoActiveFilter);
+      setCard('dc-cargo', String(count), null, 'Turkish Cargo',
+        `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      const hh = String(today.getHours()).padStart(2, '0');
+      const min = String(today.getMinutes()).padStart(2, '0');
+      const dateStr = `${dd}.${mm}.${yyyy} ${hh}:${min}`;
+      setDateBadge('dc-cargo-date', dateStr);
+      try { localStorage.setItem('cargo_count_last_good', JSON.stringify({ count, dateStr })); } catch (e) {}
+      if (document.getElementById('cargo-flights-modal')?.style.display === 'flex') {
+        renderCargoFlightsModal(false);
+      }
+    } catch (_) {
+      // Canlı OpenSky verisi alınamadı: elimizdeki son gerçek anlık sayıyı göster (fake veri yerine)
+      let lastGood = null;
+      try { lastGood = JSON.parse(localStorage.getItem('cargo_count_last_good') || 'null'); } catch (e) {}
+      if (lastGood && typeof lastGood.count === 'number') {
+        setCard('dc-cargo', String(lastGood.count), null, 'Turkish Cargo', `Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>`);
+        setDateBadge('dc-cargo-date', lastGood.dateStr);
+      } else {
+        setCard('dc-cargo', '—', null, '', 'Veri alınamadı');
+      }
+    }
+  }
+
+  window.setCargoFlightsFilter = function(type) {
+    if (type === _cargoActiveFilter) return;
+    _cargoActiveFilter = type;
+    _cargoFlights = _cargoAllFlights.filter(f => f.type === type);
+    document.querySelectorAll('#cargo-type-toggle .forex-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.type === type);
+    });
+    renderCargoFlightsModal(true);
+  };
+
+  let _cargoMap = null;
+  let _cargoMapLayers = [];
+  let _cargoRouteLayers = [];
+  let _cargoTraveledLine = null;
+  let _cargoRemainingLine = null;
+
+  const cargoPlaneIcon = (track, color) => L.divIcon({
+    className: 'cargo-plane-icon',
+    html: `<svg width="22" height="22" viewBox="0 0 24 24" style="transform:rotate(${track || 0}deg)"><path fill="${color}" d="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>`,
+    iconSize: [22, 22],
+    iconAnchor: [11, 11],
+  });
+  const cargoAirportIcon = (color) => L.divIcon({
+    className: 'cargo-airport-icon',
+    html: `<svg width="14" height="14" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="${color}" fill-opacity="0.18" stroke="${color}" stroke-width="2.5"/></svg>`,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+  });
+
+  function renderCargoFlightList() {
+    const listEl = document.getElementById('cargo-flight-list');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    if (!_cargoFlights.length) {
+      const msg = document.createElement('div');
+      msg.style.cssText = 'color:var(--text-3); font-size:12px; padding:8px 2px;';
+      msg.textContent = _cargoActiveFilter === 'cargo'
+        ? 'Şu anda havada THY kargo uçuşu tespit edilemedi.'
+        : 'Şu anda havada THY yolcu uçuşu tespit edilemedi.';
+      listEl.appendChild(msg);
+      return;
+    }
+
+    _cargoFlights.forEach((f, idx) => {
+      const item = document.createElement('div');
+      item.className = 'cargo-flight-item' + (_cargoSelectedIdx === idx ? ' selected' : '');
+      item.dataset.idx = idx;
+      const flightNumber = f.flightNumber || String(f.callsign || '').replace(/^THY/i, 'TK') || 'TK—';
+      const routeLine = (f.dep || f.arr)
+        ? `<div style="color:var(--text-2); margin-top:2px; font-weight:500;">${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}</div>`
+        : `<div style="color:var(--text-3); margin-top:2px; font-size:11px;">Rota doğrulanıyor…</div>`;
+      const regBadge = f.aircraftDetails?.registration
+        ? `<span style="font-family:monospace; font-size:10px; color:var(--text-3); background:var(--surface-3, rgba(0,0,0,0.06)); padding:1px 4px; border-radius:3px; font-weight:normal;">${f.aircraftDetails.registration}</span>`
+        : '';
+      const modelText = f.aircraftDetails?.type || f.aircraftDetails?.icaoType
+        ? `<div style="color:var(--text-3); font-size:11px; margin-top:1px;">${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType}</div>`
+        : '';
+      
+      const dotHtml = f.signalLost 
+        ? `<span class="cargo-signal-lost-dot" title="Sinyal Kaybı (Tahmini Konum)"></span>`
+        : `<span class="cargo-live-dot"></span>`;
+      const signalLostLabel = f.signalLost ? `<span style="font-size:10px; color:#9CA3AF; font-weight:700; margin-left:3px;">(Sinyal Kaybı)</span>` : '';
+      
+      item.innerHTML = `
+        <div style="font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:5px;">
+          <div style="display:flex; align-items:center; gap:5px;">
+            ${dotHtml}
+            <span title="ATC çağrı kodu: ${f.callsign || '—'}">${flightNumber}</span>
+            ${signalLostLabel}
+          </div>
+          ${regBadge}
+        </div>
+        ${routeLine}
+        ${modelText}
+        <div style="color:var(--text-3); font-size:11px; margin-top:2px;">${Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR')} ft · ${Math.round((f.velocity || 0) * 1.944)} kt · ${Math.round(f.track || 0)}°</div>
+      `;
+      item.addEventListener('click', () => focusCargoFlight(idx));
+      listEl.appendChild(item);
+    });
+  }
+
+  let _cargoSelectedIdx = null;
+  let _cargoHighlightMarker = null;
+  const cargoHighlightIcon = () => L.divIcon({
+    className: 'cargo-highlight-icon',
+    html: `<div style="width:36px; height:36px; border-radius:50%; border:2.5px solid #1D6FE8; box-shadow:0 0 0 4px rgba(29,111,232,0.18); animation:cargoHighlightPulse 1.6s ease-out infinite;"></div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+  });
+
+  function getArcPoints(p1, p2, numPoints = 40) {
+    const lat1 = p1[0] * Math.PI / 180;
+    const lon1 = p1[1] * Math.PI / 180;
+    const lat2 = p2[0] * Math.PI / 180;
+    const lon2 = p2[1] * Math.PI / 180;
+
+    const x1 = Math.cos(lat1) * Math.cos(lon1);
+    const y1 = Math.cos(lat1) * Math.sin(lon1);
+    const z1 = Math.sin(lat1);
+
+    const x2 = Math.cos(lat2) * Math.cos(lon2);
+    const y2 = Math.cos(lat2) * Math.sin(lon2);
+    const z2 = Math.sin(lat2);
+
+    const dot = x1*x2 + y1*y2 + z1*z2;
+    const omega = Math.acos(Math.min(1.0, Math.max(-1.0, dot)));
+
+    const points = [];
+    if (omega < 0.001) {
+      for (let i = 0; i <= numPoints; i++) {
+        const t = i / numPoints;
+        points.push([p1[0] + (p2[0] - p1[0]) * t, p1[1] + (p2[1] - p1[1]) * t]);
+      }
+      return points;
+    }
+
+    const sinOmega = Math.sin(omega);
+    for (let i = 0; i <= numPoints; i++) {
+      const t = i / numPoints;
+      const w1 = Math.sin((1 - t) * omega) / sinOmega;
+      const w2 = Math.sin(t * omega) / sinOmega;
+
+      const x = w1 * x1 + w2 * x2;
+      const y = w1 * y1 + w2 * y2;
+      const z = w1 * z1 + w2 * z2;
+
+      const lat = Math.atan2(z, Math.sqrt(x*x + y*y)) * 180 / Math.PI;
+      const lon = Math.atan2(y, x) * 180 / Math.PI;
+      points.push([lat, lon]);
+    }
+    return points;
+  }
+
+  function selectCargoFlight(idx, pan) {
+    const f = _cargoFlights[idx];
+    if (!f) return;
+    _cargoSelectedIdx = idx;
+    
+    const pm = _cargoPlaneMarkers.get(f.icao24);
+    let targetLat = f.lat;
+    let targetLon = f.lon;
+    if (pm && pm.marker) {
+      const currentLatLng = pm.marker.getLatLng();
+      targetLat = currentLatLng.lat;
+      targetLon = currentLatLng.lng;
+    }
+
+    if (_cargoMap) {
+      _cargoRouteLayers.forEach(l => _cargoMap.removeLayer(l));
+      _cargoRouteLayers = [];
+      _cargoTraveledLine = null;
+      _cargoRemainingLine = null;
+
+      if (_cargoHighlightMarker) _cargoMap.removeLayer(_cargoHighlightMarker);
+      _cargoHighlightMarker = L.marker([targetLat, targetLon], { icon: cargoHighlightIcon(), interactive: false, zIndexOffset: -100 });
+      _cargoHighlightMarker.addTo(_cargoMap);
+
+      const bounds = [[targetLat, targetLon]];
+
+      if (f.dep && f.dep.lat != null) {
+        const depMarker = L.marker([f.dep.lat, f.dep.lon], { icon: cargoAirportIcon('#16A34A') })
+          .bindPopup(`<strong>Kalkış (DEP):</strong> ${f.dep.name || f.dep.icao} (${f.dep.iata || ''})<br>${f.dep.city || ''}`);
+        depMarker.addTo(_cargoMap);
+        _cargoRouteLayers.push(depMarker);
+        bounds.push([f.dep.lat, f.dep.lon]);
+
+        const arcPointsTraveled = getArcPoints([f.dep.lat, f.dep.lon], [targetLat, targetLon]);
+        _cargoTraveledLine = L.polyline(arcPointsTraveled, { color: '#C8102E', weight: 2.5, opacity: 0.95 });
+        _cargoTraveledLine.addTo(_cargoMap);
+        _cargoRouteLayers.push(_cargoTraveledLine);
+      }
+
+      if (f.arr && f.arr.lat != null) {
+        const arrMarker = L.marker([f.arr.lat, f.arr.lon], { icon: cargoAirportIcon('#1D6FE8') })
+          .bindPopup(`<strong>Varış (ARR):</strong> ${f.arr.name || f.arr.icao} (${f.arr.iata || ''})<br>${f.arr.city || ''}`);
+        arrMarker.addTo(_cargoMap);
+        _cargoRouteLayers.push(arrMarker);
+        bounds.push([f.arr.lat, f.arr.lon]);
+
+        const arcPointsRemaining = getArcPoints([targetLat, targetLon], [f.arr.lat, f.arr.lon]);
+        _cargoRemainingLine = L.polyline(arcPointsRemaining, { color: '#C8102E', weight: 2, opacity: 0.45, dashArray: '5,5' });
+        _cargoRemainingLine.addTo(_cargoMap);
+        _cargoRouteLayers.push(_cargoRemainingLine);
+      }
+
+      if (pan) {
+        if (f.dep && f.dep.lat != null && f.arr && f.arr.lat != null) {
+          _cargoMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 6 });
+        } else {
+          _cargoMap.setView([targetLat, targetLon], 6, { animate: true });
+        }
+      }
+    }
+    document.querySelectorAll('.cargo-flight-item').forEach(el => {
+      el.classList.toggle('selected', Number(el.dataset.idx) === idx);
+    });
+    renderCargoFlightDetail(f);
+  }
+
+  function focusCargoFlight(idx) {
+    selectCargoFlight(idx, true);
+  }
+
+  function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  const _cargoDetailIcons = {
+    altitude: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5l-5-3-5 3M17 19l-5 3-5-3"/></svg>`,
+    speed: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`,
+    vrateUp: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`,
+    vrateDown: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>`,
+    vrateLevel: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+    transponder: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+    squawk: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>`,
+    country: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>`,
+    clock: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  };
+
+  function cargoDetailRow(iconHtml, label, valHtml, valColor) {
+    const colorStyle = valColor ? ` style="color:${valColor}"` : '';
+    return `<div style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px; padding:4px 0; border-bottom:1px dashed var(--border-soft);">
+      <span style="color:var(--text-3); display:inline-flex; align-items:center; gap:5px;">${iconHtml} ${label}</span>
+      <span style="font-weight:600; color:var(--text);"${colorStyle}>${valHtml}</span>
+    </div>`;
+  }
+
+  function renderCargoFlightDetail(f) {
+    const panel = document.getElementById('cargo-flight-detail');
+    if (!panel) return;
+    if (!f) {
+      panel.innerHTML = `<div style="color:var(--text-3); font-size:12px; padding:8px 2px;">Detayları görmek için bir uçuş seçin.</div>`;
+      return;
+    }
+    
+    let progress = 0.5;
+    let depTimeStr = '21:25';
+    let arrTimeStr = '07:27';
+    if (f.dep && f.dep.lat != null && f.arr && f.arr.lat != null) {
+      const dDep = getDistance(f.lat, f.lon, f.dep.lat, f.dep.lon);
+      const dArr = getDistance(f.lat, f.lon, f.arr.lat, f.arr.lon);
+      const totalDist = dDep + dArr;
+      if (totalDist > 0) {
+        progress = Math.max(0.05, Math.min(0.95, dDep / totalDist));
+      }
+      
+      const velocity = (f.velocity && f.velocity > 0) ? f.velocity : 220; // m/s
+      const secondsElapsed = (dDep * 1000) / velocity;
+      const secondsRemaining = (dArr * 1000) / velocity;
+      
+      const nowMs = Date.now();
+      const depTime = new Date(nowMs - secondsElapsed * 1000);
+      const arrTime = new Date(nowMs + secondsRemaining * 1000);
+      
+      const formatTime = (date) => {
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+        return `${hh}:${mm}`;
+      };
+      
+      depTimeStr = formatTime(depTime);
+      arrTimeStr = formatTime(arrTime);
+    }
+
+    const pctInt = Math.round(progress * 100);
+    const vrate = f.verticalRate || 0;
+    const vIcon = vrate > 0.5 ? _cargoDetailIcons.vrateUp : vrate < -0.5 ? _cargoDetailIcons.vrateDown : _cargoDetailIcons.vrateLevel;
+    const vLabel = vrate > 0.5 ? 'Tırmanıyor' : vrate < -0.5 ? 'Alçalıyor' : 'Düz Uçuş';
+    const vColor = vrate > 0.5 ? '#10B981' : vrate < -0.5 ? '#EF4444' : 'var(--text-3)';
+    const secsAgo = f.lastContact ? Math.max(0, Math.round((Date.now() - f.lastContact * 1000) / 1000)) : '—';
+    const typeLabel = f.type === 'cargo' ? 'Kargo' : 'Yolcu';
+    const typeColor = f.type === 'cargo' ? '#C8102E' : '#1D6FE8';
+
+    // 1. Photo Section
+    let photoHtml = '';
+    if (f.aircraftDetails && f.aircraftDetails.photoUrl) {
+      photoHtml = `
+        <div style="position:relative; width:100%; height:140px; border-radius:12px; overflow:hidden; margin-bottom:12px; border:1px solid var(--border-soft); background:var(--bg); box-shadow:var(--shadow-sm);">
+          <img src="${f.aircraftDetails.photoUrl}" alt="${f.aircraftDetails.registration || f.callsign}" style="width:100%; height:100%; object-fit:cover; display:block;" onerror="this.parentNode.style.display='none';">
+          <div style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(transparent, rgba(0,0,0,0.75)); padding:12px 10px 6px; display:flex; justify-content:space-between; align-items:flex-end;">
+            <div style="color:#fff; font-size:10px; font-weight:600; text-shadow:0 1px 2px rgba(0,0,0,0.6); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px;">
+              ${f.aircraftDetails.manufacturer || ''} ${f.aircraftDetails.type || f.aircraftDetails.icaoType || ''}
+            </div>
+            <div style="color:#fff; font-size:9px; font-family:monospace; background:rgba(0,0,0,0.5); padding:1px 4px; border-radius:3px; border:1px solid rgba(255,255,255,0.2); text-shadow:0 1px 1px rgba(0,0,0,0.4);">
+              ${f.aircraftDetails.registration || ''}
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      photoHtml = `
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:80px; border-radius:12px; margin-bottom:12px; border:1px dashed var(--border-soft); background:var(--bg); color:var(--text-3); font-size:11px; gap:6px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.5; transform:rotate(90deg);"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L14 19v-5.5L21 16z"/></svg>
+          <span style="font-weight:500;">Uçak fotoğrafı bulunamadı</span>
+        </div>
+      `;
+    }
+
+    // 2. Redesigned Premium Ticket & Arc Route Visual
+    const flightNum = f.flightNumber || String(f.callsign || '').replace(/^THY/i, 'TK') || 'TK—';
+    const uniqueGradId = 'flightGrad_' + (f.icao24 || '0') + '_' + Math.floor(Math.random()*1000);
+
+    const ticketHtml = `
+      <div class="ticket-container">
+        <div class="ticket-cutout-left"></div>
+        <div class="ticket-cutout-right"></div>
+        
+        <div class="ticket-header-row">
+          <div class="ticket-airport-block">
+            <div class="ticket-airport-code">${f.dep?.iata || f.dep?.icao || 'IST'}</div>
+            <div class="ticket-airport-time">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              ${depTimeStr}
+            </div>
+            <div class="ticket-airport-city" title="${f.dep?.city || f.dep?.name || 'Istanbul'}">${f.dep?.city || 'Istanbul'}</div>
+          </div>
+          
+          <div class="ticket-route-graphic">
+            <div class="ticket-route-svg-wrap">
+              <svg class="ticket-route-svg" viewBox="0 0 160 36" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="${uniqueGradId}" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#C8102E" stop-opacity="0.85"/>
+                    <stop offset="100%" stop-color="#E30613" stop-opacity="1"/>
+                  </linearGradient>
+                </defs>
+                
+                <!-- Background remaining dashed arc line -->
+                <path d="M 16 26 Q 80 4 144 26" fill="none" stroke="var(--border-soft, #CBD5E1)" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"/>
+                
+                <!-- Traveled solid gradient arc line -->
+                <path d="M 16 26 Q 80 4 144 26" fill="none" stroke="url(#${uniqueGradId})" stroke-width="2.8" stroke-linecap="round"
+                      pathLength="100" stroke-dasharray="${pctInt} 100"/>
+                
+                <!-- Departure Airport Ring/Dot -->
+                <circle cx="16" cy="26" r="6" fill="none" stroke="#C8102E" stroke-width="1.5" opacity="0.4"/>
+                <circle cx="16" cy="26" r="3.5" fill="#C8102E"/>
+                
+                <!-- Arrival Airport Ring/Dot -->
+                <circle cx="144" cy="26" r="6" fill="none" stroke="var(--border-color, #94A3B8)" stroke-width="1.5"/>
+                <circle cx="144" cy="26" r="3.5" fill="var(--text-3, #64748B)"/>
+              </svg>
+            </div>
+            <div class="ticket-badge-pill">✈ %${pctInt} Uçuşta</div>
+          </div>
+          
+          <div class="ticket-airport-block" style="text-align:right;">
+            <div class="ticket-airport-code">${f.arr?.iata || f.arr?.icao || 'ORD'}</div>
+            <div class="ticket-airport-time" style="justify-content:flex-end;">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              ${arrTimeStr}
+            </div>
+            <div class="ticket-airport-city" title="${f.arr?.city || f.arr?.name || 'Chicago'}">${f.arr?.city || 'Chicago'}</div>
+          </div>
+        </div>
+        
+        <div class="ticket-perforation"></div>
+        
+        <div class="ticket-grid">
+          <div class="ticket-grid-item">
+            <div class="ticket-label">UÇUŞ NUMARASI</div>
+            <div class="ticket-val">${flightNum}</div>
+          </div>
+          <div class="ticket-grid-item" style="text-align:right;">
+            <div class="ticket-label">KUYRUK TESCİL</div>
+            <div class="ticket-val" style="font-family:monospace; font-size:11.5px; font-weight:700;">${f.aircraftDetails?.registration || '—'}</div>
+          </div>
+          <div class="ticket-grid-item">
+            <div class="ticket-label">UÇAK TİPİ</div>
+            <div class="ticket-val" style="font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${f.aircraftDetails?.manufacturer || ''} ${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || 'Bilinmiyor'}">${f.aircraftDetails?.type || f.aircraftDetails?.icaoType || '777 F'}</div>
+          </div>
+          <div class="ticket-grid-item" style="text-align:right;">
+            <div class="ticket-label">UÇUŞ TİPİ</div>
+            <div style="margin-top:3px;"><span class="ticket-type-badge">${typeLabel}</span></div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    panel.innerHTML = `
+      ${photoHtml}
+      ${ticketHtml}
+      <div style="margin-top:6px; background:var(--bg); border:1px solid var(--border-soft); border-radius:12px; padding:6px 12px 10px;">
+        ${cargoDetailRow(_cargoDetailIcons.altitude, 'İrtifa (Barometrik)', Math.round((f.altitude || 0) * 3.281).toLocaleString('tr-TR') + ' ft')}
+        ${cargoDetailRow(_cargoDetailIcons.altitude, 'İrtifa (GPS)', f.geoAltitude != null ? Math.round(f.geoAltitude * 3.281).toLocaleString('tr-TR') + ' ft' : '—')}
+        ${cargoDetailRow(_cargoDetailIcons.speed, 'Yer Hızı', Math.round((f.velocity || 0) * 1.944) + ' kt')}
+        ${cargoDetailRow(vIcon, 'Dikey Hız', `${vLabel}${f.verticalRate ? ' · ' + Math.round(f.verticalRate * 196.85).toLocaleString('tr-TR') + ' ft/dk' : ''}`, vColor)}
+        ${cargoDetailRow(_cargoDetailIcons.transponder, 'Transponder (ICAO)', f.icao24.toUpperCase())}
+        ${cargoDetailRow(_cargoDetailIcons.squawk, 'Squawk Kodu', f.squawk || '—')}
+        ${cargoDetailRow(_cargoDetailIcons.country, 'Tescil Ülkesi', f.originCountry || '—')}
+        ${cargoDetailRow(_cargoDetailIcons.clock, 'Son İletişim', `<span id="cargo-detail-lastcontact">${secsAgo}s önce</span>`)}
+      </div>
+    `;
+  }
+
+  let _cargoShowNetwork = true;
+  const cargoNetworkIcon = () => L.divIcon({
+    className: 'cargo-network-icon',
+    html: `<svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3.5" fill="#9CA3AF" fill-opacity="0.55" stroke="#6B7280" stroke-width="1"/></svg>`,
+    iconSize: [8, 8],
+    iconAnchor: [4, 4],
+  });
+
+  window.toggleCargoNetworkLayer = function(checked) {
+    _cargoShowNetwork = checked;
+    renderCargoFlightsModal(false);
+  };
+
+  function startCargoAnimation() {
+    if (_cargoAnimInterval) return;
+    _cargoAnimInterval = setInterval(() => {
+      if (document.visibilityState !== 'visible') return;
+      const modal = document.getElementById('cargo-flights-modal');
+      if (!modal || modal.style.display === 'none') return;
+      if (!_cargoMap || !_cargoFlights.length) return;
+
+      const now = Date.now();
+      _cargoFlights.forEach((f, idx) => {
+        if (!f.velocity || f.velocity <= 0) return;
+        const dtSec = Math.min((now - (f.lastAnimMs || now)) / 1000, 5);
+        f.lastAnimMs = now;
+        if (dtSec <= 0) return;
+
+        const distKm = (f.velocity * dtSec) / 1000;
+        const trackRad = (f.track || 0) * Math.PI / 180;
+        const R = 6371;
+        const latRad = f.currentLat * Math.PI / 180;
+        const lonRad = f.currentLon * Math.PI / 180;
+
+        const newLatRad = Math.asin(
+          Math.sin(latRad) * Math.cos(distKm / R) +
+          Math.cos(latRad) * Math.sin(distKm / R) * Math.cos(trackRad)
+        );
+        const newLonRad = lonRad + Math.atan2(
+          Math.sin(trackRad) * Math.sin(distKm / R) * Math.cos(latRad),
+          Math.cos(distKm / R) - Math.sin(latRad) * Math.sin(newLatRad)
+        );
+
+        f.currentLat = newLatRad * 180 / Math.PI;
+        f.currentLon = newLonRad * 180 / Math.PI;
+
+        const pm = _cargoPlaneMarkers.get(f.icao24);
+        if (pm && pm.marker) {
+          pm.marker.setLatLng([f.currentLat, f.currentLon]);
+        }
+
+        if (_cargoSelectedIdx === idx) {
+          if (_cargoHighlightMarker) {
+            _cargoHighlightMarker.setLatLng([f.currentLat, f.currentLon]);
+          }
+          if (_cargoTraveledLine && f.dep && f.dep.lat != null) {
+            _cargoTraveledLine.setLatLngs(getArcPoints([f.dep.lat, f.dep.lon], [f.currentLat, f.currentLon]));
+          }
+          if (_cargoRemainingLine && f.arr && f.arr.lat != null) {
+            _cargoRemainingLine.setLatLngs(getArcPoints([f.currentLat, f.currentLon], [f.arr.lat, f.arr.lon]));
+          }
+        }
+      });
+    }, 1000);
+  }
+
+  function stopCargoAnimation() {
+    if (_cargoAnimInterval) {
+      clearInterval(_cargoAnimInterval);
+      _cargoAnimInterval = null;
+    }
+  }
+
+  function renderCargoFlightsModal(fitBounds = true) {
+    renderCargoFlightList();
+    if (!_cargoFlights.length) return;
+
+    if (!_cargoMap) {
+      _cargoMap = L.map('cargo-flights-map', { worldCopyJump: true, fadeAnimation: false }).setView([30, 30], 2);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 18,
+      }).addTo(_cargoMap);
+    }
+
+    _cargoMapLayers.forEach(l => _cargoMap.removeLayer(l));
+    _cargoMapLayers = [];
+    _cargoPlaneMarkers.clear();
+
+    if (_cargoShowNetwork && typeof TURKISH_CARGO_DESTINATIONS !== 'undefined') {
+      TURKISH_CARGO_DESTINATIONS.forEach(dest => {
+        const netMarker = L.marker([dest.lat, dest.lon], { icon: cargoNetworkIcon() })
+          .bindPopup(`<strong>Ağ Noktası:</strong> ${dest.name} (${dest.iata})<br>${dest.country}`);
+        netMarker.addTo(_cargoMap);
+        _cargoMapLayers.push(netMarker);
+      });
+    }
+
+    const bounds = [];
+    let prevSelectedCallsign = null;
+    if (_cargoSelectedIdx !== null && _cargoFlights[_cargoSelectedIdx]) {
+      prevSelectedCallsign = _cargoFlights[_cargoSelectedIdx].callsign;
+    }
+
+    _cargoFlights.forEach((f, idx) => {
+      const curLat = f.currentLat != null ? f.currentLat : f.lat;
+      const curLon = f.currentLon != null ? f.currentLon : f.lon;
+      bounds.push([curLat, curLon]);
+
+      const routeInfo = (f.dep || f.arr)
+        ? `${f.dep?.city || f.dep?.icao || '?'} → ${f.arr?.city || f.arr?.icao || 'Bilinmiyor'}<br>`
+        : `<span style="font-size:11px;color:#9CA3AF">Rota bilgisi mevcut değil</span><br>`;
+      const markerColor = f.signalLost ? '#9CA3AF' : '#C8102E';
+      const planeMarker = L.marker([curLat, curLon], { icon: cargoPlaneIcon(f.track, markerColor) });
+      
+      planeMarker.on('click', () => {
+        selectCargoFlight(idx, true);
+      });
+      
+      planeMarker.addTo(_cargoMap);
+      _cargoMapLayers.push(planeMarker);
+      _cargoPlaneMarkers.set(f.icao24, { marker: planeMarker, flight: f });
+    });
+
+    let newIdx = -1;
+    if (prevSelectedCallsign) {
+      const foundIdx = _cargoFlights.findIndex(f => f.callsign === prevSelectedCallsign);
+      if (foundIdx !== -1) newIdx = foundIdx;
+    }
+
+    if (newIdx !== -1) {
+      selectCargoFlight(newIdx, false);
+      if (fitBounds) {
+        const selectedFlight = _cargoFlights[newIdx];
+        const flightBounds = [[selectedFlight.lat, selectedFlight.lon]];
+        if (selectedFlight.dep && selectedFlight.dep.lat != null) {
+          flightBounds.push([selectedFlight.dep.lat, selectedFlight.dep.lon]);
+        }
+        if (selectedFlight.arr && selectedFlight.arr.lat != null) {
+          flightBounds.push([selectedFlight.arr.lat, selectedFlight.arr.lon]);
+        }
+        _cargoMap.fitBounds(flightBounds, { padding: [50, 50], maxZoom: 6 });
+      }
+    } else {
+      _cargoSelectedIdx = null;
+      renderCargoFlightDetail(null);
+      if (fitBounds && bounds.length) {
+        _cargoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 5 });
+      }
+    }
+
+    setTimeout(() => _cargoMap.invalidateSize(), 50);
+    startCargoAnimation();
+  }
+
+  window.openCargoFlightsModal = function() {
+    const m = document.getElementById('cargo-flights-modal');
+    if (!m) return;
+    _cargoActiveFilter = 'cargo';
+    _cargoFlights = _cargoAllFlights.filter(f => f.type === 'cargo');
+    document.querySelectorAll('#cargo-type-toggle .forex-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.type === 'cargo');
+    });
+    m.style.display = 'flex';
+    setTimeout(() => renderCargoFlightsModal(true), 50);
+  };
+  window.closeCargoFlightsModal = function() {
+    const m = document.getElementById('cargo-flights-modal');
+    if (m) m.style.display = 'none';
+    stopCargoAnimation();
+  };
+
+
+  window.initCargoCard = initCargoCard;
   window.initIataCard = initIataCard;
 
   // Run initializations
   initBafiCard();
   initFbxCard();
   initIataCard();
+  initCargoCard();
 
   // Sekme açık kalsa, kullanıcı hiçbir şey yapmasa bile saatte bir taze veriyi otomatik çek
   // (fetchCached zaten kendi TTL'ine göre gereksiz ağ isteğini engelliyor)
@@ -14325,6 +15458,7 @@ async function loadDashboard() {
     initBafiCard();
     initFbxCard();
     initIataCard();
+  initCargoCard();
   }, 60 * 60 * 1000);
 
   // ── THY Hisse Verisini Çek ve Göster ──────────────────────────────
@@ -14333,7 +15467,7 @@ async function loadDashboard() {
   let _thyCurrentPeriod = 'ytd';
 
   async function fetchThyStock(range = '1y') {
-    const cacheKey = `thy_stock_${range}`;
+    const cacheKey = `thy_stock_v7_${range}`;
     let ttl = 1 * 60 * 60 * 1000; // default (1y, 1m, 6m, ytd): 1h
     if (range === 'max') {
       ttl = 24 * 60 * 60 * 1000; // max: 24h
@@ -14358,14 +15492,14 @@ async function loadDashboard() {
 
     return fetchCached(cacheKey, async () => {
       const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/THYAO.IS?interval=${interval}&range=${range}`;
-      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}`;
+      const proxyUrl = `https://haberozetleri-proxy.demirbasemre.workers.dev/?url=${encodeURIComponent(yahooUrl)}&_t=${Date.now()}`;
 
-      const res = await fetch(proxyUrl);
+      const res = await fetch(proxyUrl, { cache: 'no-store' });
       if (!res.ok) throw new Error('Yahoo Finance proxy ' + res.status);
       const d = await res.json();
       if (d.chart && d.chart.error) throw new Error(d.chart.error.description);
       return d;
-    }, ttl);
+    }, ttl, d => !!(d && d.chart && d.chart.result && d.chart.result.length > 0));
   }
 
   function drawThyChartFromRaw(rawJSON, period) {
@@ -14729,14 +15863,29 @@ async function loadDashboard() {
         );
         const thyDateEl = document.getElementById('dc-thy-date');
         if (thyDateEl && lastObsDate) { thyDateEl.textContent = `Son veri: ${lastObsDate}`; applyDateBadgeFreshness(thyDateEl); }
+        try { localStorage.setItem('thy_last_good', JSON.stringify({ price, change, lastObsDate })); } catch (e) {}
       } catch (err) {
         console.error("THY kart güncelleme hatası:", err);
-        setCard('dc-thy', '—', null, '', 'Veri okunamadı');
+        setThyCardFromLastGood();
       }
     }).catch(err => {
       console.error("THY stock 1y fetch error:", err);
-      setCard('dc-thy', '—', null, '', 'Veri alınamadı');
+      setThyCardFromLastGood();
     });
+
+    // Canlı Yahoo Finance verisi alınamadığında son bilinen gerçek fiyatı göster (fake veri yerine)
+    function setThyCardFromLastGood() {
+      let lastGood = null;
+      try { lastGood = JSON.parse(localStorage.getItem('thy_last_good') || 'null'); } catch (e) {}
+      if (lastGood && typeof lastGood.price === 'number') {
+        setCard('dc-thy', lastGood.price.toFixed(2) + ' ₺', lastGood.change, 'Borsa İstanbul · hisse fiyatı',
+          `Son veri: ${lastGood.lastObsDate}<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>`);
+        const thyDateEl = document.getElementById('dc-thy-date');
+        if (thyDateEl) { thyDateEl.textContent = `Son veri: ${lastGood.lastObsDate}`; applyDateBadgeFreshness(thyDateEl); }
+      } else {
+        setCard('dc-thy', '—', null, '', 'Veri okunamadı');
+      }
+    }
   }
   initThyCard();
 
@@ -14833,6 +15982,13 @@ async function loadDashboard() {
         autoLabel: 'Günlük otomatik güncellenir',
         pillText: 'Günlük',
         tooltipMessage: 'Freightos Baltık Endeksi (FBX), günlük güncellenen küresel konteyner spot fiyat endeksidir. Veriler Cloudflare Worker aracılığıyla fbx.freightos.com kaynağından otomatik olarak çekilmektedir.'
+      };
+    }
+
+        if (cardId === 'dc-cargo') {
+      return {
+        isOpen: true,
+        tooltipMessage: 'Havadaki Turkish Cargo uçaklarının sayısı. Konumlar OpenSky Network ADS-B verisinden 60 saniyede bir otomatik güncellenir.'
       };
     }
 
@@ -14998,6 +16154,7 @@ async function loadDashboard() {
     'dc-fbx': { countdown: null, interval: null, initFn: () => typeof initFbxCard === 'function' ? initFbxCard() : Promise.resolve() },
     'dc-bafi': { countdown: null, interval: null, initFn: () => typeof initBafiCard === 'function' ? initBafiCard() : Promise.resolve() },
     'dc-iata': { countdown: null, interval: null, initFn: () => typeof initIataCard === 'function' ? initIataCard() : Promise.resolve() },
+    'dc-cargo': { countdown: 60, interval: 60, initFn: () => typeof initCargoCard === 'function' ? initCargoCard() : Promise.resolve() },
     'dc-wci': { countdown: null, interval: null, initFn: null }
   };
 
@@ -15092,6 +16249,91 @@ async function loadDashboard() {
     }, 1000);
   }
   startDashboardPolling();
+
+  // Safety net: 2sn sonra hâlâ skeleton'da kalan kartları temizle. Fake/statik sayı BASMA —
+  // yalnızca localStorage'daki son gerçek başarılı veriyi (fetchCached / *_last_good) kullan,
+  // o da yoksa dürüstçe "Veri alınamadı" göster.
+  setTimeout(() => {
+    const readCache = (key) => {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw).data : null;
+      } catch (e) { return null; }
+    };
+
+    const thyVal = document.querySelector('#dc-thy .dash-card-value');
+    if (thyVal && (thyVal.classList.contains('skeleton') || thyVal.textContent === '—')) {
+      let lastGood = null;
+      try { lastGood = JSON.parse(localStorage.getItem('thy_last_good') || 'null'); } catch (e) {}
+      if (lastGood && typeof lastGood.price === 'number') {
+        setCard('dc-thy', lastGood.price.toFixed(2) + ' ₺', lastGood.change, 'Borsa İstanbul · hisse fiyatı',
+          `Son veri: ${lastGood.lastObsDate}<br><a href="https://finance.yahoo.com/quote/THYAO.IS" target="_blank" rel="noopener">finance.yahoo.com →</a>`);
+        const thyDateEl = document.getElementById('dc-thy-date');
+        if (thyDateEl) thyDateEl.textContent = `Son veri: ${lastGood.lastObsDate}`;
+      } else {
+        setCard('dc-thy', '—', null, '', 'Veri alınamadı');
+      }
+    }
+
+    const bafiVal = document.querySelector('#dc-bafi .dash-card-value');
+    if (bafiVal && (bafiVal.classList.contains('skeleton') || bafiVal.textContent === '—')) {
+      const d = readCache('bafi_v8');
+      if (d?.latest?.price) {
+        setCard('dc-bafi', Number(d.latest.price).toLocaleString('tr-TR'), d.latest.change, 'Hava kargo spot tarifesi endeksi',
+          `Son veri: ${isoToDisplay(d.latest.date)}<br><a href="https://dashboard.tacindex.com" target="_blank" rel="noopener">TAC Index →</a>`);
+        setDateBadge('dc-bafi-date', isoToDisplay(d.latest.date));
+      } else {
+        setCard('dc-bafi', '—', null, '', 'Veri alınamadı');
+      }
+    }
+
+    const fbxVal = document.querySelector('#dc-fbx .dash-card-value');
+    if (fbxVal && (fbxVal.classList.contains('skeleton') || fbxVal.textContent === '—')) {
+      const d = readCache('fbx_v8');
+      if (d?.latest?.price) {
+        setCard('dc-fbx', d.latest.price.toLocaleString('en-US') + ' $', d.latest.change, 'Global konteyner spot fiyat endeksi',
+          `Son veri: ${d.latest.date}<br><a href="https://fbx.freightos.com" target="_blank" rel="noopener">fbx.freightos.com →</a>`);
+        setDateBadge('dc-fbx-date', isoToDisplay(d.latest.date));
+      } else {
+        setCard('dc-fbx', '—', null, '', 'Veri alınamadı');
+      }
+    }
+
+    const dEl = document.getElementById('iata-val-demand');
+    if (dEl && (dEl.classList.contains('skeleton') || dEl.textContent === '—' || dEl.textContent === '-')) {
+      const cEl = document.getElementById('iata-val-capacity');
+      const lfEl = document.getElementById('iata-val-loadfactor');
+      const srEl = document.getElementById('iata-val-spotrate');
+      const d = readCache('iata_full_data_v8');
+      if (d?.latest?.demand) {
+        if (dEl) { dEl.textContent = window.formatLF(d.latest.demand); dEl.classList.remove('skeleton'); }
+        if (cEl) { cEl.textContent = window.formatLF(d.latest.capacity); cEl.classList.remove('skeleton'); }
+        if (lfEl) { lfEl.textContent = window.formatLF(d.latest.loadFactor); lfEl.classList.remove('skeleton'); }
+        if (srEl) { const n = parseFloat(d.latest.spotRate); srEl.textContent = !isNaN(n) ? '$' + n.toFixed(2) : (d.latest.spotRate || '—'); srEl.classList.remove('skeleton'); }
+        const noteEl = document.getElementById('dc-iata-note');
+        if (noteEl) noteEl.innerHTML = `Son veri: ${d.latest.date}<br><a href="https://www.iata.org" target="_blank" rel="noopener">IATA Reports →</a>`;
+      } else {
+        if (dEl) { dEl.textContent = '—'; dEl.classList.remove('skeleton'); }
+        if (cEl) { cEl.textContent = '—'; cEl.classList.remove('skeleton'); }
+        if (lfEl) { lfEl.textContent = '—'; lfEl.classList.remove('skeleton'); }
+        if (srEl) { srEl.textContent = '—'; srEl.classList.remove('skeleton'); }
+        const noteEl = document.getElementById('dc-iata-note');
+        if (noteEl) noteEl.innerHTML = 'Veri alınamadı';
+      }
+    }
+
+    const cargoVal = document.querySelector('#dc-cargo .dash-card-value');
+    if (cargoVal && (cargoVal.classList.contains('skeleton') || cargoVal.textContent === '—')) {
+      let lastGood = null;
+      try { lastGood = JSON.parse(localStorage.getItem('cargo_count_last_good') || 'null'); } catch (e) {}
+      if (lastGood && typeof lastGood.count === 'number') {
+        setCard('dc-cargo', String(lastGood.count), null, 'Turkish Cargo', 'Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener">OpenSky Network →</a>');
+        setDateBadge('dc-cargo-date', lastGood.dateStr);
+      } else {
+        setCard('dc-cargo', '—', null, '', 'Veri alınamadı');
+      }
+    }
+  }, 2000);
 
   // BAFI haftalık yenileme: Unix epoch Perşembe'de başlar, 10080dk=7gün boundary + 3600sn buffer
   (function scheduleBafiWeekly() {
@@ -20121,7 +21363,7 @@ function initControls(allArticles) {
       const d = r.date
         ? new Date(r.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
         : '';
-      meta.textContent = (d ? 'Son bülten: ' + d + ' · ' : '') + _reports.length + ' bülten';
+      meta.textContent = d ? 'Son bülten: ' + d : '';
     }
     
     // update IATA home card meta if iata reports are loaded
@@ -20245,7 +21487,7 @@ function initControls(allArticles) {
         try {
           window._iataLatest = await fetchCached(
             'iata_latest_only',
-            () => fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata').then(r => r.ok ? r.json() : null).catch(() => null),
+            () => fetch('https://haberozetleri-proxy.demirbasemre.workers.dev/iata?t=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
             24 * 60 * 60 * 1000,
             (d) => !!(d && d.demand)
           );
@@ -20266,7 +21508,8 @@ function initControls(allArticles) {
             capacity: window._iataLatest.capacity,
             loadFactor: window._iataLatest.loadFactor,
             spotRate: window._iataLatest.spotRate,
-            link: window._iataLatest.pdfLink,
+            link: window._iataLatest.link || window._iataLatest.pdfLink,
+            pdfLink: window._iataLatest.pdfLink,
             summary: window._iataLatest.summary
           });
         }
@@ -23381,7 +24624,12 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Tarama kullanıcı isteğiyle durduruldu. O ana kadar taranan havayolları kaydedildi, kalanlar önceki verileriyle korundu (toplam ' + ((st.result && st.result.aircraft_count) || 0) + ' kayıt).');
           } else {
             document.getElementById('ac-progress-title').textContent = 'Güncelleme Tamamlandı';
-            showAcSummary(st.result);
+            const completed = st.completed_airlines || [];
+            showAcSummary({
+              updated: completed.filter(x => x.status === 'success').map(x => ({ name: x.name, code: x.code, count: x.count })),
+              skipped: completed.filter(x => x.status === 'skipped').map(x => ({ name: x.name, code: x.code })),
+              failed: completed.filter(x => x.status === 'error' || x.status === 'failed').map(x => ({ name: x.name, code: x.code, error: x.error }))
+            });
           }
         } catch(e) { 
           setTimeout(poll, 2000); 
@@ -25017,20 +26265,30 @@ window.toggleFinSources = function() {
 
 // ── INDICATORS CUSTOMIZATION ──────────────────────────────────────────
 
-const ALL_INDICATOR_CARDS = [
-  { id: 'dc-jetfuel', name: 'Jet Yakıtı', defaultVisible: true, isCargo: false },
-  { id: 'dc-brent', name: 'Brent Petrol', defaultVisible: true, isCargo: false },
-  { id: 'dc-thy', name: 'THYAO Hisse', defaultVisible: true, isCargo: false },
-  { id: 'dc-usd', name: 'Döviz & Parite', defaultVisible: true, isCargo: false },
-  { id: 'dc-wci', name: 'Dünya Konteyner Endeksi (WCI)', defaultVisible: true, isCargo: false },
-  { id: 'dc-bafi', name: 'Baltık Hava Kargo Endeksi (BAFI)', defaultVisible: true, isCargo: false },
-  { id: 'dc-iata', name: 'IATA Market Analizi', defaultVisible: true, isCargo: false },
-  { id: 'dc-fbx', name: 'Freightos Baltık Endeksi (FBX)', defaultVisible: true, isCargo: false }
-];
+// Kart listesi DOM'dan türetilir: #dash-sec-anlık .dash-cards içindeki her
+// .dash-card[id] otomatik olarak özelleştirme listesine girer; kayıtlı sıralamada
+// olmayan yeni kartlar getIndicatorsConfig içinde listenin SONUNA eklenir
+// (mevcut kullanıcı ayarları bozulmaz). İsim kartın .dash-card-label metninden
+// alınır; farklı bir ad gerekiyorsa INDICATOR_NAME_OVERRIDES'a ekle.
+const INDICATOR_NAME_OVERRIDES = {
+  'dc-thy': 'THYAO Hisse',
+  'dc-iata': 'IATA Market Analizi'
+};
+
+const ALL_INDICATOR_CARDS = Array.from(
+  document.querySelectorAll('#dash-sec-anlık .dash-cards .dash-card[id]')
+).map(el => ({
+  id: el.id,
+  name: INDICATOR_NAME_OVERRIDES[el.id] ||
+        (el.querySelector('.dash-card-label')?.textContent || el.id).replace(/\s+/g, ' ').trim(),
+  defaultVisible: true,
+  isCargo: false
+}));
 
 // Yeni eklenen kartlar: { addedAt: ISO tarih, badgeDays: kaç gün "YENİ" etiketi görünsün }
 const NEW_CARDS = {
-  'dc-bafi': { addedAt: '2026-06-18', badgeDays: 3 }
+  'dc-bafi': { addedAt: '2026-06-18', badgeDays: 3 },
+  'dc-licargo': { addedAt: '2026-07-20', badgeDays: 3 }
 };
 
 function isNewBadgeVisible(cardId) {
@@ -25041,8 +26299,8 @@ function isNewBadgeVisible(cardId) {
 }
 
 const DEFAULT_INDICATORS_CONFIG = {
-  order: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx'],
-  visible: ['dc-jetfuel', 'dc-brent', 'dc-thy', 'dc-usd', 'dc-wci', 'dc-bafi', 'dc-iata', 'dc-fbx']
+  order: ALL_INDICATOR_CARDS.map(c => c.id),
+  visible: ALL_INDICATOR_CARDS.map(c => c.id)
 };
 
 window.getIndicatorsConfig = function() {
@@ -25052,7 +26310,9 @@ window.getIndicatorsConfig = function() {
       const parsed = JSON.parse(saved);
       const allIds = ALL_INDICATOR_CARDS.map(c => c.id);
       if (parsed.order && parsed.visible) {
-        // Kayıp kartları sıralamanın sonuna ekle (self-healing)
+        // Artık var olmayan kart id'lerini ayıkla
+        parsed.order = parsed.order.filter(id => allIds.includes(id));
+        // Kayıtta olmayan (yeni) kartları sıralamanın sonuna ekle (self-healing)
         allIds.forEach(id => {
           if (!parsed.order.includes(id)) parsed.order.push(id);
         });
@@ -25089,11 +26349,6 @@ window.applyIndicatorsConfig = function() {
       el.style.display = 'none';
     }
   });
-
-  // dc-licargo özelleştirme/sıralama sistemine dahil değil (ALL_INDICATOR_CARDS'ta yok) —
-  // yukarıdaki döngü kayıtlı kartları sona taşıdığından, sabitlenmezse listenin başına kayar.
-  const licargoEl = document.getElementById('dc-licargo');
-  if (licargoEl) mainContainer.appendChild(licargoEl);
 
   // "YENİ" badge ekle / kaldır
   ALL_INDICATOR_CARDS.forEach(card => {
@@ -25356,6 +26611,43 @@ window.resetIndicatorsConfig = function() {
         </div>
         <div class="dash-chart-wrap" style="position: relative; width: 100%; height: 320px; margin-top: 10px;">
           <canvas id="chart-thy"></canvas>
+        </div>
+      </div>
+    </div>
+
+    
+    <!-- Kargo Uçakları Harita Modali -->
+    <div id="cargo-flights-modal" class="rel-add-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="cargo-flights-title">
+      <div class="chart-modal-card" style="max-width: 1340px; width: 97vw; max-height: 92vh;">
+        <div class="rel-add-head">
+          <div id="cargo-flights-title" class="rel-add-title">Havadaki THY Uçakları</div>
+          <button class="rel-add-x" onclick="closeCargoFlightsModal()" aria-label="Kapat">×</button>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:10px; flex-wrap:wrap;">
+          <div class="forex-toggle-btns" id="cargo-type-toggle">
+            <button class="forex-btn active" id="btn-cargo-type-cargo" data-type="cargo" onclick="setCargoFlightsFilter('cargo')">Kargo</button>
+            <button class="forex-btn" id="btn-cargo-type-pax" data-type="pax" onclick="setCargoFlightsFilter('pax')">Yolcu</button>
+          </div>
+          <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-2); cursor:pointer;">
+            <input type="checkbox" id="cargo-network-toggle" checked onchange="toggleCargoNetworkLayer(this.checked)">
+            Ağ noktalarını göster
+          </label>
+        </div>
+        <div id="cargo-flights-body" style="display:flex; gap:14px; margin-top:10px; height:540px;">
+          <div id="cargo-flight-list" style="width:260px; flex-shrink:0; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px;"></div>
+          <div style="flex:1; position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--border); min-width:0;">
+            <div id="cargo-flights-map" style="position:absolute; inset:0;"></div>
+          </div>
+          <div id="cargo-flight-detail" style="width:280px; flex-shrink:0; overflow-y:auto; border:1px solid var(--border); border-radius:10px; padding:14px; background:var(--surface);"></div>
+        </div>
+        <div style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border-soft); display:flex; flex-wrap:wrap; gap:16px; align-items:center; font-size:11px; color:var(--text-3);">
+          <span>Kaynak: <a href="https://opensky-network.org" target="_blank" rel="noopener" style="color:var(--text-2); font-weight:600;">OpenSky Network</a></span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span class="cargo-live-dot" style="margin:0;"></span><span style="color:#C8102E; font-weight:600;">Kırmızı Uçak / Yeşil Nokta</span>: Canlı Sinyal</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span class="cargo-signal-lost-dot" style="margin:0;"></span><span style="color:#D97706; font-weight:600;">Turuncu Uçak / Turuncu Nokta</span>: Sinyal Kaybı (Tahmini Konum)</span>
+          <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:7px; height:7px; background:#9CA3AF; border-radius:50%; display:inline-block;"></span><span>Gri Noktalar</span>: Ağ Destinasyonları</span>
+        </div>
+        <div style="margin-top:6px; font-size:11px; color:var(--text-3); line-height:1.4;">
+          * Konumlar canlı ADS-B verisidir. Sinyal kaybı (kapsama alanı dışı) durumunda son bilinen konum, hız ve yön bilgileri kullanılarak tahmini seyrüsefer (dead reckoning) ile seyahat simüle edilmeye devam eder. Kalkış/varış tahminleri arka planda kademeli yüklenir.
         </div>
       </div>
     </div>

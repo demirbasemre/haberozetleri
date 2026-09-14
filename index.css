@@ -2086,6 +2086,34 @@
   @media (prefers-reduced-motion: reduce) {
     .analysis-drawer, .analysis-backdrop { transition: none; }
   }
+  .web-search-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: rgba(0,86,179,0.06);
+    border-left: 3px solid #0056b3;
+    border-top: 1px dashed rgba(0,86,179,0.3);
+    border-radius: 0 6px 6px 0;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #1d3f66;
+  }
+  .web-search-label {
+    display: block;
+    font-weight: 700;
+    color: #0056b3;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+  .web-search-source {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+  .web-search-source a { color: var(--red); text-decoration: none; font-weight: 600; }
+  .web-search-source a:hover { text-decoration: underline; }
 
   /* ── INFINITE SCROLL SENTINEL ───────────────── */
   .load-sentinel {
@@ -2477,9 +2505,15 @@
     margin-top: auto;
     padding-top: 7px;
     border-top: 1px solid var(--border-soft);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
   .dc-date-footer .dash-card-date-badge {
     margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
   }
   .forex-parity-toggle {
     display: flex;
@@ -2887,7 +2921,8 @@
   .dash-card-change.down { color: var(--red); }
   .dash-card-change.flat { color: var(--text-3); }
   .dash-card-sub  { font-size: 11px; color: var(--text-2); margin-top: 4px; line-height: 1.4; min-height: 1.4em; }
-  .dash-card-note { font-size: 10px; color: var(--text-3); margin-top: 2px; line-height: 1.4; }
+  .dash-card-footer { text-align: center; }
+  .dash-card-note { font-size: 10px; color: var(--text-3); margin-top: 2px; line-height: 1.4; text-align: center; }
   .dash-card-note a { color: var(--text-3); text-decoration: underline; }
   .dash-card-date-badge {
     display: inline-block;
@@ -2901,6 +2936,7 @@
     padding: 2px 7px;
     letter-spacing: 0.01em;
     white-space: nowrap;
+    text-align: center;
     transition: background 0.3s, color 0.3s;
   }
   [data-theme="dark"] .dash-card-date-badge {
@@ -3150,6 +3186,9 @@
   .chart-legend .cl-item {
     display: flex; align-items: center; gap: 5px;
     font-size: 10.5px; color: var(--text-2); font-weight: 500;
+  }
+  .chart-legend .cl-yr {
+    color: var(--text-3); font-weight: 500; font-variant-numeric: tabular-nums;
   }
   .chart-legend .cl-dot {
     display: inline-block; width: 9px; height: 9px;
@@ -8919,6 +8958,30 @@
 }
 [data-tweak-density="spacious"] #dash-sec-endeks .dash-cards {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+}
+
+#dc-iata {
+  display: flex;
+  flex-direction: column;
+}
+
+#dc-iata .cargo-metrics-grid {
+  flex: 1;
+  align-content: center;
+  margin: 10px 0;
+}
+
+#dc-iata .dash-card-footer {
+  display: none;
+}
+
+#dc-iata .dc-date-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 7px;
+  border-top: 1px solid var(--border-soft);
 }
 
 .cargo-metrics-grid {
