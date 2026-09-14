@@ -9859,17 +9859,19 @@ function renderCustomerCards(articles) {
   }
   if (emptyEl) emptyEl.style.display = 'none';
 
-  // Group by date or render in grid
+  // Group by normalised date key (YYYY-MM-DD) — same logic as Haberler tab,
+  // so English/short/slash date formats don't get sliced into garbage keys.
   const byDate = {};
   articles.forEach(a => {
-    const d = a.date ? a.date.slice(0, 10) : 'Tarihsiz';
+    const parts = extractDateParts(a.date);
+    const d = parts ? `${parts.y}-${parts.m}-${parts.day}` : 'Tarihsiz';
     if (!byDate[d]) byDate[d] = [];
     byDate[d].push(a);
   });
 
   const dates = Object.keys(byDate).sort((a, b) => {
-    if (a === 'Tarihsiz') return 1;
-    if (b === 'Tarihsiz') return -1;
+    if (a === 'Tarihsiz') return -1;
+    if (b === 'Tarihsiz') return 1;
     return b.localeCompare(a);
   });
 
