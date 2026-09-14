@@ -17681,13 +17681,15 @@ async function loadDashboard() {
       let isEstimatedTrack = false;
       if (f._realTrack && f._realTrack.length > 1) {
         traveledPoints = f._realTrack.map(pt => [pt[0], pt[1]]);
-        traveledPoints.push([targetLat, targetLon]);
         f._realTrack.forEach(pt => bounds.push([pt[0], pt[1]]));
       } else if (f.dep && f.dep.lat != null) {
-        // Gerçek track henüz inmediyse, kalkıştan uçağa devasa yay yerine
-        // uçağın rotasına uygun geçici kılavuz çizgi (kesikli ve hafif)
-        traveledPoints = getHeadingAlignedArc([f.dep.lat, f.dep.lon], [targetLat, targetLon], { endBearing: f.track, numPoints: 30 });
-        isEstimatedTrack = true;
+        // Kalkış ve varış aynı olamaz (örn. IST -> IST hatası)
+        const isDepSameAsArr = f.arr && f.arr.lat != null && getDistance(f.dep.lat, f.dep.lon, f.arr.lat, f.arr.lon) < 50;
+        if (!isDepSameAsArr) {
+          // Gerçek track henüz inmediyse, kalkıştan uçağa uçağın rotasına uygun geçici kılavuz çizgi
+          traveledPoints = getHeadingAlignedArc([f.dep.lat, f.dep.lon], [targetLat, targetLon], { endBearing: f.track, numPoints: 30 });
+          isEstimatedTrack = true;
+        }
       }
 
       if (f.dep && f.dep.lat != null) {
@@ -17722,15 +17724,25 @@ async function loadDashboard() {
       }
 
       if (pan) {
-        // Antimeridyen geçişi kontrolü: Boylam farkı > 180° ise tüm dünyayı zoom-out yapmak yerine
-        // Flightradar24 gibi uçağın canlı konumuna odaklan
-        const allLons = bounds.map(b => ((b[1] + 180) % 360 + 360) % 360 - 180);
-        const crossesAntimeridian = (Math.max(...allLons) - Math.min(...allLons)) > 180;
-        
-        if (!crossesAntimeridian && bounds.length >= 2) {
-          _cargoMap.fitBounds(bounds, { padding: [60, 60], maxZoom: 6 });
+        // Kalkış, uçak ve varış noktalarını haritaya sığdır
+        const keyBounds = [[targetLat, targetLon]];
+        if (f.dep && f.dep.lat != null) keyBounds.push([f.dep.lat, f.dep.lon]);
+        if (f.arr && f.arr.lat != null) keyBounds.push([f.arr.lat, f.arr.lon]);
+
+        const lons = keyBounds.map(b => b[1]);
+        const minLon = Math.min(...lons);
+        const maxLon = Math.max(...lons);
+        const lonSpan = maxLon - minLon;
+
+        // Gerçekten Pasifik / Antimeridyen aşan transpasifik uçuşlar (örn. Doğu Asya <-> ABD Batı Yakası)
+        const isTranspacific = lonSpan > 200 && f.dep && f.arr && ((f.dep.lon > 100 && f.arr.lon < -70) || (f.dep.lon < -70 && f.arr.lon > 100));
+
+        if (!isTranspacific && keyBounds.length >= 2) {
+          _cargoMap.fitBounds(keyBounds, { padding: [50, 50], maxZoom: 6 });
+        } else if (bounds.length >= 2 && lonSpan <= 180) {
+          _cargoMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 6 });
         } else {
-          _cargoMap.setView([targetLat, targetLon], 5, { animate: true });
+          _cargoMap.setView([targetLat, targetLon], 4, { animate: true });
         }
       }
     }
@@ -17958,6 +17970,23 @@ async function loadDashboard() {
             }
 
             const currentPoint = pts[pts.length - 1];
+            if (currentPoint && currentPoint[0] != null && currentPoint[1] != null) {
+              f.currentLat = currentPoint[0];
+              f.currentLon = currentPoint[1];
+              const latestTrack = f._realTrackRaw && f._realTrackRaw.length > 0 ? f._realTrackRaw[f._realTrackRaw.length - 1][4] : null;
+              if (latestTrack != null && isFinite(latestTrack)) {
+                f.track = latestTrack;
+              }
+              const pm = _cargoPlaneMarkers.get(f.icao24);
+              if (pm && pm.marker) {
+                pm.marker.setLatLng([f.currentLat, f.currentLon]);
+                pm.marker.setIcon(cargoPlaneIcon(f.track, routeColor, f.signalLost));
+              }
+              if (_cargoHighlightMarker) {
+                _cargoHighlightMarker.setLatLng([f.currentLat, f.currentLon]);
+              }
+            }
+
             if (_cargoRemainingLine && f.arr && f.arr.lat != null) {
               const currentTrack = f.track != null ? f.track : (f._realTrackRaw && f._realTrackRaw.length > 0 ? f._realTrackRaw[f._realTrackRaw.length - 1][4] : null);
               const segmentedRemaining = splitAntimeridian(getHeadingAlignedArc([currentPoint[0], currentPoint[1]], [f.arr.lat, f.arr.lon], { startBearing: currentTrack }));
