@@ -1,7 +1,7 @@
 {
-  "lastScannedId": 1849,
-  "lastScanned": "2026-07-18T23:15:58.667Z",
-  "scannedCount": 109,
+  "lastScannedId": 2911,
+  "lastScanned": "2026-08-22T23:16:10.587Z",
+  "scannedCount": 171,
   "airlines": [
     {
       "id": "dyn_iag_cargo",
@@ -582,7 +582,340 @@
         "texel air"
       ],
       "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=texelair.com"
+    },
+    {
+      "id": "dyn_bbn_airlines",
+      "label": "Bbn Airlines",
+      "group": "passenger",
+      "kw": [
+        "bbn airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=bbnairlines.com"
+    },
+    {
+      "id": "dyn_mng_airlines",
+      "label": "Mng Airlines",
+      "group": "cargo",
+      "kw": [
+        "mng airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=mngairlines.com"
+    },
+    {
+      "id": "dyn_fuji_dream_airlines",
+      "label": "Fuji Dream Airlines",
+      "group": "passenger",
+      "kw": [
+        "fuji dream airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=fujidream.co.jp"
+    },
+    {
+      "id": "dyn_maersk_air_cargo",
+      "label": "Maersk Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "maersk air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=maersk.com"
+    },
+    {
+      "id": "dyn_klm_cargo",
+      "label": "Klm Cargo",
+      "group": "cargo",
+      "kw": [
+        "klm cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=klmcargo.com"
+    },
+    {
+      "id": "dyn_scat_airlines",
+      "label": "Scat Airlines",
+      "group": "passenger",
+      "kw": [
+        "scat airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=scat.kz"
+    },
+    {
+      "id": "dyn_acc_aviation",
+      "label": "Acc Aviation",
+      "group": "passenger",
+      "kw": [
+        "acc aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=accaviation.com"
+    },
+    {
+      "id": "dyn_neutral_air",
+      "label": "Neutral Air",
+      "group": "cargo",
+      "kw": [
+        "neutral air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=neutralairpartner.com"
+    },
+    {
+      "id": "dyn_universal_aviation",
+      "label": "Universal Aviation",
+      "group": "passenger",
+      "kw": [
+        "universal aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=universalaviation.aero"
+    },
+    {
+      "id": "dyn_textron_aviation",
+      "label": "Textron Aviation",
+      "group": "passenger",
+      "kw": [
+        "textron aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=txtav.com"
+    },
+    {
+      "id": "dyn_smbc_aviation",
+      "label": "Smbc Aviation",
+      "group": "passenger",
+      "kw": [
+        "smbc aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=smbcaviationcapital.com"
+    },
+    {
+      "id": "dyn_airhub_aviation",
+      "label": "Airhub Aviation",
+      "group": "cargo",
+      "kw": [
+        "airhub aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=airhubaviation.com"
+    },
+    {
+      "id": "dyn_royal_air_maroc_cargo",
+      "label": "Royal Air Maroc Cargo",
+      "group": "cargo",
+      "kw": [
+        "royal air maroc cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=royalairmaroc-cargo.com"
+    },
+    {
+      "id": "dyn_africa_world_airlines",
+      "label": "Africa World Airlines",
+      "group": "passenger",
+      "kw": [
+        "africa world airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=flyawa.com"
+    },
+    {
+      "id": "dyn_golden_aviation",
+      "label": "Golden Aviation",
+      "group": "charter",
+      "kw": [
+        "golden aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=goldenaviation.com"
+    },
+    {
+      "id": "dyn_raya_airways",
+      "label": "Raya Airways",
+      "group": "cargo",
+      "kw": [
+        "raya airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=rayaairways.com"
+    },
+    {
+      "id": "dyn_north_air",
+      "label": "North Air",
+      "group": "charter",
+      "kw": [
+        "north air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=northair.co.uk"
+    },
+    {
+      "id": "dyn_martinair_cargo",
+      "label": "Martinair Cargo",
+      "group": "cargo",
+      "kw": [
+        "martinair cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=martinair.com"
+    },
+    {
+      "id": "dyn_antonov_airlines",
+      "label": "Antonov Airlines",
+      "group": "cargo",
+      "kw": [
+        "antonov airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=antonov-airlines.com"
+    },
+    {
+      "id": "dyn_apoc_aviation",
+      "label": "Apoc Aviation",
+      "group": "charter",
+      "kw": [
+        "apoc aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=apocaviation.com"
+    },
+    {
+      "id": "dyn_sarla_aviation",
+      "label": "Sarla Aviation",
+      "group": "passenger",
+      "kw": [
+        "sarla aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=sarlaaviation.com"
+    },
+    {
+      "id": "dyn_delta_air_lines",
+      "label": "Delta Air Lines",
+      "group": "passenger",
+      "kw": [
+        "delta air lines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=delta.com"
+    },
+    {
+      "id": "dyn_network_aviation",
+      "label": "Network Aviation",
+      "group": "passenger",
+      "kw": [
+        "network aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=networkaviation.com.au"
+    },
+    {
+      "id": "dyn_network_cargo",
+      "label": "Network Cargo",
+      "group": "cargo",
+      "kw": [
+        "network cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=network-cargo.com"
+    },
+    {
+      "id": "dyn_air_one_aviation",
+      "label": "Air One Aviation",
+      "group": "cargo",
+      "kw": [
+        "air one aviation"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=aironeaviation.com"
+    },
+    {
+      "id": "dyn_vietjet_air_cargo",
+      "label": "Vietjet Air Cargo",
+      "group": "cargo",
+      "kw": [
+        "vietjet air cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=vietjetaircargo.com"
+    },
+    {
+      "id": "dyn_starlux_airlines",
+      "label": "Starlux Airlines",
+      "group": "passenger",
+      "kw": [
+        "starlux airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=starlux-airlines.com"
+    },
+    {
+      "id": "dyn_taag_angola_airlines",
+      "label": "Taag Angola Airlines",
+      "group": "passenger",
+      "kw": [
+        "taag angola airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=taag.com"
+    },
+    {
+      "id": "dyn_uzbekistan_airways",
+      "label": "Uzbekistan Airways",
+      "group": "passenger",
+      "kw": [
+        "uzbekistan airways"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=uzairways.com"
+    },
+    {
+      "id": "dyn_azerbaijan_airlines",
+      "label": "Azerbaijan Airlines",
+      "group": "passenger",
+      "kw": [
+        "azerbaijan airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=azal.az"
+    },
+    {
+      "id": "dyn_skyways_air",
+      "label": "Skyways Air",
+      "group": "passenger",
+      "kw": [
+        "skyways air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=skyways.com"
+    },
+    {
+      "id": "dyn_one_air",
+      "label": "One Air",
+      "group": "cargo",
+      "kw": [
+        "one air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=one-air.aero"
+    },
+    {
+      "id": "dyn_amazon_prime_air",
+      "label": "Amazon Prime Air",
+      "group": "cargo",
+      "kw": [
+        "amazon prime air"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=amazon.com"
+    },
+    {
+      "id": "dyn_dnepr_airlines",
+      "label": "Dnepr Airlines",
+      "group": "passenger",
+      "kw": [
+        "dnepr airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=dniproavia.com"
+    },
+    {
+      "id": "dyn_croatia_airlines",
+      "label": "Croatia Airlines",
+      "group": "passenger",
+      "kw": [
+        "croatia airlines"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=croatiaairlines.com"
+    },
+    {
+      "id": "dyn_taag_cargo",
+      "label": "Taag Cargo",
+      "group": "cargo",
+      "kw": [
+        "taag cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=taag.com"
     }
   ],
-  "gsa": []
+  "gsa": [
+    {
+      "id": "dyn_menzies_aviation_cargo",
+      "label": "Menzies Aviation Cargo",
+      "kw": [
+        "menzies aviation cargo"
+      ],
+      "logoUrl": "https://www.google.com/s2/favicons?sz=32&domain=menziesaviation.com"
+    }
+  ]
 }

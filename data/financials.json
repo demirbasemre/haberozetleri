@@ -854,6 +854,39 @@
         "2024": 82.2,
         "2025": 83.19
       }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 8702
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 7205
+        },
+        "operating_profit_musd": {
+          "2026-Q2": -64
+        },
+        "net_profit_musd": {
+          "2026-Q2": 197
+        },
+        "ev_ebitda": {
+          "2026-Q2": 5.6
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 3.4
+        },
+        "operating_margin_pct": {
+          "2026-Q2": -0.89
+        },
+        "net_margin_pct": {
+          "2026-Q2": 2.73
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 552
+        }
+      }
     }
   },
   "AF": {
@@ -1130,6 +1163,39 @@
         "2024": 87.2,
         "2025": 86.67
       }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 3726
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 10787
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 529
+        },
+        "net_profit_musd": {
+          "2026-Q2": 179
+        },
+        "ev_ebitda": {
+          "2026-Q2": 2.7
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 1.7
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 4.9
+        },
+        "net_margin_pct": {
+          "2026-Q2": 1.66
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 599
+        }
+      }
     }
   },
   "CI": {
@@ -1198,7 +1264,8 @@
         "2021": 4767.61,
         "2022": 4596.06,
         "2023": 5273.87,
-        "2024": 6222.4
+        "2024": 6222.4,
+        "2025": 6534.38
       },
       "operating_profit_musd": {
         "2011": -51.33,
@@ -1230,7 +1297,8 @@
         "2021": 323.17,
         "2022": 93.16,
         "2023": 222.44,
-        "2024": 472.91
+        "2024": 472.91,
+        "2025": 505.31
       },
       "employees": {
         "2011": 10520,
@@ -1346,7 +1414,7 @@
         "2022": 1502564,
         "2023": 9597000,
         "2024": 11464422,
-        "2025": 11746082
+        "2025": 14850000
       },
       "ask_m": {
         "2021": 3829.0,
@@ -1699,6 +1767,24 @@
         "2024": 83.21,
         "2025": 85.21
       }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 11415
+        },
+        "ev_ebitda": {
+          "2026-Q2": 4.9
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 1.7
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 237
+        }
+      }
     }
   },
   "ET": {
@@ -1765,7 +1851,9 @@
         "2021": 4843.49,
         "2022": 6068.07,
         "2023": 7000,
-        "2024": 7600
+        "2024": 7600,
+        "2025": 7600.0,
+        "2026": 9100.0
       },
       "operating_profit_musd": {
         "2010": 23.96,
@@ -1907,7 +1995,9 @@
         "2021": 7053000,
         "2022": 11327000,
         "2023": 15856000,
-        "2024": 19000000
+        "2024": 19000000,
+        "2025": 19100000,
+        "2026": 20700000
       },
       "ask_m": {
         "2020": 31037.0,
@@ -2258,6 +2348,39 @@
         "2024": 82.78,
         "2025": 83.41
       }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 11422
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 12954
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 399
+        },
+        "net_profit_musd": {
+          "2026-Q2": 143
+        },
+        "ev_ebitda": {
+          "2026-Q2": 4.1
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 1.6
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 3.08
+        },
+        "net_margin_pct": {
+          "2026-Q2": 1.1
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 740
+        }
+      }
     }
   },
   "LA": {
@@ -2561,6 +2684,39 @@
         "2024": 84.3,
         "2025": 84.37
       }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 15296
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 4123
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 218
+        },
+        "net_profit_musd": {
+          "2026-Q2": 125
+        },
+        "ev_ebitda": {
+          "2026-Q2": 5.1
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 1.5
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 5.29
+        },
+        "net_margin_pct": {
+          "2026-Q2": 3.03
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 383
+        }
+      }
     }
   },
   "KE": {
@@ -2822,6 +2978,39 @@
         "2023": 84.25,
         "2024": 84.2,
         "2025": 84.44
+      }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 6947
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 4545
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 353
+        },
+        "net_profit_musd": {
+          "2026-Q2": 83
+        },
+        "ev_ebitda": {
+          "2026-Q2": 6.8
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 4.3
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 7.77
+        },
+        "net_margin_pct": {
+          "2026-Q2": 1.83
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 169
+        }
       }
     }
   },
@@ -3101,6 +3290,33 @@
         "2024": 79.84,
         "2025": 81.87
       }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 16286
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 6432
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 214
+        },
+        "net_profit_musd": {
+          "2026-Q2": 248
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 3.33
+        },
+        "net_margin_pct": {
+          "2026-Q2": 3.86
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 535
+        }
+      }
     }
   },
   "SQ": {
@@ -3366,6 +3582,33 @@
         "2024": 86.08,
         "2025": 86.9
       }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 17612
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 4464
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 82
+        },
+        "net_profit_musd": {
+          "2026-Q2": -59
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 1.84
+        },
+        "net_margin_pct": {
+          "2026-Q2": -1.32
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 220
+        }
+      }
     }
   },
   "OZ": {
@@ -3413,7 +3656,8 @@
         "2021": 3444.5,
         "2022": 4447.7,
         "2023": 5869.98,
-        "2024": 5656.63
+        "2024": 5656.63,
+        "2025": 5310.0
       },
       "operating_profit_musd": {
         "2011": 322.43,
@@ -3585,7 +3829,7 @@
   "SV": {
     "name": "Saudia",
     "color": "#059669",
-    "financial": {},
+    "country": "Suudi Arabistan",
     "passengers": {
       "passengers": {
         "2022": 25000000,
@@ -3930,6 +4174,39 @@
         "2023": 73.72,
         "2024": 77.31,
         "2025": 81.33
+      }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 9440
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 4221
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 130
+        },
+        "net_profit_musd": {
+          "2026-Q2": 122
+        },
+        "ev_ebitda": {
+          "2026-Q2": 4.0
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": -0.1
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 3.08
+        },
+        "net_margin_pct": {
+          "2026-Q2": 2.89
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 301
+        }
       }
     }
   },
@@ -4464,6 +4741,33 @@
         "2024": 84.38,
         "2025": 85.74
       }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 12058
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 6901
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 451
+        },
+        "net_profit_musd": {
+          "2026-Q2": 214
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 6.54
+        },
+        "net_margin_pct": {
+          "2026-Q2": 3.1
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 692
+        }
+      }
     }
   },
   "AV": {
@@ -4879,13 +5183,12 @@
         "2024": 11.7,
         "2025": 2.5
       }
-    },
-    "passengers": {}
+    }
   },
   "A4B": {
     "name": "AJet",
-    "color": "#1D6FE8",
-    "financial": {},
+    "color": "#0284c7",
+    "country": "Türkiye",
     "passengers": {
       "passengers": {
         "2021": 13333000,
@@ -4928,6 +5231,658 @@
       },
       "load_factor_pct": {
         "2021": 74.0
+      }
+    }
+  },
+  "DAL": {
+    "name": "Delta Air Lines",
+    "color": "#e11d48",
+    "country": "ABD",
+    "financial": {
+      "passenger_revenue_musd": {
+        "2023": 48909,
+        "2024": 50894,
+        "2025": 51768
+      },
+      "cargo_revenue_musd": {
+        "2023": 723,
+        "2024": 822,
+        "2025": 900
+      },
+      "other_revenue_musd": {
+        "2023": 8416,
+        "2024": 9927,
+        "2025": 10696
+      },
+      "total_revenue_musd": {
+        "2023": 58048,
+        "2024": 61643,
+        "2025": 63364
+      },
+      "operating_profit_musd": {
+        "2023": 5521,
+        "2024": 5995,
+        "2025": 5822
+      },
+      "net_profit_musd": {
+        "2023": 4609,
+        "2024": 3457,
+        "2025": 5005
+      },
+      "operating_margin_pct": {
+        "2023": 9.51,
+        "2024": 9.73,
+        "2025": 9.19
+      },
+      "net_margin_pct": {
+        "2023": 7.94,
+        "2024": 5.61,
+        "2025": 7.9
+      },
+      "passenger_revenue_growth_pct": {
+        "2024": 4.06,
+        "2025": 1.72
+      },
+      "cargo_revenue_growth_pct": {
+        "2024": 13.69,
+        "2025": 9.49
+      },
+      "other_revenue_growth_pct": {
+        "2024": 17.95,
+        "2025": 7.75
+      },
+      "total_revenue_growth_pct": {
+        "2024": 6.19,
+        "2025": 2.79
+      }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 59456
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 19757
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 1864
+        },
+        "net_profit_musd": {
+          "2026-Q2": 1604
+        },
+        "ev_ebitda": {
+          "2026-Q2": 9.3
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 1.9
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 9.43
+        },
+        "net_margin_pct": {
+          "2026-Q2": 8.12
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 1322
+        }
+      }
+    }
+  },
+  "UAL": {
+    "name": "United Airlines",
+    "color": "#0284c7",
+    "country": "ABD",
+    "financial": {
+      "passenger_revenue_musd": {
+        "2023": 49046,
+        "2024": 51829,
+        "2025": 53438
+      },
+      "cargo_revenue_musd": {
+        "2023": 1495,
+        "2024": 1743,
+        "2025": 1779
+      },
+      "other_revenue_musd": {
+        "2023": 3176,
+        "2024": 3491,
+        "2025": 3853
+      },
+      "total_revenue_musd": {
+        "2023": 53717,
+        "2024": 57063,
+        "2025": 59070
+      },
+      "operating_profit_musd": {
+        "2023": 4211,
+        "2024": 5096,
+        "2025": 4713
+      },
+      "net_profit_musd": {
+        "2023": 2618,
+        "2024": 3149,
+        "2025": 3353
+      },
+      "operating_margin_pct": {
+        "2023": 7.84,
+        "2024": 8.93,
+        "2025": 7.98
+      },
+      "net_margin_pct": {
+        "2023": 4.87,
+        "2024": 5.52,
+        "2025": 5.68
+      },
+      "passenger_revenue_growth_pct": {
+        "2024": 5.67,
+        "2025": 3.1
+      },
+      "cargo_revenue_growth_pct": {
+        "2024": 16.59,
+        "2025": 2.07
+      },
+      "other_revenue_growth_pct": {
+        "2024": 9.92,
+        "2025": 10.37
+      },
+      "total_revenue_growth_pct": {
+        "2024": 6.23,
+        "2025": 3.52
+      }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 41006
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 17672
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 1096
+        },
+        "net_profit_musd": {
+          "2026-Q2": 805
+        },
+        "ev_ebitda": {
+          "2026-Q2": 7.4
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 2.2
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 6.2
+        },
+        "net_margin_pct": {
+          "2026-Q2": 4.56
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 1552
+        }
+      }
+    }
+  },
+  "RYA": {
+    "name": "Ryanair",
+    "color": "#0284c7",
+    "country": "İrlanda",
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 29614
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 5098
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 669
+        },
+        "net_profit_musd": {
+          "2026-Q2": 625
+        },
+        "ev_ebitda": {
+          "2026-Q2": 6.6
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": -0.8
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 13.12
+        },
+        "net_margin_pct": {
+          "2026-Q2": 12.26
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 647
+        }
+      }
+    }
+  },
+  "IAG": {
+    "name": "International Airlines Group (IAG)",
+    "color": "#1e3a8a",
+    "country": "İngiltere / İspanya",
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 26096
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 10329
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 1636
+        },
+        "net_profit_musd": {
+          "2026-Q2": 983
+        },
+        "ev_ebitda": {
+          "2026-Q2": 3.6
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 0.6
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 15.84
+        },
+        "net_margin_pct": {
+          "2026-Q2": 9.52
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 628
+        }
+      }
+    }
+  },
+  "LUV": {
+    "name": "Southwest Airlines",
+    "color": "#f59e0b",
+    "country": "ABD",
+    "financial": {
+      "passenger_revenue_musd": {
+        "2023": 23637,
+        "2024": 24980,
+        "2025": 25535
+      },
+      "cargo_revenue_musd": {
+        "2023": 175,
+        "2024": 175,
+        "2025": 171
+      },
+      "other_revenue_musd": {
+        "2023": 2279,
+        "2024": 2328,
+        "2025": 2357
+      },
+      "total_revenue_musd": {
+        "2023": 26091,
+        "2024": 27483,
+        "2025": 28063
+      },
+      "operating_profit_musd": {
+        "2023": 224,
+        "2024": 321,
+        "2025": 428
+      },
+      "net_profit_musd": {
+        "2023": 465,
+        "2024": 465,
+        "2025": 441
+      },
+      "operating_margin_pct": {
+        "2023": 0.86,
+        "2024": 1.17,
+        "2025": 1.53
+      },
+      "net_margin_pct": {
+        "2023": 1.78,
+        "2024": 1.69,
+        "2025": 1.57
+      },
+      "passenger_revenue_growth_pct": {
+        "2024": 5.68,
+        "2025": 2.22
+      },
+      "cargo_revenue_growth_pct": {
+        "2024": 0.0,
+        "2025": -2.29
+      },
+      "other_revenue_growth_pct": {
+        "2024": 2.15,
+        "2025": 1.25
+      },
+      "total_revenue_growth_pct": {
+        "2024": 5.34,
+        "2025": 2.11
+      }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 22269
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 8432
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 285
+        },
+        "net_profit_musd": {
+          "2026-Q2": 233
+        },
+        "ev_ebitda": {
+          "2026-Q2": 9.7
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 1.2
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 3.38
+        },
+        "net_margin_pct": {
+          "2026-Q2": 2.76
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 803
+        }
+      }
+    }
+  },
+  "INDIGO": {
+    "name": "IndiGo",
+    "color": "#2563eb",
+    "country": "Hindistan",
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 21422
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 2598
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 40
+        },
+        "net_profit_musd": {
+          "2026-Q2": -25
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 1.5
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 1.54
+        },
+        "net_margin_pct": {
+          "2026-Q2": -0.96
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 432
+        }
+      }
+    }
+  },
+  "CEA": {
+    "name": "China Eastern Airlines",
+    "color": "#dc2626",
+    "country": "Çin",
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 11054
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 5352
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 310
+        },
+        "net_profit_musd": {
+          "2026-Q2": 236
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 5.79
+        },
+        "net_margin_pct": {
+          "2026-Q2": 4.41
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 681
+        }
+      }
+    }
+  },
+  "QAN": {
+    "name": "Qantas Airways",
+    "color": "#dc2626",
+    "country": "Avustralya",
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 10813
+        },
+        "ev_ebitda": {
+          "2026-Q2": 4.7
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 1.4
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 139
+        }
+      }
+    }
+  },
+  "AAL": {
+    "name": "American Airlines",
+    "color": "#2563eb",
+    "country": "ABD",
+    "financial": {
+      "passenger_revenue_musd": {
+        "2023": 48512,
+        "2024": 49586,
+        "2025": 49643
+      },
+      "cargo_revenue_musd": {
+        "2023": 812,
+        "2024": 804,
+        "2025": 839
+      },
+      "other_revenue_musd": {
+        "2023": 3464,
+        "2024": 3821,
+        "2025": 4151
+      },
+      "total_revenue_musd": {
+        "2023": 52788,
+        "2024": 54211,
+        "2025": 54633
+      },
+      "operating_profit_musd": {
+        "2023": 3034,
+        "2024": 2614,
+        "2025": 1467
+      },
+      "net_profit_musd": {
+        "2023": 822,
+        "2024": 846,
+        "2025": 111
+      },
+      "operating_margin_pct": {
+        "2023": 5.75,
+        "2024": 4.82,
+        "2025": 2.69
+      },
+      "net_margin_pct": {
+        "2023": 1.56,
+        "2024": 1.56,
+        "2025": 0.2
+      },
+      "passenger_revenue_growth_pct": {
+        "2024": 2.21,
+        "2025": 0.11
+      },
+      "cargo_revenue_growth_pct": {
+        "2024": -0.99,
+        "2025": 4.35
+      },
+      "other_revenue_growth_pct": {
+        "2024": 10.31,
+        "2025": 8.64
+      },
+      "total_revenue_growth_pct": {
+        "2024": 2.7,
+        "2025": 0.78
+      }
+    },
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 10122
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 16735
+        },
+        "operating_profit_musd": {
+          "2026-Q2": 446
+        },
+        "net_profit_musd": {
+          "2026-Q2": 71
+        },
+        "ev_ebitda": {
+          "2026-Q2": 11.7
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 8.6
+        },
+        "operating_margin_pct": {
+          "2026-Q2": 2.67
+        },
+        "net_margin_pct": {
+          "2026-Q2": 0.42
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 1609
+        }
+      }
+    }
+  },
+  "EZJ": {
+    "name": "easyJet",
+    "color": "#f97316",
+    "country": "İngiltere",
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 6895
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 2287
+        },
+        "ev_ebitda": {
+          "2026-Q2": 3.5
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": -0.4
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 356
+        }
+      }
+    }
+  },
+  "PGSUS": {
+    "name": "Pegasus Airlines",
+    "color": "#f59e0b",
+    "country": "Türkiye",
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 1568
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 1005
+        },
+        "operating_profit_musd": {
+          "2026-Q2": -40
+        },
+        "net_profit_musd": {
+          "2026-Q2": -107
+        },
+        "ev_ebitda": {
+          "2026-Q2": 5.0
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 4.8
+        },
+        "operating_margin_pct": {
+          "2026-Q2": -3.98
+        },
+        "net_margin_pct": {
+          "2026-Q2": -10.65
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 131
+        }
+      }
+    }
+  },
+  "WIZZ": {
+    "name": "Wizz Air",
+    "color": "#ec4899",
+    "country": "Macaristan",
+    "quarterly": {
+      "financial": {
+        "market_cap_musd": {
+          "2026-Q2": 1507
+        },
+        "total_revenue_musd": {
+          "2026-Q2": 1753
+        },
+        "operating_profit_musd": {
+          "2026-Q2": -213
+        },
+        "net_profit_musd": {
+          "2026-Q2": -231
+        },
+        "ev_ebitda": {
+          "2026-Q2": 4.9
+        },
+        "net_debt_ebitda": {
+          "2026-Q2": 3.9
+        },
+        "operating_margin_pct": {
+          "2026-Q2": -12.15
+        },
+        "net_margin_pct": {
+          "2026-Q2": -13.18
+        }
+      },
+      "passengers": {
+        "fleet_size": {
+          "2026-Q2": 270
+        }
       }
     }
   }

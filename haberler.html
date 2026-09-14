@@ -9389,6 +9389,13 @@ function formatCustomerDateStr(rawDate) {
   return s;
 }
 
+function formatCustomerMonthStr(monthKey) {
+  const m = monthKey.match(/^(\d{4})-(\d{2})$/);
+  if (!m) return monthKey;
+  const d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, 1);
+  return d.toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' });
+}
+
 function syncCustomerDateBtn() {
   const btn = document.getElementById('cust-date-btn');
   const lbl = document.getElementById('cust-date-btn-label');
@@ -9859,17 +9866,19 @@ function renderCustomerCards(articles) {
   }
   if (emptyEl) emptyEl.style.display = 'none';
 
-  // Group by date or render in grid
+  // Group by normalised month key (YYYY-MM) — English/short/slash date formats
+  // are parsed via extractDateParts first so they don't produce garbage keys.
   const byDate = {};
   articles.forEach(a => {
-    const d = a.date ? a.date.slice(0, 10) : 'Tarihsiz';
+    const parts = extractDateParts(a.date);
+    const d = parts ? `${parts.y}-${parts.m}` : 'Tarihsiz';
     if (!byDate[d]) byDate[d] = [];
     byDate[d].push(a);
   });
 
   const dates = Object.keys(byDate).sort((a, b) => {
-    if (a === 'Tarihsiz') return 1;
-    if (b === 'Tarihsiz') return -1;
+    if (a === 'Tarihsiz') return -1;
+    if (b === 'Tarihsiz') return 1;
     return b.localeCompare(a);
   });
 
@@ -9880,7 +9889,7 @@ function renderCustomerCards(articles) {
     const section = document.createElement('div');
     section.className = 'date-section';
 
-    const formattedDateHeading = (dateKey === 'Tarihsiz') ? 'Tarihsiz Haberler' : formatCustomerDateStr(dateKey);
+    const formattedDateHeading = (dateKey === 'Tarihsiz') ? 'Tarihsiz Haberler' : formatCustomerMonthStr(dateKey);
     const hdr = document.createElement('div');
     hdr.className = 'date-section-header';
     hdr.innerHTML = `

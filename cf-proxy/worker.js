@@ -26,6 +26,11 @@ const PROXY_ALLOWED_HOSTS = new Set([
   'www.tacindex.com',
   'freightos.com',
   'www.freightos.com',
+  'planespotters.net',
+  'www.planespotters.net',
+  'api.worldbank.org',
+  'www.imf.org',
+  'imf.org',
 ]);
 
 const AIRPORT_DB = {
@@ -137,6 +142,9 @@ const AIRPORT_DB = {
   "LGG": { icao: "EBLG", iata: "LGG", name: "Liège Airport", city: "Liège", lat: 50.637, lon: 5.443 },
   "KCMH": { icao: "KCMH", iata: "CMH", name: "John Glenn Columbus International Airport", city: "Columbus", lat: 39.998, lon: -82.892 },
   "CMH": { icao: "KCMH", iata: "CMH", name: "John Glenn Columbus International Airport", city: "Columbus", lat: 39.998, lon: -82.892 },
+  "KLCK": { icao: "KLCK", iata: "LCK", name: "Rickenbacker International Airport", city: "Columbus", lat: 39.8138, lon: -82.9278 },
+  "LCK": { icao: "KLCK", iata: "LCK", name: "Rickenbacker International Airport", city: "Columbus", lat: 39.8138, lon: -82.9278 },
+  "FRU": { icao: "UCFM", iata: "FRU", name: "Manas International Airport", city: "Bishkek", lat: 43.061, lon: 74.478 },
   "VOMM": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 },
   "MAA": { icao: "VOMM", iata: "MAA", name: "Chennai International Airport", city: "Chennai", lat: 12.994, lon: 80.181 },
   "RCTP": { icao: "RCTP", iata: "TPE", name: "Taiwan Taoyuan International Airport", city: "Taipei", lat: 25.080, lon: 121.234 },
@@ -368,7 +376,7 @@ const AIRPORT_DB = {
 };
 
 const CARGO_FLEET_DETAILS = {
-  // Boeing 777F
+  // Boeing 777F (12 Adet)
   "4bb14c": { registration: "TC-LJL", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
   "4bb14d": { registration: "TC-LJM", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
   "4bb14e": { registration: "TC-LJN", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
@@ -381,20 +389,83 @@ const CARGO_FLEET_DETAILS = {
   "4bb156": { registration: "TC-LJV", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
   "4bb159": { registration: "TC-LJY", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
   "4bb15a": { registration: "TC-LJZ", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Turkish Cargo" },
-  // Airbus A330F
+  // Airbus A330F / A330-200F & Wet-Lease P2F
   "4ba88f": { registration: "TC-JDO", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
-  "4ba9fa": { registration: "TC-JOZ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba890": { registration: "TC-JDP", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
-  "4ba891": { registration: "TC-JDQ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9ef": { registration: "TC-JOO", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba892": { registration: "TC-JDR", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba893": { registration: "TC-JDS", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
-  "4ba9ef": { registration: "TC-JOU", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba869": { registration: "TC-JCI", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9f5": { registration: "TC-JOU", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba9f4": { registration: "TC-JOV", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9f9": { registration: "TC-JOY", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba9fa": { registration: "TC-JOZ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
+  "4ba891": { registration: "TC-JDQ", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
   "4ba9f6": { registration: "TC-JOW", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" },
-  "4ba9f9": { registration: "TC-JOY", type: "Airbus A330-200F", icaoType: "A332", manufacturer: "Airbus", owner: "Turkish Cargo" }
+  // Wet-Lease Kargo Filosu (ULS Cargo, BBN, Atlas Air)
+  "4bd8ac": { registration: "TC-VEL", type: "Airbus A310-300F", icaoType: "A310", manufacturer: "Airbus", owner: "ULS Cargo (Turkish Cargo WL)" },
+  "4bb0b2": { registration: "TC-LER", type: "Airbus A310-300F", icaoType: "A310", manufacturer: "Airbus", owner: "ULS Cargo (Turkish Cargo WL)" },
+  "4b9c63": { registration: "TC-GCC", type: "Airbus A321-200 P2F", icaoType: "A21N", manufacturer: "Airbus", owner: "BBN Airlines (Turkish Cargo WL)" },
+  "4b9df5": { registration: "TC-GOU", type: "Airbus A330-300 P2F", icaoType: "A333", manufacturer: "Airbus", owner: "ULS Cargo (Turkish Cargo WL)" },
+  "4b9dec": { registration: "TC-GOL", type: "Airbus A330-300 P2F", icaoType: "A333", manufacturer: "Airbus", owner: "ULS Cargo (Turkish Cargo WL)" },
+  "a54535": { registration: "N439GT", type: "Boeing 747-400F", icaoType: "B744", manufacturer: "Boeing", owner: "Atlas Air (Turkish Cargo WL)" },
+  // Emirates SkyCargo Boeing 777F
+  "896173": { registration: "A6-EFA", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896174": { registration: "A6-EFB", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896175": { registration: "A6-EFC", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896176": { registration: "A6-EFD", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896177": { registration: "A6-EFE", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896178": { registration: "A6-EFF", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896179": { registration: "A6-EFG", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617a": { registration: "A6-EFH", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617b": { registration: "A6-EFI", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617d": { registration: "A6-EFK", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617e": { registration: "A6-EFL", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "89617f": { registration: "A6-EFM", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896180": { registration: "A6-EFN", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896181": { registration: "A6-EFO", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896182": { registration: "A6-EFP", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896184": { registration: "A6-EFR", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896185": { registration: "A6-EFS", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896186": { registration: "A6-EFT", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896187": { registration: "A6-EFU", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896188": { registration: "A6-EFV", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" },
+  "896189": { registration: "A6-EFW", type: "Boeing 777-F", icaoType: "B77L", manufacturer: "Boeing", owner: "Emirates SkyCargo" }
 };
 
 const CARGO_STATIC_ROUTES = {
+  "THY6463": [
+    { dep: "LTFM", arr: "LHBP" }, // Istanbul -> Budapest
+    { dep: "LHBP", arr: "LTFM" }  // Budapest -> Istanbul
+  ],
+  "THY6464": [
+    { dep: "LHBP", arr: "LTFM" }, // Budapest -> Istanbul
+    { dep: "LTFM", arr: "LHBP" }  // Istanbul -> Budapest
+  ],
+  "THY6417": [
+    { dep: "LTFM", arr: "LEMD" }, // Istanbul -> Madrid
+    { dep: "LEMD", arr: "LTFM" }  // Madrid -> Istanbul
+  ],
+  "THY6418": [
+    { dep: "LEMD", arr: "LTFM" }, // Madrid -> Istanbul
+    { dep: "LTFM", arr: "LEMD" }  // Istanbul -> Madrid
+  ],
+  "THY6180": [
+    { dep: "LTFM", arr: "DNMM" }, // Istanbul -> Lagos
+    { dep: "DNMM", arr: "LTFM" }  // Lagos -> Istanbul
+  ],
+  "THY6181": [
+    { dep: "DNMM", arr: "LTFM" }, // Lagos -> Istanbul
+    { dep: "LTFM", arr: "DNMM" }  // Istanbul -> Lagos
+  ],
+  "THY6505": [
+    { dep: "LTFM", arr: "ENGM" }, // Istanbul -> Oslo
+    { dep: "ENGM", arr: "LTFM" }  // Oslo -> Istanbul
+  ],
+  "THY6506": [
+    { dep: "ENGM", arr: "LTFM" }, // Oslo -> Istanbul
+    { dep: "LTFM", arr: "ENGM" }  // Istanbul -> Oslo
+  ],
   "THY6116": [
     { dep: "HLLM", arr: "HECA" }, // Tripoli (Mitiga) -> Cairo
     { dep: "HECA", arr: "HLLM" }, // Cairo -> Tripoli (Mitiga)
@@ -402,14 +473,26 @@ const CARGO_STATIC_ROUTES = {
     { dep: "LTFM", arr: "LEMD" }  // Istanbul -> Madrid
   ],
   "THY6058": [
+    { dep: "KLCK", arr: "LTFM" }, // Columbus (LCK) -> Istanbul
+    { dep: "LTFM", arr: "KLCK" }, // Istanbul -> Columbus (LCK)
     { dep: "GOBD", arr: "LTFM" }, // Dakar -> Istanbul
     { dep: "LTFM", arr: "GOBD" }  // Istanbul -> Dakar
+  ],
+  "THY6034": [
+    { dep: "KIAH", arr: "LTFM" }, // Houston -> Istanbul
+    { dep: "LTFM", arr: "KIAH" }  // Istanbul -> Houston
+  ],
+  "THY6053": [
+    { dep: "LTFM", arr: "SBGR" }, // Istanbul -> São Paulo
+    { dep: "SBGR", arr: "LTFM" }  // São Paulo -> Istanbul
   ],
   "THY6112": [
     { dep: "LTFM", arr: "VABB" }, // Istanbul -> Mumbai
     { dep: "VABB", arr: "LTFM" }  // Mumbai -> Istanbul
   ],
   "THY6421": [
+    { dep: "LFSB", arr: "GMMN" }, // Basel -> Casablanca
+    { dep: "GMMN", arr: "LFSB" }, // Casablanca -> Basel
     { dep: "LTFM", arr: "LFPG" }, // Istanbul -> Paris
     { dep: "LFPG", arr: "LTFM" }, // Paris -> Istanbul
     { dep: "LFSB", arr: "LTFM" }, // Basel -> Istanbul
@@ -422,6 +505,14 @@ const CARGO_STATIC_ROUTES = {
   "THY6118": [
     { dep: "LTFM", arr: "VOMM" }, // Istanbul -> Chennai (MAA)
     { dep: "VOMM", arr: "LTFM" }  // Chennai -> Istanbul
+  ],
+  "THY6246": [
+    { dep: "LTFM", arr: "RCTP" }, // Istanbul -> Taipei
+    { dep: "RCTP", arr: "LTFM" }  // Taipei -> Istanbul
+  ],
+  "THY6247": [
+    { dep: "RCTP", arr: "LTFM" }, // Taipei -> Istanbul
+    { dep: "LTFM", arr: "RCTP" }  // Istanbul -> Taipei
   ],
   "THY6251": [
     { dep: "RCTP", arr: "LTFM" }, // Taipei -> Istanbul
@@ -508,6 +599,76 @@ const CARGO_STATIC_ROUTES = {
   "THY6111": [
     { dep: "LTFM", arr: "VABB" }, // Istanbul -> Mumbai (BOM)
     { dep: "VABB", arr: "LTFM" }  // Mumbai -> Istanbul
+  ],
+  "THY6694": [
+    { dep: "LTFM", arr: "UAAA" }, // Istanbul -> Almaty
+    { dep: "UAAA", arr: "LTFM" }  // Almaty -> Istanbul
+  ],
+  "THY6182": [
+    { dep: "LTFM", arr: "VOHS" }, // Istanbul -> Hyderabad
+    { dep: "VOHS", arr: "LTFM" }, // Hyderabad -> Istanbul
+    { dep: "OTHH", arr: "VOHS" }, // Doha -> Hyderabad
+    { dep: "VOHS", arr: "OTHH" }  // Hyderabad -> Doha
+  ],
+  "THY6350": [
+    { dep: "OERK", arr: "VHHH" }, // Riyadh -> Hong Kong
+    { dep: "VHHH", arr: "OERK" }, // Hong Kong -> Riyadh
+    { dep: "LTFM", arr: "OERK" }, // Istanbul -> Riyadh
+    { dep: "VHHH", arr: "LTFM" }  // Hong Kong -> Istanbul
+  ],
+  "THY6333": [
+    { dep: "LTFM", arr: "OMDW" }, // Istanbul -> Dubai (DWC)
+    { dep: "OMDW", arr: "LTFM" }, // Dubai (DWC) -> Istanbul
+    { dep: "LTFM", arr: "OMDB" }, // Istanbul -> Dubai (DXB)
+    { dep: "OMDB", arr: "LTFM" }  // Dubai (DXB) -> Istanbul
+  ],
+  "THY6637": [
+    { dep: "LTFM", arr: "OMDW" }, // Istanbul -> Dubai (DWC)
+    { dep: "OMDW", arr: "LTFM" }, // Dubai (DWC) -> Istanbul
+    { dep: "LTFM", arr: "OMDB" }, // Istanbul -> Dubai (DXB)
+    { dep: "OMDB", arr: "LTFM" }  // Dubai (DXB) -> Istanbul
+  ],
+  "THY6696": [
+    { dep: "OOMS", arr: "ZHCC" }, // Muscat -> Zhengzhou
+    { dep: "ZHCC", arr: "OOMS" }, // Zhengzhou -> Muscat
+    { dep: "LTFM", arr: "OOMS" }, // Istanbul -> Muscat
+    { dep: "OOMS", arr: "LTFM" }  // Muscat -> Istanbul
+  ],
+  "THY6576": [
+    { dep: "LTFM", arr: "UCFM" }, // Istanbul -> Bishkek
+    { dep: "UCFM", arr: "LTFM" }  // Bishkek -> Istanbul
+  ],
+  "THY6409": [
+    { dep: "LTFM", arr: "EHAM" }, // Istanbul -> Amsterdam
+    { dep: "EHAM", arr: "LTFM" }  // Amsterdam -> Istanbul
+  ],
+  "THY6140": [
+    { dep: "LTFM", arr: "VOHS" }, // Istanbul -> Hyderabad
+    { dep: "VOHS", arr: "LTFM" }  // Hyderabad -> Istanbul
+  ],
+  "THY6550": [
+    { dep: "LTFM", arr: "EDDF" }, // Istanbul -> Frankfurt
+    { dep: "EDDF", arr: "LTFM" }  // Frankfurt -> Istanbul
+  ],
+  "THY6213": [
+    { dep: "OTHH", arr: "ZGSZ" }, // Doha -> Shenzhen
+    { dep: "ZGSZ", arr: "OTHH" }  // Shenzhen -> Doha
+  ],
+  "THY6283": [
+    { dep: "UBBB", arr: "LTFM" }, // Baku -> Istanbul
+    { dep: "UAII", arr: "LTFM" }  // Shymkent -> Istanbul
+  ],
+  "THY6269": [
+    { dep: "VVNB", arr: "LTFM" }, // Hanoi -> Istanbul
+    { dep: "LTFM", arr: "VVNB" }  // Istanbul -> Hanoi
+  ],
+  "THY6589": [
+    { dep: "ZSPD", arr: "LTFM" }, // Shanghai -> Istanbul
+    { dep: "LTFM", arr: "ZSPD" }  // Istanbul -> Shanghai
+  ],
+  "THY6045": [
+    { dep: "KATL", arr: "LTFM" }, // Atlanta -> Istanbul
+    { dep: "LTFM", arr: "KATL" }  // Istanbul -> Atlanta
   ]
 };
 
@@ -994,6 +1155,280 @@ async function getOpenSkyToken(env, doFetch, debug) {
   return _openSkyToken.accessToken;
 }
 
+// ── EKONOMİK VERİLER (IMF WEO & DÜNYA BANKASI) ──────────────────────
+const ECON_COUNTRIES = [
+  'WLD','USA','CHN','EMU','TUR',
+  'GBR','FRA','DEU','JPN','CAN','ITA',
+  'BRA','RUS','IND','ZAF',
+  'ESP','SAU','ARE','QAT','ISR','EGY',
+  'KOR','IDN','VNM','SGP','IRN'
+];
+
+// Dünya Bankası sorgularında üst yıl sınırı — takvim yılı ilerledikçe otomatik kayar
+const ECON_MAX_YEAR = () => new Date().getFullYear() + 1;
+
+// IMF DataMapper'dan doğrudan çekilen ek göstergeler (n8n webhook'unda bulunmayanlar)
+// LUR: İşsizlik Oranı (%), NGDPDPC: Kişi Başı GSYH (cari $)
+const IMF_DM_INDICATORS = ['LUR', 'NGDPDPC'];
+
+async function fetchImfDatamapper(indicator, doFetch) {
+  const url = `https://www.imf.org/external/datamapper/api/v1/${indicator}`;
+  let json = null;
+  // NOT: IMF DataMapper (Akamai) tarayıcı taklidi User-Agent'lara 403 veriyor;
+  // sade bir istemci UA'sı ile 200 dönüyor. Ev proxy'si gelen UA'yı upstream'e
+  // aynen ilettiği için aynı başlık proxy dalında da kullanılıyor.
+  const IMF_DM_HEADERS = { 'Accept': 'application/json', 'User-Agent': 'curl/8.7.1' };
+  try {
+    const resp = await fetch(url, {
+      headers: IMF_DM_HEADERS,
+      signal: AbortSignal.timeout(8000),
+      cf: { cacheTtl: 86400, cacheEverything: true }
+    });
+    if (resp.ok) json = await resp.json();
+    else console.warn('[IMF DataMapper] direct HTTP', indicator, resp.status);
+  } catch (err) {
+    console.warn('[IMF DataMapper Warning]', indicator, err.message || err);
+  }
+  if (!json && typeof doFetch === 'function') {
+    try {
+      const res = await doFetch(url, { headers: IMF_DM_HEADERS }, false, 86400);
+      if (res.status === 200 && res.body) {
+        try { json = JSON.parse(res.body); } catch (_) {}
+      } else {
+        console.warn('[IMF DataMapper] proxy HTTP', indicator, res.status);
+      }
+    } catch (err) {
+      console.warn('[IMF DataMapper proxy Warning]', indicator, err.message || err);
+    }
+  }
+  const raw = (json && json.values && json.values[indicator]) || null;
+  if (!raw) return null;
+
+  // Sadece takip edilen ülkeler ve 2015 sonrası yıllar (payload'ı küçült)
+  const IMF_MAP_DM = { WLD: 'WEOWORLD', EMU: 'EURO' };
+  const out = {};
+  ECON_COUNTRIES.forEach(c => {
+    const series = raw[IMF_MAP_DM[c] || c];
+    if (!series) return;
+    const trimmed = {};
+    Object.keys(series).forEach(y => {
+      const n = Number(y);
+      if (n >= 2015 && series[y] != null) trimmed[y] = Number(series[y]);
+    });
+    if (Object.keys(trimmed).length) out[c] = trimmed;
+  });
+  return Object.keys(out).length ? out : null;
+}
+
+const WB_INDICATORS = [
+  'NY.GDP.MKTP.KD.ZG',   // GDP Büyümesi (%)
+  'FP.CPI.TOTL.ZG',      // Enflasyon / TÜFE (%)
+  'SL.UEM.TOTL.ZS',      // İşsizlik Oranı (%)
+  'BN.CAB.XOKA.GD.ZS',   // Cari Denge (% GSYH)
+  'NY.GDP.PCAP.CD',      // Kişi Başı GSYH ($)
+  'GC.DOD.TOTL.GD.ZS'    // Merkezi Yönetim Borcu (% GSYH)
+];
+
+const WB_REPORT_FORECASTS = {
+  'NY.GDP.MKTP.KD.ZG': {
+    WLD: { 2025: 2.7, 2026: 2.7, 2027: 2.8 },
+    USA: { 2025: 2.5, 2026: 2.0, 2027: 2.1 },
+    CHN: { 2025: 4.5, 2026: 4.3, 2027: 4.2 },
+    EMU: { 2025: 1.1, 2026: 1.3, 2027: 1.4 },
+    EUU: { 2025: 1.1, 2026: 1.3, 2027: 1.4 },
+    TUR: { 2025: 3.8, 2026: 4.2, 2027: 4.3 },
+    DEU: { 2025: 1.0, 2026: 1.4, 2027: 1.5 },
+    FRA: { 2025: 1.3, 2026: 1.4, 2027: 1.5 },
+    GBR: { 2025: 1.5, 2026: 1.5, 2027: 1.6 },
+    JPN: { 2025: 1.2, 2026: 1.0, 2027: 1.0 },
+    CAN: { 2025: 1.8, 2026: 2.0, 2027: 2.1 },
+    ITA: { 2025: 0.9, 2026: 1.1, 2027: 1.2 },
+    BRA: { 2025: 2.2, 2026: 2.2, 2027: 2.3 },
+    RUS: { 2025: 1.6, 2026: 1.1, 2027: 1.2 },
+    IND: { 2025: 6.7, 2026: 6.8, 2027: 6.7 },
+    ZAF: { 2025: 1.5, 2026: 1.7, 2027: 1.8 },
+    ESP: { 2025: 2.1, 2026: 1.9, 2027: 1.8 },
+    SAU: { 2025: 3.8, 2026: 4.3, 2027: 4.1 },
+    ARE: { 2025: 4.1, 2026: 4.4, 2027: 4.5 },
+    QAT: { 2025: 2.4, 2026: 3.0, 2027: 3.2 },
+    ISR: { 2025: 3.2, 2026: 4.0, 2027: 4.2 },
+    EGY: { 2025: 3.5, 2026: 4.2, 2027: 4.6 },
+    KOR: { 2025: 2.2, 2026: 2.1, 2027: 2.0 },
+    IDN: { 2025: 5.1, 2026: 5.1, 2027: 5.0 },
+    VNM: { 2025: 6.5, 2026: 6.5, 2027: 6.4 },
+    SGP: { 2025: 2.4, 2026: 2.5, 2027: 2.5 },
+    IRN: { 2025: 3.1, 2026: 2.9, 2027: 2.8 }
+  },
+  'FP.CPI.TOTL.ZG': {
+    WLD: { 2025: 3.4, 2026: 3.0, 2027: 2.8 },
+    USA: { 2025: 2.3, 2026: 2.1, 2027: 2.0 },
+    CHN: { 2025: 1.2, 2026: 1.5, 2027: 1.7 },
+    EMU: { 2025: 2.1, 2026: 2.0, 2027: 1.9 },
+    EUU: { 2025: 2.1, 2026: 2.0, 2027: 1.9 },
+    TUR: { 2025: 28.5, 2026: 18.0, 2027: 12.5 },
+    DEU: { 2025: 2.2, 2026: 2.0, 2027: 1.9 },
+    FRA: { 2025: 2.0, 2026: 1.9, 2027: 1.8 },
+    GBR: { 2025: 2.3, 2026: 2.1, 2027: 2.0 },
+    JPN: { 2025: 2.1, 2026: 1.9, 2027: 1.8 },
+    CAN: { 2025: 2.2, 2026: 2.0, 2027: 2.0 },
+    ITA: { 2025: 1.9, 2026: 1.8, 2027: 1.8 },
+    BRA: { 2025: 3.8, 2026: 3.5, 2027: 3.2 },
+    RUS: { 2025: 6.2, 2026: 4.8, 2027: 4.2 },
+    IND: { 2025: 4.5, 2026: 4.2, 2027: 4.0 },
+    ZAF: { 2025: 4.4, 2026: 4.2, 2027: 4.0 }
+  }
+};
+
+async function fetchAndCombineEconData(env, previousCache, doFetch) {
+  const WB_BASE = 'https://api.worldbank.org/v2/country';
+  const WB_MAP = { EMU: 'EMU', WLD: 'WLD' };
+
+  // World Bank API max 5 ülkeyi güvenle destekler (daha fazlası 502 verir)
+  const WB_QUERY_BATCHES = [
+    ['WLD','USA','CHN','EMU','TUR'],
+    ['GBR','FRA','DEU','JPN','CAN'],
+    ['ITA','BRA','RUS','IND','ZAF'],
+    ['ESP','SAU','ARE','QAT','ISR'],
+    ['EGY','IRN','KOR','IDN'],
+    ['VNM','SGP']
+  ];
+
+  // 1. Dünya Bankası verilerini 6 gösterge için çek
+  const wbOut = previousCache?.wb ? JSON.parse(JSON.stringify(previousCache.wb)) : {};
+  WB_INDICATORS.forEach(ind => { if (!wbOut[ind]) wbOut[ind] = {}; });
+
+  const wbPromises = WB_INDICATORS.map(async indicator => {
+    // Tüm batch'leri paralel çek (doFetch varsa ev proxy'si, yoksa direkt CF)
+    await Promise.all(WB_QUERY_BATCHES.map(async batch => {
+      const mapped = batch.map(c => WB_MAP[c] || c);
+      const url = `${WB_BASE}/${mapped.join(';')}/indicator/${indicator}?format=json&per_page=1000&date=2015:${ECON_MAX_YEAR()}`;
+      try {
+        let d = null;
+        if (typeof doFetch === 'function') {
+          const res = await doFetch(url, { headers: { 'Accept': 'application/json' } }, false, 86400);
+          if (res.status === 200 && res.body) {
+            try { d = JSON.parse(res.body); } catch (_) {}
+          }
+        } else {
+          const resp = await fetch(url, {
+            headers: { 'User-Agent': 'HaberOzetleri-Worker/1.0', 'Accept': 'application/json' },
+            signal: AbortSignal.timeout(3500),
+            cf: { cacheTtl: 86400, cacheEverything: true }
+          });
+          if (resp.ok) d = await resp.json();
+        }
+
+        if (d && d[1] && d[1].length) {
+          d[1].forEach(x => {
+            if (!x || x.value === null || x.value === undefined) return;
+            const code = x.countryiso3code || x.country?.id;
+            const yr = x.date;
+            if (!code || !yr) return;
+            const stdCode = ECON_COUNTRIES.find(c =>
+              c === code ||
+              (c === 'EMU' && (code === 'EMU' || code === 'EUU' || code === 'XC')) ||
+              (c === 'WLD' && (code === 'WLD' || code === '1W'))
+            ) || code;
+            if (!wbOut[indicator][stdCode]) wbOut[indicator][stdCode] = {};
+            wbOut[indicator][stdCode][yr] = Number(x.value);
+          });
+        }
+      } catch (err) {
+        // Timeout veya 502 durumunda sessizce geç; önceki cache veya tahmin devreye girecek
+      }
+    }));
+
+    // GEP Raporu Resmi Tahminlerini birleştir
+    const fcDict = WB_REPORT_FORECASTS[indicator];
+    if (fcDict) {
+      ECON_COUNTRIES.forEach(c => {
+        const cFc = fcDict[c] || (c === 'EMU' ? fcDict['EUU'] : null);
+        if (cFc) {
+          if (!wbOut[indicator][c]) wbOut[indicator][c] = {};
+          Object.keys(cFc).forEach(y => {
+            if (wbOut[indicator][c][y] === undefined || wbOut[indicator][c][y] === null) {
+              wbOut[indicator][c][y] = cFc[y];
+            }
+          });
+        }
+      });
+    }
+  });
+
+  // 2. IMF verisini n8n webhook'tan çek
+  const imfPromise = (async () => {
+    try {
+      const imfUrl = 'https://n8n.emredemirbas.com/webhook/imf-data?t=' + Date.now();
+      if (typeof doFetch === 'function') {
+        const res = await doFetch(imfUrl, { headers: { 'Accept': 'application/json' } }, false, 3600);
+        if (res.status === 200 && res.body) {
+          try { return JSON.parse(res.body); } catch (_) {}
+        }
+      }
+      const imfResp = await fetch(imfUrl, {
+        headers: { 'User-Agent': 'HaberOzetleri-Worker/1.0', 'Accept': 'application/json' },
+        signal: AbortSignal.timeout(4000)
+      });
+      if (!imfResp.ok) throw new Error('IMF webhook HTTP ' + imfResp.status);
+      return await imfResp.json();
+    } catch (err) {
+      console.warn('[IMF Fetch Warning]:', err.message || err);
+      return null;
+    }
+  })();
+
+  const [, imfRaw] = await Promise.all([
+    Promise.all(wbPromises),
+    imfPromise
+  ]);
+
+  // IMF verisini standart ülke kodlarıyla formatla
+  const IMF_MAP = { WLD: 'WEOWORLD', EMU: 'EURO' };
+  const inverseImf = {};
+  ECON_COUNTRIES.forEach(c => { const m = IMF_MAP[c] || c; inverseImf[m] = c; });
+
+  let imfOut = { NGDP_RPCH: {}, PCPIPCH: {}, GGXWDG_NGDP: {}, LUR: {}, NGDPDPC: {} };
+  if (imfRaw) {
+    ['NGDP_RPCH', 'PCPIPCH', 'GGXWDG_NGDP'].forEach(ind => {
+      const seriesObj = imfRaw[ind] || {};
+      Object.entries(seriesObj).forEach(([imfCode, years]) => {
+        const orig = inverseImf[imfCode] || imfCode;
+        if (inverseImf[imfCode]) imfOut[ind][inverseImf[imfCode]] = years;
+        else if (ECON_COUNTRIES.includes(imfCode)) imfOut[ind][imfCode] = years;
+      });
+    });
+  } else if (previousCache && previousCache.imf) {
+    imfOut = { ...previousCache.imf };
+  }
+
+  // IMF DataMapper: işsizlik (LUR) ve kişi başı gelir (NGDPDPC) tahmin serileri
+  const dmResults = await Promise.all(
+    IMF_DM_INDICATORS.map(ind => fetchImfDatamapper(ind, doFetch))
+  );
+  IMF_DM_INDICATORS.forEach((ind, i) => {
+    if (dmResults[i]) imfOut[ind] = dmResults[i];
+    else if (previousCache?.imf?.[ind]) imfOut[ind] = previousCache.imf[ind];
+    else if (!imfOut[ind]) imfOut[ind] = {};
+  });
+
+  // Dünya Bankası verisi bulunmayan ülkeler için (özellikle Orta Doğu, Almanya, Fransa, Japonya, Çin)
+  // resmi IMF WEO Genel Yönetim Brüt Borcu (% GSYH) verisini tamamlayıcı olarak kullan
+  if (wbOut['GC.DOD.TOTL.GD.ZS'] && imfOut.GGXWDG_NGDP) {
+    ECON_COUNTRIES.forEach(c => {
+      const wbVal = wbOut['GC.DOD.TOTL.GD.ZS'][c];
+      if ((!wbVal || Object.keys(wbVal).length === 0) && imfOut.GGXWDG_NGDP[c]) {
+        wbOut['GC.DOD.TOTL.GD.ZS'][c] = imfOut.GGXWDG_NGDP[c];
+      }
+    });
+  }
+
+  return {
+    updatedAt: new Date().toISOString(),
+    wb: wbOut,
+    imf: imfOut
+  };
+}
+
 export default {
   async fetch(request, env, ctx) {
     const origin = request.headers.get('Origin') || '';
@@ -1027,7 +1462,7 @@ export default {
               method: options.method || 'GET',
               headers,
               body: options.body,
-              signal: AbortSignal.timeout(15000) 
+              signal: AbortSignal.timeout(2500) 
             }
           );
           if (funnelResp.ok) {
@@ -1067,6 +1502,78 @@ export default {
         status: response.status,
         contentType: response.headers.get('content-type') || 'text/html'
       };
+    }
+
+    // ── /econ-data Özel Rotası (IMF WEO & Dünya Bankası Önbelleği) ──
+    if (urlObj.pathname === '/econ-data') {
+      const kvKey = 'econ_data_cache_v2';
+      const forceRefresh = urlObj.searchParams.get('refresh') === '1';
+
+      let cached = null;
+      if (env.FBX_ROUTES_KV) {
+        try {
+          cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+        } catch (e) {
+          console.warn('[EconData] KV read error:', e);
+        }
+      }
+
+      const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 saat
+      const isFresh = cached && cached.updatedAt && (Date.now() - new Date(cached.updatedAt).getTime() < CACHE_TTL_MS);
+
+      if (cached && isFresh && !forceRefresh) {
+        return new Response(JSON.stringify(cached), {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+            'X-Data-Source': 'kv-cache',
+            'X-Updated-At': cached.updatedAt || ''
+          }
+        });
+      }
+
+      // Taze veri çek ve birleştir
+      try {
+        const freshData = await fetchAndCombineEconData(env, cached, doFetch);
+        if (freshData && Object.keys(freshData.wb || {}).length > 0) {
+          if (env.FBX_ROUTES_KV) {
+            ctx.waitUntil(env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(freshData)));
+          }
+          return new Response(JSON.stringify(freshData), {
+            status: 200,
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json',
+              'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+              'X-Data-Source': 'fresh-fetch',
+              'X-Updated-At': freshData.updatedAt
+            }
+          });
+        }
+      } catch (err) {
+        console.error('[EconData] Fetch failed:', err);
+      }
+
+      // Canlı çekim başarısız olursa ve elimizde eski de olsa cache varsa onu dön
+      if (cached) {
+        return new Response(JSON.stringify(cached), {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
+            'Cache-Control': 'public, max-age=300',
+            'X-Data-Source': 'kv-stale-fallback',
+            'X-Updated-At': cached.updatedAt || ''
+          }
+        });
+      }
+
+      return new Response(JSON.stringify({ error: 'Failed to fetch economic data' }), {
+        status: 502,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     // ── /wci Özel Rotası ──
@@ -1578,7 +2085,6 @@ export default {
         const demand = extractVal('Hava Kargo Talebi');
         const capacity = extractVal('Hava Kargo Kapasitesi');
         const loadFactor = extractVal('Yük Faktörü (CLF)') !== '—' ? extractVal('Yük Faktörü (CLF)') : extractVal('Yük Faktörü');
-        const spotRate = extractVal('Global Spot Rates') !== '—' ? extractVal('Global Spot Rates') : extractVal('Air Freight Index');
 
         // Extract IATA summary from Section 4 summary-box
         const sec4Match = html.match(/id="sec-4"[^>]*>[\s\S]*?<div class="summary-box"><strong>ÖZET<\/strong>\s*([\s\S]*?)<\/div>/i) ||
@@ -1600,7 +2106,6 @@ export default {
           demand: demand,
           capacity: capacity,
           loadFactor: loadFactor,
-          spotRate: spotRate,
           summary: summary
         };
 
@@ -1650,13 +2155,17 @@ export default {
         }
 
         // Prevent date advancing when the scraped data hasn't changed (IATA website not updated yet)
+        // Ayrıca Cloudflare KV üzerinde jet yakıtı haftalık geçmişini kalıcı biriktir.
         if (env.FBX_ROUTES_KV) {
           try {
             const cacheKey = 'last_jetfuel_data';
+            const histKey = 'jetfuel_history';
             let cachedData = await env.FBX_ROUTES_KV.get(cacheKey, { type: 'json' });
+            let history = await env.FBX_ROUTES_KV.get(histKey, { type: 'json' }) || [];
+
             if (!cachedData) {
-              // Seed with the last known static report data (June 19)
-              cachedData = { price: 941.2, change: -14.2, date: '2026-06-19' };
+              // Seed with the last known static report data (July 24)
+              cachedData = { price: 1264.0, change: 7.1, date: '2026-07-24' };
               await env.FBX_ROUTES_KV.put(cacheKey, JSON.stringify(cachedData));
             }
             if (parsed.price === cachedData.price && parsed.change === cachedData.change) {
@@ -1666,6 +2175,17 @@ export default {
               cachedData = { price: parsed.price, change: parsed.change, date: parsed.date };
               await env.FBX_ROUTES_KV.put(cacheKey, JSON.stringify(cachedData));
             }
+
+            // Haftalık geçmiş dizisini güncelle ve KV'ye yaz
+            const byDate = new Map(history.map(h => [h.date, h.price]));
+            if (parsed.date && parsed.price) {
+              byDate.set(parsed.date, parsed.price);
+            }
+            history = Array.from(byDate.entries())
+              .map(([date, price]) => ({ date, price }))
+              .sort((a, b) => a.date.localeCompare(b.date));
+            await env.FBX_ROUTES_KV.put(histKey, JSON.stringify(history));
+            parsed.history = history;
           } catch (e) {
             // Fail silently
           }
@@ -1709,7 +2229,7 @@ export default {
     }
 
     // ── /cargo-flights Canlı THY Kargo Uçakları Rotası ──
-    if (urlObj.pathname === '/cargo-flights') {
+    if (urlObj.pathname === '/cargo-flights' || urlObj.pathname === '/cargo-flight-detail' || urlObj.pathname === '/cargo-flight-track') {
       const forceDirect = urlObj.searchParams.get('direct') === '1';
       const cacheKey = new Request('https://internal.cache/cargo-flights-v1');
       const kvKey = 'cargo_flights_cache_v1';
@@ -1741,43 +2261,259 @@ export default {
         } catch (_) {}
       }
 
+      // Resmi Turkish Cargo Filosu (28 Uçak - Mode-S Hex Kodları)
       const TURKISH_CARGO_HEX = new Set([
-        // Boeing 777F
+        // Boeing 777F (12 Adet)
         '4bb14c', '4bb14d', '4bb14e', '4bb14f', '4bb150', '4bb152', '4bb153', '4bb154', '4bb155', '4bb156', '4bb159', '4bb15a',
-        // Airbus A330F
-        '4ba88f', '4ba890', '4ba891', '4ba892', '4ba893', '4ba9ef', '4ba9f4', '4ba9f6', '4ba9f9', '4ba9fa',
-        // Wet-leased freighters (ACT, ULS, BBN, Atlas Air, etc. regularly flying under THY callsigns)
-        '4ba875', '4ba879', '4ba87b', '4ba87d', '4bae23', '4baa96',
-        '4bb0b2', // TC-LER (A310-300F - ULS Cargo)
-        '4b9c63', // TC-GCC (A321-200 P2F - BBN Airlines)
-        '4b9df5', // TC-GOU (A330-300 P2F - ULS Cargo)
-        '4b9dec', // TC-GOL (A330-300 P2F - ULS Cargo)
-        'a54535'  // N439GT (B747-400F - Atlas Air)
+        // Airbus A330F / A330-200F / A330-300 P2F
+        '4ba88f', '4ba890', '4ba9ef', '4ba892', '4ba893', '4ba869', '4ba9f5', '4ba9f4', '4ba9f9', '4ba9fa', '4ba891', '4ba9f6',
+        '4b9df5', '4b9dec',
+        // Airbus A310-300F (ULS Cargo Wet-Lease)
+        '4bd8ac', '4bb0b2',
+        // Airbus A321-200 P2F (BBN Airlines Wet-Lease)
+        '4b9c63',
+        // Boeing 747-400F (Atlas Air Wet-Lease)
+        'a54535'
       ]);
 
-      function determineFlightType(icao24, flightNum, details) {
-        const hex = icao24.toLowerCase();
-        
-        // 1. If it's a known dedicated or wet-leased freighter hex code, it's cargo.
-        if (TURKISH_CARGO_HEX.has(hex)) {
+      // Resmi Turkish Cargo Filosu (Kuyruk Tescilleri - Registration)
+      const TURKISH_CARGO_REGS = new Set([
+        // Boeing 777F
+        'TC-LJL', 'TC-LJM', 'TC-LJN', 'TC-LJO', 'TC-LJP', 'TC-LJR', 'TC-LJS', 'TC-LJT', 'TC-LJU', 'TC-LJV', 'TC-LJY', 'TC-LJZ',
+        // Airbus A330-200F / P2F
+        'TC-JDO', 'TC-JDP', 'TC-JOO', 'TC-JDR', 'TC-JDS', 'TC-JCI', 'TC-JOU', 'TC-JOV', 'TC-JOY', 'TC-JOZ', 'TC-JDQ', 'TC-JOW',
+        'TC-GOU', 'TC-GOL',
+        // Airbus A310-300F
+        'TC-VEL', 'TC-LER',
+        // Airbus A321-200 P2F
+        'TC-GCC',
+        // Boeing 747-400F
+        'N439GT'
+      ]);
+
+      const EMIRATES_CARGO_HEX = new Set([
+        // Emirates SkyCargo Boeing 777F filosundaki tüm uçaklar (A6-EFA ... A6-EFW)
+        '896173', '896174', '896175', '896176', '896177', '896178', '896179', '89617a',
+        '89617b', '89617d', '89617e', '89617f', '896180', '896181', '896182', '896184',
+        '896185', '896186', '896187', '896188', '896189'
+      ]);
+
+      // Takip edilen kargo havayolları. `prefix` = OpenSky ATC çağrı kodu öneki,
+      // `allCargo` = true ise o önekle uçan HER uçuş kargodur (ayrı uçak tipi
+      // kontrolüne gerek yok); false ise (THY, Emirates) yolcu filosuyla karışık
+      // uçtuğu için tip/uçak modeli kontrolü gerekir.
+      const CARGO_AIRLINES = [
+        { code: 'THY', prefix: 'THY', iata: 'TK', name: 'Turkish Cargo',       color: '#E30613', allCargo: false },
+        { code: 'GEC', prefix: 'GEC', iata: 'LH', name: 'Lufthansa Cargo',     color: '#F9BA00', allCargo: true },
+        { code: 'CKK', prefix: 'CKK', iata: 'CK', name: 'China Cargo Airlines', color: '#00A9E0', allCargo: true },
+        { code: 'MNB', prefix: 'MNB', iata: 'MB', name: 'MNG Airlines',        color: '#7C3AED', allCargo: true },
+        { code: 'UAE', prefix: 'UAE', iata: 'EK', name: 'Emirates SkyCargo',   color: '#D71921', allCargo: false },
+      ];
+      const CARGO_AIRLINE_BY_CODE = new Map(CARGO_AIRLINES.map(a => [a.code, a]));
+
+      function matchCargoAirline(callsign) {
+        const cs = (callsign || '').trim().toUpperCase();
+        for (const a of CARGO_AIRLINES) {
+          if (cs.startsWith(a.prefix)) return a;
+        }
+        return null;
+      }
+
+      // Dinamik Kargo Modeli Tanıma (Kullanıcı yeni uçak eklemeyi unutsa bile gövde/tip üzerinden otomatik algılar)
+      function isCargoAircraftModel(details) {
+        if (!details) return false;
+        const typeStr = (details.type || '').toUpperCase();
+        const icaoType = (details.icaoType || '').toUpperCase();
+        if (typeStr.includes('FREIGHTER') || typeStr.includes('CARGO') || typeStr.includes('P2F') || typeStr.includes('BCF') || typeStr.includes('BDSF') || typeStr.endsWith('F') || typeStr.endsWith('-F')) {
+          return true;
+        }
+        if (['B77L', 'B77F', 'A332F', 'A333F', 'A306F', 'A310F', 'B744F', 'B748F', 'B763F', 'B752F', 'A321F', 'A35F'].includes(icaoType)) {
+          return true;
+        }
+        return false;
+      }
+
+      // Belirgin Yolcu Uçağı Filtresi (A321, B738 vb. yolcu modellerinin kargo radarında görünmesini kesin engeller)
+      function isPassengerAircraftModel(details) {
+        if (!details) return false;
+        // Kargo modifikasyonu (P2F, Freighter vb.) varsa yolcu uçağı sayma!
+        if (isCargoAircraftModel(details)) {
+          return false;
+        }
+        const typeStr = (details.type || '').toUpperCase();
+        const icaoType = (details.icaoType || '').toUpperCase();
+
+        // Açık yolcu modelleri (Airbus A320/A321 ailesi, Boeing 737, 777-300ER, 787, A350 yolcu tipleri)
+        if (/^(A318|A319|A320|A321|A20N|A21N|A359|A35K|A333|A332|B737|B738|B739|B38M|B39M|B788|B789|B78X|B77W|B772|B773)$/i.test(icaoType)) {
+          return true;
+        }
+        if (/(A321|A320|A319|737-800|737 MAX|787-9|A350|777-300ER)/i.test(typeStr)) {
+          return true;
+        }
+        return false;
+      }
+
+      function determineFlightType(icao24, callsign, details, airlineCode) {
+        const hex = (icao24 || '').toLowerCase();
+        const cs = (callsign || '').trim().toUpperCase();
+        const reg = (details && details.registration ? details.registration.toUpperCase() : '');
+        const airline = airlineCode || (matchCargoAirline(cs) || {}).code;
+
+        // 1. Güvenlik: Uçak detayları biliniyorsa ve belirgin bir yolcu uçağıysa ASLA kargo olamaz!
+        if (isPassengerAircraftModel(details)) {
+          return 'pax';
+        }
+
+        // 2. Resmi Turkish Cargo Filo Eşleşmesi (Hem Hex hem Kuyruk Tescili)
+        if (TURKISH_CARGO_HEX.has(hex) || (reg && TURKISH_CARGO_REGS.has(reg))) {
           return 'cargo';
         }
-        
-        // 2. If it has aircraft details, we can check if it's explicitly a freighter/cargo aircraft
+
+        if (airline === 'THY') {
+          // 3. Dinamik Kargo Uçağı Tanıma: Filoda henüz tanımlı olmasa bile (örn. filoya yeni katılan kargo uçağı)
+          // gövde modeli açıkça kargo ise (B77L, A330F, P2F vb.) otomatik kargo kabul edilir!
+          if (isCargoAircraftModel(details)) {
+            return 'cargo';
+          }
+
+          // 4. Eurocontrol ATC alfa-sayısal yolcu çağrı kodları (THY9UG, THY12A vb.) -> Yolcu
+          if (/^THY\d+[A-Z]+$/i.test(cs)) {
+            return 'pax';
+          }
+
+          // 5. Turkish Cargo ana kargo uçuş blok aralığı (6000 - 6699)
+          // Not: 6700-6999 aralığı THY'de hac/umre, charter ve ek yolcu uçuşlarıdır!
+          const numMatch = cs.match(/^THY(\d+)$/i);
+          if (numMatch) {
+            const flightNum = parseInt(numMatch[1], 10);
+            if (flightNum >= 6000 && flightNum <= 6699) {
+              return 'cargo';
+            }
+          }
+
+          return 'pax';
+        } else if (airline === 'UAE') {
+          // Emirates SkyCargo: 9000-9999 aralığındaki kargo uçuşları veya tescilli B777F filosu
+          const numMatch = cs.match(/^UAE(\d+)/i);
+          if (numMatch) {
+            const flightNum = parseInt(numMatch[1], 10);
+            if (flightNum >= 9000 && flightNum <= 9999) {
+              return 'cargo';
+            }
+          }
+          if (EMIRATES_CARGO_HEX.has(hex)) {
+            return 'cargo';
+          }
+          return 'pax';
+        } else {
+          // Dedicated all-cargo carriers (GEC, CKK, MNB): her uçuş kargo
+          const meta = CARGO_AIRLINE_BY_CODE.get(airline);
+          if (meta && meta.allCargo) {
+            return 'cargo';
+          }
+        }
+
+        // 4. Karışık filolu havayolları (tip tespiti başarısız olursa):
         if (details) {
           const type = (details.icaoType || details.type || '').toUpperCase();
           if (type.endsWith('F') && type !== 'B38M' && type !== 'B39M') {
             return 'cargo';
           }
           const desc = (details.type || '').toLowerCase();
-          if (desc.includes('freighter') || desc.includes('cargo')) {
+          if (desc.includes('freighter') || desc.includes('cargo') || desc.includes('p2f')) {
             return 'cargo';
           }
         }
-        
-        // 3. Fallback to Turkish Cargo flight number block range (6000 - 6499)
-        const isCargoRange = (flightNum >= 6000 && flightNum <= 6499);
-        return isCargoRange ? 'cargo' : 'pax';
+
+        return 'pax';
+      }
+
+      // OpenSky'nin state vektöründe havayolunun ICAO çağrı kodu gelir
+      // (THY, GEC, CKK, MNB, UAE...). Kullanıcıya gösterilecek ticari uçuş
+      // numarası ise IATA öneki + kalan rakamlardır (TK, LH, CK, MB, EK).
+      function toCommercialFlightNumber(callsign) {
+        const cs = String(callsign || '').trim().toUpperCase();
+        const meta = matchCargoAirline(cs);
+        if (!meta) return null;
+        return meta.iata + cs.slice(meta.prefix.length);
+      }
+
+      // Flightradar24 Canlı Radar Feed Entegrasyonu:
+      // data-cloud.flightradar24.com üzerinden anlık olarak havadaki (on_ground === 0)
+      // kargo uçaklarını çeker, rota ve canlı uçuş doğrulaması sağlar.
+      async function fetchFlightRadar24LiveFlights() {
+        const frFlights = [];
+        const promises = CARGO_AIRLINES.map(async (airlineMeta) => {
+          try {
+            const url = `https://data-cloud.flightradar24.com/zones/fcgi/feed.js?airline=${airlineMeta.code}`;
+            const res = await doFetch(url, {
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+                'Accept': 'application/json'
+              }
+            }, false, 45);
+
+            if (res.status !== 200 || !res.body) return;
+            let data = null;
+            try {
+              data = JSON.parse(res.body);
+            } catch (_) {
+              return;
+            }
+
+            for (const [key, v] of Object.entries(data)) {
+              if (!Array.isArray(v) || v.length < 15) continue;
+              const [hex, lat, lon, track, alt, spd, sq, radar, model, reg, ts, orig, dest, flight_no, on_ground] = v;
+              const callsign = (v[16] || '').trim();
+
+              // Kesin filtre: Yerde olan (on_ground === 1) veya hızı/irtifası sıfır olan uçakları havada sayma!
+              if (on_ground === 1 || (alt === 0 && spd < 40)) continue;
+              if (lat == null || lon == null) continue;
+
+              const details = {
+                registration: reg ? reg.toUpperCase() : null,
+                model: model || null,
+                icaoType: model || null,
+                type: model || null
+              };
+
+              const type = determineFlightType(hex, callsign, details, airlineMeta.code);
+              if (type !== 'cargo') continue;
+
+              const cleanOrig = orig ? orig.trim().toUpperCase() : null;
+              const cleanDest = dest ? dest.trim().toUpperCase() : null;
+              const depDb = cleanOrig && AIRPORT_DB[cleanOrig] ? AIRPORT_DB[cleanOrig] : null;
+              const arrDb = cleanDest && AIRPORT_DB[cleanDest] ? AIRPORT_DB[cleanDest] : null;
+
+              frFlights.push({
+                icao24: (hex || '').toLowerCase(),
+                callsign: callsign || (airlineMeta.prefix + (flight_no || '').replace(/\D/g, '')),
+                lat,
+                lon,
+                airline: airlineMeta.code,
+                flightNumber: flight_no || toCommercialFlightNumber(callsign),
+                altitude: alt ? Math.round(alt * 0.3048) : null,
+                altitudeFeet: alt || null,
+                velocity: spd ? Math.round(spd * 0.514444) : null,
+                speedKts: spd || null,
+                track: track || 0,
+                squawk: sq || null,
+                aircraftDetails: details,
+                dep: depDb,
+                arr: arrDb,
+                routeSource: depDb && arrDb ? 'flightradar24' : null,
+                lastContact: ts || Math.floor(Date.now() / 1000),
+                type: 'cargo',
+                fr24Live: true
+              });
+            }
+          } catch (err) {
+            console.warn(`[FR24 Live] ${airlineMeta.code} fetch error:`, err.message || err);
+          }
+        });
+
+        await Promise.all(promises);
+        return frFlights;
       }
 
       async function computeBaseCargoFlights() {
@@ -1793,24 +2529,31 @@ export default {
         const allFlights = [];
         for (const s of states) {
           const callsign = (s[1] || '').trim();
-          if (!callsign.startsWith('THY')) continue;
-          const flightNumMatch = callsign.match(/^THY(\d+)/);
-          if (!flightNumMatch) continue;
-          const flightNum = parseInt(flightNumMatch[1], 10);
+          const meta = matchCargoAirline(callsign);
+          if (!meta) continue;
           const [icao24, , origin_country, , last_contact, longitude, latitude, baro_altitude, on_ground, velocity, true_track, vertical_rate, , geo_altitude, squawk] = s;
           if (on_ground || latitude == null || longitude == null) continue;
+
+          // SADECE KARGO: Kullanıcı yalnızca kargo uçaklarını takip eder.
+          // Havadaki yüzlerce yolcu uçağını en başta eleyerek Worker KV ve CPU limitlerini koruyoruz.
+          const type = determineFlightType(icao24, callsign, null, meta.code);
+          if (type !== 'cargo') continue;
+
           allFlights.push({
             icao24, callsign, lat: latitude, lon: longitude,
+            airline: meta.code,
+            flightNumber: toCommercialFlightNumber(callsign),
             altitude: baro_altitude, geoAltitude: geo_altitude, velocity, track: true_track,
             verticalRate: vertical_rate, squawk: squawk || null, originCountry: origin_country || null,
             lastContact: last_contact,
-            type: determineFlightType(icao24, flightNum, null),
+            type: 'cargo',
           });
         }
 
         return {
-          count: allFlights.filter(f => f.type === 'cargo').length,
-          paxCount: allFlights.filter(f => f.type === 'pax').length,
+          count: allFlights.filter(f => f.airline === 'THY').length,
+          countByAirline: Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, allFlights.filter(f => f.airline === a.code).length])),
+          airlines: CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata })),
           flights: allFlights,
           updated: Math.floor(Date.now() / 1000),
           token, authHeaders,
@@ -1820,7 +2563,9 @@ export default {
       function getDistance(lat1, lon1, lat2, lon2) {
         const R = 6371; // km
         const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
+        let diffLon = Math.abs(lon2 - lon1);
+        if (diffLon > 180) diffLon = 360 - diffLon;
+        const dLon = diffLon * Math.PI / 180;
         const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
                   Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                   Math.sin(dLon/2) * Math.sin(dLon/2);
@@ -1865,21 +2610,40 @@ export default {
         return (brng + 360) % 360;
       }
 
+      // Büyük daire (great-circle) enterpolasyonu — sinyal kaybı sonrası uçağı
+      // son bilinen konumdan varış noktasına doğru rota üzerinde ilerletmek için.
+      function interpolateGreatCircle(lat1, lon1, lat2, lon2, fraction) {
+        const toRad = d => d * Math.PI / 180;
+        const toDeg = r => r * 180 / Math.PI;
+        const phi1 = toRad(lat1), lam1 = toRad(lon1), phi2 = toRad(lat2), lam2 = toRad(lon2);
+        const angularDist = 2 * Math.asin(Math.sqrt(
+          Math.sin((phi2 - phi1) / 2) ** 2 + Math.cos(phi1) * Math.cos(phi2) * Math.sin((lam2 - lam1) / 2) ** 2
+        ));
+        if (angularDist === 0) return { lat: lat1, lon: lon1 };
+        const a = Math.sin((1 - fraction) * angularDist) / Math.sin(angularDist);
+        const b = Math.sin(fraction * angularDist) / Math.sin(angularDist);
+        const x = a * Math.cos(phi1) * Math.cos(lam1) + b * Math.cos(phi2) * Math.cos(lam2);
+        const y = a * Math.cos(phi1) * Math.sin(lam1) + b * Math.cos(phi2) * Math.sin(lam2);
+        const z = a * Math.sin(phi1) + b * Math.sin(phi2);
+        return { lat: toDeg(Math.atan2(z, Math.sqrt(x * x + y * y))), lon: toDeg(Math.atan2(y, x)) };
+      }
+
+      function angleDiff(a, b) {
+        let diff = Math.abs(a - b);
+        if (diff > 180) diff = 360 - diff;
+        return diff;
+      }
+
       function isValidRouteForCallsign(callsign, depIcao, arrIcao) {
         if (!callsign) return true;
-        const uCallsign = callsign.toUpperCase();
         const uDep = depIcao ? depIcao.toUpperCase() : '';
         const uArr = arrIcao ? arrIcao.toUpperCase() : '';
 
-        if (uCallsign === 'THY6058' && uDep !== 'GOBD') {
-          return false;
-        }
-        if (uCallsign === 'THY6261' && uDep === 'VIDP' && uArr === 'VVNB') {
-          return false;
-        }
-        if (uCallsign === 'THY6259' && uDep !== 'VHHH') {
-          return false;
-        }
+        // Havalimanı kodlarının koordinat (42.25N/25.60E vb.) veya geçersiz formatta olmadığını doğrula
+        if (uDep && !/^[A-Z]{3,4}$/.test(uDep)) return false;
+        if (uArr && !/^[A-Z]{3,4}$/.test(uArr)) return false;
+        if (uDep && uArr && uDep === uArr) return false;
+
         return true;
       }
 
@@ -1891,26 +2655,39 @@ export default {
         const dArr = getDistance(f.lat, f.lon, arr.lat, arr.lon);
         const dTotal = getDistance(dep.lat, dep.lon, arr.lat, arr.lon);
         
-        // 1. Tighter distance limit (Allows up to 15% or +300km of routing detours/airspace closures)
-        const maxAllowed = Math.max(dTotal * 1.15, dTotal + 300);
+        // 1. Detour payı:
+        // Kısa/bölgesel rotalarda (< 3000 km) azami %25 veya +350 km sapmaya izin ver.
+        // Kıtalararası uzun menzilli kargo koridorlarında (> 3000 km) Rusya/Ortadoğu bypass payı için %35 veya +900 km izin ver.
+        const detourAdd = dTotal < 3000 ? Math.min(350, dTotal * 0.25) : 900;
+        const detourRatio = dTotal < 3000 ? 1.25 : 1.35;
+        const maxAllowed = Math.max(dTotal * detourRatio, dTotal + detourAdd);
         if (dDep + dArr > maxAllowed) return false;
         
-        // 2. Heading to destination check
+        // 2. Kalkış / Varış ve Heading (Burnun dönük olduğu yön) doğrulaması
         if (f.track != null) {
-          const bearing = getBearing(f.lat, f.lon, arr.lat, arr.lon);
-          let diff = Math.abs(f.track - bearing);
-          if (diff > 180) diff = 360 - diff;
-          if (diff > 90) return false;
-        }
-        
-        // 3. Sector check: Plane must approach from the origin side of the destination.
-        // We disable this when close to the destination (dArr <= 50) to allow landing patterns.
-        if (dArr > 50) {
-          const bearingToPlane = getBearing(arr.lat, arr.lon, f.lat, f.lon);
-          const bearingToOrigin = getBearing(arr.lat, arr.lon, dep.lat, dep.lon);
-          let diffSector = Math.abs(bearingToPlane - bearingToOrigin);
-          if (diffSector > 180) diffSector = 360 - diffSector;
-          if (diffSector > 60) return false;
+          const bearingToArr = getBearing(f.lat, f.lon, arr.lat, arr.lon);
+          const diffToArr = angleDiff(f.track, bearingToArr);
+
+          const bearingFromDep = getBearing(dep.lat, dep.lon, f.lat, f.lon);
+          const diffFromDep = angleDiff(f.track, bearingFromDep);
+
+          // Varış meydanına yakınken (dArr <= 180 km / ~100 NM):
+          // Uçak varış meydanına doğru iniş yaklaşmasında olmalıdır; varış meydanından ters yöne KAÇAMAZ!
+          if (dArr <= 180) {
+            if (diffToArr > 110) return false;
+          }
+
+          // Kalkış meydanına yakınken (dDep <= 180 km / ~100 NM):
+          // Yeni kalkan uçak kalkış meydanından uzaklaşıyor olmalıdır; kalkış meydanına geri dönemez!
+          if (dDep <= 180) {
+            if (diffFromDep > 110) return false;
+          }
+
+          // Açık seyir (cruise) fazı: Uçağın burnu varış istikametinden bölgeselde 75°, uzun hatta 90°'den fazla sapamaz
+          if (dDep > 180 && dArr > 180) {
+            const maxCruiseDiff = dTotal < 3000 ? 75 : 90;
+            if (diffToArr > maxCruiseDiff) return false;
+          }
         }
         
         return true;
@@ -1922,22 +2699,11 @@ export default {
         const kvKey = `learned_routes_${uppercaseCallsign}`;
         try {
           let routes = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' }) || [];
-          if (uppercaseCallsign === 'THY6058') {
-            const filtered = routes.filter(r => r.dep && r.dep.icao === 'GOBD');
-            if (filtered.length !== routes.length) {
-              routes = filtered;
-              await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(routes));
-            }
-          }
-          if (uppercaseCallsign === 'THY6259') {
-            const filtered = routes.filter(r => r.dep && r.dep.icao === 'VHHH');
-            if (filtered.length !== routes.length) {
-              routes = filtered;
-              await env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(routes));
-            }
-          }
           for (const r of routes) {
             if (r.dep && r.dep.lat != null && r.arr && r.arr.lat != null) {
+              const depCode = r.dep.icao || r.dep.iata || '';
+              const arrCode = r.arr.icao || r.arr.iata || '';
+              if (!/^[A-Z]{3,4}$/.test(depCode) || !/^[A-Z]{3,4}$/.test(arrCode)) continue;
               if (isRouteConsistent({ callsign: uppercaseCallsign, lat, lon, track }, r.dep, r.arr)) {
                 return cleanRouteCities(r); // Rota eşleşti ve şehirler temizlendi!
               }
@@ -1949,6 +2715,9 @@ export default {
 
       async function saveLearnedRoute(callsign, route) {
         if (!env.FBX_ROUTES_KV || !route || !route.dep || !route.arr) return;
+        const depCode = route.dep.icao || route.dep.iata || '';
+        const arrCode = route.arr.icao || route.arr.iata || '';
+        if (!/^[A-Z]{3,4}$/.test(depCode) || !/^[A-Z]{3,4}$/.test(arrCode)) return;
         const kvKey = `learned_routes_${callsign}`;
         try {
           const routes = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' }) || [];
@@ -1961,39 +2730,103 @@ export default {
         } catch (_) {}
       }
 
+      async function fetchAircraftPhotoFromPlanespotters(icao24, registration) {
+        const headers = {
+          'User-Agent': 'HaberozetleriFlightTracker/1.0 (contact: demirbasemre@gmail.com)'
+        };
+        try {
+          // 1. Önce transponder hex (ICAO24) ile sorgula (forceDirect=true, CF doğrudan atar)
+          if (icao24) {
+            const hex = icao24.toLowerCase();
+            const res = await doFetch(`https://api.planespotters.net/pub/photos/hex/${hex}`, { headers }, true, 86400);
+            if (res.status === 200) {
+              const data = JSON.parse(res.body);
+              const p = data?.photos?.[0];
+              if (p) {
+                return {
+                  photoUrl: p.thumbnail_large?.src || p.thumbnail?.src || null,
+                  photoThumb: p.thumbnail?.src || null,
+                  photographer: p.photographer || null,
+                  photoPage: p.link || null,
+                };
+              }
+            }
+          }
+
+          // 2. Hex'te yoksa ve tescil (registration) biliniyorsa tescille sorgula
+          if (registration) {
+            const regClean = registration.trim().toUpperCase();
+            const res = await doFetch(`https://api.planespotters.net/pub/photos/reg/${encodeURIComponent(regClean)}`, { headers }, true, 86400);
+            if (res.status === 200) {
+              const data = JSON.parse(res.body);
+              const p = data?.photos?.[0];
+              if (p) {
+                return {
+                  photoUrl: p.thumbnail_large?.src || p.thumbnail?.src || null,
+                  photoThumb: p.thumbnail?.src || null,
+                  photographer: p.photographer || null,
+                  photoPage: p.link || null,
+                };
+              }
+            }
+          }
+        } catch (_) {}
+        return null;
+      }
+
       async function fetchAircraftDetailsFromAdsbdb(icao24) {
         const uppercaseIcao = icao24.toUpperCase();
         const lowercaseIcao = icao24.toLowerCase();
         
-        // Fleet details check first to bypass external API for our own cargo planes
-        if (CARGO_FLEET_DETAILS[lowercaseIcao]) {
-          return CARGO_FLEET_DETAILS[lowercaseIcao];
-        }
-        
         const kvKey = `aircraft_details_${uppercaseIcao}`;
+        let cached = null;
         if (env.FBX_ROUTES_KV) {
           try {
-            const cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
-            if (cached) return cached;
+            cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+            // Eğer önbellekte detaylar varsa ve fotoğrafı da mevcutsa doğrudan kullan
+            if (cached && cached.photoUrl) return cached;
           } catch (_) {}
         }
+
+        let details = null;
+        // Önbellekte detaylar var ama fotoğrafı yoksa mevcut detayları temel al
+        if (cached) {
+          details = { ...cached };
+        } else if (CARGO_FLEET_DETAILS[lowercaseIcao]) {
+          // Filo detayları (THY Kargo için yerel hızlı eşleme)
+          details = { ...CARGO_FLEET_DETAILS[lowercaseIcao] };
+        } else {
+          const res = await doFetch(`https://api.adsbdb.com/v0/aircraft/${uppercaseIcao}`, {}, false, 86400);
+          if (res.status === 200) {
+            let data;
+            try { data = JSON.parse(res.body); } catch {}
+            const ac = data?.response?.aircraft;
+            if (ac) {
+              details = {
+                registration: ac.registration || null,
+                type: ac.type || null,
+                icaoType: ac.icao_type || null,
+                manufacturer: ac.manufacturer || null,
+                owner: ac.registered_owner || null,
+                photoUrl: ac.url_photo || null,
+                photoThumb: ac.url_photo_thumbnail || null,
+              };
+            }
+          }
+        }
         
-        const res = await doFetch(`https://api.adsbdb.com/v0/aircraft/${uppercaseIcao}`, {}, false, 86400);
-        if (res.status !== 200) return null;
-        let data;
-        try { data = JSON.parse(res.body); } catch { return null; }
-        const ac = data?.response?.aircraft;
-        if (!ac) return null;
-        
-        const details = {
-          registration: ac.registration || null,
-          type: ac.type || null,
-          icaoType: ac.icao_type || null,
-          manufacturer: ac.manufacturer || null,
-          owner: ac.registered_owner || null,
-          photoUrl: ac.url_photo || null,
-          photoThumb: ac.url_photo_thumbnail || null,
-        };
+        if (!details) return null;
+
+        // Fotoğraf ADSBdb/Airport-Data'da yoksa veya yerel filodan geldiyse Planespotters'tan çek
+        if (!details.photoUrl) {
+          const ps = await fetchAircraftPhotoFromPlanespotters(lowercaseIcao, details.registration);
+          if (ps && ps.photoUrl) {
+            details.photoUrl = ps.photoUrl;
+            details.photoThumb = ps.photoThumb;
+            details.photographer = ps.photographer;
+            details.photoPage = ps.photoPage;
+          }
+        }
         
         if (env.FBX_ROUTES_KV && details.registration) {
           try {
@@ -2038,7 +2871,9 @@ export default {
 
       async function fetchRouteFromOpenSky(callsign) {
         const uppercaseCallsign = callsign.toUpperCase();
-        const res = await doFetch(`https://opensky-network.org/api/routes?callsign=${uppercaseCallsign}`, {}, false, 86400);
+        const token = await getOpenSkyToken(env, doFetch);
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await doFetch(`https://opensky-network.org/api/routes?callsign=${uppercaseCallsign}`, { headers }, false, 86400);
         if (res.status !== 200) return null;
         let data;
         try { data = JSON.parse(res.body); } catch { return null; }
@@ -2218,55 +3053,83 @@ export default {
         return { dep, arr };
       };
 
-      async function fetchRouteFromFlightRadar24(callsign) {
-        const uppercaseCallsign = callsign.toUpperCase();
-        try {
-          // Flightradar24'ün web geçmişi sayfasına istek atalım
-          const res = await doFetch(`https://www.flightradar24.com/data/flights/${uppercaseCallsign.toLowerCase()}`, {}, false, 86400);
-          if (res.status !== 200) {
-            if (res.status === 403) {
-              console.error(`[FlightRadar24] CAPTCHA / Cloudflare Challenge (403) detected on home IP for ${uppercaseCallsign}!`);
-            } else {
-              console.warn(`[FlightRadar24] HTTP status ${res.status} returned for ${uppercaseCallsign}`);
+      async function fetchRouteFromFlightRadar24(callsign, f = null) {
+        const commNumber = toCommercialFlightNumber(callsign);
+        const candidates = [];
+        if (commNumber) candidates.push(commNumber.toUpperCase());
+        if (!candidates.includes(callsign.toUpperCase())) candidates.push(callsign.toUpperCase());
+
+        for (const targetCall of candidates) {
+          try {
+            // Flightradar24'ün web geçmişi sayfasına istek atalım (IATA/ICAO)
+            const res = await doFetch(`https://www.flightradar24.com/data/flights/${targetCall.toLowerCase()}`, {}, false, 86400);
+            if (res.status !== 200) {
+              if (res.status === 403) {
+                console.error(`[FlightRadar24] CAPTCHA / Cloudflare Challenge (403) detected for ${targetCall}!`);
+              } else {
+                console.warn(`[FlightRadar24] HTTP status ${res.status} returned for ${targetCall}`);
+              }
+              continue;
             }
-            return null;
-          }
-          const html = res.body;
-          if (!html) return null;
-          
-          if (html.includes("cf-challenge") || html.includes("hCaptcha") || html.includes("g-recaptcha") || html.includes("Attention Required! | Cloudflare")) {
-            console.error(`[FlightRadar24] CAPTCHA / Cloudflare Challenge detected on home IP for ${uppercaseCallsign}!`);
-            return null;
-          }
-          
-          // HTML içindeki havalimanı ICAO kodlarını barındıran linkleri arayalım (/data/airports/ltfm vb.)
-          const links = [...html.matchAll(/href="\/data\/airports\/([a-z]{4})"/g)].map(m => m[1].toUpperCase());
-          if (links.length >= 2) {
-            const depIcao = links[0];
-            const arrIcao = links[1];
-            const depDb = AIRPORT_DB[depIcao];
-            const arrDb = AIRPORT_DB[arrIcao];
-            if (depDb && arrDb) {
-              console.log(`[FlightRadar24] Successfully resolved route for ${uppercaseCallsign}: ${depIcao} -> ${arrIcao}`);
-              return { dep: depDb, arr: arrDb };
+            const html = res.body;
+            if (!html || html.includes("cf-challenge") || html.includes("hCaptcha") || html.includes("g-recaptcha") || html.includes("Attention Required! | Cloudflare")) {
+              continue;
             }
-          }
-          
-          const linksIata = [...html.matchAll(/href="\/data\/airports\/([a-z]{3})"/g)].map(m => m[1].toUpperCase());
-          if (linksIata.length >= 2) {
-            const depIata = linksIata[0];
-            const arrIata = linksIata[1];
-            const depDb = AIRPORT_DB[depIata];
-            const arrDb = AIRPORT_DB[arrIata];
-            if (depDb && arrDb) {
-              console.log(`[FlightRadar24] Successfully resolved route for ${uppercaseCallsign}: ${depIata} -> ${arrIata}`);
-              return { dep: depDb, arr: arrDb };
+            
+            // 1. IATA kodları çiftlerini topla (FR24 linkleri /data/airports/ist şeklinde 3 harfli IATA kodudur)
+            const linksIata = [...html.matchAll(/href="\/data\/airports\/([a-z]{3})"/g)].map(m => m[1].toUpperCase());
+            if (linksIata.length >= 2) {
+              if (f) {
+                for (let i = 0; i < Math.min(linksIata.length - 1, 14); i += 2) {
+                  const depDb = AIRPORT_DB[linksIata[i]];
+                  const arrDb = AIRPORT_DB[linksIata[i + 1]];
+                  if (depDb && arrDb) {
+                    if (isRouteConsistent(f, depDb, arrDb)) {
+                      console.log(`[FlightRadar24] Consistent route found for ${targetCall}: ${linksIata[i]} -> ${linksIata[i + 1]}`);
+                      return { dep: depDb, arr: arrDb };
+                    }
+                    if (isRouteConsistent(f, arrDb, depDb)) {
+                      console.log(`[FlightRadar24] Reverse consistent route found for ${targetCall}: ${linksIata[i + 1]} -> ${linksIata[i]}`);
+                      return { dep: arrDb, arr: depDb };
+                    }
+                  }
+                }
+              } else {
+                const depDb = AIRPORT_DB[linksIata[0]];
+                const arrDb = AIRPORT_DB[linksIata[1]];
+                if (depDb && arrDb) {
+                  return { dep: depDb, arr: arrDb };
+                }
+              }
             }
+
+            // 2. ICAO kodları çiftleri (4 harfli)
+            const linksIcao = [...html.matchAll(/href="\/data\/airports\/([a-z]{4})"/g)].map(m => m[1].toUpperCase());
+            if (linksIcao.length >= 2) {
+              if (f) {
+                for (let i = 0; i < Math.min(linksIcao.length - 1, 14); i += 2) {
+                  const depDb = AIRPORT_DB[linksIcao[i]];
+                  const arrDb = AIRPORT_DB[linksIcao[i + 1]];
+                  if (depDb && arrDb) {
+                    if (isRouteConsistent(f, depDb, arrDb)) {
+                      return { dep: depDb, arr: arrDb };
+                    }
+                    if (isRouteConsistent(f, arrDb, depDb)) {
+                      return { dep: arrDb, arr: depDb };
+                    }
+                  }
+                }
+              } else {
+                const depDb = AIRPORT_DB[linksIcao[0]];
+                const arrDb = AIRPORT_DB[linksIcao[1]];
+                if (depDb && arrDb) {
+                  return { dep: depDb, arr: arrDb };
+                }
+              }
+            }
+          } catch (err) {
+            console.error(`[FlightRadar24] Request error for ${targetCall}: ${err.message || err}`);
           }
-          
-          console.warn(`[FlightRadar24] HTML parsing failed. Route links not found in history for ${uppercaseCallsign}.`);
-        } catch (err) {
-          console.error(`[FlightRadar24] Request error for ${uppercaseCallsign}: ${err.message || err}`);
         }
         return null;
       }
@@ -2307,7 +3170,13 @@ export default {
               const f = actFlights[0];
               const orig = f.origin;
               const dest = f.destination;
-              if (orig && dest && (orig.icao || orig.iata) && (dest.icao || dest.iata)) {
+              
+              const origIcao = (orig?.icao && /^[A-Z]{4}$/i.test(orig.icao.trim())) ? orig.icao.trim().toUpperCase() : null;
+              const origIata = (orig?.iata && /^[A-Z]{3}$/i.test(orig.iata.trim())) ? orig.iata.trim().toUpperCase() : null;
+              const destIcao = (dest?.icao && /^[A-Z]{4}$/i.test(dest.icao.trim())) ? dest.icao.trim().toUpperCase() : null;
+              const destIata = (dest?.iata && /^[A-Z]{3}$/i.test(dest.iata.trim())) ? dest.iata.trim().toUpperCase() : null;
+
+              if (orig && dest && (origIcao || origIata) && (destIcao || destIata)) {
                 const depLat = orig.coord ? orig.coord[1] : null;
                 const depLon = orig.coord ? orig.coord[0] : null;
                 const arrLat = dest.coord ? dest.coord[1] : null;
@@ -2318,24 +3187,21 @@ export default {
                 let arrCity = dest.friendlyLocation || 'Bilinmiyor';
                 if (arrCity.includes(',')) arrCity = arrCity.split(',')[0].trim();
                 
-                const depIcao = orig.icao ? orig.icao.toUpperCase() : null;
-                const arrIcao = dest.icao ? dest.icao.toUpperCase() : null;
-                
-                const depDb = (depIcao && AIRPORT_DB[depIcao]) || {};
-                const arrDb = (arrIcao && AIRPORT_DB[arrIcao]) || {};
+                const depDb = (origIcao && AIRPORT_DB[origIcao]) || (origIata && AIRPORT_DB[origIata]) || {};
+                const arrDb = (destIcao && AIRPORT_DB[destIcao]) || (destIata && AIRPORT_DB[destIata]) || {};
                 
                 return {
                   dep: {
-                    icao: depIcao || depDb.icao || null,
-                    iata: orig.iata ? orig.iata.toUpperCase() : depDb.iata || null,
+                    icao: origIcao || depDb.icao || null,
+                    iata: origIata || depDb.iata || null,
                     name: orig.friendlyName || depDb.name || null,
                     city: depCity || depDb.city || 'Bilinmiyor',
                     lat: depLat || depDb.lat || null,
                     lon: depLon || depDb.lon || null
                   },
                   arr: {
-                    icao: arrIcao || arrDb.icao || null,
-                    iata: dest.iata ? dest.iata.toUpperCase() : arrDb.iata || null,
+                    icao: destIcao || arrDb.icao || null,
+                    iata: destIata || arrDb.iata || null,
                     name: dest.friendlyName || arrDb.name || null,
                     city: arrCity || arrDb.city || 'Bilinmiyor',
                     lat: arrLat || arrDb.lat || null,
@@ -2349,138 +3215,157 @@ export default {
         return null;
       }
 
-      async function enrichInBackground(data, cachedFlights) {
-        const { flights } = data;
-        const cargoFlights = flights.filter(f => f.type === 'cargo');
-        let cacheUpdated = false;
-        
-        for (const f of cargoFlights) {
-          // 1. Rota tespiti (Hafızadan/API'den teyitli)
-          if (!f.dep) {
-            // Önce kendi KV'mizden öğrenilmiş rotaları kontrol et
-            const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon, f.track);
-            if (learnedRoute) {
-              f.dep = learnedRoute.dep;
-              f.arr = learnedRoute.arr;
-              cacheUpdated = true;
-            } else {
-              // KV'de yoksa API'den çek ve teyit et
-              try {
-                let apiRoute = null;
-                let valid = false;
+      // Rota tespiti (hafızadan/API'den teyitli). Yalnızca cargo için arka planda
+      // proaktif çağrılır (bkz. enrichInBackground) — yolcu uçuşları için ise
+      // /cargo-flight-detail ucundan isteğe bağlı (kullanıcı detay panelini
+      // açtığında) çağrılır; ~130+ yolcu uçuşunun hepsini her döngüde taramak
+      // FlareSolverr/scraping yükünü ve site sınırlaması riskini büyütür.
+      async function resolveFlightRoute(f) {
+        if (f.dep) return false;
+        const learnedRoute = await getLearnedRoute(f.callsign, f.lat, f.lon, f.track);
+        if (learnedRoute) {
+          f.dep = learnedRoute.dep;
+          f.arr = learnedRoute.arr;
+          return true;
+        }
+        let updated = false;
+        try {
+          let apiRoute = null;
+          let valid = false;
 
-                // 1. FlightAware (Browserless üzerinden, genellikle başarılı)
-                if (!valid) {
-                  const faRoute = await fetchRouteFromFlightAware(f.callsign);
-                  if (faRoute && faRoute.dep && faRoute.arr) {
-                    if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
-                      apiRoute = faRoute;
-                      valid = true;
-                    }
+          // 1. Yerel, doğrulanmış Turkish Cargo rota tablosu (0ms, yerel ve kesin)
+          if (!valid) {
+            const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
+            if (candidates) {
+              for (const c of candidates) {
+                const depDb = AIRPORT_DB[c.dep.toUpperCase()];
+                const arrDb = AIRPORT_DB[c.arr.toUpperCase()];
+                if (depDb && arrDb) {
+                  if (isRouteConsistent(f, depDb, arrDb)) {
+                    apiRoute = { dep: depDb, arr: arrDb, source: 'local' };
+                    valid = true;
+                    break;
                   }
                 }
-
-                // 2. ADS-B Exchange (Cloudflare yok, ücretsiz, from/to alanları varsa hızlı)
-                if (!valid) {
-                  const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
-                  if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
-                    if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
-                      apiRoute = adsbxRoute;
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 3. Adsbdb API
-                if (!valid) {
-                  const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
-                  if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
-                    if (isRouteConsistent(f, adsbRoute.dep, adsbRoute.arr)) {
-                      apiRoute = adsbRoute;
-                      valid = true;
-                    }
-                  }
-                }
-                
-                // 4. OpenSky Route API
-                if (!valid) {
-                  const osRoute = await fetchRouteFromOpenSky(f.callsign);
-                  if (osRoute && osRoute.dep && osRoute.arr) {
-                    if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
-                      apiRoute = osRoute;
-                      valid = true;
-                    }
-                  }
-                }
-                
-                // 5. Statik rota tablosu
-                if (!valid) {
-                  const candidates = CARGO_STATIC_ROUTES[f.callsign.toUpperCase()];
-                  if (candidates) {
-                    for (const c of candidates) {
-                      const depDb = AIRPORT_DB[c.dep.toUpperCase()];
-                      const arrDb = AIRPORT_DB[c.arr.toUpperCase()];
-                      if (depDb && arrDb) {
-                        if (isRouteConsistent(f, depDb, arrDb)) {
-                          apiRoute = { dep: depDb, arr: arrDb };
-                          valid = true;
-                          break;
-                        }
-                      }
-                    }
-                  }
-                }
-
-                // 6. AeroAPI (ücretli, son çare)
-                if (!valid && env.AEROAPI_KEY) {
-                  const aeroRoute = await fetchRouteFromAeroAPI(f.callsign);
-                  if (aeroRoute && aeroRoute.dep && aeroRoute.arr) {
-                    if (isRouteConsistent(f, aeroRoute.dep, aeroRoute.arr)) {
-                      apiRoute = aeroRoute;
-                      valid = true;
-                    }
-                  }
-                }
-
-                // 7. FlightRadar24 (Cloudflare engelliyor, genellikle başarısız, en son denenir)
-                if (!valid) {
-                  const frRoute = await fetchRouteFromFlightRadar24(f.callsign);
-                  if (frRoute && frRoute.dep && frRoute.arr) {
-                    if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
-                      apiRoute = frRoute;
-                      valid = true;
-                    }
-                  }
-                }
-
-                if (valid && apiRoute && apiRoute.dep && apiRoute.arr) {
-                  f.dep = apiRoute.dep;
-                  f.arr = apiRoute.arr;
-                  cacheUpdated = true;
-                  // Başarılıysa KV'ye öğrenilmiş rota olarak kaydet
-                  await saveLearnedRoute(f.callsign, apiRoute);
-                }
-              } catch (_) {}
-              await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
+              }
             }
           }
 
-          // 2. Uçak detaylarını (Tescil, Model, Fotoğraf) çek
-          if (!f.aircraftDetails) {
-            try {
-              const acDetails = await fetchAircraftDetailsFromAdsbdb(f.icao24);
-              if (acDetails) {
-                f.aircraftDetails = acDetails;
-                const flightNumMatch = f.callsign.match(/^THY(\d+)/);
-                const flightNum = flightNumMatch ? parseInt(flightNumMatch[1], 10) : 0;
-                f.type = determineFlightType(f.icao24, flightNum, acDetails);
-                cacheUpdated = true;
+          // 2. FlightRadar24 (Ev IP proxy / curl destekli — taze ve kesin IFR planı)
+          if (!valid) {
+            const frRoute = await fetchRouteFromFlightRadar24(f.callsign, f);
+            if (frRoute && frRoute.dep && frRoute.arr) {
+              if (isRouteConsistent(f, frRoute.dep, frRoute.arr)) {
+                apiRoute = { ...frRoute, source: "flightradar24" };
+                valid = true;
               }
-            } catch (_) {}
-            await new Promise(r => setTimeout(r, Math.floor(Math.random() * 4001) + 3000));
+            }
+          }
+
+          // 3. FlightAware (Ev IP proxy / curl destekli)
+          if (!valid) {
+            const faRoute = await fetchRouteFromFlightAware(f.callsign);
+            if (faRoute && faRoute.dep && faRoute.arr) {
+              if (isRouteConsistent(f, faRoute.dep, faRoute.arr)) {
+                apiRoute = { ...faRoute, source: "flightaware" };
+                valid = true;
+              }
+            }
+          }
+
+          // 4. ADSBDB (Hızlı, açık JSON API)
+          if (!valid) {
+            const adsbRoute = await fetchRouteFromAdsbdb(f.callsign);
+            if (adsbRoute && adsbRoute.dep && adsbRoute.arr) {
+              if (isRouteConsistent(f, adsbRoute.dep, adsbRoute.arr)) {
+                apiRoute = { ...adsbRoute, source: "adsbdb" };
+                valid = true;
+              }
+            }
+          }
+
+          // 5. ADSBExchange (re-api canlı çağrı araması)
+          if (!valid) {
+            const adsbxRoute = await fetchRouteFromADSBX(f.callsign);
+            if (adsbxRoute && adsbxRoute.dep && adsbxRoute.arr) {
+              if (isRouteConsistent(f, adsbxRoute.dep, adsbxRoute.arr)) {
+                apiRoute = { ...adsbxRoute, source: "adsbexchange" };
+                valid = true;
+              }
+            }
+          }
+
+          // 6. OpenSky Feeder Rota API (Resmi Feeder Kimliği ile)
+          if (!valid) {
+            const osRoute = await fetchRouteFromOpenSky(f.callsign);
+            if (osRoute && osRoute.dep && osRoute.arr) {
+              if (isRouteConsistent(f, osRoute.dep, osRoute.arr)) {
+                apiRoute = { ...osRoute, source: 'opensky' };
+                valid = true;
+              }
+            }
+          }
+
+          if (valid && apiRoute && apiRoute.dep && apiRoute.arr) {
+            f.dep = apiRoute.dep;
+            f.arr = apiRoute.arr;
+            f.routeSource = apiRoute.source || 'verified';
+            f.routeVerifiedAt = Math.floor(Date.now() / 1000);
+            updated = true;
+            // Başarılıysa KV'ye öğrenilmiş rota olarak kaydet
+            await saveLearnedRoute(f.callsign, apiRoute);
+          }
+        } catch (_) {}
+        // Dış kaynaklara nazik olmak için istek sonrası kısa bekleme
+        await new Promise(r => setTimeout(r, 100));
+        return updated;
+      }
+
+      // Uçak detaylarını (tescil, model, fotoğraf) çeker. Aynı şekilde cargo için
+      // arka planda proaktif, yolcu için /cargo-flight-detail'den isteğe bağlı çağrılır.
+      async function resolveAircraftDetails(f) {
+        if (f.aircraftDetails && f.aircraftDetails.photoUrl) return false;
+        let updated = false;
+        try {
+          const acDetails = await fetchAircraftDetailsFromAdsbdb(f.icao24);
+          if (acDetails) {
+            f.aircraftDetails = acDetails;
+            f.type = determineFlightType(f.icao24, f.callsign, acDetails, f.airline);
+            updated = true;
+          }
+        } catch (_) {}
+        await new Promise(r => setTimeout(r, 100));
+        return updated;
+      }
+
+      async function enrichInBackground(data, cachedFlights) {
+        const { flights } = data;
+        const cargoFlights = flights
+          .filter(f => f.type === 'cargo')
+          .sort((a, b) => (a.airline === 'THY' ? -1 : (b.airline === 'THY' ? 1 : 0)));
+        let cacheUpdated = false;
+
+        let subreqCount = 0;
+        for (const f of cargoFlights) {
+          if (subreqCount > 35) break;
+          if (!f.dep) {
+            if (await resolveFlightRoute(f)) {
+              cacheUpdated = true;
+              subreqCount += 2;
+            }
+          }
+          if (!f.aircraftDetails || !f.aircraftDetails.photoUrl) {
+            if (await resolveAircraftDetails(f)) {
+              cacheUpdated = true;
+              subreqCount += 1;
+            }
           }
         }
-        
+
+        // Arka planda uçak modeli yolcu çıkanları nihai listeden temizle
+        data.flights = data.flights.filter(f => f.type === 'cargo');
+        data.count = data.flights.filter(f => f.airline === 'THY').length;
+
         if (cacheUpdated) {
           const { token: _t, authHeaders: _a, ...publicData } = data;
           await setCachedFlights(publicData);
@@ -2488,8 +3373,84 @@ export default {
       }
 
       async function refreshAndCache() {
-        const fresh = await computeBaseCargoFlights();
-        
+        // OpenSky ve Flightradar24 canlı feed'ini paralel çekelim
+        const [freshRes, fr24Flights] = await Promise.all([
+          computeBaseCargoFlights().catch(err => {
+            console.warn('[OpenSky] fetch error:', err.message || err);
+            return null;
+          }),
+          fetchFlightRadar24LiveFlights().catch(err => {
+            console.warn('[FR24 Live] fetch error:', err.message || err);
+            return [];
+          })
+        ]);
+
+        let fresh = freshRes;
+        if (!fresh) {
+          fresh = {
+            count: 0,
+            countByAirline: Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, 0])),
+            airlines: CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata })),
+            flights: [],
+            updated: Math.floor(Date.now() / 1000)
+          };
+        }
+
+        // FR24 canlı kargo uçuşları hızlı erişim indeksleri
+        const frByCallsign = new Map();
+        const frByHex = new Map();
+        const frByReg = new Map();
+        const frLiveAirborneCallsigns = new Set();
+        const frLiveAirborneRegs = new Set();
+        const frLiveAirborneHexes = new Set();
+
+        for (const fr of (fr24Flights || [])) {
+          const cs = (fr.callsign || '').toUpperCase();
+          const hex = (fr.icao24 || '').toLowerCase();
+          const reg = (fr.aircraftDetails?.registration || '').toUpperCase();
+          if (cs) {
+            frByCallsign.set(cs, fr);
+            frLiveAirborneCallsigns.add(cs);
+          }
+          if (hex) {
+            frByHex.set(hex, fr);
+            frLiveAirborneHexes.add(hex);
+          }
+          if (reg) {
+            frByReg.set(reg, fr);
+            frLiveAirborneRegs.add(reg);
+          }
+        }
+
+        // OpenSky'den gelen uçuşları FR24 canlı verisiyle teyit et ve zenginleştir
+        const matchedFrCallsigns = new Set();
+        for (const f of fresh.flights) {
+          const cs = (f.callsign || '').toUpperCase();
+          const hex = (f.icao24 || '').toLowerCase();
+          const frMatch = frByCallsign.get(cs) || frByHex.get(hex);
+          if (frMatch) {
+            matchedFrCallsigns.add((frMatch.callsign || '').toUpperCase());
+            if (frMatch.flightNumber) f.flightNumber = frMatch.flightNumber;
+            if (frMatch.dep && frMatch.arr) {
+              f.dep = frMatch.dep;
+              f.arr = frMatch.arr;
+              f.routeSource = 'flightradar24';
+            }
+            if (frMatch.aircraftDetails && (!f.aircraftDetails || !f.aircraftDetails.registration)) {
+              f.aircraftDetails = frMatch.aircraftDetails;
+            }
+            f.fr24Verified = true;
+          }
+        }
+
+        // FR24'te havada olan fakat OpenSky'de henüz listelenmemiş kargo uçuşlarını da ekle
+        for (const fr of (fr24Flights || [])) {
+          const cs = (fr.callsign || '').toUpperCase();
+          if (!matchedFrCallsigns.has(cs) && !fresh.flights.some(f => (f.callsign || '').toUpperCase() === cs)) {
+            fresh.flights.push(fr);
+          }
+        }
+
         let cachedFlights = [];
         try {
           const cachedData = await getCachedFlights();
@@ -2506,15 +3467,17 @@ export default {
               prev.dep = null;
               prev.arr = null;
             }
-            if (prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null) {
+            if (!f.dep && prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null) {
               // Verify that the aircraft is still flying along the cached route
               if (isRouteConsistent(f, prev.dep, prev.arr)) {
                 f.dep = prev.dep;
                 f.arr = prev.arr;
+                f.routeSource = prev.routeSource || 'cache';
+                f.routeVerifiedAt = prev.routeVerifiedAt || null;
                 cleanRouteCities(f);
               }
             }
-            if (prev.aircraftDetails) {
+            if (!f.aircraftDetails && prev.aircraftDetails) {
               f.aircraftDetails = prev.aircraftDetails;
             }
           }
@@ -2525,6 +3488,7 @@ export default {
             if (learnedRoute) {
               f.dep = learnedRoute.dep;
               f.arr = learnedRoute.arr;
+              f.routeSource = learnedRoute.source || 'cache';
             }
           }
           // Quick static routes fallback if KV learned routes were also missing
@@ -2538,6 +3502,7 @@ export default {
                   if (isRouteConsistent(f, depDb, arrDb)) {
                     f.dep = depDb;
                     f.arr = arrDb;
+                    f.routeSource = 'local';
                     break;
                   }
                 }
@@ -2555,19 +3520,304 @@ export default {
           }
           
           // Re-evaluate type now that details may have been populated from cache/KV
-          const flightNumMatch = f.callsign.match(/^THY(\d+)/);
-          const flightNum = flightNumMatch ? parseInt(flightNumMatch[1], 10) : 0;
-          f.type = determineFlightType(f.icao24, flightNum, f.aircraftDetails);
+          f.type = determineFlightType(f.icao24, f.callsign, f.aircraftDetails, f.airline);
         }
 
+        // Kesin kargo filtresi: Uçak modeli yolcu uçağı (A321, B737 vb.) çıkanları anında ele
+        fresh.flights = fresh.flights.filter(f => f.type === 'cargo');
+        fresh.count = fresh.flights.filter(f => f.airline === 'THY').length;
+
+        // ── Sinyal kaybı: rota biliniyorsa "en iyi ihtimalle" dead-reckoning ──
+        // HAYALET UÇUŞ KORUMASI: Bir uçak OpenSky'dan düştüyse VE Flightradar24 canlı feed'inde de
+        // havada DEĞİLSE, kesinlikle uçuş bitmiş/inmiştir! Asla 2 saat haritada yürütülmez, hemen elenir!
+        const freshCallsigns = new Set(fresh.flights.map(f => (f.callsign || '').toUpperCase()));
+        const nowSec = Math.floor(Date.now() / 1000);
+        for (const prev of cachedFlights) {
+          const pCs = (prev.callsign || '').toUpperCase();
+          if (freshCallsigns.has(pCs)) continue;
+          if (prev.type !== 'cargo' || isPassengerAircraftModel(prev.aircraftDetails)) continue;
+          if (pCs.startsWith('THY')) {
+            const fnMatch = pCs.match(/^THY(\d+)$/);
+            if (fnMatch) {
+              const num = parseInt(fnMatch[1], 10);
+              if (num >= 6700) continue;
+            }
+          }
+
+          // Flightradar24 Canlı Doğrulaması: FR24 feed'i geldiyse ve uçak FR24'te havada değilse -> İNMİŞTİR!
+          const pReg = (prev.aircraftDetails?.registration || '').toUpperCase();
+          const pHex = (prev.icao24 || '').toLowerCase();
+          const isAirborneInFr24 = frLiveAirborneCallsigns.has(pCs) || (pReg && frLiveAirborneRegs.has(pReg)) || frLiveAirborneHexes.has(pHex);
+          if (fr24Flights && fr24Flights.length > 0 && !isAirborneInFr24) {
+            // Kesinlikle havada değil (örneğin TK6039 inmiştir). ASLA hayalet uçuş olarak ekleme!
+            continue;
+          }
+
+          const baseLat = prev.lastRealLat != null ? prev.lastRealLat : prev.lat;
+          const baseLon = prev.lastRealLon != null ? prev.lastRealLon : prev.lon;
+          const baseVelocity = prev.lastRealVelocity != null ? prev.lastRealVelocity : prev.velocity;
+          const hasRoute = prev.dep && prev.dep.lat != null && prev.arr && prev.arr.lat != null;
+
+          if (!hasRoute || baseLat == null || baseLon == null || !baseVelocity || baseVelocity < 5 || !prev.lastContact) {
+            continue; // Rota veya hız bilinmiyor: en iyi ihtimalle bile tahmin edilemez, gösterme
+          }
+
+          const speedKmh = baseVelocity * 3.6;
+          const distRemaining = getDistance(baseLat, baseLon, prev.arr.lat, prev.arr.lon);
+          const etaSec = (distRemaining / speedKmh) * 3600;
+          const elapsed = nowSec - prev.lastContact;
+          const MAX_DEAD_RECKONING_SEC = 900; // En fazla 15 dakika sinyal kaybı tahmini yapılabilir (hayalet uçuşları engelle)
+          if (!isFinite(etaSec) || etaSec <= 0 || elapsed >= etaSec || elapsed > MAX_DEAD_RECKONING_SEC) {
+            continue; // İndi veya süre doldu: gösterme
+          }
+
+          const fraction = Math.max(0, Math.min(1, elapsed / etaSec));
+          const pos = interpolateGreatCircle(baseLat, baseLon, prev.arr.lat, prev.arr.lon, fraction);
+
+          fresh.flights.push({
+            ...prev,
+            lat: pos.lat,
+            lon: pos.lon,
+            track: getBearing(pos.lat, pos.lon, prev.arr.lat, prev.arr.lon),
+            velocity: baseVelocity,
+            signalLost: true,
+            lastRealLat: baseLat,
+            lastRealLon: baseLon,
+            lastRealVelocity: baseVelocity,
+          });
+        }
+
+        // Kesin kargo garantisi: Yolcu uçaklarını (A321, B737 vb.) listeden tamamen süpür
+        fresh.flights = fresh.flights.filter(f => f.type === 'cargo' && !isPassengerAircraftModel(f.aircraftDetails));
+
         // Re-calculate counts in case types were corrected
-        fresh.count = fresh.flights.filter(f => f.type === 'cargo').length;
-        fresh.paxCount = fresh.flights.filter(f => f.type === 'pax').length;
+        fresh.count = fresh.flights.filter(f => f.airline === 'THY').length;
+        fresh.paxCount = 0;
+        fresh.countByAirline = Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, fresh.flights.filter(f => f.airline === a.code).length]));
+        fresh.airlines = CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata }));
 
         const { token: _t, authHeaders: _a, ...publicData } = fresh;
         await setCachedFlights(publicData);
         ctx.waitUntil(enrichInBackground(fresh, cachedFlights).catch(() => {}));
         return publicData;
+      }
+
+      // ── /cargo-flight-detail: yolcu uçuşları için isteğe bağlı (on-demand) rota +
+      // uçak detayı çözümü. Kullanıcı popover'da bir yolcu uçuşuna tıklayıp detay
+      // panelini açtığında tetiklenir — 130+ yolcu uçuşunun hepsini arka planda
+      // proaktif taramak yerine, gerçek kullanım kadar dış API/scraping yükü biner.
+      if (urlObj.pathname === '/cargo-flight-detail') {
+        try {
+          const callsign = (urlObj.searchParams.get('callsign') || '').trim().toUpperCase();
+          const icao24 = (urlObj.searchParams.get('icao24') || '').trim().toLowerCase();
+          const lat = parseFloat(urlObj.searchParams.get('lat'));
+          const lon = parseFloat(urlObj.searchParams.get('lon'));
+          const trackRaw = urlObj.searchParams.get('track');
+          const track = trackRaw != null && trackRaw !== '' ? parseFloat(trackRaw) : null;
+
+          if (!callsign || !icao24 || !isFinite(lat) || !isFinite(lon)) {
+            return new Response(JSON.stringify({ error: 'callsign, icao24, lat, lon gerekli' }), {
+              status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+          }
+
+          const airlineMeta = matchCargoAirline(callsign);
+          const f = { callsign, icao24, lat, lon, track, type: 'pax', airline: airlineMeta ? airlineMeta.code : null };
+          await resolveFlightRoute(f);
+          await resolveAircraftDetails(f);
+
+          // Rota çözüldüyse ana cache'deki ilgili kaydı da güncelle (sonraki istekler anında görsün)
+          if (f.dep && f.arr) {
+            ctx.waitUntil((async () => {
+              try {
+                const cachedData = await getCachedFlights();
+                if (cachedData && Array.isArray(cachedData.flights)) {
+                  const target = cachedData.flights.find(cf => cf.callsign === callsign);
+                  if (target) {
+                    target.dep = f.dep;
+                    target.arr = f.arr;
+                    target.routeSource = f.routeSource;
+                    if (f.aircraftDetails) target.aircraftDetails = f.aircraftDetails;
+                    await setCachedFlights(cachedData);
+                  }
+                }
+              } catch (_) {}
+            })());
+          }
+
+          return new Response(JSON.stringify({
+            dep: f.dep || null,
+            arr: f.arr || null,
+            routeSource: f.routeSource || null,
+            aircraftDetails: f.aircraftDetails || null,
+            type: f.type,
+            airline: f.airline,
+          }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        } catch (err) {
+          return new Response(JSON.stringify({ error: err.message }), {
+            status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+      }
+
+      // ── /cargo-flight-track: Uçağın canlı ADS-B uçuş geçmişi (OpenSky Tracks API) ──
+      // Kullanıcı bir uçuşa tıkladığında on-demand çağrılır; uçağın OpenSky
+      // Tracks API'den gerçek koordinat geçmişini döner (60-120 saniye KV cache ile).
+      if (urlObj.pathname === '/cargo-flight-track') {
+        try {
+          const icao24 = (urlObj.searchParams.get('icao24') || '').trim().toLowerCase();
+          if (!icao24) {
+            return new Response(JSON.stringify({ error: 'icao24 gerekli' }), {
+              status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+          }
+
+          const depLat = parseFloat(urlObj.searchParams.get('dep_lat'));
+          const depLon = parseFloat(urlObj.searchParams.get('dep_lon'));
+          const hasDep = isFinite(depLat) && isFinite(depLon);
+
+          const kvKey = `flight_track_${icao24}`;
+          if (env.FBX_ROUTES_KV) {
+            try {
+              const cached = await env.FBX_ROUTES_KV.get(kvKey, { type: 'json' });
+              if (cached && Array.isArray(cached.path)) {
+                let outPath = cached.path;
+                if (hasDep && outPath.length > 2) {
+                  let minDist = Infinity;
+                  let minIdx = 0;
+                  for (let i = 0; i < outPath.length; i++) {
+                    const d = getDistance(outPath[i][1], outPath[i][2], depLat, depLon);
+                    if (d < minDist) {
+                      minDist = d;
+                      minIdx = i;
+                    }
+                  }
+                  const distStartToDep = getDistance(outPath[0][1], outPath[0][2], depLat, depLon);
+                  if (minIdx > 0 && (distStartToDep > minDist + 150 || distStartToDep > 450 || minDist < 650)) {
+                    outPath = outPath.slice(minIdx);
+                  }
+                }
+                return new Response(JSON.stringify({ ...cached, path: outPath }), {
+                  status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
+                });
+              }
+            } catch (_) {}
+          }
+
+          function extractActiveFlightLeg(rawPath) {
+            if (!rawPath || !Array.isArray(rawPath) || rawPath.length < 2) {
+              return rawPath || [];
+            }
+            const validPts = [];
+            for (let i = 0; i < rawPath.length; i++) {
+              const p = rawPath[i];
+              if (p && p.length >= 3 && p[1] != null && p[2] != null && isFinite(p[1]) && isFinite(p[2])) {
+                validPts.push(p);
+              }
+            }
+            if (validPts.length < 2) return validPts;
+
+            validPts.sort((a, b) => (a[0] || 0) - (b[0] || 0));
+
+            const cleaned = [validPts[validPts.length - 1]];
+            for (let i = validPts.length - 1; i > 0; i--) {
+              const curr = validPts[i];
+              const prev = validPts[i - 1];
+
+              const tCurr = curr[0] || 0;
+              const tPrev = prev[0] || 0;
+              const dt = tCurr - tPrev;
+
+              if (dt <= 0) continue;
+              // 20 dakikadan fazla sinyal kesintisi varsa önceki uçuş bacağıdır
+              if (dt > 1200) break;
+
+              const dist = getDistance(prev[1], prev[2], curr[1], curr[2]);
+              const speedKmh = dist / (dt / 3600);
+
+              // 60 km üzeri mesafede süpersonik sıçrama (teleport/glitch)
+              if (dist > 60 && speedKmh > 1250) {
+                if (i > 1) {
+                  const prevPrev = validPts[i - 2];
+                  const dt2 = tCurr - (prevPrev[0] || 0);
+                  if (dt2 > 0 && dt2 <= 1200) {
+                    const dist2 = getDistance(prevPrev[1], prevPrev[2], curr[1], curr[2]);
+                    const speed2 = dist2 / (dt2 / 3600);
+                    if (speed2 <= 1250) {
+                      continue; // prev tekil glitch, atla
+                    }
+                  }
+                }
+                break;
+              }
+
+              // Uçak yerdeyse kalkış noktasıdır
+              if (prev[5] === true) {
+                cleaned.push(prev);
+                break;
+              }
+
+              cleaned.push(prev);
+            }
+
+            cleaned.reverse();
+            return cleaned;
+          }
+
+          const token = await getOpenSkyToken(env, doFetch);
+          const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
+          const trackRes = await doFetch(`https://opensky-network.org/api/tracks/all?icao24=${icao24}&time=0`, { headers: authHeaders }, false, 60);
+
+          if (trackRes.status === 200) {
+            try {
+              const trackData = JSON.parse(trackRes.body);
+              const rawPath = Array.isArray(trackData.path) ? trackData.path : [];
+              let cleanedPath = extractActiveFlightLeg(rawPath);
+
+              if (hasDep && cleanedPath.length > 2) {
+                let minDist = Infinity;
+                let minIdx = 0;
+                for (let i = 0; i < cleanedPath.length; i++) {
+                  const d = getDistance(cleanedPath[i][1], cleanedPath[i][2], depLat, depLon);
+                  if (d < minDist) {
+                    minDist = d;
+                    minIdx = i;
+                  }
+                }
+                const distStartToDep = getDistance(cleanedPath[0][1], cleanedPath[0][2], depLat, depLon);
+                if (minIdx > 0 && (distStartToDep > minDist + 150 || distStartToDep > 450 || minDist < 650)) {
+                  cleanedPath = cleanedPath.slice(minIdx);
+                }
+              }
+
+              const result = {
+                icao24,
+                callsign: (trackData.callsign || '').trim(),
+                startTime: trackData.startTime,
+                endTime: trackData.endTime,
+                path: cleanedPath,
+              };
+              if (env.FBX_ROUTES_KV && result.path.length > 0) {
+                ctx.waitUntil(env.FBX_ROUTES_KV.put(kvKey, JSON.stringify(result), { expirationTtl: 120 }));
+              }
+              return new Response(JSON.stringify(result), {
+                status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
+              });
+            } catch (e) {
+              return new Response(JSON.stringify({ icao24, path: [], error: 'JSON parse error' }), {
+                status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              });
+            }
+          }
+
+          return new Response(JSON.stringify({ icao24, path: [] }), {
+            status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        } catch (err) {
+          return new Response(JSON.stringify({ error: err.message, path: [] }), {
+            status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
       }
 
       try {
@@ -2658,7 +3908,7 @@ export default {
           'Content-Type': res.contentType,
           'X-Proxy': res.proxy,
           'X-Proxy-Status': String(res.status),
-          'Cache-Control': `public, max-age=${customTtl}`,
+          'Cache-Control': (urlObj.searchParams.has('_t') || urlObj.searchParams.has('t')) ? 'no-cache, no-store, must-revalidate' : `public, max-age=${customTtl}`,
         },
       });
     } catch (err) {
@@ -2670,13 +3920,19 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    const url = 'http://localhost/cargo-flights?cron=1';
-    const request = new Request(url);
+    const cargoUrl = 'http://localhost/cargo-flights?cron=1';
+    const econUrl = 'http://localhost/econ-data';
     ctx.waitUntil(
-      this.fetch(request, env, ctx)
-        .then(res => res.text())
-        .then(() => console.log("Cron cache refresh completed successfully"))
-        .catch(err => console.error("Cron cache refresh failed:", err))
+      Promise.all([
+        this.fetch(new Request(cargoUrl), env, ctx)
+          .then(res => res.text())
+          .then(() => console.log("Cron cargo cache refresh completed"))
+          .catch(err => console.error("Cron cargo cache refresh failed:", err)),
+        this.fetch(new Request(econUrl), env, ctx)
+          .then(res => res.text())
+          .then(() => console.log("Cron econ-data cache refresh checked"))
+          .catch(err => console.error("Cron econ-data cache refresh failed:", err))
+      ])
     );
   }
 };

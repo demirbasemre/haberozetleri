@@ -10,4 +10,4 @@ binding = "FBX_ROUTES_KV"
 id = "a2c120b335444937a037b916734f4150"
 
 [triggers]
-crons = ["* * * * *"]
+crons = ["*/2 * * * *"]
