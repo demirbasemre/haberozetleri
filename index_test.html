@@ -17747,9 +17747,9 @@ async function loadDashboard() {
         const isTranspacific = lonSpan > 200 && f.dep && f.arr && ((f.dep.lon > 100 && f.arr.lon < -70) || (f.dep.lon < -70 && f.arr.lon > 100));
 
         if (!isTranspacific && keyBounds.length >= 2) {
-          _cargoMap.fitBounds(keyBounds, { padding: [50, 50], maxZoom: 6 });
+          _cargoMap.fitBounds(keyBounds, { padding: [30, 30], maxZoom: 6 });
         } else if (bounds.length >= 2 && lonSpan <= 180) {
-          _cargoMap.fitBounds(bounds, { padding: [50, 50], maxZoom: 6 });
+          _cargoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 6 });
         } else {
           _cargoMap.setView([targetLat, targetLon], 4, { animate: true });
         }
@@ -18372,7 +18372,7 @@ async function loadDashboard() {
     if (!_cargoFlights.length && !_cargoAllFlights.length) return;
 
     if (!_cargoMap) {
-      _cargoMap = L.map('cargo-flights-map', { worldCopyJump: true, fadeAnimation: false, zoomControl: false }).setView([30, 30], 3);
+      _cargoMap = L.map('cargo-flights-map', { worldCopyJump: true, fadeAnimation: false, zoomControl: false, zoomSnap: 0.25, zoomDelta: 0.5 }).setView([30, 30], 3);
       // OpenStreetMap Tile Layer (Free, no API key required)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
