@@ -100,14 +100,16 @@
     "verified": false
   },
   "DAL": {
-    "source": "Delta Air Lines 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NYSE: DAL)",
+    "source": "Delta Air Lines 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NYSE: DAL) — EBIT: vergi öncesi kâr + net faiz gideri (SEC XBRL) olarak türetilmiştir",
     "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "verified": true,
+    "ebit_derived": true
   },
   "UAL": {
-    "source": "United Airlines Holdings 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NASDAQ: UAL)",
+    "source": "United Airlines Holdings 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NASDAQ: UAL) — EBIT: vergi öncesi kâr + net faiz gideri (SEC XBRL) olarak türetilmiştir",
     "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "verified": true,
+    "ebit_derived": true
   },
   "RYA": {
     "source": "Ryanair Holdings 2021-2025 Annual Report & 2Q26 Financial Results (NASDAQ: RYA)",
@@ -120,9 +122,10 @@
     "verified": true
   },
   "LUV": {
-    "source": "Southwest Airlines 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NYSE: LUV)",
+    "source": "Southwest Airlines 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NYSE: LUV) — EBIT: vergi öncesi kâr + net faiz gideri (SEC XBRL) olarak türetilmiştir",
     "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "verified": true,
+    "ebit_derived": true
   },
   "INDIGO": {
     "source": "InterGlobe Aviation (IndiGo) 2021-2025 Annual Report & 2Q26 Disclosures (NSE)",
@@ -140,9 +143,10 @@
     "verified": true
   },
   "AAL": {
-    "source": "American Airlines Group 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NASDAQ: AAL)",
+    "source": "American Airlines Group 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NASDAQ: AAL) — EBIT: vergi öncesi kâr + net faiz gideri (SEC XBRL) olarak türetilmiştir",
     "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "verified": true,
+    "ebit_derived": true
   },
   "EZJ": {
     "source": "easyJet 2021-2025 Annual Report & 2Q26 Financial Disclosures (LSE: EZJ)",
@@ -150,7 +154,7 @@
     "verified": true
   },
   "PGSUS": {
-    "source": "Pegasus Hava Taşımacılığı 2021-2025 Finansal Raporları & 2Ç26 Sunumu (BIST: PGSUS)",
+    "source": "Pegasus Hava Taşımacılığı 2011-2025 (ch-aviation; 2011-2022 TL, 2023+ EUR tabanlı) & IFRS ara dönem raporları (BIST: PGSUS)",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   },

@@ -6045,9 +6045,36 @@
           Tüm finansal veriler ilgili havayollarının <strong>resmi yıllık, yarı yıllık (H1/H2) ve çeyreklik (Q1-Q4) mali raporlarından</strong> derlenmiştir.
           Değerler bağımsız denetimden geçmiş borsa ve SEC/KAP bildirimleri esas alınarak <strong>USD</strong>'ye dönüştürülmüştür.
         </p>
+        <p class="fin-src-intro">
+          <strong>Op. Kâr (EBIT) tanımı:</strong> her havayolunda, şirketin <em>finansman gelir/giderinden hemen önce</em> raporladığı
+          faaliyet kârı alt toplamı kullanılır — THY'de <em>Operating Profit</em>, Lufthansa'da <em>EBIT</em>,
+          Pegasus'ta <em>Operating profit before financial expense</em>. Böylece yatırım ve özkaynak yöntemi sonuçları
+          tüm havayollarında aynı şekilde dahil edilir. <strong>US GAAP</strong> gelir tablolarında bu alt toplam bulunmadığından
+          ABD havayollarında (Delta, United, American, Southwest) değer <em>vergi öncesi kâr + net faiz gideri</em> olarak
+          <strong>türetilmiştir</strong>; bileşenlerin tamamı SEC bildirimlerinden alınmıştır.
+        </p>
 
         <!-- Raporlama Yapısı & Metodoloji Kategorizasyon Tablosu (Dinamik JS ile doldurulur) -->
         <div id="fin-src-cat-table-wrap"></div>
+
+        <!-- Bilinen Sınırlar & Veri Notları — okuyucuyu bilgilendirme -->
+        <div class="fin-src-limits" style="margin:16px 0 18px;padding:14px 16px;border:1px solid var(--border-color);border-left:3px solid #D97706;border-radius:10px;background:var(--bg-soft)">
+          <div style="display:flex;align-items:center;gap:7px;margin-bottom:10px">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.5"/></svg>
+            <span style="font-size:12.5px;font-weight:800;color:var(--text-1)">Bilinen Sınırlar ve Veri Notları</span>
+          </div>
+          <ul style="margin:0;padding-left:17px;font-size:11.8px;line-height:1.75;color:var(--text-2)">
+            <li><strong>Kapsam.</strong> Çeyreklik ve yarı yıllık seriler şu an THY, Pegasus, Lufthansa, Delta, United, American ve Southwest için doludur. Diğer havayollarında bu haneler boştur ve resmi ara dönem raporlarından kademeli olarak tamamlanmaktadır.</li>
+            <li><strong>ABD havayollarında EBIT türetilmiştir.</strong> US GAAP gelir tablosunda EBIT alt toplamı bulunmaz; değer <em>vergi öncesi kâr + net faiz gideri</em> olarak hesaplanmıştır. Bileşenlerin tamamı SEC bildirimlerinden alınmıştır.</li>
+            <li><strong>Pegasus'ta kaynak tablo 2023'te değişir.</strong> Tüm değerler USD'dir; ancak USD'ye çevrilen tablo farklıdır: 2011–2022 şirketin <strong>TL (TFRS)</strong> tablolarından, 2023'ten itibaren <strong>EUR (IFRS)</strong> tablolarından gelir. Enflasyon muhasebesi nedeniyle iki tablo aynı yıl için farklı sonuç verir (2022 geliri TL tabanından 2,28 mlr $, EUR tabanından 2,61 mlr $). Bu nedenle 2022→2023 değişiminin bir kısmı gerçek büyüme değil, taban değişimidir. Faaliyet kârı da aynı sınırda EBIT seviyesine geçer; 2011–2022 kaynağın kullandığı faaliyet kârı satırıdır.</li>
+            <li><strong>Kur yöntemi.</strong> Yerel para birimiyle raporlayan havayollarında tüm dönemler ilgili yılın <strong>yıl sonu</strong> USD kuruyla çevrilir. Bu sayede çeyrek toplamları yıllık rakamla birebir tutar; ancak çeyreğin kendi dönem kuru değildir.</li>
+            <li><strong>2026 dönemleri geçicidir.</strong> 2026 yıl sonu kuru henüz oluşmadığından yerel para biriminde raporlayan havayollarının 2026 çeyrekleri, aynı sütundaki diğer havayollarıyla tek tabanda kalması için <strong>1,1627 EUR/USD</strong> ile çevrilmiştir. Yıl kapandığında tüm 2026 dönemleri yıl sonu kuruyla yeniden hesaplanacaktır.</li>
+            <li><strong>Bazı havayollarında finansal ve yolcu verisi farklı kapsamdadır.</strong> Kaynak, Lufthansa ve Air France-KLM'de <strong>grup cirosunu</strong> (SWISS, Austrian, Eurowings / KLM dahil) verirken <strong>yolcu sayısını ana marka için</strong> raporlar (Lufthansa 2025: grup 135 milyon yolcu taşırken tabloda 65,7 milyon görünür). Bu nedenle bu iki havayolunda <em>yolcu başına gelir</em> gerçekte olduğundan yüksek çıkar; ciro ve yolcu rakamları doğrudan oranlanmamalıdır.</li>
+            <li><strong>IFRS / US GAAP sunum farkı.</strong> IFRS raporlayan şirketlerde (ör. THY) uçak satış kazancı gibi yatırım faaliyeti sonuçları EBIT'in içindedir; ABD havayollarında aynı kalemler faaliyet dışıdır. Marj karşılaştırmalarında bu fark göz önünde bulundurulmalıdır.</li>
+            <li><strong>Ethiopian Airlines'da dönem tabanı karışıktır.</strong> Mali yıl Temmuz–Haziran'dır ve yıl etiketi mali yılın <em>başladığı</em> yılı gösterir (ör. 2025 = Temmuz 2025 – Haziran 2026). Gelir serisi baştan sona mali yıldır; ancak <strong>2020–2023 yolcu ve kapasite verileri takvim yılıdır</strong> (AFRAA derlemesi), 2024'ten itibaren mali yıla geçilmiştir. Bu nedenle 2020–2023'te aynı yıl etiketindeki gelir ile yolcu rakamları farklı dönemleri kapsar.</li>
+            <li><strong>Ara dönem yayımlamayanlar.</strong> AJet ve Saudia kamuya finansal tablo açıklamaz; Qatar Airways, Ethiopian ve Cargolux yalnızca yıllık rapor yayımlar. Bu havayollarında çeyreklik/yarı yıllık haneler <strong>tahminle doldurulmaz</strong>, boş bırakılır.</li>
+          </ul>
+        </div>
 
         <!-- Veri Kaynağı Dönem Sekmeleri (Yıllık / Yarı Yıllık / Çeyreklik) -->
         <div class="fin-src-period-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border-color);flex-wrap:wrap">
@@ -17824,6 +17851,13 @@ async function loadDashboard() {
 
     validPts.sort((a, b) => (a[0] || 0) - (b[0] || 0));
 
+    // 1. Bayatlık kontrolü (Stale Track): Son nokta 40 dakikadan daha eskiyse eski uçuştan kalmadır
+    const nowSec = Math.floor(Date.now() / 1000);
+    const lastTime = validPts[validPts.length - 1][0] || 0;
+    if (lastTime > 0 && nowSec - lastTime > 2400) {
+      return [];
+    }
+
     const cleaned = [validPts[validPts.length - 1]];
     for (let i = validPts.length - 1; i > 0; i--) {
       const curr = validPts[i];
@@ -17871,6 +17905,16 @@ async function loadDashboard() {
   function buildFlightTrackPoints(f, rawPath) {
     if (!rawPath || !Array.isArray(rawPath) || rawPath.length < 2) return null;
     const cleanedPath = extractActiveFlightLeg(rawPath);
+    if (!cleanedPath || cleanedPath.length < 2) return null;
+
+    // Bayat veri kontrolü: Uçağın canlı zamanı veya şu an ile izin son noktası 40 dakikadan eskiyse izi kullanma
+    const nowSec = Math.floor(Date.now() / 1000);
+    const liveTime = f.lastContact || nowSec;
+    const lastTrackTime = cleanedPath[cleanedPath.length - 1][0] || 0;
+    if (lastTrackTime > 0 && (liveTime - lastTrackTime > 2400 || nowSec - lastTrackTime > 2400)) {
+      return null;
+    }
+
     let rawPts = [];
     cleanedPath.forEach(p => {
       const plat = p[1];
@@ -17881,8 +17925,8 @@ async function loadDashboard() {
     });
     if (rawPts.length === 0) return null;
 
-    // Kalkış meydanı (f.dep) biliniyorsa: önceki uçuştan (örn. IST -> ALA) kalan bacakları KESİN kes
-    if (f.dep && f.dep.lat != null && rawPts.length > 1) {
+    // Kalkış meydanı (f.dep) biliniyorsa:
+    if (f.dep && f.dep.lat != null && f.dep.lon != null && rawPts.length > 0) {
       let minDist = Infinity;
       let minIdx = 0;
       for (let i = 0; i < rawPts.length; i++) {
@@ -17893,11 +17937,27 @@ async function loadDashboard() {
         }
       }
 
+      // İzin kalkış meydanına en yakın noktası bile 500 km'den uzaksa (ör. ALA kalkışı için Bakü 2.400 km uzakta!),
+      // bu iz kesinlikle bu uçuşa ait olamaz, önceki uçuştan kalmadır:
+      if (minDist > 500) {
+        return null;
+      }
+
       const distStartToDep = getDistance(rawPts[0][0], rawPts[0][1], f.dep.lat, f.dep.lon);
-      // Eğer ilk nokta kalkış meydanından uzaktaysa ve uçak zamanla kalkış meydanına çok daha yaklaştıysa,
-      // veya minimum mesafe makul hava sahası menzilindeyse (örn. dağlık/kör bölgeler dahil 650 km):
-      if (minIdx > 0 && (distStartToDep > minDist + 150 || distStartToDep > 450 || minDist < 650)) {
+      if (minIdx > 0 && (distStartToDep > minDist + 150 || distStartToDep > 450)) {
         rawPts = rawPts.slice(minIdx);
+      }
+    }
+
+    // Canlı konum ile izin son noktası arasındaki mesafe kontrolü:
+    const liveLat = f.currentLat != null ? f.currentLat : f.lat;
+    const liveLon = f.currentLon != null ? f.currentLon : f.lon;
+    if (liveLat != null && liveLon != null && rawPts.length > 0) {
+      const tailRaw = rawPts[rawPts.length - 1];
+      const distToLive = getDistance(tailRaw[0], tailRaw[1], liveLat, liveLon);
+      // Son radar noktasından uçağın canlı konumuna 450 km'den fazla radar boşluğu varsa yapay çizgi çekme, izi reddet:
+      if (distToLive > 450) {
+        return null;
       }
     }
 
@@ -17926,8 +17986,6 @@ async function loadDashboard() {
     pts.push(...rawPts);
 
     if (pts.length > 0) {
-      const liveLat = f.currentLat != null ? f.currentLat : f.lat;
-      const liveLon = f.currentLon != null ? f.currentLon : f.lon;
       if (liveLat != null && liveLon != null) {
         const tailPt = pts[pts.length - 1];
         const distToLive = getDistance(tailPt[0], tailPt[1], liveLat, liveLon);
@@ -25965,16 +26023,17 @@ function getMatrixValue(air, def, period) {
     }
   }
 
-  // 3. Anlık durum (Snapshot) metriklerinin yıllık rapordan tamamlanması (Çalışan, Filo, Piyasa Değeri, Katlar)
+  // 3. Anlık durum (Snapshot) metrikleri: yalnızca DÖNEMİN KENDİSİ veya AYNI YIL için
+  //    kayıtlı değer kullanılır. Eskiden bulunamayınca bir önceki yıla, o da yoksa
+  //    serinin EN SON yılına düşülüyordu; bu, veri olmayan (hatta henüz gelmemiş)
+  //    çeyreklere güncel değeri kopyalayıp sahte sütun üretiyordu — ör. 2026'nın dört
+  //    çeyreği de 2025 çalışan sayısını gösteriyordu.
   if (['employees', 'fleet_size', 'market_cap_musd', 'ev_ebitda', 'net_debt_ebitda'].includes(def.key)) {
     const yr = period.split('-')[0];
     const parentMap = air[def.section]?.[def.key];
     if (parentMap) {
       if (parentMap[period] != null) return parentMap[period];
       if (parentMap[yr] != null) return parentMap[yr];
-      if (parentMap[String(parseInt(yr) - 1)] != null) return parentMap[String(parseInt(yr) - 1)];
-      const lastYr = Object.keys(parentMap).sort().pop();
-      if (lastYr && parentMap[lastYr] != null) return parentMap[lastYr];
     }
   }
 
@@ -26098,7 +26157,7 @@ function fmtFinVal(v, fmt) {
     case 'pct':   return (cleanV < 0 ? '-%' + Math.abs(cleanV).toFixed(1) : '%' + cleanV.toFixed(1));
     case 'pct_s': return (cleanV < 0 ? '-%' + Math.abs(cleanV).toFixed(1) : '%' + cleanV.toFixed(1));
     case 'multiple': return cleanV.toFixed(1) + 'x';
-    case 'pax':   return (cleanV >= 1e6 ? (cleanV / 1e6).toFixed(2) + 'M' : cleanV.toFixed(2) + 'M');
+    case 'pax':   return (cleanV >= 1000 ? (cleanV / 1e6).toFixed(2) + 'M' : cleanV.toFixed(2) + 'M');
     case 'munit': return Math.round(cleanV).toLocaleString('tr-TR');
     case 'count': return Math.round(cleanV).toLocaleString('tr-TR');
     default:      return String(cleanV);
@@ -27287,21 +27346,23 @@ const MATRIX_PERIOD_CONFIG = {
     years: ['2025', '2024', '2023', '2022', '2021', '2020', '2019']
   },
   quarterly: {
-    years: ['2026', '2025', '2024', '2023'],
+    years: ['2026', '2025', '2024', '2023', '2022'],
     subs: {
       '2026': ['Q2', 'Q1'],
       '2025': ['Q4', 'Q3', 'Q2', 'Q1'],
       '2024': ['Q4', 'Q3', 'Q2', 'Q1'],
-      '2023': ['Q4', 'Q3', 'Q2', 'Q1']
+      '2023': ['Q4', 'Q3', 'Q2', 'Q1'],
+      '2022': ['Q4', 'Q3', 'Q2', 'Q1']
     }
   },
   semi_annual: {
-    years: ['2026', '2025', '2024', '2023'],
+    years: ['2026', '2025', '2024', '2023', '2022'],
     subs: {
       '2026': ['H1'],
       '2025': ['H2', 'H1'],
       '2024': ['H2', 'H1'],
-      '2023': ['H2', 'H1']
+      '2023': ['H2', 'H1'],
+      '2022': ['H2', 'H1']
     }
   }
 };
@@ -30554,26 +30615,37 @@ function buildFinSourcesGrid() {
     let periodTitle = 'Yıllık Faaliyet Raporları';
     let availablePeriods = [];
 
+    // Dönem rozetleri YALNIZCA gerçekten veri bulunan dönemler için üretilir.
+    // (Eskiden veri yoksa sabit bir dönem listesi uyduruluyordu — AJet/Saudia gibi
+    //  ara dönem yayımlamayan havayolları için var olmayan rapora link veriyordu.)
+    const qData = air.quarterly?.financial?.total_revenue_musd || {};
     if (_finSrcPeriod === 'semi_annual') {
       periodTitle = 'Yarı Yıllık (H1 / H2) Finansal Sonuçlar';
       const hData = air.semi_annual?.financial?.total_revenue_musd || {};
-      availablePeriods = Object.keys(hData).reverse();
-      if (!availablePeriods.length) availablePeriods = ['2026-H1', '2025-H2', '2025-H1', '2024-H2'];
+      availablePeriods = Object.keys(hData);
+      if (!availablePeriods.length) {
+        // H bloğu yoksa çeyreklerden türet: H1 = Q1+Q2, H2 = Q3+Q4
+        const years = [...new Set(Object.keys(qData).map(k => k.slice(0, 4)))];
+        years.forEach(y => {
+          if (qData[y + '-Q1'] != null && qData[y + '-Q2'] != null) availablePeriods.push(y + '-H1');
+          if (qData[y + '-Q3'] != null && qData[y + '-Q4'] != null) availablePeriods.push(y + '-H2');
+        });
+      }
+      availablePeriods = availablePeriods.sort().reverse();
     } else if (_finSrcPeriod === 'quarterly') {
       periodTitle = 'Çeyreklik (Q1-Q4) Bilanço Bildirimleri';
-      const qData = air.quarterly?.financial?.total_revenue_musd || {};
-      availablePeriods = Object.keys(qData).reverse();
-      if (!availablePeriods.length) availablePeriods = ['2026-Q2', '2026-Q1', '2025-Q4', '2025-Q3', '2025-Q2', '2025-Q1'];
+      availablePeriods = Object.keys(qData).sort().reverse();
     } else {
       periodTitle = 'Yıllık Bağımsız Denetim Raporları';
       const aData = air.financial?.total_revenue_musd || {};
-      availablePeriods = Object.keys(aData).reverse().slice(0, 6);
-      if (!availablePeriods.length) availablePeriods = ['2025', '2024', '2023', '2022', '2021'];
+      availablePeriods = Object.keys(aData).sort().reverse().slice(0, 6);
     }
 
     const currentUrl = d.branch_urls?.[_finSrcPeriod] || d.url;
 
-    const periodChips = availablePeriods.slice(0, 5).map((p, idx) => {
+    const periodChips = !availablePeriods.length
+      ? `<span style="font-size:11px;color:var(--text-3);font-style:italic">Bu dönem için veri yok</span>`
+      : availablePeriods.slice(0, 5).map((p, idx) => {
       const isLatest = idx === 0;
       const targetUrl = getDirectPeriodUrl(slug, p, currentUrl);
       if (isLatest) {
@@ -30628,14 +30700,18 @@ function buildFinSourcesCatTable() {
   // Dönemsel veri metodolojisi — 4 kategori.
   // Sıralama önemli: her havayolu YALNIZCA bir gruba girer.
   // 1) Dört çeyreğin tamamını resmî olarak raporlayanlar (tahmin/türetme yok)
-  const group1 = ['TK', 'PGSUS', 'AF', 'LH', 'IAG', 'RYA', 'WIZZ', 'EZJ', 'DAL', 'UAL', 'AAL', 'LUV',
+  const group1 = ['TK', 'PGSUS', 'AF', 'LH', 'IAG', 'RYA', 'WIZZ', 'DAL', 'UAL', 'AAL', 'LUV',
                   'LA', 'AV', 'KE', 'OZ', 'CA', 'CZ', 'CEA', 'CI', 'NH', 'INDIGO'];
   // 2) Ara dönem raporlayanlar — yayımlanmayan dönemler çıkarımla türetilir
-  const group2 = ['SQ', 'ETI', 'EK', 'CX', 'QAN'];
+  //    easyJet buraya taşındı: Q1/Q3'te tam IFRS tablosu değil sınırlı işletme raporu yayımlar.
+  const group2 = ['SQ', 'ETI', 'EK', 'CX', 'QAN', 'EZJ'];
   // 3) Yalnızca yıllık raporlayanlar — alt dönemler boş bırakılır
   const group3 = ['QR', 'ET', 'CV'];
   // 4) Kamuya finansal tablo açıklamayanlar — yalnızca trafik verisi
   const group4 = ['SV', 'A4B'];
+  // Sayılar dizilerden hesaplanır — grup değişince başlık kaymasın diye.
+  const _catTotal = group1.length + group2.length + group3.length + group4.length;
+  const catCount = g => `${g.length} Havayolu (%${Math.round(g.length / _catTotal * 100)})`;
 
   const renderLogos = (slugs) => {
     return `<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:2px 0">
@@ -30679,14 +30755,14 @@ function buildFinSourcesCatTable() {
               1 · Doğrudan raporlanan
             </td>
             <td style="padding:10px 12px;font-weight:700;color:var(--accent)">
-              22 Havayolu (%69)
+              ${catCount(group1)}
             </td>
             <td style="padding:10px 12px">
               ${renderLogos(group1)}
             </td>
             <td style="padding:10px 12px;color:var(--text-2);line-height:1.45">
-              Borsa yükümlülükleri (BIST, Euronext, XETRA, NYSE, NASDAQ, KRX, SSE, TWSE, TSE, NSE vb.) gereği <strong>dört çeyreğin tamamı için</strong> resmî ara dönem raporu yayımlarlar. Değerler doğrudan şirket raporundan alınır — <strong>tahmin de türetme de yoktur</strong>.
-              <div style="margin-top:5px;font-size:10.5px;opacity:.8">easyJet'te Q1 ve Q3, tam IFRS bilançosu değil resmî çeyreklik işletme raporudur (hasılat + headline VÖK).</div>
+              Borsa yükümlülükleri (BIST, Euronext, XETRA, NYSE, NASDAQ, KRX, SSE, TWSE, TSE, NSE vb.) gereği yıl içinde <strong>üç ara dönem raporu</strong> yayımlarlar. Değerler doğrudan şirket raporundan alınır; <strong>tahmin yoktur</strong>.
+              <div style="margin-top:5px;font-size:10.5px;opacity:.8"><strong>4. çeyrek istisnası:</strong> hiçbir şirket Q4'ü ayrı yayımlamaz — bu hane her havayolunda <code>Yıllık − 9 Aylık</code> ile aritmetik olarak türetilir. <strong>Asiana</strong> Aralık 2024'te Korean Air bünyesine girdi; sonraki dönemlerde bağımsız raporlaması yoktur.</div>
             </td>
           </tr>
           <tr style="border-bottom:1px solid var(--border-color)">
@@ -30694,7 +30770,7 @@ function buildFinSourcesCatTable() {
               2 · Türetilmiş
             </td>
             <td style="padding:10px 12px;font-weight:700;color:var(--accent)">
-              5 Havayolu (%16)
+              ${catCount(group2)}
             </td>
             <td style="padding:10px 12px">
               ${renderLogos(group2)}
@@ -30716,7 +30792,7 @@ function buildFinSourcesCatTable() {
               3 · Yayımlanmıyor
             </td>
             <td style="padding:10px 12px;font-weight:700;color:var(--accent)">
-              3 Havayolu (%9)
+              ${catCount(group3)}
             </td>
             <td style="padding:10px 12px">
               ${renderLogos(group3)}
@@ -30730,7 +30806,7 @@ function buildFinSourcesCatTable() {
               4 · Finansal tablo açıklamayanlar
             </td>
             <td style="padding:10px 12px;font-weight:700;color:var(--accent)">
-              2 Havayolu (%6)
+              ${catCount(group4)}
             </td>
             <td style="padding:10px 12px">
               ${renderLogos(group4)}
@@ -30743,7 +30819,8 @@ function buildFinSourcesCatTable() {
       </table>
       <div style="padding:11px 14px;border-top:1px solid var(--border-color);background:var(--bg-soft);font-size:11px;color:var(--text-2);line-height:1.55">
         <div style="margin-bottom:6px"><strong style="color:var(--text-1)">Kâr kalemleri dağıtılmaz.</strong> Op. kâr ve net kâr hiçbir koşulda sezonsallık katsayısıyla alt dönemlere bölünmez. Havayollarında faaliyet kaldıracı nedeniyle kâr gelirle orantılı değildir — geliri yüksek bir çeyrek pekâlâ zarar edebilir. Dağıtılmış kâr yerine boş hane gösterilir.</div>
-        <div><strong style="color:var(--text-1)">Kur.</strong> Şirket kendi USD rakamını yayımlıyorsa o alınır; yayımlamıyorsa yerel para birimi <strong>ilgili dönemin kapanış kuruyla</strong> USD'ye çevrilir (çeyrek için çeyrek sonu, yıl için mali yıl sonu). Bu nedenle çeyrek toplamları yıllık değerden <strong>kur farkı kadar sapabilir</strong>.</div>
+        <div style="margin-bottom:6px"><strong style="color:var(--text-1)">Kur.</strong> Şirket kendi USD rakamını yayımlıyorsa (THY, ABD havayolları) doğrudan o alınır, çevrim yapılmaz. Yayımlamıyorsa yerel para birimi <strong>ilgili yılın yıl sonu kuruyla</strong> USD'ye çevrilir — yılın <em>tüm</em> çeyrekleri için aynı kur kullanılır. Bu sayede <strong>çeyrek toplamları yıllık değerle birebir tutar</strong>; çeyreğin kendi dönem kuru kullanılmaz.</div>
+        <div><strong style="color:var(--text-1)">Kapsam.</strong> Bu tablo havayollarının <em>raporlama pratiğini</em> özetler; her hanenin dolu olduğu anlamına gelmez. Dönemsel seriler resmî raporlardan kademeli olarak işlenmektedir — güncel kapsam yukarıdaki <strong>Bilinen Sınırlar</strong> bölümünde listelidir.</div>
       </div>
     </div>
   `;
