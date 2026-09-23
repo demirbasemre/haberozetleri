@@ -15,19 +15,21 @@
     "verified": true
   },
   "AF": {
-    "source": "Air France-KLM 2011-2025 Universal Registration Document & 2Q26 Financial Report (Euronext)",
+    "source": "Air France-KLM 2011-2025 yillik sonuc duyurulari & Registration/URD (Euronext: AF) — FAVOK yerine 'income from operating activities + istirak payi'; 2024-2026 ceyrek basin bultenleri (2026: IFRS 18)",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   },
   "CI": {
-    "source": "China Airlines 2011-2025 Audited Financial Statements & 2Q26 IR Report (TWSE: 2610)",
+    "source": "China Airlines 2013-2025 konsolide IFRS gelir tablolari & 2024-2026 ceyrek tablolari (TWSE MOPS: 2610)",
     "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "verified": true,
+    "ebit_derived": true
   },
   "CX": {
-    "source": "Cathay Pacific 2011-2025 Annual Report & 2026 Interim Results (HKEX: 0293)",
+    "source": "Cathay Pacific 2011-2025 yillik sonuc duyurulari & 2023-2026 ara donem (H1) sonuclari (HKEX: 0293)",
     "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "verified": true,
+    "ebit_derived": true
   },
   "ET": {
     "source": "Ethiopian Airlines Group 2010-2026 Annual Report & Ministry Disclosures",
@@ -40,29 +42,31 @@
     "verified": true
   },
   "LA": {
-    "source": "LATAM Airlines 2011-2025 Audited Financial Statements (SEC Form 20-F & NYSE: LTM)",
+    "source": "LATAM Airlines 2015-2025 IFRS (SEC Form 20-F XBRL) & 2024-2026 ceyrek sonuclari (SEC Form 6-K) — raporlanan (duzeltilmemis) faaliyet kari ve toplam net kar",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   },
   "KE": {
-    "source": "Korean Air 2011-2025 Audited Business Report & 2Q26 Financial Statements (KRX: 003490)",
+    "source": "Korean Air 2011-2025 Audited Business Report; 2025-2026 ceyrekleri ayri (non-consolidated) K-IFRS faaliyet kari (KRX: 003490)",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   },
   "CA": {
-    "source": "Air China 2011-2025 Annual Report & 2Q26 Interim Financial Report (HKEX: 0753)",
+    "source": "Air China 2011-2025 IFRS yillik sonuclar & 2024-2026 ara donem raporlari (Q1/Q3 CAS, H1 IFRS) — HKEX: 0753",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   },
   "SQ": {
-    "source": "Singapore Airlines 2011-2025 Annual Report & 2Q26 Financial Statements (SGX)",
+    "source": "Singapore Airlines 2011-2025 grup yillik raporlari & 2024-2026 ceyrek bultenleri / ara donem tablolari (SGX: C6L) — Nisan-Mart mali yili",
     "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "verified": true,
+    "ebit_derived": true
   },
   "OZ": {
-    "source": "Asiana Airlines 2011-2025 Audit Report & 2Q26 Financial Disclosures (KRX: 020560)",
+    "source": "Asiana Airlines 2011-2025 konsolide K-IFRS tablolari & 2024-2026 ceyrek raporlari (DART / KRX: 020560)",
     "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "verified": true,
+    "ebit_derived": true
   },
   "SV": {
     "source": "Saudia — kamuya finansal tablo yayımlamaz (%100 PIF). Yalnızca trafik verisi: ch-aviation",
@@ -70,22 +74,23 @@
     "verified": false
   },
   "NH": {
-    "source": "ANA Holdings 2010-2025 Financial Results & 2Q26 Investor Presentation (TSE: 9202)",
+    "source": "ANA Holdings 2011-2025 Fact Book & kesin sonuc bildirimleri (tanshin) — Nisan-Mart mali yili; 2024-2026 ceyrek tanshinleri (TSE: 9202)",
     "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
+    "verified": true,
+    "ebit_derived": true
   },
   "ETI": {
-    "source": "Etihad Airways 2011-2025 Audited Financial Statements & Bond Disclosures (ADX)",
+    "source": "Etihad Airways yillik ve ceyrek sonuc bultenleri (etihad.com) — EBIT yayimlanmaz",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   },
   "CZ": {
-    "source": "China Southern 2011-2025 Annual Report & 2Q26 Financial Disclosures (HKEX: 1055)",
+    "source": "China Southern 2011-2025 IFRS yillik sonuclar & 2024-2026 ara donem raporlari (Q1/Q3 CAS, H1 IFRS) — HKEX: 1055",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   },
   "AV": {
-    "source": "Avianca Holdings 2011-2025 Audited Financial Statements & Bondholder Reports",
+    "source": "Avianca Holdings 2011-2020 (SEC Form 20-F) & Avianca Group International (AGIL) 2022-2026 finansal tablolari (ir.avianca.com)",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   },
