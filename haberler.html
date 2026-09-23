@@ -5775,6 +5775,19 @@ function extractDateParts(dateStr) {
   return null;
 }
 
+// Fallback: derive a date from an article/publish URL that embeds /YYYY/MM/DD/
+// (used by sources whose scraped 'date' field came back empty, e.g. Maersk newsroom pages).
+function extractDateFromUrl(url) {
+  if (!url) return null;
+  const m = String(url).match(/\/(20\d{2})\/(\d{1,2})\/(\d{1,2})(?:\/|$)/);
+  if (!m) return null;
+  return { y: m[1], m: m[2].padStart(2, '0'), day: m[3].padStart(2, '0') };
+}
+
+function getCustomerDateParts(a) {
+  return extractDateParts(a.date) || extractDateFromUrl(a.link) || extractDateFromUrl(a.id);
+}
+
 let allArticles      = [];
 let activeCat        = 'all';
 let activeDateYear   = null;   // '2025'
@@ -9474,7 +9487,7 @@ function buildCustomerDatePanel(articles) {
 
   const idx = {};
   articles.forEach(a => {
-    const parts = (typeof extractDateParts === 'function') ? extractDateParts(a.date) : null;
+    const parts = (typeof extractDateParts === 'function') ? getCustomerDateParts(a) : null;
     if (!parts) return;
     const { y, m, day } = parts;
     if (!idx[y]) idx[y] = {};
@@ -9808,7 +9821,7 @@ function filterAndRenderCustomerNews() {
 
   if (activeCustDateYear || activeCustDateMonth || activeCustDateDay) {
     list = list.filter(a => {
-      const parts = (typeof extractDateParts === 'function') ? extractDateParts(a.date) : null;
+      const parts = (typeof extractDateParts === 'function') ? getCustomerDateParts(a) : null;
       if (!parts) return false;
       if (activeCustDateYear && parts.y !== activeCustDateYear) return false;
       if (activeCustDateMonth && parts.m !== activeCustDateMonth) return false;
@@ -9915,7 +9928,7 @@ function renderCustomerCards(articles) {
   // are parsed via extractDateParts first so they don't produce garbage keys.
   const byDate = {};
   articles.forEach(a => {
-    const parts = extractDateParts(a.date);
+    const parts = getCustomerDateParts(a);
     const d = parts ? `${parts.y}-${parts.m}` : 'Tarihsiz';
     if (!byDate[d]) byDate[d] = [];
     byDate[d].push(a);
