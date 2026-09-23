@@ -111,34 +111,14 @@
     "verified": true,
     "ebit_derived": true
   },
-  "RYA": {
-    "source": "Ryanair Holdings 2021-2025 Annual Report & 2Q26 Financial Results (NASDAQ: RYA)",
-    "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
-  },
-  "IAG": {
-    "source": "International Airlines Group 2021-2025 Annual Report & 2Q26 Results (LSE: IAG)",
-    "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
-  },
   "LUV": {
     "source": "Southwest Airlines 2021-2025 SEC Form 10-K & 2Q26 Form 10-Q (NYSE: LUV) — EBIT: vergi öncesi kâr + net faiz gideri (SEC XBRL) olarak türetilmiştir",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true,
     "ebit_derived": true
   },
-  "INDIGO": {
-    "source": "InterGlobe Aviation (IndiGo) 2021-2025 Annual Report & 2Q26 Disclosures (NSE)",
-    "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
-  },
   "CEA": {
-    "source": "China Eastern Airlines 2021-2025 Annual Report & 2Q26 Financial Statements (HKEX)",
-    "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
-  },
-  "QAN": {
-    "source": "Qantas Airways 2021-2025 Annual Report & 2Q26 Financial Results (ASX: QAN)",
+    "source": "China Eastern Airlines 2011-2025 IFRS (SEC Form 20-F, HKEX yillik sonuc duyurulari) & 2024-2026 ara donem raporlari (Q1/Q3 CAS, H1 IFRS) — HKEX: 0670 / SSE: 600115",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   },
@@ -148,18 +128,8 @@
     "verified": true,
     "ebit_derived": true
   },
-  "EZJ": {
-    "source": "easyJet 2021-2025 Annual Report & 2Q26 Financial Disclosures (LSE: EZJ)",
-    "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
-  },
   "PGSUS": {
     "source": "Pegasus Hava Taşımacılığı 2011-2025 (ch-aviation; 2011-2022 TL, 2023+ EUR tabanlı) & IFRS ara dönem raporları (BIST: PGSUS)",
-    "type": "Official Financial Report / SEC / BIST / IFRS",
-    "verified": true
-  },
-  "WIZZ": {
-    "source": "Wizz Air Holdings 2021-2025 Annual Report & 2Q26 Interim Report (LSE: WIZZ)",
     "type": "Official Financial Report / SEC / BIST / IFRS",
     "verified": true
   }
