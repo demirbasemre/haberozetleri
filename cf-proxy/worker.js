@@ -3704,7 +3704,7 @@ export default {
               if (minDist > 500) {
                 const lastPt = path[path.length - 1];
                 const distEndToDep = getDistance(lastPt[1], lastPt[2], targetDepLat, targetDepLon);
-                const movingAwayFromDep = minIdx === 0 && distEndToDep > minDist + 300;
+                const movingAwayFromDep = minIdx === 0 && distEndToDep > minDist + 30;
                 return movingAwayFromDep ? path : [];
               }
 

@@ -17392,6 +17392,19 @@ async function loadDashboard() {
   let _cargoRouteLayers = [];
   let _cargoTraveledLine = null;
   let _cargoRemainingLine = null;
+  let _cargoGapLine = null;
+
+  // Kalkıştan ilk radar noktasına kadar kapsama boşluğu varsa (gerçek iz değil) tahmini kesikli çizgiyle göster
+  function drawCargoTrackGapLine(f, routeColor) {
+    if (_cargoGapLine) { _cargoMap.removeLayer(_cargoGapLine); _cargoGapLine = null; }
+    if (!f._realTrack || f._realTrack.length < 2 || !f.dep || f.dep.lat == null) return;
+    const first = f._realTrack[0];
+    if (getDistance(f.dep.lat, f.dep.lon, first[0], first[1]) < 15) return;
+    const gapPts = getArcPoints([f.dep.lat, f.dep.lon], [first[0], first[1]], 40);
+    _cargoGapLine = L.polyline(splitAntimeridian(gapPts), { color: routeColor, weight: 2.2, opacity: 0.45, dashArray: '5,5' });
+    _cargoGapLine.addTo(_cargoMap);
+    _cargoRouteLayers.push(_cargoGapLine);
+  }
 
   const cargoPlaneIcon = (track, color, dashed) => L.divIcon({
     className: 'cargo-plane-icon',
@@ -17743,6 +17756,7 @@ async function loadDashboard() {
       _cargoRouteLayers = [];
       _cargoTraveledLine = null;
       _cargoRemainingLine = null;
+      _cargoGapLine = null;
 
       if (_cargoHighlightMarker) _cargoMap.removeLayer(_cargoHighlightMarker);
       _cargoHighlightMarker = L.marker([targetLat, targetLon], { icon: cargoHighlightIcon(), interactive: false, zIndexOffset: -100 });
@@ -17782,6 +17796,7 @@ async function loadDashboard() {
         _cargoTraveledLine = L.polyline(segmentedTraveled, traveledStyle);
         _cargoTraveledLine.addTo(_cargoMap);
         _cargoRouteLayers.push(_cargoTraveledLine);
+        if (!isEstimatedTrack) drawCargoTrackGapLine(f, routeColor);
       }
 
       if (f.arr && f.arr.lat != null) {
@@ -17976,9 +17991,12 @@ async function loadDashboard() {
       }
 
       // İzin kalkış meydanına en yakın noktası bile 500 km'den uzaksa (ör. ALA kalkışı için Bakü 2.400 km uzakta!),
-      // bu iz kesinlikle bu uçuşa ait olamaz, önceki uçuştan kalmadır:
+      // bu iz genelde önceki uçuştan kalmadır. İstisna: radar kapsama boşluğu (ör. Güney Çin, okyanus) —
+      // iz meydana en yakın noktasından başlıyor ve uçak meydandan uzaklaşıyorsa bu seferin izidir.
       if (minDist > 500) {
-        return null;
+        const lastRaw = rawPts[rawPts.length - 1];
+        const distEndToDep = getDistance(lastRaw[0], lastRaw[1], f.dep.lat, f.dep.lon);
+        if (!(minIdx === 0 && distEndToDep > minDist + 30)) return null;
       }
 
       const distStartToDep = getDistance(rawPts[0][0], rawPts[0][1], f.dep.lat, f.dep.lon);
@@ -18015,11 +18033,9 @@ async function loadDashboard() {
         if (leadArc && leadArc.length > 1) {
           pts.push(...leadArc.slice(0, -1));
         }
-      } else {
-        // Kör nokta çok büyükse (örn. > 180 km), ASLA geriye doğru bükülen yapay 2500 km'lik yay çizme!
-        // Meydandan ilk radar noktasına doğrudan hat oluştur
-        pts.push([f.dep.lat, f.dep.lon]);
       }
+      // Kör nokta çok büyükse (örn. > 180 km) meydanı ize ekleme: bu boşluk gerçek iz değil,
+      // drawCargoTrackGapLine ile ayrıca kesikli çizilir.
     }
     pts.push(...rawPts);
 
@@ -18073,6 +18089,7 @@ async function loadDashboard() {
               _cargoTraveledLine.addTo(_cargoMap);
               _cargoRouteLayers.push(_cargoTraveledLine);
             }
+            drawCargoTrackGapLine(f, routeColor);
 
             const currentPoint = pts[pts.length - 1];
             if (currentPoint && currentPoint[0] != null && currentPoint[1] != null) {
