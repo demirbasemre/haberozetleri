@@ -1,5 +1,18 @@
 [
   {
+    "month": "Eylül 2026",
+    "items": [
+      {
+        "text": "Müşteri gündemleri sekmesinde 'date' alanı boş gelen haberler (ör. Maersk haberleri) artık haber/ilan linkindeki tarih (/YYYY/MM/DD/) üzerinden otomatik tamamlanıyor; kart ve tarih filtresi artık bu haberleri de doğru günde gösteriyor.",
+        "major": false
+      },
+      {
+        "text": "Müşteri gündemlerinde 'DD.MM.YYYY' biçiminde gelen tarihler (ör. 16.09.2026) tanınamadığı için 'Tarihsiz Haberler' altına düşüyordu; tarih ayrıştırıcıya bu format eklendi.",
+        "major": false
+      }
+    ]
+  },
+  {
     "month": "Temmuz 2026",
     "items": [
       {

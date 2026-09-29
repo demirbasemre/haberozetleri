@@ -5764,6 +5764,9 @@ function extractDateParts(dateStr) {
     const mon = MONTHS[abbrev[1].toLowerCase()];
     if (mon) return { y: abbrev[3], m: mon, day: abbrev[2].padStart(2, '0') };
   }
+  // "16.09.2026" — European dotted DD.MM.YYYY
+  const dotted = stripped.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if (dotted) return { y: dotted[3], m: dotted[2].padStart(2, '0'), day: dotted[1].padStart(2, '0') };
   const d = new Date(stripped);
   if (!isNaN(d)) {
     return {
@@ -9440,11 +9443,26 @@ function formatCustomerDateStr(rawDate) {
     const d = new Date(parseInt(isoMatch[1], 10), parseInt(isoMatch[2], 10) - 1, parseInt(isoMatch[3], 10));
     return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
+  // "16.09.2026" — European dotted DD.MM.YYYY (JS Date can't parse this natively)
+  const dotted = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if (dotted) {
+    const d = new Date(parseInt(dotted[3], 10), parseInt(dotted[2], 10) - 1, parseInt(dotted[1], 10));
+    return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
   const parsed = new Date(s);
   if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 2000) {
     return parsed.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
   return s;
+}
+
+// Formats a {y, m, day} triple (e.g. from getCustomerDateParts' URL fallback) the same
+// way formatCustomerDateStr formats a raw date string.
+function formatCustomerDateParts(parts) {
+  if (!parts) return '';
+  const d = new Date(parseInt(parts.y, 10), parseInt(parts.m, 10) - 1, parseInt(parts.day, 10));
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function formatCustomerMonthStr(monthKey) {
@@ -9855,7 +9873,7 @@ function buildCustomerCardHTML(article) {
   const catLangAttr = isEnCat ? 'lang="en"' : '';
   const cleanLink = article.link || '#';
   const faviconUrl = getCustomerFavicon(article.source, article.link);
-  const dateStr = formatCustomerDateStr(article.date);
+  const dateStr = formatCustomerDateStr(article.date) || formatCustomerDateParts(getCustomerDateParts(article));
   const formattedSummary = formatCustomerPercentage(article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>');
 
   const extraSources = Array.isArray(article.extraSources) ? article.extraSources : [];

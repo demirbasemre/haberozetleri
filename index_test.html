@@ -6345,6 +6345,27 @@ function extractDateParts(dateStr) {
   // Strip "Published: Weekday, " prefix → "May 4, 2026"
   const stripped = s.replace(/^Published\s*:\s*/i, '').replace(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),?\s*/i, '').trim();
   if (stripped === '') return null;
+  const MONTHS = {
+    jan: '01', january: '01', feb: '02', february: '02', mar: '03', march: '03',
+    apr: '04', april: '04', may: '05', jun: '06', june: '06', jul: '07', july: '07',
+    aug: '08', august: '08', sep: '09', sept: '09', september: '09',
+    oct: '10', october: '10', nov: '11', november: '11', dec: '12', december: '12'
+  };
+  // "21September2026| 06:45 Europe/Berlin" — day+month+year glued with no spaces
+  const glued = stripped.match(/^(\d{1,2})([A-Za-z]{3,9})(\d{4})/);
+  if (glued) {
+    const mon = MONTHS[glued[2].toLowerCase()];
+    if (mon) return { y: glued[3], m: mon, day: glued[1].padStart(2, '0') };
+  }
+  // "Sept. 16, 2026, 11:09 a.m." — abbreviated month with trailing period
+  const abbrev = stripped.match(/^([A-Za-z]{3,9})\.?\s+(\d{1,2}),\s+(\d{4})/);
+  if (abbrev) {
+    const mon = MONTHS[abbrev[1].toLowerCase()];
+    if (mon) return { y: abbrev[3], m: mon, day: abbrev[2].padStart(2, '0') };
+  }
+  // "16.09.2026" — European dotted DD.MM.YYYY
+  const dotted = stripped.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if (dotted) return { y: dotted[3], m: dotted[2].padStart(2, '0'), day: dotted[1].padStart(2, '0') };
   const d = new Date(stripped);
   if (!isNaN(d)) {
     return {
@@ -6354,6 +6375,19 @@ function extractDateParts(dateStr) {
     };
   }
   return null;
+}
+
+// Fallback: derive a date from an article/publish URL that embeds /YYYY/MM/DD/
+// (used by sources whose scraped 'date' field came back empty, e.g. Maersk newsroom pages).
+function extractDateFromUrl(url) {
+  if (!url) return null;
+  const m = String(url).match(/\/(20\d{2})\/(\d{1,2})\/(\d{1,2})(?:\/|$)/);
+  if (!m) return null;
+  return { y: m[1], m: m[2].padStart(2, '0'), day: m[3].padStart(2, '0') };
+}
+
+function getCustomerDateParts(a) {
+  return extractDateParts(a.date) || extractDateFromUrl(a.link) || extractDateFromUrl(a.id);
 }
 
 let allArticles      = [];
@@ -9981,11 +10015,26 @@ function formatCustomerDateStr(rawDate) {
     const d = new Date(parseInt(isoMatch[1], 10), parseInt(isoMatch[2], 10) - 1, parseInt(isoMatch[3], 10));
     return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
+  // "16.09.2026" — European dotted DD.MM.YYYY (JS Date can't parse this natively)
+  const dotted = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if (dotted) {
+    const d = new Date(parseInt(dotted[3], 10), parseInt(dotted[2], 10) - 1, parseInt(dotted[1], 10));
+    return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
   const parsed = new Date(s);
   if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 2000) {
     return parsed.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
   return s;
+}
+
+// Formats a {y, m, day} triple (e.g. from getCustomerDateParts' URL fallback) the same
+// way formatCustomerDateStr formats a raw date string.
+function formatCustomerDateParts(parts) {
+  if (!parts) return '';
+  const d = new Date(parseInt(parts.y, 10), parseInt(parts.m, 10) - 1, parseInt(parts.day, 10));
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function formatCustomerMonthStr(monthKey) {
@@ -10028,7 +10077,7 @@ function buildCustomerDatePanel(articles) {
 
   const idx = {};
   articles.forEach(a => {
-    const parts = (typeof extractDateParts === 'function') ? extractDateParts(a.date) : null;
+    const parts = (typeof getCustomerDateParts === 'function') ? getCustomerDateParts(a) : null;
     if (!parts) return;
     const { y, m, day } = parts;
     if (!idx[y]) idx[y] = {};
@@ -10362,7 +10411,7 @@ function filterAndRenderCustomerNews() {
 
   if (activeCustDateYear || activeCustDateMonth || activeCustDateDay) {
     list = list.filter(a => {
-      const parts = (typeof extractDateParts === 'function') ? extractDateParts(a.date) : null;
+      const parts = (typeof getCustomerDateParts === 'function') ? getCustomerDateParts(a) : null;
       if (!parts) return false;
       if (activeCustDateYear && parts.y !== activeCustDateYear) return false;
       if (activeCustDateMonth && parts.m !== activeCustDateMonth) return false;
@@ -10371,12 +10420,16 @@ function filterAndRenderCustomerNews() {
     });
   }
 
-  // Her zaman en yeniden en eskiye sırala
-  list.sort((a, b) => {
-    const da = new Date(a.date || 0).getTime();
-    const db = new Date(b.date || 0).getTime();
-    return db - da;
-  });
+  // Her zaman en yeniden en eskiye sırala (tarih alanı boşsa link/id URL'sinden fallback)
+  const custSortValue = a => {
+    if (a.date) {
+      const t = new Date(a.date).getTime();
+      if (!isNaN(t)) return t;
+    }
+    const parts = getCustomerDateParts(a);
+    return parts ? new Date(parseInt(parts.y, 10), parseInt(parts.m, 10) - 1, parseInt(parts.day, 10)).getTime() : 0;
+  };
+  list.sort((a, b) => custSortValue(b) - custSortValue(a));
 
   const clearBtn = document.getElementById('cust-clear-btn');
   const isFiltered = _custFilterCat !== 'all' || _custFilterSource !== 'all' || activeCustDateYear || activeCustDateMonth || activeCustDateDay;
@@ -10393,7 +10446,7 @@ function buildCustomerCardHTML(article) {
   const catLangAttr = isEnCat ? 'lang="en"' : '';
   const cleanLink = article.link || '#';
   const faviconUrl = getCustomerFavicon(article.source, article.link);
-  const dateStr = formatCustomerDateStr(article.date);
+  const dateStr = formatCustomerDateStr(article.date) || formatCustomerDateParts(getCustomerDateParts(article));
   const formattedSummary = formatCustomerPercentage(article.summary || '<em style="color:var(--text-3)">Özet henüz oluşturulmadı.</em>');
 
   const extraSources = Array.isArray(article.extraSources) ? article.extraSources : [];
@@ -10463,10 +10516,12 @@ function renderCustomerCards(articles) {
   if (emptyEl) emptyEl.style.display = 'none';
 
   // Group by normalised month key (YYYY-MM) — English/short/slash date formats
-  // are parsed via extractDateParts first so they don't produce garbage keys.
+  // are parsed via getCustomerDateParts first (with a link/id URL fallback for
+  // articles whose scraped 'date' field came back empty) so they don't produce
+  // garbage keys.
   const byDate = {};
   articles.forEach(a => {
-    const parts = extractDateParts(a.date);
+    const parts = getCustomerDateParts(a);
     const d = parts ? `${parts.y}-${parts.m}` : 'Tarihsiz';
     if (!byDate[d]) byDate[d] = [];
     byDate[d].push(a);
