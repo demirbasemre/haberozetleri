@@ -9363,7 +9363,12 @@ const CUSTOMER_DOMAIN_MAP = {
   'Lx Pantos': 'lxpantos.com',
   'LX PANTOS': 'lxpantos.com',
   'DSV ABD': 'dsv.com',
-  'DSV Güney Afrika': 'dsv.com'
+  'DSV Güney Afrika': 'dsv.com',
+  'DHL Banglades': 'dhl.com',
+  'DHL Hong Kong': 'dhl.com',
+  'DHL Japonya': 'dhl.com',
+  'Nippon Express GD Asya-Okyanusya': 'nipponexpress.com',
+  'Nippon Express Japonya': 'nipponexpress.com'
 };
 
 const CUSTOMER_CAT_COLORS = {
@@ -9387,6 +9392,13 @@ const CUSTOMER_FAVICON_OVERRIDES = {
   'TUSAŞ / Turkish Aerospace / TAI': 'https://www.tusas.com/favicon.ico',
   'Nippon Express / NX Group': 'https://www.nipponexpress.com/favicon.ico',
   'Nippon Express': 'https://www.nipponexpress.com/favicon.ico',
+  'Nippon Express GD Asya-Okyanusya': 'https://www.nipponexpress.com/favicon.ico',
+  'Nippon Express Japonya': 'https://www.nipponexpress.com/favicon.ico',
+  'DHL': 'https://www.google.com/s2/favicons?domain=dhl.com&sz=32',
+  'DHL / DHL Group': 'https://www.google.com/s2/favicons?domain=dhl.com&sz=32',
+  'DHL Banglades': 'https://www.google.com/s2/favicons?domain=dhl.com&sz=32',
+  'DHL Hong Kong': 'https://www.google.com/s2/favicons?domain=dhl.com&sz=32',
+  'DHL Japonya': 'https://www.google.com/s2/favicons?domain=dhl.com&sz=32',
   'Kintetsu World Express / KWE': 'https://www.kwe.com/favicon/favicon-32x32.png',
   'EFL Global': 'https://efl.global/themes/custom/efl/favicon.ico',
   'TEI': 'https://www.tei.com.tr/frontend/manifest/images/apple-icon-57x57.png'
@@ -9411,6 +9423,68 @@ function getCustomerFavicon(source, link) {
       if (k.toLowerCase() === sLower) {
         return 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=32';
       }
+    }
+
+    // Akıllı desen/marka eşleştirmesi (Smart fallback matching)
+    if (/\bdhl\b/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=dhl.com&sz=32';
+    }
+    if (/nippon\s*express|nx\s*group/i.test(s)) {
+      return 'https://www.nipponexpress.com/favicon.ico';
+    }
+    if (/\bdsv\b/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=dsv.com&sz=32';
+    }
+    if (/\bceva\b/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=cevalogistics.com&sz=32';
+    }
+    if (/kuehne/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=kuehne-nagel.com&sz=32';
+    }
+    if (/maersk/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=maersk.com&sz=32';
+    }
+    if (/fedex/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=fedex.com&sz=32';
+    }
+    if (/geodis/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=geodis.com&sz=32';
+    }
+    if (/dachser/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=dachser.com&sz=32';
+    }
+    if (/\befl\b/i.test(s)) {
+      return 'https://efl.global/themes/custom/efl/favicon.ico';
+    }
+    if (/crane/i.test(s)) {
+      return 'https://www.craneww.com/favicon.ico';
+    }
+    if (/savino/i.test(s)) {
+      return 'https://www.savinodelbene.com/wp-content/uploads/2022/05/Vector-1.png';
+    }
+    if (/pantos/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=lxpantos.com&sz=32';
+    }
+    if (/skyways/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=skyways-group.com&sz=32';
+    }
+    if (/dimerco/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=dimerco.com&sz=32';
+    }
+    if (/rhenus/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=rhenus.com&sz=32';
+    }
+    if (/hellmann/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=hellmann.com&sz=32';
+    }
+    if (/kintetsu|kwe/i.test(s)) {
+      return 'https://www.kwe.com/favicon/favicon-32x32.png';
+    }
+    if (/expeditors/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=expeditors.com&sz=32';
+    }
+    if (/yusen/i.test(s)) {
+      return 'https://www.google.com/s2/favicons?domain=yusen-logistics.com&sz=32';
     }
   }
   if (link) {
