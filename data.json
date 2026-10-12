@@ -22,8 +22,8 @@
     "date": "2026-10-09"
   },
   {
-    "title": "Air China Cargo 14. Boeing 777F Kargo Uçağını Filosuna Kattı",
-    "summary": "Air China Cargo, kapasite ve uçuş ağı büyüme stratejisi doğrultusunda <strong>1 Ekim</strong> tarihinde filosuna <strong>14.</strong> Boeing 777F kargo uçağını ekledi. B-229D tescilli yeni nesil kargo uçağı, Boeing'in Washington'daki Everett tesislerinde tamamlanarak Seattle Paine Field Havalimanı'ndan Pekin Başkent Uluslararası Havalimanı'na uçuruldu. Taşıyıcının aktif filosunda <strong>14 adet</strong> 777F'in yanı sıra <strong>sekiz adet</strong> yolcudan kargoya dönüştürülmüş Airbus A330-200P2F ve <strong>iki adet</strong> Boeing 747-400F yer alıyor. <strong>102 ton</strong> taşıma kapasitesine ve <strong>9.200 km</strong> menzile sahip uçak, taşıyıcının <strong>Mayıs</strong> ayında kesinleştirdiği <strong>10 adetlik</strong> A350F sipariş sürecinde kapasitesini destekleyecek.",
+    "title": "Air China Cargo 14. Boeing 777 Kargo Uçağını Filosuna Kattı",
+    "summary": "Pekin merkezli Air China Cargo, kapasite ve uçuş ağı büyümesine odaklanarak <strong>1 Ekim 2026</strong> tarihinde B-229D tescilli <strong>14.</strong> Boeing 777F kargo uçağını teslim aldı. Everett fabrikasında üretilen uçak, Seattle Paine Field Havalimanı'ndan Pekin Başkent Uluslararası Havalimanı'na uçuruldu. Şirket filosunda <strong>14 adet</strong> 777F'in yanı sıra <strong>sekiz adet</strong> yolcudan kargoya dönüştürülmüş Airbus A330-200 ve <strong>iki adet</strong> Boeing 747-400F bulunuyor. Ayrıca taşıyıcı, <strong>Mayıs 2026</strong>'da mevcut siparişine <strong>dört adet</strong> ekleyerek toplam A350F siparişini <strong>10 adede</strong> çıkarmıştı.",
     "category": "Filo & Network",
     "source": "aircargonews",
     "link": "https://www.aircargonews.net/airlines/2026/10/air-china-cargo-adds-14th-777f/",
@@ -45,14 +45,14 @@
   },
   {
     "title": "Amazon Çin-ABD Arasında İki Yeni Hava Kargo Hizmeti Başlattı",
-    "summary": "Amazon Global Logistics, Çin ile ABD arasındaki hava kargo operasyonları için Air SMP ve Economy Air adlı <strong>iki</strong> yeni hizmet seçeneğini duyurdu. Air SMP seçeneği, Şanghay ve Hong Kong'dan günlük uçuşlarla kargoları <b>7</b><strong>&nbsp;ile 10</strong> takvim günü içinde ABD'deki beş bölgedeki lojistik merkezlerine doğrudan ulaştırırken lityum pil veya elektronik ürünlere ek ücret uygulamıyor. Economy Air seçeneği ise Şanghay veya Shenzhen'den Los Angeles'a <strong>11 ile 15</strong> günlük transit süresiyle daha ekonomik bir hava kargo alternatifi sağlıyor. Hizmetler, deniz taşımacılığına kıyasla haftalar kazandırarak dördüncü çeyrek zirve sezonu hazırlıklarını desteklemeyi hedefliyor.",
+    "summary": "Amazon Global Logistics, Çin ile ABD arasındaki hava kargo operasyonları için Air SMP ve Economy Air adlı <strong>iki</strong> yeni hizmet seçeneğini duyurdu. Air SMP seçeneği, Şanghay ve Hong Kong'dan günlük uçuşlarla kargoları <strong>yedi ila 10</strong> takvim günü içinde ABD'deki beş bölgedeki lojistik merkezlerine doğrudan ulaştırırken lityum pil veya elektronik ürünlere ek ücret uygulamıyor. Economy Air seçeneği ise Şanghay veya Shenzhen'den Los Angeles'a <strong>11 ila 15</strong> günlük transit süresiyle daha ekonomik bir hava kargo alternatifi sağlıyor. Hizmetler, deniz taşımacılığına kıyasla haftalar kazandırarak dördüncü çeyrek zirve sezonu hazırlıklarını desteklemeyi hedefliyor.",
     "category": "Özel Kargo",
     "source": "aircargonews",
     "link": "https://www.aircargonews.net/supply-chains/2026/10/amazon-adds-two-new-china-airfreight-service-offerings/",
     "id": null,
     "isDuplicate": false,
     "duplicateOf": "",
-    "thyImpact": "notr",
+    "thyImpact": "risk",
     "thyAnalysis": "Amazon'un Çin-ABD e-ticaret koridorunda doğrudan hava kargo ve dağıtım çözümlerini genişletmesi, geleneksel havayollarının bu hatlardaki pazar payı üzerinde baskı oluşturabilir. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun Uzak Doğu çıkışlı Transpasifik ve aktarmalı e-ticaret taşımalarında birim gelir seviyeleri bu entegre modelden olumsuz etkilenebilir. Ancak şirketin küresel ağ esnekliği alternatif rotalarda kapasite optimizasyonunu korumasını sağlayacaktır.",
     "usedWebSearch": false,
     "webSearchDetails": "",
@@ -62,7 +62,7 @@
       "direct": [],
       "hub": []
     },
-    "etkiAlaniGerekce": "",
+    "etkiAlaniGerekce": "Amazon'un doğrudan uçtan uca e-ticaret hava kargo kapasitesi sunması Transpasifik kargo talebini bağlayarak geleneksel taşıyıcıların kargo gelirlerini ve pazar payını kısıtlayabilir.",
     "date": "2026-10-09"
   },
   {
@@ -142,14 +142,14 @@
     "date": "2026-10-09"
   },
   {
-    "title": "Silk Way West Airlines CargoAi Üzerinden Dijital Rezervasyon Erişimini Genişletiyor",
-    "summary": "Silk Way West Airlines, CargoAi ile gerçekleştirdiği ortaklık kapsamında <strong>30.000</strong>'den fazla taşıma işleri organizatörüne kargo kapasitesini, anlık navlun fiyatlarını ve e-rezervasyon hizmetlerini açtı. CargoMART platformu üzerinden genel kargo, lityum piller ve tehlikeli madde rezervasyonları yapılabilirken CargoCONNECT entegrasyonu şirketlerin yönetim sistemlerine doğrudan bağlantı sağlıyor. Gelişme, ABD, Avrupa ve Asya'daki kilit pazarlarda taşıyıcının kargo uçağı kapasitesine erişimi otomatikleştirerek operasyonel süreçleri hızlandırıyor.",
+    "title": "Silk Way West Airlines CargoAi ile Dijital Rezervasyon Erişimini Artırıyor",
+    "summary": "Silk Way West Airlines, CargoAi ile genişlettiği ortaklık kapsamında <strong>30.000</strong>'den fazla taşıma işleri organizatörüne ABD, Avrupa ve Asya pazarlarında kapasite, anlık fiyat ve e-rezervasyon erişimi sağladı. Şanghay'daki Air Cargo China <strong>2026</strong> etkinliğinde duyurulan iş birliği; genel kargo, lityum piller ve tehlikeli maddeler için CargoMART üzerinden rezervasyon yapılmasına ve CargoCONNECT ile taşıma yönetim sistemlerine bağlanılmasına olanak tanıyor. Entegrasyon, havayolunun dijital dağıtım stratejisini ve müşteri deneyimini geliştirmeyi amaçlıyor. Geniş gövdeli kargo uçağı filosu ile CargoAi ekosisteminin bir araya gelmesi rezervasyon süreçlerinde esneklik ve operasyonel hız kazandırıyor.",
     "category": "Teknoloji & Dijitalleşme",
     "source": "aircargoweek",
     "link": "https://aircargoweek.com/silk-way-west-airlines-expands-digital-booking-access-through-cargoai/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Silk Way West CargoAi ile Dijital Hizmet Ağını Genişletiyor",
+    "duplicateOf": "Silk Way West CargoAi ile Dijital Hizmet Dağıtımını Genişletiyor",
     "thyImpact": "notr",
     "thyAnalysis": "",
     "usedWebSearch": false,
@@ -186,8 +186,8 @@
     "date": "2026-10-09"
   },
   {
-    "title": "ST Engineering Singapur'da Yeni Uçak Gövdesi Bakım Merkezini Açtı",
-    "summary": "ST Engineering, Singapur Changi Havalimanı Changi Creek bölgesinde dördüncü uçak gövdesi bakım, onarım ve revizyon (MRO) tesisini resmi olarak faaliyete geçirdi. <strong>84.000 metrekarelik</strong> alana ve <strong>dört</strong> geniş gövdeli uçak hangarına sahip tesis, şirketin Singapur'daki geniş gövde bakım kapasitesini <strong>%40</strong> artırarak yılda yaklaşık <strong>100</strong> ilave uçağa hizmet verebilecek. Tesis bünyesinde görsel denetim yapan dronlar, otonom mobil robotlar ve yapay zeka destekli hasar tespit sistemleri devreye alındı. Tam kapasiteye ulaştığında <strong>500</strong>'den fazla personele istihdam sağlayacak merkezin yanı sıra şirketin Çin Ezhou'daki ikinci hangarı <strong>2027</strong>'nin ikinci yarısında, ABD Pensacola'daki iki yeni hangarı ise <strong>2027</strong> başında açılacak.",
+    "title": "ST Engineering Singapur'da Yeni Uçak Gövdesi Bakım Tesisini Açtı",
+    "summary": "ST Engineering, Singapur Changi Havalimanı bünyesindeki Changi Creek'te yeni ticari uçak gövdesi bakım, onarım ve revizyon (MRO) tesisini faaliyete geçirdi. Şirketin Singapur'daki <strong>dördüncü</strong> gövde bakım tesisi olan <strong>84.000 metrekarelik</strong> merkez, <strong>dört adet</strong> geniş gövde uçağa aynı anda hizmet verebilecek ve şirketin bölgedeki geniş gövde kapasitesini <strong>%40</strong> artıracak. Yılda yaklaşık <strong>100</strong> ilave geniş gövde uçağa bakım sağlayabilecek tesiste tam kapasitede <strong>500</strong>'den fazla personel istihdam edilecek. Tesis; yapay zeka destekli hasar tespit sistemleri, otonom mobil robotlar ve parça teslim dronları gibi dijital çözümlerle donatıldı.",
     "category": "Altyapı",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/10/st-engineering-opens-new-airframe-mro-facility-singapore-support-growing-global-mro-demand/",
@@ -208,14 +208,14 @@
     "date": "2026-10-12"
   },
   {
-    "title": "Silk Way West Airlines CargoAi ile Dijital Kapasite Dağıtımını Genişletiyor",
-    "summary": "Silk Way West Airlines, CargoAi platformuyla ortaklığını güçlendirerek <strong>30.000</strong>'i aşkın taşıma işleri organizatörüne gerçek zamanlı navlun oranları ve doğrudan rezervasyon erişimi sundu. Sistem; genel kargonun yanı sıra lityum piller ve tehlikeli maddeleri CargoMART üzerinden rezervasyona açarken kargo yönetim sistemleriyle de doğrudan entegrasyon sağlıyor. Geniş gövdeli kargo uçağı filosu işleten havayolu, ABD, Avrupa ve Asya hatlarında dijital görünürlüğünü artırmayı hedefliyor.",
+    "title": "Silk Way West Airlines CargoAi ile Dijital Rezervasyon Ağına Açılıyor",
+    "summary": "Silk Way West Airlines, CargoAi platformu ile kurduğu ortaklık kapsamında <strong>30.000</strong>'den fazla freight forwarder'a kapasite, gerçek zamanlı fiyat ve e-rezervasyon erişimi sağladı. Entegrasyon sayesinde genel kargo, lityum bataryalar ve tehlikeli maddeler CargoMART üzerinden rezerve edilebilirken CargoCONNECT ile doğrudan taşıma yönetim sistemlerine bağlantı kurulabiliyor. Sistem, havayolunun küresel uçuş ağında rezervasyon esnekliğini ve görünürlüğü artırmayı amaçlıyor. Şirket, bu adımla küresel ölçekte dijital dağıtım kanallarını genişletmeyi hedefliyor.",
     "category": "Teknoloji & Dijitalleşme",
     "source": "payloadasia",
     "link": "https://payloadasia.com/2026/10/silk-way-west-airlines-expands-digital-booking-access-cargoai/",
     "id": null,
     "isDuplicate": true,
-    "duplicateOf": "Silk Way West CargoAi ile Dijital Hizmet Ağını Genişletiyor",
+    "duplicateOf": "Silk Way West CargoAi ile Dijital Hizmet Dağıtımını Genişletiyor",
     "thyImpact": "notr",
     "thyAnalysis": "",
     "usedWebSearch": false,
