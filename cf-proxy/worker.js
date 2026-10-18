@@ -3347,11 +3347,11 @@ export default {
 
         let subreqCount = 0;
         for (const f of cargoFlights) {
-          if (subreqCount > 35) break;
+          if (subreqCount >= 4) break; // Free tier CPU/subrequest limit koruması: döngü başına en fazla 4 alt istek
           if (!f.dep) {
             if (await resolveFlightRoute(f)) {
               cacheUpdated = true;
-              subreqCount += 2;
+              subreqCount += 1;
             }
           }
           if (!f.aircraftDetails || !f.aircraftDetails.photoUrl) {
@@ -3373,33 +3373,13 @@ export default {
       }
 
       async function refreshAndCache() {
-        // OpenSky ve Flightradar24 canlı feed'ini paralel çekelim
-        const [freshRes, fr24Flights] = await Promise.all([
-          computeBaseCargoFlights().catch(err => {
-            console.warn('[OpenSky] fetch error:', err.message || err);
-            return null;
-          }),
-          fetchFlightRadar24LiveFlights().catch(err => {
-            console.warn('[FR24 Live] fetch error:', err.message || err);
-            return [];
-          })
-        ]);
-
-        let fresh = freshRes;
-        if (!fresh) {
-          fresh = {
-            count: 0,
-            countByAirline: Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, 0])),
-            airlines: CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata })),
-            flights: [],
-            updated: Math.floor(Date.now() / 1000)
-          };
-        }
+        // 1. Birincil ve ultra-hafif kaynak: Flightradar24 canlı kargo feed'i (Sadece 5 kargo havayolu, ~30 KB, <1ms CPU)
+        const fr24Flights = await fetchFlightRadar24LiveFlights().catch(err => {
+          console.warn('[FR24 Live] fetch error:', err.message || err);
+          return [];
+        });
 
         // FR24 canlı kargo uçuşları hızlı erişim indeksleri
-        const frByCallsign = new Map();
-        const frByHex = new Map();
-        const frByReg = new Map();
         const frLiveAirborneCallsigns = new Set();
         const frLiveAirborneRegs = new Set();
         const frLiveAirborneHexes = new Set();
@@ -3408,47 +3388,28 @@ export default {
           const cs = (fr.callsign || '').toUpperCase();
           const hex = (fr.icao24 || '').toLowerCase();
           const reg = (fr.aircraftDetails?.registration || '').toUpperCase();
-          if (cs) {
-            frByCallsign.set(cs, fr);
-            frLiveAirborneCallsigns.add(cs);
-          }
-          if (hex) {
-            frByHex.set(hex, fr);
-            frLiveAirborneHexes.add(hex);
-          }
-          if (reg) {
-            frByReg.set(reg, fr);
-            frLiveAirborneRegs.add(reg);
-          }
+          if (cs) frLiveAirborneCallsigns.add(cs);
+          if (hex) frLiveAirborneHexes.add(hex);
+          if (reg) frLiveAirborneRegs.add(reg);
         }
 
-        // OpenSky'den gelen uçuşları FR24 canlı verisiyle teyit et ve zenginleştir
-        const matchedFrCallsigns = new Set();
-        for (const f of fresh.flights) {
-          const cs = (f.callsign || '').toUpperCase();
-          const hex = (f.icao24 || '').toLowerCase();
-          const frMatch = frByCallsign.get(cs) || frByHex.get(hex);
-          if (frMatch) {
-            matchedFrCallsigns.add((frMatch.callsign || '').toUpperCase());
-            if (frMatch.flightNumber) f.flightNumber = frMatch.flightNumber;
-            if (frMatch.dep && frMatch.arr) {
-              f.dep = frMatch.dep;
-              f.arr = frMatch.arr;
-              f.routeSource = 'flightradar24';
-            }
-            if (frMatch.aircraftDetails && (!f.aircraftDetails || !f.aircraftDetails.registration)) {
-              f.aircraftDetails = frMatch.aircraftDetails;
-            }
-            f.fr24Verified = true;
-          }
-        }
-
-        // FR24'te havada olan fakat OpenSky'de henüz listelenmemiş kargo uçuşlarını da ekle
-        for (const fr of (fr24Flights || [])) {
-          const cs = (fr.callsign || '').toUpperCase();
-          if (!matchedFrCallsigns.has(cs) && !fresh.flights.some(f => (f.callsign || '').toUpperCase() === cs)) {
-            fresh.flights.push(fr);
-          }
+        let fresh = null;
+        if (fr24Flights && fr24Flights.length > 0) {
+          fresh = {
+            count: fr24Flights.filter(f => f.airline === 'THY').length,
+            countByAirline: Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, fr24Flights.filter(f => f.airline === a.code).length])),
+            airlines: CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata })),
+            flights: [...fr24Flights],
+            updated: Math.floor(Date.now() / 1000)
+          };
+        } else {
+          fresh = {
+            count: 0,
+            countByAirline: Object.fromEntries(CARGO_AIRLINES.map(a => [a.code, 0])),
+            airlines: CARGO_AIRLINES.map(({ code, name, color, iata }) => ({ code, name, color, iata })),
+            flights: [],
+            updated: Math.floor(Date.now() / 1000)
+          };
         }
 
         let cachedFlights = [];
@@ -3837,10 +3798,22 @@ export default {
         const cachedData = isCron ? null : await getCachedFlights();
         let data;
         if (cachedData) {
-          data = cachedData;
-          const age = Math.floor(Date.now() / 1000) - data.updated;
-          if (age > 55) {
-            ctx.waitUntil(refreshAndCache().catch(() => {}));
+          const age = Math.floor(Date.now() / 1000) - (cachedData.updated || 0);
+          if (age > 180) {
+            // Veri 3 dakikadan eskiyse (örn. uzun süre kimse girmemişse):
+            // İlk kullanıcıya bayat veri göstermek yerine anında taze veriyi çek (artık <1ms CPU sürüyor!)
+            try {
+              data = await refreshAndCache();
+            } catch (_) {
+              data = cachedData;
+            }
+          } else {
+            // Veri taze (< 3 dakika): 0ms ile hemen önbellekten ver
+            data = cachedData;
+            if (age > 55) {
+              // 55 saniyeden eskiyse arka planda sessizce güncelle
+              ctx.waitUntil(refreshAndCache().catch(() => {}));
+            }
           }
         } else {
           data = await refreshAndCache();
