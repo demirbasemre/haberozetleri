@@ -1,5 +1,331 @@
 [
   {
+    "title": "My Freighter Birleşik Krallık Operasyonları İçin Onay Aldı",
+    "summary": "Özbekistan merkezli kargo havayolu My Freighter, Birleşik Krallık Ulaştırma Bakanlığı'ndan ACC3 güvenlik yetkilendirmesi alarak ülkeye operasyon düzenleme hakkı kazandı. Taşkent aktarma merkezli taşıyıcı; <strong>Ekim 2026</strong> başında filosuna kattığı <strong>10.</strong> Boeing 767 kargo uçağı ile birlikte <strong>10 adet</strong> Boeing 767F ve <strong>bir adet</strong> Boeing 757-200F'ten oluşan kargo filosuna ulaştı. Şirket bu yıl Hong Kong-Maastricht, Asya-Frankfurt hatlarını devreye almış ve Liege sefer sıklıklarını artırmıştı.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freighter-operator/2026/10/my-freighter-is-approved-for-uk-operations/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "My Freighter'ın Birleşik Krallık pazarına doğrudan giriş hakkı elde etmesi ve Taşkent aktarma merkezli kargo uçağı ağını büyütmesi, Orta Asya ile Avrupa arasındaki hava kargo koridorunda kapasite artışına yol açmaktadır. Bu gelişme, BDT ve Asya çıkışlı Birleşik Krallık trafiğinde <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun aktarma trafiği pazar payı ve birim gelirleri üzerinde bölgesel rekabet baskısı oluşturabilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Birim Gelir (Yield)"
+      ]
+    },
+    "etkiAlaniGerekce": "Taşkent üzerinden Birleşik Krallık'a sunulacak alternatif kargo uçağı kapasitesi, benzer transit pazarlara odaklanan Turkish Cargo'nun fiyatlama gücünü etkileyebilir.",
+    "date": "2026-10-16",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/my-freighter-secures-uk-approval-for-cargo-operations-1360963"
+      }
+    ]
+  },
+  {
+    "title": "UPS Clark Havalimanı'nda Günlük 46.000 Paket Kapasiteli Yeni Aktarma Merkezini Açtı",
+    "summary": "UPS, Filipinler'deki Clark Uluslararası Havalimanı'nda <strong>80 milyon doları</strong> aşan yatırımla kurduğu <strong>30.000 metrekarelik</strong> yeni aktarma merkezini hizmete açtı. Önceki merkeze kıyasla <strong>15 kat</strong> daha büyük olan tesis, saatte maksimum <strong>15.000</strong> ve günlük ortalama <strong>46.000</strong> paket işleme kapasitesine sahip bulunuyor. Merkezde <strong>-20°C ila 25°C</strong> aralığında çalışan <strong>üç</strong> soğuk hava ünitesi yer alırken, şirket Clark üzerinden haftada <strong>170</strong> uçuş segmenti gerçekleştiriyor.",
+    "category": "Altyapı",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freighter-operator/2026/10/ups-opens-new-hub-at-clark-international-airport/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "UPS Filipinler'deki Yeni Aktarma Merkeziyle 1.100'den Fazla Ticaret Hattında Hizmetlerini Artırdı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-16"
+  },
+  {
+    "title": "Mammoth Freighters Çin'deki STAECO Tesisinde İlk Boeing 777-200LR Dönüşümünü Başlattı",
+    "summary": "Mammoth Freighters, kiralama şirketi Jetran mülkiyetindeki N60VL tescilli Boeing 777-200LR uçağını kargo uçağı dönüşümü için Çin'in Qingdao kentindeki STAECO tesisine kabul etti. Bu kabul, şirketin STAECO ortaklığındaki ilk Boeing 777 kargo dönüşümü olma özelliğini taşıyor. Mammoth daha önce ilk dönüştürülmüş 777-200LRMF uçağını Jetran'a teslim etmiş, uçak Birleşik Krallık operasyonları için <span style='color:#C8102E;font-weight:700;'>DHL Aviation</span> bünyesinde uçuşa başlamıştı.",
+    "category": "Altyapı",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freighter-conversions-mro/2026/10/mammoth-freighters-inducts-its-first-777-200lr-to-staeco/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-16",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/10/mammoth-freighters-inducts-first-777-200lr-staeco/"
+      }
+    ]
+  },
+  {
+    "title": "Turkish Airlines ve CFM 600'den Fazla LEAP-1B Motoru İçin Anlaşma İmzaladı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Turkish Airlines</span>, Turkish Technic ve CFM International; <strong>100</strong> kesin ve <strong>50</strong> opsiyonel Boeing 737 MAX uçağı için yedekler dahil <strong>300</strong>'den fazla LEAP-1B motorunun tedarikine yönelik mutabakat zaptı imzaladı. Uzun vadeli hizmet sözleşmesi, <span style='color:#C8102E;font-weight:700;'>Turkish Airlines</span> ve AJet tarafından işletilen <strong>600</strong>'ü aşkın LEAP-1B motorunu kapsayacak. Anlaşma ayrıca Türkiye'de kurulacak yeni bir motor bakım, onarım ve revizyon (MRO) tesisinin malzeme destek süreçlerini de içeriyor.",
+    "category": "Altyapı",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/turkish-airlines-and-cfm-sign-mou-for-more-than-600-leap-1b-engines/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Boeing 737 MAX filosunun motor tedarik ve uzun vadeli bakım desteğinin güvenceye alınması, yolcu uçağı altı kargo kapasitesinin operasyonel sürekliliğini ve güvenilirliğini destekleyecektir. Türkiye'de kurulacak yeni LEAP motor bakım tesisinin Turkish Technic altyapısına katılması, bakım maliyetlerini optimize ederek operasyonel verimliliğe doğrudan katkı sağlayacaktır.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Maliyet Yönetimi"
+      ]
+    },
+    "etkiAlaniGerekce": "Genişleyen dar gövde filosu altındaki kargo kapasitesi operasyonel süreklilik kazanırken yerli MRO kabiliyeti bakım maliyetlerini düşürecektir.",
+    "date": "2026-10-16"
+  },
+  {
+    "title": "Asia Airfreight Terminal Hong Kong Havalimanı İşletme Sözleşmesini 15 Yıl Uzattı",
+    "summary": "SATS iştiraki Asia Airfreight Terminal (AAT), Hong Kong Havalimanı Otoritesi ile olan imtiyaz sözleşmesini <strong>2028'den 2043'e</strong> kadar <strong>15 yıl</strong> süreyle yeniledi. Sözleşme yenilemesi, Hong Kong Uluslararası Havalimanı'nın Üç Pistli Sisteminin devreye girmesi ve Büyük Körfez Bölgesi çok modlu bağlantılarının genişletildiği stratejik bir döneme rastladı. AAT, havalimanındaki hava kargo elleçleme kapasitesini <strong>2 milyon tona</strong> çıkarmayı hedefliyor.",
+    "category": "Altyapı",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/asia-airfreight-terminal-renewed-for-15-years-at-hong-kong-international-airport/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "AAT Hong Kong Havalimanı İmtiyazını 15 Yıl Süreyle Yeniledi",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-16"
+  },
+  {
+    "title": "Yapay Zeka Patlaması Asya'nın Yarı İletken Tedarik Zincirini Yeniden Şekillendiriyor",
+    "summary": "FedEx için hazırlanan rapora göre yapay zeka hızlandırıcıları, <strong>2024</strong> yılında yarı iletken satışlarının yaklaşık <strong>%20</strong>'sini oluştururken <strong>2026-2035</strong> döneminde küresel çapta yaklaşık <strong>2.000</strong> yeni veri merkezi kurulması bekleniyor. Asya-Pasifik bölgesi <strong>2022</strong>'de küresel yarı iletken gelirlerinin <strong>%57,6</strong>'sını sağlarken Tayvan'ın ihracatı <strong>2025</strong>'te yaklaşık <strong>170 milyar dolara</strong>, Singapur'un ithalatı ise <strong>105 milyar doların</strong> üzerine ulaştı. Dağıtık üretim modeli; prototip, çip plakası ve sunucu ekipmanlarının hava kargo yoluyla sık ve hassas taşınmasını zorunlu kılıyor.",
+    "category": "Diğer",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/ai-boom-reshapes-asias-semiconductor-supply-chains-1360969",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Asya-Pasifik genelinde yayılan yarı iletken ve yapay zeka donanımı üretimi, yüksek birim gelirli acil hava kargo talebini ciddi ölçüde artırmaktadır. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, Uzak Doğu ve Güneydoğu Asya'yı İstanbul aktarma merkezi üzerinden Batı pazarlarına bağlayan kargo uçağı ve geniş gövdeli yolcu uçuşu ağıyla bu yüksek değerli özel kargo trafiğinden pazar payı alma imkanına sahiptir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Kapasite & Filo"
+      ]
+    },
+    "etkiAlaniGerekce": "Yarı iletken tedarik zincirindeki parçalı üretim ve acil yedek parça ihtiyacı, Turkish Cargo'nun Doğu-Batı hattındaki yüksek birim gelirli kargo hacimlerini büyütebilir.",
+    "date": "2026-10-19"
+  },
+  {
+    "title": "My Freighter Birleşik Krallık Kargo Uçuşları İçin İzin Aldı",
+    "summary": "Taşkent merkezli hava kargo taşıyıcısı My Freighter, Birleşik Krallık Ulaştırma Bakanlığı'ndan ACC3 sertifikası alarak Birleşik Krallık'a kargo seferleri düzenleme izni aldı. <strong>4 Ekim</strong>'de <strong>10.</strong> Boeing 767 kargo uçağını teslim alan taşıyıcı, <strong>biri</strong> Boeing 757 olmak üzere filosundaki toplam kargo uçağı sayısını <strong>11</strong>'e yükseltti. <strong>2026</strong> içinde <strong>dört</strong> kargo uçağı daha teslim almayı ve <strong>2030</strong>'a kadar <strong>50</strong> uçağa ulaşmayı planlayan havayolu, Taşkent Havalimanı'nda <strong>Kasım</strong> veya <strong>Aralık 2026</strong>'da faaliyete geçecek özel bir kargo terminali inşa ediyor.",
+    "category": "Filo & Network",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/my-freighter-secures-uk-approval-for-cargo-operations-1360963",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "My Freighter Birleşik Krallık Operasyonları İçin Onay Aldı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-19"
+  },
+  {
+    "title": "UPS Küresel Ticareti Hızlandırmak İçin Clark Havalimanı'ndaki 80 Milyon Dolarlık Merkezini Açtı",
+    "summary": "UPS, Filipinler'deki Clark Uluslararası Havalimanı'nda <strong>80 milyon doları</strong> aşan yatırımla inşa edilen <strong>30.000 metrekarelik</strong> aktarma merkezini faaliyete geçirdi. Eski merkeze kıyasla <strong>15 kat</strong> daha büyük olan tesis, saatte maksimum <strong>15.000</strong> ve günlük ortalama <strong>46.000</strong> paket işleme kapasitesi sunuyor. Haftada <strong>170</strong> uçuş segmenti işleten şirket; <strong>-20°C ila 25°C</strong> aralığında çalışan <strong>üç</strong> soğuk hava deposu ve saatte <strong>9.000</strong> küçük paket işleyen otomatik ayrıştırma altyapısıyla <strong>1.100</strong>'den fazla ticaret hattında teslimat sürelerini hızlandırıyor.",
+    "category": "Altyapı",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/ups-opens-80mn-clark-airport-hub-to-accelerate-global-trade-1360962",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "UPS Filipinler'deki Yeni Aktarma Merkeziyle 1.100'den Fazla Ticaret Hattında Hizmetlerini Artırdı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-19"
+  },
+  {
+    "title": "Edmonton Havalimanı 50.000 Fit Karelik Kargo Tesisi İçin Temel Attı",
+    "summary": "Kanada'daki Edmonton Uluslararası Havalimanı ve Terracap Management, apron kenarında yer alacak <strong>50.000 fit karelik</strong> yeni kargo tesisinin inşasına başladı. Kanada Hükümeti'nin Ulusal Ticaret Koridorları Fonu üzerinden sağladığı <strong>118 milyon dolarlık</strong> altyapı desteğinin ardından gelen tesis, kargo uçakları ile depo arasında doğrudan ve hızlı transfer imkanı tanıyacak. Terracap'in havalimanında kiraladığı mevcut <strong>100.000 fit karelik</strong> kargo alanı bulunurken, şirketin toplam gayrimenkul portföyü <strong>2,4 milyar dolar</strong> değerinde bulunuyor.",
+    "category": "Altyapı",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/edmonton-airport-breaks-ground-on-50000-sq-ft-cargo-facility-1360956",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-19"
+  },
+  {
+    "title": "LATAM Cargo Miami Aktarma Merkezindeki 550 Personel İçin VR Eğitimini Başlattı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>LATAM Airlines Group</span> kargo birimi LATAM Cargo, operasyonel güvenliği artırmak amacıyla Miami aktarma merkezindeki depo personeline Sanal Gerçeklik (VR) tabanlı eğitim uygulaması başlattı. Programın ilk fazında <strong>250</strong> forklift operatörü dahil olmak üzere yaklaşık <strong>550</strong> personel eğitimden geçecek. Tesisin zemin altyapısını birebir yansıtan simülatörler; tehlikeli maddelerin ayrıştırılması, kargo elleçleme prosedürleri ve yaya trafiği güvenliği gibi yüksek riskli süreçleri kapsıyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/latam-cargo-introduces-vr-training-for-550-staff-at-miami-hub-1360954",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "LATAM Cargo Depo Personeli Eğitiminde Sanal Gerçeklik Teknolojisini Kullanmaya Başladı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-19"
+  },
+  {
+    "title": "SATS Havacılık Güvenliği ve İş Gücü Hazırlığı İçin İleri Simülasyon Merkezini Açtı",
+    "summary": "SATS, hava kargo ve yer hizmetleri operasyonlarında güvenliği ve iş gücü yetkinliğini artırmak amacıyla SATS İnovatif Eğitim Merkezi'ni (Immersive Centre) <strong>15 Ekim 2026</strong>'da Singapur'da faaliyete açtı. Singapur Politeknik iş birliği ve Sivil Havacılık Otoritesi hibesiyle kurulan tesis, ileri simülasyon araçlarıyla birebir operasyonel senaryolar oluşturuyor. Merkez; uçak dönüş koordinasyonu, apron güvenliği ve kargo elleçleme gibi yüksek riskli görevlerin kontrollü bir ortamda deneyimlenmesine imkan veriyor.",
+    "category": "Altyapı",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/sats-launches-immersive-centre-to-advance-aviation-safety-workforce-readiness/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-19"
+  },
+  {
+    "title": "Mammoth Freighters İlk Boeing 777-200LR Uçağını STAECO Tesisine Kabul Etti",
+    "summary": "Mammoth Freighters, Jetran mülkiyetindeki N60VL tescilli Boeing 777-200LR uçağını yolcudan kargoya dönüştürmek amacıyla Çin'in Qingdao kentindeki STAECO tesisine kabul etti. Bu kabul, şirketin Çin merkezli kargo uçağı dönüşüm operasyonlarının başlangıcını simgeliyor. Boeing 777-200LRMF dönüşüm programı, Asya-Pasifik ve küresel pazarlarda hızla artan uzun menzilli geniş gövde kargo uçağı talebini karşılamaya yönelik teknik altyapıyı güçlendirmeyi amaçlıyor.",
+    "category": "Altyapı",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/mammoth-freighters-inducts-first-777-200lr-staeco/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Mammoth Freighters Çin'deki STAECO Tesisinde İlk Boeing 777-200LR Dönüşümünü Başlattı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-19"
+  },
+  {
+    "title": "Özel Kiralama Uçuşlarında Fiyat Rekabetinin Gerçek Maliyeti",
+    "summary": "Dubai'de düzenlenen Corporate Jet Investor <strong>2026</strong> etkinliğinde, özel kiralama piyasasındaki fiyat odaklı rekabet, gri pazar operasyonları ve aracıların sorumlulukları tartışıldı. Chapman Freeborn yöneticisi Steffen Fries, Orta Doğu pazarında müşterilerin <strong>100.000 dolarlık</strong> bir uçuşta <strong>500</strong> ila <strong>1.000 dolarlık</strong> fiyat farkları için operasyonel riskleri göz ardı edebildiğini vurguladı. Sektör temsilcileri, yapay zekanın rezervasyon süreçlerine girmesiyle salt fiyat teklif eden aracıların eleneceğini ve operasyonel uzmanlığın belirleyici olacağını belirtti.",
+    "category": "Diğer",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/real-cost-private-charters-race-bottom/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-19"
+  },
+  {
+    "title": "Hasenkamp Frankfurt Bölgesinde Yeni Sanat Eseri Depolama Tesisini Açtı",
+    "summary": "Sanat lojistiği uzmanı Hasenkamp, Almanya'nın Frankfurt yakınlarındaki Mörfelden-Walldorf bölgesinde yaklaşık <strong>12.000 metrekare</strong> depolama ve <strong>500 metrekare</strong> ofis alanına sahip yeni tesisini açtı. Yaklaşık <strong>50</strong> personelin çalıştığı tesis; jeotermal ısıtma-soğutma ve fotovoltaik enerji sistemleriyle donatıldı. Avrupa çapındaki özel depo ağına <strong>100 milyon avroyu</strong> aşkın yatırım yapan şirket, Frankfurt Havalimanı'na yakın konumuyla müze ve koleksiyonlara iklimlendirmeli saklama ve uluslararası taşıma hizmeti veriyor.",
+    "category": "Altyapı",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/hasenkamp-opens-new-art-storage-facility-frankfurt-area/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-19"
+  },
+  {
     "title": "LATAM Cargo Depo Personeli Eğitiminde Sanal Gerçeklik Teknolojisini Kullanmaya Başladı",
     "summary": "<span style='color:#C8102E;font-weight:700;'>LATAM Airlines Group</span> kargo kolu LATAM Cargo, Miami Havalimanı tesislerindeki depo personelinin eğitimi için Sanal Gerçeklik (VR) teknolojisini devreye aldı. İlk aşamada <strong>250</strong> forklift operatörü dahil olmak üzere yaklaşık <strong>550</strong> çalışanın katılacağı program, tehlikeli madde ayrıştırma ve kargo elleçleme gibi yüksek riskli senaryoları kapsıyor. Santiago'daki Fast Air deposundaki ilk uygulamanın ardından Miami'ye taşınan sistemin, Brezilya dahil ağdaki diğer stratejik aktarma merkezlerine yayılması planlanıyor.",
     "category": "Teknoloji & Dijitalleşme",
@@ -19,7 +345,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-10-15"
+    "date": "2026-10-15",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/latam-cargo-introduces-vr-training-for-550-staff-at-miami-hub-1360954"
+      }
+    ]
   },
   {
     "title": "ACIA Büyük Kargo Kapılı İlk ATR 72-600P2F Dönüştürülmüş Kargo Uçağını FedEx'e Teslim Etti",
@@ -249,7 +581,17 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-10-16"
+    "date": "2026-10-16",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/freighter-operator/2026/10/ups-opens-new-hub-at-clark-international-airport/"
+      },
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/ups-opens-80mn-clark-airport-hub-to-accelerate-global-trade-1360962"
+      }
+    ]
   },
   {
     "title": "Liege Havalimanı Küçük Paket Vergisine Rağmen Eylül Sonu İtibarıyla Bir Milyon Tonu Aştı",
