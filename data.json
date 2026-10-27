@@ -1,5 +1,515 @@
 [
   {
+    "title": "Logistics UK Raporu Lojistik Büyümesinin Ekonomik Faydalarını Vurguluyor",
+    "summary": "Ticaret birliği Logistics UK tarafından yayımlanan yeni bir rapor, lojistik sektörünün Birleşik Krallık genelinde <strong>356 milyar sterlinlik</strong> ekonomik faaliyeti, <strong>5,3 milyon</strong> istihdamı ve <strong>65 milyar sterlinlik</strong> vergi gelirini desteklediğini ortaya koydu. Sektörün payındaki her <strong>%1</strong>'lik artışın <strong>30 milyar sterlinlik</strong> doğrudan yabancı yatırım çekebileceği ve doğrudan üretilen her <strong>1 sterlinin</strong> ekonomi geneline <strong>1,04 sterlin</strong> ilave katkı sağladığı vurgulandı. Tedarik harcamalarının <strong>2024</strong> yılında <strong>90 milyar sterlini</strong> aşan brüt katma değer ürettiği belirtilirken hükümete altyapı yatırımlarını destekleme çağrısı yapıldı.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/supply-chains/2026/10/logistics-uk-report-highlights-economic-benefit-of-logistics-growth/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Hava Kargo Patlaması Havacılık Maliyetlerindeki Artışla Karşı Karşıya Kalıyor",
+    "summary": "Küresel hava kargo talebindeki güçlü seyre rağmen yükselen yakıt fiyatları, uçak ve motor tedarik maliyetleri ile bakım harcamaları kargo havayollarını baskılıyor. Kargo dönüşümüne uygun eski Boeing 777-300ER uçaklarının aylık kira bedelleri son <strong>iki yılda</strong> <strong>200.000 dolar</strong> artış kaydederken, <strong>2024</strong> sonunda <strong>30 milyon dolar</strong> olan uçak değerleri <strong>40-45 milyon dolar</strong> bandına yükseldi. IATA verilerine göre <strong>Ağustos</strong> ayında hava kargo talebi yıllık <strong>%4,4</strong> büyürken, motor ve yedek parça kıtlığı nedeniyle revizyon bakım slotları için bekleme süreleri <strong>bir yılı</strong> bulabiliyor.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/editorial/2026/10/air-cargo-boom-collides-with-the-rising-cost-of-aviation/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Geniş gövde kargo uçakları ve motor bakım maliyetlerindeki sert artış ile yedek parça tedarik zincirindeki darboğazlar, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun filo işletme ve kiralama giderleri üzerinde maliyet baskısı yaratabilir. Uzayan bakım slotu süreleri kargo uçağı filosu kullanım oranlarını ve sefer planlamasını zorlaştırabilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Operasyonel Verimlilik"
+      ]
+    },
+    "etkiAlaniGerekce": "Piyasadaki uçak tedarik ve bakım maliyeti artışları filonun operasyonel giderlerini ve bakım planlarını doğrudan etkilemektedir.",
+    "date": "2026-10-26"
+  },
+  {
+    "title": "TAP Air Portugal Orlando Seferiyle Kargo Talebini Hedefliyor",
+    "summary": "TAP Air Portugal ve satış acentesi America Cargo GSA, <strong>29 Ekim</strong>'de Lizbon ile Orlando arasında başlayacak direkt uçuşlarla hava kargo müşterilerine hizmet vermeye hazırlanıyor. Airbus A330 tipi yolcu uçaklarıyla haftada <strong>üç</strong> frekans icra edilecek seferler, haftalık <strong>45 ila 60 ton</strong> yolcu uçağı altı kargo kapasitesi sunacak. Lizbon aktarma merkezi üzerinden Güney Amerika'ya bağlantı sağlayan yeni hat, havacılık parçaları, yüksek teknoloji ürünleri ve bozulabilir kargo taşımalarını hedefliyor.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/gssa/2026/10/tap-air-portugal-eyes-cargo-demand-for-orlando-flight/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26"
+  },
+  {
+    "title": "CH Robinson Hava Kargo Fiyatlandırmasını Hızlandırmak İçin Yapay Zekaya Yatırım Yapıyor",
+    "summary": "ABD merkezli küresel taşıma işleri organizatörü CH Robinson, hava kargo ve gümrükleme süreçlerini hızlandırmak amacıyla geliştirdiği yeni yapay zeka ajanlarını devreye aldı. Sistem bugüne kadar <strong>3.600</strong>'den fazla müşteri için <strong>80.000</strong>'in üzerinde anlık fiyat teklifi üretirken, önceden <strong>bir gün</strong> süren hava kargo teklif sürelerini <strong>iki ila üç dakikaya</strong> indirdi. Gümrük evraklarının otomatik ayrıştırılıp işlenmesi sayesinde gümrük operasyonlarında harcanan süre <strong>%23</strong> oranında azaltıldı.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freight-forwarder/2026/10/ch-robinson-invests-in-ai-to-speed-up-air-cargo-quoting/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26",
+    "sources": [
+      {
+        "source": "aircargoweek",
+        "link": "https://aircargoweek.com/c-h-robinson-overhauls-ai-usage-for-air-freight-and-customs-brokerage/"
+      }
+    ]
+  },
+  {
+    "title": "Menzies Kamyon Slot Rezervasyon Sistemini Yaygınlaştırmaya Başladı",
+    "summary": "Yer hizmetleri sağlayıcısı Menzies Aviation, Nallian'ın Kamyon Ziyaret Yönetimi (TVM) platformunu Prag ve Vancouver havalimanlarındaki kargo operasyonlarında kullanmaya başladı. Yıllık toplam <strong>500.000 tondan</strong> fazla kargo elleçleyen <strong>beş</strong> istasyonda planlanan sistemin Ocak ayında Sidney, Melbourne ve Auckland'da da devreye alınacağı açıklandı. <strong>53</strong> noktada kullanılan MACH kargo yönetim sistemine entegre edilen platform, dijital slot rezervasyonu ve saha yönetimiyle tır bekleme sürelerini ve kuyrukları azaltmayı hedefliyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/ground-handler/2026/10/menzies-begins-roll-out-of-truck-slot-booking-system/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/menzies-rolls-out-digital-truck-management-platform-1361059"
+      }
+    ]
+  },
+  {
+    "title": "Cargolux İniş Takımı Kırılması Olayını Doğruladı",
+    "summary": "Kargo havayolu <span style='color:#C8102E;font-weight:700;'>Cargolux</span>, LX-VCF tescilli Boeing 747-8F tipi kargo uçağının sol kanat ana iniş takımının çöktüğünü doğruladı. Olay, <strong>23 Ekim</strong> tarihinde Lüksemburg Havalimanı'nda uçağın park pozisyonunda bulunduğu sırada meydana geldi. Olayda herhangi bir personelin yaralanmadığı belirtilirken taşıyıcı, tedbir amacıyla dünya genelindeki tüm 747-8F kargo uçağı filosuna bir sonraki uçuş öncesinde ilave teknik denetim zorunluluğu getirdi.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/editorial/2026/10/cargolux-reports-landing-gear-collapse/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26",
+    "sources": [
+      {
+        "source": "aircargoweek",
+        "link": "https://aircargoweek.com/cargolux-reports-landing-gear-failure-on-boeing-747-8f-aircraft/"
+      }
+    ]
+  },
+  {
+    "title": "A350 Kargo Uçağının Değeri 200 Milyon Dolara Yaklaşıyor",
+    "summary": "Havacılık danışmanlık şirketi IBA'nın analizine göre, gelecek yıl teslim edilecek yeni Airbus A350F kargo uçağının piyasa değerinin <strong>197 milyon ila 198 milyon dolar</strong> arasında olacağı öngörülüyor. Modelin aylık kira bedellerinin <strong>1,53 milyon ila 1,55 milyon dolara</strong> ulaşması beklenirken, rakibi Boeing 777F'in piyasa değeri <strong>170 milyon dolar</strong> ve aylık kirası <strong>1,35 milyon dolar</strong> seviyesinde bulunuyor. Yaklaşık <strong>111 tonluk</strong> faydalı yük kapasitesi ve <strong>14 fit 1 inçlik</strong> ana kargo kapısıyla A350F, şu ana kadar <strong>14</strong> müşteriden <strong>115</strong> kesin sipariş aldı.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freighter-operator/2026/10/value-of-an-a350-freighter-pushing-close-to-200m/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26"
+  },
+  {
+    "title": "C.H. Robinson Hava Kargo ve Gümrük İşlemlerinde Yapay Zeka Modelini Genişletiyor",
+    "summary": "Lojistik kuruluşu C.H. Robinson, küresel hava kargo ve gümrük müşavirliği süreçlerini hızlandırmak amacıyla Yalın Yapay Zeka (Lean AI) operasyonel modelini devreye aldı. Sistem aracılığıyla bugüne kadar <strong>3.600</strong>'den fazla müşteri için <strong>80.000</strong>'i aşkın anlık fiyat teklifi üretilirken, hava kargo teklif süreleri <strong>bir günden</strong> <strong>iki ila üç dakikaya</strong> düşürüldü. ABD Gümrüğü için gerekli olan <strong>dört düzineden</strong> fazla evrak türünün otomatik işlenmesiyle gümrük ekiplerinin işlem sürelerinde <strong>%23</strong>'lük zaman tasarrufu sağlandı.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/c-h-robinson-overhauls-ai-usage-for-air-freight-and-customs-brokerage/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "CH Robinson Hava Kargo Fiyatlandırmasını Hızlandırmak İçin Yapay Zekaya Yatırım Yapıyor",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26"
+  },
+  {
+    "title": "Birleşik Krallık Bütçesi Öncesinde Yakıt Maliyetleri ve Düşük Değerli Eşya Politikası Endişesi",
+    "summary": "Birleşik Krallık lojistik sektörü temsilcileri, <strong>28 Ekim</strong> tarihinde açıklanacak Sonbahar Bütçesi öncesinde akaryakıt vergisi indiriminin korunması ve e-ticaret gümrük kurallarında netlik sağlanması çağrısında bulundu. Logistics UK, <strong>5 penilik</strong> vergi indiriminin kaldırılmasının işletmelere yıllık <strong>2,8 milyar sterlinlik</strong> ek maliyet getireceğini bildirdi. ASM ise hükümetin <strong>135 sterlin</strong> altındaki düşük değerli ithalatlara yönelik gümrük muafiyetini kaldıracak düzenlemenin teknik ayrıntılarını <strong>30 Haziran 2027</strong> tarihine kadar kesinleştirmesini talep etti.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/fuel-costs-and-low-value-goods-policy-ahead-of-uk-government-budget/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26"
+  },
+  {
+    "title": "Cargolux Boeing 747-8F Uçağında İniş Takımı Arızası Bildirdi",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Cargolux</span>, LX-VCF tescilli Boeing 747-8F tipi kargo uçağının <strong>23 Ekim 2026 Cuma</strong> günü Lüksemburg Havalimanı'ndaki park pozisyonunda sol kanat ana iniş takımının çöktüğünü bildirdi. Meydana gelen olayda herhangi bir yaralanma yaşanmazken kaza kırım ve kurtarma çalışmalarının ilgili otoritelerle sürdürüldüğü kaydedildi. Şirket, güvenlik tedbirleri doğrultusunda dünya genelindeki tüm Boeing 747-8F kargo uçağı filosuna sonraki uçuşları öncesinde zorunlu ek kontroller getirdi.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/cargolux-reports-landing-gear-failure-on-boeing-747-8f-aircraft/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Cargolux İniş Takımı Kırılması Olayını Doğruladı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26"
+  },
+  {
+    "title": "Boeing 777F Dünyanın En Çok Tercih Edilen Kargo Uçağı Olarak 747'yi Geride Bıraktı",
+    "summary": "Boeing tarafından yapılan açıklamaya göre, hizmetteki <strong>330</strong>'u aşkın adediyle Boeing 777F, Boeing 747 modelini geride bırakarak küresel çapta en yaygın kullanılan kargo uçağı konumuna yükseldi. Dünya genelindeki kargo uçağı kapasitesinin yaklaşık <strong>%40</strong>'ını oluşturan 777F filosu, <strong>2025</strong> yılında toplam <strong>6.250</strong> uçuş saati icra ederek <strong>4 trilyon dolarlık</strong> küresel ticareti taşıdı. Model ve yeni nesil 777-8F için alınan kesin siparişler <strong>450</strong> adedi geride bıraktı.",
+    "category": "Filo & Network",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/boeing-777-freighter-overtakes-747-as-most-operated-cargo-aircraft/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Boeing 777F Dünyanın En Yaygın Kullanılan Kargo Uçağı Oldu",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26"
+  },
+  {
+    "title": "Menzies Dijital Kamyon Yönetim Platformunu Kullanıma Sunuyor",
+    "summary": "Hava kargo yer hizmetleri kuruluşu Menzies Aviation, Prag ve Vancouver havalimanlarındaki kargo merkezlerinde Nallian'ın Kamyon Ziyaret Yönetimi (TVM) platformunu devreye aldı. Ekim <strong>2025</strong>'te duyurulan program kapsamında <strong>Ocak 2027</strong>'de Sidney, Melbourne ve Auckland istasyonları da sisteme katılarak yıllık <strong>500.000 tondan</strong> fazla kargo dijital slot yönetimine dahil edilecek. Yazılım, şirketin <strong>53</strong> merkezinde aktif olan MACH kargo yönetim platformuna entegre edilerek tır giriş-çıkışlarında bekleme sürelerini optimize ediyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/menzies-rolls-out-digital-truck-management-platform-1361059",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Menzies Kamyon Slot Rezervasyon Sistemini Yaygınlaştırmaya Başladı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "FedEx Jamere Jackson'ı 30 Kasım İtibarıyla Finans Direktörü Olarak Atadı",
+    "summary": "FedEx, <strong>30 Kasım</strong> tarihi itibarıyla geçerli olmak üzere Baş Finans Direktörlüğü (CFO) görevine Jamere Jackson'ın getirildiğini duyurdu. Jackson, <strong>1 Haziran</strong>'dan bu yana geçici CFO olarak görev yapan Claude Russ'tan koltuğu devralacak. Kariyerinde daha önce AutoZone, Hertz Global Holdings ve Nielsen Holdings CFO'luğu ile General Electric bünyesinde üst düzey finans liderliği bulunan Jackson, şirketin kârlı büyüme ve sermaye tahsis stratejilerini yönetecek.",
+    "category": "Atama & Görevlendirme",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/fedex-appoints-jamere-jackson-as-cfo-from-november-30-1361048",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Saudia Cargo ve Alfaisal Üniversitesi Lojistikte Yapay Zeka İçin Ortaklık Kurdu",
+    "summary": "Saudia Cargo ve Alfaisal Üniversitesi, havacılık lojistiğinde yapay zeka uygulamalarını ve akademik araştırmaları geliştirmek üzere Riyad'da bir Mutabakat Zaptı (MoU) imzaladı. Ortaklık; ortak Ar-Ge projeleri, sektör ihtiyaçlarına göre uyarlanmış müfredat tasarımı ve Saudia Cargo genel merkezinde öğrencilere staj imkanı sağlanmasını içeriyor. Anlaşma ile Suudi Arabistan'ın 2030 Vizyonu doğrultusunda hava kargo operasyonlarında yapay zeka destekli verimlilik artışı ve nitelikli iş gücü gelişimi hedefleniyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/saudia-cargo-alfaisal-university-partner-on-ai-in-logistics-1361046",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Skyways Küresel Hava Kargo Sıralamasında 42. Basamağa Yükseldi",
+    "summary": "Hindistan merkezli lojistik şirketi Skyways Air Services, küresel hava kargo sıralamasında <strong>44.</strong> sıradan <strong>42.</strong> sıraya yükseldi. WorldACD verilerine göre şirket, <strong>2026-27</strong> mali yılı <strong>ikinci çeyreğinde</strong> Hindistan hava kargo ihracat pazarındaki payını <strong>%6,2</strong>'den <strong>%6,3</strong>'e çıkardı. Sıcaklık kontrollü ilaç, otomotiv ve elektronik taşımalarıyla büyüyen şirket; <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, <span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, <span style='color:#C8102E;font-weight:700;'>Lufthansa</span> Cargo ve Saudia Cargo gibi küresel taşıyıcılarla uzun vadeli kapasite anlaşmaları yürütüyor.",
+    "category": "Özel Kargo",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/skyways-climbs-to-42nd-in-global-air-freight-rankings-1361043",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Skyways'in Hindistan hava kargo ihracatındaki pazar payını artırması ve <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> ile mevcut uzun vadeli kapasite ortaklığı, şirketin Hindistan çıkışlı transit taşımalarında doluluk ve birim gelir potansiyelini desteklemektedir. Özellikle ilaç ve otomotiv gibi yüksek katma değerli özel kargo segmentlerindeki talep büyümesi, İstanbul aktarma merkezi üzerinden Avrupa ve Kuzey Amerika koridorlarına ilave hacim akışı sağlayabilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Operasyonel Kapasite"
+      ]
+    },
+    "etkiAlaniGerekce": "Hindistan pazarında lider bir forwarder ile yürütülen kapasite anlaşması doğrudan kargo gelirlerini ve pazar payını pozitif etkilemektedir.",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Jettainer Trinity Airways ile ULD Ortaklığını Uzattı",
+    "summary": "Jettainer, eski adıyla T'way Air olarak bilinen Trinity Airways ile <strong>2022</strong> yılında başlayan birim yükleme aygıtı (ULD) yönetim ortaklığını uzattı. Yenilenen anlaşma kapsamında ULD filosunun operasyonel şeffaflığını ve verimliliğini artırmak amacıyla Nesnelerin İnterneti (IoT) takip teknolojilerinin devreye alınması planlanıyor. Havayolu, uçak ağırlığını hafifleterek yakıt tüketimini düşürmek amacıyla operasyonlarında tamamen hafif kompozit ULD'ler kullanmayı sürdürüyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/jettainer-extends-uld-partnership-with-trinity-airways-1361042",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Jettainer ve Trinity Airways ULD Yönetimi Ortaklığını Uzattı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Asya-Pasifik'teki Toparlanma Küresel Hava Kargo Hacmini Yüzde 2 Artırdı",
+    "summary": "WorldACD verilerine göre, <strong>12-18 Ekim 2026</strong> haftasında küresel hava kargo hacimleri Altın Hafta sonrası Asya-Pasifik ihracatındaki toparlanmayla haftalık bazda <strong>%2</strong> arttı. Ortalama hava kargo navlunları ABD doları bazında <strong>%4</strong>, küresel kapasite ise kargo uçağı arzındaki artışla <strong>%2</strong> yükseldi. Asya-Pasifik'ten Avrupa'ya taşınan kargo tonajı haftalık <strong>%13</strong>, ABD'ye ise <strong>%10</strong> büyüme kaydetti. Küresel navlun seviyeleri geçen yılın aynı dönemine kıyasla yaklaşık <strong>%30</strong> daha yüksek seyrederken, transpasifik hatlarda yapay zeka sevkiyatları talebi desteklemeye devam ediyor.",
+    "category": "Diğer",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/asia-pacific-rebound-lifts-global-air-cargo-volumes-2-1361041",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Asya-Pasifik çıkışlı hava kargo talebindeki toparlanma ve küresel navlunlardaki artış, geniş Doğu-Batı aktarma ağına sahip <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için birim gelirleri ve doluluk oranlarını artırma fırsatı sunmaktadır. Özellikle İstanbul aktarma merkezi üzerinden Avrupa ve Kuzey Amerika'ya yönlendirilecek Asya kaynaklı yüksek getirili teknoloji kargoları ek getiri sağlayabilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Kapasite / Doluluk"
+      ]
+    },
+    "etkiAlaniGerekce": "Pazardaki navlun ve talep artışı doğrudan doluluklara ve gelir performansına olumlu yansıyabilir.",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Asia Airfreight Terminal 2026 Payload Asia Ödülleri'nde İki Ödül Kazandı",
+    "summary": "SATS iştiraki Asia Airfreight Terminal (AAT), Singapur'da düzenlenen <strong>13.</strong> Payload Asia Ödülleri'nde Yılın Yer Hizmetleri Kuruluşu – Asya-Pasifik ile Dijitalleşme ve İnovasyon ödüllerini kazandı. Hong Kong Uluslararası Havalimanı'nda <strong>60</strong>'tan fazla uluslararası havayoluna hizmet veren terminal, operasyonel standartlarıyla öne çıktı. Şirket; bulut tabanlı COSYS+ yönetim sistemi, elektronik sevkiyat teslim formu (eSRF), yapay zeka destekli X-ray ve kamera denetimleri ile otonom elektrikli çekiciler gibi teknolojileri operasyonlarına entegre etti.",
+    "category": "Altyapı",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/asia-airfreight-terminal-wins-honours-payload-asia-awards-2026-recognised-excellence-air-cargo-operations-innovation/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Airbus Küresel Kargo Uçağı Filosunun 2045'e Kadar Yaklaşık İki Katına Çıkacağını Öngörüyor",
+    "summary": "Airbus Küresel Pazar Tahmini'ne göre, küresel kargo uçağı filosunun <strong>2026</strong> yılındaki <strong>2.360</strong> adetten <strong>2045</strong> yılına kadar <strong>%46</strong> büyüyerek <strong>3.460</strong> uçağa ulaşması bekleniyor. Tahmin kapsamında <strong>1.580</strong> adedi eski uçakların yenilenmesi ve <strong>1.090</strong> adedi filo büyümesi olmak üzere toplam <strong>2.670</strong> yeni kargo uçağı ihtiyacı bulunuyor. Gelecek <strong>20 yılda</strong> teslim edilecek kargo uçaklarının <strong>1.140</strong>'ını tek koridorlu, <strong>860</strong>'ını orta geniş gövde ve <strong>670</strong>'ini büyük geniş gövde modeller oluştururken, <strong>970</strong> uçağın fabrika çıkışlı ve <strong>1.700</strong> uçağın yolcudan dönüştürülmüş olacağı öngörülüyor.",
+    "category": "Filo & Network",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/airbus-projects-global-freighter-fleet-almost-double-2045/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Airbus Gelecek 20 Yıl İçin Kargo Uçağı Filosu Büyüme Tahminini Yükseltti",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Qatar Airways Cargo Kargo Uçağı Ağını Kopenhag, Dallas, New York ve Varşova'ya Genişletiyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Qatar Airways</span> Cargo, <strong>Kış 2026</strong> sezonunda Kopenhag, Dallas, New York JFK ve Varşova hatlarında yeni Boeing 777 kargo uçağı seferleri başlattı. <strong>25 Ekim 2026</strong> itibarıyla haftalık Kopenhag kargo uçuşu <strong>100 tonluk</strong> ihraç kapasitesi sunarken, <strong>26 Ekim 2026</strong>'da başlayan Varşova-Şikago seferi Polonya kargo kapasitesini yön başına <strong>435 tonun</strong> üzerine çıkardı. Havayolu ayrıca <strong>1 Kasım 2026</strong>'dan itibaren haftalık New York JFK ve haftada iki frekans Dallas kargo seferleriyle Kuzey Amerika kapasitesini güçlendiriyor.",
+    "category": "Filo & Network",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/qatar-airways-cargo-expands-freighter-network-copenhagen-dallas-fort-worth-new-york-warsaw/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Qatar Airways Cargo Danimarka, ABD ve Polonya'ya Yeni Kargo Uçağı Hatları Ekliyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>Qatar Airways</span> Cargo'nun Doğu ve Orta Avrupa ile Kuzey Amerika arasında kargo uçağı kapasitesini artırması, transatlantik ve Avrupa aktarmalı pazarlarda <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> üzerindeki rekabet baskısını yükseltmektedir. Özellikle Polonya, İskandinavya ve ABD çıkışlı yüksek getirili genel ve özel kargo akışlarında pazar payı rekabeti sertleşebilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Kapasite / Doluluk"
+      ]
+    },
+    "etkiAlaniGerekce": "Doğrudan rakip olan Qatar Airways'in kritik koridorlarda kapasite artırması Turkish Cargo'nun pazar payını ve yield seviyelerini baskılayabilir.",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "TCE TUI Airlines'ın Kargo Kapasitesini Ticari Fırsata Dönüştürüyor",
+    "summary": "Kargo uzmanı TCE, tatil odaklı havayolu TUI Airline'ın yolcu uçağı altı kargo kapasitesini pazarlamak üzere <strong>Ocak 2019</strong>'dan bu yana yürüttüğü iş birliğini sürdürüyor. İş birliği kapsamında TCE; ticari geliştirme, müşteri ilişkileri, rezervasyon koordinasyonu, operasyonel destek ve ACC3 denetimleri dahil kargo güvenlik uyumluluğu süreçlerini yönetiyor. Entegre model sayesinde TUI Airline ana yolcu operasyonuna odaklanırken atıl gövde altı kapasitesinden ticari gelir üretiyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/tce-turns-tui-airlines-cargo-capacity-commercial-opportunity/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Atlas Lojistik Ödülleri Başvuruları Sona Eriyor",
+    "summary": "Bu yıl düzenlenecek Atlas Lojistik Ödülleri kurumsal yarışma kategorisi için başvurular <strong>27 Ekim 2026 Salı</strong> günü saat <strong>18.00</strong>'de sona eriyor. Yarışmanın online oylama süreci <strong>30 Ekim 2026 Cuma</strong> günü saat <strong>19.00</strong>'a kadar devam edecek. Aysberg Basın Yayın tarafından organize edilen ödül töreni, <strong>12 Kasım 2026</strong> tarihinde Uluslararası Logitrans Transport Lojistik Fuarı ev sahipliğinde gerçekleştirilecek.",
+    "category": "Diğer",
+    "source": "haberekonomi",
+    "link": "https://haberekonomi.com.tr/index.asp?sayfa=haber&icerik=32189",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "UND Başkanı Şerafettin Aras'tan Atlas Lojistik Ödülleri Başvuruları İçin Çağrı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-26"
+  },
+  {
     "title": "Hava Kargo Yöneticileri 787F Odaklı Yeni Orta Boy Kargo Uçağı Çağrısında Bulunuyor",
     "summary": "Nashville'de düzenlenen Cargo Facts Sempozyumu'nda hava kargo yöneticileri, filolarda önemli paya sahip Boeing 767 kargo uçaklarının yerini alacak yeni modeller için Airbus, Boeing ve dönüşüm şirketlerine çağrıda bulundu. Sektör temsilcileri, modern motorlara sahip yeni nesil kargo uçaklarına ihtiyaç duyarken, Boeing 787 modelinin fabrika çıkışlı ya da yolcudan kargoya dönüştürülmüş (P2F) versiyonunu en mantıklı çözüm olarak görüyor. Mevcut durumda <strong>20</strong> adet 767F işleten ve <strong>dokuz</strong> uçak daha ekleme opsiyonu bulunan <span style='color:#C8102E;font-weight:700;'>LATAM Airlines Group</span> yetkilileri, bu uçakların <strong>2030</strong>'lu yılların ikinci yarısına kadar filoda kalamayacağını vurguladı. IAI, KMC ve ATSG gibi dönüşüm şirketleri 787 dönüşümlerinin kompozit gövde yapısı nedeniyle doğrudan ana üretici ortaklığıyla yürütülmesi gerektiğini belirtiyor.",
     "category": "Filo & Network",
@@ -109,7 +619,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-10-23"
+    "date": "2026-10-23",
+    "sources": [
+      {
+        "source": "aircargoweek",
+        "link": "https://aircargoweek.com/boeing-777-freighter-overtakes-747-as-most-operated-cargo-aircraft/"
+      }
+    ]
   },
   {
     "title": "Lufthansa Cargo İştiraki GlobeCross Frankfurt'taki Yeni Genel Merkezini Açtı",
@@ -249,7 +765,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-10-23"
+    "date": "2026-10-23",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/jettainer-extends-uld-partnership-with-trinity-airways-1361042"
+      }
+    ]
   },
   {
     "title": "IAG Cargo Kış Tarifesinde Kolombo Hattını Açarak Bangkok ve Delhi Seferlerini Artırıyor",
@@ -427,7 +949,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-10-23"
+    "date": "2026-10-23",
+    "sources": [
+      {
+        "source": "haberekonomi",
+        "link": "https://haberekonomi.com.tr/index.asp?sayfa=haber&icerik=32189"
+      }
+    ]
   },
   {
     "title": "Qatar Airways Cargo Pelicargo Rezervasyon Platformuna Katıldı",
@@ -504,6 +1032,10 @@
       {
         "source": "stattimes",
         "link": "https://www.stattimes.com/air-cargo/qatar-airways-cargo-expands-winter-freighter-network-1361002"
+      },
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/10/qatar-airways-cargo-expands-freighter-network-copenhagen-dallas-fort-worth-new-york-warsaw/"
       }
     ]
   },
@@ -609,7 +1141,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-10-22"
+    "date": "2026-10-22",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/10/airbus-projects-global-freighter-fleet-almost-double-2045/"
+      }
+    ]
   },
   {
     "title": "Kuehne+Nagel'in Üçüncü Çeyrek Hava Kargo Gelir ve Kârı Güçlü Artış Gösterdi",
