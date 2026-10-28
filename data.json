@@ -1,5 +1,395 @@
 [
   {
+    "title": "Miami Uluslararası Havalimanı Kargo Topluluk Sistemini Devreye Aldı",
+    "summary": "Miami Uluslararası Havalimanı, Kalé Logistics ortaklığıyla yeni kargo topluluk sistemini (ACCS) kullanıma sundu. <strong>27 Ekim 2026</strong> tarihinde TIACA Hava Kargo Forumu'nda duyurulan platform; taşıma işleri organizatörleri, yer hizmetleri kuruluşları ve tır taşımacıları arasındaki dağınık bilgi akışını tek çatı altında topluyor. Yıllık <strong>3,1 milyon ton</strong> kargo elleçleyen ve günde <strong>190</strong> kargo uçağı ile <strong>1.600</strong>'den fazla tır hareketine sahne olan aktarma merkezinde, bekleme sürelerini azaltarak yılda <strong>250 milyon dolara</strong> varan operasyonel maliyet tasarrufu sağlanması hedefleniyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/cargo-airport/2026/10/miami-international-adopts-cargo-community-system/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27",
+    "sources": [
+      {
+        "source": "aircargoweek",
+        "link": "https://aircargoweek.com/worlds-first-native-ai-powered-air-cargo-community-system-to-be-launched-at-miami-airport/"
+      },
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/miami-international-airport-launches-ai-powered-cargo-platform-1361076"
+      }
+    ]
+  },
+  {
+    "title": "Rotate Yeni Uyumluluk ve Yaptırım Tarama Platformunu Tanıttı",
+    "summary": "Hava kargo danışmanlık ve veri kuruluşu Rotate, hava kargo operasyonlarına yönelik yeni uyumluluk platformu Rotate Compliance'ı piyasaya sundu. Hollanda merkezli SaaS sağlayıcısı Pandora Intelligence'ın satın alınmasının ardından geliştirilen yazılım; gönderi açıklamalarını, rota verilerini ve konşimento detaylarını yaptırım listeleriyle bağlamsal olarak eşleştiriyor. Büyük bir kargo havayolu ile gerçek konşimento verileri üzerinden test edilen sistemin, kargo yönetim sistemleriyle entegre biçimde <strong>2027</strong> yılının <strong>ilk çeyreğinde</strong> genel kullanıma açılması planlanıyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/technology/2026/10/rotate-launches-new-compliance-screening-platform/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27",
+    "sources": [
+      {
+        "source": "aircargoweek",
+        "link": "https://aircargoweek.com/cargo-compliance-targeted-with-rotates-expansion-into-operational-products/"
+      }
+    ]
+  },
+  {
+    "title": "Boeing Tedarikçi Anlaşmazlığı Nedeniyle 777 Kargo Uçağı Üretimini Durdurdu",
+    "summary": "Boeing, 777 ve 767 kargo uçaklarında kullanılan kanat firar kenarı rib kitlerinin tedarikçisiyle yaşadığı hukuki uyuşmazlık nedeniyle kargo uçağı üretim hatlarını geçici olarak durdurdu. <strong>Eylül</strong> ayı sonunda varılan uzlaşmaya rağmen montaj hatlarının henüz yeniden başlatılamadığı ve aksaklığın üreticiye günlük yaklaşık <strong>6,5 milyon dolara</strong> mal olduğu açıklandı. Üreticinin elinde FedEx, <span style='color:#C8102E;font-weight:700;'>Emirates</span> ve <span style='color:#C8102E;font-weight:700;'>Ethiopian Airlines</span> gibi taşıyıcılara teslim edilmeyi bekleyen <strong>38</strong> adet kesin 777 kargo uçağı siparişi bulunuyor.",
+    "category": "Altyapı",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freighter-operator/2026/10/boeing-777-production-halted-by-supplier-dispute/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Boeing 777F Üretimi Tedarikçi Anlaşmazlığı Nedeniyle İki Aydır Durmuş Durumda",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Miami Havalimanı'nda Yapay Zeka Destekli Kargo Topluluk Sistemi Devreye Alınıyor",
+    "summary": "Miami Havalimanı, Kalé iş birliğiyle hava kargo ekosistemine yönelik yapay zeka tabanlı Kargo Topluluk Sistemi'ni (ACCS) faaliyete geçirdiğini duyurdu. <strong>2025</strong> yılında <strong>3,4 milyon tonluk</strong> rekor kargo hacmiyle ABD'nin en işlek kargo havalimanı olan merkezde sistem; evrak süreçlerinde <strong>%15</strong> ve tır bekleme sürelerinde <strong>iki saatlik</strong> tasarruf sağlayacak. Dijitalleşme adımıyla havalimanı ekosisteminde yıllık <strong>250 milyon dolara</strong> varan operasyonel tasarruf elde edilmesi öngörülüyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/worlds-first-native-ai-powered-air-cargo-community-system-to-be-launched-at-miami-airport/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Miami Uluslararası Havalimanı Kargo Topluluk Sistemini Devreye Aldı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Rotate Yeni Uyumluluk Platformu ile Operasyonel Yazılım Pazarına Giriyor",
+    "summary": "Havacılık veri ve analiz şirketi Rotate, havayollarının kargo ekipleriyle ortak geliştirdiği Rotate Compliance platformunu duyurarak operasyonel yazılım pazarına adım attı. Pandora Intelligence'ın satın alınmasıyla yeniden kodlanan sistem; uçuş rotaları, konşimento içerikleri ve sevkiyat detaylarını küresel yaptırım listeleriyle eşleştirerek hatalı pozitif alarmları en aza indiriyor. Yazılımın kargo yönetim sistemlerine tam entegrasyonu ve taşıma işleri organizatörlerine yönelik sürümünün <strong>2027</strong>'nin <strong>ilk çeyreğinde</strong> kullanıma sunulması planlanıyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/cargo-compliance-targeted-with-rotates-expansion-into-operational-products/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Rotate Yeni Uyumluluk ve Yaptırım Tarama Platformunu Tanıttı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Riyad Havalimanı Günlük 1.500 Tona Yakın Çıkış Kargo Kapasitesi Kaybetti",
+    "summary": "Havacılık danışmanlık kuruluşu Aevean, Husi saldırıları sonucu <strong>10 Ekim 2026</strong>'da geçici olarak kapatılan Riyad Kral Halid Uluslararası Havalimanı'nın günlük yaklaşık <strong>1.500 ton</strong> çıkış kargo kapasitesi kaybettiğini açıkladı. Havalimanındaki kargo operasyonlarının olağan kapasitenin yalnızca <strong>%6</strong>'sı seviyesinde çalıştığı ve toparlanmanın uzun süreceği kaydedildi. Günlük kayıplar kapsamında Hong Kong'a <strong>115 ton</strong>, Doha'ya <strong>139 ton</strong>, Dubai'ye <strong>121 ton</strong>, Dakka'ya <strong>112 ton</strong> ve Kahire'ye <strong>98 tonluk</strong> kapasitenin aksadığı belirtildi.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/riyadh-airport-lost-up-to-1500-tonnes-of-outbound-air-cargo-capacity-a-day/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Riyad Havalimanı'na yönelik saldırılar ve uçuş iptalleri, Suudi Arabistan'a tarifeli seferler düzenleyen <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için bölge operasyonlarında güvenlik risklerini ve aksama ihtimallerini artırmaktadır. Bölgesel hava sahası istikrarsızlığı uçuş rotalarında sapmalara, ek yakıt tüketimine ve artan sigorta primlerine yol açabilir. Diğer taraftan Körfez aktarma merkezlerindeki kapasite kayıpları, Asya ve Orta Doğu arasındaki bazı acil transit yüklerin İstanbul aktarma merkezine yönelmesine zemin hazırlayabilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "Uluslararası Hava Kargo Sektörü air cargo Europe 2027 Fuarına Odaklanıyor",
+    "summary": "Münih'te <strong>26-29 Nisan 2027</strong> tarihlerinde düzenlenecek transport logistic fuarı kapsamındaki air cargo Europe etkinliği, artan talep nedeniyle toplam <strong>22.000 metrekarelik</strong> <strong>iki</strong> tam salonda gerçekleştirilecek. Şimdiden <strong>240</strong>'ı aşkın kuruluşun katılımını kesinleştirdiği fuarda; <span style='color:#C8102E;font-weight:700;'>Qatar Airways</span> Cargo, <span style='color:#C8102E;font-weight:700;'>Emirates</span> SkyCargo, <span style='color:#C8102E;font-weight:700;'>Etihad</span> Cargo ve Cathay Cargo gibi küresel havayolları yer alacak. IATA verilerine göre Ağustos <strong>2026</strong>'da küresel hava kargo talebi yıllık <strong>%4,4</strong> büyürken etkinlik kapsamında yapay zeka ve otomasyon odaklı yeni konferans alanları kurulacak.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/international-air-freight-industry-sets-its-sights-on-air-cargo-europe-2027/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-27"
+  },
+  {
+    "title": "CargoAi Hava Kargo Operasyonlarında Yapay Zeka Destekli Zaman Tasarruflarını Açıkladı",
+    "summary": "CargoAi, TIACA Hava Kargo Forumu'nda yapay zeka destekli platformunun kargo süreçlerinde sağladığı operasyonel kazanımları paylaştı. Geliştirilen yapay zeka aracının son <strong>iki yılda</strong> talep başına ortalama <strong>1,6 saniyede</strong> <strong>446.000</strong> sevkiyat talebini işleyerek <strong>37.000 saatlik</strong> manuel veri girişini engellediği bildirildi. Havayolu müşteri e-postalarını yöneten AirAgent modülünün ise <strong>2026</strong> yılında <strong>105.000</strong> e-postayı yanıtlayarak <strong>61</strong> tam zamanlı çalışanın iş yüküne denk zaman tasarrufu sunduğu ve <strong>6.935</strong> forwarder ile <strong>209</strong> havayolunu bağladığı aktarıldı.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/cargoai-highlights-ai-driven-time-savings-in-air-cargo-operations-1361079",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
+    "title": "Challenge Group Belçika Aktarmalı Hindistan-ABD Kargo Uçağı Seferlerini Başlatıyor",
+    "summary": "Challenge Group, <strong>4 Kasım 2026</strong> tarihinden itibaren Hindistan, Avrupa ve ABD arasında haftada <strong>iki</strong> frekans Boeing 777 kargo uçağı seferi başlatacağını açıkladı. Navi Mumbai Uluslararası Havalimanı çıkışlı seferler, Belçika'daki Liège Havalimanı aktarmalı olarak ABD'deki Şikago Rockford Havalimanı'na bağlanacak. Liège aktarma merkezindeki aylık yaklaşık <strong>1.500</strong> tırlık kara besleme hizmeti ağıyla entegre edilecek hat; öncelikli olarak farmasötik ürünler, gabari dışı kargolar ve canlı hayvan taşımalarına hizmet verecek.",
+    "category": "Filo & Network",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/challenge-group-to-launch-india-us-freighter-service-via-belgium-1361078",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Challenge Group'un Navi Mumbai-Liège-Şikago koridorunda başlatacağı Boeing 777 kargo uçağı seferleri, <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun Hindistan-Avrupa ve transatlantik hatlarındaki pazar payı üzerinde doğrudan rekabet baskısı oluşturmaktadır. Özellikle ilaç ve gabari dışı gibi yüksek birim gelirli özel kargo segmentlerine yönelik kapasite arzı, bölge çıkışlı navlun fiyatlarını olumsuz etkileyebilir. <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun İstanbul aktarma merkezli transit süre avantajını ve soğuk zincir hizmet kalitesini öne çıkararak ticari pozisyonunu koruması gerekecektir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
+    "title": "Miami Uluslararası Havalimanı Yapay Zeka Destekli Kargo Platformunu Başlattı",
+    "summary": "Miami Uluslararası Havalimanı, Kalé Logistics tarafından geliştirilen yapay zeka destekli Kargo Topluluk Sistemi'ni (ACCS) <strong>27 Ekim</strong>'de TIACA Hava Kargo Forumu'nda tanıttı. <strong>2025</strong> yılında <strong>3,4 milyon ton</strong> kargo elleçleyen ve günde <strong>190</strong> kargo seferine ev sahipliği yapan aktarma merkezinde yeni sistem; tır planlamasını ve evrak akışını dijitalleştiriyor. Tır dönüş sürelerinde <strong>iki saatlik</strong> tasarruf ve evrak işlerinde <strong>%15</strong> azalma sağlayan platformun tedarik zincirinde yıllık <strong>250 milyon dolara</strong> varan tasarruf oluşturması bekleniyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/miami-international-airport-launches-ai-powered-cargo-platform-1361076",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Miami Uluslararası Havalimanı Kargo Topluluk Sistemini Devreye Aldı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
+    "title": "Jettainer Amerika Operasyonlarının Başına Pınar Meitzner'i Atadı",
+    "summary": "Birim yükleme aygıtı (ULD) yönetimi kuruluşu Jettainer, Jettainer Americas Genel Müdürlüğü görevine Pınar Meitzner'in getirildiğini duyurdu. Meitzner, şirkette yaklaşık <strong>yedi yıl</strong> görev yaptıktan sonra <strong>2026</strong> sonunda emekliye ayrılacak olan Shailendar Kothari'nin görevini devralacak. Havacılık kariyerinde DO & CO ve LSG Sky Chefs bünyesinde üst düzey ticari liderlik pozisyonlarında bulunan Meitzner, Kuzey ve Güney Amerika genelindeki ticari ortaklıkları ve ULD operasyonlarını yönetecek.",
+    "category": "Atama & Görevlendirme",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/jettainer-appoints-pinar-meitzner-to-lead-americas-business-1361075",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
+    "title": "Menzies Aviation Portekiz'de Yedi Yıllık Yer Hizmetleri Lisansı Kazandı",
+    "summary": "Menzies Aviation, Portekiz Sivil Havacılık Otoritesi'nin (ANAC) yürüttüğü ihale sürecinin ardından Lizbon, Porto ve Faro havalimanlarında <strong>yedi yıllık</strong> yer hizmetleri lisansı elde etti. Lisans anlaşması; Lizbon ve Porto'da kargo ve posta elleçleme faaliyetlerini kapsarken her üç havalimanında rampa ve yolcu hizmetleri sunulmasına imkan tanıyor. Portekiz'de <strong>3.500</strong>'den fazla personeli bulunan ve yılda <strong>100.000</strong>'den fazla uçuşa hizmet veren şirket, <strong>Haziran 2026</strong>'da tamamını satın aldığı SPdH üzerinden yatırımlarını sürdürecek.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/menzies-aviation-secures-seven-year-ground-handling-licences-in-portugal-1361074",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
+    "title": "SmartKargo Havayolu Kargo Operasyonları İçin Dört Yapay Zeka Uygulaması Başlattı",
+    "summary": "Hava kargo teknoloji sağlayıcısı SmartKargo; havayollarının gelirlerini artırmak, maliyetleri kısmak ve operasyonel riskleri yönetmek üzere geliştirdiği <strong>dört</strong> yeni yapay zeka uygulamasını tanıttı. Çözüm paketi; gelir ve kapasite yönetimini tahminleyen AIRCAM, aksaklıkları önceden tespit eden AINOC kontrol kulesi, konteyner takibi sağlayan AIULD ve mesajlaşma omurgası AICTX sistemlerinden oluşuyor. Havayollarının mevcut kargo yönetim sistemlerine doğrudan entegre olabilen modüler araçlar, kapsamlı göç süreçlerine ihtiyaç duyulmadan <strong>birkaç hafta</strong> içinde devreye alınabiliyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/smartkargo-launches-four-ai-apps-for-airline-cargo-operations-1361068",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
+    "title": "Batı Sidney Uluslararası Havalimanı Kargo Faaliyetlerinin Ardından Uçuşlara Açıldı",
+    "summary": "Avustralya'da yarım asrı aşkın bir sürenin ardından inşa edilen ilk büyük uluslararası havalimanı olan Batı Sidney Uluslararası (Nancy-Bird Walton) Havalimanı (WSI), Jetstar'ın ilk seferleriyle yolcu uçuşlarına resmen başladı. Havalimanının kargo bölgesi <strong>27 Temmuz 2026</strong>'da faaliyete geçmiş olup açılışından bu yana kritik ticari gönderiler taşıyan <strong>1.000</strong>'den fazla kargo uçuş hareketine ev sahipliği yaptı. Gece uçuş yasağı uygulanmayan ve <strong>24 saat</strong> kesintisiz operasyon altyapısına sahip olan meydanın, başlangıçta <strong>10 milyon</strong> ve nihai olarak <strong>80 milyon</strong> yolcu ile yüksek hacimli hava kargo kapasitesine ulaşması hedefleniyor.",
+    "category": "Altyapı",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/western-sydney-international-airport-opens-cargo-operations-already-underway/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "Gece uçuş kısıtlaması (curfew) olmayan ve <strong>24 saat</strong> operasyon kabiliyeti sunan WSI'ın hizmete girmesi, Avustralya pazarına açılan <span style='color:#C8102E;font-weight:700;'>Turkish Airlines</span> ve <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> için kritik bir operasyonel esneklik sağlamaktadır. Kingsford Smith Havalimanı'ndaki slot ve saat kısıtlamalarının aşılması, kargo uçağı seferleri veya frekans artışları için elverişli bir zemin oluşturmaktadır. Yeni aktarma merkezinin modern altyapısı, Okyanusya hattındaki bozulabilir ürünler ve e-ticaret trafiğinde ek pazar payı kazanımını destekleyebilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
+    "title": "IAG Cargo Kış Tarifesi Kapsamında Yeni Kolombo Seferlerini Başlatıyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>IAG</span> Cargo, <strong>2026/27</strong> kış tarifesi kapsamında <strong>23 Ekim</strong> itibarıyla Londra Gatwick ile Kolombo arasında haftada <strong>üç</strong> direkt uçuş başlattığını duyurdu. Sri Lanka'nın tekstil, oto yedek parça ve bozulabilir ürün ihracatını destekleyecek uçuşların yanı sıra Londra Gatwick-Bangkok seferleri haftada <strong>üçten altıya</strong>, Londra Heathrow-Delhi seferleri ise haftada <strong>14'ten 21'e</strong> çıkarıldı. Taşıyıcı ayrıca Londra, Dublin, Madrid ve Barselona üzerinden Kuzey Amerika'da <strong>29</strong> varış noktasına transatlantic kargo bağlantısı sunmayı sürdürüyor.",
+    "category": "Filo & Network",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/iag-cargo-launches-new-colombo-service-part-winter-schedule/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "IAG Cargo Kış Tarifesinde Kolombo Hattını Açarak Bangkok ve Delhi Seferlerini Artırıyor",
+    "thyImpact": "risk",
+    "thyAnalysis": "<span style='color:#C8102E;font-weight:700;'>IAG</span> Cargo'nun Kolombo, Bangkok ve Delhi hatlarında sunduğu frekans artışları, Güney Asya ile Avrupa ve Kuzey Amerika arasındaki ticaret koridorunda <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span> aleyhine kapasite rekabetini artırmaktadır. Özellikle tekstil ve bozulabilir kargo akışında rakip taşıyıcının sunduğu direkt ve aktarmalı bağlantılar birim gelirler üzerinde baskı oluşturabilir. Londra ve Madrid aktarma merkezli transatlantik kapasite genişlemesi, transit kargo taşımalarında pazar payı kaybı riski yaratmaktadır.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
+    "title": "Trinity Airways ve Jettainer ULD Yönetim Ortaklığını Uzattı",
+    "summary": "Jettainer ve eski adıyla T'way Air olarak bilinen Trinity Airways, <strong>2022</strong> yılında başlayan birim yükleme aygıtı (ULD) yönetimi ortaklığını uzattı. İş birliğinin yeni etabında operasyonel şeffaflığı ve ULD filo yönetim verimliliğini artırmak amacıyla Nesnelerin İnterneti (IoT) takip teknolojilerinin devreye alınması planlanıyor. Havayolu, uçak ağırlığını hafifleterek yakıt tüketimini düşürmek amacıyla operasyonlarında tamamen hafif kompozit ULD'ler kullanmayı sürdürüyor. Süreç kapsamında Jettainer'ın ULD Kontrol Masası (UCD) operasyonel destek sağlamaya devam edecek.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/trinity-airways-jettainer-extend-uld-management-partnership/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Jettainer Trinity Airways ile ULD Ortaklığını Uzattı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
+    "title": "CharterDesk Havacılık Taşımacılığı Hizmetlerini Genişletiyor",
+    "summary": "Budapeşte merkezli CharterDesk; havayolları, üreticiler ve bakım sağlayıcılarına yönelik uçak motorları, iniş takımları ve operasyonel açıdan kritik AOG yedek parça taşımacılığı operasyonlarını genişlettiğini açıkladı. Özel kargo uçağı kiralama, uçak içi kurye ve tarifeli sefer alternatiflerini birleştiren şirket, her sevkiyatın teslim süresi ve elleçleme gereksinimine göre terzi usulü çözümler sunuyor. Yakın dönemde iki adet CF6 uçak motorunun Helsinki'den Kazablanka'ya <span style='color:#C8102E;font-weight:700;'>Ethiopian Airlines</span> Boeing 777 kargo uçağıyla <strong>48 saat</strong> içinde naklini tamamlayan aracı kurum, Brüksel'den İstanbul'a Antonov An-12 ile LEAP-1A motoru taşınmasını da koordine etti.",
+    "category": "Özel Kargo",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/10/charterdesk-puts-aerospace-transport-fast-track/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-10-28"
+  },
+  {
     "title": "Logistics UK Raporu Lojistik Büyümesinin Ekonomik Faydalarını Vurguluyor",
     "summary": "Ticaret birliği Logistics UK tarafından yayımlanan yeni bir rapor, lojistik sektörünün Birleşik Krallık genelinde <strong>356 milyar sterlinlik</strong> ekonomik faaliyeti, <strong>5,3 milyon</strong> istihdamı ve <strong>65 milyar sterlinlik</strong> vergi gelirini desteklediğini ortaya koydu. Sektörün payındaki her <strong>%1</strong>'lik artışın <strong>30 milyar sterlinlik</strong> doğrudan yabancı yatırım çekebileceği ve doğrudan üretilen her <strong>1 sterlinin</strong> ekonomi geneline <strong>1,04 sterlin</strong> ilave katkı sağladığı vurgulandı. Tedarik harcamalarının <strong>2024</strong> yılında <strong>90 milyar sterlini</strong> aşan brüt katma değer ürettiği belirtilirken hükümete altyapı yatırımlarını destekleme çağrısı yapıldı.",
     "category": "Diğer",
@@ -371,7 +761,13 @@
       "hub": []
     },
     "etkiAlaniGerekce": "",
-    "date": "2026-10-27"
+    "date": "2026-10-27",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/10/trinity-airways-jettainer-extend-uld-management-partnership/"
+      }
+    ]
   },
   {
     "title": "Asya-Pasifik'teki Toparlanma Küresel Hava Kargo Hacmini Yüzde 2 Artırdı",
@@ -575,7 +971,13 @@
       ]
     },
     "etkiAlaniGerekce": "Geniş gövde kargo uçağı teslimat zincirindeki tıkanıklıklar filonun büyüme hızını ve kapasite planlarını doğrudan etkilemektedir.",
-    "date": "2026-10-26"
+    "date": "2026-10-26",
+    "sources": [
+      {
+        "source": "aircargonews",
+        "link": "https://www.aircargonews.net/freighter-operator/2026/10/boeing-777-production-halted-by-supplier-dispute/"
+      }
+    ]
   },
   {
     "title": "Finnair Kargo Kısıtlamalarıyla 25 Ekim'de Melbourne Seferlerine Başlıyor",
@@ -795,7 +1197,13 @@
       ]
     },
     "etkiAlaniGerekce": "IAG Cargo'nun Güney Asya'dan Londra aktarmalı Kuzey Amerika ve Avrupa kapasitesini artırması, Turkish Cargo'nun bu pazarlardaki transit yük payını zorlamaktadır.",
-    "date": "2026-10-23"
+    "date": "2026-10-23",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/10/iag-cargo-launches-new-colombo-service-part-winter-schedule/"
+      }
+    ]
   },
   {
     "title": "GlobeCross Frankfurt Havalimanı'ndaki Yeni Merkezini Faaliyete Geçirdi",
