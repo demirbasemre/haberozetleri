@@ -1,5 +1,184 @@
 [
   {
+    "date": "Eylül 2026",
+    "title": "Kuzey Amerika Kargo Büyümesi İvme Kazanıyor",
+    "demand": "+7.7%",
+    "capacity": "+2.7%",
+    "loadFactor": "47.9%",
+    "clf_pp": "+2.2",
+    "demand_intl": "+8.6%",
+    "capacity_intl": "+3.3%",
+    "clf_intl": "52.9%",
+    "ytd_demand": "+5.0%",
+    "ytd_capacity": "+1.7%",
+    "ytd_clf": "46.5%",
+    "cargoYield": "+25.9%",
+    "jetFuel": "+103.4%",
+    "pmi": "53.8",
+    "pmi_exports": "51.9",
+    "regions": {
+      "asiaPacific": {
+        "share": "35.8",
+        "ctk": "+8.6%",
+        "actk": "+4.9%"
+      },
+      "northAmerica": {
+        "share": "24.6",
+        "ctk": "+11.8%",
+        "actk": "+0.8%"
+      },
+      "europe": {
+        "share": "21.4",
+        "ctk": "+4.5%",
+        "actk": "-1.6%"
+      },
+      "middleEast": {
+        "share": "13.2",
+        "ctk": "+3.8%",
+        "actk": "+7.0%"
+      },
+      "latinAmerica": {
+        "share": "2.9",
+        "ctk": "+6.7%",
+        "actk": "+7.6%"
+      },
+      "africa": {
+        "share": "2.1",
+        "ctk": "+4.7%",
+        "actk": "-1.2%"
+      }
+    },
+    "link": "https://www.iata.org/en/publications/economics/reports/air-cargo-market-analysis-september-2026/",
+    "pdfLink": "https://www.iata.org/en/iata-repository/publications/economic-reports/air-cargo-market-analysis-september-2026/",
+    "summary": "Eylül 2026'da küresel hava kargo talebi (CTK) yıllık %7.7 artarak büyümesini hızlandırdı ve tüm taşıyıcı bölgelerinde artış kaydedildi. Uluslararası kargo trafiği, Kuzey Amerika ve Asya-Pasifik taşıyıcılarının öncülüğünde %8.6 büyürken, Orta Doğu bağlantılı ana koridorlardaki daralmalar hafiflese de devam etti. Küresel kapasite (ACTK) ağırlıklı olarak Asya-Pasifik ve Orta Doğu taşıyıcılarının etkisiyle %2.7 artarken, talebin daha hızlı büyümesi küresel yük faktörünü (CLF) 2.2 puan artışla %47.9'a yükseltti. İmalat üretimi ve yeni ihracat siparişleri endeksleri son beş yılın en yüksek seviyelerine ulaşırken, jet yakıtı fiyatları yıllık %103.4 artarak kargo yield'larındaki %25.9'luk yükselişi belirgin şekilde geride bıraktı.",
+    "data": {
+      "totalMarket": {
+        "yoy": {
+          "world": {
+            "ctk": "+7.7%",
+            "actk": "+2.7%"
+          },
+          "africa": {
+            "ctk": "+4.7%",
+            "actk": "-1.2%"
+          },
+          "asiaPacific": {
+            "ctk": "+8.6%",
+            "actk": "+4.9%"
+          },
+          "europe": {
+            "ctk": "+4.5%",
+            "actk": "-1.6%"
+          },
+          "latinAmerica": {
+            "ctk": "+6.7%",
+            "actk": "+7.6%"
+          },
+          "middleEast": {
+            "ctk": "+3.8%",
+            "actk": "+7.0%"
+          },
+          "northAmerica": {
+            "ctk": "+11.8%",
+            "actk": "+0.8%"
+          }
+        },
+        "ytd": {
+          "world": {
+            "ctk": "+5.0%",
+            "actk": "+1.7%"
+          },
+          "africa": {
+            "ctk": "+6.5%",
+            "actk": "-0.4%"
+          },
+          "asiaPacific": {
+            "ctk": "+7.6%",
+            "actk": "+4.8%"
+          },
+          "europe": {
+            "ctk": "+5.4%",
+            "actk": "+2.6%"
+          },
+          "latinAmerica": {
+            "ctk": "+1.7%",
+            "actk": "+4.8%"
+          },
+          "middleEast": {
+            "ctk": "-5.3%",
+            "actk": "-5.5%"
+          },
+          "northAmerica": {
+            "ctk": "+6.5%",
+            "actk": "+0.4%"
+          }
+        }
+      },
+      "international": {
+        "yoy": {
+          "world": {
+            "ctk": "+8.6%",
+            "actk": "+3.3%"
+          },
+          "africa": {
+            "ctk": "+4.7%",
+            "actk": "-0.9%"
+          },
+          "asiaPacific": {
+            "ctk": "+10.0%",
+            "actk": "+5.8%"
+          },
+          "europe": {
+            "ctk": "+4.6%",
+            "actk": "-3.7%"
+          },
+          "latinAmerica": {
+            "ctk": "+6.6%",
+            "actk": "+7.1%"
+          },
+          "middleEast": {
+            "ctk": "+3.9%",
+            "actk": "+7.2%"
+          },
+          "northAmerica": {
+            "ctk": "+15.3%",
+            "actk": "+3.6%"
+          }
+        },
+        "ytd": {
+          "world": {
+            "ctk": "+5.5%",
+            "actk": "+2.1%"
+          },
+          "africa": {
+            "ctk": "+6.5%",
+            "actk": "-0.4%"
+          },
+          "asiaPacific": {
+            "ctk": "+8.5%",
+            "actk": "+6.0%"
+          },
+          "europe": {
+            "ctk": "+5.6%",
+            "actk": "+1.6%"
+          },
+          "latinAmerica": {
+            "ctk": "+2.2%",
+            "actk": "+4.3%"
+          },
+          "middleEast": {
+            "ctk": "-5.3%",
+            "actk": "-5.5%"
+          },
+          "northAmerica": {
+            "ctk": "+8.3%",
+            "actk": "+2.3%"
+          }
+        }
+      }
+    }
+  },
+  {
     "date": "Ağustos 2026",
     "title": "Yakıt Maliyetleri Artarken Hava Kargo Talebi Kapasiteyi Geride Bıraktı",
     "demand": "+4.4%",
