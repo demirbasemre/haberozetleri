@@ -1,5 +1,430 @@
 [
   {
+    "title": "IATA'dan DAWB Çerçevesi Konusunda Sorumluluk Uyarısı",
+    "summary": "Uluslararası Hava Taşımacılığı Birliği <strong>IATA</strong>, <strong>1 Temmuz</strong> tarihinde yürürlüğe giren Doğrudan Hava Konşimentosu (DAWB) çerçevesinde taşıma işleri organizatörlerinin yükümlülüklerini artırdığı gerekçesiyle eleştirilerin hedefi oldu. Hava Kargo Taşıma İşleri Organizatörleri Birliği (AfA) ve ABD Ulusal Gümrük Müşavirleri ve Taşıma İşleri Organizatörleri Birliği (NCBFAA) tarafından yayınlanan ortak raporda, yeni düzenlemenin forwarder’ları kontrol edemedikleri riskler ve beyan hataları nedeniyle yasal ve sigorta yükümlülükleriyle karşı karşıya bıraktığı vurgulandı. Kanada Uluslararası Hava Kargo Taşıma İşleri Organizatörleri Birliği (CIFFA) ve Avustralya Uluslararası Taşıma İşleri Organizatörleri Birliği (IFCBAA) de rapora destek vererek kuralların yeniden düzenlenmesini talep etti.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freight-forwarder/2026/11/iata-urged-to-revise-dawb-framework-over-forwarder-liability-concerns/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-16"
+  },
+  {
+    "title": "Turkish Cargo Erivan Hat Ağını Başlattı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, İstanbul'dan Ermenistan'ın başkenti Erivan'a kargo uçağı seferleri düzenlemeye başladığını açıkladı. <span style='color:#C8102E;font-weight:700;'>Turkish Airlines</span> Gürcistan, Azerbaycan ve Ermenistan kargo müdürü Yusuf Parlak'ın LinkedIn üzerinden duyurduğu ilk tarifeli İstanbul - Erivan - İstanbul kargo uçuşu <strong>15 Kasım</strong> tarihinde başarıyla gerçekleştirildi. Aktarma merkezi İstanbul olan <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>, SMARTIST kargo terminali kapasitesini yıllık <strong>2 milyon ton</strong>dan <strong>4,5 milyon ton</strong>a çıkaracak ikinci aşama yatırımları sürdürürken, <span style='color:#C8102E;font-weight:700;'>AerCap</span> ile imzalanan anlaşma kapsamında <strong>2027</strong>'nin ilk dokuz ayında teslim alınacak iki adet Boeing 777-300ERSF yolcu uçağından kargo uçağına dönüştürülen (P2F) uçağı filosuna katmaya hazırlanıyor.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/airlines/2026/11/turkish-cargo-adds-yerevan-to-network/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "İstanbul Hub Etkinliği"
+      ]
+    },
+    "etkiAlaniGerekce": "Erivan hattının açılması doğrudan network kapasitesini ve bölgesel erişimi artırmaktadır.",
+    "date": "2026-11-16"
+  },
+  {
+    "title": "DHL Global Forwarding Asya ile Avrupa Arasında Yeni Hindistan Uçuşu Başlatıyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>DHL</span> Global Forwarding, Hong Kong, Hindistan ve Avrupa arasındaki güvenilir hava kargo kapasitesi talebini karşılamak amacıyla yeni bir kargo uçağı hattı açtı. <span style='color:#C8102E;font-weight:700;'>DHL Aviation</span> tarafından işletilen <strong>100 ton</strong> kapasiteli Boeing 747 kargo uçağıyla haftada <strong>iki</strong> kez gerçekleştirilecek hat Hong Kong, Navi Mumbai (Navi Mumbai) ve Liège (Liège) arasında hizmet verecek. Hindistan pazarındaki ilk tarifeli uçuşu olma özelliğini taşıyan seferlerde her bir uçuş için <strong>25 ila 30 ton</strong> kargo taşınması öngörülürken, şirket <strong>Mart</strong> ayında Bengaluru (Bengaluru) kalkışlı Avrupa hattını da devreye almayı planlıyor.",
+    "category": "Filo & Network",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/freight-forwarder/2026/11/dhl-global-forwarding-adds-india-through-new-asia-europe-freighter-flight/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "DHL Global Forwarding'in Asya-Avrupa hattında kendi kargo uçağı kapasitesini artırması, Turkish Cargo'nun aynı koridordaki pazar payı ve birim gelirleri üzerinde rekabet baskısı oluşturabilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Avrupa-Asya Koridoru"
+      ]
+    },
+    "etkiAlaniGerekce": "Rakip dev operatörün yeni hat açması ana koridorlardaki hacimleri doğrudan etkilemektedir.",
+    "date": "2026-11-16"
+  },
+  {
+    "title": "Lufthansa Cargo İçin Asya Pazarı Odak Noktası Olmaya Devam Ediyor",
+    "summary": "Frankfurt Havalimanı merkezli <span style='color:#C8102E;font-weight:700;'>Lufthansa Cargo</span> İcra Kurulu Başkanı Ashwin Bhat, Asya pazarının üretim gücü ve dinamizmi sayesinde şirketin küresel ağındaki en kritik ticaret koridoru olmayı sürdürdüğünü belirtti. Kış tarifesi kapsamında <span style='color:#C8102E;font-weight:700;'>Lufthansa Cargo</span>, Asya-Pasifik bölgesindeki <strong>17</strong> destinasyona haftada <strong>46</strong> kargo uçağı seferi sunuyor. Şirket, <span style='color:#C8102E;font-weight:700;'>SWISS WorldCargo</span>, <span style='color:#C8102E;font-weight:700;'>ANA</span> ve Nippon Cargo Airlines ile Japonya-Avrupa pazarındaki iş birliğini güçlendirmek amacıyla bir mutabakat zaptı imzaladı. Öte yandan lojistik grubu, Asya-Pasifik ve Amerika'dan gelen güçlü talep sayesinde üçüncü çeyrekte hacimlerinde <strong>%11</strong> artış kaydetti.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/airlines/2026/11/asia-to-remain-a-focus-for-lufthansa-cargo/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "Lufthansa Cargo'nun Asya-Avrupa hattındaki kapasite artışları ve stratejik ortaklıkları, Turkish Cargo'nun Frankfurt merkezli rekabet alanında baskı yaratabilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Aktarma Merkezi Verimliliği"
+      ]
+    },
+    "etkiAlaniGerekce": "Rakip havayolunun ortaklıklarla gücünü artırması pazar payını tehdit etmektedir.",
+    "date": "2026-11-16"
+  },
+  {
+    "title": "ABD Hava Kargo Tedarik Zincirleri Sistem Kesintisinin Ardından Toparlanıyor",
+    "summary": "Amerika Birleşik Devletleri'nde hava trafik kontrol sisteminde yaşanan arıza nedeniyle Federal Havacılık İdaresi'nin (FAA) ülke genelinde uyguladığı <strong>4 saat</strong>lik geçici kalkış yasağının ardından kargo operasyonları normale dönmeye başladı. Cuma günü saat <strong>20:16</strong>'da sona eren yer yasağı sonrasında <span style='color:#C8102E;font-weight:700;'>American Airlines Cargo</span> pazar günü normal operasyonlara döndüğünü duyururken, <span style='color:#C8102E;font-weight:700;'>Delta Cargo</span> ekspres, ilaç ve canlı hayvan gönderileri için cumartesi gece yarısına kadar kısıtlama getirdi. Ulaştırma Bakanı Sean Duffy kesintinin eskimiş analog telekomünikasyon sistemlerindeki yönlendirici aşırı yüklenmesinden kaynaklandığını belirtirken, Kongre tarafından altyapı modernizasyonu için FAA'e <strong>12,5 milyar dolar</strong> kaynak sağlandığı bildirildi.",
+    "category": "Diğer",
+    "source": "aircargonews",
+    "link": "https://www.aircargonews.net/cargo-airport/2026/11/us-air-cargo-supply-chains-recover-following-ground-stop/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-16"
+  },
+  {
+    "title": "ECS Group ve Thai Airways Avrupa Kargo Operasyonlarını Birleştiriyor",
+    "summary": "ECS Group ve <span style=\"color:#C8102E;font-weight:700;\">Thai Airways</span>, Avrupa genelindeki genel satış ve servis acentesi (GSSA) operasyonlarını tek bir ticari strateji altında birleştirdi. Ortaklık kapsamında Fransa, İtalya, Belçika, İsviçre, Danimarka ve İsveç'teki ECS Group iştirakleri ile Finlandiya ve Orta-Doğu Avrupa'daki (CEE) istasyonlar ortak hizmet seviyesi anlaşmasıyla yönetilecek. <span style=\"color:#C8102E;font-weight:700;\">Thai Airways</span>, Paris ve Zürih hatlarındaki frekans artışlarıyla birlikte uçuş başı <strong>5 ila 20 ton</strong> kargo kapasitesi sunmaya devam ederken, aralık ayından itibaren Paris seferlerini günlük iki kata çıkararak Fransız başkentinden günlük <strong>20 ton</strong>a varan taşıma kapasitesi sağlayacak.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/ecs-group-and-thai-airways-new-strategy-to-bolster-european-operations/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "Thai Airways ve ECS Group Avrupa Kargo Operasyonlarını Hizaya Getirdi",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-16",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/thai-airways-and-ecs-group-align-european-cargo-operations-1361307"
+      }
+    ]
+  },
+  {
+    "title": "Miami Havalimanı'nda UPS Kargo Uçağı ile Copa Airlines Yolcu Uçağı Çarpıştı",
+    "summary": "Miami Uluslararası Havalimanı'nda (MIA) <strong>14 Kasım</strong> cumartesi günü akşam saatlerinde Bogota'ya gitmek üzere taksi yapan <span style='color:#C8102E;font-weight:700;'>UPS</span> şirketine ait bir Boeing 767 kargo uçağı ile Panama'dan gelen <strong>172</strong> kişi (<strong>166</strong> yolcu ve <strong>6</strong> mürettebat) taşıyan <span style='color:#C8102E;font-weight:700;'>Copa Airlines</span> Boeing 737 yolcu uçağı taksi yolunda çarpıştı. Federal Havacılık İdaresi (FAA) ve Ulusal Ulaştırma Güvenliği Kurulu (NTSB) kazaya ilişkin soruşturma başlatırken, <span style='color:#C8102E;font-weight:700;'>UPS</span> kargo uçağının burnunda büyük hasar oluştuğu, <span style='color:#C8102E;font-weight:700;'>Copa Airlines</span> uçağındaki iki yolcunun ise olay yerinde tedavi edildiği açıklandı.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/ups-cargo-aircraft-collides-with-copa-airlines-passenger-jet-at-miami-airport/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "UPS 767F ve Copa 737 Miami Havalimanı Taksi Yolunda Çarpıştı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-16",
+    "sources": [
+      {
+        "source": "stattimes",
+        "link": "https://www.stattimes.com/air-cargo/ups-767f-and-copa-737-collide-on-taxiway-at-miami-airport-1361303"
+      }
+    ]
+  },
+  {
+    "title": "ABD'deki Ülke Geneli Uçuş Yasağı Bakır Kablo Güncellemesinden Kaynaklandı",
+    "summary": "Ulaştırma Bakanı Sean Duffy, cuma günü Amerika Birleşik Devletleri'nde uygulanan ülke genelindeki uçuş yasağının bakır kablo güncellemesi sırasında yaşanan teknik bir sorundan kaynaklandığını açıkladı. Yıl sonu itibarıyla devreden çıkarılacak eski kabloların yönlendirici sistemde aşırı veri yüklenmesine yol açtığını belirten Duffy, <strong>50.000</strong> planlanan uçuşun yaklaşık <strong>20.000</strong>'inin etkilendiğini bildirdi. FAA yöneticisi Bryan Bedford, sistemlerin tamamen yenilenmemesi durumunda benzer kesintilerin tekrar yaşanabileceği konusunda uyardı.",
+    "category": "Diğer",
+    "source": "aircargoweek",
+    "link": "https://aircargoweek.com/copper-wire-upgrade-sparked-us-ground-stop/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-16"
+  },
+  {
+    "title": "FedEx Guangzhou'da 45 Bin Metrekarelik Kargo Terminalini Hizmete Açtı",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>FedEx</span>, Çin'deki Guangzhou Baiyun Uluslararası Havalimanı'nda yaklaşık <strong>45.000 metrekare</strong> büyüklüğündeki yeni uluslararası kargo terminalini açtı. Guangdong Havalimanı Otoritesi iş birliğiyle kurulan terminal, saatte <strong>28.000</strong> gönderi işleme kapasitesiyle şirketin önceki performansını <strong>üç kat</strong>tan fazla artırırken yıllık <strong>100.000 ton</strong>un üzerinde kargo elleçleme hacmi sunuyor. Yapay zekâ, otomasyon ve radyo frekanslı tanımlama (RFID) teknolojilerini kullanan tesis, ay sonu itibarıyla sıralama doğruluğunu <strong>%99</strong>'un üzerinde tutmayı hedefliyor. Şirket ayrıca ağ genişletme stratejisi kapsamında ağustosta Guangzhou ile Sydney arasında Boeing 777 kargo uçaklarıyla haftada <strong>beş</strong> frekanslık hat açmıştı.",
+    "category": "Altyapı",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/fedex-opens-45000-sq-m-cargo-terminal-in-guangzhou-1361309",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "risk",
+    "thyAnalysis": "FedEx'in Guangzhou'da açtığı devasa otomasyon terminali, Asya çıkışlı e-ticaret ve ekspres kargo pazarında küresel entegratörlerin operasyonel hızını artırarak Turkish Cargo'nun bölgedeki rekabet gücünü zorlayabilir.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "E-Ticaret Lojistiği"
+      ]
+    },
+    "etkiAlaniGerekce": "Rakip hub tesisinin kapasite ve otomasyon artışı bölgesel rekabeti kızıştırmaktadır.",
+    "date": "2026-11-17"
+  },
+  {
+    "title": "mas 2030 Hedefleri Doğrultusunda Filosunu A330 Freighters İle Büyütüyor",
+    "summary": "Meksikalı kargo havayolu şirketi mas, uçak tedarik koşullarının iyileşmesiyle birlikte gelecek yıl filosuna en az bir, ihtimale göre iki adet Airbus A330 dönüştürülmüş kargo uçağı katarak <strong>2030</strong> yılına kadar <strong>8 ila 10</strong> uçaklık filo hedefini koruyor. Filosunda halihazırda <strong>5</strong> adet A330 kargo uçağı bulunduran şirket, tek tip uçak operasyon stratejisini sürdürüyor. Şirket CEO'su Robert van de Weg, artan yakıt maliyetlerinin tarifeli kargo uçuşlarında ek ücret mekanizmasıyla tam olarak karşılanamadığını ve bunun sektör için kriz yarattığını vurguladı.",
+    "category": "Filo & Network",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/mas-sticks-with-a330fs-targets-8-10-freighters-by-2030-1361308",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-17"
+  },
+  {
+    "title": "Thai Airways ve ECS Group Avrupa Kargo Operasyonlarını Hizaya Getirdi",
+    "summary": "ECS Group ve <span style='color:#C8102E;font-weight:700;'>Thai Airways</span>, Avrupa genelinde müşteri hizmetlerini optimize etmek ve gelir yönetimini güçlendirmek amacıyla birleştirilmiş genel satış ve servis acentesi (GSSA) yapısını hayata geçirdi. Fransa, İtalya, Belçika, İsviçre, Danimarka ve İsveç'teki ECS Group iştirakleri ortak hizmet seviyesi anlaşması altında faaliyet gösterirken, iş birliği Finlandiya, Çekya, Slovakya, Polonya, Bulgaristan, Macaristan ve Romanya gibi çevrim dışı (offline) pazarları da kapsayacak şekilde genişletildi. <span style='color:#C8102E;font-weight:700;'>Thai Airways</span>, aralık ayından itibaren Paris seferlerini günlük iki kata çıkararak günlük <strong>20 ton</strong> kargo kapasitesi sunmaya hazırlanıyor.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/thai-airways-and-ecs-group-align-european-cargo-operations-1361307",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "ECS Group ve Thai Airways Avrupa Kargo Operasyonlarını Birleştiriyor",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-17"
+  },
+  {
+    "title": "UPS 767F ve Copa 737 Miami Havalimanı Taksi Yolunda Çarpıştı",
+    "summary": "Miami Uluslararası Havalimanı'nda (MIA) <strong>14 Kasım</strong> cumartesi gecesi saat <strong>21:15</strong> sularında <span style='color:#C8102E;font-weight:700;'>UPS</span> şirketine ait bir Boeing 767 kargo uçağı ile <span style='color:#C8102E;font-weight:700;'>Copa Airlines</span> Boeing 737 yolcu uçağı taksi sırasında çarpıştı. Panama'dan gelen <span style='color:#C8102E;font-weight:700;'>Copa Airlines</span> uçuşunda bulunan <strong>166</strong> yolcu ve <strong>6</strong> mürettebattan iki kişi olay yerinde tedavi edilirken, kargo uçağının burnunda ciddi hasar meydana geldi. FAA, hava trafik kontrolörlerinin kargo ekibine yol verme talimatı verdiğini belirterek kazayla ilgili soruşturma başlattı.",
+    "category": "Diğer",
+    "source": "stattimes",
+    "link": "https://www.stattimes.com/air-cargo/ups-767f-and-copa-737-collide-on-taxiway-at-miami-airport-1361303",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Miami Havalimanı'nda UPS Kargo Uçağı ile Copa Airlines Yolcu Uçağı Çarpıştı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-17"
+  },
+  {
+    "title": "ANA ve CHOOOSE Sürdürülebilir Havacılık Yakıtı İnisiyatifini Genişletiyor",
+    "summary": "<span style='color:#C8102E;font-weight:700;'>ANA</span> (<span style='color:#C8102E;font-weight:700;'>All Nippon Airways</span>) ve yazılım şirketi CHOOOSE, sürdürülebilir havacılık yakıtı (SAF) kullanımını artırmak amacıyla iş birliği anlaşmasını genişletti. Anlaşma sayesinde kurumsal ve kargo müşterileri, <span style='color:#C8102E;font-weight:700;'>ANA</span>'nın SAF Uçuş İnisiyatifi (SFI) programı kapsamında CO₂ emisyonlarını takip edebilecek ve minimum alım şartı olmaksızın, bir metrik tondan başlayan miktarlarda çevresel nitelik satın alabilecek. <span style='color:#C8102E;font-weight:700;'>ANA</span> Grubu, <strong>2050</strong> yılına kadar net sıfır sera gazı emisyonuna ulaşmayı hedefliyor.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/11/ana-chooose-expand-partnership-enhance-saf-flight-initiative-corporate-cargo-programs/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-17"
+  },
+  {
+    "title": "FreightSpark Tüm Süreçleri Birleştiren Yeni Kargo Yönetim Sistemi ONE'ı Başlattı",
+    "summary": "FreightSpark, satış, rezervasyon, operasyon ve finans süreçlerini tek bir çalışma alanında birleştiren 'ONE' adlı yeni kargo yönetim sistemini tanıttı. Birçok ülkede aktif olarak kullanılmaya başlanan sistem; müşteri e-postalarını teklif ve sevkiyatlarla eşleştirirken, yapay zekâ desteğiyle parça, ağırlık, hacim ve kargo tipi gibi bilgileri otomatik olarak ayıklıyor. Yazılımın ilk lansman müşterisi Hollanda ve Belçika'da faaliyet gösteren GSSA ve kargo brokerlik şirketi Simple Cargo oldu.",
+    "category": "Teknoloji & Dijitalleşme",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/11/freightspark-launches-one-cargo-management-system/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-17"
+  },
+  {
+    "title": "Atlas Air Worldwide ve Nippon Cargo Airlines 10 Yıllık Ortaklığı Kutladı",
+    "summary": "Atlas Air Worldwide ile <span style='color:#C8102E;font-weight:700;'>Nippon Cargo Airlines</span> (<span style='color:#C8102E;font-weight:700;'>NCA</span>) stratejik ortaklıklarının <strong>10.</strong> yıl dönümünü Japonya'da gerçekleştirdikleri üst düzey toplantıyla kutladı. Ekim <strong>2016</strong>'da tek bir Boeing 747-400 kargo uçağı ile başlayan iş birliği, zaman içinde <strong>5</strong> uçağa ulaşarak Asya ile Kuzey Amerika arasındaki kritik ticaret koridorlarını destekleyen güçlü bir operasyonel yapıya dönüştü.",
+    "category": "Ortaklık & İş Birlikleri",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/11/atlas-air-worldwide-nippon-cargo-airlines-years-collaboration/",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-17"
+  },
+  {
+    "title": "Glasgow Prestwick Havalimanı İhracatı Artırmak İçin Paul McGrattan'ı Atadı",
+    "summary": "Glasgow Prestwick Havalimanı, giden kargo hacimlerini artırmak ve ihracat işini büyütmek amacıyla Paul McGrattan'ı Ticaret ve İhracat Geliştirme Müdürü olarak atadı. McGrattan; deniz ürünleri, ilaç, viski ve diğer yüksek değerli ihracat ürünleri odağında doğuya giden seferlerdeki doluluk oranlarını artırmak için ihracatçılar, taşıma işleri organizatörleri ve hava yolu ortaklarıyla birlikte çalışacak. Havalimanı, Çin'e yönelik başlattığı deniz ürünleri ihracat servisi kapsamında <strong>Mayıs 2026</strong>'ya kadar <strong>1 milyon kilogram</strong>dan fazla somon ihraç etmişti.",
+    "category": "Atama & Görevlendirme",
+    "source": "payloadasia",
+    "link": "https://payloadasia.com/2026/11/glasgow-prestwick-airport-appoints-trade-and-development-manager/",
+    "id": null,
+    "isDuplicate": true,
+    "duplicateOf": "Prestwick Havalimanı İhracatı Artırmak İçin Paul McGrattan'ı Atadı",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-17",
+    "sources": [
+      {
+        "source": "payloadasia",
+        "link": "https://payloadasia.com/2026/11/glasgow-prestwick-airport-appoints-trade-and-development-manager/"
+      }
+    ]
+  },
+  {
+    "title": "COP31'de Denizcilikte Karbonsuzlaştırma ve Sürdürülebilir Denizcilik Yakıtlarının Geleceği Ele Alındı",
+    "summary": "COP31 kapsamında Ulaştırma ve Altyapı Bakanlığı Denizcilik Genel Müdürlüğü ev sahipliğinde Antalya'da düzenlenen panelde, deniz taşımacılığının düşük karbonlu geleceği ve sürdürülebilir yakıtlara geçiş süreci ele alındı. Biyoyakıt Sanayi Derneği Yönetim Kurulu Başkanı Selçuk Borovalı, denizcilik sektörüne yönelik biyoyakıt üretim ve ikmal süreçlerinin <strong>2022</strong> yılında AR-GE çalışmalarıyla başladığını ve <strong>2024</strong>'ten itibaren başarılı uygulamalara dönüştüğünü belirtti. Panelde, Türkiye'nin sürdürülebilir denizcilik yakıtlarında güçlü bir tedarikçi ve çözüm merkezi olma potansiyeline sahip olduğu vurgulandı.",
+    "category": "Diğer",
+    "source": "haberekonomi",
+    "link": "https://haberekonomi.com.tr/index.asp?sayfa=haber&icerik=32424",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "notr",
+    "thyAnalysis": "",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": []
+    },
+    "etkiAlaniGerekce": "",
+    "date": "2026-11-16"
+  },
+  {
+    "title": "cargo-partner'den İstanbul'a 2 Milyon Euro'luk Yeni Lojistik Yatırımı",
+    "summary": "Uluslararası lojistik şirketi cargo-partner, Türkiye'deki büyüme stratejisi doğrultusunda İstanbul Hadımköy'de yaklaşık <strong>2 milyon euro</strong> yatırımla toplam <strong>7 bin 200 metrekare</strong>lik yeni lojistik tesisini hayata geçirdi. <strong>5 bin 400 metrekare</strong> depolama ve <strong>1 bin 800 metrekare</strong> asma kat alanından oluşan tesiste <strong>15</strong> kişiye istihdam sağlanırken, elektronik, gıda ve e-ticaret operasyonlarına yönelik katma değerli hizmetler sunulacak. Şirket ayrıca Ambarlı Gümrük Müdürlüğü'ne bağlı mevcut antreposunun kapasitesini <strong>5 bin 850 metrekare</strong>den <strong>8 bin 500 metrekare</strong>ye çıkardığını açıkladı.",
+    "category": "Altyapı",
+    "source": "haberekonomi",
+    "link": "https://haberekonomi.com.tr/index.asp?sayfa=haber&icerik=32409",
+    "id": null,
+    "isDuplicate": false,
+    "duplicateOf": "",
+    "thyImpact": "firsat",
+    "thyAnalysis": "cargo-partner'in İstanbul'daki yeni lojistik tesisi ve antrepo kapasite artışı, bölgedeki depolama ve e-ticaret hacmini büyütürken <span style='color:#C8102E;font-weight:700;'>Turkish Cargo</span>'nun İstanbul aktarma merkezindeki feeder ve transit kargo akışına ek sinerji sağlayacaktır.",
+    "usedWebSearch": false,
+    "webSearchDetails": "",
+    "webSearchSource": "",
+    "webSearchSources": [],
+    "etkiAlani": {
+      "direct": [],
+      "hub": [
+        "Avrupa",
+        "Orta Doğu"
+      ]
+    },
+    "etkiAlaniGerekce": "Şirketin İstanbul'daki depolama ve antrepo yatırımları, bölgesel kargo akışını hızlandırarak Turkish Cargo'nun aktarma merkezi operasyonlarına dolaylı katkı sunacaktır.",
+    "date": "2026-11-16"
+  },
+  {
     "title": "Natilus Kargo Uçağı Kanatlarının Üretim Projesi Başladı",
     "summary": "ABD'li havacılık üreticisi Natilus, <strong>3,8 ton</strong> faydalı yük kapasiteli KONA hibrit gövdeli kargo uçağının prototipi için Composites Universal Group ile kanat imalatı konusunda anlaştı. Kanatların <strong>2027 baharında</strong> teslim edilmesi planlanırken, karbon fiber malzeme kullanımı sayesinde korozyona karşı dayanıklılığın artırılması ve parça sayısının azaltılması hedefleniyor. Natilus, <strong>2023</strong> yılında başlattığı alt ölçekli uçuş testlerinin ardından şimdiye kadar toplam <strong>570</strong>'ten fazla uçak ön siparişi ve <strong>24 milyar dolar</strong> değerinde portföy büyüklüğüne ulaştı.",
     "category": "Filo & Network",
